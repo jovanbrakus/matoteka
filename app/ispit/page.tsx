@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ClipboardList, Clock, Hash } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { ClipboardList, Clock, Hash, AlertCircle, ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 interface Faculty {
   id: string;
@@ -14,24 +16,39 @@ interface Faculty {
 
 export default function ExamSetupPage() {
   const router = useRouter();
-  const [faculties, setFaculties] = useState<Faculty[]>([]);
-  const [selected, setSelected] = useState("");
+  const { data: session } = useSession();
+  const user = session?.user as any;
+  const [faculty, setFaculty] = useState<Faculty | null>(null);
   const [loading, setLoading] = useState(false);
+  const [fetchingFaculty, setFetchingFaculty] = useState(true);
 
+  // Read user's current targetFaculty from DB (fresh) and get its config
   useEffect(() => {
-    fetch("/api/faculties")
-      .then((r) => r.json())
-      .then(setFaculties)
-      .catch(() => {});
+    async function load() {
+      try {
+        const [profileRes, facultiesRes] = await Promise.all([
+          fetch("/api/profile/faculty"),
+          fetch("/api/faculties"),
+        ]);
+        const profile = await profileRes.json();
+        const allFaculties: Faculty[] = await facultiesRes.json();
+
+        if (profile.targetFaculty && profile.targetFaculty !== "other") {
+          const match = allFaculties.find((f) => f.id === profile.targetFaculty);
+          if (match) setFaculty(match);
+        }
+      } catch {}
+      setFetchingFaculty(false);
+    }
+    load();
   }, []);
 
   async function startExam() {
-    if (!selected) return;
     setLoading(true);
     const res = await fetch("/api/exams", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ facultyId: selected }),
+      body: JSON.stringify({}),
     });
     const data = await res.json();
     if (data.examId) {
@@ -40,50 +57,77 @@ export default function ExamSetupPage() {
     setLoading(false);
   }
 
+  if (fetchingFaculty) {
+    return (
+      <div className="mx-auto max-w-2xl px-4 py-16">
+        <div className="h-8 w-48 animate-pulse rounded-lg bg-[#1e293b]" />
+        <div className="mt-4 h-40 animate-pulse rounded-2xl bg-[#1e293b]" />
+      </div>
+    );
+  }
+
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8">
+    <div className="mx-auto max-w-2xl px-4 py-8">
       <h1 className="mb-2 text-3xl font-bold text-[#e2e8f0]">
         <ClipboardList className="mr-2 inline" size={28} />
         Probni prijemni ispit
       </h1>
-      <p className="mb-8 text-[#94a3b8]">Izaberi fakultet i započni simulaciju prijemnog ispita.</p>
+      <p className="mb-8 text-[#94a3b8]">
+        Simulacija prijemnog ispita sa nasumičnim zadacima iz cele baze.
+      </p>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {faculties.map((f) => (
-          <button
-            key={f.id}
-            onClick={() => setSelected(f.id)}
-            className={`rounded-xl border p-5 text-left transition ${
-              selected === f.id
-                ? "border-[#60a5fa] bg-[#60a5fa]/10"
-                : "border-[#334155] bg-[#1e293b] hover:border-[#60a5fa]/50"
-            }`}
+      {!faculty ? (
+        /* No faculty set — prompt user to set one */
+        <div className="rounded-2xl border border-[#fbbf24]/30 bg-[#fbbf24]/5 p-6">
+          <div className="mb-3 flex items-center gap-2 text-[#fbbf24]">
+            <AlertCircle size={20} />
+            <span className="font-semibold">Fakultet nije izabran</span>
+          </div>
+          <p className="mb-4 text-sm text-[#94a3b8]">
+            Da bismo podesili trajanje i broj zadataka na ispitu, potrebno je da izabereš
+            fakultet za koji se spremaš.
+          </p>
+          <Link
+            href="/profil"
+            className="inline-flex items-center gap-2 rounded-xl bg-[#fbbf24] px-5 py-2.5 text-sm font-semibold text-[#0f172a] transition hover:bg-[#f59e0b]"
           >
-            <h3 className="mb-2 text-lg font-bold text-[#e2e8f0]">{f.shortName}</h3>
-            <p className="mb-3 text-xs text-[#94a3b8]">{f.name}</p>
-            <div className="flex gap-4 text-xs text-[#64748b]">
-              <span className="flex items-center gap-1">
-                <Hash size={12} /> {f.examNumProblems} zadataka
-              </span>
-              <span className="flex items-center gap-1">
-                <Clock size={12} /> {f.examDuration} min
-              </span>
+            Izaberi u profilu <ArrowRight size={16} />
+          </Link>
+        </div>
+      ) : (
+        <>
+          {/* Exam info card */}
+          <div className="mb-6 rounded-2xl border border-[#334155] bg-[#1e293b] p-6">
+            <h2 className="mb-4 text-lg font-semibold text-[#e2e8f0]">
+              Format ispita — {faculty.shortName}
+            </h2>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="rounded-xl bg-[#0f172a]/60 p-4 text-center">
+                <Hash size={20} className="mx-auto mb-1 text-[#60a5fa]" />
+                <div className="text-2xl font-bold text-[#e2e8f0]">{faculty.examNumProblems}</div>
+                <div className="text-xs text-[#94a3b8]">zadataka</div>
+              </div>
+              <div className="rounded-xl bg-[#0f172a]/60 p-4 text-center">
+                <Clock size={20} className="mx-auto mb-1 text-[#a78bfa]" />
+                <div className="text-2xl font-bold text-[#e2e8f0]">{faculty.examDuration}</div>
+                <div className="text-xs text-[#94a3b8]">minuta</div>
+              </div>
             </div>
+          </div>
+
+          <div className="mb-6 rounded-xl border border-[#334155] bg-[#1e293b] p-4 text-sm text-[#94a3b8]">
+            Zadaci se nasumično biraju iz cele baze. Tajmer počinje odmah!
+          </div>
+
+          <button
+            onClick={startExam}
+            disabled={loading}
+            className="w-full rounded-xl bg-gradient-to-r from-[#60a5fa] to-[#a78bfa] px-8 py-4 text-lg font-semibold text-white transition hover:opacity-90 disabled:opacity-50"
+          >
+            {loading ? "Pokretanje..." : "Započni ispit"}
           </button>
-        ))}
-      </div>
-
-      <div className="mt-8 rounded-xl border border-[#334155] bg-[#1e293b] p-4 text-sm text-[#94a3b8]">
-        Zadaci se nasumično biraju iz baze za izabrani fakultet. Tajmer počinje odmah!
-      </div>
-
-      <button
-        onClick={startExam}
-        disabled={!selected || loading}
-        className="mt-6 rounded-xl bg-[#60a5fa] px-8 py-3 text-lg font-semibold text-white hover:bg-[#3b82f6] disabled:opacity-50"
-      >
-        {loading ? "Pokretanje..." : "Započni ispit"}
-      </button>
+        </>
+      )}
     </div>
   );
 }

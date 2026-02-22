@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { User, Target, BarChart3, Clock } from "lucide-react";
+import { User, Target, Clock, Pencil } from "lucide-react";
+import FacultyPickerDialog, { FACULTIES } from "@/components/ui/faculty-picker-dialog";
 
 export default function ProfilePage() {
   const { data: session } = useSession();
@@ -10,15 +11,47 @@ export default function ProfilePage() {
   const [byFaculty, setByFaculty] = useState<any[]>([]);
   const [byTopic, setByTopic] = useState<any[]>([]);
   const [examHistory, setExamHistory] = useState<any[]>([]);
+  const [currentFaculty, setCurrentFaculty] = useState<string | null>(null);
+  const [showFacultyPicker, setShowFacultyPicker] = useState(false);
+  const [savingFaculty, setSavingFaculty] = useState(false);
+  const [facultyLoaded, setFacultyLoaded] = useState(false);
 
   useEffect(() => {
     fetch("/api/progress").then((r) => r.json()).then(setProgress);
     fetch("/api/progress/by-faculty").then((r) => r.json()).then(setByFaculty);
     fetch("/api/progress/by-topic").then((r) => r.json()).then(setByTopic);
     fetch("/api/exams/history").then((r) => r.json()).then(setExamHistory);
+    // Read current faculty from DB (always fresh)
+    fetch("/api/profile/faculty")
+      .then((r) => r.json())
+      .then((data) => {
+        setCurrentFaculty(data.targetFaculty || null);
+        setFacultyLoaded(true);
+        if (!data.targetFaculty) setShowFacultyPicker(true);
+      });
   }, []);
 
   const user = session?.user as any;
+
+  const facultyLabel = currentFaculty
+    ? FACULTIES.find((f) => f.id === currentFaculty)?.name || currentFaculty.toUpperCase()
+    : null;
+
+  async function handleFacultySelect(facultyId: string) {
+    setSavingFaculty(true);
+    try {
+      const res = await fetch("/api/profile/faculty", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ targetFaculty: facultyId }),
+      });
+      if (res.ok) {
+        setCurrentFaculty(facultyId);
+        setShowFacultyPicker(false);
+      }
+    } catch {}
+    setSavingFaculty(false);
+  }
 
   function formatTime(s: number) {
     const h = Math.floor(s / 3600);
@@ -35,12 +68,25 @@ export default function ProfilePage() {
           {user?.displayName || user?.name || "Profil"}
         </h1>
         <p className="text-sm text-[#94a3b8]">{user?.email}</p>
-        {user?.targetFaculty && (
-          <p className="mt-1 text-sm text-[#60a5fa]">
-            <Target className="mr-1 inline" size={14} />
-            Ciljani fakultet: {user.targetFaculty.toUpperCase()}
-          </p>
-        )}
+
+        {/* Faculty display with edit button */}
+        <div className="mt-2 flex items-center gap-2">
+          {facultyLoaded && (
+            <>
+              <p className="text-sm text-[#60a5fa]">
+                <Target className="mr-1 inline" size={14} />
+                {facultyLabel || "Fakultet nije izabran"}
+              </p>
+              <button
+                onClick={() => setShowFacultyPicker(true)}
+                className="rounded-md p-1 text-[#94a3b8] transition hover:bg-[#334155] hover:text-[#e2e8f0]"
+                title="Promeni fakultet"
+              >
+                <Pencil size={14} />
+              </button>
+            </>
+          )}
+        </div>
       </div>
 
       {/* Stats cards */}
@@ -150,6 +196,15 @@ export default function ProfilePage() {
           </div>
         </div>
       )}
+
+      {/* Faculty picker dialog */}
+      <FacultyPickerDialog
+        open={showFacultyPicker}
+        current={currentFaculty}
+        onSelect={handleFacultySelect}
+        onClose={() => setShowFacultyPicker(false)}
+        loading={savingFaculty}
+      />
     </div>
   );
 }
