@@ -51,8 +51,8 @@ export default function LoginPage() {
     <div className="flex min-h-[80vh] items-center justify-center px-4">
       <div className="w-full max-w-md rounded-2xl border border-[#334155] bg-[#1e293b] p-8 text-center">
         <h1 className="mb-2 text-3xl font-bold">
-          <span className="bg-gradient-to-r from-[#60a5fa] to-[#a78bfa] bg-clip-text text-transparent">
-            Prijemni
+          <span className="bg-gradient-to-r from-[#4ade80] to-[#a3e635] bg-clip-text text-transparent">
+            TataMata
           </span>
         </h1>
         <p className="mb-8 text-[#94a3b8]">

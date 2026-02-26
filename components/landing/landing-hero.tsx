@@ -17,7 +17,7 @@ export default function LandingHero() {
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 w-fit mx-auto lg:mx-0 backdrop-blur-sm">
                 <span className="w-2 h-2 rounded-full bg-banana animate-pulse" />
                 <span className="text-xs font-medium text-slate-300 uppercase tracking-wider">
-                  Prijemni 2025/2026
+                  TataMata 2025/2026
                 </span>
               </div>
 
@@ -56,7 +56,7 @@ export default function LandingHero() {
                   <span className="material-symbols-outlined text-banana text-lg">
                     check_circle
                   </span>
-                  <span>600+ zadataka</span>
+                  <span>1000+ zadataka</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-banana text-lg">
@@ -118,7 +118,7 @@ export default function LandingHero() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
               { value: "600+", label: "Rešenih zadataka" },
-              { value: "3+", label: "Fakulteta" },
+              { value: "5+", label: "Fakulteta" },
               { value: "24/7", label: "AI Tutor podrška" },
               { value: "Top 3", label: "Ciljana fakulteta" },
             ].map((s) => (
@@ -368,7 +368,7 @@ export default function LandingHero() {
                   <span className="material-symbols-outlined text-primary mr-2 text-lg">
                     check
                   </span>{" "}
-                  600+ zadataka sa rešenjima
+                  1000+ zadataka sa rešenjima
                 </li>
                 <li className="flex items-center text-slate-300 text-sm">
                   <span className="material-symbols-outlined text-primary mr-2 text-lg">
@@ -392,7 +392,7 @@ export default function LandingHero() {
               </div>
               <div className="mb-4">
                 <h3 className="text-xl font-medium text-white">
-                  Prijemni <span className="text-primary">Pro</span>
+                  TataMata <span className="text-[#a3e635]">Pro</span>
                 </h3>
                 <div className="mt-4 flex items-baseline">
                   <span className="text-4xl font-bold text-white">€89</span>
@@ -512,12 +512,12 @@ export default function LandingHero() {
               <div className="flex items-center gap-2 mb-4">
                 <Image
                   src="/logo-56.png"
-                  alt="Prijemni Pro"
+                  alt="TataMata"
                   width={24}
                   height={24}
                 />
                 <span className="text-white text-lg font-bold">
-                  Prijemni Pro
+                  TataMata
                 </span>
               </div>
               <p className="text-slate-500 text-sm leading-relaxed">
@@ -610,7 +610,7 @@ export default function LandingHero() {
           </div>
           <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-slate-600 text-xs">
-              © 2025 Prijemni Pro. Sva prava zadržana.
+              © 2025 TataMata. Sva prava zadržana.
             </p>
             <div className="flex gap-4">
               <span className="text-slate-500 hover:text-white transition-colors cursor-pointer">

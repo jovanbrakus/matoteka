@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import {
@@ -33,9 +34,10 @@ export function TopNav() {
   return (
     <nav className="sticky top-0 z-50 border-b border-[#334155] bg-[#0f172a]/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
-        <Link href="/" className="text-xl font-bold">
-          <span className="bg-gradient-to-r from-[#60a5fa] to-[#a78bfa] bg-clip-text text-transparent">
-            Prijemni
+        <Link href="/" className="flex items-center gap-2 text-xl font-bold">
+          <Image src="/logo-56.png" alt="TataMata" width={28} height={26} />
+          <span className="bg-gradient-to-r from-[#4ade80] to-[#a3e635] bg-clip-text text-transparent">
+            TataMata
           </span>
         </Link>
 

@@ -88,7 +88,7 @@ In LaTeX math mode, write decimals as 3{,}14.`;
 }
 
 export function getContextualPrompt(solutionHtml: string, contextHint: string): string {
-  return `Ti si AI tutor na platformi Prijemni. Učenik gleda rešenje zadatka i ima pitanje.
+  return `Ti si AI tutor na platformi TataMata. Učenik gleda rešenje zadatka i ima pitanje.
 
 ## Originalni zadatak i rešenje
 

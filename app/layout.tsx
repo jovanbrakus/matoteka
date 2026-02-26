@@ -4,9 +4,9 @@ import { TopNav } from "@/components/nav/top-nav";
 import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
-  title: "Prijemni — 600+ rešenih zadataka za prijemni ispit",
+  title: "TataMata — 1000+ rešenih zadataka za prijemni ispit",
   description:
-    "Besplatna platforma za pripremu prijemnog ispita iz matematike. 600+ rešenih zadataka sa ETF, MATF, FON i drugih fakulteta Univerziteta u Beogradu.",
+    "Besplatna platforma za pripremu prijemnog ispita iz matematike. 1000+ rešenih zadataka sa ETF, MATF, FON i drugih fakulteta Univerziteta u Beogradu.",
   keywords: "prijemni ispit, matematika, ETF, MATF, FON, rešeni zadaci, Beograd",
 };
 
