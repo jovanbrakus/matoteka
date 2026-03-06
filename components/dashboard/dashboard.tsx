@@ -19,10 +19,12 @@ import {
   Clock,
   ChevronRight,
   BarChart3,
+  Play,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { sr } from "date-fns/locale";
 import { FACULTIES } from "@/components/ui/faculty-picker-dialog";
+import { MAJOR_CATEGORIES } from "@/lib/major-categories";
 
 /* ─── types ─── */
 
@@ -51,6 +53,13 @@ interface FacultyProgress {
 
 interface TopicProgress {
   topic_id: string;
+  name: string;
+  total: number;
+  solved: number;
+}
+
+interface MajorProgress {
+  id: string;
   name: string;
   total: number;
   solved: number;
@@ -141,6 +150,7 @@ export default function Dashboard({ user }: DashboardProps) {
   const [progress, setProgress] = useState<Progress | null>(null);
   const [byFaculty, setByFaculty] = useState<FacultyProgress[]>([]);
   const [byTopic, setByTopic] = useState<TopicProgress[]>([]);
+  const [byMajorCategory, setByMajorCategory] = useState<MajorProgress[]>([]);
   const [recentActivity, setRecentActivity] = useState<RecentProblem[]>([]);
   const [examHistory, setExamHistory] = useState<ExamEntry[]>([]);
   const [myRank, setMyRank] = useState<MyRank | null>(null);
@@ -152,14 +162,16 @@ export default function Dashboard({ user }: DashboardProps) {
       fetch("/api/progress").then((r) => r.json()),
       fetch("/api/progress/by-faculty").then((r) => r.json()),
       fetch("/api/progress/by-topic").then((r) => r.json()),
+      fetch("/api/progress/by-major-category").then((r) => r.json()),
       fetch("/api/progress/history?limit=5").then((r) => r.json()),
       fetch("/api/exams/history").then((r) => r.json()),
       fetch("/api/leaderboard/me").then((r) => r.json()),
       fetch("/api/bookmarks").then((r) => r.json()),
-    ]).then(([prog, fac, top, hist, exams, rank, bm]) => {
+    ]).then(([prog, fac, top, major, hist, exams, rank, bm]) => {
       if (prog.status === "fulfilled") setProgress(prog.value);
       if (fac.status === "fulfilled") setByFaculty(Array.isArray(fac.value) ? fac.value : []);
       if (top.status === "fulfilled") setByTopic(Array.isArray(top.value) ? top.value : []);
+      if (major.status === "fulfilled") setByMajorCategory(Array.isArray(major.value) ? major.value : []);
       if (hist.status === "fulfilled") setRecentActivity(Array.isArray(hist.value) ? hist.value : []);
       if (exams.status === "fulfilled") setExamHistory(Array.isArray(exams.value) ? exams.value : []);
       if (rank.status === "fulfilled" && rank.value && !rank.value.error) setMyRank(rank.value);
@@ -423,6 +435,42 @@ export default function Dashboard({ user }: DashboardProps) {
               );
             })}
           </div>
+          {/* Major category progress bars */}
+          {byMajorCategory.length > 0 && (
+            <div className="mt-7">
+              <h3 className="mb-2 text-sm font-semibold text-[#e2e8f0]">Napredak po kategorijama</h3>
+              <div className="space-y-3">
+                {byMajorCategory
+                  .slice()
+                  .sort((a, b) =>
+                    MAJOR_CATEGORIES.findIndex((c) => c.id === a.id) -
+                    MAJOR_CATEGORIES.findIndex((c) => c.id === b.id),
+                  )
+                  .map((cat) => {
+                    const pct = cat.total > 0 ? Math.round((cat.solved / cat.total) * 100) : 0;
+                    return (
+                      <div key={cat.id}>
+                        <div className="mb-1 flex items-center justify-between text-sm">
+                          <Link
+                            href={`/zadaci?majorCategory=${encodeURIComponent(cat.id)}`}
+                            className="inline-flex items-center text-[#e2e8f0] transition hover:text-[#a78bfa]"
+                          >
+                            <Play size={14} className="mr-1 text-[#a78bfa]" />
+                            {cat.name}
+                          </Link>
+                          <span className="text-xs text-[#94a3b8]">
+                            {cat.solved}/{cat.total} ({pct}%)
+                          </span>
+                        </div>
+                        <div className="h-2 overflow-hidden rounded-full bg-[#0f172a]">
+                          <div className="h-full rounded-full bg-[#a78bfa]/70" style={{ width: `${pct}%` }} />
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* D2: Recent Activity */}
@@ -521,7 +569,7 @@ export default function Dashboard({ user }: DashboardProps) {
               return (
                 <Link
                   key={topic.topic_id}
-                  href={`/zadaci`}
+                  href={`/zadaci?topic=${encodeURIComponent(topic.topic_id)}`}
                   className="group rounded-xl border border-[#334155] bg-[#1e293b] p-4 transition hover:border-[#4ade80]/50"
                 >
                   <h3 className="mb-2 text-sm font-medium text-[#e2e8f0] group-hover:text-[#4ade80]">

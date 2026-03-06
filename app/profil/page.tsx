@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { User, Target, Clock, Pencil } from "lucide-react";
 import FacultyPickerDialog, { FACULTIES } from "@/components/ui/faculty-picker-dialog";
+import { MAJOR_CATEGORIES } from "@/lib/major-categories";
 
 export default function ProfilePage() {
   const { data: session } = useSession();
   const [progress, setProgress] = useState<any>(null);
   const [byFaculty, setByFaculty] = useState<any[]>([]);
+  const [byMajorCategory, setByMajorCategory] = useState<any[]>([]);
   const [byTopic, setByTopic] = useState<any[]>([]);
   const [examHistory, setExamHistory] = useState<any[]>([]);
   const [currentFaculty, setCurrentFaculty] = useState<string | null>(null);
@@ -19,6 +21,7 @@ export default function ProfilePage() {
   useEffect(() => {
     fetch("/api/progress").then((r) => r.json()).then(setProgress);
     fetch("/api/progress/by-faculty").then((r) => r.json()).then(setByFaculty);
+    fetch("/api/progress/by-major-category").then((r) => r.json()).then(setByMajorCategory);
     fetch("/api/progress/by-topic").then((r) => r.json()).then(setByTopic);
     fetch("/api/exams/history").then((r) => r.json()).then(setExamHistory);
     // Read current faculty from DB (always fresh)
@@ -131,6 +134,34 @@ export default function ProfilePage() {
                 </div>
               );
             })}
+          </div>
+        </div>
+      )}
+
+      {/* Progress by major category */}
+      {byMajorCategory.length > 0 && (
+        <div className="mb-8">
+          <h2 className="mb-4 text-lg font-semibold text-[#e2e8f0]">Napredak po kategoriji</h2>
+          <div className="space-y-3">
+            {[...byMajorCategory]
+              .sort(
+                (a, b) =>
+                  MAJOR_CATEGORIES.findIndex((c) => c.id === a.id) - MAJOR_CATEGORIES.findIndex((c) => c.id === b.id),
+              )
+              .map((cat: any) => {
+                const pct = cat.total > 0 ? (cat.solved / cat.total) * 100 : 0;
+                return (
+                  <div key={cat.id}>
+                    <div className="mb-1 flex items-center justify-between text-sm">
+                      <span className="text-[#e2e8f0]">{cat.name}</span>
+                      <span className="text-[#94a3b8]">{pct.toFixed(0)}%</span>
+                    </div>
+                    <div className="h-2 overflow-hidden rounded-full bg-[#1e293b]">
+                      <div className="h-full rounded-full bg-[#4ade80]" style={{ width: `${pct}%` }} />
+                    </div>
+                  </div>
+                );
+              })}
           </div>
         </div>
       )}

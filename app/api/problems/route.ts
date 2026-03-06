@@ -1,13 +1,15 @@
 import { db } from "@/lib/db";
-import { problems, faculties, problemTopics, topics } from "@/drizzle/schema";
+import { problems, problemTopics } from "@/drizzle/schema";
 import { eq, and, ilike, sql, desc, asc, inArray } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { getMajorCategoryTopicIds } from "@/lib/major-categories";
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const faculty = url.searchParams.get("faculty");
   const year = url.searchParams.get("year");
   const topic = url.searchParams.get("topic");
+  const majorCategory = url.searchParams.get("majorCategory");
   const search = url.searchParams.get("search");
   const page = parseInt(url.searchParams.get("page") || "1");
   const limit = parseInt(url.searchParams.get("limit") || "30");
@@ -19,18 +21,25 @@ export async function GET(req: Request) {
   if (year) conditions.push(eq(problems.year, parseInt(year)));
   if (search) conditions.push(ilike(problems.title, `%${search}%`));
 
-  let query;
-  if (topic) {
-    // Join with problem_topics to filter by topic
+  if (topic || majorCategory) {
+    const topicIds = topic
+      ? [topic]
+      : getMajorCategoryTopicIds(majorCategory || "");
+
+    if (!topicIds.length) {
+      return NextResponse.json({ problems: [], total: 0, page, limit });
+    }
+
     const problemIds = await db
-      .select({ problemId: problemTopics.problemId })
+      .selectDistinct({ problemId: problemTopics.problemId })
       .from(problemTopics)
-      .where(eq(problemTopics.topicId, topic));
+      .where(inArray(problemTopics.topicId, topicIds));
 
     const ids = problemIds.map((r) => r.problemId);
     if (ids.length === 0) {
       return NextResponse.json({ problems: [], total: 0, page, limit });
     }
+
     conditions.push(inArray(problems.id, ids));
   }
 
