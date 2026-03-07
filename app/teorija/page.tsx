@@ -19,6 +19,7 @@ const topics = [
   { href: "/teorija/algebarski-izrazi", label: "Algebarski izrazi", summary: "Pojednostavljenje izraza sa korenima, razlomcima i faktorisanjem." },
   { href: "/teorija/binomna-formula", label: "Binomna formula", summary: "Razvoj izraza sa kvadratima i prepoznavanje tipičnih obrazaca." },
   { href: "/teorija/kvadratna-funkcija", label: "Kvadratna funkcija", summary: "Parabola, vrh i znak funkcije za zadatke iz grafika i jednačina." },
+  { href: "/teorija/kompozicija-i-inverzna-funkcija", label: "Kompozicija i inverzna funkcija", summary: "Kako raditi sa f(g(x)) i pronalaziti inverzne funkcije." },
   { href: "/teorija/iracionalne-jednadzbe", label: "Iracionalne jednačine", summary: "Rešavanje sa korenima i obavezna provera rešenja." },
   { href: "/teorija/izvod", label: "Izvod funkcije", summary: "Pravila izvoda i brz pregled rasta i pada funkcije." },
   { href: "/teorija/eksponencijalne-jednadzbe", label: "Eksponencijalne jednačine", summary: "Prebacivanje na zajedničku osnovu i logaritamska rešenja." },
