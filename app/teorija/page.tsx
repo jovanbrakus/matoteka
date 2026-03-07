@@ -12,6 +12,7 @@ const topics = [
   { href: "/teorija/funkcije-grafici", label: "Funkcije i grafici", summary: "Kako prepoznati rast/opadanje, nultočke i znak funkcije." },
   { href: "/teorija/planimetrija", label: "Planimetrija", summary: "Trouglovi, površine, oblici i ključni geometrijski odnosi." },
   { href: "/teorija/stereometrija", label: "Stereometrija", summary: "Zapremina i površine tela u prostoru." },
+  { href: "/teorija/krugovi-i-tangente", label: "Krugovi i tangente", summary: "Upisani i opisani krug, tangente i klasične relacije u planimetriji." },
   { href: "/teorija/solida", label: "Solida", summary: "Kupa, stožac, piramida i njihovi formuli." },
   { href: "/teorija/analiticka-geometrija", label: "Analitička geometrija", summary: "Jednačine pravih, nagib i koordinate u ravni." },
   { href: "/teorija/kompleksni-brojevi", label: "Kompleksni brojevi", summary: "Osnovne operacije sa i i konjugovanjem." },
