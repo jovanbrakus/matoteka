@@ -2,27 +2,14 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Sidebar from "@/components/layout/sidebar";
 import {
-  BookOpen,
-  ClipboardList,
-  Trophy,
-  Bot,
-  Bookmark,
-  Target,
-  TrendingUp,
-  CheckCircle,
-  XCircle,
-  Minus,
-  ArrowRight,
+  Search,
+  Bell,
+  Settings,
+  Flame,
   Sparkles,
-  GraduationCap,
-  Clock,
-  ChevronRight,
-  BarChart3,
 } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
-import { sr } from "date-fns/locale";
-import { FACULTIES } from "@/components/ui/faculty-picker-dialog";
 
 /* ─── types ─── */
 
@@ -30,594 +17,589 @@ interface DashboardProps {
   user: {
     displayName: string;
     email: string;
+    avatarUrl?: string | null;
     targetFaculties: string[];
     role: string;
   };
 }
 
-interface Progress {
-  total: number;
-  solved: number;
-  attempted: number;
-  unseen: number;
-}
-
-interface FacultyProgress {
-  faculty_id: string;
-  short_name: string;
-  total: number;
-  solved: number;
-}
-
-interface TopicProgress {
+interface TopicData {
   topic_id: string;
   name: string;
+  icon: string | null;
   total: number;
   solved: number;
 }
 
-interface RecentProblem {
-  slug: string;
-  title: string;
-  facultyId: string;
-  year: number;
-  problemNumber: number;
-  status: string;
-  isCorrect: boolean | null;
-  updatedAt: string;
+interface DashboardData {
+  user: {
+    displayName: string;
+    avatarUrl: string | null;
+    streakCurrent: number;
+    streakBest: number;
+    targetFaculties: string[];
+  };
+  progress: {
+    total: number;
+    solved: number;
+    dailyGoal: number;
+    solvedToday: number;
+  };
+  lastExam: {
+    scorePercent: string;
+    facultyName: string;
+    startedAt: string;
+  } | null;
+  countdown: string | null;
+  topics: TopicData[];
+  rank: {
+    position: number | null;
+    totalParticipants: number;
+    totalScore: string;
+    problemsSolved: number;
+    avgScore: string;
+  };
+  facultyExamDates: Array<{
+    id: string;
+    name: string;
+    shortName: string;
+    examDate: string | null;
+  }>;
+  season: { name: string; examPeriodStart: string } | null;
 }
 
-interface ExamEntry {
-  id: string;
-  facultyId: string;
-  facultyName: string;
-  startedAt: string;
-  scorePercent: string;
-  numCorrect: number;
-  numWrong: number;
-  numBlank: number;
-  timeSpent: number;
-  status: string;
+/* ─── topic styling ─── */
+
+const TOPIC_STYLES: Record<
+  string,
+  { color: string; hoverBorder: string; icon: string; bgClass: string }
+> = {
+  algebra: {
+    color: "text-[#ec5b13]",
+    hoverBorder: "hover:border-[#ec5b13]/30",
+    icon: "square_foot",
+    bgClass: "bg-orange-500/10",
+  },
+  geometrija: {
+    color: "text-[#0ea5e9]",
+    hoverBorder: "hover:border-[#0ea5e9]/30",
+    icon: "category",
+    bgClass: "bg-sky-500/10",
+  },
+  verovatnoca: {
+    color: "text-emerald-500",
+    hoverBorder: "hover:border-emerald-500/30",
+    icon: "casino",
+    bgClass: "bg-emerald-500/10",
+  },
+  logika: {
+    color: "text-purple-500",
+    hoverBorder: "hover:border-purple-500/30",
+    icon: "psychology",
+    bgClass: "bg-purple-500/10",
+  },
+  trigonometrija: {
+    color: "text-rose-500",
+    hoverBorder: "hover:border-rose-500/30",
+    icon: "change_history",
+    bgClass: "bg-rose-500/10",
+  },
+  kombinatorika: {
+    color: "text-amber-500",
+    hoverBorder: "hover:border-amber-500/30",
+    icon: "grid_view",
+    bgClass: "bg-amber-500/10",
+  },
+  analiza: {
+    color: "text-cyan-500",
+    hoverBorder: "hover:border-cyan-500/30",
+    icon: "trending_up",
+    bgClass: "bg-cyan-500/10",
+  },
+};
+
+const DEFAULT_TOPIC_COLORS = [
+  {
+    color: "text-[#ec5b13]",
+    hoverBorder: "hover:border-[#ec5b13]/30",
+    icon: "functions",
+    bgClass: "bg-orange-500/10",
+  },
+  {
+    color: "text-[#0ea5e9]",
+    hoverBorder: "hover:border-[#0ea5e9]/30",
+    icon: "calculate",
+    bgClass: "bg-sky-500/10",
+  },
+  {
+    color: "text-emerald-500",
+    hoverBorder: "hover:border-emerald-500/30",
+    icon: "data_object",
+    bgClass: "bg-emerald-500/10",
+  },
+  {
+    color: "text-purple-500",
+    hoverBorder: "hover:border-purple-500/30",
+    icon: "hub",
+    bgClass: "bg-purple-500/10",
+  },
+];
+
+function getTopicStyle(name: string, index: number) {
+  const key = name
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[čćšžđ]/g, (m) => {
+      const map: Record<string, string> = { č: "c", ć: "c", š: "s", ž: "z", đ: "d" };
+      return map[m] || m;
+    });
+
+  for (const [k, v] of Object.entries(TOPIC_STYLES)) {
+    if (key.includes(k)) return v;
+  }
+  return DEFAULT_TOPIC_COLORS[index % DEFAULT_TOPIC_COLORS.length];
 }
 
-interface MyRank {
-  rank: number | null;
-  totalScore: string;
-  problemsSolved: number;
-  examsCompleted: number;
-  avgExamPercent: string;
-  bestExamPercent: string;
-  streakBest: number;
+function getTopicBarColor(name: string, index: number) {
+  const style = getTopicStyle(name, index);
+  // Extract the color value from the class
+  if (style.color.includes("ec5b13")) return "#ec5b13";
+  if (style.color.includes("0ea5e9")) return "#0ea5e9";
+  if (style.color.includes("emerald")) return "#10b981";
+  if (style.color.includes("purple")) return "#a855f7";
+  if (style.color.includes("rose")) return "#f43f5e";
+  if (style.color.includes("amber")) return "#f59e0b";
+  if (style.color.includes("cyan")) return "#06b6d4";
+  return "#ec5b13";
 }
-
-interface BookmarkEntry {
-  problemId: string;
-  slug: string;
-  title: string;
-  facultyId: string;
-  year: number;
-  problemNumber: number;
-  createdAt: string;
-}
-
-type ActivityEntry =
-  | { type: "problem"; slug: string; title: string; isCorrect: boolean | null; date: string }
-  | { type: "exam"; id: string; facultyName: string; scorePercent: string; date: string };
 
 /* ─── helpers ─── */
 
-function relativeTime(dateStr: string): string {
-  try {
-    return formatDistanceToNow(new Date(dateStr), { addSuffix: true, locale: sr });
-  } catch {
-    return "";
-  }
+function getCountdown(targetDate: string | null) {
+  if (!targetDate) return { days: 0, hours: 0, minutes: 0 };
+  const now = new Date();
+  const target = new Date(targetDate + "T10:00:00");
+  const diff = target.getTime() - now.getTime();
+  if (diff <= 0) return { days: 0, hours: 0, minutes: 0 };
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  return { days, hours, minutes };
 }
 
-function buildActivityFeed(problems: RecentProblem[], exams: ExamEntry[]): ActivityEntry[] {
-  const items: ActivityEntry[] = [
-    ...problems.map((p) => ({
-      type: "problem" as const,
-      slug: p.slug,
-      title: p.title,
-      isCorrect: p.isCorrect,
-      date: p.updatedAt,
-    })),
-    ...exams.slice(0, 5).map((e) => ({
-      type: "exam" as const,
-      id: e.id,
-      facultyName: e.facultyName,
-      scorePercent: e.scorePercent,
-      date: e.startedAt,
-    })),
+function getMotivationalMessage(): string {
+  const messages = [
+    "Danas je odlican dan za naprednu trigonometriju.",
+    "Svaki reseni zadatak te priblizava cilju!",
+    "Fokus i upornost donose rezultate.",
+    "Nastavi tako, na dobrom si putu!",
+    "Matematika je jezik univerzuma.",
   ];
-  items.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  return items;
+  const dayIndex = new Date().getDate() % messages.length;
+  return messages[dayIndex];
 }
 
 /* ─── component ─── */
 
 export default function Dashboard({ user }: DashboardProps) {
-  const [progress, setProgress] = useState<Progress | null>(null);
-  const [byFaculty, setByFaculty] = useState<FacultyProgress[]>([]);
-  const [byTopic, setByTopic] = useState<TopicProgress[]>([]);
-  const [recentActivity, setRecentActivity] = useState<RecentProblem[]>([]);
-  const [examHistory, setExamHistory] = useState<ExamEntry[]>([]);
-  const [myRank, setMyRank] = useState<MyRank | null>(null);
-  const [bookmarks, setBookmarks] = useState<BookmarkEntry[]>([]);
+  const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Promise.allSettled([
-      fetch("/api/progress").then((r) => r.json()),
-      fetch("/api/progress/by-faculty").then((r) => r.json()),
-      fetch("/api/progress/by-topic").then((r) => r.json()),
-      fetch("/api/progress/history?limit=5").then((r) => r.json()),
-      fetch("/api/exams/history").then((r) => r.json()),
-      fetch("/api/leaderboard/me").then((r) => r.json()),
-      fetch("/api/bookmarks").then((r) => r.json()),
-    ]).then(([prog, fac, top, hist, exams, rank, bm]) => {
-      if (prog.status === "fulfilled") setProgress(prog.value);
-      if (fac.status === "fulfilled") setByFaculty(Array.isArray(fac.value) ? fac.value : []);
-      if (top.status === "fulfilled") setByTopic(Array.isArray(top.value) ? top.value : []);
-      if (hist.status === "fulfilled") setRecentActivity(Array.isArray(hist.value) ? hist.value : []);
-      if (exams.status === "fulfilled") setExamHistory(Array.isArray(exams.value) ? exams.value : []);
-      if (rank.status === "fulfilled" && rank.value && !rank.value.error) setMyRank(rank.value);
-      if (bm.status === "fulfilled") setBookmarks(Array.isArray(bm.value) ? bm.value : []);
-      setLoading(false);
-    });
+    fetch("/api/user/dashboard")
+      .then((r) => r.json())
+      .then((d) => {
+        setData(d);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
   }, []);
 
-  /* derived */
-  const completionPercent = progress
-    ? Math.round((progress.solved / Math.max(progress.total, 1)) * 100)
-    : 0;
-  const avgExamScore =
-    examHistory.length > 0
-      ? Math.round(
-          examHistory.reduce((s, e) => s + parseFloat(e.scorePercent || "0"), 0) /
-            examHistory.length,
-        )
-      : 0;
-  const hour = new Date().getHours();
-  const greeting = hour < 12 ? "Dobro jutro" : hour < 18 ? "Dobar dan" : "Dobro veče";
-
-  const RING_R = 52;
-  const RING_C = 2 * Math.PI * RING_R;
-
-  /* ─── loading skeleton ─── */
+  /* loading skeleton */
   if (loading) {
     return (
-      <div className="mx-auto max-w-7xl px-4 py-8">
-        <div className="mb-8 h-10 w-72 animate-pulse rounded-lg bg-[#1e293b]" />
-        <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="h-28 animate-pulse rounded-2xl bg-[#1e293b]" />
-          ))}
-        </div>
-        <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="h-16 animate-pulse rounded-xl bg-[#1e293b]" />
-          ))}
-        </div>
-        <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-5">
-          <div className="h-72 animate-pulse rounded-2xl bg-[#1e293b] lg:col-span-3" />
-          <div className="h-72 animate-pulse rounded-2xl bg-[#1e293b] lg:col-span-2" />
-        </div>
-        <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="h-24 animate-pulse rounded-xl bg-[#1e293b]" />
-          ))}
-        </div>
+      <div className="flex h-screen overflow-hidden bg-[#0a0a0a]">
+        <Sidebar user={{ displayName: user.displayName, avatarUrl: user.avatarUrl }} />
+        <main className="flex-1 overflow-y-auto p-8">
+          <div className="mb-10 h-12 w-96 animate-pulse rounded-lg bg-white/5" />
+          <div className="grid grid-cols-12 gap-6">
+            <div className="col-span-8 space-y-6">
+              <div className="grid grid-cols-2 gap-6">
+                <div className="h-40 animate-pulse rounded-2xl bg-white/5" />
+                <div className="h-40 animate-pulse rounded-2xl bg-white/5" />
+              </div>
+              <div className="grid grid-cols-4 gap-4">
+                {[0, 1, 2, 3].map((i) => (
+                  <div key={i} className="h-52 animate-pulse rounded-2xl bg-white/5" />
+                ))}
+              </div>
+              <div className="h-32 animate-pulse rounded-2xl bg-white/5" />
+            </div>
+            <div className="col-span-4 space-y-6">
+              <div className="h-44 animate-pulse rounded-2xl bg-[#ec5b13]/20" />
+              <div className="h-72 animate-pulse rounded-2xl bg-white/5" />
+            </div>
+          </div>
+        </main>
       </div>
     );
   }
 
-  const activityFeed = buildActivityFeed(recentActivity, examHistory);
+  const progress = data?.progress ?? { total: 0, solved: 0, dailyGoal: 20, solvedToday: 0 };
+  const dailyPercent = Math.min(
+    100,
+    Math.round((progress.solvedToday / Math.max(progress.dailyGoal, 1)) * 100)
+  );
+  const countdown = getCountdown(data?.countdown ?? "2026-06-15");
+  const lastExam = data?.lastExam;
+  const lastExamScore = lastExam ? parseFloat(lastExam.scorePercent || "0").toFixed(0) : null;
+  const rank = data?.rank;
+  const streak = data?.user?.streakCurrent ?? 0;
+  const topics = data?.topics ?? [];
+  const displayTopics = topics.slice(0, 4);
+
+  // Find weakest topic for AI recommendation
+  const weakest = [...topics]
+    .filter((t) => Number(t.total) > 0)
+    .sort(
+      (a, b) =>
+        Number(a.solved) / Math.max(Number(a.total), 1) -
+        Number(b.solved) / Math.max(Number(b.total), 1)
+    )[0];
+  const weakestPct = weakest
+    ? Math.round((Number(weakest.solved) / Math.max(Number(weakest.total), 1)) * 100)
+    : 0;
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      {/* ─── A. HEADER ─── */}
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-[#e2e8f0] md:text-3xl">
-            {greeting},{" "}
-            <span className="bg-gradient-to-r from-[#60a5fa] to-[#a78bfa] bg-clip-text text-transparent">
-              {user.displayName}
-            </span>
-          </h1>
-          {user.targetFaculties.length > 0 && user.targetFaculties.some(f => f !== "other") ? (
-            <p className="mt-1 text-lg font-medium text-[#60a5fa]">
-              <Target size={16} className="mr-1.5 inline" />
-              {user.targetFaculties.filter(f => f !== "other").map(f =>
-                FACULTIES.find((fac) => fac.id === f)?.name || f.toUpperCase()
-              ).join(", ")}
-            </p>
-          ) : (
-            <p className="mt-1 text-sm text-[#94a3b8]">
-              Nastavi sa vežbanjem za prijemni
-            </p>
-          )}
-        </div>
-        <div className="flex items-center gap-2 rounded-full border border-[#a78bfa]/30 bg-[#a78bfa]/10 px-4 py-2">
-          <Sparkles size={16} className="text-[#a78bfa]" />
-          <span className="text-sm font-semibold text-[#a78bfa]">Sezona 2026</span>
-        </div>
-      </div>
+    <div className="flex h-screen overflow-hidden bg-[#0a0a0a]" style={{
+      background: "radial-gradient(circle at 50% -20%, #2a1a12 0%, #0a0a0a 100%)",
+    }}>
+      {/* Sidebar */}
+      <Sidebar user={{ displayName: user.displayName, avatarUrl: user.avatarUrl }} />
 
-      {/* ─── B. STAT CARDS ─── */}
-      <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        {/* Solved */}
-        <div className="relative overflow-hidden rounded-2xl border border-[#334155] bg-[#1e293b] p-5">
-          <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-[#60a5fa]/5" />
-          <div className="relative">
-            <div className="mb-1 flex items-center gap-2 text-[#94a3b8]">
-              <CheckCircle size={16} className="text-[#60a5fa]" />
-              <span className="text-xs font-medium uppercase tracking-wider">Rešeno</span>
-            </div>
-            <div className="text-3xl font-bold text-[#e2e8f0]">{progress?.solved ?? 0}</div>
+      {/* Main Content */}
+      <main className="flex-1 overflow-y-auto p-8 relative">
+        {/* Header */}
+        <header className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-4xl font-black tracking-tight text-white mb-1">
+              Zdravo, {user.displayName}!
+            </h1>
+            <p className="text-sm text-slate-400">{getMotivationalMessage()}</p>
           </div>
-        </div>
-
-        {/* Znanje */}
-        <div className="relative overflow-hidden rounded-2xl border border-[#334155] bg-[#1e293b] p-5">
-          <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-[#a78bfa]/5" />
-          <div className="relative">
-            <div className="mb-1 flex items-center gap-2 text-[#94a3b8]">
-              <BarChart3 size={16} className="text-[#a78bfa]" />
-              <span className="text-xs font-medium uppercase tracking-wider">Znanje</span>
+          <div className="flex items-center gap-4">
+            <div className="relative group">
+              <input
+                className="rounded-full border border-white/10 bg-[#141414] py-2.5 pl-12 pr-6 text-sm w-64 placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-[#ec5b13] focus:border-[#ec5b13] transition-all"
+                placeholder="Pretrazi gradivo..."
+                type="text"
+              />
+              <Search
+                size={18}
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"
+              />
             </div>
-            <div className="text-3xl font-bold text-[#e2e8f0]">{avgExamScore}/100</div>
-            <div className="mt-1 text-xs text-[#64748b]">poena</div>
+            <button className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-slate-300 hover:bg-white/10">
+              <Bell size={20} />
+            </button>
+            <button className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-slate-300 hover:bg-white/10">
+              <Settings size={20} />
+            </button>
           </div>
-        </div>
+        </header>
 
-        {/* Rank */}
-        <div className="relative overflow-hidden rounded-2xl border border-[#334155] bg-[#1e293b] p-5">
-          <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-[#fbbf24]/5" />
-          <div className="relative">
-            <div className="mb-1 flex items-center gap-2 text-[#94a3b8]">
-              <Trophy size={16} className="text-[#fbbf24]" />
-              <span className="text-xs font-medium uppercase tracking-wider">Rang</span>
-            </div>
-            <div className="text-3xl font-bold text-[#e2e8f0]">
-              {myRank?.rank ? `#${myRank.rank}` : "—"}
-            </div>
-            <div className="mt-1 text-xs text-[#64748b]">
-              {myRank ? `${parseFloat(myRank.totalScore || "0").toLocaleString("sr")} bodova` : "Nema podataka"}
-            </div>
-          </div>
-        </div>
-
-        {/* Best score */}
-        <div className="relative overflow-hidden rounded-2xl border border-[#334155] bg-[#1e293b] p-5">
-          <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-[#4ade80]/5" />
-          <div className="relative">
-            <div className="mb-1 flex items-center gap-2 text-[#94a3b8]">
-              <TrendingUp size={16} className="text-[#4ade80]" />
-              <span className="text-xs font-medium uppercase tracking-wider">Najbolji</span>
-            </div>
-            <div className="text-3xl font-bold text-[#e2e8f0]">
-              {myRank ? `${parseFloat(myRank.bestExamPercent || "0").toFixed(0)}%` : "—"}
-            </div>
-            <div className="mt-1 text-xs text-[#64748b]">Najbolji rezultat na ispitu</div>
-          </div>
-        </div>
-      </div>
-
-      {/* ─── C. QUICK ACTIONS ─── */}
-      <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        {[
-          { href: "/ispit", icon: ClipboardList, label: "Pokreni ispit", color: "#60a5fa" },
-          { href: "/zadaci", icon: BookOpen, label: "Vežbaj zadatke", color: "#a78bfa" },
-          { href: "/ai", icon: Bot, label: "AI Tutor", color: "#4ade80" },
-          { href: "/sacuvano", icon: Bookmark, label: "Sačuvano", color: "#fbbf24" },
-        ].map(({ href, icon: Icon, label, color }) => (
-          <Link
-            key={href}
-            href={href}
-            className="group flex items-center gap-3 rounded-xl border border-[#334155] bg-[#1e293b] p-4 transition hover:bg-[#1e293b]/80"
-          >
-            <div
-              className="flex h-10 w-10 items-center justify-center rounded-lg"
-              style={{ backgroundColor: `${color}15` }}
-            >
-              <Icon size={20} style={{ color }} />
-            </div>
-            <span className="text-sm font-medium text-[#e2e8f0]">{label}</span>
-            <ArrowRight
-              size={14}
-              className="ml-auto transition group-hover:translate-x-1"
-              style={{ color: `${color}80` }}
-            />
-          </Link>
-        ))}
-      </div>
-
-      {/* ─── D. PROGRESS + ACTIVITY ─── */}
-      <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-5">
-        {/* D1: Season Progress */}
-        <div className="rounded-2xl border border-[#334155] bg-[#1e293b] p-6 lg:col-span-3">
-          <div className="mb-6 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-[#e2e8f0]">
-              <Target size={18} className="mr-2 inline text-[#60a5fa]" />
-              Napredak u sezoni 2026
-            </h2>
-            <Link href="/profil" className="text-xs text-[#60a5fa] hover:underline">
-              Detaljnije <ChevronRight size={12} className="inline" />
-            </Link>
-          </div>
-
-          {/* Ring + mini stats */}
-          <div className="mb-6 flex items-center gap-8">
-            <div className="relative h-28 w-28 flex-shrink-0">
-              <svg className="-rotate-90" viewBox="0 0 120 120" width="112" height="112">
-                <circle cx="60" cy="60" r={RING_R} fill="none" stroke="#334155" strokeWidth="8" />
-                <circle
-                  cx="60"
-                  cy="60"
-                  r={RING_R}
-                  fill="none"
-                  stroke="url(#progressGrad)"
-                  strokeWidth="8"
-                  strokeLinecap="round"
-                  strokeDasharray={RING_C}
-                  strokeDashoffset={RING_C * (1 - completionPercent / 100)}
-                  className="transition-all duration-1000"
-                />
-                <defs>
-                  <linearGradient id="progressGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#60a5fa" />
-                    <stop offset="100%" stopColor="#a78bfa" />
-                  </linearGradient>
-                </defs>
-              </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-2xl font-bold text-[#e2e8f0]">{completionPercent}%</span>
-                <span className="text-[10px] text-[#94a3b8]">završeno</span>
-              </div>
-            </div>
-
-            <div className="grid flex-1 grid-cols-3 gap-4">
-              <div className="text-center">
-                <div className="text-xl font-bold text-[#4ade80]">{progress?.solved ?? 0}</div>
-                <div className="text-[10px] text-[#94a3b8]">Rešeno</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xl font-bold text-[#fbbf24]">{progress?.attempted ?? 0}</div>
-                <div className="text-[10px] text-[#94a3b8]">Pokušano</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xl font-bold text-[#94a3b8]">{progress?.unseen ?? 0}</div>
-                <div className="text-[10px] text-[#94a3b8]">Preostalo</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Faculty progress bars */}
-          <div className="space-y-3">
-            {byFaculty.map((f) => {
-              const pct = f.total > 0 ? Math.round((f.solved / f.total) * 100) : 0;
-              const isTarget = user.targetFaculties.includes(f.faculty_id);
-              return (
-                <div key={f.faculty_id}>
-                  <div className="mb-1 flex items-center justify-between text-sm">
-                    <span className={`font-medium ${isTarget ? "text-[#60a5fa]" : "text-[#e2e8f0]"}`}>
-                      {isTarget && <Target size={12} className="mr-1 inline" />}
-                      {f.short_name}
+        <div className="grid grid-cols-12 gap-6">
+          {/* ─── LEFT COLUMN (8 cols) ─── */}
+          <div className="col-span-12 space-y-6 lg:col-span-8">
+            {/* Daily Goal + Last Test */}
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              {/* Daily Progress Card */}
+              <div className="glass-card relative overflow-hidden rounded-2xl p-6">
+                <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-[#ec5b13]/10 blur-3xl" />
+                <div className="relative z-10">
+                  <h3 className="mb-4 text-xs font-bold uppercase tracking-widest text-slate-400">
+                    Dnevni cilj
+                  </h3>
+                  <div className="mb-2 flex items-end justify-between">
+                    <span className="text-3xl font-black text-white">
+                      {progress.solvedToday}
+                      <span className="text-lg text-slate-500">/{progress.dailyGoal}</span>
                     </span>
-                    <span className="text-xs text-[#94a3b8]">
-                      {f.solved}/{f.total} ({pct}%)
+                    <span className="text-sm font-bold text-[#ec5b13]">
+                      {dailyPercent}% Reseno
                     </span>
                   </div>
-                  <div className="h-2 overflow-hidden rounded-full bg-[#0f172a]">
+                  <p className="mb-6 text-sm text-slate-400">Zadataka do dnevne kvote</p>
+                  <div className="h-2 w-full overflow-hidden rounded-full bg-white/5">
                     <div
-                      className={`h-full rounded-full transition-all duration-700 ${
-                        isTarget
-                          ? "bg-gradient-to-r from-[#60a5fa] to-[#a78bfa]"
-                          : "bg-[#60a5fa]/60"
-                      }`}
-                      style={{ width: `${pct}%` }}
+                      className="h-full rounded-full bg-[#ec5b13] shadow-[0_0_15px_rgba(236,91,19,0.2)] transition-all duration-700"
+                      style={{ width: `${dailyPercent}%` }}
                     />
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        </div>
+              </div>
 
-        {/* D2: Recent Activity */}
-        <div className="rounded-2xl border border-[#334155] bg-[#1e293b] p-6 lg:col-span-2">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-[#e2e8f0]">
-              <Clock size={18} className="mr-2 inline text-[#a78bfa]" />
-              Poslednje aktivnosti
-            </h2>
-          </div>
-
-          {activityFeed.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-8 text-center">
-              <BookOpen size={32} className="mb-3 text-[#334155]" />
-              <p className="text-sm text-[#94a3b8]">Još nemaš aktivnosti.</p>
-              <Link href="/zadaci" className="mt-2 text-sm text-[#60a5fa] hover:underline">
-                Počni sa vežbanjem
-              </Link>
-            </div>
-          ) : (
-            <div className="space-y-1">
-              {activityFeed.slice(0, 6).map((item, i) =>
-                item.type === "problem" ? (
-                  <Link
-                    key={`p-${i}`}
-                    href={`/zadaci/${item.slug}`}
-                    className="flex items-center gap-3 rounded-lg p-2 transition hover:bg-[#0f172a]/50"
-                  >
-                    <div
-                      className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg ${
-                        item.isCorrect === true
-                          ? "bg-[#4ade80]/10"
-                          : item.isCorrect === false
-                            ? "bg-[#f87171]/10"
-                            : "bg-[#fbbf24]/10"
-                      }`}
-                    >
-                      {item.isCorrect === true ? (
-                        <CheckCircle size={14} className="text-[#4ade80]" />
-                      ) : item.isCorrect === false ? (
-                        <XCircle size={14} className="text-[#f87171]" />
-                      ) : (
-                        <Minus size={14} className="text-[#fbbf24]" />
-                      )}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm text-[#e2e8f0]">{item.title}</p>
-                      <p className="text-xs text-[#64748b]">{relativeTime(item.date)}</p>
-                    </div>
-                  </Link>
-                ) : (
-                  <Link
-                    key={`e-${i}`}
-                    href={`/ispit/${item.id}/rezultati`}
-                    className="flex items-center gap-3 rounded-lg p-2 transition hover:bg-[#0f172a]/50"
-                  >
-                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-[#a78bfa]/10">
-                      <ClipboardList size={14} className="text-[#a78bfa]" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm text-[#e2e8f0]">
-                        Ispit — {item.facultyName}
-                      </p>
-                      <p className="text-xs text-[#64748b]">{relativeTime(item.date)}</p>
-                    </div>
-                    <span className="text-sm font-semibold text-[#60a5fa]">
-                      {parseFloat(item.scorePercent || "0").toFixed(0)}%
-                    </span>
-                  </Link>
-                ),
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* ─── E. TOPIC GRID ─── */}
-      {byTopic.length > 0 && (
-        <div className="mb-8">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-[#e2e8f0]">
-              <GraduationCap size={18} className="mr-2 inline text-[#4ade80]" />
-              Teme za vežbanje
-            </h2>
-            <Link href="/zadaci" className="text-xs text-[#60a5fa] hover:underline">
-              Sve teme <ChevronRight size={12} className="inline" />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {byTopic.slice(0, 8).map((topic) => {
-              const pct =
-                topic.total > 0
-                  ? Math.round((Number(topic.solved) / Number(topic.total)) * 100)
-                  : 0;
-              return (
-                <Link
-                  key={topic.topic_id}
-                  href={`/zadaci`}
-                  className="group rounded-xl border border-[#334155] bg-[#1e293b] p-4 transition hover:border-[#4ade80]/50"
-                >
-                  <h3 className="mb-2 text-sm font-medium text-[#e2e8f0] group-hover:text-[#4ade80]">
-                    {topic.name}
+              {/* Last Test Score Card */}
+              <div className="glass-card relative overflow-hidden rounded-2xl border-l-4 border-[#0ea5e9]/50 p-6">
+                <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-[#0ea5e9]/10 blur-3xl" />
+                <div className="relative z-10">
+                  <h3 className="mb-4 text-xs font-bold uppercase tracking-widest text-slate-400">
+                    Poslednji test
                   </h3>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-[#94a3b8]">
-                      {topic.solved}/{topic.total}
-                    </span>
-                    <span className="text-xs font-semibold text-[#4ade80]">{pct}%</span>
-                  </div>
-                  <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[#0f172a]">
-                    <div
-                      className="h-full rounded-full bg-[#4ade80]/70 transition-all duration-500"
-                      style={{ width: `${pct}%` }}
-                    />
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* ─── F. BOTTOM ROW ─── */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* F1: Bookmarks Preview */}
-        <div className="rounded-2xl border border-[#334155] bg-[#1e293b] p-6">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-[#e2e8f0]">
-              <Bookmark size={18} className="mr-2 inline text-[#fbbf24]" />
-              Sačuvani zadaci
-            </h2>
-            {bookmarks.length > 0 && (
-              <Link href="/sacuvano" className="text-xs text-[#60a5fa] hover:underline">
-                Svi ({bookmarks.length}) <ChevronRight size={12} className="inline" />
-              </Link>
-            )}
-          </div>
-
-          {bookmarks.length === 0 ? (
-            <p className="py-4 text-center text-sm text-[#94a3b8]">Nemaš sačuvanih zadataka.</p>
-          ) : (
-            <div className="space-y-2">
-              {bookmarks.slice(0, 3).map((b) => (
-                <Link
-                  key={b.problemId}
-                  href={`/zadaci/${b.slug}`}
-                  className="flex items-center justify-between rounded-lg p-2 transition hover:bg-[#0f172a]/50"
-                >
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm text-[#e2e8f0]">{b.title}</p>
-                    <p className="text-xs text-[#64748b]">
-                      {b.facultyId?.toUpperCase()} {b.year} · #{b.problemNumber}
-                    </p>
-                  </div>
-                  <Bookmark size={14} className="flex-shrink-0 text-[#fbbf24]" />
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* F2: Exam Quick Start */}
-        <div className="rounded-2xl border border-[#334155] bg-gradient-to-br from-[#1e293b] to-[#1e293b]/80 p-6">
-          <div className="mb-4">
-            <h2 className="text-lg font-semibold text-[#e2e8f0]">
-              <ClipboardList size={18} className="mr-2 inline text-[#60a5fa]" />
-              Probni ispit
-            </h2>
-            <p className="mt-1 text-sm text-[#94a3b8]">
-              Testiraj svoje znanje sa nasumičnim zadacima iz cele baze.
-            </p>
-          </div>
-
-          {examHistory.length > 0 && (
-            <div className="mb-4 rounded-lg bg-[#0f172a]/50 p-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-[#94a3b8]">Poslednji rezultat</span>
-                <span className="text-sm font-semibold text-[#60a5fa]">
-                  {parseFloat(examHistory[0].scorePercent || "0").toFixed(0)}%
-                </span>
+                  {lastExam ? (
+                    <>
+                      <div className="flex items-center gap-4">
+                        <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#0ea5e9]/20">
+                          <span className="material-symbols-outlined text-3xl font-bold text-[#0ea5e9]">
+                            verified
+                          </span>
+                        </div>
+                        <div>
+                          <div className="text-3xl font-black text-white">{lastExamScore}%</div>
+                          <div className="text-sm font-bold tracking-wide text-[#0ea5e9]">
+                            {Number(lastExamScore) >= 80
+                              ? "ODLICNO!"
+                              : Number(lastExamScore) >= 60
+                                ? "DOBRO!"
+                                : "MOZE BOLJE"}
+                          </div>
+                        </div>
+                      </div>
+                      <p className="mt-4 text-xs text-slate-400">
+                        Simulacija: {lastExam.facultyName}{" "}
+                        {lastExam.startedAt
+                          ? new Date(lastExam.startedAt).toLocaleDateString("sr-RS")
+                          : ""}
+                      </p>
+                    </>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center py-4">
+                      <span className="material-symbols-outlined mb-2 text-4xl text-slate-600">
+                        quiz
+                      </span>
+                      <p className="text-sm text-slate-400">Nemas zavrsenih testova</p>
+                      <Link
+                        href="/ispit"
+                        className="mt-2 text-xs font-bold text-[#0ea5e9] hover:underline"
+                      >
+                        POKRENI PRVI TEST
+                      </Link>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          )}
 
-          <Link
-            href="/ispit"
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#60a5fa] to-[#a78bfa] px-6 py-3 font-semibold text-white transition hover:opacity-90"
-          >
-            <ClipboardList size={18} />
-            Pokreni ispit
-          </Link>
+            {/* Core Categories */}
+            <div>
+              <div className="mb-4 flex items-end justify-between">
+                <h3 className="text-xl font-bold text-white">Glavne oblasti</h3>
+                <Link
+                  href="/zadaci"
+                  className="text-xs font-bold uppercase text-[#ec5b13] hover:underline"
+                >
+                  Vidi sve
+                </Link>
+              </div>
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                {displayTopics.map((topic, i) => {
+                  const pct =
+                    Number(topic.total) > 0
+                      ? Math.round(
+                          (Number(topic.solved) / Math.max(Number(topic.total), 1)) * 100
+                        )
+                      : 0;
+                  const style = getTopicStyle(topic.name, i);
+                  const barColor = getTopicBarColor(topic.name, i);
+
+                  return (
+                    <div
+                      key={topic.topic_id}
+                      className={`glass-card group rounded-2xl p-5 transition-all ${style.hoverBorder}`}
+                    >
+                      <div
+                        className={`mb-4 flex h-10 w-10 items-center justify-center rounded-lg transition-transform group-hover:scale-110 ${style.bgClass}`}
+                      >
+                        <span className={`material-symbols-outlined ${style.color}`}>
+                          {style.icon}
+                        </span>
+                      </div>
+                      <h4 className="mb-1 text-sm font-bold">{topic.name}</h4>
+                      <p className="mb-3 text-[10px] text-slate-500">{pct}% Zavrseno</p>
+                      <div className="mb-4 h-1 w-full overflow-hidden rounded-full bg-white/5">
+                        <div
+                          className="h-full rounded-full transition-all duration-700"
+                          style={{ width: `${pct}%`, backgroundColor: barColor }}
+                        />
+                      </div>
+                      <Link
+                        href="/zadaci"
+                        className="block w-full rounded-lg bg-white/5 py-2 text-center text-xs font-bold transition-all hover:text-white"
+                        style={
+                          {
+                            "--hover-bg": barColor,
+                          } as React.CSSProperties
+                        }
+                        onMouseEnter={(e) => {
+                          (e.target as HTMLElement).style.backgroundColor = barColor;
+                        }}
+                        onMouseLeave={(e) => {
+                          (e.target as HTMLElement).style.backgroundColor = "";
+                        }}
+                      >
+                        NASTAVI
+                      </Link>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* AI Recommendation */}
+            <div className="glass-card rounded-2xl border-l-4 border-[#ec5b13] p-6">
+              <div className="mb-4 flex items-center gap-3">
+                <Sparkles size={22} className="text-[#ec5b13]" />
+                <h3 className="text-lg font-bold">Preporuka za danas</h3>
+              </div>
+              <div className="flex items-center justify-between rounded-xl border border-white/5 bg-white/5 p-4">
+                <div className="flex items-center gap-4">
+                  <div className="text-3xl font-black text-[#ec5b13]/40">01</div>
+                  <div>
+                    <h4 className="font-bold text-white">
+                      Uvezba{weakest ? `: ${weakest.name}` : "j zadatke"}
+                    </h4>
+                    <p className="text-xs text-slate-400">
+                      {weakest
+                        ? `Tvoj procenat tacnosti ovde je ${weakestPct}%. Potrebno dodatno vezbanje.`
+                        : "Nastavi da resavas zadatke i prati svoj napredak."}
+                    </p>
+                  </div>
+                </div>
+                <Link
+                  href="/zadaci"
+                  className="flex-shrink-0 rounded-xl bg-[#ec5b13] px-5 py-2.5 text-sm font-bold text-white shadow-[0_0_15px_rgba(236,91,19,0.2)] transition-transform hover:scale-105"
+                >
+                  KRENI
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* ─── RIGHT COLUMN (4 cols) ─── */}
+          <div className="col-span-12 space-y-6 lg:col-span-4">
+            {/* Countdown Widget */}
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#ec5b13] to-[#ff8c00] p-6 text-white shadow-2xl">
+              <div className="pointer-events-none absolute -bottom-10 -right-10 opacity-20">
+                <span className="material-symbols-outlined text-[180px]">schedule</span>
+              </div>
+              <div className="relative z-10">
+                <p className="mb-6 text-center text-sm font-bold uppercase tracking-widest opacity-80">
+                  Do prijemnog ispita
+                </p>
+                <div className="flex items-center justify-between text-center">
+                  <div className="space-y-1">
+                    <div className="text-4xl font-black">
+                      {String(countdown.days).padStart(2, "0")}
+                    </div>
+                    <p className="text-[10px] font-bold uppercase opacity-80">Dana</p>
+                  </div>
+                  <div className="text-2xl font-light opacity-50">:</div>
+                  <div className="space-y-1">
+                    <div className="text-4xl font-black">
+                      {String(countdown.hours).padStart(2, "0")}
+                    </div>
+                    <p className="text-[10px] font-bold uppercase opacity-80">Sati</p>
+                  </div>
+                  <div className="text-2xl font-light opacity-50">:</div>
+                  <div className="space-y-1">
+                    <div className="text-4xl font-black">
+                      {String(countdown.minutes).padStart(2, "0")}
+                    </div>
+                    <p className="text-[10px] font-bold uppercase opacity-80">Minuta</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Streak & Quick Stats */}
+            <div className="glass-card rounded-2xl p-6">
+              <h3 className="mb-6 text-center text-xs font-bold uppercase tracking-widest text-slate-400">
+                Trenutni niz
+              </h3>
+              <div className="mb-6 flex justify-center">
+                <div className="relative">
+                  <div className="flex h-32 w-32 items-center justify-center rounded-full border-4 border-white/5">
+                    <Flame
+                      size={64}
+                      className="text-[#ec5b13] drop-shadow-[0_0_10px_rgba(236,91,19,0.5)]"
+                      fill="currentColor"
+                    />
+                  </div>
+                  <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[#ec5b13] px-4 py-1 text-xs font-black text-white">
+                    {streak} DANA
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between rounded-xl bg-white/5 p-3">
+                  <span className="text-xs text-slate-400">Ukupno reseno</span>
+                  <span className="font-bold">
+                    {(progress.solved ?? 0).toLocaleString("sr")}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between rounded-xl bg-white/5 p-3">
+                  <span className="text-xs text-slate-400">Prosecan skor</span>
+                  <span className="font-bold text-[#0ea5e9]">
+                    {rank?.avgScore ? `${parseFloat(rank.avgScore).toFixed(0)}%` : "--"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between rounded-xl bg-white/5 p-3">
+                  <span className="text-xs text-slate-400">Rang lista</span>
+                  <span className="font-bold">
+                    {rank?.position
+                      ? `#${rank.position} / ${rank.totalParticipants >= 1000 ? `${(rank.totalParticipants / 1000).toFixed(1)}k` : rank.totalParticipants}`
+                      : "--"}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Faculty Exam Dates */}
+            {data?.facultyExamDates && data.facultyExamDates.length > 0 && (
+              <div className="glass-card rounded-2xl border-t border-[#0ea5e9]/20 p-6">
+                <h3 className="mb-4 text-sm font-bold text-slate-100">Datumi ispita</h3>
+                <div className="space-y-3">
+                  {data.facultyExamDates.map((fac) => (
+                    <div
+                      key={fac.id}
+                      className="flex items-start gap-4 rounded-xl border border-[#0ea5e9]/20 bg-[#0ea5e9]/10 p-4"
+                    >
+                      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-[#0ea5e9]/20">
+                        <span className="material-symbols-outlined text-[#0ea5e9]">
+                          school
+                        </span>
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold">{fac.shortName}</p>
+                        <p className="text-xs text-slate-400">
+                          {fac.examDate
+                            ? new Date(fac.examDate).toLocaleDateString("sr-RS", {
+                                day: "numeric",
+                                month: "long",
+                                year: "numeric",
+                              })
+                            : "Datum jos nije poznat"}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

@@ -12,6 +12,7 @@ export default async function HomePage() {
         user={{
           displayName: user.displayName || user.name || "Korisnik",
           email: user.email || "",
+          avatarUrl: user.image || null,
           targetFaculties: (user.targetFaculties as string[]) || [],
           role: user.role || "student",
         }}

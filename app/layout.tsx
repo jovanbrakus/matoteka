@@ -16,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="sr">
+    <html lang="sr" className="dark">
       <head>
         <link href="https://fonts.googleapis.com" rel="preconnect" />
         <link crossOrigin="" href="https://fonts.gstatic.com" rel="preconnect" />
