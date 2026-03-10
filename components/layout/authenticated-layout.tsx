@@ -1,17 +1,18 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import Sidebar from "./sidebar";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 interface AuthenticatedLayoutProps {
   user: { displayName: string; avatarUrl: string | null };
   children: React.ReactNode;
 }
+
+const SIDEBAR_KEY = "tatamata-sidebar-collapsed";
 
 export default function AuthenticatedLayout({
   user,
@@ -19,10 +20,24 @@ export default function AuthenticatedLayout({
 }: AuthenticatedLayoutProps) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  // Full-screen pages (simulation active + start dialog) use fixed overlays
-  // that cover the sidebar. The sidebar renders but is visually hidden.
-  // Onboarding doesn't need sidebar.
+  useEffect(() => {
+    const stored = localStorage.getItem(SIDEBAR_KEY);
+    if (stored === "true") setCollapsed(true);
+    setMounted(true);
+  }, []);
+
+  function toggleCollapsed() {
+    setCollapsed((prev) => {
+      const next = !prev;
+      localStorage.setItem(SIDEBAR_KEY, String(next));
+      return next;
+    });
+  }
+
+  // Onboarding doesn't need sidebar
   const skipSidebar = pathname === "/onboarding";
 
   if (skipSidebar) {
@@ -38,8 +53,12 @@ export default function AuthenticatedLayout({
       }}
     >
       {/* Desktop sidebar */}
-      <div className="hidden lg:flex">
-        <Sidebar user={user} />
+      <div className={`hidden lg:flex transition-all duration-300 ${!mounted ? "w-[260px]" : ""}`}>
+        <Sidebar
+          user={user}
+          collapsed={mounted ? collapsed : false}
+          onToggle={toggleCollapsed}
+        />
       </div>
 
       {/* Mobile header */}
@@ -50,15 +69,12 @@ export default function AuthenticatedLayout({
             Tata<span className="text-[#4ade80]">Mata</span>
           </span>
         </Link>
-        <div className="flex items-center gap-2">
-          <ThemeToggle />
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="text-slate-400"
-          >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="text-slate-400"
+        >
+          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
       </div>
 
       {/* Mobile sidebar overlay */}
@@ -69,11 +85,13 @@ export default function AuthenticatedLayout({
         >
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
           <div
-            className="relative h-full w-72"
+            className="relative h-full w-[260px]"
             onClick={(e) => e.stopPropagation()}
           >
             <Sidebar
               user={user}
+              collapsed={false}
+              onToggle={() => {}}
               onNavigate={() => setMobileMenuOpen(false)}
             />
           </div>
