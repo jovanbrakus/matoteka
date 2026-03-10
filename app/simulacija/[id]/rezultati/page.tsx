@@ -85,7 +85,7 @@ export default function SimulationResultsPage() {
       <div className="flex min-h-[60vh] items-center justify-center">
         <div className="text-center">
           <div className="inline-block h-8 w-8 animate-spin rounded-full border-2 border-[#ec5b13] border-t-transparent" />
-          <p className="mt-4 text-slate-400">Učitavanje rezultata...</p>
+          <p className="mt-4 text-text-secondary">Učitavanje rezultata...</p>
         </div>
       </div>
     );
@@ -123,14 +123,14 @@ export default function SimulationResultsPage() {
         {/* Back link */}
         <Link
           href="/simulacija/istorija"
-          className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors mb-8"
+          className="inline-flex items-center gap-2 text-sm text-text-secondary hover:text-heading transition-colors mb-8"
         >
           <ArrowLeft size={16} />
           Istorija testova
         </Link>
 
         {/* Main Result Card */}
-        <div className="rounded-3xl border border-[#ec5b13]/10 bg-[rgba(34,22,16,0.6)] backdrop-blur-xl p-8 mb-8">
+        <div className="rounded-3xl border border-[#ec5b13]/10 bg-[var(--glass-bg)] backdrop-blur-xl p-8 mb-8">
           <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
             {/* Score Circle */}
             <div className="relative w-40 h-40 shrink-0">
@@ -155,7 +155,7 @@ export default function SimulationResultsPage() {
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-4xl font-black text-white">
+                <span className="text-4xl font-black text-heading">
                   {pct.toFixed(0)}%
                 </span>
                 <span
@@ -168,44 +168,44 @@ export default function SimulationResultsPage() {
 
             {/* Details */}
             <div className="flex-1 text-center md:text-left">
-              <h1 className="text-3xl font-black text-white mb-2">
+              <h1 className="text-3xl font-black text-heading mb-2">
                 Rezultati simulacije
               </h1>
-              <p className="text-slate-400 mb-6">
+              <p className="text-text-secondary mb-6">
                 {testLabel} - {faculty?.shortName}
               </p>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="rounded-xl bg-white/5 border border-white/10 p-4 text-center">
+                <div className="rounded-xl bg-[var(--tint)] border border-[var(--glass-border)] p-4 text-center">
                   <Trophy size={20} className="mx-auto mb-2 text-emerald-400" />
-                  <div className="text-xl font-black text-white">
+                  <div className="text-xl font-black text-heading">
                     {exam.numCorrect}/{problems.length}
                   </div>
-                  <div className="text-xs text-slate-400">Tačnih</div>
+                  <div className="text-xs text-text-secondary">Tačnih</div>
                 </div>
-                <div className="rounded-xl bg-white/5 border border-white/10 p-4 text-center">
+                <div className="rounded-xl bg-[var(--tint)] border border-[var(--glass-border)] p-4 text-center">
                   <BarChart3
                     size={20}
                     className="mx-auto mb-2 text-[#ec5b13]"
                   />
-                  <div className="text-xl font-black text-white">
+                  <div className="text-xl font-black text-heading">
                     {score.toFixed(1)}/{maxScore.toFixed(0)}
                   </div>
-                  <div className="text-xs text-slate-400">Bodovi</div>
+                  <div className="text-xs text-text-secondary">Bodovi</div>
                 </div>
-                <div className="rounded-xl bg-white/5 border border-white/10 p-4 text-center">
+                <div className="rounded-xl bg-[var(--tint)] border border-[var(--glass-border)] p-4 text-center">
                   <Clock size={20} className="mx-auto mb-2 text-blue-400" />
-                  <div className="text-xl font-black text-white">
+                  <div className="text-xl font-black text-heading">
                     {formatTime(exam.timeSpent || 0)}
                   </div>
-                  <div className="text-xs text-slate-400">Vreme</div>
+                  <div className="text-xs text-text-secondary">Vreme</div>
                 </div>
-                <div className="rounded-xl bg-white/5 border border-white/10 p-4 text-center">
+                <div className="rounded-xl bg-[var(--tint)] border border-[var(--glass-border)] p-4 text-center">
                   <Target size={20} className="mx-auto mb-2 text-yellow-400" />
-                  <div className="text-xl font-black text-white">
+                  <div className="text-xl font-black text-heading">
                     {exam.numWrong}
                   </div>
-                  <div className="text-xs text-slate-400">Pogrešnih</div>
+                  <div className="text-xs text-text-secondary">Pogrešnih</div>
                 </div>
               </div>
             </div>
@@ -213,18 +213,18 @@ export default function SimulationResultsPage() {
         </div>
 
         {/* Progress bar */}
-        <div className="mb-8 rounded-2xl border border-[#ec5b13]/10 bg-[rgba(34,22,16,0.6)] p-6">
+        <div className="mb-8 rounded-2xl border border-[#ec5b13]/10 bg-[var(--glass-bg)] p-6">
           <div className="flex justify-between text-sm mb-2">
-            <span className="text-slate-400">Ukupan rezultat</span>
-            <span className="font-bold text-white">{pct.toFixed(0)}%</span>
+            <span className="text-text-secondary">Ukupan rezultat</span>
+            <span className="font-bold text-heading">{pct.toFixed(0)}%</span>
           </div>
-          <div className="h-3 overflow-hidden rounded-full bg-white/10">
+          <div className="h-3 overflow-hidden rounded-full bg-[var(--tint-strong)]">
             <div
               className="h-full rounded-full bg-gradient-to-r from-[#ec5b13] to-[#ff7a33] transition-all duration-500"
               style={{ width: `${pct}%` }}
             />
           </div>
-          <div className="flex justify-between text-xs text-slate-500 mt-2">
+          <div className="flex justify-between text-xs text-muted mt-2">
             <span>
               Tačno: {exam.numCorrect} | Pogrešno: {exam.numWrong} | Prazno:{" "}
               {exam.numBlank}
@@ -238,35 +238,35 @@ export default function SimulationResultsPage() {
         </div>
 
         {/* Per-problem breakdown */}
-        <div className="rounded-2xl border border-[#ec5b13]/10 bg-[rgba(34,22,16,0.6)] overflow-hidden mb-8">
-          <div className="px-6 py-4 border-b border-white/5">
-            <h2 className="text-lg font-bold text-white">
+        <div className="rounded-2xl border border-[#ec5b13]/10 bg-[var(--glass-bg)] overflow-hidden mb-8">
+          <div className="px-6 py-4 border-b border-[var(--glass-border)]">
+            <h2 className="text-lg font-bold text-heading">
               Pregled po zadacima
             </h2>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-white/5 text-left">
-                  <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                <tr className="border-b border-[var(--glass-border)] text-left">
+                  <th className="px-6 py-3 text-xs font-bold text-muted uppercase tracking-wider">
                     #
                   </th>
-                  <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-xs font-bold text-muted uppercase tracking-wider">
                     Zadatak
                   </th>
-                  <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">
+                  <th className="px-6 py-3 text-xs font-bold text-muted uppercase tracking-wider text-center">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">
+                  <th className="px-6 py-3 text-xs font-bold text-muted uppercase tracking-wider text-center">
                     Tvoj odgovor
                   </th>
-                  <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">
+                  <th className="px-6 py-3 text-xs font-bold text-muted uppercase tracking-wider text-center">
                     Tačan
                   </th>
-                  <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">
+                  <th className="px-6 py-3 text-xs font-bold text-muted uppercase tracking-wider text-center">
                     Bodovi
                   </th>
-                  <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">
+                  <th className="px-6 py-3 text-xs font-bold text-muted uppercase tracking-wider text-right">
                     Akcija
                   </th>
                 </tr>
@@ -286,12 +286,12 @@ export default function SimulationResultsPage() {
                   return (
                     <tr
                       key={p.position}
-                      className="border-b border-white/5 hover:bg-white/5 transition-colors"
+                      className="border-b border-[var(--glass-border)] hover:bg-[var(--tint)] transition-colors"
                     >
-                      <td className="px-6 py-4 text-white font-bold">
+                      <td className="px-6 py-4 text-heading font-bold">
                         {p.position}
                       </td>
-                      <td className="px-6 py-4 text-slate-300 max-w-[200px] truncate">
+                      <td className="px-6 py-4 text-text max-w-[200px] truncate">
                         {p.title}
                       </td>
                       <td className="px-6 py-4 text-center">
@@ -308,10 +308,10 @@ export default function SimulationResultsPage() {
                           />
                         )}
                         {p.isCorrect === null && (
-                          <Minus size={18} className="inline text-slate-500" />
+                          <Minus size={18} className="inline text-muted" />
                         )}
                       </td>
-                      <td className="px-6 py-4 text-center text-white">
+                      <td className="px-6 py-4 text-center text-heading">
                         {p.answer ? `(${p.answer})` : "—"}
                       </td>
                       <td className="px-6 py-4 text-center text-emerald-400 font-medium">
@@ -324,7 +324,7 @@ export default function SimulationResultsPage() {
                               ? "text-emerald-400"
                               : earnedPoints < 0
                               ? "text-red-400"
-                              : "text-slate-500"
+                              : "text-muted"
                           }`}
                         >
                           {earnedPoints > 0 ? "+" : ""}
@@ -352,7 +352,7 @@ export default function SimulationResultsPage() {
         <div className="flex flex-col sm:flex-row gap-3">
           <Link
             href="/simulacija/istorija"
-            className="flex items-center justify-center gap-2 rounded-xl border border-white/10 px-6 py-3 text-sm font-bold text-slate-300 hover:bg-white/5 transition-all"
+            className="flex items-center justify-center gap-2 rounded-xl border border-[var(--glass-border)] px-6 py-3 text-sm font-bold text-text hover:bg-[var(--tint)] transition-all"
           >
             <History size={16} />
             Istorija testova

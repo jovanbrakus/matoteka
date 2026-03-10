@@ -175,19 +175,19 @@ export default function AnalytikaPage() {
   if (loading || sessionStatus === "loading") {
     return (
       <div className="mx-auto max-w-[1400px] px-4 py-8 sm:px-8">
-        <div className="mb-6 h-8 w-64 animate-pulse rounded-lg bg-[#1e293b]" />
+        <div className="mb-6 h-8 w-64 animate-pulse rounded-lg bg-card" />
         <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="h-32 animate-pulse rounded-2xl bg-[#1e293b]" />
+            <div key={i} className="h-32 animate-pulse rounded-2xl bg-card" />
           ))}
         </div>
         <div className="mb-8 grid grid-cols-1 gap-8 lg:grid-cols-3">
-          <div className="h-80 animate-pulse rounded-3xl bg-[#1e293b] lg:col-span-2" />
-          <div className="h-80 animate-pulse rounded-3xl bg-[#1e293b]" />
+          <div className="h-80 animate-pulse rounded-3xl bg-card lg:col-span-2" />
+          <div className="h-80 animate-pulse rounded-3xl bg-card" />
         </div>
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-          <div className="h-64 animate-pulse rounded-3xl bg-[#1e293b] lg:col-span-2" />
-          <div className="h-64 animate-pulse rounded-3xl bg-[#1e293b]" />
+          <div className="h-64 animate-pulse rounded-3xl bg-card lg:col-span-2" />
+          <div className="h-64 animate-pulse rounded-3xl bg-card" />
         </div>
       </div>
     );
@@ -201,10 +201,10 @@ export default function AnalytikaPage() {
       {/* Header */}
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#e2e8f0]">
+          <h1 className="text-2xl font-bold text-text">
             Analitika uspeha
           </h1>
-          <p className="mt-1 text-sm text-[#94a3b8]">
+          <p className="mt-1 text-sm text-text-secondary">
             {hasData
               ? `Dobrodosli nazad, ${userName}. Vas napredak je konstantan.`
               : `${userName}, pocnite sa vezbanjem da biste videli analitiku.`}
@@ -225,10 +225,10 @@ export default function AnalytikaPage() {
         {/* Accuracy */}
         <div className="glass-panel relative overflow-hidden rounded-2xl p-6">
           <div className="relative z-10">
-            <p className="text-sm font-semibold text-[#94a3b8]">
+            <p className="text-sm font-semibold text-text-secondary">
               Prosecna Preciznost
             </p>
-            <h3 className="mt-1 text-3xl font-black text-[#e2e8f0]">
+            <h3 className="mt-1 text-3xl font-black text-text">
               {hasData ? `${analytics.accuracyPercent.toFixed(1)}%` : "—"}
             </h3>
             {hasData && (
@@ -248,10 +248,10 @@ export default function AnalytikaPage() {
         {/* Avg Solve Time */}
         <div className="glass-panel relative overflow-hidden rounded-2xl p-6">
           <div className="relative z-10">
-            <p className="text-sm font-semibold text-[#94a3b8]">
+            <p className="text-sm font-semibold text-text-secondary">
               Brzina resavanja
             </p>
-            <h3 className="mt-1 text-3xl font-black text-[#e2e8f0]">
+            <h3 className="mt-1 text-3xl font-black text-text">
               {hasData && analytics.avgSolveTimeSec
                 ? formatTime(analytics.avgSolveTimeSec)
                 : "—"}
@@ -272,10 +272,10 @@ export default function AnalytikaPage() {
         {/* Percentile Rank */}
         <div className="glass-panel relative overflow-hidden rounded-2xl p-6">
           <div className="relative z-10">
-            <p className="text-sm font-semibold text-[#94a3b8]">
+            <p className="text-sm font-semibold text-text-secondary">
               Percentilni rang
             </p>
-            <h3 className="mt-1 text-3xl font-black text-[#e2e8f0]">
+            <h3 className="mt-1 text-3xl font-black text-text">
               {hasData && analytics.problemsAttempted >= 10
                 ? percentileLabel
                 : "—"}
@@ -296,14 +296,14 @@ export default function AnalytikaPage() {
         {/* Total Simulations */}
         <div className="glass-panel relative overflow-hidden rounded-2xl p-6">
           <div className="relative z-10">
-            <p className="text-sm font-semibold text-[#94a3b8]">
+            <p className="text-sm font-semibold text-text-secondary">
               Zavrsene simulacije
             </p>
-            <h3 className="mt-1 text-3xl font-black text-[#e2e8f0]">
+            <h3 className="mt-1 text-3xl font-black text-text">
               {hasData ? analytics.totalSimulations : "0"}
             </h3>
             {hasData && (
-              <div className="mt-2 flex items-center gap-1 text-xs font-bold text-[#94a3b8]">
+              <div className="mt-2 flex items-center gap-1 text-xs font-bold text-text-secondary">
                 <ClipboardCheck size={14} />
                 zavrsen{analytics.totalSimulations === 1 ? "a" : "o"}
               </div>
@@ -322,16 +322,16 @@ export default function AnalytikaPage() {
         <div className="glass-panel relative overflow-hidden rounded-3xl p-6 sm:p-8 lg:col-span-2">
           <div className="relative z-10 mb-6 flex items-center justify-between">
             <div>
-              <h4 className="text-lg font-bold text-[#e2e8f0]">
+              <h4 className="text-lg font-bold text-text">
                 Trend uspesnosti
               </h4>
-              <p className="text-xs text-[#94a3b8]">
+              <p className="text-xs text-text-secondary">
                 Stopa uspeha kroz poslednjih 12 nedelja
               </p>
             </div>
             <div className="flex items-center gap-2">
               <span className="h-3 w-3 rounded-full bg-[#ec5b13] shadow-[0_0_8px_rgba(236,91,19,0.6)]" />
-              <span className="text-xs font-bold uppercase tracking-tighter text-[#94a3b8]">
+              <span className="text-xs font-bold uppercase tracking-tighter text-text-secondary">
                 Uspeh %
               </span>
             </div>
@@ -378,10 +378,10 @@ export default function AnalytikaPage() {
                   />
                   <Tooltip
                     contentStyle={{
-                      background: "#1e293b",
+                      background: "var(--color-card)",
                       border: "1px solid rgba(236,91,19,0.3)",
                       borderRadius: "8px",
-                      color: "#e2e8f0",
+                      color: "var(--color-text)",
                       fontSize: "12px",
                     }}
                     formatter={(value) => [`${value}%`, "Uspeh"]}
@@ -411,8 +411,8 @@ export default function AnalytikaPage() {
           ) : (
             <div className="flex h-64 items-center justify-center">
               <div className="text-center">
-                <BarChart3 size={48} className="mx-auto mb-3 text-[#334155]" />
-                <p className="text-sm text-[#94a3b8]">
+                <BarChart3 size={48} className="mx-auto mb-3 text-border" />
+                <p className="text-sm text-text-secondary">
                   Zavrseni ispiti ce se prikazati ovde.
                 </p>
               </div>
@@ -422,7 +422,7 @@ export default function AnalytikaPage() {
 
         {/* Category Breakdown */}
         <div className="glass-panel rounded-3xl p-6 sm:p-8">
-          <h4 className="mb-6 text-lg font-bold text-[#e2e8f0]">
+          <h4 className="mb-6 text-lg font-bold text-text">
             Uspeh po kategorijama
           </h4>
           {categories.length > 0 ? (
@@ -430,10 +430,10 @@ export default function AnalytikaPage() {
               {categories.map((cat) => (
                 <div key={cat.id} className="space-y-2">
                   <div className="flex justify-between text-xs font-bold uppercase tracking-wider">
-                    <span className="text-[#94a3b8]">{cat.name}</span>
+                    <span className="text-text-secondary">{cat.name}</span>
                     <span className="text-[#ec5b13]">{cat.percent}%</span>
                   </div>
-                  <div className="h-2 w-full overflow-hidden rounded-full bg-[#1e293b]">
+                  <div className="h-2 w-full overflow-hidden rounded-full bg-card">
                     <div
                       className="h-full rounded-full bg-[#ec5b13] shadow-[0_0_10px_rgba(236,91,19,0.3)] transition-all duration-700"
                       style={{ width: `${cat.percent}%` }}
@@ -443,7 +443,7 @@ export default function AnalytikaPage() {
               ))}
               {categories.length > 0 && (
                 <div className="mt-8 rounded-xl border border-[#ec5b13]/10 bg-[#ec5b13]/5 p-4">
-                  <p className="text-xs italic text-[#94a3b8]">
+                  <p className="text-xs italic text-text-secondary">
                     {analytics?.weaknesses && analytics.weaknesses.length > 0 ? (
                       <>
                         Vas fokus bi trebalo da ostane na{" "}
@@ -461,7 +461,7 @@ export default function AnalytikaPage() {
             </div>
           ) : (
             <div className="flex h-48 items-center justify-center">
-              <p className="text-sm text-[#94a3b8]">
+              <p className="text-sm text-text-secondary">
                 Resavajte zadatke da vidite statistiku.
               </p>
             </div>
@@ -474,7 +474,7 @@ export default function AnalytikaPage() {
         {/* Recent Simulations */}
         <div className="glass-panel overflow-hidden rounded-3xl lg:col-span-2">
           <div className="flex items-center justify-between border-b border-[#ec5b13]/10 px-6 py-5 sm:px-8">
-            <h4 className="text-lg font-bold text-[#e2e8f0]">
+            <h4 className="text-lg font-bold text-text">
               Nedavne simulacije
             </h4>
             <button
@@ -487,7 +487,7 @@ export default function AnalytikaPage() {
           {recentExams.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full text-left">
-                <thead className="bg-[#0f172a]/50 text-[10px] font-black uppercase tracking-widest text-[#94a3b8]">
+                <thead className="bg-bg/50 text-[10px] font-black uppercase tracking-widest text-text-secondary">
                   <tr>
                     <th className="px-6 py-4 sm:px-8">Naziv simulacije</th>
                     <th className="px-6 py-4 text-center sm:px-8">Uspeh</th>
@@ -514,7 +514,7 @@ export default function AnalytikaPage() {
                           router.push(`/simulacija/${exam.id}/rezultati`)
                         }
                       >
-                        <td className="px-6 py-4 text-sm font-semibold text-[#e2e8f0] sm:px-8">
+                        <td className="px-6 py-4 text-sm font-semibold text-text sm:px-8">
                           {exam.facultyName} simulacija
                         </td>
                         <td className="px-6 py-4 text-center sm:px-8">
@@ -524,10 +524,10 @@ export default function AnalytikaPage() {
                             {score.toFixed(0)}%
                           </span>
                         </td>
-                        <td className="hidden px-6 py-4 text-center font-mono text-sm text-[#94a3b8] sm:table-cell sm:px-8">
+                        <td className="hidden px-6 py-4 text-center font-mono text-sm text-text-secondary sm:table-cell sm:px-8">
                           {formatExamTime(exam.timeSpent)}
                         </td>
-                        <td className="px-6 py-4 text-right text-xs text-[#94a3b8] sm:px-8">
+                        <td className="px-6 py-4 text-right text-xs text-text-secondary sm:px-8">
                           {formatDate(exam.finishedAt)}
                         </td>
                       </tr>
@@ -540,9 +540,9 @@ export default function AnalytikaPage() {
             <div className="flex flex-col items-center justify-center py-12">
               <ClipboardCheck
                 size={40}
-                className="mb-3 text-[#334155]"
+                className="mb-3 text-border"
               />
-              <p className="text-sm text-[#94a3b8]">
+              <p className="text-sm text-text-secondary">
                 Nemate zavrsenih simulacija.
               </p>
               <button
@@ -557,7 +557,7 @@ export default function AnalytikaPage() {
 
         {/* Strengths & Weaknesses */}
         <div className="glass-panel flex flex-col rounded-3xl p-6 sm:p-8">
-          <h4 className="mb-6 text-lg font-bold text-[#e2e8f0]">
+          <h4 className="mb-6 text-lg font-bold text-text">
             Snage i slabosti
           </h4>
 
@@ -578,7 +578,7 @@ export default function AnalytikaPage() {
                     </span>
                   ))
                 ) : (
-                  <p className="text-xs text-[#94a3b8]">
+                  <p className="text-xs text-text-secondary">
                     Resavajte vise zadataka da otkrijete vase snage.
                   </p>
                 )}
@@ -601,7 +601,7 @@ export default function AnalytikaPage() {
                     </span>
                   ))
                 ) : (
-                  <p className="text-xs text-[#94a3b8]">
+                  <p className="text-xs text-text-secondary">
                     {analytics?.strengths && analytics.strengths.length > 0
                       ? "Odlicno! Nema oblasti koje zahtevaju posebnu paznju."
                       : "Resavajte vise zadataka da identifikujemo slabosti."}
@@ -618,10 +618,10 @@ export default function AnalytikaPage() {
                 <Lightbulb size={20} />
               </div>
               <div>
-                <p className="text-xs font-bold text-[#e2e8f0]">
+                <p className="text-xs font-bold text-text">
                   Sledeci preporuceni korak
                 </p>
-                <p className="text-[11px] text-[#94a3b8]">
+                <p className="text-[11px] text-text-secondary">
                   {analytics?.weaknesses && analytics.weaknesses.length > 0
                     ? `Vezbajte: ${analytics.weaknesses[0].name}`
                     : "Pokrenite novu simulaciju"}

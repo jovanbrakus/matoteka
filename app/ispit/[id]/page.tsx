@@ -110,7 +110,7 @@ export default function ExamPage() {
   }
 
   if (!exam || problems.length === 0) {
-    return <div className="py-20 text-center text-[#94a3b8]">Učitavanje ispita...</div>;
+    return <div className="py-20 text-center text-text-secondary">Učitavanje ispita...</div>;
   }
 
   const cp = problems[current];
@@ -119,12 +119,12 @@ export default function ExamPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-4">
       {/* Header */}
-      <div className="mb-4 flex items-center justify-between rounded-xl border border-[#334155] bg-[#1e293b] px-4 py-3">
-        <span className="font-semibold text-[#e2e8f0]">{faculty?.shortName} Probni ispit</span>
+      <div className="mb-4 flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3">
+        <span className="font-semibold text-text">{faculty?.shortName} Probni ispit</span>
         <span className={`font-mono text-lg font-bold ${timeLeft < 300 ? "text-[#f87171]" : "text-[#4ade80]"}`}>
           {formatTime(timeLeft)}
         </span>
-        <span className="text-sm text-[#94a3b8]">{current + 1}/{problems.length}</span>
+        <span className="text-sm text-text-secondary">{current + 1}/{problems.length}</span>
       </div>
 
       {/* Problem navigation strip */}
@@ -140,23 +140,23 @@ export default function ExamPage() {
                 ? "bg-[#4ade80]/20 text-[#4ade80]"
                 : p.isFlagged
                 ? "bg-[#fbbf24]/20 text-[#fbbf24]"
-                : "bg-[#1e293b] text-[#94a3b8]"
-            } border border-[#334155]`}
+                : "bg-card text-text-secondary"
+            } border border-border`}
           >
-            {p.isFlagged ? "🚩" : i + 1}
+            {p.isFlagged ? "\ud83d\udea9" : i + 1}
           </button>
         ))}
       </div>
 
       {/* Problem content */}
-      <div className="mb-4 rounded-xl border border-[#334155] bg-[#1e293b] p-6">
-        <h2 className="mb-4 text-lg font-semibold text-[#e2e8f0]">
+      <div className="mb-4 rounded-xl border border-border bg-card p-6">
+        <h2 className="mb-4 text-lg font-semibold text-text">
           Zadatak {cp.position}
         </h2>
         {cp.problemText ? (
-          <p className="mb-6 text-[#e2e8f0] whitespace-pre-wrap">{cp.problemText}</p>
+          <p className="mb-6 text-text whitespace-pre-wrap">{cp.problemText}</p>
         ) : (
-          <p className="mb-6 text-[#94a3b8] italic">{cp.title}</p>
+          <p className="mb-6 text-text-secondary italic">{cp.title}</p>
         )}
 
         <div className="space-y-2">
@@ -169,7 +169,7 @@ export default function ExamPage() {
                 className={`flex w-full items-center gap-3 rounded-lg border p-3 text-left text-sm transition ${
                   cp.answer === letter
                     ? "border-[#60a5fa] bg-[#60a5fa]/20 text-[#60a5fa]"
-                    : "border-[#334155] bg-[#0f172a] text-[#e2e8f0] hover:border-[#60a5fa]/50"
+                    : "border-border bg-bg text-text hover:border-[#60a5fa]/50"
                 }`}
               >
                 <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-current text-xs font-bold">
@@ -187,11 +187,11 @@ export default function ExamPage() {
         <div className="flex gap-2">
           <button
             onClick={toggleFlag}
-            className={`flex items-center gap-1.5 rounded-lg border border-[#334155] px-4 py-2 text-sm ${
-              cp.isFlagged ? "text-[#fbbf24]" : "text-[#94a3b8]"
+            className={`flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 text-sm ${
+              cp.isFlagged ? "text-[#fbbf24]" : "text-text-secondary"
             }`}
           >
-            <Flag size={14} /> Obeleži
+            <Flag size={14} /> Obele\u017ei
           </button>
         </div>
 
@@ -199,22 +199,22 @@ export default function ExamPage() {
           <button
             onClick={() => setCurrent(Math.max(0, current - 1))}
             disabled={current === 0}
-            className="flex items-center gap-1 rounded-lg border border-[#334155] px-4 py-2 text-sm text-[#94a3b8] disabled:opacity-50"
+            className="flex items-center gap-1 rounded-lg border border-border px-4 py-2 text-sm text-text-secondary disabled:opacity-50"
           >
             <ChevronLeft size={14} /> Prethodni
           </button>
           {current < problems.length - 1 ? (
             <button
               onClick={() => setCurrent(current + 1)}
-              className="flex items-center gap-1 rounded-lg border border-[#334155] px-4 py-2 text-sm text-[#94a3b8]"
+              className="flex items-center gap-1 rounded-lg border border-border px-4 py-2 text-sm text-text-secondary"
             >
-              Sledeći <ChevronRight size={14} />
+              Slede\u0107i <ChevronRight size={14} />
             </button>
           ) : (
             <button
               onClick={submitExam}
               disabled={submitting}
-              className="flex items-center gap-1 rounded-lg bg-[#4ade80] px-6 py-2 text-sm font-semibold text-[#0f172a] hover:bg-[#34d399] disabled:opacity-50"
+              className="flex items-center gap-1 rounded-lg bg-[#4ade80] px-6 py-2 text-sm font-semibold text-heading hover:bg-[#34d399] disabled:opacity-50"
             >
               <Send size={14} /> Predaj ispit
             </button>

@@ -70,15 +70,15 @@ const CATEGORY_ICONS: Record<string, string> = {
 };
 
 function getDifficultyLabel(diff: number): { label: string; color: string; bgColor: string } {
-  if (diff <= 3) return { label: "OSNOVNI", color: "text-slate-300", bgColor: "bg-slate-700" };
-  if (diff <= 6) return { label: "NAPREDNI", color: "text-slate-300", bgColor: "bg-slate-700" };
+  if (diff <= 3) return { label: "OSNOVNI", color: "text-text", bgColor: "bg-surface-lighter" };
+  if (diff <= 6) return { label: "NAPREDNI", color: "text-text", bgColor: "bg-surface-lighter" };
   return { label: "ELITE", color: "text-white", bgColor: "bg-[#ec5b13]" };
 }
 
 function getDifficultyStarIcon(diff: number) {
   if (diff >= 7) return <Star size={12} className="text-[#ec5b13]" />;
-  if (diff >= 4) return <StarHalf size={12} className="text-slate-500" />;
-  return <Star size={12} className="text-slate-500" />;
+  if (diff >= 4) return <StarHalf size={12} className="text-muted" />;
+  return <Star size={12} className="text-muted" />;
 }
 
 export default function PracticePage() {
@@ -171,7 +171,7 @@ export default function PracticePage() {
   if (sessionStatus !== "authenticated") {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
-        <p className="text-slate-400">Moras biti prijavljen da bi vezbao.</p>
+        <p className="text-text-secondary">Moras biti prijavljen da bi vezbao.</p>
         <Link
           href="/prijava"
           className="rounded-xl bg-[#ec5b13] px-6 py-3 font-bold text-white"
@@ -188,10 +188,10 @@ export default function PracticePage() {
       <section className="mb-8 flex flex-col gap-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h2 className="text-4xl font-black tracking-tight text-white italic lg:text-5xl">
+            <h2 className="text-4xl font-black tracking-tight text-heading italic lg:text-5xl">
               Slobodna <span className="text-[#ec5b13]">Vezba</span>
             </h2>
-            <p className="mt-2 max-w-lg font-medium text-slate-400">
+            <p className="mt-2 max-w-lg font-medium text-text-secondary">
               Odaberi oblast i kreni u osvajanje prijemnog ispita. Tvoj
               personalizovani put ka 100 poena.
             </p>
@@ -221,7 +221,7 @@ export default function PracticePage() {
                 className={`group flex flex-col rounded-2xl p-6 transition-all ${
                   isActive
                     ? "glass-card border-[#ec5b13]/50 ring-2 ring-[#ec5b13]/20 bg-gradient-to-br from-[#ec5b13]/10 to-transparent"
-                    : "glass-card hover:border-white/20"
+                    : "glass-card hover:border-[var(--tint-strong)]"
                 }`}
               >
                 <div className="mb-4 flex items-start justify-between">
@@ -229,7 +229,7 @@ export default function PracticePage() {
                     className={`flex h-12 w-12 items-center justify-center rounded-xl ${
                       isActive
                         ? "bg-[#ec5b13] text-white shadow-lg shadow-[#ec5b13]/30"
-                        : "border border-white/10 bg-[#1c1411] text-slate-400 group-hover:border-[#ec5b13]/50 group-hover:text-[#ec5b13]"
+                        : "border border-[var(--glass-border)] bg-card text-text-secondary group-hover:border-[#ec5b13]/50 group-hover:text-[#ec5b13]"
                     } transition-all`}
                   >
                     <span className="material-symbols-outlined text-2xl">
@@ -241,25 +241,25 @@ export default function PracticePage() {
                       AKTIVNO
                     </span>
                   ) : (
-                    <span className="rounded bg-white/5 px-2 py-1 text-[10px] font-black text-slate-500">
+                    <span className="rounded bg-[var(--tint)] px-2 py-1 text-[10px] font-black text-muted">
                       {cat.totalProblems} Zadataka
                     </span>
                   )}
                 </div>
-                <h3 className="text-lg font-bold text-white transition-colors group-hover:text-[#ec5b13]">
+                <h3 className="text-lg font-bold text-heading transition-colors group-hover:text-[#ec5b13]">
                   {cat.name}
                 </h3>
-                <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+                <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-[var(--tint-strong)]">
                   <div
                     className={`h-full rounded-full transition-all ${
                       isActive
                         ? "bg-[#ec5b13]"
-                        : "bg-slate-600 group-hover:bg-[#ec5b13]/50"
+                        : "bg-muted group-hover:bg-[#ec5b13]/50"
                     }`}
                     style={{ width: `${Math.max(2, cat.progressPercent)}%` }}
                   />
                 </div>
-                <p className="mt-2 text-xs font-medium text-slate-400">
+                <p className="mt-2 text-xs font-medium text-text-secondary">
                   {cat.progressPercent}% Savladano
                 </p>
               </button>
@@ -273,9 +273,9 @@ export default function PracticePage() {
         {/* Problem Feed (8 cols) */}
         <div className="flex flex-col gap-6 lg:col-span-8">
           <div className="mb-2 flex items-center justify-between">
-            <h4 className="flex items-center gap-2 text-xl font-bold text-white">
+            <h4 className="flex items-center gap-2 text-xl font-bold text-heading">
               Dostupni Zadaci
-              <span className="rounded-full bg-white/5 px-2 py-1 text-xs font-normal text-slate-500">
+              <span className="rounded-full bg-[var(--tint)] px-2 py-1 text-xs font-normal text-muted">
                 {activeCategory
                   ? `${problems.length} od ${totalProblems}`
                   : `Prikazano ${problems.length} od ${totalProblems}`}
@@ -293,7 +293,7 @@ export default function PracticePage() {
                 <Loader2 className="h-6 w-6 animate-spin text-[#ec5b13]" />
               </div>
             ) : problems.length === 0 ? (
-              <div className="py-20 text-center text-slate-500">
+              <div className="py-20 text-center text-muted">
                 Nema zadataka za prikaz.
               </div>
             ) : (
@@ -312,7 +312,7 @@ export default function PracticePage() {
                       className={`absolute left-0 top-0 h-full w-2 ${
                         isElite
                           ? "bg-[#ec5b13] opacity-50 group-hover:opacity-100"
-                          : "bg-slate-700 opacity-30 group-hover:opacity-60"
+                          : "bg-surface-lighter opacity-30 group-hover:opacity-60"
                       }`}
                     />
 
@@ -324,24 +324,24 @@ export default function PracticePage() {
                         >
                           {label}
                         </span>
-                        <span className="text-xs font-bold text-slate-400">
+                        <span className="text-xs font-bold text-text-secondary">
                           {FACULTY_LABELS[p.facultyId] || p.facultyId.toUpperCase()}{" "}
                           {p.year} | Zadatak {p.problemNumber}
                         </span>
                         <div className="ml-auto flex items-center gap-1">
                           {getDifficultyStarIcon(diff)}
-                          <span className="text-xs font-bold text-slate-400">
+                          <span className="text-xs font-bold text-text-secondary">
                             Tezina: {diff}/10
                           </span>
                         </div>
                       </div>
-                      <h4 className="mb-2 text-lg font-bold leading-relaxed text-white line-clamp-2">
+                      <h4 className="mb-2 text-lg font-bold leading-relaxed text-heading line-clamp-2">
                         {p.title}
                       </h4>
                     </div>
 
                     {/* Action column */}
-                    <div className="flex flex-col items-center justify-center gap-4 border-l border-white/5 bg-white/5 p-6 md:w-48">
+                    <div className="flex flex-col items-center justify-center gap-4 border-l border-[var(--glass-border)] bg-[var(--tint)] p-6 md:w-48">
                       <Link
                         href={`/vezbe/${p.id}`}
                         className={`w-full rounded-xl py-2 text-center text-sm font-bold shadow-lg transition-transform hover:scale-105 ${
@@ -354,7 +354,7 @@ export default function PracticePage() {
                       </Link>
                       <Link
                         href={`/zadaci/${p.slug}`}
-                        className="w-full rounded-xl border border-white/5 bg-[#1c1411] py-2 text-center text-sm font-bold text-slate-400 hover:bg-white/5"
+                        className="w-full rounded-xl border border-[var(--glass-border)] bg-card py-2 text-center text-sm font-bold text-text-secondary hover:bg-[var(--tint)]"
                       >
                         Pregled
                       </Link>
@@ -370,7 +370,7 @@ export default function PracticePage() {
             <button
               onClick={handleLoadMore}
               disabled={loadingProblems}
-              className="mt-4 w-full rounded-2xl border-2 border-dashed border-white/10 py-4 text-xs font-bold uppercase tracking-widest text-slate-500 transition-all hover:border-[#ec5b13]/50 hover:text-[#ec5b13]"
+              className="mt-4 w-full rounded-2xl border-2 border-dashed border-[var(--glass-border)] py-4 text-xs font-bold uppercase tracking-widest text-muted transition-all hover:border-[#ec5b13]/50 hover:text-[#ec5b13]"
             >
               {loadingProblems ? (
                 <Loader2 className="mx-auto h-4 w-4 animate-spin" />
@@ -435,28 +435,28 @@ export default function PracticePage() {
 
           {/* Quick Stats */}
           <div className="flex flex-col gap-6 rounded-2xl p-6 glass-card">
-            <h4 className="flex items-center gap-2 text-sm font-black uppercase tracking-widest text-white">
+            <h4 className="flex items-center gap-2 text-sm font-black uppercase tracking-widest text-heading">
               Tvoj progres
-              <span className="h-[1px] flex-1 bg-white/10" />
+              <span className="h-[1px] flex-1 bg-[var(--tint-strong)]" />
             </h4>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="rounded-xl border border-white/5 bg-[#1c1411] p-4">
-                <p className="text-[10px] font-bold uppercase text-slate-500">
+              <div className="rounded-xl border border-[var(--glass-border)] bg-card p-4">
+                <p className="text-[10px] font-bold uppercase text-muted">
                   Reseno
                 </p>
-                <p className="mt-1 text-2xl font-black text-white">
+                <p className="mt-1 text-2xl font-black text-heading">
                   {totalSolved}
                 </p>
-                <p className="mt-1 text-[10px] font-bold text-slate-500">
+                <p className="mt-1 text-[10px] font-bold text-muted">
                   od {categories.reduce((s, c) => s + c.totalProblems, 0)}
                 </p>
               </div>
-              <div className="rounded-xl border border-white/5 bg-[#1c1411] p-4">
-                <p className="text-[10px] font-bold uppercase text-slate-500">
+              <div className="rounded-xl border border-[var(--glass-border)] bg-card p-4">
+                <p className="text-[10px] font-bold uppercase text-muted">
                   Preciznost
                 </p>
-                <p className="mt-1 text-2xl font-black text-white">
+                <p className="mt-1 text-2xl font-black text-heading">
                   {overallAccuracy}%
                 </p>
                 <p className="mt-1 text-[10px] font-bold text-[#ec5b13]">
@@ -476,13 +476,13 @@ export default function PracticePage() {
                     <Flame size={18} />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-white">Ukupno pokusano</p>
-                    <p className="text-[10px] text-slate-500">
+                    <p className="text-xs font-bold text-heading">Ukupno pokusano</p>
+                    <p className="text-[10px] text-muted">
                       Svi pokusaji
                     </p>
                   </div>
                 </div>
-                <span className="text-lg font-black italic text-white">
+                <span className="text-lg font-black italic text-heading">
                   {totalAttempted}
                 </span>
               </div>
@@ -493,11 +493,11 @@ export default function PracticePage() {
                     <Target size={18} />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-white">Tacni odgovori</p>
-                    <p className="text-[10px] text-slate-500">Kroz sve kategorije</p>
+                    <p className="text-xs font-bold text-heading">Tacni odgovori</p>
+                    <p className="text-[10px] text-muted">Kroz sve kategorije</p>
                   </div>
                 </div>
-                <span className="text-lg font-black italic text-white">
+                <span className="text-lg font-black italic text-heading">
                   {totalSolved}
                 </span>
               </div>
@@ -505,7 +505,7 @@ export default function PracticePage() {
 
             <Link
               href="/analitika"
-              className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-[#1c1411] py-4 text-xs font-bold uppercase tracking-widest text-white transition-all hover:border-[#ec5b13]/50"
+              className="flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--glass-border)] bg-card py-4 text-xs font-bold uppercase tracking-widest text-heading transition-all hover:border-[#ec5b13]/50"
             >
               Puna Analitika
               <BarChart3 size={14} />
@@ -513,8 +513,8 @@ export default function PracticePage() {
           </div>
 
           {/* Achievements Preview */}
-          <div className="rounded-2xl border-dashed border-white/10 p-6 glass-card">
-            <h4 className="mb-6 text-sm font-black uppercase tracking-widest text-white">
+          <div className="rounded-2xl border-dashed border-[var(--glass-border)] p-6 glass-card">
+            <h4 className="mb-6 text-sm font-black uppercase tracking-widest text-heading">
               Poslednja Postignuca
             </h4>
             <div className="flex gap-4">
@@ -529,7 +529,7 @@ export default function PracticePage() {
                   </div>
                 </div>
               ) : (
-                <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-slate-800 text-slate-500 opacity-40 grayscale">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full border border-[var(--glass-border)] bg-card text-muted opacity-40 grayscale">
                   <Award size={20} />
                 </div>
               )}
@@ -545,7 +545,7 @@ export default function PracticePage() {
                   </div>
                 </div>
               ) : (
-                <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-slate-800 text-slate-500 opacity-40 grayscale">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full border border-[var(--glass-border)] bg-card text-muted opacity-40 grayscale">
                   <Trophy size={20} />
                 </div>
               )}
@@ -561,12 +561,12 @@ export default function PracticePage() {
                   </div>
                 </div>
               ) : (
-                <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-slate-800 text-slate-500 opacity-40 grayscale">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full border border-[var(--glass-border)] bg-card text-muted opacity-40 grayscale">
                   <span className="material-symbols-outlined text-lg">military_tech</span>
                 </div>
               )}
 
-              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-dashed border-white/10 text-slate-600">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-dashed border-[var(--glass-border)] text-muted">
                 <Plus size={14} />
               </div>
             </div>

@@ -10,11 +10,11 @@ export default function AiSolutionPage() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
-      <Link href="/ai" className="mb-4 inline-flex items-center gap-1 text-sm text-[#94a3b8] hover:text-[#a78bfa]">
+      <Link href="/ai" className="mb-4 inline-flex items-center gap-1 text-sm text-text-secondary hover:text-[#a78bfa]">
         <ArrowLeft size={16} /> Nazad na AI Tutor
       </Link>
 
-      <div className="overflow-hidden rounded-xl border border-[#334155]">
+      <div className="overflow-hidden rounded-xl border border-border">
         <iframe
           src={`/api/ai/solutions/${id}/html`}
           sandbox="allow-scripts allow-same-origin"

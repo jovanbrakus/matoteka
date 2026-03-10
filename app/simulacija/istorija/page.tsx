@@ -95,7 +95,7 @@ function getTestTypeInfo(testSize: string) {
       return {
         label: testSize,
         icon: ClipboardList,
-        iconColor: "text-slate-400",
+        iconColor: "text-text-secondary",
         bgColor: "bg-slate-400/10",
       };
   }
@@ -198,7 +198,7 @@ export default function SimulationHistoryPage() {
       <div className="mx-auto max-w-7xl px-4 md:px-8 py-8 space-y-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight">
+          <h1 className="text-2xl md:text-3xl font-black text-heading tracking-tight">
             Istorija <span className="text-[#ec5b13]">testova</span>
           </h1>
           <Link
@@ -211,7 +211,7 @@ export default function SimulationHistoryPage() {
         </div>
 
         {/* Filters */}
-        <div className="rounded-2xl border border-[#ec5b13]/10 bg-[rgba(34,22,16,0.6)] backdrop-blur-xl p-6 flex flex-wrap items-center gap-4">
+        <div className="rounded-2xl border border-[#ec5b13]/10 bg-[var(--glass-bg)] backdrop-blur-xl p-6 flex flex-wrap items-center gap-4">
           <form
             onSubmit={handleSearch}
             className="flex-1 min-w-[200px] relative"
@@ -235,7 +235,7 @@ export default function SimulationHistoryPage() {
                 setTypeFilter(e.target.value);
                 setPage(1);
               }}
-              className="px-4 py-3 bg-[#0a0705]/40 rounded-xl text-sm font-medium text-slate-300 border-none focus:outline-none focus:ring-2 focus:ring-[#ec5b13]/50 cursor-pointer appearance-none"
+              className="px-4 py-3 bg-[#0a0705]/40 rounded-xl text-sm font-medium text-text border-none focus:outline-none focus:ring-2 focus:ring-[#ec5b13]/50 cursor-pointer appearance-none"
             >
               <option value="">Svi tipovi</option>
               <option value="full">Kompletan</option>
@@ -246,11 +246,11 @@ export default function SimulationHistoryPage() {
         </div>
 
         {/* Table */}
-        <div className="rounded-2xl border border-[#ec5b13]/10 bg-[rgba(34,22,16,0.6)] backdrop-blur-xl overflow-hidden shadow-2xl">
+        <div className="rounded-2xl border border-[#ec5b13]/10 bg-[var(--glass-bg)] backdrop-blur-xl overflow-hidden shadow-2xl">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-white/5 border-b border-[#ec5b13]/10">
+                <tr className="bg-[var(--tint)] border-b border-[#ec5b13]/10">
                   <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-[#ec5b13]/60">
                     Datum
                   </th>
@@ -276,7 +276,7 @@ export default function SimulationHistoryPage() {
                   <tr>
                     <td
                       colSpan={6}
-                      className="px-8 py-12 text-center text-slate-400"
+                      className="px-8 py-12 text-center text-text-secondary"
                     >
                       <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-[#ec5b13] border-t-transparent" />
                       <p className="mt-2">Učitavanje...</p>
@@ -287,7 +287,7 @@ export default function SimulationHistoryPage() {
                   <tr>
                     <td
                       colSpan={6}
-                      className="px-8 py-12 text-center text-slate-400"
+                      className="px-8 py-12 text-center text-text-secondary"
                     >
                       <p className="text-lg font-bold">
                         Nema završenih testova
@@ -322,10 +322,10 @@ export default function SimulationHistoryPage() {
                       >
                         <td className="px-8 py-6">
                           <div className="flex flex-col">
-                            <span className="font-bold text-white">
+                            <span className="font-bold text-heading">
                               {dateInfo.date}
                             </span>
-                            <span className="text-xs text-slate-500">
+                            <span className="text-xs text-muted">
                               {dateInfo.detail}
                             </span>
                           </div>
@@ -340,13 +340,13 @@ export default function SimulationHistoryPage() {
                                 className={typeInfo.iconColor}
                               />
                             </div>
-                            <span className="font-medium text-slate-300">
+                            <span className="font-medium text-text">
                               {typeInfo.label}
                             </span>
                           </div>
                         </td>
                         <td className="px-8 py-6 text-center">
-                          <span className="text-sm font-mono text-slate-400">
+                          <span className="text-sm font-mono text-text-secondary">
                             {formatDuration(exam.timeSpent)} /{" "}
                             {formatDuration(exam.durationLimit)}
                           </span>
@@ -355,7 +355,7 @@ export default function SimulationHistoryPage() {
                           <span className="text-lg font-black text-[#ec5b13]">
                             {totalCorrect}/{problemCount}
                           </span>
-                          <span className="text-xs text-slate-400 block font-bold">
+                          <span className="text-xs text-text-secondary block font-bold">
                             {pct.toFixed(0)}%
                           </span>
                         </td>
@@ -369,7 +369,7 @@ export default function SimulationHistoryPage() {
                         <td className="px-8 py-6 text-right">
                           <Link
                             href={`/simulacija/${exam.id}/rezultati`}
-                            className="inline-flex items-center gap-2 font-bold text-sm text-slate-400 hover:text-[#ec5b13] transition-all group-hover:translate-x-[-4px]"
+                            className="inline-flex items-center gap-2 font-bold text-sm text-text-secondary hover:text-[#ec5b13] transition-all group-hover:translate-x-[-4px]"
                           >
                             Pogledaj rešenja
                             <ChevronRight size={16} />
@@ -384,7 +384,7 @@ export default function SimulationHistoryPage() {
 
           {/* Pagination */}
           {data && data.pagination.totalPages > 1 && (
-            <div className="px-8 py-4 bg-white/5 border-t border-[#ec5b13]/10 flex items-center justify-between">
+            <div className="px-8 py-4 bg-[var(--tint)] border-t border-[#ec5b13]/10 flex items-center justify-between">
               <p className="text-xs text-[#ec5b13]/60 font-medium">
                 Prikazano{" "}
                 {(data.pagination.page - 1) * data.pagination.perPage + 1}-
@@ -398,7 +398,7 @@ export default function SimulationHistoryPage() {
                 <button
                   onClick={() => setPage(Math.max(1, page - 1))}
                   disabled={page === 1}
-                  className="p-2 rounded-lg bg-[#0a0705]/60 text-slate-400 disabled:opacity-30 hover:text-[#ec5b13] transition-colors"
+                  className="p-2 rounded-lg bg-[#0a0705]/60 text-text-secondary disabled:opacity-30 hover:text-[#ec5b13] transition-colors"
                 >
                   <ChevronLeft size={16} />
                 </button>
@@ -422,7 +422,7 @@ export default function SimulationHistoryPage() {
                         className={`w-8 h-8 rounded-lg text-xs font-bold transition-colors ${
                           pageNum === page
                             ? "bg-[#ec5b13] text-white shadow-md shadow-[#ec5b13]/30"
-                            : "bg-[#0a0705]/60 text-slate-400 hover:text-[#ec5b13]"
+                            : "bg-[#0a0705]/60 text-text-secondary hover:text-[#ec5b13]"
                         }`}
                       >
                         {pageNum}
@@ -435,7 +435,7 @@ export default function SimulationHistoryPage() {
                     setPage(Math.min(data.pagination.totalPages, page + 1))
                   }
                   disabled={page === data.pagination.totalPages}
-                  className="p-2 rounded-lg bg-[#0a0705]/60 text-slate-400 disabled:opacity-30 hover:text-[#ec5b13] transition-colors"
+                  className="p-2 rounded-lg bg-[#0a0705]/60 text-text-secondary disabled:opacity-30 hover:text-[#ec5b13] transition-colors"
                 >
                   <ChevronRight size={16} />
                 </button>
@@ -447,7 +447,7 @@ export default function SimulationHistoryPage() {
         {/* Summary Stats */}
         {data && data.stats.totalTests > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="rounded-2xl border border-[#ec5b13]/10 bg-[rgba(34,22,16,0.6)] backdrop-blur-xl p-6 flex items-center gap-4">
+            <div className="rounded-2xl border border-[#ec5b13]/10 bg-[var(--glass-bg)] backdrop-blur-xl p-6 flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl bg-[#ec5b13]/20 flex items-center justify-center text-[#ec5b13]">
                 <TrendingUp size={24} />
               </div>
@@ -455,12 +455,12 @@ export default function SimulationHistoryPage() {
                 <p className="text-xs text-[#ec5b13]/60 font-bold uppercase tracking-widest">
                   Prosečan rezultat
                 </p>
-                <h3 className="text-2xl font-black text-white">
+                <h3 className="text-2xl font-black text-heading">
                   {data.stats.avgScore}%
                 </h3>
               </div>
             </div>
-            <div className="rounded-2xl border border-[#ec5b13]/10 bg-[rgba(34,22,16,0.6)] backdrop-blur-xl p-6 flex items-center gap-4">
+            <div className="rounded-2xl border border-[#ec5b13]/10 bg-[var(--glass-bg)] backdrop-blur-xl p-6 flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-500">
                 <Clock size={24} />
               </div>
@@ -468,12 +468,12 @@ export default function SimulationHistoryPage() {
                 <p className="text-xs text-[#ec5b13]/60 font-bold uppercase tracking-widest">
                   Ukupno vreme vežbanja
                 </p>
-                <h3 className="text-2xl font-black text-white">
+                <h3 className="text-2xl font-black text-heading">
                   {formatTotalTime(data.stats.totalTime)}
                 </h3>
               </div>
             </div>
-            <div className="rounded-2xl border border-[#ec5b13]/10 bg-[rgba(34,22,16,0.6)] backdrop-blur-xl p-6 flex items-center gap-4">
+            <div className="rounded-2xl border border-[#ec5b13]/10 bg-[var(--glass-bg)] backdrop-blur-xl p-6 flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-500">
                 <CheckCircle size={24} />
               </div>
@@ -481,7 +481,7 @@ export default function SimulationHistoryPage() {
                 <p className="text-xs text-[#ec5b13]/60 font-bold uppercase tracking-widest">
                   Urađeno testova
                 </p>
-                <h3 className="text-2xl font-black text-white">
+                <h3 className="text-2xl font-black text-heading">
                   {data.stats.totalTests}
                 </h3>
               </div>

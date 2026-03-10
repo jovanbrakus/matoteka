@@ -143,7 +143,7 @@ export default function PracticeProblemPage() {
   if (!problem) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-20 text-center">
-        <p className="mb-4 text-lg text-slate-400">Zadatak nije pronadjen.</p>
+        <p className="mb-4 text-lg text-text-secondary">Zadatak nije pronadjen.</p>
         <Link href="/vezbe" className="text-[#ec5b13] hover:underline">
           Nazad na vezbe
         </Link>
@@ -158,7 +158,7 @@ export default function PracticeProblemPage() {
       {/* Back navigation */}
       <Link
         href="/vezbe"
-        className="mb-6 inline-flex items-center gap-1 text-sm text-slate-400 transition-colors hover:text-[#ec5b13]"
+        className="mb-6 inline-flex items-center gap-1 text-sm text-text-secondary transition-colors hover:text-[#ec5b13]"
       >
         <ArrowLeft size={16} /> Nazad na vezbe
       </Link>
@@ -169,13 +169,13 @@ export default function PracticeProblemPage() {
           <span className="rounded-full bg-[#ec5b13]/20 px-3 py-1 text-xs font-bold text-[#ec5b13]">
             {problem.facultyShortName || problem.facultyId.toUpperCase()}
           </span>
-          <span className="text-sm text-slate-400">{problem.year}</span>
-          <span className="text-sm text-slate-400">
+          <span className="text-sm text-text-secondary">{problem.year}</span>
+          <span className="text-sm text-text-secondary">
             Zadatak #{problem.problemNumber}
           </span>
           <div className="ml-auto flex items-center gap-1">
             <Star size={12} className="text-[#ec5b13]" />
-            <span className="text-xs font-bold text-slate-400">
+            <span className="text-xs font-bold text-text-secondary">
               Tezina: {diff}/10
             </span>
           </div>
@@ -195,10 +195,10 @@ export default function PracticeProblemPage() {
         )}
 
         <div className="flex items-center justify-between gap-4">
-          <h1 className="text-2xl font-bold text-white">{problem.title}</h1>
+          <h1 className="text-2xl font-bold text-heading">{problem.title}</h1>
           <button
             onClick={handleToggleBookmark}
-            className="flex shrink-0 items-center gap-2 rounded-lg border border-white/10 px-3 py-2 text-sm text-slate-400 transition-colors hover:text-[#fbbf24]"
+            className="flex shrink-0 items-center gap-2 rounded-lg border border-[var(--glass-border)] px-3 py-2 text-sm text-text-secondary transition-colors hover:text-[#fbbf24]"
           >
             {bookmarked ? (
               <BookmarkCheck size={16} className="text-[#fbbf24]" />
@@ -211,7 +211,7 @@ export default function PracticeProblemPage() {
       </div>
 
       {/* Problem content iframe (MathJax rendered) */}
-      <div className="mb-8 overflow-hidden rounded-2xl border border-white/10 glass-card">
+      <div className="mb-8 overflow-hidden rounded-2xl border border-[var(--glass-border)] glass-card">
         <iframe
           src={`/api/problems/${problem.slug}/html?section=statement`}
           sandbox="allow-scripts allow-same-origin"
@@ -241,10 +241,10 @@ export default function PracticeProblemPage() {
 
       {/* Answer Section */}
       {!showSolution && (
-        <div className="mb-8 rounded-2xl border border-white/10 p-6 glass-card">
+        <div className="mb-8 rounded-2xl border border-[var(--glass-border)] p-6 glass-card">
           <div className="mb-4 flex items-center gap-2">
             <Lightbulb size={18} className="text-[#ec5b13]" />
-            <h3 className="text-lg font-bold text-white">Tvoj odgovor</h3>
+            <h3 className="text-lg font-bold text-heading">Tvoj odgovor</h3>
           </div>
 
           {answerResult ? (
@@ -275,7 +275,7 @@ export default function PracticeProblemPage() {
               </div>
             </div>
           ) : (
-            <p className="mb-4 text-sm text-slate-400">
+            <p className="mb-4 text-sm text-text-secondary">
               Izaberi odgovor i proveri da li si u pravu:
             </p>
           )}
@@ -300,14 +300,14 @@ export default function PracticeProblemPage() {
                     "border-[#f87171] bg-[#f87171]/20 text-[#f87171] line-through";
                 } else {
                   btnClass =
-                    "border-white/5 bg-[#1c1411] text-slate-600 opacity-50";
+                    "border-[var(--glass-border)] bg-card text-muted opacity-50";
                 }
               } else if (isSelected) {
                 btnClass =
                   "border-[#ec5b13] bg-[#ec5b13]/20 text-[#ec5b13] ring-2 ring-[#ec5b13]/30";
               } else {
                 btnClass =
-                  "border-white/10 bg-[#1c1411] text-white hover:border-[#ec5b13]/50 hover:bg-[#ec5b13]/5";
+                  "border-[var(--glass-border)] bg-card text-heading hover:border-[#ec5b13]/50 hover:bg-[#ec5b13]/5";
               }
 
               return (
@@ -346,7 +346,7 @@ export default function PracticeProblemPage() {
                 </button>
                 <button
                   onClick={() => setShowSolution(true)}
-                  className="rounded-xl border border-white/10 px-6 py-3 text-sm text-slate-400 transition-colors hover:text-white"
+                  className="rounded-xl border border-[var(--glass-border)] px-6 py-3 text-sm text-text-secondary transition-colors hover:text-heading"
                 >
                   Preskoci i vidi resenje
                 </button>
@@ -378,8 +378,8 @@ export default function PracticeProblemPage() {
       {/* Full Solution */}
       {showSolution && (
         <>
-          <div className="mb-6 overflow-hidden rounded-2xl border border-white/10 glass-card">
-            <div className="border-b border-white/10 bg-white/5 px-6 py-3">
+          <div className="mb-6 overflow-hidden rounded-2xl border border-[var(--glass-border)] glass-card">
+            <div className="border-b border-[var(--glass-border)] bg-[var(--tint)] px-6 py-3">
               <h3 className="text-sm font-bold uppercase tracking-widest text-[#ec5b13]">
                 Kompletno Resenje
               </h3>
@@ -412,11 +412,11 @@ export default function PracticeProblemPage() {
           </div>
 
           {/* Next Problem CTA */}
-          <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-white/10 p-6 glass-card">
+          <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-[var(--glass-border)] p-6 glass-card">
             <div>
-              <p className="text-sm text-slate-400">Spreman za sledeci?</p>
+              <p className="text-sm text-text-secondary">Spreman za sledeci?</p>
               {nextProblem && (
-                <p className="mt-1 text-xs text-slate-500 line-clamp-1">
+                <p className="mt-1 text-xs text-muted line-clamp-1">
                   {nextProblem.title}
                 </p>
               )}
@@ -424,7 +424,7 @@ export default function PracticeProblemPage() {
             <div className="flex gap-3">
               <Link
                 href="/vezbe"
-                className="rounded-xl border border-white/10 px-6 py-3 text-sm text-slate-400 transition-colors hover:text-white"
+                className="rounded-xl border border-[var(--glass-border)] px-6 py-3 text-sm text-text-secondary transition-colors hover:text-heading"
               >
                 Nazad na listu
               </Link>

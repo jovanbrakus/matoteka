@@ -46,10 +46,10 @@ export default function AuthenticatedLayout({
 
   return (
     <div
-      className="flex h-screen overflow-hidden bg-[#0a0a0a]"
+      className="flex h-screen overflow-hidden bg-bg"
       style={{
         background:
-          "radial-gradient(circle at 50% -20%, #2a1a12 0%, #0a0a0a 100%)",
+          "radial-gradient(circle at 50% -20%, var(--gradient-top) 0%, var(--color-bg) 100%)",
       }}
     >
       {/* Desktop sidebar */}
@@ -62,16 +62,16 @@ export default function AuthenticatedLayout({
       </div>
 
       {/* Mobile header */}
-      <div className="fixed left-0 right-0 top-0 z-40 flex items-center justify-between border-b border-white/5 bg-[#0a0a0a]/95 px-4 py-3 backdrop-blur lg:hidden">
+      <div className="fixed left-0 right-0 top-0 z-40 flex items-center justify-between border-b border-[var(--glass-border)] bg-surface-dark/95 px-4 py-3 backdrop-blur lg:hidden">
         <Link href="/" className="flex items-center gap-2">
           <Image src="/logo-56.png" alt="TataMata" width={24} height={22} />
-          <span className="text-lg font-bold">
+          <span className="text-lg font-bold text-heading">
             Tata<span className="text-[#4ade80]">Mata</span>
           </span>
         </Link>
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="text-slate-400"
+          className="text-muted"
         >
           {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>

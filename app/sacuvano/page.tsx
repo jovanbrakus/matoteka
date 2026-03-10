@@ -13,13 +13,13 @@ export default function BookmarksPage() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
-      <h1 className="mb-6 text-3xl font-bold text-[#e2e8f0]">
+      <h1 className="mb-6 text-3xl font-bold text-text">
         <Bookmark className="mr-2 inline text-[#fbbf24]" size={28} />
         Sačuvani zadaci
       </h1>
 
       {bookmarks.length === 0 ? (
-        <div className="py-20 text-center text-[#94a3b8]">
+        <div className="py-20 text-center text-text-secondary">
           <p>Nemaš sačuvanih zadataka.</p>
           <Link href="/zadaci" className="mt-4 inline-block text-[#60a5fa] hover:underline">
             Pretraži zadatke
@@ -31,11 +31,11 @@ export default function BookmarksPage() {
             <Link
               key={b.problemId}
               href={`/zadaci/${b.slug}`}
-              className="flex items-center justify-between rounded-xl border border-[#334155] bg-[#1e293b] p-4 transition hover:border-[#60a5fa]/50"
+              className="flex items-center justify-between rounded-xl border border-border bg-card p-4 transition hover:border-[#60a5fa]/50"
             >
               <div>
-                <h3 className="text-sm font-medium text-[#e2e8f0]">{b.title}</h3>
-                <p className="text-xs text-[#94a3b8]">
+                <h3 className="text-sm font-medium text-text">{b.title}</h3>
+                <p className="text-xs text-text-secondary">
                   {b.facultyId?.toUpperCase()} {b.year} · Zadatak #{b.problemNumber}
                 </p>
               </div>

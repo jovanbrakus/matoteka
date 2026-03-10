@@ -66,18 +66,18 @@ export default function ProblemsPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
-      <h1 className="mb-6 text-3xl font-bold text-[#e2e8f0]">
+      <h1 className="mb-6 text-3xl font-bold text-text">
         <BookOpen className="mr-2 inline" size={28} />
         Zadaci
       </h1>
 
       {/* Filter bar */}
-      <div className="mb-6 rounded-xl border border-[#334155] bg-[#1e293b] p-4">
+      <div className="mb-6 rounded-xl border border-border bg-card p-4">
         <div className="flex flex-wrap gap-3">
           <select
             value={faculty}
             onChange={(e) => { setFaculty(e.target.value); setPage(1); }}
-            className="rounded-lg border border-[#334155] bg-[#0f172a] px-3 py-2 text-sm text-[#e2e8f0]"
+            className="rounded-lg border border-border bg-bg px-3 py-2 text-sm text-text"
           >
             <option value="">Svi fakulteti</option>
             {Object.entries(FACULTY_LABELS).map(([id, label]) => (
@@ -88,7 +88,7 @@ export default function ProblemsPage() {
           <select
             value={year}
             onChange={(e) => { setYear(e.target.value); setPage(1); }}
-            className="rounded-lg border border-[#334155] bg-[#0f172a] px-3 py-2 text-sm text-[#e2e8f0]"
+            className="rounded-lg border border-border bg-bg px-3 py-2 text-sm text-text"
           >
             <option value="">Sve godine</option>
             {years.map((y) => (
@@ -105,25 +105,25 @@ export default function ProblemsPage() {
             }}
           >
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-2.5 text-[#64748b]" size={16} />
+              <Search className="absolute left-3 top-2.5 text-muted" size={16} />
               <input
                 type="text"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 placeholder="Pretraži zadatke..."
-                className="w-full rounded-lg border border-[#334155] bg-[#0f172a] py-2 pl-9 pr-3 text-sm text-[#e2e8f0] outline-none focus:border-[#60a5fa]"
+                className="w-full rounded-lg border border-border bg-bg py-2 pl-9 pr-3 text-sm text-text outline-none focus:border-[#60a5fa]"
               />
             </div>
           </form>
         </div>
-        <p className="mt-3 text-sm text-[#94a3b8]">Prikazano: {total} zadataka</p>
+        <p className="mt-3 text-sm text-text-secondary">Prikazano: {total} zadataka</p>
       </div>
 
       {/* Problem grid */}
       {loading ? (
-        <div className="py-20 text-center text-[#94a3b8]">Učitavanje...</div>
+        <div className="py-20 text-center text-text-secondary">Učitavanje...</div>
       ) : problems.length === 0 ? (
-        <div className="py-20 text-center text-[#94a3b8]">Nema pronađenih zadataka.</div>
+        <div className="py-20 text-center text-text-secondary">Nema pronađenih zadataka.</div>
       ) : (
         <>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -131,7 +131,7 @@ export default function ProblemsPage() {
               <Link
                 key={p.id}
                 href={`/zadaci/${p.slug}`}
-                className="group rounded-xl border border-[#334155] bg-[#1e293b] p-5 transition hover:border-[#60a5fa]/50"
+                className="group rounded-xl border border-border bg-card p-5 transition hover:border-[#60a5fa]/50"
               >
                 <div className="mb-2 flex items-center gap-2">
                   <span
@@ -143,12 +143,12 @@ export default function ProblemsPage() {
                   >
                     {FACULTY_LABELS[p.facultyId] || p.facultyId.toUpperCase()}
                   </span>
-                  <span className="text-xs text-[#94a3b8]">{p.year}</span>
+                  <span className="text-xs text-text-secondary">{p.year}</span>
                 </div>
-                <h3 className="mb-2 line-clamp-2 text-sm font-medium text-[#e2e8f0] group-hover:text-[#60a5fa]">
+                <h3 className="mb-2 line-clamp-2 text-sm font-medium text-text group-hover:text-[#60a5fa]">
                   {p.title}
                 </h3>
-                <p className="text-xs text-[#64748b]">Zadatak #{p.problemNumber}</p>
+                <p className="text-xs text-muted">Zadatak #{p.problemNumber}</p>
               </Link>
             ))}
           </div>
@@ -159,17 +159,17 @@ export default function ProblemsPage() {
               <button
                 onClick={() => setPage(Math.max(1, page - 1))}
                 disabled={page === 1}
-                className="rounded-lg border border-[#334155] px-4 py-2 text-sm text-[#94a3b8] disabled:opacity-50"
+                className="rounded-lg border border-border px-4 py-2 text-sm text-text-secondary disabled:opacity-50"
               >
                 Prethodna
               </button>
-              <span className="flex items-center px-4 text-sm text-[#94a3b8]">
+              <span className="flex items-center px-4 text-sm text-text-secondary">
                 Strana {page} od {Math.ceil(total / 30)}
               </span>
               <button
                 onClick={() => setPage(page + 1)}
                 disabled={page >= Math.ceil(total / 30)}
-                className="rounded-lg border border-[#334155] px-4 py-2 text-sm text-[#94a3b8] disabled:opacity-50"
+                className="rounded-lg border border-border px-4 py-2 text-sm text-text-secondary disabled:opacity-50"
               >
                 Sledeća
               </button>

@@ -62,19 +62,19 @@ export default function ExamSetupPage() {
   if (fetchingFaculty) {
     return (
       <div className="mx-auto max-w-2xl px-4 py-16">
-        <div className="h-8 w-48 animate-pulse rounded-lg bg-[#1e293b]" />
-        <div className="mt-4 h-40 animate-pulse rounded-2xl bg-[#1e293b]" />
+        <div className="h-8 w-48 animate-pulse rounded-lg bg-card" />
+        <div className="mt-4 h-40 animate-pulse rounded-2xl bg-card" />
       </div>
     );
   }
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
-      <h1 className="mb-2 text-3xl font-bold text-[#e2e8f0]">
+      <h1 className="mb-2 text-3xl font-bold text-text">
         <ClipboardList className="mr-2 inline" size={28} />
         Probni prijemni ispit
       </h1>
-      <p className="mb-8 text-[#94a3b8]">
+      <p className="mb-8 text-text-secondary">
         Simulacija prijemnog ispita sa nasumičnim zadacima iz cele baze.
       </p>
 
@@ -85,13 +85,13 @@ export default function ExamSetupPage() {
             <AlertCircle size={20} />
             <span className="font-semibold">Fakultet nije izabran</span>
           </div>
-          <p className="mb-4 text-sm text-[#94a3b8]">
+          <p className="mb-4 text-sm text-text-secondary">
             Da bismo podesili trajanje i broj zadataka na ispitu, potrebno je da izabereš
             fakultet za koji se spremaš.
           </p>
           <Link
             href="/profil"
-            className="inline-flex items-center gap-2 rounded-xl bg-[#fbbf24] px-5 py-2.5 text-sm font-semibold text-[#0f172a] transition hover:bg-[#f59e0b]"
+            className="inline-flex items-center gap-2 rounded-xl bg-[#fbbf24] px-5 py-2.5 text-sm font-semibold text-heading transition hover:bg-[#f59e0b]"
           >
             Izaberi u profilu <ArrowRight size={16} />
           </Link>
@@ -99,25 +99,25 @@ export default function ExamSetupPage() {
       ) : (
         <>
           {/* Exam info card */}
-          <div className="mb-6 rounded-2xl border border-[#334155] bg-[#1e293b] p-6">
-            <h2 className="mb-4 text-lg font-semibold text-[#e2e8f0]">
+          <div className="mb-6 rounded-2xl border border-border bg-card p-6">
+            <h2 className="mb-4 text-lg font-semibold text-text">
               Format ispita — {faculty.shortName}
             </h2>
             <div className="grid grid-cols-2 gap-4">
-              <div className="rounded-xl bg-[#0f172a]/60 p-4 text-center">
+              <div className="rounded-xl bg-bg/60 p-4 text-center">
                 <Hash size={20} className="mx-auto mb-1 text-[#60a5fa]" />
-                <div className="text-2xl font-bold text-[#e2e8f0]">{faculty.examNumProblems}</div>
-                <div className="text-xs text-[#94a3b8]">zadataka</div>
+                <div className="text-2xl font-bold text-text">{faculty.examNumProblems}</div>
+                <div className="text-xs text-text-secondary">zadataka</div>
               </div>
-              <div className="rounded-xl bg-[#0f172a]/60 p-4 text-center">
+              <div className="rounded-xl bg-bg/60 p-4 text-center">
                 <Clock size={20} className="mx-auto mb-1 text-[#a78bfa]" />
-                <div className="text-2xl font-bold text-[#e2e8f0]">{faculty.examDuration}</div>
-                <div className="text-xs text-[#94a3b8]">minuta</div>
+                <div className="text-2xl font-bold text-text">{faculty.examDuration}</div>
+                <div className="text-xs text-text-secondary">minuta</div>
               </div>
             </div>
           </div>
 
-          <div className="mb-6 rounded-xl border border-[#334155] bg-[#1e293b] p-4 text-sm text-[#94a3b8]">
+          <div className="mb-6 rounded-xl border border-border bg-card p-4 text-sm text-text-secondary">
             Zadaci se nasumično biraju iz cele baze. Tajmer počinje odmah!
           </div>
 

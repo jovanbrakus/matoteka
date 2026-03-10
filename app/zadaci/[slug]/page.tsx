@@ -71,12 +71,12 @@ function SidebarProblemItem({
     <Link
       href={`/zadaci/${item.slug}`}
       className={`group flex flex-col gap-1 rounded-lg px-3 py-2.5 transition-colors ${
-        isActive ? "bg-white/10" : "hover:bg-white/5"
+        isActive ? "bg-[var(--tint-strong)]" : "hover:bg-[var(--tint)]"
       }`}
     >
       <span
         className={`line-clamp-2 text-sm font-medium leading-tight ${
-          isActive ? "text-white" : "text-slate-200 group-hover:text-white"
+          isActive ? "text-heading" : "text-slate-200 group-hover:text-heading"
         }`}
       >
         {item.title}
@@ -85,7 +85,7 @@ function SidebarProblemItem({
         <span className="rounded bg-[#60a5fa]/10 px-1.5 py-0.5 text-[10px] font-medium text-[#60a5fa]">
           {label}
         </span>
-        <span className="text-[10px] text-slate-500">
+        <span className="text-[10px] text-muted">
           {item.year} · #{item.problemNumber}
         </span>
         {showStatus && item.isCorrect != null && (
@@ -98,7 +98,7 @@ function SidebarProblemItem({
           </span>
         )}
         {showStatus && item.updatedAt && (
-          <span className="ml-auto text-[10px] text-slate-500">
+          <span className="ml-auto text-[10px] text-muted">
             {formatRelativeDate(item.updatedAt)}
           </span>
         )}
@@ -188,7 +188,7 @@ export default function ProblemViewPage() {
   }
 
   if (!problem) {
-    return <div className="py-20 text-center text-[#94a3b8]">Učitavanje...</div>;
+    return <div className="py-20 text-center text-text-secondary">Učitavanje...</div>;
   }
 
   const bookmarksPreview = bookmarksList.slice(0, 3);
@@ -197,18 +197,18 @@ export default function ProblemViewPage() {
   return (
     <div className="flex min-h-[calc(100vh-56px)]">
       {/* Sidebar */}
-      <aside className="hidden w-[280px] shrink-0 flex-col border-r border-white/10 bg-[#0f172a] lg:flex">
+      <aside className="hidden w-[280px] shrink-0 flex-col border-r border-[var(--glass-border)] bg-bg lg:flex">
         <div className="flex flex-1 flex-col overflow-y-auto px-2 py-4 [scrollbar-color:theme(colors.slate.700)_transparent] [scrollbar-width:thin]">
           {/* Bookmarks section */}
           <div className="mb-1 flex items-center justify-between px-3">
-            <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted">
               <Bookmark size={12} />
               Sačuvani zadaci
             </h3>
           </div>
 
           {bookmarksPreview.length === 0 ? (
-            <p className="px-3 py-3 text-xs text-slate-600">
+            <p className="px-3 py-3 text-xs text-muted">
               Još nemaš sačuvanih zadataka.
             </p>
           ) : (
@@ -243,18 +243,18 @@ export default function ProblemViewPage() {
           )}
 
           {/* Divider */}
-          <div className="mx-3 mb-3 border-t border-white/5" />
+          <div className="mx-3 mb-3 border-t border-[var(--glass-border)]" />
 
           {/* History section */}
           <div className="mb-1 flex items-center justify-between px-3">
-            <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted">
               <Clock size={12} />
               Poslednji rešavani
             </h3>
           </div>
 
           {historyPreview.length === 0 ? (
-            <p className="px-3 py-3 text-xs text-slate-600">
+            <p className="px-3 py-3 text-xs text-muted">
               Još nisi rešavao zadatke.
             </p>
           ) : (
@@ -286,7 +286,7 @@ export default function ProblemViewPage() {
         <div className="mx-auto max-w-4xl px-4 py-8 lg:px-8">
           <Link
             href="/zadaci"
-            className="mb-4 inline-flex items-center gap-1 text-sm text-[#94a3b8] hover:text-[#60a5fa]"
+            className="mb-4 inline-flex items-center gap-1 text-sm text-text-secondary hover:text-[#60a5fa]"
           >
             <ArrowLeft size={16} /> Nazad na zadatke
           </Link>
@@ -295,8 +295,8 @@ export default function ProblemViewPage() {
             <span className="rounded-full bg-[#60a5fa]/20 px-2.5 py-0.5 text-xs font-semibold text-[#60a5fa]">
               {FACULTY_LABELS[problem.facultyId] || problem.facultyId.toUpperCase()}
             </span>
-            <span className="text-sm text-[#94a3b8]">{problem.year}</span>
-            <span className="text-sm text-[#94a3b8]">
+            <span className="text-sm text-text-secondary">{problem.year}</span>
+            <span className="text-sm text-text-secondary">
               Zadatak #{problem.problemNumber}
             </span>
           </div>
@@ -314,10 +314,10 @@ export default function ProblemViewPage() {
             </div>
           )}
 
-          <h1 className="mb-6 text-2xl font-bold text-[#e2e8f0]">{problem.title}</h1>
+          <h1 className="mb-6 text-2xl font-bold text-text">{problem.title}</h1>
 
           {/* Problem statement */}
-          <div className="mb-6 overflow-hidden rounded-xl border border-[#334155]">
+          <div className="mb-6 overflow-hidden rounded-xl border border-border">
             <iframe
               src={`/api/problems/${slug}/html?section=statement`}
               sandbox="allow-scripts allow-same-origin"
@@ -346,8 +346,8 @@ export default function ProblemViewPage() {
 
           {/* Answer section */}
           {!showSolution && (
-            <div className="mb-6 rounded-xl border border-[#334155] bg-[#1e293b] p-6">
-              <p className="mb-4 text-[#94a3b8]">
+            <div className="mb-6 rounded-xl border border-border bg-card p-6">
+              <p className="mb-4 text-text-secondary">
                 {answerResult
                   ? answerResult === "correct"
                     ? "Odlično, tačan odgovor!"
@@ -371,14 +371,14 @@ export default function ProblemViewPage() {
                         "border-[#f87171] bg-[#f87171]/20 text-[#f87171] line-through";
                     } else {
                       btnClass =
-                        "border-[#334155] bg-[#0f172a] text-[#64748b] opacity-50";
+                        "border-border bg-bg text-muted opacity-50";
                     }
                   } else if (isSelected) {
                     btnClass =
                       "border-[#60a5fa] bg-[#60a5fa]/20 text-[#60a5fa]";
                   } else {
                     btnClass =
-                      "border-[#334155] bg-[#0f172a] text-[#e2e8f0] hover:border-[#60a5fa]/50";
+                      "border-border bg-bg text-text hover:border-[#60a5fa]/50";
                   }
 
                   return (
@@ -436,7 +436,7 @@ export default function ProblemViewPage() {
                     </button>
                     <button
                       onClick={skipToSolution}
-                      className="rounded-lg border border-[#334155] px-6 py-2.5 text-sm text-[#94a3b8] hover:text-[#e2e8f0]"
+                      className="rounded-lg border border-border px-6 py-2.5 text-sm text-text-secondary hover:text-text"
                     >
                       Preskoči → Vidi rešenje
                     </button>
@@ -456,7 +456,7 @@ export default function ProblemViewPage() {
 
           {/* Solution iframe */}
           {showSolution && (
-            <div className="mb-6 overflow-hidden rounded-xl border border-[#334155]">
+            <div className="mb-6 overflow-hidden rounded-xl border border-border">
               <iframe
                 src={`/api/problems/${slug}/html`}
                 sandbox="allow-scripts allow-same-origin"
@@ -470,7 +470,7 @@ export default function ProblemViewPage() {
           <div className="mb-8 flex flex-wrap gap-3">
             <button
               onClick={toggleBookmark}
-              className="flex items-center gap-2 rounded-lg border border-[#334155] px-4 py-2 text-sm text-[#94a3b8] hover:text-[#fbbf24]"
+              className="flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm text-text-secondary hover:text-[#fbbf24]"
             >
               {bookmarked ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}
               {bookmarked ? "Sačuvano" : "Sačuvaj"}
@@ -479,8 +479,8 @@ export default function ProblemViewPage() {
 
           {/* AI contextual panel */}
           {showSolution && (
-            <div className="rounded-xl border border-[#334155] bg-[#1e293b] p-6">
-              <h3 className="mb-3 flex items-center gap-2 text-lg font-semibold text-[#e2e8f0]">
+            <div className="rounded-xl border border-border bg-card p-6">
+              <h3 className="mb-3 flex items-center gap-2 text-lg font-semibold text-text">
                 <Bot size={20} className="text-[#a78bfa]" />
                 Pitaj AI o ovom zadatku
               </h3>
@@ -488,11 +488,11 @@ export default function ProblemViewPage() {
                 value={aiQuestion}
                 onChange={(e) => setAiQuestion(e.target.value)}
                 placeholder='Npr: "Objasni mi korak 3 detaljnije" ili "Daj mi sličan zadatak za vežbu"'
-                className="mb-3 w-full rounded-lg border border-[#334155] bg-[#0f172a] p-3 text-sm text-[#e2e8f0] outline-none focus:border-[#a78bfa]"
+                className="mb-3 w-full rounded-lg border border-border bg-bg p-3 text-sm text-text outline-none focus:border-[#a78bfa]"
                 rows={3}
               />
               <div className="flex items-center justify-between">
-                <span className="text-xs text-[#64748b]">
+                <span className="text-xs text-muted">
                   Preostalo danas: {aiUsage.remaining}/{aiUsage.limit}
                 </span>
                 <button

@@ -219,23 +219,23 @@ export default function Dashboard({ user }: DashboardProps) {
   if (loading) {
     return (
       <div className="p-8">
-        <div className="mb-10 h-12 w-96 animate-pulse rounded-lg bg-white/5" />
+        <div className="mb-10 h-12 w-96 animate-pulse rounded-lg bg-[var(--tint)]" />
         <div className="grid grid-cols-12 gap-6">
           <div className="col-span-12 space-y-6 lg:col-span-8">
             <div className="grid grid-cols-2 gap-6">
-              <div className="h-40 animate-pulse rounded-2xl bg-white/5" />
-              <div className="h-40 animate-pulse rounded-2xl bg-white/5" />
+              <div className="h-40 animate-pulse rounded-2xl bg-[var(--tint)]" />
+              <div className="h-40 animate-pulse rounded-2xl bg-[var(--tint)]" />
             </div>
             <div className="grid grid-cols-4 gap-4">
               {[0, 1, 2, 3].map((i) => (
-                <div key={i} className="h-52 animate-pulse rounded-2xl bg-white/5" />
+                <div key={i} className="h-52 animate-pulse rounded-2xl bg-[var(--tint)]" />
               ))}
             </div>
-            <div className="h-32 animate-pulse rounded-2xl bg-white/5" />
+            <div className="h-32 animate-pulse rounded-2xl bg-[var(--tint)]" />
           </div>
           <div className="col-span-12 space-y-6 lg:col-span-4">
             <div className="h-44 animate-pulse rounded-2xl bg-[#ec5b13]/20" />
-            <div className="h-72 animate-pulse rounded-2xl bg-white/5" />
+            <div className="h-72 animate-pulse rounded-2xl bg-[var(--tint)]" />
           </div>
         </div>
       </div>
@@ -272,27 +272,27 @@ export default function Dashboard({ user }: DashboardProps) {
         {/* Header */}
         <header className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-4xl font-black tracking-tight text-white mb-1">
+            <h1 className="text-4xl font-black tracking-tight text-heading mb-1">
               Zdravo, {user.displayName}!
             </h1>
-            <p className="text-sm text-slate-400">{getMotivationalMessage()}</p>
+            <p className="text-sm text-text-secondary">{getMotivationalMessage()}</p>
           </div>
           <div className="flex items-center gap-4">
             <div className="relative group">
               <input
-                className="rounded-full border border-white/10 bg-[#141414] py-2.5 pl-12 pr-6 text-sm w-64 placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-[#ec5b13] focus:border-[#ec5b13] transition-all"
+                className="rounded-full border border-[var(--glass-border)] bg-card py-2.5 pl-12 pr-6 text-sm w-64 placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-[#ec5b13] focus:border-[#ec5b13] transition-all"
                 placeholder="Pretrazi gradivo..."
                 type="text"
               />
               <Search
                 size={18}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-muted"
               />
             </div>
-            <button className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-slate-300 hover:bg-white/10">
+            <button className="flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--glass-border)] bg-[var(--tint)] text-text hover:bg-[var(--tint-strong)]">
               <Bell size={20} />
             </button>
-            <button className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-slate-300 hover:bg-white/10">
+            <button className="flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--glass-border)] bg-[var(--tint)] text-text hover:bg-[var(--tint-strong)]">
               <Settings size={20} />
             </button>
           </div>
@@ -307,20 +307,20 @@ export default function Dashboard({ user }: DashboardProps) {
               <div className="glass-card relative overflow-hidden rounded-2xl p-6">
                 <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-[#ec5b13]/10 blur-3xl" />
                 <div className="relative z-10">
-                  <h3 className="mb-4 text-xs font-bold uppercase tracking-widest text-slate-400">
+                  <h3 className="mb-4 text-xs font-bold uppercase tracking-widest text-text-secondary">
                     Dnevni cilj
                   </h3>
                   <div className="mb-2 flex items-end justify-between">
-                    <span className="text-3xl font-black text-white">
+                    <span className="text-3xl font-black text-heading">
                       {progress.solvedToday}
-                      <span className="text-lg text-slate-500">/{progress.dailyGoal}</span>
+                      <span className="text-lg text-muted">/{progress.dailyGoal}</span>
                     </span>
                     <span className="text-sm font-bold text-[#ec5b13]">
                       {dailyPercent}% Reseno
                     </span>
                   </div>
-                  <p className="mb-6 text-sm text-slate-400">Zadataka do dnevne kvote</p>
-                  <div className="h-2 w-full overflow-hidden rounded-full bg-white/5">
+                  <p className="mb-6 text-sm text-text-secondary">Zadataka do dnevne kvote</p>
+                  <div className="h-2 w-full overflow-hidden rounded-full bg-[var(--tint)]">
                     <div
                       className="h-full rounded-full bg-[#ec5b13] shadow-[0_0_15px_rgba(236,91,19,0.2)] transition-all duration-700"
                       style={{ width: `${dailyPercent}%` }}
@@ -333,7 +333,7 @@ export default function Dashboard({ user }: DashboardProps) {
               <div className="glass-card relative overflow-hidden rounded-2xl border-l-4 border-[#0ea5e9]/50 p-6">
                 <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-[#0ea5e9]/10 blur-3xl" />
                 <div className="relative z-10">
-                  <h3 className="mb-4 text-xs font-bold uppercase tracking-widest text-slate-400">
+                  <h3 className="mb-4 text-xs font-bold uppercase tracking-widest text-text-secondary">
                     Poslednji test
                   </h3>
                   {lastExam ? (
@@ -345,7 +345,7 @@ export default function Dashboard({ user }: DashboardProps) {
                           </span>
                         </div>
                         <div>
-                          <div className="text-3xl font-black text-white">{lastExamScore}%</div>
+                          <div className="text-3xl font-black text-heading">{lastExamScore}%</div>
                           <div className="text-sm font-bold tracking-wide text-[#0ea5e9]">
                             {Number(lastExamScore) >= 80
                               ? "ODLICNO!"
@@ -355,7 +355,7 @@ export default function Dashboard({ user }: DashboardProps) {
                           </div>
                         </div>
                       </div>
-                      <p className="mt-4 text-xs text-slate-400">
+                      <p className="mt-4 text-xs text-text-secondary">
                         Simulacija: {lastExam.facultyName}{" "}
                         {lastExam.startedAt
                           ? new Date(lastExam.startedAt).toLocaleDateString("sr-RS")
@@ -367,7 +367,7 @@ export default function Dashboard({ user }: DashboardProps) {
                       <span className="material-symbols-outlined mb-2 text-4xl text-slate-600">
                         quiz
                       </span>
-                      <p className="text-sm text-slate-400">Nemas zavrsenih testova</p>
+                      <p className="text-sm text-text-secondary">Nemas zavrsenih testova</p>
                       <Link
                         href="/simulacija"
                         className="mt-2 text-xs font-bold text-[#0ea5e9] hover:underline"
@@ -383,7 +383,7 @@ export default function Dashboard({ user }: DashboardProps) {
             {/* Core Categories */}
             <div>
               <div className="mb-4 flex items-end justify-between">
-                <h3 className="text-xl font-bold text-white">Glavne oblasti</h3>
+                <h3 className="text-xl font-bold text-heading">Glavne oblasti</h3>
                 <Link
                   href="/zadaci"
                   className="text-xs font-bold uppercase text-[#ec5b13] hover:underline"
@@ -415,8 +415,8 @@ export default function Dashboard({ user }: DashboardProps) {
                         </span>
                       </div>
                       <h4 className="mb-1 text-sm font-bold">{topic.name}</h4>
-                      <p className="mb-3 text-[10px] text-slate-500">{pct}% Zavrseno</p>
-                      <div className="mb-4 h-1 w-full overflow-hidden rounded-full bg-white/5">
+                      <p className="mb-3 text-[10px] text-muted">{pct}% Zavrseno</p>
+                      <div className="mb-4 h-1 w-full overflow-hidden rounded-full bg-[var(--tint)]">
                         <div
                           className="h-full rounded-full transition-all duration-700"
                           style={{ width: `${pct}%`, backgroundColor: barColor }}
@@ -424,7 +424,7 @@ export default function Dashboard({ user }: DashboardProps) {
                       </div>
                       <Link
                         href="/zadaci"
-                        className="block w-full rounded-lg bg-white/5 py-2 text-center text-xs font-bold transition-all hover:text-white"
+                        className="block w-full rounded-lg bg-[var(--tint)] py-2 text-center text-xs font-bold transition-all hover:text-white"
                         style={
                           {
                             "--hover-bg": barColor,
@@ -451,14 +451,14 @@ export default function Dashboard({ user }: DashboardProps) {
                 <Sparkles size={22} className="text-[#ec5b13]" />
                 <h3 className="text-lg font-bold">Preporuka za danas</h3>
               </div>
-              <div className="flex items-center justify-between rounded-xl border border-white/5 bg-white/5 p-4">
+              <div className="flex items-center justify-between rounded-xl border border-[var(--glass-border)] bg-[var(--tint)] p-4">
                 <div className="flex items-center gap-4">
                   <div className="text-3xl font-black text-[#ec5b13]/40">01</div>
                   <div>
-                    <h4 className="font-bold text-white">
+                    <h4 className="font-bold text-heading">
                       Uvezba{weakest ? `: ${weakest.name}` : "j zadatke"}
                     </h4>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-text-secondary">
                       {weakest
                         ? `Tvoj procenat tacnosti ovde je ${weakestPct}%. Potrebno dodatno vezbanje.`
                         : "Nastavi da resavas zadatke i prati svoj napredak."}
@@ -513,12 +513,12 @@ export default function Dashboard({ user }: DashboardProps) {
 
             {/* Streak & Quick Stats */}
             <div className="glass-card rounded-2xl p-6">
-              <h3 className="mb-6 text-center text-xs font-bold uppercase tracking-widest text-slate-400">
+              <h3 className="mb-6 text-center text-xs font-bold uppercase tracking-widest text-text-secondary">
                 Trenutni niz
               </h3>
               <div className="mb-6 flex justify-center">
                 <div className="relative">
-                  <div className="flex h-32 w-32 items-center justify-center rounded-full border-4 border-white/5">
+                  <div className="flex h-32 w-32 items-center justify-center rounded-full border-4 border-[var(--glass-border)]">
                     <Flame
                       size={64}
                       className="text-[#ec5b13] drop-shadow-[0_0_10px_rgba(236,91,19,0.5)]"
@@ -531,20 +531,20 @@ export default function Dashboard({ user }: DashboardProps) {
                 </div>
               </div>
               <div className="space-y-3">
-                <div className="flex items-center justify-between rounded-xl bg-white/5 p-3">
-                  <span className="text-xs text-slate-400">Ukupno reseno</span>
+                <div className="flex items-center justify-between rounded-xl bg-[var(--tint)] p-3">
+                  <span className="text-xs text-text-secondary">Ukupno reseno</span>
                   <span className="font-bold">
                     {(progress.solved ?? 0).toLocaleString("sr")}
                   </span>
                 </div>
-                <div className="flex items-center justify-between rounded-xl bg-white/5 p-3">
-                  <span className="text-xs text-slate-400">Prosecan skor</span>
+                <div className="flex items-center justify-between rounded-xl bg-[var(--tint)] p-3">
+                  <span className="text-xs text-text-secondary">Prosecan skor</span>
                   <span className="font-bold text-[#0ea5e9]">
                     {rank?.avgScore ? `${parseFloat(rank.avgScore).toFixed(0)}%` : "--"}
                   </span>
                 </div>
-                <div className="flex items-center justify-between rounded-xl bg-white/5 p-3">
-                  <span className="text-xs text-slate-400">Rang lista</span>
+                <div className="flex items-center justify-between rounded-xl bg-[var(--tint)] p-3">
+                  <span className="text-xs text-text-secondary">Rang lista</span>
                   <span className="font-bold">
                     {rank?.position
                       ? `#${rank.position} / ${rank.totalParticipants >= 1000 ? `${(rank.totalParticipants / 1000).toFixed(1)}k` : rank.totalParticipants}`
@@ -557,7 +557,7 @@ export default function Dashboard({ user }: DashboardProps) {
             {/* Faculty Exam Dates */}
             {data?.facultyExamDates && data.facultyExamDates.length > 0 && (
               <div className="glass-card rounded-2xl border-t border-[#0ea5e9]/20 p-6">
-                <h3 className="mb-4 text-sm font-bold text-slate-100">Datumi ispita</h3>
+                <h3 className="mb-4 text-sm font-bold text-heading">Datumi ispita</h3>
                 <div className="space-y-3">
                   {data.facultyExamDates.map((fac) => (
                     <div
@@ -571,7 +571,7 @@ export default function Dashboard({ user }: DashboardProps) {
                       </div>
                       <div>
                         <p className="text-sm font-bold">{fac.shortName}</p>
-                        <p className="text-xs text-slate-400">
+                        <p className="text-xs text-text-secondary">
                           {fac.examDate
                             ? new Date(fac.examDate).toLocaleDateString("sr-RS", {
                                 day: "numeric",

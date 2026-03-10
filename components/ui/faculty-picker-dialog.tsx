@@ -43,19 +43,19 @@ export default function FacultyPickerDialog({
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
       {/* Dialog */}
-      <div className="relative w-full max-w-md rounded-2xl border border-[#334155] bg-[#1e293b] p-6 shadow-2xl">
+      <div className="relative w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-2xl">
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 text-[#94a3b8] transition hover:text-[#e2e8f0]"
+          className="absolute right-4 top-4 text-text-secondary transition hover:text-text"
         >
           <X size={20} />
         </button>
 
         <div className="mb-1 flex items-center gap-2">
           <GraduationCap size={22} className="text-[#60a5fa]" />
-          <h2 className="text-lg font-bold text-[#e2e8f0]">Izaberi fakultet</h2>
+          <h2 className="text-lg font-bold text-text">Izaberi fakultet</h2>
         </div>
-        <p className="mb-5 text-sm text-[#94a3b8]">
+        <p className="mb-5 text-sm text-text-secondary">
           Za koji fakultet se spremaš?
         </p>
 
@@ -66,8 +66,8 @@ export default function FacultyPickerDialog({
               onClick={() => setSelected(f.id)}
               className={`flex w-full items-center justify-between rounded-xl border p-3.5 text-left text-sm transition ${
                 selected === f.id
-                  ? "border-[#60a5fa] bg-[#60a5fa]/10 text-[#e2e8f0]"
-                  : "border-[#334155] bg-[#0f172a]/50 text-[#94a3b8] hover:border-[#60a5fa]/30 hover:text-[#e2e8f0]"
+                  ? "border-[#60a5fa] bg-[#60a5fa]/10 text-text"
+                  : "border-border bg-bg/50 text-text-secondary hover:border-[#60a5fa]/30 hover:text-text"
               }`}
             >
               <span className="font-medium">{f.name}</span>

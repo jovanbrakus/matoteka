@@ -54,11 +54,11 @@ export default function AiTutorPage() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
-      <h1 className="mb-2 text-3xl font-bold text-[#e2e8f0]">
+      <h1 className="mb-2 text-3xl font-bold text-text">
         <Bot className="mr-2 inline text-[#a78bfa]" size={28} />
         AI Tutor — Reši bilo koji zadatak
       </h1>
-      <p className="mb-8 text-[#94a3b8]">Opiši zadatak tekstom ili dodaj sliku i dobij kompletno rešenje.</p>
+      <p className="mb-8 text-text-secondary">Opiši zadatak tekstom ili dodaj sliku i dobij kompletno rešenje.</p>
 
       <form onSubmit={handleSubmit} className="mb-8">
         <textarea
@@ -66,14 +66,14 @@ export default function AiTutorPage() {
           onChange={(e) => setPromptText(e.target.value)}
           placeholder="Opiši zadatak..."
           rows={5}
-          className="mb-4 w-full rounded-xl border border-[#334155] bg-[#1e293b] p-4 text-[#e2e8f0] outline-none focus:border-[#a78bfa]"
+          className="mb-4 w-full rounded-xl border border-border bg-card p-4 text-text outline-none focus:border-[#a78bfa]"
         />
 
         <div
           onClick={() => fileRef.current?.click()}
           onDrop={(e) => { e.preventDefault(); if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); }}
           onDragOver={(e) => e.preventDefault()}
-          className="mb-4 flex cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-[#334155] bg-[#1e293b] p-6 text-sm text-[#94a3b8] hover:border-[#a78bfa]"
+          className="mb-4 flex cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-border bg-card p-6 text-sm text-text-secondary hover:border-[#a78bfa]"
         >
           {screenshotPreview ? (
             <img src={screenshotPreview} alt="Preview" className="max-h-40 rounded" />
@@ -92,7 +92,7 @@ export default function AiTutorPage() {
         />
 
         <div className="flex items-center justify-between">
-          <span className="text-xs text-[#64748b]">Preostalo danas: {usage.remaining}/{usage.limit}</span>
+          <span className="text-xs text-muted">Preostalo danas: {usage.remaining}/{usage.limit}</span>
           <button
             type="submit"
             disabled={loading || usage.remaining <= 0}
@@ -108,17 +108,17 @@ export default function AiTutorPage() {
       {/* History */}
       {history.length > 0 && (
         <div>
-          <h2 className="mb-4 text-lg font-semibold text-[#e2e8f0]">Tvoja prethodna AI rešenja</h2>
+          <h2 className="mb-4 text-lg font-semibold text-text">Tvoja prethodna AI rešenja</h2>
           <div className="space-y-2">
             {history.map((s: any) => (
               <Link
                 key={s.id}
                 href={`/ai/resenje/${s.id}`}
-                className="flex items-center justify-between rounded-xl border border-[#334155] bg-[#1e293b] p-4 transition hover:border-[#a78bfa]/50"
+                className="flex items-center justify-between rounded-xl border border-border bg-card p-4 transition hover:border-[#a78bfa]/50"
               >
                 <div>
-                  <h3 className="text-sm font-medium text-[#e2e8f0]">{s.title}</h3>
-                  <p className="text-xs text-[#64748b]">
+                  <h3 className="text-sm font-medium text-text">{s.title}</h3>
+                  <p className="text-xs text-muted">
                     <Clock size={12} className="mr-1 inline" />
                     {new Date(s.createdAt).toLocaleDateString("sr-Latn")}
                     {" · "}
