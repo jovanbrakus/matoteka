@@ -486,7 +486,7 @@ export default function Dashboard({ user }: DashboardProps) {
                 <p className="mb-6 text-center text-sm font-bold uppercase tracking-widest opacity-80">
                   Do prijemnog ispita
                 </p>
-                <div className="flex items-center justify-between text-center">
+                <div className="flex items-center justify-center gap-4 text-center">
                   <div className="space-y-1">
                     <div className="text-4xl font-black">
                       {String(countdown.days).padStart(2, "0")}

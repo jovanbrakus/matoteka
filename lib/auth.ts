@@ -78,7 +78,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       return true;
     },
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account, trigger }) {
       if (account?.provider === "credentials" && user) {
         const dbUser = await db
           .select()
@@ -103,6 +103,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         if (dbUser[0]) {
           token.userId = dbUser[0].id;
+          token.displayName = dbUser[0].displayName;
+          token.role = dbUser[0].role;
+          token.targetFaculties = dbUser[0].targetFaculties;
+          token.needsOnboarding =
+            dbUser[0].displayName === dbUser[0].email?.split("@")[0];
+        }
+      } else if (trigger === "update" && token.userId) {
+        // Re-read from DB when session.update() is called
+        const dbUser = await db
+          .select()
+          .from(users)
+          .where(eq(users.id, token.userId as string))
+          .limit(1);
+
+        if (dbUser[0]) {
           token.displayName = dbUser[0].displayName;
           token.role = dbUser[0].role;
           token.targetFaculties = dbUser[0].targetFaculties;

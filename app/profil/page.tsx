@@ -2,41 +2,27 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
-import {
-  User,
-  Mail,
-  Clock,
-  Pencil,
-  Check,
-  X,
-  Target,
-  TrendingUp,
-  Award,
-  BookOpen,
-} from "lucide-react";
-import FacultyMultiSelect, { FACULTIES } from "@/components/ui/faculty-multi-select";
+import { User, Mail, Check, Loader2 } from "lucide-react";
+import { FACULTIES } from "@/components/ui/faculty-multi-select";
+
+const MAX_FACULTIES = 3;
 
 export default function ProfilePage() {
-  const { data: session } = useSession();
-  const [progress, setProgress] = useState<any>(null);
-  const [examHistory, setExamHistory] = useState<any[]>([]);
-  const [targetFaculties, setTargetFaculties] = useState<string[]>([]);
-  const [editingFaculties, setEditingFaculties] = useState(false);
-  const [pendingFaculties, setPendingFaculties] = useState<string[]>([]);
-  const [savingFaculty, setSavingFaculty] = useState(false);
-  const [facultyLoaded, setFacultyLoaded] = useState(false);
-
-  // Display name editing
-  const [editingName, setEditingName] = useState(false);
-  const [pendingName, setPendingName] = useState("");
-  const [savingName, setSavingName] = useState(false);
-  const [nameError, setNameError] = useState("");
-
+  const { data: session, update: updateSession } = useSession();
   const user = session?.user as any;
 
+  const [targetFaculties, setTargetFaculties] = useState<string[]>([]);
+  const [facultyLoaded, setFacultyLoaded] = useState(false);
+  const [savingFaculty, setSavingFaculty] = useState(false);
+  const [facultySaved, setFacultySaved] = useState(false);
+
+  const [displayName, setDisplayName] = useState("");
+  const [originalName, setOriginalName] = useState("");
+  const [savingName, setSavingName] = useState(false);
+  const [nameError, setNameError] = useState("");
+  const [nameSaved, setNameSaved] = useState(false);
+
   const loadData = useCallback(() => {
-    fetch("/api/progress").then((r) => r.json()).then(setProgress).catch(() => {});
-    fetch("/api/exams/history").then((r) => r.json()).then(setExamHistory).catch(() => {});
     fetch("/api/profile/faculty")
       .then((r) => r.json())
       .then((data) => {
@@ -51,40 +37,24 @@ export default function ProfilePage() {
     loadData();
   }, [loadData]);
 
-  function getFacultyLabels(ids: string[]): string {
-    return ids
-      .map((id) => {
-        if (id === "other") return "Ostalo";
-        return FACULTIES.find((f) => f.id === id)?.short || id;
-      })
-      .join(", ");
-  }
+  useEffect(() => {
+    if (user) {
+      const name = user.displayName || user.name || "";
+      setDisplayName(name);
+      setOriginalName(name);
+    }
+  }, [user]);
 
-  async function handleFacultySave() {
-    if (pendingFaculties.length === 0) return;
-    setSavingFaculty(true);
-    try {
-      const res = await fetch("/api/profile/faculty", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ targetFaculties: pendingFaculties }),
-      });
-      if (res.ok) {
-        setTargetFaculties(pendingFaculties);
-        setEditingFaculties(false);
-      }
-    } catch {}
-    setSavingFaculty(false);
-  }
+  const nameChanged = displayName !== originalName;
 
   async function handleNameSave() {
     setNameError("");
-    if (pendingName.length < 3 || pendingName.length > 20) {
-      setNameError("3-20 karaktera.");
+    if (displayName.length < 3 || displayName.length > 20) {
+      setNameError("Ime mora imati između 3 i 20 karaktera.");
       return;
     }
-    if (!/^[a-zA-Z0-9_]+$/.test(pendingName)) {
-      setNameError("Samo slova, brojevi i _.");
+    if (!/^[a-zA-Z0-9_ ]+$/.test(displayName)) {
+      setNameError("Dozvoljeni su samo slova, brojevi, razmak i donja crta (_).");
       return;
     }
     setSavingName(true);
@@ -92,13 +62,16 @@ export default function ProfilePage() {
       const res = await fetch("/api/profile/name", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ displayName: pendingName }),
+        body: JSON.stringify({ displayName }),
       });
       if (res.ok) {
-        setEditingName(false);
+        setOriginalName(displayName);
+        setNameSaved(true);
+        await updateSession({ displayName });
+        setTimeout(() => setNameSaved(false), 2000);
       } else {
         const data = await res.json();
-        setNameError(data.error || "Greška.");
+        setNameError(data.error || "Greška pri čuvanju.");
       }
     } catch {
       setNameError("Greška pri čuvanju.");
@@ -106,274 +79,253 @@ export default function ProfilePage() {
     setSavingName(false);
   }
 
-  function formatTime(s: number) {
-    const h = Math.floor(s / 3600);
-    const m = Math.floor((s % 3600) / 60);
-    const sec = s % 60;
-    return `${h}:${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
+  async function toggleFaculty(id: string) {
+    const isSelected = targetFaculties.includes(id);
+    let next: string[];
+
+    if (isSelected) {
+      next = targetFaculties.filter((f) => f !== id);
+    } else {
+      const mainCount = targetFaculties.filter((f) => f !== "other").length;
+      if (id !== "other" && mainCount >= MAX_FACULTIES) return;
+      next = [...targetFaculties, id];
+    }
+
+    setTargetFaculties(next);
+    setFacultySaved(false);
+    setSavingFaculty(true);
+    try {
+      const res = await fetch("/api/profile/faculty", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ targetFaculties: next }),
+      });
+      if (res.ok) {
+        setFacultySaved(true);
+        await updateSession({ targetFaculties: next });
+        setTimeout(() => setFacultySaved(false), 2000);
+      }
+    } catch {}
+    setSavingFaculty(false);
   }
 
-  const avgScore =
-    examHistory.length > 0
-      ? (
-          examHistory.reduce((sum: number, e: any) => sum + parseFloat(e.scorePercent || 0), 0) /
-          examHistory.length
-        ).toFixed(0)
-      : "0";
+  const mainSelectedCount = targetFaculties.filter((f) => f !== "other").length;
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8">
-      {/* Profile Header */}
-      <div className="mb-8 rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)] p-6">
-        <div className="flex items-start gap-5">
-          {/* Avatar */}
-          <div className="flex-shrink-0">
-            {user?.image ? (
-              <img
-                src={user.image}
-                alt="Avatar"
-                className="h-20 w-20 rounded-2xl border-2 border-amber-500/30 object-cover"
-              />
-            ) : (
-              <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-amber-500/10 border-2 border-amber-500/30">
-                <User size={36} className="text-amber-400" />
-              </div>
-            )}
-          </div>
+    <div className="mx-auto max-w-2xl px-4 py-10">
+      {/* Page header */}
+      <h1 className="mb-8 text-3xl font-black tracking-tight text-heading">
+        Podešavanja profila
+      </h1>
 
-          {/* Info */}
-          <div className="flex-1 min-w-0">
-            {/* Display Name */}
-            <div className="mb-1 flex items-center gap-2">
-              {editingName ? (
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={pendingName}
-                    onChange={(e) => setPendingName(e.target.value)}
-                    className="rounded-lg border border-amber-500/50 bg-[var(--color-bg)] px-3 py-1.5 text-lg font-bold text-[var(--color-text)] outline-none focus:border-amber-500"
-                    maxLength={20}
-                    autoFocus
-                  />
-                  <button
-                    onClick={handleNameSave}
-                    disabled={savingName}
-                    className="rounded-lg bg-amber-500 p-1.5 text-black transition hover:bg-amber-400 disabled:opacity-50"
-                  >
-                    <Check size={16} />
-                  </button>
-                  <button
-                    onClick={() => { setEditingName(false); setNameError(""); }}
-                    className="rounded-lg p-1.5 text-[var(--color-muted)] transition hover:bg-[var(--color-surface-lighter)]"
-                  >
-                    <X size={16} />
-                  </button>
-                </div>
-              ) : (
-                <>
-                  <h1 className="text-2xl font-bold text-[var(--color-text)]">
-                    {user?.displayName || user?.name || "Profil"}
-                  </h1>
-                  <button
-                    onClick={() => {
-                      setPendingName(user?.displayName || user?.name || "");
-                      setEditingName(true);
-                    }}
-                    className="rounded-lg p-1 text-[var(--color-muted)] transition hover:bg-[var(--color-surface-lighter)] hover:text-[var(--color-text)]"
-                    title="Promeni ime"
-                  >
-                    <Pencil size={14} />
-                  </button>
-                </>
-              )}
+      {/* Avatar + Email (read-only) */}
+      <section className="mb-10 flex items-center gap-5">
+        <div className="flex-shrink-0">
+          {user?.image ? (
+            <img
+              src={user.image}
+              alt="Avatar"
+              className="h-20 w-20 rounded-2xl border-2 border-[#ec5b13]/30 object-cover"
+            />
+          ) : (
+            <div className="flex h-20 w-20 items-center justify-center rounded-2xl border-2 border-[#ec5b13]/30 bg-[#ec5b13]/10">
+              <User size={36} className="text-[#ec5b13]" />
             </div>
-            {nameError && <p className="mb-1 text-xs text-red-400">{nameError}</p>}
-
-            {/* Email */}
-            <p className="mb-2 flex items-center gap-1.5 text-sm text-[var(--color-muted)]">
-              <Mail size={14} />
-              {user?.email}
-            </p>
-
-            {/* Faculty display */}
-            {facultyLoaded && (
-              <div className="flex items-start gap-2">
-                <Target size={14} className="mt-0.5 flex-shrink-0 text-amber-400" />
-                {editingFaculties ? (
-                  <div className="flex-1">
-                    <FacultyMultiSelect
-                      selected={pendingFaculties}
-                      onChange={setPendingFaculties}
-                    />
-                    <div className="mt-3 flex gap-2">
-                      <button
-                        onClick={handleFacultySave}
-                        disabled={savingFaculty || pendingFaculties.length === 0}
-                        className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-black transition hover:bg-amber-400 disabled:opacity-50"
-                      >
-                        {savingFaculty ? "Čuvanje..." : "Sačuvaj"}
-                      </button>
-                      <button
-                        onClick={() => setEditingFaculties(false)}
-                        className="rounded-lg px-4 py-2 text-sm text-[var(--color-muted)] transition hover:bg-[var(--color-surface-lighter)]"
-                      >
-                        Otkaži
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    {targetFaculties.length > 0 ? (
-                      <div className="flex flex-wrap gap-1.5">
-                        {targetFaculties.map((id) => (
-                          <span
-                            key={id}
-                            className="inline-flex items-center rounded-lg bg-amber-500/15 px-2.5 py-1 text-xs font-medium text-amber-400 border border-amber-500/25"
-                          >
-                            {id === "other"
-                              ? "Ostalo"
-                              : FACULTIES.find((f) => f.id === id)?.short || id}
-                          </span>
-                        ))}
-                      </div>
-                    ) : (
-                      <span className="text-sm text-[var(--color-muted)]">
-                        Fakultet nije izabran
-                      </span>
-                    )}
-                    <button
-                      onClick={() => {
-                        setPendingFaculties([...targetFaculties]);
-                        setEditingFaculties(true);
-                      }}
-                      className="rounded-lg p-1 text-[var(--color-muted)] transition hover:bg-[var(--color-surface-lighter)] hover:text-[var(--color-text)]"
-                      title="Promeni fakultete"
-                    >
-                      <Pencil size={14} />
-                    </button>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+          )}
         </div>
-      </div>
-
-      {/* Stats Cards */}
-      {progress && (
-        <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-          <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] p-5">
-            <BookOpen size={20} className="mb-2 text-amber-400" />
-            <div className="text-2xl font-bold text-[var(--color-text)]">
-              {progress.solved}
-            </div>
-            <div className="text-xs text-[var(--color-muted)]">Rešenih zadataka</div>
-            {progress.total > 0 && (
-              <div className="mt-1 text-xs text-amber-400">
-                od {progress.total} ({((progress.solved / progress.total) * 100).toFixed(0)}%)
-              </div>
-            )}
-          </div>
-
-          <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] p-5">
-            <Award size={20} className="mb-2 text-purple-400" />
-            <div className="text-2xl font-bold text-[var(--color-text)]">
-              {examHistory.length}
-            </div>
-            <div className="text-xs text-[var(--color-muted)]">Završenih ispita</div>
-          </div>
-
-          <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] p-5">
-            <TrendingUp size={20} className="mb-2 text-green-400" />
-            <div className="text-2xl font-bold text-[var(--color-text)]">
-              {avgScore}%
-            </div>
-            <div className="text-xs text-[var(--color-muted)]">Prosečan rezultat</div>
-          </div>
-
-          <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] p-5">
-            <Clock size={20} className="mb-2 text-blue-400" />
-            <div className="text-2xl font-bold text-[var(--color-text)]">
-              {progress.streak || 0}
-            </div>
-            <div className="text-xs text-[var(--color-muted)]">Dana u nizu</div>
-          </div>
-        </div>
-      )}
-
-      {/* Exam History */}
-      {examHistory.length > 0 && (
         <div>
-          <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-[var(--color-text)]">
-            <Clock size={20} />
-            Istorija ispita
-          </h2>
-          <div className="overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-card)]">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-[var(--color-border)] text-left text-[var(--color-muted)]">
-                    <th className="px-4 py-3 font-medium">Fakultet</th>
-                    <th className="px-4 py-3 font-medium">Datum</th>
-                    <th className="px-4 py-3 text-right font-medium">Rezultat</th>
-                    <th className="px-4 py-3 text-right font-medium">Tačnih</th>
-                    <th className="hidden px-4 py-3 text-right font-medium sm:table-cell">Vreme</th>
-                    <th className="hidden px-4 py-3 text-right font-medium md:table-cell">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {examHistory.map((e: any) => {
-                    const pct = parseFloat(e.scorePercent || 0);
-                    const statusLabel =
-                      pct >= 80 ? "Odlično" : pct >= 60 ? "Dobro" : "Potrebna vežba";
-                    const statusColor =
-                      pct >= 80
-                        ? "text-green-400 bg-green-500/10 border-green-500/20"
-                        : pct >= 60
-                        ? "text-amber-400 bg-amber-500/10 border-amber-500/20"
-                        : "text-red-400 bg-red-500/10 border-red-500/20";
-                    return (
-                      <tr key={e.id} className="border-b border-[var(--color-border)]/30">
-                        <td className="px-4 py-3 text-[var(--color-text)]">{e.facultyName}</td>
-                        <td className="px-4 py-3 text-[var(--color-muted)]">
-                          {new Date(e.startedAt).toLocaleDateString("sr-Latn")}
-                        </td>
-                        <td className="px-4 py-3 text-right font-medium text-amber-400">
-                          {pct.toFixed(0)}%
-                        </td>
-                        <td className="px-4 py-3 text-right text-[var(--color-muted)]">
-                          {e.numCorrect}/
-                          {(e.numCorrect || 0) + (e.numWrong || 0) + (e.numBlank || 0)}
-                        </td>
-                        <td className="hidden px-4 py-3 text-right text-[var(--color-muted)] sm:table-cell">
-                          {e.timeSpent ? formatTime(e.timeSpent) : "\u2014"}
-                        </td>
-                        <td className="hidden px-4 py-3 text-right md:table-cell">
-                          <span
-                            className={`inline-block rounded-lg border px-2 py-0.5 text-xs font-medium ${statusColor}`}
-                          >
-                            {statusLabel}
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Empty state */}
-      {examHistory.length === 0 && progress && (
-        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] p-8 text-center">
-          <Award size={40} className="mx-auto mb-3 text-[var(--color-muted)]" />
-          <p className="text-[var(--color-muted)]">
-            Još nemaš završenih ispita. Uradi prvu simulaciju!
+          <p className="text-lg font-bold text-heading">
+            {user?.displayName || user?.name || "Korisnik"}
+          </p>
+          <p className="flex items-center gap-1.5 text-sm text-text-secondary">
+            <Mail size={14} />
+            {user?.email}
+          </p>
+          <p className="mt-1 text-xs text-muted">
+            Google nalog — avatar i email se menjaju na Google-u
           </p>
         </div>
-      )}
+      </section>
+
+      {/* Divider */}
+      <hr className="mb-8 border-[var(--glass-border)]" />
+
+      {/* Display Name */}
+      <section className="mb-10">
+        <label
+          htmlFor="display-name"
+          className="mb-1.5 block text-sm font-semibold text-heading"
+        >
+          Ime za prikaz
+        </label>
+        <p className="mb-4 text-sm text-text-secondary">
+          Ovo ime se prikazuje na rang listi i u zajednici. Slova, brojevi, razmak i _ (3–20 karaktera).
+        </p>
+        <div className="flex gap-3">
+          <input
+            id="display-name"
+            type="text"
+            value={displayName}
+            onChange={(e) => {
+              setDisplayName(e.target.value);
+              setNameError("");
+              setNameSaved(false);
+            }}
+            maxLength={20}
+            className="flex-1 rounded-xl border border-border bg-card px-4 py-3 text-heading outline-none transition focus:border-[#ec5b13] focus:ring-1 focus:ring-[#ec5b13]/30"
+            placeholder="Tvoje ime..."
+          />
+          <button
+            onClick={handleNameSave}
+            disabled={!nameChanged || savingName}
+            className={`flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition ${
+              nameSaved
+                ? "bg-success/20 text-success"
+                : nameChanged
+                  ? "bg-[#ec5b13] text-white hover:bg-[#ec5b13]/90 shadow-[0_0_15px_rgba(236,91,19,0.2)]"
+                  : "bg-[var(--tint)] text-muted cursor-not-allowed"
+            }`}
+          >
+            {savingName ? (
+              <Loader2 size={16} className="animate-spin" />
+            ) : nameSaved ? (
+              <Check size={16} />
+            ) : null}
+            {nameSaved ? "Sačuvano" : "Sačuvaj"}
+          </button>
+        </div>
+        {nameError && (
+          <p className="mt-2 text-sm text-error">{nameError}</p>
+        )}
+      </section>
+
+      {/* Divider */}
+      <hr className="mb-8 border-[var(--glass-border)]" />
+
+      {/* Faculty Selection */}
+      <section className="mb-10">
+        <div className="mb-1.5 flex items-center justify-between">
+          <h2 className="text-sm font-semibold text-heading">
+            Ciljani fakulteti
+          </h2>
+          {savingFaculty && (
+            <span className="flex items-center gap-1.5 text-xs text-text-secondary">
+              <Loader2 size={12} className="animate-spin" />
+              Čuvanje...
+            </span>
+          )}
+          {facultySaved && !savingFaculty && (
+            <span className="flex items-center gap-1.5 text-xs text-success">
+              <Check size={12} />
+              Sačuvano
+            </span>
+          )}
+        </div>
+        <p className="mb-5 text-sm text-text-secondary">
+          Izaberi do {MAX_FACULTIES} fakulteta za koje se spremaš. Zadaci i simulacije će biti prilagođeni tvom izboru.
+        </p>
+
+        {!facultyLoaded ? (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 size={20} className="animate-spin text-muted" />
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {FACULTIES.map((f) => {
+              const isSelected = targetFaculties.includes(f.id);
+              const isDisabled =
+                !isSelected && mainSelectedCount >= MAX_FACULTIES;
+
+              return (
+                <button
+                  key={f.id}
+                  onClick={() => !isDisabled && toggleFaculty(f.id)}
+                  disabled={isDisabled && !isSelected}
+                  className={`flex w-full items-center justify-between rounded-xl border px-4 py-3.5 text-left transition ${
+                    isSelected
+                      ? "border-[#ec5b13]/40 bg-[#ec5b13]/10"
+                      : isDisabled
+                        ? "border-border bg-[var(--tint)] opacity-40 cursor-not-allowed"
+                        : "border-border bg-card hover:border-[#ec5b13]/30"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold ${
+                        isSelected
+                          ? "bg-[#ec5b13] text-white"
+                          : "bg-[var(--tint-strong)] text-muted"
+                      }`}
+                    >
+                      {f.short}
+                    </div>
+                    <div>
+                      <span
+                        className={`text-sm font-medium ${
+                          isSelected ? "text-[#ec5b13]" : "text-heading"
+                        }`}
+                      >
+                        {f.short}
+                      </span>
+                      <span className="ml-2 text-xs text-muted">{f.name}</span>
+                    </div>
+                  </div>
+                  {isSelected && (
+                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#ec5b13]">
+                      <Check size={14} className="text-white" />
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+
+            {/* Divider */}
+            <div className="!mt-3 border-t border-[var(--glass-border)]" />
+
+            {/* Other */}
+            <button
+              onClick={() => toggleFaculty("other")}
+              className={`flex w-full items-center justify-between rounded-xl border px-4 py-3.5 text-left transition ${
+                targetFaculties.includes("other")
+                  ? "border-[#ec5b13]/40 bg-[#ec5b13]/10"
+                  : "border-border bg-card hover:border-[#ec5b13]/30"
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <div
+                  className={`flex h-8 w-8 items-center justify-center rounded-lg text-sm ${
+                    targetFaculties.includes("other")
+                      ? "bg-[#ec5b13] text-white"
+                      : "bg-[var(--tint-strong)] text-muted"
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-lg">more_horiz</span>
+                </div>
+                <span
+                  className={`text-sm font-medium ${
+                    targetFaculties.includes("other")
+                      ? "text-[#ec5b13]"
+                      : "text-heading"
+                  }`}
+                >
+                  Drugi fakultet
+                </span>
+              </div>
+              {targetFaculties.includes("other") && (
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#ec5b13]">
+                  <Check size={14} className="text-white" />
+                </div>
+              )}
+            </button>
+
+            {mainSelectedCount >= MAX_FACULTIES && (
+              <p className="pt-1 text-xs text-muted">
+                Maksimum {MAX_FACULTIES} fakulteta izabrano. Klikni na izabrani da ga ukloniš.
+              </p>
+            )}
+          </div>
+        )}
+      </section>
     </div>
   );
 }

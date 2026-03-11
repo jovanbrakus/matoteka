@@ -3,8 +3,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { FACULTIES } from "@/components/ui/faculty-multi-select";
 
 interface SidebarUser {
   displayName: string;
@@ -30,8 +31,18 @@ const BOTTOM_ITEMS = [
   { href: "/profil", label: "Profil", shortLabel: "Profil", icon: "person" },
 ];
 
+function getFacultyShort(id: string): string | null {
+  if (id === "other") return null;
+  return FACULTIES.find((f) => f.id === id)?.short || null;
+}
+
 export default function Sidebar({ user, collapsed, onToggle, onNavigate }: SidebarProps) {
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const targetFaculties = ((session?.user as any)?.targetFaculties as string[]) || [];
+  const facultyShorts = targetFaculties
+    .map(getFacultyShort)
+    .filter((s): s is string => s !== null);
 
   function isActive(href: string) {
     if (href === "/") return pathname === "/";
@@ -55,9 +66,20 @@ export default function Sidebar({ user, collapsed, onToggle, onNavigate }: Sideb
             <Image src="/logo-56.png" alt="TataMata" width={24} height={22} />
           </div>
           {!collapsed && (
-            <h2 className="text-lg font-bold tracking-tight text-heading whitespace-nowrap">
-              Tata<span className="text-[#4ade80]">Mata</span>
-            </h2>
+            <div>
+              <h2 className="text-lg font-bold tracking-tight text-heading whitespace-nowrap">
+                Tata<span className="text-[#4ade80]">Mata</span>
+              </h2>
+              {facultyShorts.length > 0 && (
+                <div className="flex gap-2 mt-0.5">
+                  {facultyShorts.map((s) => (
+                    <span key={s} className="text-[10px] font-bold uppercase tracking-wider text-[#ec5b13]">
+                      {s}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
           )}
         </Link>
         {!collapsed && (

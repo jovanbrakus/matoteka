@@ -19,8 +19,8 @@ export async function PATCH(req: Request) {
     return NextResponse.json({ error: "Ime mora imati između 3 i 20 karaktera." }, { status: 400 });
   }
 
-  if (!/^[a-zA-Z0-9_]+$/.test(displayName)) {
-    return NextResponse.json({ error: "Samo slova, brojevi i donja crta." }, { status: 400 });
+  if (!/^[a-zA-Z0-9_ ]+$/.test(displayName)) {
+    return NextResponse.json({ error: "Samo slova, brojevi, razmak i donja crta." }, { status: 400 });
   }
 
   // Check uniqueness

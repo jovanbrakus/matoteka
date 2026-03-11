@@ -8,11 +8,11 @@ export const FACULTIES = [
   { id: "fon", name: "Fakultet organizacionih nauka", short: "FON" },
   { id: "rgf", name: "Rudarsko-geološki fakultet", short: "RGF" },
   { id: "matf", name: "Matematički fakultet", short: "MATF" },
-  { id: "masf", name: "Mašinski fakultet", short: "Mašinski" },
-  { id: "grf", name: "Građevinski fakultet", short: "Građevinski" },
+  { id: "masf", name: "Mašinski fakultet", short: "MF" },
+  { id: "grf", name: "Građevinski fakultet", short: "GRF" },
   { id: "tmf", name: "Tehnološko-metalurški fakultet", short: "TMF" },
-  { id: "sf", name: "Saobraćajni fakultet", short: "Saobraćajni" },
-  { id: "ff", name: "Fizički fakultet", short: "Fizički" },
+  { id: "sf", name: "Saobraćajni fakultet", short: "SF" },
+  { id: "ff", name: "Fizički fakultet", short: "FF" },
 ] as const;
 
 const OTHER_OPTION = { id: "other", name: "Ostalo (Other)", short: "Ostalo" };
