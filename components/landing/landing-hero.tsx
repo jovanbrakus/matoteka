@@ -125,7 +125,7 @@ export default function LandingHero() {
               </div>
               <h3 className="mb-3 text-xl font-bold text-white">Kompletna arhiva</h3>
               <p className="mb-6 leading-relaxed text-slate-400">
-                Svi zadaci koji su se pojavili na ETF, FON i RGF ispitima u
+                Svi zadaci koji su se pojavili na ETF, FON, RGF, MATF i TMF ispitima u
                 poslednjih 20+ godina sa detaljnim rešenjima.
               </p>
               <div className="h-1 w-12 bg-[#ec5b13] transition-all duration-500 group-hover:w-full" />
@@ -336,15 +336,23 @@ export default function LandingHero() {
                 <div className="flex flex-col gap-4">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-slate-300">ETF Beograd</span>
-                    <span className="text-sm font-bold text-green-400">Visoka šansa (Top 50)</span>
+                    <span className="text-sm font-bold text-[#ec5b13]">Umerena šansa</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-slate-300">MATF Beograd</span>
+                    <span className="text-sm font-bold text-[#ec5b13]">Umerena šansa</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-slate-300">FON Beograd</span>
-                    <span className="text-sm font-bold text-green-400">Siguran upis</span>
+                    <span className="text-sm font-bold text-green-400">Visoka šansa (Top 50)</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-slate-300">RGF Beograd</span>
-                    <span className="text-sm font-bold text-[#ec5b13]">Umerena šansa</span>
+                    <span className="text-sm font-bold text-green-400">Siguran upis</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-slate-300">TMF Beograd</span>
+                    <span className="text-sm font-bold text-green-400">Siguran upis</span>
                   </div>
                 </div>
               </div>
@@ -430,7 +438,7 @@ export default function LandingHero() {
             </Link>
           </div>
 
-          <div className="mt-16 flex items-center justify-center gap-12 opacity-50 transition-all duration-700 grayscale hover:opacity-100 hover:grayscale-0">
+          <div className="mt-16 flex flex-wrap items-center justify-center gap-12 opacity-50 transition-all duration-700 grayscale hover:opacity-100 hover:grayscale-0">
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-2xl">school</span>
               <span className="font-bold">ETF</span>
@@ -442,6 +450,14 @@ export default function LandingHero() {
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-2xl">settings</span>
               <span className="font-bold">RGF</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-2xl">calculate</span>
+              <span className="font-bold">MATF</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-2xl">biotech</span>
+              <span className="font-bold">TMF</span>
             </div>
           </div>
         </div>
