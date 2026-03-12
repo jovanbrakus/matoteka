@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 export function TopNav() {
@@ -11,11 +10,9 @@ export function TopNav() {
     <nav className="sticky top-0 z-50 w-full border-b border-white/5 bg-[#0a0604]/80 backdrop-blur-md">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
         <Link href="/" className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#ec5b13] shadow-[0_0_15px_rgba(236,91,19,0.3)]">
-            <Image src="/logo-56.png" alt="TataMata" width={20} height={18} />
-          </div>
-          <span className="text-xl font-bold tracking-tight text-white">
-            Tata<span className="text-[#4ade80]">Mata</span>
+          <img src="/logo.svg" alt="Matoteka" className="h-9 w-9" />
+          <span className="text-xl font-semibold text-white" style={{ fontFamily: "'Fredoka', sans-serif" }}>
+            Matoteka
           </span>
         </Link>
 

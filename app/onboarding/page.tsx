@@ -66,7 +66,7 @@ export default function OnboardingPage() {
             <Brain size={32} className="text-amber-400" />
           </div>
           <h1 className="mb-2 text-3xl font-bold text-[var(--color-text)]">
-            Dobrodošli u TataMata!
+            Dobrodošli u Matoteka!
           </h1>
           <p className="text-[var(--color-text-secondary)]">
             Podesi svoj profil i kreni sa vežbanjem.

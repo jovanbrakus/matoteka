@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -62,13 +61,11 @@ export default function Sidebar({ user, collapsed, onToggle, onNavigate }: Sideb
           onClick={onNavigate}
           className="flex items-center gap-3"
         >
-          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-[#ec5b13] shadow-[0_0_15px_rgba(236,91,19,0.3)]">
-            <Image src="/logo-56.png" alt="TataMata" width={24} height={22} />
-          </div>
+          <img src="/logo.svg" alt="Matoteka" className="h-10 w-10 flex-shrink-0" />
           {!collapsed && (
             <div>
-              <h2 className="text-lg font-bold tracking-tight text-heading whitespace-nowrap">
-                Tata<span className="text-[#4ade80]">Mata</span>
+              <h2 className="text-lg font-semibold tracking-tight text-heading whitespace-nowrap" style={{ fontFamily: "'Fredoka', sans-serif" }}>
+                Matoteka
               </h2>
               {facultyShorts.length > 0 && (
                 <div className="flex gap-2 mt-0.5">

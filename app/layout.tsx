@@ -6,7 +6,7 @@ import { SessionProvider } from "next-auth/react";
 import { auth } from "@/lib/auth";
 
 export const metadata: Metadata = {
-  title: "TataMata — 1000+ rešenih zadataka za prijemni ispit",
+  title: "Matoteka — 1000+ rešenih zadataka za prijemni ispit",
   description:
     "Besplatna platforma za pripremu prijemnog ispita iz matematike. 1000+ rešenih zadataka sa ETF, MATF, FON i drugih fakulteta Univerziteta u Beogradu.",
   keywords: "prijemni ispit, matematika, ETF, MATF, FON, rešeni zadaci, Beograd",
@@ -33,7 +33,7 @@ export default async function RootLayout({
         <link crossOrigin="" href="https://fonts.gstatic.com" rel="preconnect" />
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fredoka:wght@400;500;600;700&display=swap"
         />
         <link
           rel="stylesheet"

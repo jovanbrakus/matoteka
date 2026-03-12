@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 
 export default function LandingHero() {
   return (
@@ -467,11 +466,9 @@ export default function LandingHero() {
       <footer className="border-t border-white/5 bg-[#140c08] py-12">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-8 px-6 md:flex-row">
           <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10">
-              <Image src="/logo-56.png" alt="TataMata" width={16} height={14} />
-            </div>
-            <span className="text-lg font-bold text-white">
-              Tata<span className="text-[#4ade80]">Mata</span>
+            <img src="/logo.svg" alt="Matoteka" className="h-8 w-8" />
+            <span className="text-lg font-semibold text-white" style={{ fontFamily: "'Fredoka', sans-serif" }}>
+              Matoteka
             </span>
           </div>
 
@@ -483,7 +480,7 @@ export default function LandingHero() {
           </div>
 
           <p className="text-sm text-slate-600">
-            &copy; 2025 TataMata. Sva prava zadržana.
+            &copy; 2025 Matoteka. Sva prava zadržana.
           </p>
         </div>
       </footer>

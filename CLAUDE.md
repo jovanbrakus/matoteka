@@ -1,4 +1,4 @@
-# Tatamata Project Guidelines
+# Matoteka Project Guidelines
 
 ## Problems Database
 
@@ -10,6 +10,15 @@ The authoritative source of the problems database is the **prijemni project** at
 **DO NOT make local changes** to `database/` or `problems/` in this repo. Any local modifications will be overwritten on the next sync, as the prijemni project is the one being regularly updated.
 
 To sync, use: `/sync-problems`
+
+## Logo & Typography
+
+- **Logo SVG**: `assets/logo/logo.svg` (also copied to `public/logo.svg`)
+- **Logo mascot**: Orange beaver (dabar) with glasses, pencil, and "+" math symbol
+- **Logo font**: **Fredoka** (semibold 600) — used for the "Matoteka" wordmark next to the logo
+- **Body font**: **Inter** — used for all UI text
+- **Logo usage**: Always show the SVG beaver icon + "Matoteka" text in Fredoka font side by side. Use `<img src="/logo.svg">` (not Next.js `<Image>`), with font style `fontFamily: "'Fredoka', sans-serif"`.
+- **Logo PNG variants**: stored in `assets/logo/` (various exploration versions v1-v14)
 
 ## Running JS Scripts
 

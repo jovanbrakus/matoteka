@@ -3,7 +3,6 @@
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import Sidebar from "./sidebar";
 
@@ -12,7 +11,7 @@ interface AuthenticatedLayoutProps {
   children: React.ReactNode;
 }
 
-const SIDEBAR_KEY = "tatamata-sidebar-collapsed";
+const SIDEBAR_KEY = "matoteka-sidebar-collapsed";
 
 export default function AuthenticatedLayout({
   user,
@@ -64,9 +63,9 @@ export default function AuthenticatedLayout({
       {/* Mobile header */}
       <div className="fixed left-0 right-0 top-0 z-40 flex items-center justify-between border-b border-[var(--glass-border)] bg-surface-dark/95 px-4 py-3 backdrop-blur lg:hidden">
         <Link href="/" className="flex items-center gap-2">
-          <Image src="/logo-56.png" alt="TataMata" width={24} height={22} />
-          <span className="text-lg font-bold text-heading">
-            Tata<span className="text-[#4ade80]">Mata</span>
+          <img src="/logo.svg" alt="Matoteka" className="h-8 w-8" />
+          <span className="text-lg font-semibold text-heading" style={{ fontFamily: "'Fredoka', sans-serif" }}>
+            Matoteka
           </span>
         </Link>
         <button

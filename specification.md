@@ -1,4 +1,4 @@
-# TataMata — Product Specification
+# Matoteka — Product Specification
 
 **Version:** 2.0 (Season 2026)
 **Date:** March 8, 2026
@@ -7,11 +7,11 @@
 
 ## 1. Overview
 
-TataMata is a learning platform for Serbian high school students preparing for university admission math exams. The platform offers 799+ solved problems from Belgrade university entrance exams, timed exam simulations, free practice, analytics, and a theory hub.
+Matoteka is a learning platform for Serbian high school students preparing for university admission math exams. The platform offers 799+ solved problems from Belgrade university entrance exams, timed exam simulations, free practice, analytics, and a theory hub.
 
 **Tech stack:** Next.js 16, PostgreSQL (Neon), NextAuth.js (Google OAuth + Credentials), Drizzle ORM, Tailwind v4.
 
-**Brand:** TataMata with brain logo, green/lime accent colors. Dark theme by default with light theme toggle.
+**Brand:** Matoteka with brain logo, green/lime accent colors. Dark theme by default with light theme toggle.
 
 ---
 

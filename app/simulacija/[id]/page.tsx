@@ -299,7 +299,7 @@ export default function SimulationPage() {
             </div>
             <div>
               <h2 className="text-heading text-lg font-extrabold leading-tight tracking-tight uppercase">
-                TataMata{" "}
+                Matoteka{" "}
                 <span className="text-[#ec5b13]">Simulacija</span>
               </h2>
               <div className="flex gap-3 text-[10px] font-bold text-text-secondary tracking-widest uppercase">
