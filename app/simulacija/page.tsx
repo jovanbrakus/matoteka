@@ -84,12 +84,12 @@ export default function SimulacijaPage() {
   const durationMin = getDurationMinutes(testSize);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Background overlay */}
+    <div className="absolute inset-0 z-30 flex items-center justify-center overflow-y-auto">
+      {/* Background overlay — content area only */}
       <div className="absolute inset-0 bg-[#0a0604]/85 backdrop-blur-sm" />
 
       {/* Modal */}
-      <div className="relative w-full max-w-3xl mx-4 rounded-3xl overflow-hidden shadow-2xl flex flex-col bg-[var(--glass-bg)] backdrop-blur-xl border border-[#ec5b13]/10">
+      <div className="relative w-full max-w-3xl mx-4 my-8 rounded-3xl overflow-hidden shadow-2xl flex flex-col bg-[var(--glass-bg)] backdrop-blur-xl border border-[#ec5b13]/10">
         {/* Decorative gradients */}
         <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#ec5b13]/10 blur-[100px] rounded-full -z-10" />
         <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-cyan-500/10 blur-[100px] rounded-full -z-10" />
