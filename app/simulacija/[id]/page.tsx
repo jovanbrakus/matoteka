@@ -14,6 +14,7 @@ import {
   HelpCircle,
   Award,
 } from "lucide-react";
+import AnswerOptions from "@/components/problems/AnswerOptions";
 
 interface ExamProblem {
   id: string;
@@ -509,52 +510,12 @@ export default function SimulationPage() {
             </div>
 
             {/* Answer Options */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {options.map((opt, i) => {
-                const letter = String.fromCharCode(65 + i);
-                const isSelected = cp.answer === letter;
-                return (
-                  <button
-                    key={i}
-                    onClick={() => selectAnswer(letter)}
-                    className={`p-4 md:p-6 rounded-2xl border transition-all flex items-center justify-between text-left ${
-                      isSelected
-                        ? "bg-[#ec5b13]/5 border-[#ec5b13]/40"
-                        : "bg-[var(--glass-bg)] border-[var(--glass-border)] hover:border-[#ec5b13]/50"
-                    }`}
-                  >
-                    <div className="flex items-center gap-4">
-                      <span
-                        className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-sm ${
-                          isSelected
-                            ? "bg-[#ec5b13] text-white"
-                            : "bg-[var(--tint)] text-text-secondary"
-                        }`}
-                      >
-                        {letter}
-                      </span>
-                      <span
-                        className="text-heading font-medium"
-                        dangerouslySetInnerHTML={{ __html: opt }}
-                      />
-                    </div>
-                    <div
-                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                        isSelected
-                          ? "border-[#ec5b13] bg-[#ec5b13]"
-                          : "border-white/20"
-                      }`}
-                    >
-                      {isSelected && (
-                        <span className="material-symbols-outlined text-[16px] text-white font-bold">
-                          check
-                        </span>
-                      )}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
+            <AnswerOptions
+              options={options}
+              selectedAnswer={cp.answer}
+              onSelect={selectAnswer}
+              mode="exam"
+            />
 
             {/* Action Bar */}
             <div className="mt-4 flex flex-col md:flex-row justify-between items-center py-6 gap-4">

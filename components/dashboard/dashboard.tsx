@@ -332,7 +332,7 @@ export default function Dashboard({ user }: DashboardProps) {
               <div className="mb-4 flex items-end justify-between">
                 <h3 className="text-xl font-bold text-heading">Glavne oblasti</h3>
                 <Link
-                  href="/zadaci"
+                  href="/vezbe"
                   className="text-xs font-bold uppercase text-[#ec5b13] hover:underline"
                 >
                   Vidi sve
@@ -369,7 +369,7 @@ export default function Dashboard({ user }: DashboardProps) {
                         />
                       </div>
                       <Link
-                        href="/zadaci"
+                        href="/vezbe"
                         className="block w-full rounded-lg bg-[var(--tint)] py-2 text-center text-xs font-bold transition-all hover:text-white"
                         onMouseEnter={(e) => {
                           (e.target as HTMLElement).style.backgroundColor = style.barColor;
@@ -407,7 +407,7 @@ export default function Dashboard({ user }: DashboardProps) {
                   </div>
                 </div>
                 <Link
-                  href="/zadaci"
+                  href="/vezbe"
                   className="flex-shrink-0 rounded-xl bg-[#ec5b13] px-5 py-2.5 text-sm font-bold text-white shadow-[0_0_15px_rgba(236,91,19,0.2)] transition-transform hover:scale-105"
                 >
                   KRENI

@@ -564,7 +564,7 @@ export default function PracticePage() {
                         Reši
                       </Link>
                       <Link
-                        href={`/zadaci/${p.id}`}
+                        href={`/vezbe/${p.id}`}
                         className="w-full rounded-xl border border-[var(--glass-border)] bg-card py-2 text-center text-sm font-bold text-text-secondary hover:bg-[var(--tint)]"
                       >
                         Pregled

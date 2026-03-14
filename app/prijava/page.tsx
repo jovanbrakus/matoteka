@@ -13,7 +13,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [hasGoogle, setHasGoogle] = useState(false);
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/zadaci";
+  const callbackUrl = searchParams.get("callbackUrl") || "/vezbe";
 
   useEffect(() => {
     if (status === "authenticated") {

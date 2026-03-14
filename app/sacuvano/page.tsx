@@ -21,7 +21,7 @@ export default function BookmarksPage() {
       {bookmarks.length === 0 ? (
         <div className="py-20 text-center text-text-secondary">
           <p>Nemaš sačuvanih zadataka.</p>
-          <Link href="/zadaci" className="mt-4 inline-block text-[#60a5fa] hover:underline">
+          <Link href="/vezbe" className="mt-4 inline-block text-[#60a5fa] hover:underline">
             Pretraži zadatke
           </Link>
         </div>
@@ -30,7 +30,7 @@ export default function BookmarksPage() {
           {bookmarks.map((b) => (
             <Link
               key={b.id}
-              href={`/zadaci/${b.id}`}
+              href={`/vezbe/${b.id}`}
               className="flex items-center justify-between rounded-xl border border-border bg-card p-4 transition hover:border-[#60a5fa]/50"
             >
               <div>

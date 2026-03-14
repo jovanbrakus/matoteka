@@ -21,7 +21,7 @@ export default auth((req) => {
   if (pathname.startsWith("/admin")) {
     const role = (req.auth.user as any)?.role;
     if (role !== "admin") {
-      return NextResponse.redirect(new URL("/zadaci", req.url));
+      return NextResponse.redirect(new URL("/vezbe", req.url));
     }
   }
 

@@ -333,7 +333,7 @@ export default function SimulationResultsPage() {
                       </td>
                       <td className="px-6 py-4 text-right">
                         <Link
-                          href={`/zadaci/${p.id}`}
+                          href={`/vezbe/${p.id}`}
                           className="inline-flex items-center gap-1 text-xs text-[#ec5b13] hover:text-[#ff7a33] font-bold"
                         >
                           Rešenje

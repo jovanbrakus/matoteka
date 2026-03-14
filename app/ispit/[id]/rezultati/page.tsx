@@ -89,7 +89,7 @@ export default function ExamResultsPage() {
                 <td className="px-4 py-3 text-text">{p.answer ? `(${p.answer})` : "\u2014"}</td>
                 <td className="px-4 py-3 text-[#4ade80]">({p.correctAnswer})</td>
                 <td className="px-4 py-3">
-                  <Link href={`/zadaci/${p.id}`} className="text-xs text-[#60a5fa] hover:underline">
+                  <Link href={`/vezbe/${p.id}`} className="text-xs text-[#60a5fa] hover:underline">
                     Rešenje
                   </Link>
                 </td>
@@ -106,7 +106,7 @@ export default function ExamResultsPage() {
         <Link href="/ispit" className="rounded-lg border border-border px-5 py-2.5 text-sm text-text-secondary">
           Novi ispit
         </Link>
-        <Link href="/zadaci" className="rounded-lg bg-[#60a5fa] px-5 py-2.5 text-sm font-medium text-white">
+        <Link href="/vezbe" className="rounded-lg bg-[#60a5fa] px-5 py-2.5 text-sm font-medium text-white">
           Nazad na zadatke
         </Link>
       </div>

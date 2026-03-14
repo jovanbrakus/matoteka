@@ -42,7 +42,7 @@ export default function LandingHero() {
                   </span>
                 </Link>
                 <Link
-                  href="/zadaci"
+                  href="/vezbe"
                   className="rounded-xl border border-white/10 bg-white/5 px-8 py-4 text-lg font-bold text-white transition-all hover:bg-white/10"
                 >
                   Pogledaj primer
@@ -430,7 +430,7 @@ export default function LandingHero() {
               Započni besplatnu probu
             </Link>
             <Link
-              href="/zadaci"
+              href="/vezbe"
               className="rounded-2xl border border-white/10 bg-white/5 px-10 py-5 text-xl font-bold text-white transition-all hover:bg-white/10"
             >
               Svi paketi usluga
