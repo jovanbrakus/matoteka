@@ -7,6 +7,18 @@ const HEADERS = {
   "X-Frame-Options": "SAMEORIGIN",
 };
 
+/**
+ * Strip CSS properties that cause infinite iframe resize loops.
+ * Problem HTML files use `min-height: 100vh` on body, which expands
+ * with the iframe viewport, triggering ResizeObserver endlessly.
+ */
+function sanitizeForIframe(html: string): string {
+  return html
+    .replace(/min-height:\s*100vh;?/gi, "")
+    .replace(/max-width:\s*\d+px;?/gi, "")
+    .replace(/margin:\s*0\s+auto;?/gi, "");
+}
+
 function extractStatementHtml(html: string): string {
   const startMarker = '<div class="card problem-statement">';
   const startIdx = html.indexOf(startMarker);
@@ -67,13 +79,15 @@ export async function GET(req: Request, { params }: { params: Promise<{ problemI
     return new NextResponse("Not found", { status: 404 });
   }
 
+  const safeHtml = sanitizeForIframe(html);
+
   if (section === "statement") {
-    const statementHtml = extractStatementHtml(html);
+    const statementHtml = extractStatementHtml(safeHtml);
     if (!statementHtml) {
       return new NextResponse("Statement not found", { status: 404 });
     }
     return new NextResponse(statementHtml, { headers: HEADERS });
   }
 
-  return new NextResponse(html, { headers: HEADERS });
+  return new NextResponse(safeHtml, { headers: HEADERS });
 }
