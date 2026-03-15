@@ -31,10 +31,10 @@ export default function ProblemStatement({
           if (doc) {
             const resizeObserver = new ResizeObserver(() => {
               const height = doc.documentElement.scrollHeight;
-              iframe.style.height = height + 20 + "px";
+              iframe.style.height = height + "px";
             });
             resizeObserver.observe(doc.documentElement);
-            iframe.style.height = doc.documentElement.scrollHeight + 20 + "px";
+            iframe.style.height = doc.documentElement.scrollHeight + "px";
           }
         } catch {
           iframe.style.height = section === "statement" ? "400px" : "600px";

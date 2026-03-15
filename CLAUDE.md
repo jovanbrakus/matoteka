@@ -1,5 +1,9 @@
 # Matoteka Project Guidelines
 
+## Git Rules
+
+**NEVER commit unless the user explicitly asks you to.** Wait for an explicit instruction like "commit this" before running `git commit`. This applies to all repos (matoteka, prijemni, etc.).
+
 ## Problems Database
 
 The authoritative source of the problems database is the **prijemni project** at `/Users/jovan/personal/prijemni`. This includes:

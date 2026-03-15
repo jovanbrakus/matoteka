@@ -58,13 +58,22 @@ function extractStatementHtml(html: string): string {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 ${cleanHead}
 <style>
-  body { padding: 10px; }
+  body { padding: 10px; margin: 0; }
   .container { padding: 0; }
   .card { margin-bottom: 0; }
-  /* Hide answer options — shown separately by AnswerOptions component */
+  /* Preemptively hide answer options to prevent flash before JS removal */
   .answer-option, .answer-chip, .answer-options-row { display: none !important; }
-  .given-grid:has(.answer-option) { display: none !important; }
 </style>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Remove answer option elements entirely so they don't affect layout
+  document.querySelectorAll('.answer-option, .answer-chip, .answer-options-row').forEach(el => el.remove());
+  // Remove empty .given-grid containers left behind
+  document.querySelectorAll('.given-grid').forEach(el => {
+    if (el.children.length === 0) el.remove();
+  });
+});
+</script>
 </head>
 <body>
 <div class="container">
