@@ -93,20 +93,31 @@ export function parseHtml(htmlContent: string) {
   }
 
   const answerOptions: string[] = [];
+  const originalLabels: string[] = []; // track original labels (A, B, V, G, D, etc.)
   $(".answer-option[data-option]").each((_, el) => {
     const valueEl = $(el).find(".value");
-    // Use .html() to preserve LaTeX markup like \(\dfrac{...}\)
     const value = (valueEl.html() || valueEl.text()).trim();
     answerOptions.push(value);
+    originalLabels.push(($(el).attr("data-option") || "").toUpperCase());
   });
 
   if (answerOptions.length === 0) {
     $(".answer-chip").each((_, el) => {
-      // Strip leading label like "(A) " from chip text
       const text = $(el).text().trim();
+      const labelMatch = text.match(/^\(?([A-Za-zА-Яа-я])\)/);
+      if (labelMatch) originalLabels.push(labelMatch[1].toUpperCase());
       const stripped = text.replace(/^\([A-Za-zА-Яа-яĐŽĆČŠđžćčš]\)\s*/, "");
       answerOptions.push(stripped || text);
     });
+  }
+
+  // Map correct answer from original label (e.g. "G") to index-based letter (e.g. "D")
+  // since AnswerOptions component uses sequential A, B, C, D, E labels
+  if (correctAnswer && originalLabels.length > 0) {
+    const idx = originalLabels.indexOf(correctAnswer);
+    if (idx !== -1) {
+      correctAnswer = String.fromCharCode(65 + idx); // A=0, B=1, C=2, ...
+    }
   }
 
   if (!correctAnswer && answerOptions.length > 0) {
