@@ -18,13 +18,6 @@ export default auth((req) => {
     return NextResponse.redirect(loginUrl);
   }
 
-  if (pathname.startsWith("/admin")) {
-    const role = (req.auth.user as any)?.role;
-    if (role !== "admin") {
-      return NextResponse.redirect(new URL("/vezbe", req.url));
-    }
-  }
-
   return NextResponse.next();
 });
 
