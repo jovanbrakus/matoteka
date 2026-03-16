@@ -9,6 +9,7 @@ import { eq, and } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { getProblemFull } from "@/lib/problems";
 import { updateStreakOnCorrectSolve } from "@/lib/streak";
+import { recalculateAnalytics } from "@/lib/analytics";
 
 export async function POST(
   req: Request,
@@ -132,6 +133,9 @@ export async function POST(
       numBlank,
     })
     .where(eq(mockExams.id, id));
+
+  // Recalculate analytics in the background (fire-and-forget)
+  recalculateAnalytics(userId).catch(() => {});
 
   return NextResponse.json({ examId: id });
 }
