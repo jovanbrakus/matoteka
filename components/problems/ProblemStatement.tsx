@@ -29,12 +29,16 @@ export default function ProblemStatement({
         try {
           const doc = iframe.contentDocument || iframe.contentWindow?.document;
           if (doc) {
-            const resizeObserver = new ResizeObserver(() => {
-              const height = doc.documentElement.scrollHeight;
+            const updateHeight = () => {
+              const bodyStyle = doc.defaultView?.getComputedStyle(doc.body);
+              const marginTop = parseInt(bodyStyle?.marginTop || "0", 10);
+              const marginBottom = parseInt(bodyStyle?.marginBottom || "0", 10);
+              const height = doc.body.offsetHeight + marginTop + marginBottom + 1;
               iframe.style.height = height + "px";
-            });
-            resizeObserver.observe(doc.documentElement);
-            iframe.style.height = doc.documentElement.scrollHeight + "px";
+            };
+            const resizeObserver = new ResizeObserver(updateHeight);
+            resizeObserver.observe(doc.body);
+            updateHeight();
           }
         } catch {
           iframe.style.height = section === "statement" ? "400px" : "600px";

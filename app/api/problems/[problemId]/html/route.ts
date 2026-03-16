@@ -63,9 +63,9 @@ function extractStatementHtml(html: string): string {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 ${cleanHead}
 <style>
-  body { padding: 10px 10px 0 10px; margin: 0; }
+  body { padding: 10px; margin: 0; }
   .container { padding: 0; }
-  .card, .problem-statement { margin-bottom: 0; padding-bottom: 12px; }
+  .card, .problem-statement { margin-bottom: 0; }
   /* Preemptively hide answer options to prevent flash before JS removal */
   .answer-option, .answer-chip, .answer-options-row, .options-grid { display: none !important; }
 </style>
