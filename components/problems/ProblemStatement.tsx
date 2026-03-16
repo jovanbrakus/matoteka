@@ -10,7 +10,7 @@ interface ProblemStatementProps {
 export default function ProblemStatement({
   problemId,
   section = "statement",
-  minHeight = "200px",
+  minHeight = "150px",
 }: ProblemStatementProps) {
   const src =
     section === "statement"
