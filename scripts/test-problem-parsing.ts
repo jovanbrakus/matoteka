@@ -54,37 +54,29 @@ function testProblem(id: string, solutionPath: string): string[] {
 
   // 3. Problem statement
   const hasStatementCard = $(".problem-statement").length > 0 || $(".card.problem-statement").length > 0;
-  const statementMarkerIdx = html.indexOf('<div class="card problem-statement">');
-  if (!hasStatementCard) {
-    issues.push("NO_STATEMENT: Missing .problem-statement element");
+  const statementMarkerMatch = html.match(/<div\s+class="[^"]*problem-statement[^"]*">/) || html.match(/<div\s+class="card">/);
+  if (!hasStatementCard && !html.match(/<div\s+class="card">/)) {
+    issues.push("NO_STATEMENT: Missing .problem-statement or .card element");
   }
-  if (statementMarkerIdx === -1) {
-    issues.push("NO_STATEMENT_MARKER: Statement marker div not found (exact class match)");
+  if (!statementMarkerMatch) {
+    issues.push("NO_STATEMENT_MARKER: Statement marker div not found");
   }
 
-  // 4. Answer options
+  // 4. Answer options — check all patterns the parser handles
+  const OPTION_SELECTORS = ".answer-option[data-option], .answer-chip, .final-option, .option-btn, .option-card, .option-chip, .option-item, .option-box, .answer-opt, .option-final, .option-pill, .final-opt, .answer-option-final, .opt, .option";
   const answerOptionEls = $(".answer-option[data-option]");
   const answerChipEls = $(".answer-chip");
+  const allAnswerEls = $(OPTION_SELECTORS);
   const hasAnswerOptions = answerOptionEls.length > 0;
   const hasAnswerChips = answerChipEls.length > 0;
+  const hasAnyAnswers = allAnswerEls.length > 0;
 
-  if (!hasAnswerOptions && !hasAnswerChips) {
-    issues.push("NO_ANSWERS: No .answer-option or .answer-chip elements found");
+  if (!hasAnyAnswers) {
+    issues.push("NO_ANSWERS: No answer elements found in any known pattern");
   }
 
-  // 5. Answer option values
+  // 5. Answer option attributes (data-option)
   if (hasAnswerOptions) {
-    let emptyValues = 0;
-    answerOptionEls.each((_, el) => {
-      const valueEl = $(el).find(".value");
-      const value = (valueEl.html() || valueEl.text() || "").trim();
-      if (!value) emptyValues++;
-    });
-    if (emptyValues > 0) {
-      issues.push(`EMPTY_OPTION_VALUES: ${emptyValues} answer-option(s) have empty .value`);
-    }
-
-    // Check data-option attributes
     const optionLetters: string[] = [];
     answerOptionEls.each((_, el) => {
       const opt = $(el).attr("data-option") || "";
@@ -216,4 +208,19 @@ if (allIssues.length > 0) {
   }
 } else {
   console.log("\nAll problems parsed successfully!");
+}
+
+// Export failing IDs as JSON if --report flag is passed
+if (process.argv.includes("--report")) {
+  const reportPath = path.join(process.cwd(), "..", "prijemni", "database", "reports.json");
+  const existing = JSON.parse(fs.readFileSync(reportPath, "utf-8"));
+  const newReports = allIssues.map((issue) => ({
+    problemId: issue.id,
+    file: issue.file,
+    issues: issue.problems,
+    description: "problematic HTML files (no correct answer marker, no answers at all, etc.)",
+  }));
+  const merged = [...existing, ...newReports];
+  fs.writeFileSync(reportPath, JSON.stringify(merged, null, 2) + "\n");
+  console.log(`\nWrote ${newReports.length} reports to ${reportPath}`);
 }

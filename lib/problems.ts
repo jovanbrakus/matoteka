@@ -94,20 +94,50 @@ export function parseHtml(htmlContent: string) {
 
   const answerOptions: string[] = [];
   const originalLabels: string[] = []; // track original labels (A, B, V, G, D, etc.)
+  const LABEL_STRIP_RE = /^\(?([A-Za-zА-ЯЂЉЊЋЏа-яђљњћџ])\)\s*/;
+
   $(".answer-option[data-option]").each((_, el) => {
     const valueEl = $(el).find(".value");
-    const value = (valueEl.html() || valueEl.text()).trim();
-    answerOptions.push(value);
+    // Fall back to element's own content when .value div is missing or empty
+    const value = (valueEl.html() || valueEl.text() || "").trim();
+    if (value) {
+      answerOptions.push(value);
+    } else {
+      // No .value div — extract from element text, strip label prefix
+      const html = ($(el).html() || $(el).text() || "").trim();
+      const stripped = html.replace(LABEL_STRIP_RE, "").replace(/<div[^>]*class="label"[^>]*>.*?<\/div>/i, "").trim();
+      answerOptions.push(stripped || html);
+    }
     originalLabels.push(($(el).attr("data-option") || "").toUpperCase());
   });
 
+  // Fallback 1: .answer-chip
   if (answerOptions.length === 0) {
     $(".answer-chip").each((_, el) => {
       const text = $(el).text().trim();
-      const labelMatch = text.match(/^\(?([A-Za-zА-Яа-я])\)/);
+      const labelMatch = text.match(LABEL_STRIP_RE);
       if (labelMatch) originalLabels.push(labelMatch[1].toUpperCase());
       const stripped = text.replace(/^\([A-Za-zА-Яа-яĐŽĆČŠđžćčš]\)\s*/, "");
       answerOptions.push(stripped || text);
+    });
+  }
+
+  // Fallback 2: extract from final answer section or inline options —
+  // covers .final-option, .option-btn, .option-card, .option, .opt, etc.
+  if (answerOptions.length === 0) {
+    const OPTION_SELECTORS = ".final-option, .option-btn, .option-card, .option-chip, .option-item, .option-box, .answer-opt, .option-final, .option-pill, .final-opt, .answer-option-final, .opt, .option";
+    $(OPTION_SELECTORS).each((_, el) => {
+      const text = $(el).text().trim();
+      if (/ne\s+znam/i.test(text)) return; // skip "Ne znam" option
+      const cls = $(el).attr("class") || "";
+      if (cls.includes("incorrect")) return; // skip wrong-answer markers
+      const labelMatch = text.match(LABEL_STRIP_RE);
+      if (labelMatch) {
+        originalLabels.push(labelMatch[1].toUpperCase());
+        const html = ($(el).html() || text).trim();
+        const stripped = html.replace(LABEL_STRIP_RE, "");
+        answerOptions.push(stripped);
+      }
     });
   }
 
