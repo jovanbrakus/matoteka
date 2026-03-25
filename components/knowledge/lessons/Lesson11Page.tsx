@@ -16,7 +16,7 @@ import MicroCheck from "@/components/knowledge/MicroCheck";
 import SectionCard from "@/components/knowledge/SectionCard";
 
 import cs from "@/styles/lesson-common.module.css";
-import s from "@/styles/lesson10.module.css";
+import s from "@/styles/lesson-layout.module.css";
 
 /* ───────────────────────── NAV ───────────────────────── */
 

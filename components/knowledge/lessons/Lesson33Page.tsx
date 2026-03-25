@@ -15,7 +15,7 @@ import SectionCard from "@/components/knowledge/SectionCard";
 import UnitCircleLab from "./UnitCircleLab";
 
 import cs from "@/styles/lesson-common.module.css";
-import s from "@/styles/lesson10.module.css";
+import s from "@/styles/lesson-layout.module.css";
 
 const NAV_LINKS = [
   { href: "#zasto", label: "Zašto je važno" },

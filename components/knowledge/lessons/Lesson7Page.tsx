@@ -15,7 +15,7 @@ import SectionCard from "@/components/knowledge/SectionCard";
 import ProportionLab from "./ProportionLab";
 
 import cs from "@/styles/lesson-common.module.css";
-import s from "@/styles/lesson10.module.css";
+import s from "@/styles/lesson-layout.module.css";
 
 const NAV_LINKS = [
   { href: "#vaznost", label: "Zašto je važna" },

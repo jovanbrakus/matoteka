@@ -1,7 +1,7 @@
 "use client";
 
 import { MathJax } from "better-react-mathjax";
-import s from "@/styles/lesson10.module.css";
+import s from "@/styles/lesson-layout.module.css";
 
 interface MathBlockProps {
   children: string;

@@ -1,6 +1,6 @@
 "use client";
 
-import s from "@/styles/lesson10.module.css";
+import s from "@/styles/lesson-layout.module.css";
 
 interface WalkStepProps {
   number: number;

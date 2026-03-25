@@ -1,7 +1,7 @@
 "use client";
 
 import cs from "@/styles/lesson-common.module.css";
-import s from "@/styles/lesson10.module.css";
+import s from "@/styles/lesson-layout.module.css";
 import MathBlock from "./MathBlock";
 
 interface FormulaCardProps {

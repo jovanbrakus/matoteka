@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import InlineMath from "@/components/knowledge/InlineMath";
-import s from "@/styles/lesson10.module.css";
+import s from "@/styles/lesson-layout.module.css";
 import cs from "@/styles/lesson-common.module.css";
 
 type Operator = "not" | "and" | "or" | "implies" | "equiv";

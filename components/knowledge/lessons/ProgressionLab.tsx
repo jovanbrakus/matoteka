@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, useCallback, useState } from "react";
 import { MathJax } from "better-react-mathjax";
-import s from "@/styles/lesson10.module.css";
+import s from "@/styles/lesson-layout.module.css";
 import cs from "@/styles/lesson-common.module.css";
 
 interface Preset {

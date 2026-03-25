@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import s from "@/styles/lesson10.module.css";
+import s from "@/styles/lesson-layout.module.css";
 
 /**
  * Interactive nested Venn-style diagram showing N ⊂ Z ⊂ Q ⊂ R.

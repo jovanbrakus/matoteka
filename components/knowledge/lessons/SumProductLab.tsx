@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState, useCallback } from "react";
-import s from "@/styles/lesson10.module.css";
+import s from "@/styles/lesson-layout.module.css";
 import cs from "@/styles/lesson-common.module.css";
 import InlineMath from "@/components/knowledge/InlineMath";
 import MathBlock from "@/components/knowledge/MathBlock";
