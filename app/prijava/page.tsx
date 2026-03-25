@@ -49,13 +49,13 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-[80vh] items-center justify-center px-4">
-      <div className="w-full max-w-md rounded-2xl border border-[#334155] bg-[#1e293b] p-8 text-center">
+      <div className="w-full max-w-md rounded-2xl border border-[var(--glass-border)] bg-card p-8 text-center">
         <h1 className="mb-2 text-3xl font-bold">
-          <span className="bg-gradient-to-r from-[#4ade80] to-[#a3e635] bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-[#ec5b13] to-[#fe9d00] bg-clip-text text-transparent">
             Matoteka
           </span>
         </h1>
-        <p className="mb-8 text-[#94a3b8]">
+        <p className="mb-8 text-text-secondary">
           Prijavi se da počneš sa pripremom
         </p>
 
@@ -63,7 +63,7 @@ export default function LoginPage() {
           <div>
             <label
               htmlFor="email"
-              className="mb-1 block text-sm text-[#94a3b8]"
+              className="mb-1 block text-sm text-text-secondary"
             >
               Email
             </label>
@@ -73,14 +73,14 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full rounded-xl border border-[#334155] bg-[#0f172a] px-4 py-3 text-[#e2e8f0] placeholder-[#64748b] focus:border-[#60a5fa] focus:outline-none"
+              className="w-full rounded-xl border border-[var(--glass-border)] bg-surface-dark px-4 py-3 text-text placeholder-muted focus:border-primary focus:outline-none"
               placeholder="tvoj@email.com"
             />
           </div>
           <div>
             <label
               htmlFor="password"
-              className="mb-1 block text-sm text-[#94a3b8]"
+              className="mb-1 block text-sm text-text-secondary"
             >
               Lozinka
             </label>
@@ -90,19 +90,19 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full rounded-xl border border-[#334155] bg-[#0f172a] px-4 py-3 text-[#e2e8f0] placeholder-[#64748b] focus:border-[#60a5fa] focus:outline-none"
+              className="w-full rounded-xl border border-[var(--glass-border)] bg-surface-dark px-4 py-3 text-text placeholder-muted focus:border-primary focus:outline-none"
               placeholder="••••••••"
             />
           </div>
 
           {error && (
-            <p className="text-sm text-[#f87171]">{error}</p>
+            <p className="text-sm text-error">{error}</p>
           )}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl bg-[#60a5fa] px-6 py-3 text-base font-medium text-white transition hover:bg-[#3b82f6] disabled:opacity-50"
+            className="w-full rounded-xl bg-primary px-6 py-3 text-base font-medium text-white transition hover:bg-primary-glow disabled:opacity-50"
           >
             {loading ? "Prijavljivanje..." : "Prijavi se"}
           </button>
@@ -111,9 +111,9 @@ export default function LoginPage() {
         {hasGoogle && (
           <>
             <div className="mb-6 flex items-center gap-4">
-              <div className="h-px flex-1 bg-[#334155]" />
-              <span className="text-xs text-[#64748b]">ili</span>
-              <div className="h-px flex-1 bg-[#334155]" />
+              <div className="h-px flex-1 bg-[var(--glass-border)]" />
+              <span className="text-xs text-muted">ili</span>
+              <div className="h-px flex-1 bg-[var(--glass-border)]" />
             </div>
 
             <button
@@ -143,7 +143,7 @@ export default function LoginPage() {
           </>
         )}
 
-        <p className="mt-6 text-xs text-[#64748b]">
+        <p className="mt-6 text-xs text-muted">
           Prijavom prihvataš uslove korišćenja platforme.
         </p>
       </div>
