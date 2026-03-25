@@ -127,10 +127,10 @@ function BoolBadge({ value }: { value: boolean }) {
         fontWeight: 700,
         fontSize: "0.88rem",
         background: value
-          ? "rgba(103, 215, 173, 0.14)"
-          : "rgba(255, 180, 136, 0.14)",
+          ? "var(--lesson-true-bg)"
+          : "var(--lesson-false-bg)",
         border: `1px solid ${
-          value ? "rgba(103, 215, 173, 0.34)" : "rgba(255, 180, 136, 0.34)"
+          value ? "var(--lesson-true-border)" : "var(--lesson-false-border)"
         }`,
         color: value ? "var(--lesson-success)" : "var(--lesson-primary-soft)",
       }}
@@ -163,8 +163,8 @@ export default function TruthTableLab() {
             style={
               activeOp === op
                 ? {
-                    background: "rgba(236, 91, 19, 0.18)",
-                    borderColor: "rgba(255, 154, 106, 0.40)",
+                    background: "var(--lesson-btn-active-bg)",
+                    borderColor: "var(--lesson-btn-active-border)",
                   }
                 : undefined
             }
@@ -229,7 +229,7 @@ export default function TruthTableLab() {
                   style={{
                     cursor: "pointer",
                     background: selected
-                      ? "rgba(236, 91, 19, 0.16)"
+                      ? "var(--lesson-row-selected)"
                       : "transparent",
                     borderTop: "1px solid var(--lesson-border)",
                     transition:
@@ -333,7 +333,7 @@ const thStyle: React.CSSProperties = {
   color: "var(--lesson-primary-soft)",
   textTransform: "uppercase",
   letterSpacing: "0.06em",
-  background: "rgba(236, 91, 19, 0.10)",
+  background: "var(--lesson-header-bg)",
   borderBottom: "1px solid var(--lesson-border)",
 };
 

@@ -175,12 +175,59 @@ const SCENARIOS: Record<ScenarioKey, Scenario> = {
   },
 };
 
+interface RationalTheme {
+  bg: string;
+  grid: string;
+  text: string;
+  textStrong: string;
+  muted: string;
+  cardBg: string;
+  cardBorder: string;
+  divider: string;
+  chipBorder: string;
+  chipText: string;
+  numFactorBg: string;
+  denFactorBg: string;
+  ribbonBg: string;
+  ribbonBorder: string;
+  ribbonText: string;
+  accentLeft: string;
+  accentRight: string;
+  accentResult: string;
+  accentOp: string;
+}
+
+function getRationalTheme(): RationalTheme {
+  const isLight = document.documentElement.classList.contains("light");
+  return {
+    bg: isLight ? "rgba(245, 240, 235, 0.95)" : "rgba(8, 4, 2, 0.95)",
+    grid: isLight ? "rgba(0,0,0,0.05)" : "rgba(255,255,255,0.05)",
+    text: isLight ? "rgba(42,36,32,0.9)" : "rgba(255,255,255,0.9)",
+    textStrong: isLight ? "rgba(42,36,32,0.95)" : "rgba(255,247,240,0.95)",
+    muted: isLight ? "rgba(42,36,32,0.65)" : "rgba(237,226,220,0.95)",
+    cardBg: isLight ? "rgba(255, 255, 255, 0.62)" : "rgba(8, 4, 2, 0.62)",
+    cardBorder: isLight ? "rgba(0,0,0,0.10)" : "rgba(255,255,255,0.10)",
+    divider: isLight ? "rgba(0,0,0,0.18)" : "rgba(255,255,255,0.18)",
+    chipBorder: isLight ? "rgba(0,0,0,0.12)" : "rgba(255,255,255,0.12)",
+    chipText: isLight ? "rgba(42,36,32,0.96)" : "rgba(255,248,242,0.96)",
+    numFactorBg: isLight ? "rgba(236, 91, 19, 0.12)" : "rgba(236, 91, 19, 0.18)",
+    denFactorBg: isLight ? "rgba(56, 152, 200, 0.12)" : "rgba(136, 216, 255, 0.14)",
+    ribbonBg: isLight ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.06)",
+    ribbonBorder: isLight ? "rgba(0,0,0,0.10)" : "rgba(255,255,255,0.10)",
+    ribbonText: isLight ? "#4a3e35" : "#f3e6dd",
+    accentLeft: isLight ? "#c94a08" : "#ffb488",
+    accentRight: isLight ? "#2980b9" : "#88d8ff",
+    accentResult: isLight ? "#1a9e6e" : "#6bdfb7",
+    accentOp: isLight ? "#8b5a2e" : "#ffd7b9",
+  };
+}
+
 function drawText(
   ctx: CanvasRenderingContext2D,
   text: string,
   x: number,
   y: number,
-  color = "rgba(255,255,255,0.9)",
+  color: string,
   size = 15,
   weight = 700,
   align: CanvasTextAlign = "left"
@@ -198,7 +245,8 @@ function drawFactorChips(
   x: number,
   y: number,
   width: number,
-  color: string
+  color: string,
+  theme: RationalTheme
 ) {
   let cursorX = x;
   let cursorY = y;
@@ -216,14 +264,14 @@ function drawFactorChips(
     }
     ctx.fillStyle = color;
     ctx.fillRect(cursorX, cursorY, chipWidth, chipHeight);
-    ctx.strokeStyle = "rgba(255,255,255,0.12)";
+    ctx.strokeStyle = theme.chipBorder;
     ctx.strokeRect(cursorX, cursorY, chipWidth, chipHeight);
     drawText(
       ctx,
       item,
       cursorX + chipWidth / 2,
       cursorY + 19,
-      "rgba(255,248,242,0.96)",
+      theme.chipText,
       13,
       700,
       "center"
@@ -240,11 +288,12 @@ function drawFractionCard(
   w: number,
   h: number,
   accent: string,
-  compact: boolean
+  compact: boolean,
+  theme: RationalTheme
 ) {
-  ctx.fillStyle = "rgba(8, 4, 2, 0.62)";
+  ctx.fillStyle = theme.cardBg;
   ctx.fillRect(x, y, w, h);
-  ctx.strokeStyle = "rgba(255,255,255,0.10)";
+  ctx.strokeStyle = theme.cardBorder;
   ctx.strokeRect(x, y, w, h);
 
   drawText(ctx, card.title, x + 16, y + 22, accent, 11, 800);
@@ -255,13 +304,13 @@ function drawFractionCard(
     card.num,
     x + w / 2,
     numY,
-    "rgba(255,247,240,0.95)",
+    theme.textStrong,
     compact ? 16 : 18,
     700,
     "center"
   );
 
-  ctx.strokeStyle = "rgba(255,255,255,0.18)";
+  ctx.strokeStyle = theme.divider;
   ctx.beginPath();
   ctx.moveTo(x + 16, y + 62);
   ctx.lineTo(x + w - 16, y + 62);
@@ -274,7 +323,8 @@ function drawFractionCard(
       x + 16,
       y + 34,
       w - 32,
-      "rgba(236, 91, 19, 0.18)"
+      theme.numFactorBg,
+      theme
     );
   }
 
@@ -283,7 +333,7 @@ function drawFractionCard(
     card.den,
     x + w / 2,
     y + 92,
-    "rgba(237,226,220,0.95)",
+    theme.muted,
     compact ? 15 : 17,
     700,
     "center"
@@ -296,7 +346,8 @@ function drawFractionCard(
       x + 16,
       y + 104,
       w - 32,
-      "rgba(136, 216, 255, 0.14)"
+      theme.denFactorBg,
+      theme
     );
   }
 }
@@ -305,7 +356,8 @@ function drawRibbon(
   ctx: CanvasRenderingContext2D,
   items: string[],
   width: number,
-  height: number
+  height: number,
+  theme: RationalTheme
 ) {
   let cursorX = 28;
   let cursorY = height - 58;
@@ -319,16 +371,16 @@ function drawRibbon(
       cursorX = 28;
       cursorY -= 38;
     }
-    ctx.fillStyle = "rgba(255,255,255,0.06)";
+    ctx.fillStyle = theme.ribbonBg;
     ctx.fillRect(cursorX, cursorY, chipWidth, 28);
-    ctx.strokeStyle = "rgba(255,255,255,0.10)";
+    ctx.strokeStyle = theme.ribbonBorder;
     ctx.strokeRect(cursorX, cursorY, chipWidth, 28);
     drawText(
       ctx,
       item,
       cursorX + chipWidth / 2,
       cursorY + 19,
-      "#f3e6dd",
+      theme.ribbonText,
       13,
       700,
       "center"
@@ -345,6 +397,8 @@ function renderCanvas(
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
+  const T = getRationalTheme();
+
   const dpr = window.devicePixelRatio || 1;
   const width = Math.max(320, canvas.clientWidth || 640);
   const compact = width < 760;
@@ -358,11 +412,11 @@ function renderCanvas(
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.clearRect(0, 0, width, height);
 
-  ctx.fillStyle = "rgba(8, 4, 2, 0.95)";
+  ctx.fillStyle = T.bg;
   ctx.fillRect(0, 0, width, height);
 
   // grid lines
-  ctx.strokeStyle = "rgba(255,255,255,0.05)";
+  ctx.strokeStyle = T.grid;
   ctx.lineWidth = 1;
   for (let x = 28; x < width; x += 38) {
     ctx.beginPath();
@@ -381,34 +435,34 @@ function renderCanvas(
     const cardW = width - 56;
     const cardH = scenario.type === "division" ? 128 : 116;
     let top = 28;
-    drawFractionCard(ctx, scenario.left, 28, top, cardW, cardH, "#ffb488", true);
+    drawFractionCard(ctx, scenario.left, 28, top, cardW, cardH, T.accentLeft, true, T);
     drawText(
       ctx,
       scenario.operation,
       width / 2,
       top + cardH + 28,
-      "#ffd7b9",
+      T.accentOp,
       28,
       900,
       "center"
     );
     top += cardH + 44;
-    drawFractionCard(ctx, scenario.right, 28, top, cardW, cardH, "#88d8ff", true);
+    drawFractionCard(ctx, scenario.right, 28, top, cardW, cardH, T.accentRight, true, T);
     drawText(
       ctx,
       "\u2193",
       width / 2,
       top + cardH + 28,
-      "#ffd7b9",
+      T.accentOp,
       26,
       900,
       "center"
     );
     top += cardH + 44;
     const resultH = 98;
-    drawFractionCard(ctx, scenario.result, 28, top, cardW, resultH, "#6bdfb7", true);
+    drawFractionCard(ctx, scenario.result, 28, top, cardW, resultH, T.accentResult, true, T);
     if (showHints) {
-      drawText(ctx, scenario.title, 28, 18, "#ffd7b9", 14, 800);
+      drawText(ctx, scenario.title, 28, 18, T.accentOp, 14, 800);
     }
   } else {
     const cardW = width * 0.23;
@@ -422,15 +476,16 @@ function renderCanvas(
       leftY,
       cardW,
       cardH,
-      "#ffb488",
-      false
+      T.accentLeft,
+      false,
+      T
     );
     drawText(
       ctx,
       scenario.operation,
       leftX + cardW + 24,
       leftY + cardH * 0.54,
-      "#ffd7b9",
+      T.accentOp,
       32,
       900
     );
@@ -442,15 +497,16 @@ function renderCanvas(
       leftY,
       cardW,
       cardH,
-      "#88d8ff",
-      false
+      T.accentRight,
+      false,
+      T
     );
     drawText(
       ctx,
       "\u2192",
       rightX + cardW + 24,
       leftY + cardH * 0.54,
-      "#ffd7b9",
+      T.accentOp,
       30,
       900
     );
@@ -462,16 +518,17 @@ function renderCanvas(
       76,
       width * 0.25,
       142,
-      "#6bdfb7",
-      false
+      T.accentResult,
+      false,
+      T
     );
     if (showHints) {
-      drawText(ctx, scenario.title, leftX, 42, "#ffd7b9", 17, 800);
+      drawText(ctx, scenario.title, leftX, 42, T.accentOp, 17, 800);
     }
   }
 
   if (showHints) {
-    drawRibbon(ctx, scenario.ribbon, width, height);
+    drawRibbon(ctx, scenario.ribbon, width, height, T);
   }
 }
 
@@ -492,7 +549,9 @@ function RationalLab() {
     draw();
     const onResize = () => draw();
     window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+    const observer = new MutationObserver(() => draw());
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => { window.removeEventListener("resize", onResize); observer.disconnect(); };
   }, [draw]);
 
   return (

@@ -94,20 +94,27 @@ const PRESETS: Record<TrianglePreset, { label: string; points: Point[] }> = {
   },
 };
 
-const COLORS = {
-  triangle: "#f6eee9",
-  fill: "rgba(246, 238, 233, 0.05)",
-  medians: "#7be0bb",
-  altitudes: "#ff9c98",
-  perpBisectors: "#8ed3ff",
-  angleBisectors: "#ffd37b",
-  centroid: "#7be0bb",
-  orthocenter: "#ff9c98",
-  circumcenter: "#8ed3ff",
-  incenter: "#ffd37b",
-  accent: "#ffd4b7",
-  grid: "rgba(255, 255, 255, 0.06)",
-};
+function getTriColors() {
+  const isLight = document.documentElement.classList.contains("light");
+  return {
+    triangle: isLight ? "#3a3028" : "#f6eee9",
+    fill: isLight ? "rgba(42, 36, 32, 0.05)" : "rgba(246, 238, 233, 0.05)",
+    medians: isLight ? "#1a9e6e" : "#7be0bb",
+    altitudes: isLight ? "#d94e4e" : "#ff9c98",
+    perpBisectors: isLight ? "#2980b9" : "#8ed3ff",
+    angleBisectors: isLight ? "#c99a1a" : "#ffd37b",
+    centroid: isLight ? "#1a9e6e" : "#7be0bb",
+    orthocenter: isLight ? "#d94e4e" : "#ff9c98",
+    circumcenter: isLight ? "#2980b9" : "#8ed3ff",
+    incenter: isLight ? "#c99a1a" : "#ffd37b",
+    accent: isLight ? "#8b5a2e" : "#ffd4b7",
+    grid: isLight ? "rgba(0, 0, 0, 0.06)" : "rgba(255, 255, 255, 0.06)",
+    labelBg: isLight ? "rgba(255, 255, 255, 0.84)" : "rgba(10, 5, 3, 0.84)",
+    labelBorder: isLight ? "rgba(0, 0, 0, 0.08)" : "rgba(255, 255, 255, 0.08)",
+    simText: isLight ? "rgba(42, 36, 32, 0.92)" : "rgba(240, 223, 212, 0.92)",
+    simLine: isLight ? "rgba(0, 0, 0, 0.10)" : "rgba(255, 255, 255, 0.10)",
+  };
+}
 
 /* ---- geometry helpers ---- */
 function add(a: Point, b: Point): Point {
@@ -346,6 +353,7 @@ function TriangleLab() {
     const maybeCtx = canvas.getContext("2d");
     if (!maybeCtx) return;
     const ctx: CanvasRenderingContext2D = maybeCtx;
+    const COLORS = getTriColors();
 
     const dpr = window.devicePixelRatio || 1;
     const rect = wrap.getBoundingClientRect();
@@ -419,8 +427,8 @@ function TriangleLab() {
       const bw = tw + 18;
       const bx = p.x + 10;
       const by = p.y - 16;
-      ctx.fillStyle = "rgba(10, 5, 3, 0.84)";
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
+      ctx.fillStyle = COLORS.labelBg;
+      ctx.strokeStyle = COLORS.labelBorder;
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.roundRect(bx, by, bw, 22, 11);
@@ -512,7 +520,7 @@ function TriangleLab() {
 
       ctx.save();
       ctx.font = '700 13px "Public Sans", sans-serif';
-      ctx.fillStyle = "rgba(240, 223, 212, 0.92)";
+      ctx.fillStyle = COLORS.simText;
       ctx.fillText("Osnovni trougao", stacked ? W / 2 - 52 : 70, stacked ? 34 : 38);
       ctx.fillText("Transformisani trougao", stacked ? W / 2 - 78 : W - 234, stacked ? H * 0.52 : 38);
       ctx.restore();
@@ -524,7 +532,7 @@ function TriangleLab() {
 
       if (!stacked) {
         for (let i = 0; i < 3; i++)
-          drawSeg(first[i], second[i], "rgba(255, 255, 255, 0.10)", 1.2, [5, 7]);
+          drawSeg(first[i], second[i], COLORS.simLine, 1.2, [5, 7]);
       }
       setReadout(similarityReadout(first, ratio, mirror));
     }
@@ -534,7 +542,9 @@ function TriangleLab() {
     render();
     const onResize = () => render();
     window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+    const observer = new MutationObserver(() => render());
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => { window.removeEventListener("resize", onResize); observer.disconnect(); };
   }, [render]);
 
   return (
@@ -1021,7 +1031,7 @@ export default function Lesson42Page() {
               borderRadius: 20,
               overflow: "hidden",
               marginTop: 18,
-              border: "1px solid rgba(255, 255, 255, 0.08)",
+              border: "1px solid var(--lesson-border)",
             }}
           >
             <thead>
@@ -1033,7 +1043,7 @@ export default function Lesson42Page() {
                       style={{
                         padding: "14px 16px",
                         textAlign: "left",
-                        background: "rgba(255, 255, 255, 0.06)",
+                        background: "var(--lesson-panel-soft)",
                         color: "var(--lesson-muted-strong)",
                         fontSize: "0.86rem",
                         textTransform: "uppercase",
@@ -1073,7 +1083,7 @@ export default function Lesson42Page() {
                   <td
                     style={{
                       padding: "14px 16px",
-                      borderTop: "1px solid rgba(255, 255, 255, 0.06)",
+                      borderTop: "1px solid var(--lesson-border)",
                       color: "var(--lesson-accent)",
                       fontWeight: 800,
                       minWidth: 120,
@@ -1084,7 +1094,7 @@ export default function Lesson42Page() {
                   <td
                     style={{
                       padding: "14px 16px",
-                      borderTop: "1px solid rgba(255, 255, 255, 0.06)",
+                      borderTop: "1px solid var(--lesson-border)",
                       color: "var(--lesson-muted)",
                     }}
                   >
@@ -1093,7 +1103,7 @@ export default function Lesson42Page() {
                   <td
                     style={{
                       padding: "14px 16px",
-                      borderTop: "1px solid rgba(255, 255, 255, 0.06)",
+                      borderTop: "1px solid var(--lesson-border)",
                       color: "var(--lesson-muted)",
                     }}
                   >

@@ -136,6 +136,26 @@ function drawCanvas(
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
+  const isLight = document.documentElement.classList.contains("light");
+  const T = {
+    bg1: isLight ? "rgba(245, 240, 235, 0.96)" : "rgba(20, 9, 6, 0.96)",
+    bg2: isLight ? "rgba(235, 229, 223, 0.98)" : "rgba(10, 4, 3, 0.98)",
+    text: isLight ? "#2a2420" : "#f6eee9",
+    muted: isLight ? "#7a6f68" : "rgba(215, 199, 187, 0.82)",
+    accent: isLight ? "#c44200" : "#ffb184",
+    grid: isLight ? "rgba(0,0,0,0.05)" : "rgba(255,255,255,0.06)",
+    axis: isLight ? "rgba(140,100,60,0.40)" : "rgba(255, 215, 185, 0.45)",
+    tick: isLight ? "rgba(140,100,60,0.50)" : "rgba(255, 215, 185, 0.55)",
+    tickLabel: isLight ? "rgba(80,60,40,0.75)" : "rgba(243, 229, 219, 0.75)",
+    markerOutline: isLight ? "rgba(245,240,235,0.9)" : "rgba(9, 4, 3, 0.8)",
+    cardBg: isLight ? "rgba(0,0,0,0.03)" : "rgba(255,255,255,0.05)",
+    cardBorder: isLight ? "rgba(217,78,10,0.15)" : "rgba(255,154,106,0.18)",
+    cardMuted: isLight ? "#7a6f68" : "rgba(215, 199, 187, 0.78)",
+    dotColors: isLight
+      ? ["#d94e0a", "#a06030", "#2878b8", "#1a9e6e"]
+      : ["#ec5b13", "#ffd7b9", "#88d8ff", "#6bdfb7"],
+  };
+
   const rect = canvas.getBoundingClientRect();
   const ratio = window.devicePixelRatio || 1;
   const width = Math.max(320, Math.floor(rect.width));
@@ -164,7 +184,7 @@ function drawCanvas(
           ["S3", formatNumber(sums[2]), "-d/a"],
           ["S4", formatNumber(sums[3]), "e/a"],
         ];
-  const colors = ["#ec5b13", "#ffd7b9", "#88d8ff", "#6bdfb7"];
+  const colors = T.dotColors;
 
   function mapValue(value: number) {
     return axisStart + ((value - min) / (max - min)) * (axisEnd - axisStart);
@@ -173,15 +193,15 @@ function drawCanvas(
   ctx.clearRect(0, 0, width, height);
 
   const bgGrad = ctx.createLinearGradient(0, 0, 0, height);
-  bgGrad.addColorStop(0, "rgba(20, 9, 6, 0.96)");
-  bgGrad.addColorStop(1, "rgba(10, 4, 3, 0.98)");
+  bgGrad.addColorStop(0, T.bg1);
+  bgGrad.addColorStop(1, T.bg2);
   ctx.fillStyle = bgGrad;
   ctx.fillRect(0, 0, width, height);
 
-  ctx.fillStyle = "#f6eee9";
+  ctx.fillStyle = T.text;
   ctx.font = '700 20px "Public Sans", system-ui, sans-serif';
   ctx.fillText("Veza izmedju korenova i koeficijenata", 22, 34);
-  ctx.fillStyle = "rgba(215, 199, 187, 0.82)";
+  ctx.fillStyle = T.muted;
   ctx.font = '400 13px "Public Sans", system-ui, sans-serif';
   ctx.fillText(
     `Koreni: ${roots.map(formatNumber).join(", ")} | Koeficijenti: ${coeffs.map(formatNumber).join(", ")}`,
@@ -189,7 +209,7 @@ function drawCanvas(
     56
   );
 
-  ctx.strokeStyle = "rgba(255,255,255,0.06)";
+  ctx.strokeStyle = T.grid;
   ctx.lineWidth = 1;
   for (
     let x = axisStart;
@@ -202,7 +222,7 @@ function drawCanvas(
     ctx.stroke();
   }
 
-  ctx.strokeStyle = "rgba(255, 215, 185, 0.45)";
+  ctx.strokeStyle = T.axis;
   ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.moveTo(axisStart, axisY);
@@ -211,12 +231,12 @@ function drawCanvas(
 
   for (let tick = min; tick <= max; tick += 1) {
     const x = mapValue(tick);
-    ctx.strokeStyle = "rgba(255, 215, 185, 0.55)";
+    ctx.strokeStyle = T.tick;
     ctx.beginPath();
     ctx.moveTo(x, axisY - 7);
     ctx.lineTo(x, axisY + 7);
     ctx.stroke();
-    ctx.fillStyle = "rgba(243, 229, 219, 0.75)";
+    ctx.fillStyle = T.tickLabel;
     ctx.font = '600 12px "Public Sans", system-ui, sans-serif';
     ctx.fillText(String(tick), x - 8, axisY + 24);
   }
@@ -241,10 +261,10 @@ function drawCanvas(
       ctx.beginPath();
       ctx.arc(x, y, 7, 0, Math.PI * 2);
       ctx.fill();
-      ctx.strokeStyle = "rgba(9, 4, 3, 0.8)";
+      ctx.strokeStyle = T.markerOutline;
       ctx.lineWidth = 2;
       ctx.stroke();
-      ctx.fillStyle = "#f6eee9";
+      ctx.fillStyle = T.text;
       ctx.font = '700 12px "Public Sans", system-ui, sans-serif';
       ctx.fillText(`x${labelIndex}`, x - 10, y - 14);
     });
@@ -258,18 +278,18 @@ function drawCanvas(
     const x = 18 + index * (cardWidth + 10);
     const y = height - 88;
     roundRectPath(ctx, x, y, cardWidth, 58, 14);
-    ctx.fillStyle = "rgba(255,255,255,0.05)";
+    ctx.fillStyle = T.cardBg;
     ctx.fill();
-    ctx.strokeStyle = "rgba(255,154,106,0.18)";
+    ctx.strokeStyle = T.cardBorder;
     ctx.lineWidth = 1;
     ctx.stroke();
-    ctx.fillStyle = "#ffb184";
+    ctx.fillStyle = T.accent;
     ctx.font = '700 12px "Public Sans", system-ui, sans-serif';
     ctx.fillText(item[0], x + 12, y + 18);
-    ctx.fillStyle = "#f6eee9";
+    ctx.fillStyle = T.text;
     ctx.font = '700 16px "Public Sans", system-ui, sans-serif';
     ctx.fillText(item[1], x + 12, y + 38);
-    ctx.fillStyle = "rgba(215, 199, 187, 0.78)";
+    ctx.fillStyle = T.cardMuted;
     ctx.font = '600 12px "Public Sans", system-ui, sans-serif';
     ctx.fillText(item[2], x + 12, y + 54);
   });
@@ -321,7 +341,9 @@ export default function VieteLab() {
     paint();
     const onResize = () => paint();
     window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+    const observer = new MutationObserver(() => paint());
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => { window.removeEventListener("resize", onResize); observer.disconnect(); };
   }, [paint]);
 
   const setRoot = (index: number, value: number) => {

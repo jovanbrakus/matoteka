@@ -197,6 +197,49 @@ function finalSet(op: Op, p: number, q: number): Interval[] {
 
 /* ── Canvas drawing ── */
 
+interface ThemePalette {
+  bg: string;
+  grid: string;
+  axis: string;
+  axisLabel: string;
+  solutionShade: string;
+  solutionColor: string;
+  domainLine: string;
+  domainLabel: string;
+  sqrtCurve: string;
+  lineCurve: string;
+  sqrtLabel: string;
+  lineLabel: string;
+  solutionLabel: string;
+  tickMark: string;
+  tickLabel: string;
+  hintText: string;
+  openCircleBg: string;
+}
+
+function getTheme(): ThemePalette {
+  const isLight = document.documentElement.classList.contains("light");
+  return {
+    bg: isLight ? "rgba(245, 240, 235, 0.95)" : "rgba(8, 4, 3, 0.95)",
+    grid: isLight ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.06)",
+    axis: isLight ? "rgba(0,0,0,0.24)" : "rgba(255,255,255,0.24)",
+    axisLabel: isLight ? "rgba(42, 36, 32, 0.8)" : "rgba(246, 238, 233, 0.8)",
+    solutionShade: isLight ? "rgba(26, 158, 110, 0.08)" : "rgba(116, 223, 183, 0.08)",
+    solutionColor: isLight ? "#1a9e6e" : "#74dfb7",
+    domainLine: isLight ? "rgba(200, 130, 50, 0.95)" : "rgba(255, 195, 127, 0.95)",
+    domainLabel: isLight ? "#a06820" : "#ffc37f",
+    sqrtCurve: isLight ? "#d94e0a" : "#ff9a6a",
+    lineCurve: isLight ? "#2e8ebf" : "#8ed7ff",
+    sqrtLabel: isLight ? "#d94e0a" : "#ff9a6a",
+    lineLabel: isLight ? "#2e8ebf" : "#8ed7ff",
+    solutionLabel: isLight ? "#1a9e6e" : "#74dfb7",
+    tickMark: isLight ? "rgba(0,0,0,0.18)" : "rgba(255,255,255,0.18)",
+    tickLabel: isLight ? "rgba(42, 36, 32, 0.72)" : "rgba(246, 238, 233, 0.72)",
+    hintText: isLight ? "rgba(42, 36, 32, 0.8)" : "rgba(246, 238, 233, 0.8)",
+    openCircleBg: isLight ? "#f5f0eb" : "#090403",
+  };
+}
+
 const VIEWPORT = { minX: -10, maxX: 10, minY: -6, maxY: 8 };
 
 function xToCanvas(x: number, w: number) {
@@ -221,7 +264,8 @@ function drawIntervals(
   w: number,
   y: number,
   intervals: Interval[],
-  color: string
+  color: string,
+  openCircleBg: string
 ) {
   intervals.forEach((item) => {
     const l = Math.max(item.left, VIEWPORT.minX);
@@ -242,7 +286,7 @@ function drawIntervals(
       ctx.beginPath();
       ctx.arc(x1, y, 6, 0, Math.PI * 2);
       if (item.openLeft) {
-        ctx.fillStyle = "#090403";
+        ctx.fillStyle = openCircleBg;
         ctx.fill();
         ctx.strokeStyle = color;
         ctx.stroke();
@@ -256,7 +300,7 @@ function drawIntervals(
       ctx.beginPath();
       ctx.arc(x2, y, 6, 0, Math.PI * 2);
       if (item.openRight) {
-        ctx.fillStyle = "#090403";
+        ctx.fillStyle = openCircleBg;
         ctx.fill();
         ctx.strokeStyle = color;
         ctx.stroke();
@@ -273,22 +317,23 @@ function drawGraph(
   op: Op,
   p: number,
   q: number,
-  solution: Interval[]
+  solution: Interval[],
+  theme: ThemePalette
 ) {
   const { ctx, width, height } = setupCanvas(canvas);
   ctx.clearRect(0, 0, width, height);
-  ctx.fillStyle = "rgba(8, 4, 3, 0.95)";
+  ctx.fillStyle = theme.bg;
   ctx.fillRect(0, 0, width, height);
 
   solution.forEach((item) => {
     const l = Math.max(item.left, VIEWPORT.minX);
     const r = Math.min(item.right, VIEWPORT.maxX);
     if (r <= VIEWPORT.minX || l >= VIEWPORT.maxX) return;
-    ctx.fillStyle = "rgba(116, 223, 183, 0.08)";
+    ctx.fillStyle = theme.solutionShade;
     ctx.fillRect(xToCanvas(l, width), 0, xToCanvas(r, width) - xToCanvas(l, width), height);
   });
 
-  ctx.strokeStyle = "rgba(255,255,255,0.06)";
+  ctx.strokeStyle = theme.grid;
   ctx.lineWidth = 1;
   for (let x = Math.ceil(VIEWPORT.minX); x <= VIEWPORT.maxX; x++) {
     const px = xToCanvas(x, width);
@@ -301,7 +346,7 @@ function drawGraph(
 
   const axisX = yToCanvas(0, height);
   const axisY = xToCanvas(0, width);
-  ctx.strokeStyle = "rgba(255,255,255,0.24)";
+  ctx.strokeStyle = theme.axis;
   ctx.lineWidth = 1.5;
   ctx.beginPath(); ctx.moveTo(0, axisX); ctx.lineTo(width, axisX); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(axisY, 0); ctx.lineTo(axisY, height); ctx.stroke();
@@ -309,7 +354,7 @@ function drawGraph(
   const domainStart = -p;
   if (domainStart >= VIEWPORT.minX && domainStart <= VIEWPORT.maxX) {
     const dx = xToCanvas(domainStart, width);
-    ctx.strokeStyle = "rgba(255, 195, 127, 0.95)";
+    ctx.strokeStyle = theme.domainLine;
     ctx.setLineDash([7, 6]);
     ctx.lineWidth = 2;
     ctx.beginPath(); ctx.moveTo(dx, 0); ctx.lineTo(dx, height); ctx.stroke();
@@ -318,7 +363,7 @@ function drawGraph(
 
   // sqrt curve
   ctx.lineWidth = 3;
-  ctx.strokeStyle = "#ff9a6a";
+  ctx.strokeStyle = theme.sqrtCurve;
   ctx.beginPath();
   let started = false;
   for (let x = VIEWPORT.minX; x <= VIEWPORT.maxX; x += 0.02) {
@@ -333,7 +378,7 @@ function drawGraph(
   ctx.stroke();
 
   // line
-  ctx.strokeStyle = "#8ed7ff";
+  ctx.strokeStyle = theme.lineCurve;
   ctx.beginPath();
   started = false;
   for (let x = VIEWPORT.minX; x <= VIEWPORT.maxX; x += 0.02) {
@@ -346,46 +391,47 @@ function drawGraph(
   ctx.stroke();
 
   // labels
-  ctx.fillStyle = "rgba(246, 238, 233, 0.8)";
+  ctx.fillStyle = theme.axisLabel;
   ctx.font = '12px "Public Sans", system-ui, sans-serif';
   ctx.fillText("x", width - 18, axisX - 8);
   ctx.fillText("y", axisY + 10, 14);
-  ctx.fillStyle = "#ffc37f";
+  ctx.fillStyle = theme.domainLabel;
   ctx.fillText(`domena pocinje od x=${fmt(domainStart)}`, 18, 24);
-  ctx.fillStyle = "#ff9a6a";
+  ctx.fillStyle = theme.sqrtLabel;
   ctx.fillText(`y=sqrt(${fmtLinear(p)})`, 18, 44);
-  ctx.fillStyle = "#8ed7ff";
+  ctx.fillStyle = theme.lineLabel;
   ctx.fillText(`y=${fmtLinear(q)}`, 18, 64);
-  ctx.fillStyle = "#74dfb7";
+  ctx.fillStyle = theme.solutionLabel;
   ctx.fillText(`resenje za znak ${op}`, 18, 84);
 }
 
 function drawLine(
   canvas: HTMLCanvasElement,
-  solution: Interval[]
+  solution: Interval[],
+  theme: ThemePalette
 ) {
   const { ctx, width, height } = setupCanvas(canvas);
   ctx.clearRect(0, 0, width, height);
-  ctx.fillStyle = "rgba(8, 4, 3, 0.95)";
+  ctx.fillStyle = theme.bg;
   ctx.fillRect(0, 0, width, height);
 
   const y = height / 2;
-  ctx.strokeStyle = "rgba(255,255,255,0.22)";
+  ctx.strokeStyle = theme.axis;
   ctx.lineWidth = 2;
   ctx.beginPath(); ctx.moveTo(24, y); ctx.lineTo(width - 24, y); ctx.stroke();
 
   for (let x = Math.ceil(VIEWPORT.minX); x <= VIEWPORT.maxX; x++) {
     const px = xToCanvas(x, width);
-    ctx.strokeStyle = "rgba(255,255,255,0.18)";
+    ctx.strokeStyle = theme.tickMark;
     ctx.lineWidth = 1.3;
     ctx.beginPath(); ctx.moveTo(px, y - 12); ctx.lineTo(px, y + 12); ctx.stroke();
-    ctx.fillStyle = "rgba(246, 238, 233, 0.72)";
+    ctx.fillStyle = theme.tickLabel;
     ctx.font = '12px "Public Sans", system-ui, sans-serif';
     ctx.fillText(String(x), px - 8, y + 30);
   }
 
-  drawIntervals(ctx, width, y, solution, "#74dfb7");
-  ctx.fillStyle = "rgba(246, 238, 233, 0.8)";
+  drawIntervals(ctx, width, y, solution, theme.solutionColor, theme.openCircleBg);
+  ctx.fillStyle = theme.hintText;
   ctx.font = '12px "Public Sans", system-ui, sans-serif';
   ctx.fillText("Brojevna prava: obojen je skup resenja u prikazanom prozoru.", 18, 24);
 }
@@ -413,16 +459,19 @@ export default function IrrationalInequalityLab() {
 
   const paint = useCallback(() => {
     if (!graphRef.current || !lineRef.current) return;
+    const theme = getTheme();
     const sol = finalSet(op, p, q);
-    drawGraph(graphRef.current, op, p, q, sol);
-    drawLine(lineRef.current, sol);
+    drawGraph(graphRef.current, op, p, q, sol, theme);
+    drawLine(lineRef.current, sol, theme);
   }, [op, p, q]);
 
   useEffect(() => {
     paint();
     const onResize = () => paint();
     window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+    const observer = new MutationObserver(() => paint());
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => { window.removeEventListener("resize", onResize); observer.disconnect(); };
   }, [paint]);
 
   /* derived data for text readouts */

@@ -172,6 +172,32 @@ function drawCanvas(
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
+  const isLight = document.documentElement.classList.contains("light");
+  const T = {
+    bg1: isLight ? "rgba(245, 240, 235, 0.96)" : "rgba(20, 9, 6, 0.96)",
+    bg2: isLight ? "rgba(235, 229, 223, 0.98)" : "rgba(10, 4, 3, 0.98)",
+    text: isLight ? "#2a2420" : "#f6eee9",
+    muted: isLight ? "#7a6f68" : "#cdb8aa",
+    plotBg: isLight ? "rgba(0,0,0,0.02)" : "rgba(255,255,255,0.02)",
+    grid: isLight ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.06)",
+    axis: isLight ? "rgba(0,0,0,0.18)" : "rgba(255,255,255,0.18)",
+    curve: isLight ? "#d94e0a" : "#ec5b13",
+    tangent: isLight ? "rgba(40,120,184,0.60)" : "rgba(143,215,255,0.7)",
+    tangentDot: isLight ? "#2878b8" : "#8fd7ff",
+    tangentLabel: isLight ? "#2a2420" : "#fff",
+    critDot: isLight ? "#1a9e6e" : "#79dfb8",
+    critLabel: isLight ? "#1a9e6e" : "#c0f0d8",
+    stripBg: isLight ? "rgba(0,0,0,0.03)" : "rgba(255,255,255,0.04)",
+    stripBorder: isLight ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.08)",
+    stripPosBg: isLight ? "rgba(26,158,110,0.10)" : "rgba(121,223,184,0.12)",
+    stripNegBg: isLight ? "rgba(217,78,10,0.10)" : "rgba(255,155,143,0.12)",
+    stripZeroBg: isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.06)",
+    stripPos: isLight ? "#1a9e6e" : "#79dfb8",
+    stripNeg: isLight ? "#c42020" : "#ff9b8f",
+    stripZero: isLight ? "#888" : "#ccc",
+    rootLine: isLight ? "rgba(0,0,0,0.16)" : "rgba(255,255,255,0.22)",
+  };
+
   const rect = canvas.getBoundingClientRect();
   const dpr = window.devicePixelRatio || 1;
   const width = Math.max(320, Math.floor(rect.width));
@@ -183,8 +209,8 @@ function drawCanvas(
   ctx.clearRect(0, 0, width, height);
 
   const bgGrad = ctx.createLinearGradient(0, 0, 0, height);
-  bgGrad.addColorStop(0, "rgba(20, 9, 6, 0.96)");
-  bgGrad.addColorStop(1, "rgba(10, 4, 3, 0.98)");
+  bgGrad.addColorStop(0, T.bg1);
+  bgGrad.addColorStop(1, T.bg2);
   ctx.fillStyle = bgGrad;
   ctx.fillRect(0, 0, width, height);
 
@@ -211,10 +237,10 @@ function drawCanvas(
   const sx = (x: number) => gR.x + ((x - xMin) / (xMax - xMin)) * gR.w;
   const sy = (y: number) => gR.y + gR.h - ((y - yMin) / (yMax - yMin)) * gR.h;
 
-  ctx.fillStyle = "rgba(255,255,255,0.02)";
+  ctx.fillStyle = T.plotBg;
   ctx.fillRect(gR.x, gR.y, gR.w, gR.h);
 
-  ctx.strokeStyle = "rgba(255,255,255,0.06)";
+  ctx.strokeStyle = T.grid;
   ctx.lineWidth = 1;
   for (let tick = -4; tick <= 4; tick++) {
     const px = sx(tick);
@@ -231,7 +257,7 @@ function drawCanvas(
     ctx.stroke();
   }
 
-  ctx.strokeStyle = "rgba(255,255,255,0.18)";
+  ctx.strokeStyle = T.axis;
   ctx.lineWidth = 1.2;
   if (xMin < 0 && xMax > 0) {
     const xA = sx(0);
@@ -248,7 +274,7 @@ function drawCanvas(
     ctx.stroke();
   }
 
-  ctx.fillStyle = "#cdb8aa";
+  ctx.fillStyle = T.muted;
   ctx.font = '12px "Public Sans", system-ui, sans-serif';
   ctx.textAlign = "center";
   for (let tick = -4; tick <= 4; tick++) {
@@ -256,7 +282,7 @@ function drawCanvas(
   }
 
   /* f(x) curve */
-  ctx.strokeStyle = "#ec5b13";
+  ctx.strokeStyle = T.curve;
   ctx.lineWidth = 3;
   ctx.beginPath();
   let started = false;
@@ -280,7 +306,7 @@ function drawCanvas(
   /* tangent */
   const y0 = fVal(x0, a, b, c, d);
   const slope = fpVal(x0, a, b, c);
-  ctx.strokeStyle = "rgba(143,215,255,0.7)";
+  ctx.strokeStyle = T.tangent;
   ctx.lineWidth = 2;
   ctx.setLineDash([6, 4]);
   ctx.beginPath();
@@ -291,11 +317,11 @@ function drawCanvas(
 
   const px0 = sx(x0);
   const py0 = sy(y0);
-  ctx.fillStyle = "#8fd7ff";
+  ctx.fillStyle = T.tangentDot;
   ctx.beginPath();
   ctx.arc(px0, py0, 6, 0, Math.PI * 2);
   ctx.fill();
-  ctx.fillStyle = "#fff";
+  ctx.fillStyle = T.tangentLabel;
   ctx.font = '12px "Public Sans", system-ui, sans-serif';
   ctx.textAlign = "left";
   ctx.fillText(`x\u2080=${fmt(x0)}`, px0 + 10, py0 - 10);
@@ -305,24 +331,24 @@ function drawCanvas(
     if (root < xMin || root > xMax) return;
     const rpx = sx(root);
     const rpy = sy(fVal(root, a, b, c, d));
-    ctx.fillStyle = "#79dfb8";
+    ctx.fillStyle = T.critDot;
     ctx.beginPath();
     ctx.arc(rpx, rpy, 5, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = "#c0f0d8";
+    ctx.fillStyle = T.critLabel;
     ctx.font = '11px "Public Sans", system-ui, sans-serif';
     ctx.textAlign = "center";
     ctx.fillText(fmt(root), rpx, rpy - 10);
   });
 
   /* derivative sign strip */
-  ctx.fillStyle = "rgba(255,255,255,0.04)";
+  ctx.fillStyle = T.stripBg;
   ctx.fillRect(sR.x, sR.y, sR.w, sR.h);
-  ctx.strokeStyle = "rgba(255,255,255,0.08)";
+  ctx.strokeStyle = T.stripBorder;
   ctx.lineWidth = 1;
   ctx.strokeRect(sR.x, sR.y, sR.w, sR.h);
 
-  ctx.fillStyle = "#cdb8aa";
+  ctx.fillStyle = T.muted;
   ctx.font = '12px "Public Sans", system-ui, sans-serif';
   ctx.textAlign = "right";
   ctx.fillText("f\u2032(x)", sR.x - 8, sR.y + sR.h / 2 + 4);
@@ -335,12 +361,12 @@ function drawCanvas(
     if (cR <= cL) return;
     ctx.fillStyle =
       iv.sign > 0
-        ? "rgba(121,223,184,0.12)"
+        ? T.stripPosBg
         : iv.sign < 0
-        ? "rgba(255,155,143,0.12)"
-        : "rgba(255,255,255,0.06)";
+        ? T.stripNegBg
+        : T.stripZeroBg;
     ctx.fillRect(cL, sR.y, cR - cL, sR.h);
-    ctx.fillStyle = iv.sign > 0 ? "#79dfb8" : iv.sign < 0 ? "#ff9b8f" : "#ccc";
+    ctx.fillStyle = iv.sign > 0 ? T.stripPos : iv.sign < 0 ? T.stripNeg : T.stripZero;
     ctx.font = 'bold 18px "Public Sans", system-ui, sans-serif';
     ctx.textAlign = "center";
     ctx.fillText(
@@ -353,7 +379,7 @@ function drawCanvas(
   roots.forEach((root) => {
     if (root < xMin || root > xMax) return;
     const rpx = sx(root);
-    ctx.strokeStyle = "rgba(255,255,255,0.22)";
+    ctx.strokeStyle = T.rootLine;
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(rpx, sR.y);
@@ -361,7 +387,7 @@ function drawCanvas(
     ctx.stroke();
   });
 
-  ctx.fillStyle = "#cdb8aa";
+  ctx.fillStyle = T.muted;
   ctx.font = '11px "Public Sans", system-ui, sans-serif';
   ctx.textAlign = "center";
   ctx.fillText(
@@ -410,7 +436,9 @@ export default function DerivativeApplicationLab() {
     paint();
     const onResize = () => paint();
     window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+    const observer = new MutationObserver(() => paint());
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => { window.removeEventListener("resize", onResize); observer.disconnect(); };
   }, [paint]);
 
   const applyPreset = (p: Preset) => {

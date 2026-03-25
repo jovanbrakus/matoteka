@@ -141,6 +141,23 @@ function drawPolyLab(
 ) {
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
+  const isLight = document.documentElement.classList.contains("light");
+
+  const T = {
+    bg: isLight ? "rgba(0,0,0,0.03)" : "rgba(255,255,255,0.05)",
+    title: isLight ? "#8b5a2e" : "#ffd7b9",
+    colBg: isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.06)",
+    colLabel: isLight ? "#6b5a4e" : "#d5c3b6",
+    rowLabel: isLight ? "#2a2420" : "#f6eee9",
+    degLabel: isLight ? "#6b5a4e" : "#d5c3b6",
+    coeffZero: isLight ? "#9a8e86" : "#bfaea2",
+    coeffNonZero: isLight ? "#2a2420" : "#fff5ee",
+    footer: isLight ? "#6b5a4e" : "#d5c3b6",
+    pColor: isLight ? "#d95a1b" : "#ff8a52",
+    qColor: isLight ? "#2980b9" : "#88d8ff",
+    rColor: isLight ? "#1a9e6e" : "#6bdfb7",
+  };
+
   const ratio = window.devicePixelRatio || 1;
   const cssW = canvas.clientWidth;
   const cssH = canvas.clientHeight;
@@ -150,12 +167,12 @@ function drawPolyLab(
   ctx.clearRect(0, 0, cssW, cssH);
 
   const rows = [
-    { label: "P(x)", poly: st.p, color: "#ff8a52" },
-    { label: "Q(x)", poly: st.q, color: "#88d8ff" },
+    { label: "P(x)", poly: st.p, color: T.pColor },
+    { label: "Q(x)", poly: st.q, color: T.qColor },
     {
       label: st.op === "*" ? "P(x)\u00b7Q(x)" : "Rezultat",
       poly: result,
-      color: "#6bdfb7",
+      color: T.rColor,
     },
   ];
 
@@ -175,18 +192,18 @@ function drawPolyLab(
   const rowH = (cssH - 78) / rows.length;
   const cellW = (cssW - leftPad - rightPad) / (maxDeg + 1);
 
-  ctx.fillStyle = "rgba(255,255,255,0.05)";
+  ctx.fillStyle = T.bg;
   ctx.fillRect(0, 0, cssW, cssH);
 
   ctx.font = '600 14px "Inter", sans-serif';
-  ctx.fillStyle = "#ffd7b9";
+  ctx.fillStyle = T.title;
   ctx.fillText("Poravnanje koeficijenata po stepenu", 20, 26);
 
   for (let d = maxDeg; d >= 0; d--) {
     const x = leftPad + (maxDeg - d) * cellW;
-    ctx.fillStyle = "rgba(255,255,255,0.06)";
+    ctx.fillStyle = T.colBg;
     ctx.fillRect(x, headerY, cellW - 6, cssH - headerY - 18);
-    ctx.fillStyle = "#d5c3b6";
+    ctx.fillStyle = T.colLabel;
     ctx.font = '600 13px "Inter", sans-serif';
     const colLabel = d === 0 ? "1" : d === 1 ? "x" : `x^${d}`;
     ctx.fillText(colLabel, x + 10, headerY + 18);
@@ -194,12 +211,12 @@ function drawPolyLab(
 
   rows.forEach((row, ri) => {
     const y = headerY + ri * rowH + 34;
-    ctx.fillStyle = "#f6eee9";
+    ctx.fillStyle = T.rowLabel;
     ctx.font = '700 15px "Inter", sans-serif';
     ctx.fillText(row.label, 22, y + 18);
 
     const deg = getDeg(row.poly);
-    ctx.fillStyle = "#d5c3b6";
+    ctx.fillStyle = T.degLabel;
     ctx.font = '500 12px "Inter", sans-serif';
     ctx.fillText(deg === null ? "deg: poseb." : `deg: ${deg}`, 22, y + 38);
 
@@ -216,7 +233,7 @@ function drawPolyLab(
       ctx.lineWidth = 1;
       ctx.strokeRect(x + 6, y, cellW - 18, rowH - 24);
 
-      ctx.fillStyle = Math.abs(coeff) < 1e-9 ? "#bfaea2" : "#fff5ee";
+      ctx.fillStyle = Math.abs(coeff) < 1e-9 ? T.coeffZero : T.coeffNonZero;
       ctx.font = '700 16px "Inter", sans-serif';
       const text = fmtNum(coeff);
       const tw = ctx.measureText(text).width;
@@ -228,7 +245,7 @@ function drawPolyLab(
     }
   });
 
-  ctx.fillStyle = "#d5c3b6";
+  ctx.fillStyle = T.footer;
   ctx.font = '500 12px "Inter", sans-serif';
   ctx.fillText(
     "Tamne ćelije znače koeficijent 0. Jača boja znači veći apsolutni iznos.",
@@ -250,7 +267,9 @@ function PolyLab() {
     render();
     const onResize = () => render();
     window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+    const observer = new MutationObserver(() => render());
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => { window.removeEventListener("resize", onResize); observer.disconnect(); };
   }, [render]);
 
   const setCoeff = (which: "p" | "q", idx: number, val: string) => {
@@ -409,8 +428,8 @@ function PolyLab() {
             type="button"
             style={{
               background:
-                "linear-gradient(135deg, rgba(236,91,19,0.28), rgba(255,154,106,0.18))",
-              borderColor: "rgba(255,154,106,0.26)",
+                "linear-gradient(135deg, var(--lesson-btn-active-bg), var(--lesson-border))",
+              borderColor: "var(--lesson-btn-active-border)",
             }}
             onClick={render}
           >

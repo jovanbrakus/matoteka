@@ -38,6 +38,35 @@ export default function QuadrantDiagram() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    const isLight = document.documentElement.classList.contains("light");
+    const T = {
+      bg: isLight ? "#f5f0eb" : "rgba(8, 4, 2, 0.95)",
+      text: isLight ? "#2a2420" : "#f6eee9",
+      muted: isLight ? "#7a6f68" : "#cdb8aa",
+      grid: isLight ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.06)",
+      gridStrong: isLight ? "rgba(0,0,0,0.22)" : "rgba(255,255,255,0.3)",
+      gridLabel: isLight ? "rgba(0,0,0,0.35)" : "rgba(255,255,255,0.30)",
+      axisLabel: isLight ? "rgba(0,0,0,0.6)" : "rgba(255,255,255,0.7)",
+      quadLabelActive: isLight ? "rgba(0,0,0,0.75)" : "rgba(255, 255, 255, 0.8)",
+      quadLabelInactive: isLight ? "rgba(0,0,0,0.20)" : "rgba(255, 255, 255, 0.25)",
+      projection: isLight ? "rgba(236,91,19,0.35)" : "rgba(255, 156, 109, 0.4)",
+      signText: isLight ? "rgba(0,0,0,0.40)" : "rgba(255, 255, 255, 0.45)",
+    };
+
+    const QUADRANT_COLORS_THEMED = isLight
+      ? [
+          "rgba(236, 91, 19, 0.10)",
+          "rgba(0, 140, 200, 0.08)",
+          "rgba(140, 100, 220, 0.08)",
+          "rgba(30, 160, 120, 0.08)",
+        ]
+      : [
+          "rgba(236, 91, 19, 0.12)",
+          "rgba(143, 215, 255, 0.10)",
+          "rgba(207, 183, 255, 0.10)",
+          "rgba(121, 223, 184, 0.10)",
+        ];
+
     const dpr = window.devicePixelRatio || 1;
     const w = Math.max(280, canvas.clientWidth || 460);
     const h = Math.max(280, Math.round(w * 0.85));
@@ -52,7 +81,7 @@ export default function QuadrantDiagram() {
     const qh = cy - 30;
 
     // Background
-    ctx.fillStyle = "rgba(8, 4, 2, 0.95)";
+    ctx.fillStyle = T.bg;
     ctx.fillRect(0, 0, w, h);
 
     // Quadrant fills
@@ -64,17 +93,17 @@ export default function QuadrantDiagram() {
     ];
 
     quadRects.forEach((rect, i) => {
-      ctx.fillStyle = activeQ === i ? QUADRANT_COLORS[i].replace(/[\d.]+\)$/, "0.25)") : QUADRANT_COLORS[i];
+      ctx.fillStyle = activeQ === i ? QUADRANT_COLORS_THEMED[i].replace(/[\d.]+\)$/, "0.25)") : QUADRANT_COLORS_THEMED[i];
       ctx.fillRect(rect[0], rect[1], rect[2], rect[3]);
     });
 
     // Axes
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
+    ctx.strokeStyle = T.gridStrong;
     ctx.lineWidth = 1.5;
     ctx.beginPath(); ctx.moveTo(30, cy); ctx.lineTo(w - 30, cy); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(cx, 30); ctx.lineTo(cx, h - 30); ctx.stroke();
 
-    ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
+    ctx.fillStyle = T.axisLabel;
     ctx.font = `600 13px ${FONT}`;
     ctx.fillText("Re", w - 28, cy - 10);
     ctx.fillText("Im", cx + 10, 22);
@@ -88,7 +117,7 @@ export default function QuadrantDiagram() {
     ];
 
     labelPositions.forEach((pos, i) => {
-      ctx.fillStyle = activeQ === i ? "rgba(255, 255, 255, 0.8)" : "rgba(255, 255, 255, 0.25)";
+      ctx.fillStyle = activeQ === i ? T.quadLabelActive : T.quadLabelInactive;
       ctx.font = `800 22px ${FONT}`;
       ctx.textAlign = "center";
       ctx.fillText(QUADRANT_LABELS[i], pos[0], pos[1] - 10);
@@ -122,7 +151,7 @@ export default function QuadrantDiagram() {
 
       // Reference angle dashed
       ctx.setLineDash([4, 3]);
-      ctx.strokeStyle = "rgba(255, 156, 109, 0.4)";
+      ctx.strokeStyle = T.projection;
       ctx.lineWidth = 1.2;
       ctx.beginPath();
       ctx.moveTo(px, py);
@@ -144,7 +173,7 @@ export default function QuadrantDiagram() {
       ctx.fillText("α", aX, aY + 4);
 
       // Sign indicators
-      ctx.fillStyle = "rgba(255, 255, 255, 0.45)";
+      ctx.fillStyle = T.signText;
       ctx.font = `600 11px ${FONT}`;
       const signs = [
         ["a>0, b>0", "a<0, b>0", "a<0, b<0", "a>0, b<0"],
@@ -161,7 +190,9 @@ export default function QuadrantDiagram() {
   useEffect(() => {
     const h = () => draw();
     window.addEventListener("resize", h);
-    return () => window.removeEventListener("resize", h);
+    const observer = new MutationObserver(() => draw());
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => { window.removeEventListener("resize", h); observer.disconnect(); };
   }, [draw]);
 
   const handleClick = (e: React.MouseEvent<HTMLCanvasElement>) => {

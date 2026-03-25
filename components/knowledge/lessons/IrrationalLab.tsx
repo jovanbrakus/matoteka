@@ -210,17 +210,31 @@ function renderCanvas(
   canvas.height = Math.round(rect.height * dpr);
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
+  const isLight = document.documentElement.classList.contains("light");
+  const T = {
+    bg: isLight ? "rgba(245, 240, 235, 0.94)" : "rgba(9, 4, 3, 0.94)",
+    grid: isLight ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.06)",
+    axis: isLight ? "rgba(0,0,0,0.22)" : "rgba(255, 255, 255, 0.22)",
+    domainShade: isLight ? "rgba(26, 158, 110, 0.12)" : "rgba(117, 223, 184, 0.14)",
+    sqrtCurve: isLight ? "#d94e0a" : "#ec5b13",
+    lineCurve: isLight ? "#2e8ebf" : "#8fd7ff",
+    solutionDot: isLight ? "#1a9e6e" : "#75dfb8",
+    solutionRing: isLight ? "rgba(26, 158, 110, 0.4)" : "rgba(117, 223, 184, 0.4)",
+    labelText: isLight ? "#2a2420" : "#f6eee9",
+    axisLabel: isLight ? "rgba(42, 36, 32, 0.72)" : "rgba(246, 238, 233, 0.72)",
+  };
+
   const w = rect.width;
   const h = rect.height;
   const bounds = buildBounds(data, result);
 
   // background
   ctx.clearRect(0, 0, w, h);
-  ctx.fillStyle = "rgba(9, 4, 3, 0.94)";
+  ctx.fillStyle = T.bg;
   ctx.fillRect(0, 0, w, h);
 
   // grid
-  ctx.strokeStyle = "rgba(255,255,255,0.06)";
+  ctx.strokeStyle = T.grid;
   ctx.lineWidth = 1;
   for (let x = Math.ceil(bounds.xMin); x <= Math.floor(bounds.xMax); x++) {
     const px = mapX(x, bounds, w);
@@ -232,7 +246,7 @@ function renderCanvas(
   }
 
   // axes
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.22)";
+  ctx.strokeStyle = T.axis;
   ctx.lineWidth = 1.4;
   if (bounds.yMin <= 0 && bounds.yMax >= 0) {
     const ay = mapY(0, bounds, h);
@@ -245,7 +259,7 @@ function renderCanvas(
 
   // shade domain
   if (result.domain.kind !== "none") {
-    ctx.fillStyle = "rgba(117, 223, 184, 0.14)";
+    ctx.fillStyle = T.domainShade;
     if (result.domain.kind === "all") {
       ctx.fillRect(0, 0, w, h);
     } else if (result.domain.boundary != null) {
@@ -256,7 +270,7 @@ function renderCanvas(
   }
 
   // re-draw grid on top
-  ctx.strokeStyle = "rgba(255,255,255,0.06)";
+  ctx.strokeStyle = T.grid;
   ctx.lineWidth = 1;
   for (let x = Math.ceil(bounds.xMin); x <= Math.floor(bounds.xMax); x++) {
     const px = mapX(x, bounds, w);
@@ -270,7 +284,7 @@ function renderCanvas(
   // sqrt function
   ctx.beginPath();
   ctx.lineWidth = 2.6;
-  ctx.strokeStyle = "#ec5b13";
+  ctx.strokeStyle = T.sqrtCurve;
   let started = false;
   for (let px = 0; px <= w; px++) {
     const x = bounds.xMin + (px / w) * (bounds.xMax - bounds.xMin);
@@ -286,7 +300,7 @@ function renderCanvas(
   // line function
   ctx.beginPath();
   ctx.lineWidth = 2.6;
-  ctx.strokeStyle = "#8fd7ff";
+  ctx.strokeStyle = T.lineCurve;
   started = false;
   for (let px = 0; px <= w; px++) {
     const x = bounds.xMin + (px / w) * (bounds.xMax - bounds.xMin);
@@ -303,18 +317,18 @@ function renderCanvas(
     const y = data.c * x + data.d;
     const px = mapX(x, bounds, w);
     const py = mapY(y, bounds, h);
-    ctx.fillStyle = "#75dfb8";
+    ctx.fillStyle = T.solutionDot;
     ctx.beginPath(); ctx.arc(px, py, 5.5, 0, Math.PI * 2); ctx.fill();
-    ctx.strokeStyle = "rgba(117, 223, 184, 0.4)";
+    ctx.strokeStyle = T.solutionRing;
     ctx.lineWidth = 1.5;
     ctx.beginPath(); ctx.arc(px, py, 10, 0, Math.PI * 2); ctx.stroke();
-    ctx.fillStyle = "#f6eee9";
+    ctx.fillStyle = T.labelText;
     ctx.font = '600 12px "Public Sans", sans-serif';
     ctx.fillText(`R${i + 1}`, px + 8, py - 10);
   });
 
   // axis labels
-  ctx.fillStyle = "rgba(246, 238, 233, 0.72)";
+  ctx.fillStyle = T.axisLabel;
   ctx.font = '500 12px "Public Sans", sans-serif';
   for (let x = Math.ceil(bounds.xMin); x <= Math.floor(bounds.xMax); x += 2) {
     const px = mapX(x, bounds, w);
@@ -366,7 +380,9 @@ export default function IrrationalLab() {
     draw();
     const onResize = () => draw();
     window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+    const observer = new MutationObserver(() => draw());
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => { window.removeEventListener("resize", onResize); observer.disconnect(); };
   }, [draw]);
 
   function applyPreset(name: string) {

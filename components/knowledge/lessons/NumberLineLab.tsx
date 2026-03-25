@@ -270,6 +270,29 @@ export default function NumberLineLab() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    const isLight = document.documentElement.classList.contains("light");
+
+    // Theme-aware palette
+    const T = {
+      bg1: isLight ? "#f5f0eb" : "#160906",
+      bg2: isLight ? "#ebe5df" : "#0b0403",
+      text: isLight ? "#2a2420" : "#f6eee9",
+      muted: isLight ? "#7a6f68" : "#cdb8aa",
+      accent: isLight ? "#d94e0a" : "#ffb488",
+      panelBg: isLight ? "rgba(0,0,0,0.02)" : "rgba(255,255,255,0.02)",
+      panelBorder: isLight ? "rgba(180,120,80,0.14)" : "rgba(255,154,106,0.14)",
+      axisStroke: isLight ? "rgba(42,36,32,0.6)" : "rgba(246,238,233,0.7)",
+      zeroTick: isLight ? "rgba(217,78,10,0.8)" : "rgba(255,154,106,0.9)",
+      tickStroke: isLight ? "rgba(42,36,32,0.20)" : "rgba(246,238,233,0.24)",
+      zeroLabel: isLight ? "#d94e0a" : "#ffd7b9",
+      tickLabel: isLight ? "rgba(42,36,32,0.68)" : "rgba(246,238,233,0.74)",
+      absSegment: isLight ? "rgba(217,78,10,0.75)" : "rgba(236,91,19,0.85)",
+      absLabel: isLight ? "rgba(180,120,80,0.85)" : "rgba(255,154,106,0.9)",
+      pointEmpty: isLight ? "rgba(245,240,235,0.9)" : "rgba(9,4,3,0.9)",
+      pointLabelColor: isLight ? "#2a2420" : "#f6eee9",
+      bottomText: isLight ? "rgba(42,36,32,0.70)" : "rgba(246,238,233,0.76)",
+    };
+
     const item = currentNumber;
     const cssWidth = canvas.clientWidth || 900;
     const cssHeight = Math.max(280, Math.round(cssWidth * 0.38));
@@ -286,11 +309,15 @@ export default function NumberLineLab() {
     const right = width - 56;
     const axisY = Math.round(height * 0.6);
 
-    ctx.clearRect(0, 0, width, height);
-
     /* background */
-    ctx.fillStyle = "rgba(255,255,255,0.02)";
-    ctx.strokeStyle = "rgba(255,154,106,0.14)";
+    const bg = ctx.createLinearGradient(0, 0, width, height);
+    bg.addColorStop(0, T.bg1);
+    bg.addColorStop(1, T.bg2);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, width, height);
+
+    ctx.fillStyle = T.panelBg;
+    ctx.strokeStyle = T.panelBorder;
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.roundRect(18, 18, width - 36, height - 36, 22);
@@ -298,13 +325,13 @@ export default function NumberLineLab() {
     ctx.stroke();
 
     /* title */
-    ctx.fillStyle = "#ffb488";
+    ctx.fillStyle = T.accent;
     ctx.font = "700 16px Inter, system-ui, sans-serif";
     ctx.textAlign = "left";
     ctx.fillText("Brojevna prava", 36, 46);
 
     /* axis */
-    ctx.strokeStyle = "rgba(246,238,233,0.7)";
+    ctx.strokeStyle = T.axisStroke;
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(left, axisY);
@@ -319,16 +346,14 @@ export default function NumberLineLab() {
     /* ticks */
     for (let i = min; i <= max; i++) {
       const x = scale(i);
-      ctx.strokeStyle =
-        i === 0 ? "rgba(255,154,106,0.9)" : "rgba(246,238,233,0.24)";
+      ctx.strokeStyle = i === 0 ? T.zeroTick : T.tickStroke;
       ctx.lineWidth = i === 0 ? 2.5 : 1.3;
       ctx.beginPath();
       ctx.moveTo(x, axisY - 12);
       ctx.lineTo(x, axisY + 12);
       ctx.stroke();
 
-      ctx.fillStyle =
-        i === 0 ? "#ffd7b9" : "rgba(246,238,233,0.74)";
+      ctx.fillStyle = i === 0 ? T.zeroLabel : T.tickLabel;
       ctx.font = "600 13px Inter, system-ui, sans-serif";
       ctx.textAlign = "center";
       ctx.fillText(String(i), x, axisY + 32);
@@ -339,7 +364,7 @@ export default function NumberLineLab() {
     const oppositeX = scale(-item.value);
 
     /* abs value segment */
-    ctx.strokeStyle = "rgba(236,91,19,0.85)";
+    ctx.strokeStyle = T.absSegment;
     ctx.lineWidth = 8;
     ctx.lineCap = "round";
     ctx.beginPath();
@@ -347,7 +372,7 @@ export default function NumberLineLab() {
     ctx.lineTo(Math.max(currentX, zeroX), axisY - 48);
     ctx.stroke();
 
-    ctx.fillStyle = "rgba(255,154,106,0.9)";
+    ctx.fillStyle = T.absLabel;
     ctx.font = "700 14px Inter, system-ui, sans-serif";
     ctx.textAlign = "center";
     ctx.fillText(
@@ -366,14 +391,14 @@ export default function NumberLineLab() {
     ) {
       ctx!.save();
       ctx!.strokeStyle = color;
-      ctx!.fillStyle = filled ? color : "rgba(9,4,3,0.9)";
+      ctx!.fillStyle = filled ? color : T.pointEmpty;
       ctx!.lineWidth = 2.4;
       ctx!.beginPath();
       ctx!.arc(x, y, 9, 0, Math.PI * 2);
       ctx!.fill();
       ctx!.stroke();
 
-      ctx!.fillStyle = "#f6eee9";
+      ctx!.fillStyle = T.pointLabelColor;
       ctx!.font = "600 14px Inter, system-ui, sans-serif";
       ctx!.textAlign = "center";
       ctx!.fillText(label, x, y - 18);
@@ -394,10 +419,10 @@ export default function NumberLineLab() {
       drawPoint(oppositeX, axisY, oppLabel, "#7fd6ff", false);
     }
 
-    drawPoint(zeroX, axisY, "0", "#ffd7b9", true);
+    drawPoint(zeroX, axisY, "0", isLight ? "#d94e0a" : "#ffd7b9", true);
 
     /* bottom text */
-    ctx.fillStyle = "rgba(246,238,233,0.76)";
+    ctx.fillStyle = T.bottomText;
     ctx.font = "500 14px Inter, system-ui, sans-serif";
     ctx.textAlign = "left";
     ctx.fillText(
@@ -418,7 +443,9 @@ export default function NumberLineLab() {
     renderCanvas();
     const onResize = () => renderCanvas();
     window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+    const observer = new MutationObserver(() => renderCanvas());
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => { window.removeEventListener("resize", onResize); observer.disconnect(); };
   }, [renderCanvas]);
 
   /* ── Derive display values ── */
@@ -551,8 +578,6 @@ export default function NumberLineLab() {
             width: "100%",
             display: "block",
             borderRadius: 18,
-            background: "rgba(8,4,3,0.92)",
-            border: "1px solid rgba(255,154,106,0.14)",
           }}
         />
         <p style={{ color: "var(--lesson-muted)", marginTop: 12, fontSize: "0.95rem" }}>

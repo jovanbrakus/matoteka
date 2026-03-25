@@ -131,6 +131,21 @@ function renderCanvas(
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
+  const isLight = document.documentElement.classList.contains("light");
+  const T = {
+    bg: isLight ? "#f5f0eb" : "#0a0403",
+    title: isLight ? "#a0582a" : "#ffd7b9",
+    note: isLight ? "#7a6f68" : "#cdb8ab",
+    lBorder: isLight ? "rgba(200, 120, 60, 0.55)" : "rgba(255, 154, 106, 0.55)",
+    rootValue: isLight ? "#2e8ebf" : "#88d8ff",
+    colLabel: isLight ? "#a0582a" : "#ffd7b9",
+    coeffText: isLight ? "#2a2420" : "#f6eee9",
+    productText: isLight ? "#7b5fbf" : "#c0a2ff",
+    remainderColor: isLight ? "#d94e0a" : "#ec5b13",
+    quotientColor: isLight ? "#1a9e6e" : "#6bdfb7",
+    remainderBorder: isLight ? "rgba(217, 78, 10, 0.5)" : "rgba(236, 91, 19, 0.5)",
+  };
+
   const cssWidth =
     canvas.clientWidth || (canvas.parentElement?.clientWidth ?? 700);
   const cssHeight = cssWidth < 500 ? 300 : 340;
@@ -147,7 +162,7 @@ function renderCanvas(
 
   /* background */
   drawRoundedRect(ctx, 0, 0, width, height, 22);
-  ctx.fillStyle = "#0a0403";
+  ctx.fillStyle = T.bg;
   ctx.fill();
 
   const titleFont = width < 500 ? 15 : 18;
@@ -163,7 +178,7 @@ function renderCanvas(
   const stepX = usableWidth / coeffs.length;
 
   /* title */
-  ctx.fillStyle = "#ffd7b9";
+  ctx.fillStyle = T.title;
   ctx.font = `700 ${titleFont}px Inter, sans-serif`;
   ctx.textAlign = "left";
   ctx.fillText(
@@ -172,7 +187,7 @@ function renderCanvas(
     36,
   );
 
-  ctx.fillStyle = "#cdb8ab";
+  ctx.fillStyle = T.note;
   ctx.font = `400 ${noteFont}px Inter, sans-serif`;
   ctx.fillText(
     "Gornji red: koeficijenti \u00B7 Srednji red: umno\u0161ci \u00B7 Donji red: rezultat",
@@ -181,7 +196,7 @@ function renderCanvas(
   );
 
   /* L-shaped border */
-  ctx.strokeStyle = "rgba(255, 154, 106, 0.55)";
+  ctx.strokeStyle = T.lBorder;
   ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.moveTo(leftPad + 30, topY - 28);
@@ -191,14 +206,14 @@ function renderCanvas(
   ctx.stroke();
 
   /* root value on the left */
-  ctx.fillStyle = "#88d8ff";
+  ctx.fillStyle = T.rootValue;
   ctx.font = `700 ${noteFont + 2}px Inter, sans-serif`;
   ctx.textAlign = "right";
   ctx.fillText(formatNumber(root), leftPad + 24, midY);
 
   /* column labels */
   ctx.textAlign = "left";
-  ctx.fillStyle = "#ffd7b9";
+  ctx.fillStyle = T.colLabel;
   ctx.font = `700 ${noteFont}px Inter, sans-serif`;
   ctx.fillText("koef.", 12, topY - 6);
   ctx.fillText("umno\u0161ci", 8, midY - 6);
@@ -208,23 +223,23 @@ function renderCanvas(
   ctx.textAlign = "center";
   coeffs.forEach((coeff, index) => {
     const x = startX + stepX * index + stepX / 2;
-    ctx.fillStyle = "#f6eee9";
+    ctx.fillStyle = T.coeffText;
     ctx.font = `700 ${numberFont}px Inter, sans-serif`;
     ctx.fillText(formatNumber(coeff), x, topY);
 
     if (index < result.products.length) {
-      ctx.fillStyle = "#c0a2ff";
+      ctx.fillStyle = T.productText;
       ctx.fillText(formatNumber(result.products[index]), x + stepX, midY);
     }
 
     ctx.fillStyle =
-      index === coeffs.length - 1 ? "#ec5b13" : "#6bdfb7";
+      index === coeffs.length - 1 ? T.remainderColor : T.quotientColor;
     ctx.fillText(formatNumber(result.bottom[index]), x, bottomY);
   });
 
   /* highlight remainder box */
   const lastX = startX + stepX * (coeffs.length - 1) + stepX / 2;
-  ctx.strokeStyle = "rgba(236, 91, 19, 0.5)";
+  ctx.strokeStyle = T.remainderBorder;
   ctx.lineWidth = 2;
   drawRoundedRect(ctx, lastX - 32, bottomY - 28, 64, 38, 12);
   ctx.stroke();
@@ -266,7 +281,9 @@ export default function HornerLab() {
     draw();
     const onResize = () => draw();
     window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+    const observer = new MutationObserver(() => draw());
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => { window.removeEventListener("resize", onResize); observer.disconnect(); };
   }, [draw]);
 
   function updateCoeff(index: number, value: string) {

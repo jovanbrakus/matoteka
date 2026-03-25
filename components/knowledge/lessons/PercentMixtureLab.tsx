@@ -117,11 +117,51 @@ function drawRoundedRect(
   ctx.closePath();
 }
 
+interface ThemePalette {
+  bg1: string;
+  bg2: string;
+  text: string;
+  muted: string;
+  accent: string;
+  bar1: string;
+  bar2: string;
+  bar3: string;
+  baseline: string;
+  labelSoft: string;
+  tankStroke: string;
+  tankBg: string;
+  tankPure: string;
+  wrapBg: string;
+  wrapBorder: string;
+}
+
+function getTheme(): ThemePalette {
+  const isLight = document.documentElement.classList.contains("light");
+  return {
+    bg1: isLight ? "#f5f0eb" : "rgba(8, 4, 2, 0.02)",
+    bg2: isLight ? "#ebe5df" : "rgba(8, 4, 2, 0.02)",
+    text: isLight ? "#2a2420" : "#f6eee9",
+    muted: isLight ? "#7a6f68" : "rgba(246,238,233,0.76)",
+    accent: isLight ? "#c44200" : "#ffb488",
+    bar1: isLight ? "rgba(236,160,100,0.72)" : "rgba(255,215,185,0.86)",
+    bar2: isLight ? "rgba(217,78,10,0.72)" : "rgba(236,91,19,0.82)",
+    bar3: isLight ? "rgba(60,170,220,0.72)" : "rgba(127,214,255,0.82)",
+    baseline: isLight ? "rgba(0,0,0,0.14)" : "rgba(246,238,233,0.18)",
+    labelSoft: isLight ? "#7a6f68" : "rgba(246,238,233,0.78)",
+    tankStroke: isLight ? "rgba(0,0,0,0.18)" : "rgba(255,255,255,0.24)",
+    tankBg: isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.06)",
+    tankPure: isLight ? "rgba(0,0,0,0.12)" : "rgba(9,4,3,0.35)",
+    wrapBg: isLight ? "rgba(0,0,0,0.02)" : "rgba(255,255,255,0.02)",
+    wrapBorder: isLight ? "rgba(0,0,0,0.08)" : "rgba(255,154,106,0.14)",
+  };
+}
+
 function renderPercentCanvas(
   ctx: CanvasRenderingContext2D,
   width: number,
   height: number,
-  pState: PercentState
+  pState: PercentState,
+  T: ThemePalette
 ) {
   const model = percentModel(pState);
   const values = [pState.base, model.after1, model.after2];
@@ -134,18 +174,14 @@ function renderPercentCanvas(
   const startX = (width - totalWidth) / 2;
 
   const labels = ["Početna", "Posle 1.", "Posle 2."];
-  const colors = [
-    "rgba(255,215,185,0.86)",
-    "rgba(236,91,19,0.82)",
-    "rgba(127,214,255,0.82)",
-  ];
+  const colors = [T.bar1, T.bar2, T.bar3];
 
-  ctx.fillStyle = "#ffb488";
+  ctx.fillStyle = T.accent;
   ctx.font = "700 16px Public Sans, system-ui, sans-serif";
   ctx.textAlign = "left";
   ctx.fillText("Sukcesivne procentualne promene", 36, 46);
 
-  ctx.strokeStyle = "rgba(246,238,233,0.18)";
+  ctx.strokeStyle = T.baseline;
   ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.moveTo(startX - 20, barBottom);
@@ -161,14 +197,14 @@ function renderPercentCanvas(
     drawRoundedRect(ctx, x, y, barWidth, h, 8);
     ctx.fill();
 
-    ctx.fillStyle = "#f6eee9";
+    ctx.fillStyle = T.text;
     ctx.font = "700 14px Public Sans, system-ui, sans-serif";
     ctx.textAlign = "center";
     ctx.fillText(labels[index], x + barWidth / 2, barBottom + 28);
     ctx.fillText(fmt(value), x + barWidth / 2, y - 12);
   });
 
-  ctx.fillStyle = "rgba(246,238,233,0.76)";
+  ctx.fillStyle = T.muted;
   ctx.font = "500 13px Public Sans, system-ui, sans-serif";
   ctx.textAlign = "center";
   const sign1 = pState.a1 === "up" ? "+" : "-";
@@ -189,8 +225,10 @@ function renderMixtureCanvas(
   ctx: CanvasRenderingContext2D,
   width: number,
   height: number,
-  mState: MixtureState
+  mState: MixtureState,
+  T: ThemePalette
 ) {
+  const isLight = document.documentElement.classList.contains("light");
   const model = mixtureModel(mState);
   const tankWidth = Math.min(120, (width - 200) / 4);
   const spacing = (width - tankWidth * 3) / 4;
@@ -201,7 +239,7 @@ function renderMixtureCanvas(
   const tankY = 100;
   const maxAmount = Math.max(mState.m1, mState.m2, model.total, 1);
 
-  ctx.fillStyle = "#ffb488";
+  ctx.fillStyle = T.accent;
   ctx.font = "700 16px Public Sans, system-ui, sans-serif";
   ctx.textAlign = "left";
   ctx.fillText(
@@ -222,17 +260,17 @@ function renderMixtureCanvas(
     const fillY = tankY + tankHeight - fillHeight;
     const pureHeight = fillHeight * (conc / 100);
 
-    ctx.strokeStyle = "rgba(255,255,255,0.24)";
+    ctx.strokeStyle = T.tankStroke;
     ctx.lineWidth = 2;
     ctx.strokeRect(x, tankY, tankWidth, tankHeight);
 
-    ctx.fillStyle = "rgba(255,255,255,0.06)";
+    ctx.fillStyle = T.tankBg;
     ctx.fillRect(x, tankY, tankWidth, tankHeight);
 
     ctx.fillStyle = color;
     ctx.fillRect(x, fillY, tankWidth, fillHeight);
 
-    ctx.fillStyle = "rgba(9,4,3,0.35)";
+    ctx.fillStyle = T.tankPure;
     ctx.fillRect(
       x,
       tankY + tankHeight - pureHeight,
@@ -240,7 +278,7 @@ function renderMixtureCanvas(
       pureHeight
     );
 
-    ctx.fillStyle = "#f6eee9";
+    ctx.fillStyle = T.text;
     ctx.font = "700 13px Public Sans, system-ui, sans-serif";
     ctx.textAlign = "center";
     ctx.fillText(title, x + tankWidth / 2, tankY - 16);
@@ -251,12 +289,17 @@ function renderMixtureCanvas(
     );
   }
 
-  drawTank(leftX, mState.m1, mState.c1, "Komponenta 1", "rgba(236,91,19,0.78)");
-  drawTank(midX, mState.m2, mState.c2, "Komponenta 2", "rgba(255,180,136,0.76)");
-  drawTank(rightX, model.total, model.conc, "Konačna smeša", "rgba(127,214,255,0.78)");
+  const tank1Color = isLight ? "rgba(217,78,10,0.55)" : "rgba(236,91,19,0.78)";
+  const tank2Color = isLight ? "rgba(200,120,80,0.50)" : "rgba(255,180,136,0.76)";
+  const tank3Color = isLight ? "rgba(40,150,210,0.55)" : "rgba(127,214,255,0.78)";
+
+  drawTank(leftX, mState.m1, mState.c1, "Komponenta 1", tank1Color);
+  drawTank(midX, mState.m2, mState.c2, "Komponenta 2", tank2Color);
+  drawTank(rightX, model.total, model.conc, "Konačna smeša", tank3Color);
 
   // Arrows
-  ctx.strokeStyle = "rgba(255,215,185,0.78)";
+  const arrowColor = isLight ? "rgba(180,120,70,0.60)" : "rgba(255,215,185,0.78)";
+  ctx.strokeStyle = arrowColor;
   ctx.lineWidth = 2.5;
   ctx.beginPath();
   ctx.moveTo(leftX + tankWidth + 12, tankY + 50);
@@ -267,7 +310,7 @@ function renderMixtureCanvas(
   ctx.lineTo(rightX - 12, tankY + 90);
   ctx.stroke();
 
-  ctx.fillStyle = "rgba(246,238,233,0.78)";
+  ctx.fillStyle = T.labelSoft;
   ctx.font = "500 13px Public Sans, system-ui, sans-serif";
   ctx.textAlign = "center";
   ctx.fillText(
@@ -308,6 +351,8 @@ export default function PercentMixtureLab() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    const T = getTheme();
+
     const cssWidth = canvas.clientWidth || canvas.parentElement?.clientWidth || 800;
     const cssHeight = Math.max(360, Math.round(cssWidth * 0.5));
     const ratio = window.devicePixelRatio || 1;
@@ -318,17 +363,17 @@ export default function PercentMixtureLab() {
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
 
     ctx.clearRect(0, 0, cssWidth, cssHeight);
-    ctx.fillStyle = "rgba(255,255,255,0.02)";
-    ctx.strokeStyle = "rgba(255,154,106,0.14)";
+    ctx.fillStyle = T.wrapBg;
+    ctx.strokeStyle = T.wrapBorder;
     ctx.lineWidth = 1.5;
     drawRoundedRect(ctx, 18, 18, cssWidth - 36, cssHeight - 36, 22);
     ctx.fill();
     ctx.stroke();
 
     if (mode === "percent") {
-      renderPercentCanvas(ctx, cssWidth, cssHeight, pState);
+      renderPercentCanvas(ctx, cssWidth, cssHeight, pState, T);
     } else {
-      renderMixtureCanvas(ctx, cssWidth, cssHeight, mState);
+      renderMixtureCanvas(ctx, cssWidth, cssHeight, mState, T);
     }
   }, [mode, pState, mState]);
 
@@ -336,7 +381,9 @@ export default function PercentMixtureLab() {
     renderCanvas();
     const handleResize = () => renderCanvas();
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    const observer = new MutationObserver(() => renderCanvas());
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => { window.removeEventListener("resize", handleResize); observer.disconnect(); };
   }, [renderCanvas]);
 
   /* Preset handling */

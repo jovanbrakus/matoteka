@@ -280,22 +280,39 @@ function drawNode(
   y: number,
   label: string,
   tone: string,
-  dimmed: boolean
+  dimmed: boolean,
+  isLight: boolean
 ) {
-  const fillMap: Record<string, string> = {
-    default: "rgba(255,255,255,0.06)",
-    success: "rgba(103, 215, 173, 0.18)",
-    warning: "rgba(255, 180, 136, 0.18)",
-    danger: "rgba(255, 143, 143, 0.18)",
-    sky: "rgba(127, 214, 255, 0.16)",
-  };
-  const strokeMap: Record<string, string> = {
-    default: "rgba(255, 154, 106, 0.22)",
-    success: "rgba(103, 215, 173, 0.42)",
-    warning: "rgba(255, 180, 136, 0.42)",
-    danger: "rgba(255, 143, 143, 0.42)",
-    sky: "rgba(127, 214, 255, 0.42)",
-  };
+  const fillMap: Record<string, string> = isLight
+    ? {
+        default: "rgba(0,0,0,0.04)",
+        success: "rgba(26, 158, 110, 0.14)",
+        warning: "rgba(180, 120, 80, 0.14)",
+        danger: "rgba(200, 60, 60, 0.14)",
+        sky: "rgba(50, 140, 200, 0.12)",
+      }
+    : {
+        default: "rgba(255,255,255,0.06)",
+        success: "rgba(103, 215, 173, 0.18)",
+        warning: "rgba(255, 180, 136, 0.18)",
+        danger: "rgba(255, 143, 143, 0.18)",
+        sky: "rgba(127, 214, 255, 0.16)",
+      };
+  const strokeMap: Record<string, string> = isLight
+    ? {
+        default: "rgba(180,120,80,0.22)",
+        success: "rgba(26, 158, 110, 0.42)",
+        warning: "rgba(180, 120, 80, 0.42)",
+        danger: "rgba(200, 60, 60, 0.42)",
+        sky: "rgba(50, 140, 200, 0.42)",
+      }
+    : {
+        default: "rgba(255, 154, 106, 0.22)",
+        success: "rgba(103, 215, 173, 0.42)",
+        warning: "rgba(255, 180, 136, 0.42)",
+        danger: "rgba(255, 143, 143, 0.42)",
+        sky: "rgba(127, 214, 255, 0.42)",
+      };
 
   ctx.save();
   ctx.globalAlpha = dimmed ? 0.55 : 1;
@@ -307,7 +324,7 @@ function drawNode(
   ctx.fill();
   ctx.stroke();
 
-  ctx.fillStyle = "#f6eee9";
+  ctx.fillStyle = isLight ? "#2a2420" : "#f6eee9";
   ctx.font = "700 18px Public Sans, system-ui, sans-serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
@@ -324,6 +341,24 @@ function renderCanvas(
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
+  const isLight = document.documentElement.classList.contains("light");
+
+  // Theme-aware palette
+  const T = {
+    bg1: isLight ? "#f5f0eb" : "#160906",
+    bg2: isLight ? "#ebe5df" : "#0b0403",
+    text: isLight ? "#2a2420" : "#f6eee9",
+    muted: isLight ? "#7a6f68" : "#cdb8aa",
+    accent: isLight ? "#d94e0a" : "#ffb488",
+    panelBg: isLight ? "rgba(0,0,0,0.02)" : "rgba(255,255,255,0.02)",
+    panelBorder: isLight ? "rgba(180,120,80,0.12)" : "rgba(255,154,106,0.12)",
+    arrowInvalid: isLight ? "rgba(200,60,60,0.82)" : "rgba(255,143,143,0.88)",
+    arrowBijective: isLight ? "rgba(26,158,110,0.82)" : "rgba(103,215,173,0.88)",
+    arrowDefault: isLight ? "rgba(180,120,80,0.85)" : "rgba(255,180,136,0.9)",
+    arrowInverse: isLight ? "rgba(50,140,200,0.70)" : "rgba(127,214,255,0.75)",
+    noteText: isLight ? "rgba(42,36,32,0.72)" : "rgba(246,238,233,0.75)",
+  };
+
   const cssWidth = canvas.clientWidth || canvas.parentElement?.clientWidth || 800;
   const cssHeight = Math.max(360, Math.round(cssWidth * 0.52));
   const ratio = window.devicePixelRatio || 1;
@@ -336,7 +371,12 @@ function renderCanvas(
   const width = cssWidth;
   const height = cssHeight;
 
-  ctx.clearRect(0, 0, width, height);
+  /* Background */
+  const bg = ctx.createLinearGradient(0, 0, width, height);
+  bg.addColorStop(0, T.bg1);
+  bg.addColorStop(1, T.bg2);
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, width, height);
 
   const leftX = Math.max(80, width * 0.19);
   const rightX = width - Math.max(80, width * 0.19);
@@ -344,8 +384,8 @@ function renderCanvas(
   const panelHeight = height - 68;
   const panelWidth = Math.min(200, width * 0.25);
 
-  ctx.fillStyle = "rgba(255,255,255,0.02)";
-  ctx.strokeStyle = "rgba(255,154,106,0.12)";
+  ctx.fillStyle = T.panelBg;
+  ctx.strokeStyle = T.panelBorder;
   ctx.lineWidth = 1.5;
   drawRoundedRect(ctx, leftX - panelWidth / 2, panelTop, panelWidth, panelHeight, 24);
   ctx.fill();
@@ -355,7 +395,7 @@ function renderCanvas(
   ctx.fill();
   ctx.stroke();
 
-  ctx.fillStyle = "#ffb488";
+  ctx.fillStyle = T.accent;
   ctx.font = "700 16px Public Sans, system-ui, sans-serif";
   ctx.textAlign = "center";
   ctx.fillText("DOMEN", leftX, 56);
@@ -389,10 +429,10 @@ function renderCanvas(
     const isInvalid =
       analysis.multiDomain.includes(arrow.from) || !analysis.isFunction;
     const color = isInvalid
-      ? "rgba(255,143,143,0.88)"
+      ? T.arrowInvalid
       : analysis.bijective
-        ? "rgba(103,215,173,0.88)"
-        : "rgba(255,180,136,0.9)";
+        ? T.arrowBijective
+        : T.arrowDefault;
     const bend = (index % 2 === 0 ? 1 : -1) * 18;
     drawArrow(ctx, start.x + 26, start.y, end.x - 26, end.y, color, false, bend);
   });
@@ -411,7 +451,7 @@ function renderCanvas(
         from.y,
         to.x + 26,
         to.y,
-        "rgba(127,214,255,0.75)",
+        T.arrowInverse,
         true,
         (index % 2 === 0 ? 1 : -1) * 22
       );
@@ -429,7 +469,7 @@ function renderCanvas(
         : analysis.isFunction
           ? "success"
           : "default";
-    drawNode(ctx, position.x, position.y, label, tone, false);
+    drawNode(ctx, position.x, position.y, label, tone, false, isLight);
   });
 
   // Draw codomain nodes
@@ -448,12 +488,13 @@ function renderCanvas(
       position.y,
       label,
       tone,
-      !hasIncoming && analysis.isFunction
+      !hasIncoming && analysis.isFunction,
+      isLight
     );
   });
 
   // Center note
-  ctx.fillStyle = "rgba(246,238,233,0.75)";
+  ctx.fillStyle = T.noteText;
   ctx.font = "500 14px Public Sans, system-ui, sans-serif";
   ctx.textAlign = "center";
   const centerNote = analysis.isFunction
@@ -558,7 +599,9 @@ export default function MappingLab() {
     doRender();
     const handler = () => doRender();
     window.addEventListener("resize", handler);
-    return () => window.removeEventListener("resize", handler);
+    const observer = new MutationObserver(() => doRender());
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => { window.removeEventListener("resize", handler); observer.disconnect(); };
   }, [doRender]);
 
   const scenario = getScenario();
@@ -704,8 +747,6 @@ export default function MappingLab() {
             display: "block",
             width: "100%",
             borderRadius: 20,
-            background: "rgba(8, 4, 3, 0.92)",
-            border: "1px solid rgba(255, 154, 106, 0.14)",
           }}
         />
         <p

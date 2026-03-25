@@ -127,6 +127,22 @@ export default function ComplexPlaneLab() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    const isLight = document.documentElement.classList.contains("light");
+    const T = {
+      bg: isLight ? "#f5f0eb" : "rgba(8, 4, 2, 0.95)",
+      text: isLight ? "#2a2420" : "#f6eee9",
+      muted: isLight ? "#7a6f68" : "#cdb8aa",
+      grid: isLight ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.06)",
+      gridStrong: isLight ? "rgba(0,0,0,0.22)" : "rgba(255,255,255,0.24)",
+      gridLabel: isLight ? "rgba(0,0,0,0.35)" : "rgba(255,255,255,0.32)",
+      axisLabel: isLight ? "rgba(0,0,0,0.6)" : "rgba(255,255,255,0.68)",
+      projection: isLight ? "rgba(236,91,19,0.20)" : "rgba(255, 154, 106, 0.22)",
+      conjZ: isLight ? "rgba(236,91,19,0.50)" : "rgba(255, 154, 106, 0.55)",
+      conjW: isLight ? "rgba(0,140,200,0.50)" : "rgba(136, 216, 255, 0.55)",
+      modCircle: isLight ? "rgba(200,150,100,0.22)" : "rgba(255, 215, 185, 0.22)",
+      modLabel: isLight ? "rgba(0,0,0,0.45)" : "rgba(255,255,255,0.5)",
+    };
+
     const dpr = window.devicePixelRatio || 1;
     const width = Math.max(320, canvas.clientWidth || 640);
     const height = Math.max(240, Math.round(width * 0.62));
@@ -163,11 +179,11 @@ export default function ComplexPlaneLab() {
     const gridMax = Math.ceil(maxC / step) * step;
 
     // Background
-    ctx.fillStyle = "rgba(8, 4, 2, 0.95)";
+    ctx.fillStyle = T.bg;
     ctx.fillRect(0, 0, width, height);
 
     // Grid
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.06)";
+    ctx.strokeStyle = T.grid;
     ctx.lineWidth = 1;
     for (let v = -gridMax; v <= gridMax; v += step) {
       if (Math.abs(v) < step * 0.01) continue;
@@ -176,18 +192,18 @@ export default function ComplexPlaneLab() {
     }
 
     // Axes
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.24)";
+    ctx.strokeStyle = T.gridStrong;
     ctx.lineWidth = 1.4;
     ctx.beginPath(); ctx.moveTo(margin * 0.45, cy); ctx.lineTo(width - margin * 0.45, cy); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(cx, margin * 0.45); ctx.lineTo(cx, height - margin * 0.45); ctx.stroke();
 
-    ctx.fillStyle = "rgba(255, 255, 255, 0.68)";
+    ctx.fillStyle = T.axisLabel;
     ctx.font = `600 13px ${FONT}`;
     ctx.fillText("Re", width - 28, cy - 10);
     ctx.fillText("Im", cx + 10, 24);
 
     // Number labels
-    ctx.fillStyle = "rgba(255, 255, 255, 0.32)";
+    ctx.fillStyle = T.gridLabel;
     ctx.font = `500 11px ${FONT}`;
     for (let v = -gridMax; v <= gridMax; v += step) {
       if (Math.abs(v) < step * 0.01) continue;
@@ -217,7 +233,7 @@ export default function ComplexPlaneLab() {
 
     // Dashed projections for z
     ctx.setLineDash([6, 6]);
-    ctx.strokeStyle = "rgba(255, 154, 106, 0.22)";
+    ctx.strokeStyle = T.projection;
     ctx.lineWidth = 1.2;
     ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(mx(z.re), cy); ctx.lineTo(mx(z.re), my(z.im)); ctx.stroke();
     ctx.setLineDash([]);
@@ -230,17 +246,17 @@ export default function ComplexPlaneLab() {
     // Conjugates
     if (st.showConjugates) {
       ctx.setLineDash([4, 6]);
-      drawArrow(cx, cy, mx(zConj.re), my(zConj.im), "rgba(255, 154, 106, 0.55)", "konj z");
-      drawArrow(cx, cy, mx(conjugate(w).re), my(conjugate(w).im), "rgba(136, 216, 255, 0.55)", "konj w");
+      drawArrow(cx, cy, mx(zConj.re), my(zConj.im), T.conjZ, "konj z");
+      drawArrow(cx, cy, mx(conjugate(w).re), my(conjugate(w).im), T.conjW, "konj w");
       ctx.setLineDash([]);
     }
 
     // Modulus circle for z
     const radius = zMod * scale;
-    ctx.strokeStyle = "rgba(255, 215, 185, 0.22)";
+    ctx.strokeStyle = T.modCircle;
     ctx.lineWidth = 1.4;
     ctx.beginPath(); ctx.arc(cx, cy, radius, 0, Math.PI * 2); ctx.stroke();
-    ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+    ctx.fillStyle = T.modLabel;
     ctx.font = `600 12px ${FONT}`;
     ctx.fillText("|z|", cx + radius * 0.45, cy - 8);
   }, [z.re, z.im, w.re, w.im, st.op, st.showConjugates, result, zConj.re, zConj.im, zMod]);
@@ -249,7 +265,9 @@ export default function ComplexPlaneLab() {
   useEffect(() => {
     const h = () => draw();
     window.addEventListener("resize", h);
-    return () => window.removeEventListener("resize", h);
+    const observer = new MutationObserver(() => draw());
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => { window.removeEventListener("resize", h); observer.disconnect(); };
   }, [draw]);
 
   const set = (key: keyof LabState, v: number | string | boolean) =>

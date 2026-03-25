@@ -57,6 +57,51 @@ function clampInt(value: string, fallback: number, min: number, max: number) {
   return Math.min(max, Math.max(min, parsed));
 }
 
+interface FactorTheme {
+  bg: string;
+  grid: string;
+  stroke: string;
+  sqFill: string;
+  abFill: string;
+  resultFill: string;
+  cutoutFill: string;
+  boxGroupBg: string;
+  boxGroupStroke: string;
+  textDefault: string;
+  labelAccent: string;     // #ffd7b9 equiv
+  labelSq: string;         // #ffe5d6 equiv
+  labelAb: string;         // #caecff equiv
+  labelResult: string;     // #dffbea equiv
+  labelCutout: string;     // #ffb9b3 equiv
+  labelContent: string;    // #ffeadd equiv
+  labelMuted: string;      // #c8b5a8 equiv
+  arrowColor: string;
+}
+
+function getFactorTheme(): FactorTheme {
+  const isLight = document.documentElement.classList.contains("light");
+  return {
+    bg: isLight ? "rgba(245, 240, 235, 0.95)" : "rgba(8, 4, 2, 0.95)",
+    grid: isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.05)",
+    stroke: isLight ? "rgba(0,0,0,0.12)" : "rgba(255,255,255,0.14)",
+    sqFill: isLight ? "rgba(217, 78, 10, 0.15)" : "rgba(236, 91, 19, 0.22)",
+    abFill: isLight ? "rgba(40, 120, 184, 0.12)" : "rgba(136, 216, 255, 0.16)",
+    resultFill: isLight ? "rgba(26, 158, 110, 0.12)" : "rgba(107, 223, 183, 0.16)",
+    cutoutFill: isLight ? "rgba(245, 240, 235, 0.96)" : "rgba(12, 7, 5, 0.96)",
+    boxGroupBg: isLight ? "rgba(0,0,0,0.03)" : "rgba(255,255,255,0.05)",
+    boxGroupStroke: isLight ? "rgba(0,0,0,0.10)" : "rgba(255,255,255,0.12)",
+    textDefault: isLight ? "rgba(0,0,0,0.72)" : "rgba(255,255,255,0.85)",
+    labelAccent: isLight ? "#a06030" : "#ffd7b9",
+    labelSq: isLight ? "#8b4513" : "#ffe5d6",
+    labelAb: isLight ? "#2060a0" : "#caecff",
+    labelResult: isLight ? "#1a7050" : "#dffbea",
+    labelCutout: isLight ? "#b03020" : "#ffb9b3",
+    labelContent: isLight ? "#6e4020" : "#ffeadd",
+    labelMuted: isLight ? "#7a6f68" : "#c8b5a8",
+    arrowColor: isLight ? "#a06030" : "#ffd7b9",
+  };
+}
+
 function drawLabel(
   ctx: CanvasRenderingContext2D,
   text: string,
@@ -74,7 +119,8 @@ function renderSquare(
   ctx: CanvasRenderingContext2D,
   width: number,
   height: number,
-  st: LabState
+  st: LabState,
+  T: FactorTheme
 ) {
   const margin = 56;
   const total = st.a + st.b;
@@ -87,20 +133,20 @@ function renderSquare(
   const aSize = st.a * unit;
   const bSize = st.b * unit;
 
-  ctx.strokeStyle = "rgba(255,255,255,0.14)";
+  ctx.strokeStyle = T.stroke;
   ctx.lineWidth = 1.4;
 
-  ctx.fillStyle = "rgba(236, 91, 19, 0.22)";
+  ctx.fillStyle = T.sqFill;
   ctx.fillRect(x0, y0, aSize, aSize);
   ctx.strokeRect(x0, y0, aSize, aSize);
 
-  ctx.fillStyle = "rgba(136, 216, 255, 0.16)";
+  ctx.fillStyle = T.abFill;
   ctx.fillRect(x0 + aSize, y0, bSize, aSize);
   ctx.strokeRect(x0 + aSize, y0, bSize, aSize);
   ctx.fillRect(x0, y0 + aSize, aSize, bSize);
   ctx.strokeRect(x0, y0 + aSize, aSize, bSize);
 
-  ctx.fillStyle = "rgba(107, 223, 183, 0.16)";
+  ctx.fillStyle = T.resultFill;
   ctx.fillRect(x0 + aSize, y0 + aSize, bSize, bSize);
   ctx.strokeRect(x0 + aSize, y0 + aSize, bSize, bSize);
 
@@ -110,7 +156,7 @@ function renderSquare(
       `${st.a * st.a}x²`,
       x0 + aSize * 0.34,
       y0 + aSize * 0.52,
-      "#ffe5d6",
+      T.labelSq,
       18
     );
     drawLabel(
@@ -118,7 +164,7 @@ function renderSquare(
       `${st.a * st.b}x`,
       x0 + aSize + bSize * 0.18,
       y0 + aSize * 0.52,
-      "#caecff",
+      T.labelAb,
       18
     );
     drawLabel(
@@ -126,7 +172,7 @@ function renderSquare(
       `${st.a * st.b}x`,
       x0 + aSize * 0.34,
       y0 + aSize + bSize * 0.58,
-      "#caecff",
+      T.labelAb,
       18
     );
     drawLabel(
@@ -134,7 +180,7 @@ function renderSquare(
       `${st.b * st.b}`,
       x0 + aSize + bSize * 0.22,
       y0 + aSize + bSize * 0.58,
-      "#dffbea",
+      T.labelResult,
       18
     );
     drawLabel(
@@ -142,7 +188,7 @@ function renderSquare(
       `${st.a}x`,
       x0 + aSize * 0.42,
       y0 - 16,
-      "#ffd7b9",
+      T.labelAccent,
       15
     );
     drawLabel(
@@ -150,16 +196,16 @@ function renderSquare(
       `${st.b}`,
       x0 + aSize + bSize * 0.35,
       y0 - 16,
-      "#ffd7b9",
+      T.labelAccent,
       15
     );
-    drawLabel(ctx, `${st.a}x`, x0 - 36, y0 + aSize * 0.55, "#ffd7b9", 15);
+    drawLabel(ctx, `${st.a}x`, x0 - 36, y0 + aSize * 0.55, T.labelAccent, 15);
     drawLabel(
       ctx,
       `${st.b}`,
       x0 - 28,
       y0 + aSize + bSize * 0.55,
-      "#ffd7b9",
+      T.labelAccent,
       15
     );
   }
@@ -169,15 +215,15 @@ function renderSquare(
     "Kvadrat sa stranicom ax + b",
     x0,
     42,
-    "#ffd7b9",
+    T.labelAccent,
     17
   );
   drawLabel(
     ctx,
-    "→ zbir četiri dela daje kvadrat binoma",
+    "\u2192 zbir \u010Detiri dela daje kvadrat binoma",
     x0,
     y0 + aSize + bSize + 40,
-    "#c8b5a8",
+    T.labelMuted,
     14
   );
 }
@@ -186,7 +232,8 @@ function renderDifference(
   ctx: CanvasRenderingContext2D,
   width: number,
   height: number,
-  st: LabState
+  st: LabState,
+  T: FactorTheme
 ) {
   const compact = width < 720;
   const margin = 40;
@@ -196,27 +243,27 @@ function renderDifference(
   const big = st.a * unit;
   const small = st.b * unit;
 
-  ctx.strokeStyle = "rgba(255,255,255,0.14)";
+  ctx.strokeStyle = T.stroke;
   ctx.lineWidth = 1.4;
 
   if (compact) {
     const leftX = (width - big) / 2;
     const topY = 70;
 
-    ctx.fillStyle = "rgba(236, 91, 19, 0.18)";
+    ctx.fillStyle = T.sqFill;
     ctx.fillRect(leftX, topY, big, big);
     ctx.strokeRect(leftX, topY, big, big);
-    ctx.fillStyle = "rgba(12, 7, 5, 0.96)";
+    ctx.fillStyle = T.cutoutFill;
     ctx.fillRect(leftX + big - small, topY, small, small);
     ctx.strokeRect(leftX + big - small, topY, small, small);
 
     if (st.showLabels) {
       drawLabel(
         ctx,
-        `${st.a * st.a}x²`,
+        `${st.a * st.a}x\u00B2`,
         leftX + big * 0.24,
         topY + big * 0.55,
-        "#ffe5d6",
+        T.labelSq,
         Math.max(12, unit * 0.34)
       );
       drawLabel(
@@ -224,18 +271,18 @@ function renderDifference(
         `${st.b * st.b}`,
         leftX + big - small * 0.75,
         topY + small * 0.58,
-        "#ffb9b3",
+        T.labelCutout,
         Math.max(11, unit * 0.28)
       );
     }
 
-    drawLabel(ctx, "↓", width / 2 - 8, topY + big + 42, "#ffd7b9", 28);
+    drawLabel(ctx, "\u2193", width / 2 - 8, topY + big + 42, T.arrowColor, 28);
 
     const rectW = (st.a + st.b) * unit;
     const rectH = Math.max(st.a - st.b, 1) * unit;
     const rectX = (width - rectW) / 2;
     const rectY = topY + big + 78;
-    ctx.fillStyle = "rgba(107, 223, 183, 0.16)";
+    ctx.fillStyle = T.resultFill;
     ctx.fillRect(rectX, rectY, rectW, rectH);
     ctx.strokeRect(rectX, rectY, rectW, rectH);
 
@@ -245,7 +292,7 @@ function renderDifference(
         `(${st.a}x + ${st.b})`,
         rectX + rectW * 0.18,
         rectY - 12,
-        "#dffbea",
+        T.labelResult,
         Math.max(11, unit * 0.24)
       );
       drawLabel(
@@ -253,7 +300,7 @@ function renderDifference(
         `(${st.a}x - ${st.b})`,
         rectX + 4,
         rectY + rectH / 2 + 6,
-        "#dffbea",
+        T.labelResult,
         Math.max(11, unit * 0.24)
       );
     }
@@ -263,7 +310,7 @@ function renderDifference(
       "Veliki kvadrat minus mali kvadrat",
       margin,
       34,
-      "#ffd7b9",
+      T.labelAccent,
       15
     );
     return;
@@ -272,20 +319,20 @@ function renderDifference(
   const leftX = margin;
   const topY = 88;
 
-  ctx.fillStyle = "rgba(236, 91, 19, 0.18)";
+  ctx.fillStyle = T.sqFill;
   ctx.fillRect(leftX, topY, big, big);
   ctx.strokeRect(leftX, topY, big, big);
-  ctx.fillStyle = "rgba(12, 7, 5, 0.96)";
+  ctx.fillStyle = T.cutoutFill;
   ctx.fillRect(leftX + big - small, topY, small, small);
   ctx.strokeRect(leftX + big - small, topY, small, small);
 
   if (st.showLabels) {
     drawLabel(
       ctx,
-      `${st.a * st.a}x²`,
+      `${st.a * st.a}x\u00B2`,
       leftX + big * 0.28,
       topY + big * 0.55,
-      "#ffe5d6",
+      T.labelSq,
       18
     );
     drawLabel(
@@ -293,7 +340,7 @@ function renderDifference(
       `${st.b * st.b}`,
       leftX + big - small * 0.7,
       topY + small * 0.58,
-      "#ffb9b3",
+      T.labelCutout,
       16
     );
     drawLabel(
@@ -301,7 +348,7 @@ function renderDifference(
       `${st.a}x`,
       leftX + big * 0.42,
       topY - 16,
-      "#ffd7b9",
+      T.labelAccent,
       15
     );
     drawLabel(
@@ -309,7 +356,7 @@ function renderDifference(
       `${st.a}x`,
       leftX - 36,
       topY + big * 0.55,
-      "#ffd7b9",
+      T.labelAccent,
       15
     );
     drawLabel(
@@ -317,18 +364,18 @@ function renderDifference(
       `${st.b}`,
       leftX + big - small * 0.45,
       topY - 16,
-      "#ffb9b3",
+      T.labelCutout,
       15
     );
   }
 
   const arrowX = leftX + big + 52;
-  drawLabel(ctx, "→", arrowX, topY + big * 0.52, "#ffd7b9", 34);
+  drawLabel(ctx, "\u2192", arrowX, topY + big * 0.52, T.arrowColor, 34);
 
   const rectX = arrowX + 56;
   const rectW = (st.a + st.b) * unit;
   const rectH = Math.max(st.a - st.b, 1) * unit;
-  ctx.fillStyle = "rgba(107, 223, 183, 0.16)";
+  ctx.fillStyle = T.resultFill;
   ctx.fillRect(rectX, topY + (big - rectH) / 2, rectW, rectH);
   ctx.strokeRect(rectX, topY + (big - rectH) / 2, rectW, rectH);
 
@@ -338,7 +385,7 @@ function renderDifference(
       `(${st.a}x + ${st.b})`,
       rectX + rectW * 0.23,
       topY + (big - rectH) / 2 - 14,
-      "#dffbea",
+      T.labelResult,
       14
     );
     drawLabel(
@@ -346,7 +393,7 @@ function renderDifference(
       `(${st.a}x - ${st.b})`,
       rectX - 8,
       topY + (big + rectH) / 2,
-      "#dffbea",
+      T.labelResult,
       14
     );
   }
@@ -356,15 +403,15 @@ function renderDifference(
     "Veliki kvadrat minus mali kvadrat",
     leftX,
     42,
-    "#ffd7b9",
+    T.labelAccent,
     17
   );
   drawLabel(
     ctx,
-    "→ rezultat se može zapisati kao proizvod dva binoma",
+    "\u2192 rezultat se mo\u017Ee zapisati kao proizvod dva binoma",
     leftX,
     topY + big + 40,
-    "#c8b5a8",
+    T.labelMuted,
     14
   );
 }
@@ -373,7 +420,8 @@ function renderGrouping(
   ctx: CanvasRenderingContext2D,
   width: number,
   height: number,
-  st: LabState
+  st: LabState,
+  T: FactorTheme
 ) {
   const compact = width < 760;
 
@@ -385,38 +433,33 @@ function renderGrouping(
     const gap = 12;
 
     const labels = [`${st.a}x`, `${st.a}y`, `${st.b}x`, `${st.b}y`];
-    const colors = [
-      "rgba(236, 91, 19, 0.18)",
-      "rgba(236, 91, 19, 0.18)",
-      "rgba(136, 216, 255, 0.16)",
-      "rgba(136, 216, 255, 0.16)",
-    ];
+    const boxColors = [T.sqFill, T.sqFill, T.abFill, T.abFill];
 
     labels.forEach((label, index) => {
       const row = index < 2 ? 0 : 1;
       const col = index % 2;
       const x = startX + col * (boxW + gap);
       const y = startY + row * (boxH + gap);
-      ctx.fillStyle = colors[index];
+      ctx.fillStyle = boxColors[index];
       ctx.fillRect(x, y, boxW, boxH);
-      ctx.strokeStyle = "rgba(255,255,255,0.12)";
+      ctx.strokeStyle = T.boxGroupStroke;
       ctx.strokeRect(x, y, boxW, boxH);
       drawLabel(
         ctx,
         label,
         x + boxW * 0.28,
         y + boxH * 0.58,
-        "#ffeadd",
+        T.labelContent,
         Math.max(15, boxH * 0.36)
       );
     });
 
     drawLabel(
       ctx,
-      "↓",
+      "\u2193",
       width / 2 - 8,
       startY + 2 * (boxH + gap) + 10,
-      "#ffd7b9",
+      T.arrowColor,
       26
     );
 
@@ -425,9 +468,9 @@ function renderGrouping(
     const midX = (width - midW) / 2;
     const midY = startY + 2 * (boxH + gap) + 38;
 
-    ctx.fillStyle = "rgba(255,255,255,0.05)";
+    ctx.fillStyle = T.boxGroupBg;
     ctx.fillRect(midX, midY, midW, midH);
-    ctx.strokeStyle = "rgba(255,255,255,0.12)";
+    ctx.strokeStyle = T.boxGroupStroke;
     ctx.strokeRect(midX, midY, midW, midH);
     ctx.fillRect(midX, midY + midH + 14, midW, midH);
     ctx.strokeRect(midX, midY + midH + 14, midW, midH);
@@ -436,7 +479,7 @@ function renderGrouping(
       `${st.a}(x+y)`,
       midX + midW * 0.22,
       midY + midH * 0.58,
-      "#ffeadd",
+      T.labelContent,
       18
     );
     drawLabel(
@@ -444,16 +487,16 @@ function renderGrouping(
       `${st.b}(x+y)`,
       midX + midW * 0.22,
       midY + midH + 14 + midH * 0.58,
-      "#caecff",
+      T.labelAb,
       18
     );
 
     drawLabel(
       ctx,
-      "↓",
+      "\u2193",
       width / 2 - 8,
       midY + 2 * midH + 54,
-      "#ffd7b9",
+      T.arrowColor,
       26
     );
 
@@ -461,16 +504,16 @@ function renderGrouping(
     const finalH = 72;
     const finalX = (width - finalW) / 2;
     const finalY = midY + 2 * midH + 84;
-    ctx.fillStyle = "rgba(107, 223, 183, 0.16)";
+    ctx.fillStyle = T.resultFill;
     ctx.fillRect(finalX, finalY, finalW, finalH);
-    ctx.strokeStyle = "rgba(255,255,255,0.12)";
+    ctx.strokeStyle = T.boxGroupStroke;
     ctx.strokeRect(finalX, finalY, finalW, finalH);
     drawLabel(
       ctx,
       `(${st.a + st.b})(x+y)`,
       finalX + finalW * 0.15,
       finalY + finalH * 0.58,
-      "#dffbea",
+      T.labelResult,
       18
     );
 
@@ -479,7 +522,7 @@ function renderGrouping(
       "Na uskom ekranu grupisanje ide korak po korak nadole",
       startX,
       34,
-      "#ffd7b9",
+      T.labelAccent,
       14
     );
     return;
@@ -492,23 +535,18 @@ function renderGrouping(
   const gap = 18;
 
   const labels = [`${st.a}x`, `${st.a}y`, `${st.b}x`, `${st.b}y`];
-  const colors = [
-    "rgba(236, 91, 19, 0.18)",
-    "rgba(236, 91, 19, 0.18)",
-    "rgba(136, 216, 255, 0.16)",
-    "rgba(136, 216, 255, 0.16)",
-  ];
+  const boxColors = [T.sqFill, T.sqFill, T.abFill, T.abFill];
 
   labels.forEach((label, index) => {
     const row = index < 2 ? 0 : 1;
     const col = index % 2;
     const x = startX + col * (boxW + gap);
     const y = startY + row * (boxH + gap);
-    ctx.fillStyle = colors[index];
+    ctx.fillStyle = boxColors[index];
     ctx.fillRect(x, y, boxW, boxH);
-    ctx.strokeStyle = "rgba(255,255,255,0.12)";
+    ctx.strokeStyle = T.boxGroupStroke;
     ctx.strokeRect(x, y, boxW, boxH);
-    drawLabel(ctx, label, x + 42, y + 46, "#ffeadd", 22);
+    drawLabel(ctx, label, x + 42, y + 46, T.labelContent, 22);
   });
 
   if (st.showLabels) {
@@ -517,7 +555,7 @@ function renderGrouping(
       `(${st.a}x + ${st.a}y)`,
       startX + 26,
       startY - 18,
-      "#ffd7b9",
+      T.labelAccent,
       14
     );
     drawLabel(
@@ -525,52 +563,52 @@ function renderGrouping(
       `(${st.b}x + ${st.b}y)`,
       startX + 26,
       startY + boxH + gap - 18,
-      "#caecff",
+      T.labelAb,
       14
     );
   }
 
   drawLabel(
     ctx,
-    "→",
+    "\u2192",
     startX + 2 * (boxW + gap) + 36,
     startY + 88,
-    "#ffd7b9",
+    T.arrowColor,
     34
   );
 
   const fx = startX + 2 * (boxW + gap) + 94;
   const fy = startY + 8;
-  ctx.fillStyle = "rgba(255,255,255,0.05)";
+  ctx.fillStyle = T.boxGroupBg;
   ctx.fillRect(fx, fy, 210, 80);
-  ctx.strokeStyle = "rgba(255,255,255,0.12)";
+  ctx.strokeStyle = T.boxGroupStroke;
   ctx.strokeRect(fx, fy, 210, 80);
   ctx.fillRect(fx, fy + 100, 210, 80);
   ctx.strokeRect(fx, fy + 100, 210, 80);
-  drawLabel(ctx, `${st.a}(x+y)`, fx + 50, fy + 48, "#ffeadd", 22);
-  drawLabel(ctx, `${st.b}(x+y)`, fx + 50, fy + 148, "#caecff", 22);
+  drawLabel(ctx, `${st.a}(x+y)`, fx + 50, fy + 48, T.labelContent, 22);
+  drawLabel(ctx, `${st.b}(x+y)`, fx + 50, fy + 148, T.labelAb, 22);
 
-  drawLabel(ctx, "→", fx + 236, startY + 88, "#ffd7b9", 34);
+  drawLabel(ctx, "\u2192", fx + 236, startY + 88, T.arrowColor, 34);
 
-  ctx.fillStyle = "rgba(107, 223, 183, 0.16)";
+  ctx.fillStyle = T.resultFill;
   ctx.fillRect(fx + 292, startY + 56, 200, 100);
-  ctx.strokeStyle = "rgba(255,255,255,0.12)";
+  ctx.strokeStyle = T.boxGroupStroke;
   ctx.strokeRect(fx + 292, startY + 56, 200, 100);
   drawLabel(
     ctx,
     `(${st.a + st.b})(x+y)`,
     fx + 325,
     startY + 114,
-    "#dffbea",
+    T.labelResult,
     21
   );
 
   drawLabel(
     ctx,
-    "Grupiši tako da isti binom ispadne u obe grupe",
+    "Grupi\u0161i tako da isti binom ispadne u obe grupe",
     startX,
     48,
-    "#ffd7b9",
+    T.labelAccent,
     17
   );
 }
@@ -590,6 +628,8 @@ function FactorLab() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    const T = getFactorTheme();
+
     const dpr = window.devicePixelRatio || 1;
     const width = Math.max(320, canvas.clientWidth || 640);
     const ratio = state.mode === "grouping" ? 0.82 : 0.68;
@@ -601,10 +641,10 @@ function FactorLab() {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, width, height);
 
-    ctx.fillStyle = "rgba(8, 4, 2, 0.95)";
+    ctx.fillStyle = T.bg;
     ctx.fillRect(0, 0, width, height);
 
-    ctx.strokeStyle = "rgba(255,255,255,0.05)";
+    ctx.strokeStyle = T.grid;
     ctx.lineWidth = 1;
     for (let x = 28; x < width; x += 38) {
       ctx.beginPath();
@@ -620,11 +660,11 @@ function FactorLab() {
     }
 
     if (state.mode === "square") {
-      renderSquare(ctx, width, height, state);
+      renderSquare(ctx, width, height, state, T);
     } else if (state.mode === "difference") {
-      renderDifference(ctx, width, height, state);
+      renderDifference(ctx, width, height, state, T);
     } else {
-      renderGrouping(ctx, width, height, state);
+      renderGrouping(ctx, width, height, state, T);
     }
   }, [state]);
 
@@ -632,7 +672,9 @@ function FactorLab() {
     renderCanvas();
     const handleResize = () => renderCanvas();
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    const observer = new MutationObserver(() => renderCanvas());
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => { window.removeEventListener("resize", handleResize); observer.disconnect(); };
   }, [renderCanvas]);
 
   /* ---- derived summaries ---- */

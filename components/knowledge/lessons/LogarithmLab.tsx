@@ -109,6 +109,43 @@ function mapValue(
 
 /* ── Canvas drawing ── */
 
+interface ThemePalette {
+  panelGradTop: string;
+  panelGradBottom: string;
+  panelBorder: string;
+  panelTitle: string;
+  boxBg: string;
+  boxText: string;
+  barAxis: string;
+  barAxisLabel: string;
+  muted: string;
+  accent: string;
+  lineCurve: string;
+  productColor: string;
+  quotientColor: string;
+  powerColor: string;
+}
+
+function getTheme(): ThemePalette {
+  const isLight = document.documentElement.classList.contains("light");
+  return {
+    panelGradTop: isLight ? "rgba(0,0,0,0.03)" : "rgba(255,255,255,0.03)",
+    panelGradBottom: isLight ? "rgba(0,0,0,0.01)" : "rgba(255,255,255,0.01)",
+    panelBorder: isLight ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.08)",
+    panelTitle: isLight ? "#2a2420" : "#f6eee9",
+    boxBg: isLight ? "rgba(0,0,0,0.03)" : "rgba(255,255,255,0.03)",
+    boxText: isLight ? "#2a2420" : "#f6eee9",
+    barAxis: isLight ? "rgba(0,0,0,0.2)" : "rgba(255,255,255,0.2)",
+    barAxisLabel: isLight ? "#7a6f68" : "#d8c6ba",
+    muted: isLight ? "#7a6f68" : "#d8c6ba",
+    accent: isLight ? "#d94e0a" : "#ec5b13",
+    lineCurve: isLight ? "#2e8ebf" : "#8fd7ff",
+    productColor: isLight ? "#a06820" : "#ffc57f",
+    quotientColor: isLight ? "#1a9e6e" : "#78dfb9",
+    powerColor: isLight ? "#7b5fbf" : "#cfb7ff",
+  };
+}
+
 function roundRect(
   ctx: CanvasRenderingContext2D,
   x: number,
@@ -136,17 +173,18 @@ function drawPanel(
   y: number,
   w: number,
   h: number,
-  title: string
+  title: string,
+  theme: ThemePalette
 ) {
   const grad = ctx.createLinearGradient(x, y, x, y + h);
-  grad.addColorStop(0, "rgba(255,255,255,0.03)");
-  grad.addColorStop(1, "rgba(255,255,255,0.01)");
+  grad.addColorStop(0, theme.panelGradTop);
+  grad.addColorStop(1, theme.panelGradBottom);
   ctx.fillStyle = grad;
   roundRect(ctx, x, y, w, h, 20, true, false);
-  ctx.strokeStyle = "rgba(255,255,255,0.08)";
+  ctx.strokeStyle = theme.panelBorder;
   ctx.lineWidth = 1;
   roundRect(ctx, x, y, w, h, 20, false, true);
-  ctx.fillStyle = "#f6eee9";
+  ctx.fillStyle = theme.panelTitle;
   ctx.font = '700 16px "Public Sans", system-ui, sans-serif';
   ctx.fillText(title, x + 18, y + 28);
 }
@@ -159,9 +197,10 @@ function drawBox(
   h: number,
   color: string,
   title: string,
-  body: string
+  body: string,
+  theme: ThemePalette
 ) {
-  ctx.fillStyle = "rgba(255,255,255,0.03)";
+  ctx.fillStyle = theme.boxBg;
   roundRect(ctx, x, y, w, h, 16, true, false);
   ctx.strokeStyle = color;
   ctx.lineWidth = 1.5;
@@ -169,7 +208,7 @@ function drawBox(
   ctx.fillStyle = color;
   ctx.font = '700 13px "Public Sans", system-ui, sans-serif';
   ctx.fillText(title, x + 12, y + 18);
-  ctx.fillStyle = "#f6eee9";
+  ctx.fillStyle = theme.boxText;
   ctx.font = '600 14px "Public Sans", system-ui, sans-serif';
   ctx.fillText(body, x + 12, y + 42);
 }
@@ -255,30 +294,31 @@ function drawBars(
   y: number,
   w: number,
   h: number,
-  data: LabData
+  data: LabData,
+  theme: ThemePalette
 ) {
-  drawPanel(ctx, x, y, w, h, "Eksponenti koje logaritam cita");
+  drawPanel(ctx, x, y, w, h, "Eksponenti koje logaritam cita", theme);
 
   const items = [
-    { label: "u", value: data.u, color: "#ec5b13" },
-    { label: "v", value: data.v, color: "#8fd7ff" },
-    { label: "u+v", value: data.sum, color: "#ffc57f" },
-    { label: "u-v", value: data.diff, color: "#78dfb9" },
-    { label: "n*u", value: data.scaled, color: "#cfb7ff" },
+    { label: "u", value: data.u, color: theme.accent },
+    { label: "v", value: data.v, color: theme.lineCurve },
+    { label: "u+v", value: data.sum, color: theme.productColor },
+    { label: "u-v", value: data.diff, color: theme.quotientColor },
+    { label: "n*u", value: data.scaled, color: theme.powerColor },
   ];
 
   const minVal = Math.min(-4, ...items.map((i) => i.value));
   const maxVal = Math.max(4, ...items.map((i) => i.value));
   const zeroX = mapValue(0, minVal, maxVal, x + 24, x + w - 24);
 
-  ctx.strokeStyle = "rgba(255,255,255,0.2)";
+  ctx.strokeStyle = theme.barAxis;
   ctx.lineWidth = 1.5;
   ctx.beginPath();
   ctx.moveTo(zeroX, y + 40);
   ctx.lineTo(zeroX, y + h - 22);
   ctx.stroke();
 
-  ctx.fillStyle = "#d8c6ba";
+  ctx.fillStyle = theme.barAxisLabel;
   ctx.font = '600 12px "Public Sans", system-ui, sans-serif';
   ctx.fillText("0", zeroX - 4, y + h - 6);
 
@@ -306,6 +346,7 @@ function drawCanvas(canvas: HTMLCanvasElement, data: LabData) {
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
+  const theme = getTheme();
   const rect = canvas.getBoundingClientRect();
   const dpr = window.devicePixelRatio || 1;
   canvas.width = Math.max(1, Math.floor(rect.width * dpr));
@@ -318,7 +359,7 @@ function drawCanvas(canvas: HTMLCanvasElement, data: LabData) {
 
   if (width < 700) {
     const topH = height * 0.54;
-    drawPanel(ctx, 12, 12, width - 24, topH - 8, "Logaritamska masina");
+    drawPanel(ctx, 12, 12, width - 24, topH - 8, "Logaritamska masina", theme);
 
     const boxX = 24;
     const boxW = width - 48;
@@ -331,9 +372,10 @@ function drawCanvas(canvas: HTMLCanvasElement, data: LabData) {
       56,
       boxW,
       boxH,
-      "#ec5b13",
+      theme.accent,
       "x = a^u",
-      "x = " + rationalLabel(data.x) + ", log = " + data.u
+      "x = " + rationalLabel(data.x) + ", log = " + data.u,
+      theme
     );
     drawBox(
       ctx,
@@ -341,9 +383,10 @@ function drawCanvas(canvas: HTMLCanvasElement, data: LabData) {
       56 + (boxH + gap),
       boxW,
       boxH,
-      "#8fd7ff",
+      theme.lineCurve,
       "y = a^v",
-      "y = " + rationalLabel(data.y) + ", log = " + data.v
+      "y = " + rationalLabel(data.y) + ", log = " + data.v,
+      theme
     );
     drawBox(
       ctx,
@@ -351,9 +394,10 @@ function drawCanvas(canvas: HTMLCanvasElement, data: LabData) {
       56 + 2 * (boxH + gap),
       boxW,
       boxH,
-      "#ffc57f",
+      theme.productColor,
       "xy",
-      rationalLabel(data.product) + ", log = " + data.sum
+      rationalLabel(data.product) + ", log = " + data.sum,
+      theme
     );
     drawBox(
       ctx,
@@ -361,9 +405,10 @@ function drawCanvas(canvas: HTMLCanvasElement, data: LabData) {
       56 + 3 * (boxH + gap),
       boxW,
       boxH,
-      "#78dfb9",
+      theme.quotientColor,
       "x / y",
-      rationalLabel(data.quotient) + ", log = " + data.diff
+      rationalLabel(data.quotient) + ", log = " + data.diff,
+      theme
     );
     drawBox(
       ctx,
@@ -371,16 +416,17 @@ function drawCanvas(canvas: HTMLCanvasElement, data: LabData) {
       56 + 4 * (boxH + gap),
       boxW,
       boxH,
-      "#cfb7ff",
+      theme.powerColor,
       "x^n",
-      rationalLabel(data.power) + ", log = " + data.scaled
+      rationalLabel(data.power) + ", log = " + data.scaled,
+      theme
     );
 
-    drawBars(ctx, 12, topH + 8, width - 24, height - topH - 20, data);
+    drawBars(ctx, 12, topH + 8, width - 24, height - topH - 20, data, theme);
     return;
   }
 
-  drawPanel(ctx, 12, 12, width - 24, height * 0.48, "Logaritamska masina");
+  drawPanel(ctx, 12, 12, width - 24, height * 0.48, "Logaritamska masina", theme);
 
   drawBox(
     ctx,
@@ -388,9 +434,10 @@ function drawCanvas(canvas: HTMLCanvasElement, data: LabData) {
     56,
     124,
     58,
-    "#ec5b13",
+    theme.accent,
     "x = a^u",
-    "x = " + rationalLabel(data.x)
+    "x = " + rationalLabel(data.x),
+    theme
   );
   drawBox(
     ctx,
@@ -398,9 +445,10 @@ function drawCanvas(canvas: HTMLCanvasElement, data: LabData) {
     134,
     124,
     58,
-    "#8fd7ff",
+    theme.lineCurve,
     "y = a^v",
-    "y = " + rationalLabel(data.y)
+    "y = " + rationalLabel(data.y),
+    theme
   );
 
   drawBox(
@@ -409,9 +457,10 @@ function drawCanvas(canvas: HTMLCanvasElement, data: LabData) {
     44,
     140,
     58,
-    "#ffc57f",
+    theme.productColor,
     "xy",
-    rationalLabel(data.product)
+    rationalLabel(data.product),
+    theme
   );
   drawBox(
     ctx,
@@ -419,9 +468,10 @@ function drawCanvas(canvas: HTMLCanvasElement, data: LabData) {
     118,
     140,
     58,
-    "#78dfb9",
+    theme.quotientColor,
     "x / y",
-    rationalLabel(data.quotient)
+    rationalLabel(data.quotient),
+    theme
   );
   drawBox(
     ctx,
@@ -429,9 +479,10 @@ function drawCanvas(canvas: HTMLCanvasElement, data: LabData) {
     192,
     140,
     58,
-    "#cfb7ff",
+    theme.powerColor,
     "x^n",
-    rationalLabel(data.power)
+    rationalLabel(data.power),
+    theme
   );
 
   drawBox(
@@ -440,9 +491,10 @@ function drawCanvas(canvas: HTMLCanvasElement, data: LabData) {
     44,
     148,
     58,
-    "#ffc57f",
+    theme.productColor,
     "log_a(xy)",
-    String(data.sum)
+    String(data.sum),
+    theme
   );
   drawBox(
     ctx,
@@ -450,9 +502,10 @@ function drawCanvas(canvas: HTMLCanvasElement, data: LabData) {
     118,
     148,
     58,
-    "#78dfb9",
+    theme.quotientColor,
     "log_a(x/y)",
-    String(data.diff)
+    String(data.diff),
+    theme
   );
   drawBox(
     ctx,
@@ -460,15 +513,16 @@ function drawCanvas(canvas: HTMLCanvasElement, data: LabData) {
     192,
     148,
     58,
-    "#cfb7ff",
+    theme.powerColor,
     "log_a(x^n)",
-    String(data.scaled)
+    String(data.scaled),
+    theme
   );
 
-  drawArrow(ctx, 152, 86, width * 0.33, 72, "+", "#ffc57f");
-  drawArrow(ctx, 152, 162, width * 0.33, 146, "\u2212", "#78dfb9");
-  drawArrow(ctx, 152, 86, width * 0.33, 220, "n", "#cfb7ff");
-  drawArrow(ctx, width * 0.33 + 140, 72, width * 0.68, 72, "log", "#ffc57f");
+  drawArrow(ctx, 152, 86, width * 0.33, 72, "+", theme.productColor);
+  drawArrow(ctx, 152, 162, width * 0.33, 146, "\u2212", theme.quotientColor);
+  drawArrow(ctx, 152, 86, width * 0.33, 220, "n", theme.powerColor);
+  drawArrow(ctx, width * 0.33 + 140, 72, width * 0.68, 72, "log", theme.productColor);
   drawArrow(
     ctx,
     width * 0.33 + 140,
@@ -476,7 +530,7 @@ function drawCanvas(canvas: HTMLCanvasElement, data: LabData) {
     width * 0.68,
     146,
     "log",
-    "#78dfb9"
+    theme.quotientColor
   );
   drawArrow(
     ctx,
@@ -485,10 +539,10 @@ function drawCanvas(canvas: HTMLCanvasElement, data: LabData) {
     width * 0.68,
     220,
     "log",
-    "#cfb7ff"
+    theme.powerColor
   );
 
-  ctx.fillStyle = "#d8c6ba";
+  ctx.fillStyle = theme.muted;
   ctx.font = '600 13px "Public Sans", system-ui, sans-serif';
   ctx.fillText(
     "Ako su x i y stepeni iste baze, logaritam samo ocita njihove eksponente.",
@@ -496,7 +550,7 @@ function drawCanvas(canvas: HTMLCanvasElement, data: LabData) {
     286
   );
 
-  drawBars(ctx, 12, height * 0.52, width - 24, height * 0.44 - 12, data);
+  drawBars(ctx, 12, height * 0.52, width - 24, height * 0.44 - 12, data, theme);
 }
 
 /* ── Component ── */
@@ -522,7 +576,9 @@ export default function LogarithmLab() {
     redraw();
     const handleResize = () => redraw();
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    const observer = new MutationObserver(() => redraw());
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => { window.removeEventListener("resize", handleResize); observer.disconnect(); };
   }, [redraw]);
 
   function valueSign(value: number): string {

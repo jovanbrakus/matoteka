@@ -120,6 +120,7 @@ export default function VennDiagramLab() {
     if (!ctx) return;
 
     const dpr = window.devicePixelRatio || 1;
+    const isLight = document.documentElement.classList.contains("light");
     const rect = canvas.getBoundingClientRect();
     const W = Math.max(320, Math.floor(rect.width));
     const H = 480;
@@ -128,24 +129,44 @@ export default function VennDiagramLab() {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     canvas.style.height = H + "px";
 
+    // Theme-aware palette
+    const T = {
+      bg1: isLight ? "#f5f0eb" : "#160906",
+      bg2: isLight ? "#ebe5df" : "#0b0403",
+      text: isLight ? "#2a2420" : "#f6eee9",
+      muted: isLight ? "#7a6f68" : "#cdb8aa",
+      accent: isLight ? "#d94e0a" : "#ffb488",
+      uBorder: isLight ? "rgba(180,120,80,0.22)" : "rgba(255, 154, 106, 0.18)",
+      highlightA: isLight ? "rgba(217,78,10,0.10)" : "rgba(236, 91, 19, 0.14)",
+      highlightB: isLight ? "rgba(180,120,80,0.08)" : "rgba(255, 154, 106, 0.12)",
+      circleStroke: isLight ? "rgba(180,120,80,0.38)" : "rgba(255, 154, 106, 0.42)",
+      belongsFill: isLight ? "rgba(26,158,110,0.14)" : "rgba(103, 215, 173, 0.18)",
+      belongsStroke: isLight ? "rgba(26,158,110,0.38)" : "rgba(103, 215, 173, 0.42)",
+      notBelongsFill: isLight ? "rgba(180,120,80,0.10)" : "rgba(255, 180, 136, 0.12)",
+      notBelongsStroke: isLight ? "rgba(180,120,80,0.28)" : "rgba(255, 180, 136, 0.32)",
+      belongsText: isLight ? "#1a9e6e" : "#67d7ad",
+      notBelongsText: isLight ? "#d94e0a" : "#ffb488",
+      activeStroke: isLight ? "#2a2420" : "#f6eee9",
+    };
+
     const op = OPERATIONS[activeOp];
     const positions = elementPositions();
     const hits: typeof hitRef.current = [];
 
     /* Background */
     const bg = ctx.createLinearGradient(0, 0, W, H);
-    bg.addColorStop(0, "#160906");
-    bg.addColorStop(1, "#0b0403");
+    bg.addColorStop(0, T.bg1);
+    bg.addColorStop(1, T.bg2);
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, W, H);
 
     /* Title */
-    ctx.fillStyle = "#f6eee9";
+    ctx.fillStyle = T.text;
     ctx.font = '800 24px "Public Sans", system-ui, sans-serif';
     ctx.textAlign = "left";
     ctx.fillText("Venn laboratorija", 26, 42);
 
-    ctx.fillStyle = "#cdb8aa";
+    ctx.fillStyle = T.muted;
     ctx.font = '400 14px "Public Sans", system-ui, sans-serif';
     ctx.fillText(
       "Klikni broj u dijagramu i proveri pripadnost rezultujucem skupu",
@@ -162,10 +183,10 @@ export default function VennDiagramLab() {
     const uRect = { x: 70 * scaleX, y: 95, w: W - 140 * scaleX, h: 320 };
 
     /* Universal set rectangle */
-    ctx.strokeStyle = "rgba(255, 154, 106, 0.18)";
+    ctx.strokeStyle = T.uBorder;
     ctx.lineWidth = 2;
     ctx.strokeRect(uRect.x, uRect.y, uRect.w, uRect.h);
-    ctx.fillStyle = "#cdb8aa";
+    ctx.fillStyle = T.muted;
     ctx.font = '700 16px "Public Sans", system-ui, sans-serif';
     ctx.textAlign = "left";
     ctx.fillText("U", uRect.x + 8, uRect.y + 20);
@@ -190,7 +211,7 @@ export default function VennDiagramLab() {
         ctx.fill();
       }
       ctx.globalCompositeOperation = "source-over";
-      ctx.fillStyle = "rgba(236, 91, 19, 0.14)";
+      ctx.fillStyle = T.highlightA;
       ctx.fillRect(uRect.x, uRect.y, uRect.w, uRect.h);
       ctx.restore();
     }
@@ -207,13 +228,13 @@ export default function VennDiagramLab() {
         ctx.fill();
       }
       ctx.globalCompositeOperation = "source-over";
-      ctx.fillStyle = "rgba(255, 154, 106, 0.12)";
+      ctx.fillStyle = T.highlightB;
       ctx.fillRect(uRect.x, uRect.y, uRect.w, uRect.h);
       ctx.restore();
     }
 
     /* Circle outlines */
-    ctx.strokeStyle = "rgba(255, 154, 106, 0.42)";
+    ctx.strokeStyle = T.circleStroke;
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.arc(leftC.x, leftC.y, leftC.r, 0, Math.PI * 2);
@@ -223,7 +244,7 @@ export default function VennDiagramLab() {
     ctx.stroke();
 
     /* Labels */
-    ctx.fillStyle = "#ffb488";
+    ctx.fillStyle = T.accent;
     ctx.font = '700 18px "Public Sans", system-ui, sans-serif';
     ctx.textAlign = "center";
     ctx.fillText("A", leftC.x - 65 * scaleX, leftC.y - 85);
@@ -239,19 +260,15 @@ export default function VennDiagramLab() {
       const radius = isActive ? 22 : 18;
       hits.push({ x: px, y: py, r: radius + 8, item });
 
-      const fill = belongs
-        ? "rgba(103, 215, 173, 0.18)"
-        : "rgba(255, 180, 136, 0.12)";
-      const stroke = belongs
-        ? "rgba(103, 215, 173, 0.42)"
-        : "rgba(255, 180, 136, 0.32)";
-      const textColor = belongs ? "#67d7ad" : "#ffb488";
+      const fill = belongs ? T.belongsFill : T.notBelongsFill;
+      const stroke = belongs ? T.belongsStroke : T.notBelongsStroke;
+      const textColor = belongs ? T.belongsText : T.notBelongsText;
 
       ctx.beginPath();
       ctx.arc(px, py, radius, 0, Math.PI * 2);
       ctx.fillStyle = fill;
       ctx.fill();
-      ctx.strokeStyle = isActive ? "#f6eee9" : stroke;
+      ctx.strokeStyle = isActive ? T.activeStroke : stroke;
       ctx.lineWidth = isActive ? 2.5 : 1.4;
       ctx.stroke();
 
@@ -263,7 +280,7 @@ export default function VennDiagramLab() {
     });
 
     /* Footer note */
-    ctx.fillStyle = "#cdb8aa";
+    ctx.fillStyle = T.muted;
     ctx.font = '400 13px "Public Sans", system-ui, sans-serif';
     ctx.textAlign = "left";
     ctx.textBaseline = "alphabetic";
@@ -276,12 +293,14 @@ export default function VennDiagramLab() {
     hitRef.current = hits;
   }, [activeOp, activeEl]);
 
-  /* Redraw on state or resize */
+  /* Redraw on state, resize, or theme change */
   useEffect(() => {
     draw();
     const onResize = () => draw();
     window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+    const observer = new MutationObserver(() => draw());
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => { window.removeEventListener("resize", onResize); observer.disconnect(); };
   }, [draw]);
 
   /* Click / touch handler */

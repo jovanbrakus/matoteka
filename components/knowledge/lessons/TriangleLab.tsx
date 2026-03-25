@@ -66,22 +66,76 @@ function angleBetween(v1: Point, v2: Point) {
   return Math.acos(Math.min(1, Math.max(-1, dot / denom)));
 }
 
+/* ── Theme ── */
+
+interface TriTheme {
+  bg1: string;
+  bg2: string;
+  grid: string;
+  text: string;
+  textSoft: string;
+  accent: string;
+  lineDefault: string;
+  polyFill: string;
+  polyStroke: string;
+  marker: string;
+  height: string;
+  heightDash: string;
+  rightAngle: string;
+  arcBlue: string;
+  circleBlue: string;
+  rayColor: string;
+  error: string;
+  ssaFill1: string;
+  ssaFill2: string;
+  ssaLine1: string;
+  ssaLine2: string;
+}
+
+function getTriTheme(): TriTheme {
+  const isLight = document.documentElement.classList.contains("light");
+  return {
+    bg1: isLight ? "rgba(245, 240, 235, 0.95)" : "rgba(32, 14, 8, 0.95)",
+    bg2: isLight ? "rgba(235, 229, 223, 0.98)" : "rgba(10, 5, 3, 0.98)",
+    grid: isLight ? "rgba(0, 0, 0, 0.05)" : "rgba(255, 255, 255, 0.04)",
+    text: isLight ? "#2a2420" : "#f6eee9",
+    textSoft: isLight ? "#6e6058" : "#ffd8bb",
+    accent: isLight ? "#c44200" : "#ffb488",
+    lineDefault: isLight ? "#b8860b" : "#ffd37b",
+    polyFill: isLight ? "rgba(217, 78, 10, 0.12)" : "rgba(236, 91, 19, 0.14)",
+    polyStroke: isLight ? "#b8860b" : "#ffd37b",
+    marker: isLight ? "#d94e0a" : "#ec5b13",
+    height: isLight ? "rgba(26, 158, 110, 0.85)" : "rgba(121, 223, 184, 0.95)",
+    heightDash: isLight ? "rgba(26, 158, 110, 0.85)" : "rgba(121, 223, 184, 0.95)",
+    rightAngle: isLight ? "#1a9e6e" : "#79dfb8",
+    arcBlue: isLight ? "#2878b8" : "#8fd7ff",
+    circleBlue: isLight ? "rgba(40, 120, 184, 0.75)" : "rgba(143, 215, 255, 0.9)",
+    rayColor: isLight ? "rgba(140, 100, 60, 0.6)" : "rgba(255, 216, 187, 0.8)",
+    error: isLight ? "#c42020" : "#ff9b8f",
+    ssaFill1: isLight ? "rgba(184, 134, 11, 0.12)" : "rgba(255, 211, 123, 0.14)",
+    ssaFill2: isLight ? "rgba(40, 120, 184, 0.12)" : "rgba(143, 215, 255, 0.14)",
+    ssaLine1: isLight ? "#b8860b" : "#ffd37b",
+    ssaLine2: isLight ? "#2878b8" : "#8fd7ff",
+  };
+}
+
 /* ── Drawing helpers ── */
 
 function clearCanvas(
   ctx: CanvasRenderingContext2D,
   width: number,
-  height: number
+  height: number,
+  T: TriTheme
 ) {
   ctx.clearRect(0, 0, width, height);
   const bg = ctx.createLinearGradient(0, 0, 0, height);
-  bg.addColorStop(0, "rgba(32, 14, 8, 0.95)");
-  bg.addColorStop(1, "rgba(10, 5, 3, 0.98)");
+  bg.addColorStop(0, T.bg1);
+  bg.addColorStop(1, T.bg2);
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, width, height);
 
   ctx.save();
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.04)";
+  ctx.strokeStyle = T.grid;
   ctx.lineWidth = 1;
   for (let x = 24; x < width; x += 28) {
     ctx.beginPath();
@@ -327,6 +381,8 @@ export default function TriangleLab() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    const TT = getTriTheme();
+
     const rect = wrap.getBoundingClientRect();
     const w = rect.width;
     const h = rect.height;
@@ -335,7 +391,7 @@ export default function TriangleLab() {
     canvas.height = Math.round(h * ratio);
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
 
-    clearCanvas(ctx, w, h);
+    clearCanvas(ctx, w, h, TT);
 
     if (mode === "cosine") {
       const { a, hc, rad } = cosState;
@@ -346,38 +402,38 @@ export default function TriangleLab() {
       const foot = { x: C.x, y: A.y };
 
       polygon(ctx, [A, B, C], {
-        fill: "rgba(236, 91, 19, 0.14)",
-        stroke: "#ffd37b",
+        fill: TT.polyFill,
+        stroke: TT.polyStroke,
       });
       drawLine(ctx, C, foot, {
-        stroke: "rgba(121, 223, 184, 0.95)",
+        stroke: TT.heightDash,
         lineWidth: 2.5,
         dash: [8, 6],
       });
-      drawRightAngle(ctx, foot, 15);
-      drawAngleArc(ctx, A, 32, 0, -rad, "#8fd7ff", "A");
+      drawRightAngle(ctx, foot, 15, TT.rightAngle);
+      drawAngleArc(ctx, A, 32, 0, -rad, TT.arcBlue, "A");
 
-      pointMarker(ctx, A);
-      pointMarker(ctx, B);
-      pointMarker(ctx, C);
-      pointLabel(ctx, A, "A");
-      pointLabel(ctx, B, "B");
-      pointLabel(ctx, C, "C");
+      pointMarker(ctx, A, TT.marker);
+      pointMarker(ctx, B, TT.marker);
+      pointMarker(ctx, C, TT.marker);
+      pointLabel(ctx, A, "A", TT.text);
+      pointLabel(ctx, B, "B", TT.text);
+      pointLabel(ctx, C, "C", TT.text);
 
-      textLabel(ctx, midpoint(B, C), `a = ${fmt(a)}`);
+      textLabel(ctx, midpoint(B, C), `a = ${fmt(a)}`, TT.textSoft);
       textLabel(
         ctx,
         { x: (A.x + C.x) / 2 - 18, y: (A.y + C.y) / 2 },
         `b = ${fmt(cosB)}`,
-        "#8fd7ff",
+        TT.arcBlue,
         "right"
       );
-      textLabel(ctx, { x: (A.x + B.x) / 2, y: A.y + 18 }, `c = ${fmt(cosC)}`);
+      textLabel(ctx, { x: (A.x + B.x) / 2, y: A.y + 18 }, `c = ${fmt(cosC)}`, TT.textSoft);
       textLabel(
         ctx,
         { x: foot.x + 22, y: (foot.y + C.y) / 2 },
         `h = ${fmt(hc)}`,
-        "#79dfb8",
+        TT.rightAngle,
         "left"
       );
     } else {
@@ -396,56 +452,53 @@ export default function TriangleLab() {
       const radius = ssaSideA * scale;
 
       drawLine(ctx, A, rayEnd, {
-        stroke: "rgba(255, 216, 187, 0.8)",
+        stroke: TT.rayColor,
         lineWidth: 2.5,
       });
-      drawLine(ctx, A, C, { stroke: "#ffd37b" });
+      drawLine(ctx, A, C, { stroke: TT.lineDefault });
       drawLine(ctx, C, foot, {
-        stroke: "rgba(121, 223, 184, 0.95)",
+        stroke: TT.heightDash,
         lineWidth: 2.5,
         dash: [8, 6],
       });
-      drawRightAngle(ctx, foot, 14);
+      drawRightAngle(ctx, foot, 14, TT.rightAngle);
       circleStroke(ctx, C, radius, {
-        stroke: "rgba(143, 215, 255, 0.9)",
+        stroke: TT.circleBlue,
         dash: [9, 7],
       });
-      drawAngleArc(ctx, A, 30, 0, -rad, "#8fd7ff", "A");
+      drawAngleArc(ctx, A, 30, 0, -rad, TT.arcBlue, "A");
 
-      pointMarker(ctx, A);
-      pointMarker(ctx, C);
-      pointLabel(ctx, A, "A");
-      pointLabel(ctx, C, "C");
+      pointMarker(ctx, A, TT.marker);
+      pointMarker(ctx, C, TT.marker);
+      pointLabel(ctx, A, "A", TT.text);
+      pointLabel(ctx, C, "C", TT.text);
       textLabel(
         ctx,
         { x: (A.x + C.x) / 2 - 10, y: (A.y + C.y) / 2 },
         `b = ${fmt(ssaSideB)}`,
-        "#ffd8bb",
+        TT.textSoft,
         "right"
       );
       textLabel(
         ctx,
         { x: foot.x + 22, y: (foot.y + C.y) / 2 },
         `h = ${fmt(hVal)}`,
-        "#79dfb8",
+        TT.rightAngle,
         "left"
       );
       textLabel(
         ctx,
         { x: C.x + radius * 0.54, y: C.y - radius * 0.54 },
         `a = ${fmt(ssaSideA)}`,
-        "#8fd7ff",
+        TT.arcBlue,
         "left"
       );
 
-      const colors = ["#ffd37b", "#8fd7ff"];
+      const colors = [TT.ssaLine1, TT.ssaLine2];
       solutions.forEach((sol, i) => {
         const B: Point = { x: A.x + sol.c * scale, y: A.y };
         polygon(ctx, [A, B, C], {
-          fill:
-            i === 0
-              ? "rgba(255, 211, 123, 0.14)"
-              : "rgba(143, 215, 255, 0.14)",
+          fill: i === 0 ? TT.ssaFill1 : TT.ssaFill2,
           stroke: colors[i],
         });
         pointMarker(ctx, B, colors[i]);
@@ -465,7 +518,7 @@ export default function TriangleLab() {
 
       if (!solutions.length) {
         ctx.save();
-        ctx.fillStyle = "#ff9b8f";
+        ctx.fillStyle = TT.error;
         ctx.font = '700 18px "Public Sans", system-ui, sans-serif';
         ctx.textAlign = "center";
         ctx.fillText(
@@ -482,7 +535,9 @@ export default function TriangleLab() {
     draw();
     const onResize = () => draw();
     window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+    const observer = new MutationObserver(() => draw());
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => { window.removeEventListener("resize", onResize); observer.disconnect(); };
   }, [draw]);
 
   /* Side-panel content */

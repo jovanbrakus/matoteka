@@ -264,6 +264,28 @@ function drawMatrix(
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
   const dpr = window.devicePixelRatio || 1;
+  const isLight = document.documentElement.classList.contains("light");
+
+  // Theme-aware palette
+  const T = {
+    bg1: isLight ? "#f5f0eb" : "#160906",
+    bg2: isLight ? "#ebe5df" : "#0a0403",
+    text: isLight ? "#2a2420" : "#f6eee9",
+    muted: isLight ? "#7a6f68" : "#cdb8aa",
+    accent: isLight ? "#d94e0a" : "#ffb488",
+    pillBg: isLight ? "rgba(236,91,19,0.12)" : "rgba(236, 91, 19, 0.14)",
+    pillBorder: isLight ? "rgba(236,91,19,0.20)" : "rgba(255, 154, 106, 0.28)",
+    gridBg: isLight ? "rgba(0,0,0,0.02)" : "rgba(255, 255, 255, 0.02)",
+    gridBorder: isLight ? "rgba(0,0,0,0.06)" : "rgba(255, 154, 106, 0.12)",
+    insideFill: isLight ? "rgba(26,158,110,0.14)" : "rgba(103, 215, 173, 0.18)",
+    outsideFill: isLight ? "rgba(236,91,19,0.05)" : "rgba(236, 91, 19, 0.05)",
+    selectedStroke: isLight ? "#2a2420" : "#f6eee9",
+    insideStroke: isLight ? "rgba(26,158,110,0.30)" : "rgba(103, 215, 173, 0.34)",
+    diagStroke: isLight ? "rgba(180,120,80,0.26)" : "rgba(255, 154, 106, 0.30)",
+    outsideStroke: isLight ? "rgba(180,120,80,0.10)" : "rgba(255, 154, 106, 0.10)",
+    insideText: isLight ? "#1a9e6e" : "#67d7ad",
+    outsideText: isLight ? "#d94e0a" : "#ffb488",
+  };
 
   const rect = canvas.getBoundingClientRect();
   const W = Math.max(320, Math.floor(rect.width));
@@ -279,18 +301,18 @@ function drawMatrix(
 
   /* background */
   const bg = ctx.createLinearGradient(0, 0, W, H);
-  bg.addColorStop(0, "#160906");
-  bg.addColorStop(1, "#0a0403");
+  bg.addColorStop(0, T.bg1);
+  bg.addColorStop(1, T.bg2);
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, W, H);
 
   /* title */
-  ctx.fillStyle = "#f6eee9";
+  ctx.fillStyle = T.text;
   ctx.font = '800 24px "Public Sans", system-ui, sans-serif';
   ctx.textAlign = "left";
   ctx.fillText("Laboratorijum relacija", 24, 40);
 
-  ctx.fillStyle = "#cdb8aa";
+  ctx.fillStyle = T.muted;
   ctx.font = '400 14px "Public Sans", system-ui, sans-serif';
   ctx.fillText(
     "Matrica prikazuje koje uređene parove relacija prihvata.",
@@ -302,12 +324,12 @@ function drawMatrix(
   const pillWidth = Math.min(260, W - 48);
   ctx.beginPath();
   ctx.roundRect(W - pillWidth - 24, 22, pillWidth, 34, 999);
-  ctx.fillStyle = "rgba(236, 91, 19, 0.14)";
+  ctx.fillStyle = T.pillBg;
   ctx.fill();
-  ctx.strokeStyle = "rgba(255, 154, 106, 0.28)";
+  ctx.strokeStyle = T.pillBorder;
   ctx.lineWidth = 1.2;
   ctx.stroke();
-  ctx.fillStyle = "#f6eee9";
+  ctx.fillStyle = T.text;
   ctx.font = '700 13px "Public Sans", system-ui, sans-serif';
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
@@ -335,9 +357,9 @@ function drawMatrix(
     gridHeight + 66,
     24
   );
-  ctx.fillStyle = "rgba(255, 255, 255, 0.02)";
+  ctx.fillStyle = T.gridBg;
   ctx.fill();
-  ctx.strokeStyle = "rgba(255, 154, 106, 0.12)";
+  ctx.strokeStyle = T.gridBorder;
   ctx.lineWidth = 1.2;
   ctx.stroke();
 
@@ -347,7 +369,7 @@ function drawMatrix(
   vals.forEach((v, idx) => {
     const x = gridX + idx * cellSize + cellSize / 2;
     const y = gridY + idx * cellSize + cellSize / 2;
-    ctx.fillStyle = "#ffb488";
+    ctx.fillStyle = T.accent;
     ctx.textAlign = "center";
     ctx.fillText(String(v), x, gridY - 24);
     ctx.fillText(String(v), gridX - 22, y);
@@ -357,13 +379,13 @@ function drawMatrix(
   ctx.save();
   ctx.translate(gridX - 48, gridY + gridHeight / 2);
   ctx.rotate(-Math.PI / 2);
-  ctx.fillStyle = "#cdb8aa";
+  ctx.fillStyle = T.muted;
   ctx.font = '700 12px "Public Sans", system-ui, sans-serif';
   ctx.textAlign = "center";
   ctx.fillText("prvi član para", 0, 0);
   ctx.restore();
 
-  ctx.fillStyle = "#cdb8aa";
+  ctx.fillStyle = T.muted;
   ctx.font = '700 12px "Public Sans", system-ui, sans-serif';
   ctx.textAlign = "center";
   ctx.fillText("drugi član para", gridX + gridWidth / 2, gridY - 48);
@@ -377,16 +399,14 @@ function drawMatrix(
       const selected = activePair.a === a && activePair.b === b;
       const diagonal = row === col;
 
-      const fill = inside
-        ? "rgba(103, 215, 173, 0.18)"
-        : "rgba(236, 91, 19, 0.05)";
+      const fill = inside ? T.insideFill : T.outsideFill;
       const stroke = selected
-        ? "#f6eee9"
+        ? T.selectedStroke
         : inside
-          ? "rgba(103, 215, 173, 0.34)"
+          ? T.insideStroke
           : diagonal
-            ? "rgba(255, 154, 106, 0.30)"
-            : "rgba(255, 154, 106, 0.10)";
+            ? T.diagStroke
+            : T.outsideStroke;
 
       ctx.beginPath();
       ctx.roundRect(x + 2, y + 2, cellSize - 4, cellSize - 4, 12);
@@ -396,7 +416,7 @@ function drawMatrix(
       ctx.lineWidth = selected ? 2 : 1.2;
       ctx.stroke();
 
-      ctx.fillStyle = inside ? "#67d7ad" : "#ffb488";
+      ctx.fillStyle = inside ? T.insideText : T.outsideText;
       ctx.font =
         (selected ? "800 " : "700 ") +
         Math.max(14, cellSize * 0.32) +
@@ -411,7 +431,7 @@ function drawMatrix(
 
   /* footer */
   ctx.textAlign = "left";
-  ctx.fillStyle = "#cdb8aa";
+  ctx.fillStyle = T.muted;
   ctx.font = '400 13px "Public Sans", system-ui, sans-serif';
   ctx.fillText(
     "Zelena ćelija znači da par pripada relaciji. Bela ivica pokazuje izabrani par.",
@@ -448,7 +468,9 @@ export default function RelationMatrixLab() {
     paint();
     const onResize = () => paint();
     window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+    const observer = new MutationObserver(() => paint());
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => { window.removeEventListener("resize", onResize); observer.disconnect(); };
   }, [paint]);
 
   function handleCanvasClick(e: React.MouseEvent<HTMLCanvasElement>) {

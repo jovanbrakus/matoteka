@@ -179,6 +179,45 @@ function computeData(st: LabState) {
 
 /* ── Canvas drawing ── */
 
+interface ThemePalette {
+  panelGradTop: string;
+  panelGradBottom: string;
+  panelBorder: string;
+  panelTitle: string;
+  axisLine: string;
+  muted: string;
+  text: string;
+  accent: string;
+  accentShade: string;
+  lineCurve: string;
+  solutionColor: string;
+  emptyColor: string;
+  dashed: string;
+  openCircleBg: string;
+  dotBorder: string;
+}
+
+function getTheme(): ThemePalette {
+  const isLight = document.documentElement.classList.contains("light");
+  return {
+    panelGradTop: isLight ? "rgba(0,0,0,0.03)" : "rgba(255,255,255,0.03)",
+    panelGradBottom: isLight ? "rgba(0,0,0,0.01)" : "rgba(255,255,255,0.01)",
+    panelBorder: isLight ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.08)",
+    panelTitle: isLight ? "#2a2420" : "#f6eee9",
+    axisLine: isLight ? "rgba(0,0,0,0.12)" : "rgba(255,255,255,0.12)",
+    muted: isLight ? "#7a6f68" : "#d8c6ba",
+    text: isLight ? "#2a2420" : "#f6eee9",
+    accent: isLight ? "#d94e0a" : "#ec5b13",
+    accentShade: isLight ? "rgba(217, 78, 10, 0.10)" : "rgba(236,91,19,0.10)",
+    lineCurve: isLight ? "#2e8ebf" : "#8fd7ff",
+    solutionColor: isLight ? "#1a9e6e" : "#74dfb7",
+    emptyColor: isLight ? "#d94e0a" : "#ff9b8e",
+    dashed: isLight ? "rgba(0,0,0,0.35)" : "rgba(255,255,255,0.35)",
+    openCircleBg: isLight ? "#f5f0eb" : "#090403",
+    dotBorder: isLight ? "#2a2420" : "#090403",
+  };
+}
+
 function mapValue(
   value: number,
   inMin: number,
@@ -217,17 +256,18 @@ function drawPanelBg(
   y: number,
   w: number,
   h: number,
-  title: string
+  title: string,
+  theme: ThemePalette
 ) {
   const grad = ctx.createLinearGradient(x, y, x, y + h);
-  grad.addColorStop(0, "rgba(255,255,255,0.03)");
-  grad.addColorStop(1, "rgba(255,255,255,0.01)");
+  grad.addColorStop(0, theme.panelGradTop);
+  grad.addColorStop(1, theme.panelGradBottom);
   ctx.fillStyle = grad;
   roundRect(ctx, x, y, w, h, 20, true, false);
-  ctx.strokeStyle = "rgba(255,255,255,0.08)";
+  ctx.strokeStyle = theme.panelBorder;
   ctx.lineWidth = 1;
   roundRect(ctx, x, y, w, h, 20, false, true);
-  ctx.fillStyle = "#f6eee9";
+  ctx.fillStyle = theme.panelTitle;
   ctx.font = '700 14px "Public Sans", system-ui, sans-serif';
   ctx.fillText(title, x + 18, y + 28);
 }
@@ -238,9 +278,10 @@ function drawAxes(
   xMin: number,
   xMax: number,
   yMin: number,
-  yMax: number
+  yMax: number,
+  theme: ThemePalette
 ) {
-  ctx.strokeStyle = "rgba(255,255,255,0.12)";
+  ctx.strokeStyle = theme.axisLine;
   ctx.lineWidth = 1;
   if (xMin < 0 && xMax > 0) {
     const x0 = mapValue(0, xMin, xMax, box.x, box.x + box.w);
@@ -263,7 +304,8 @@ function drawDot(
   x: number,
   y: number,
   color: string,
-  filled: boolean
+  filled: boolean,
+  openCircleBg: string
 ) {
   ctx.beginPath();
   ctx.arc(x, y, 5.5, 0, Math.PI * 2);
@@ -271,7 +313,7 @@ function drawDot(
     ctx.fillStyle = color;
     ctx.fill();
   } else {
-    ctx.fillStyle = "#090403";
+    ctx.fillStyle = openCircleBg;
     ctx.fill();
     ctx.strokeStyle = color;
     ctx.lineWidth = 2;
@@ -284,16 +326,17 @@ type Data = ReturnType<typeof computeData>;
 function drawMonotonicPlot(
   ctx: CanvasRenderingContext2D,
   box: { x: number; y: number; w: number; h: number },
-  data: Data
+  data: Data,
+  theme: ThemePalette
 ) {
-  drawPanelBg(ctx, box.x, box.y, box.w, box.h, "Graf funkcije y = a^t");
+  drawPanelBg(ctx, box.x, box.y, box.w, box.h, "Graf funkcije y = a^t", theme);
   const tMin = -3,
     tMax = 3,
     yMax = 12,
     yMin = 0;
-  drawAxes(ctx, box, tMin, tMax, yMin, yMax);
+  drawAxes(ctx, box, tMin, tMax, yMin, yMax, theme);
 
-  ctx.strokeStyle = "rgba(236,91,19,0.95)";
+  ctx.strokeStyle = theme.accent;
   ctx.lineWidth = 3;
   ctx.beginPath();
   for (let i = 0; i <= 180; i++) {
@@ -307,8 +350,8 @@ function drawMonotonicPlot(
   ctx.stroke();
 
   const markers = [
-    { label: "t1", value: data.t1, color: "#ec5b13" },
-    { label: "t2", value: data.t2, color: "#8fd7ff" },
+    { label: "t1", value: data.t1, color: theme.accent },
+    { label: "t2", value: data.t2, color: theme.lineCurve },
   ];
   markers.forEach((m) => {
     const ct = Math.max(tMin, Math.min(tMax, m.value));
@@ -323,13 +366,13 @@ function drawMonotonicPlot(
     ctx.lineTo(px, py);
     ctx.stroke();
     ctx.setLineDash([]);
-    drawDot(ctx, px, py, m.color, true);
+    drawDot(ctx, px, py, m.color, true, theme.openCircleBg);
     ctx.fillStyle = m.color;
     ctx.font = '700 12px "Public Sans", system-ui, sans-serif';
     ctx.fillText(m.label, px - 10, py - 10);
   });
 
-  ctx.fillStyle = "#d8c6ba";
+  ctx.fillStyle = theme.muted;
   ctx.font = '600 12px "Public Sans", system-ui, sans-serif';
   ctx.fillText(
     data.base > 1
@@ -343,9 +386,10 @@ function drawMonotonicPlot(
 function drawLinearPlot(
   ctx: CanvasRenderingContext2D,
   box: { x: number; y: number; w: number; h: number },
-  data: Data
+  data: Data,
+  theme: ThemePalette
 ): { xMin: number; xMax: number } {
-  drawPanelBg(ctx, box.x, box.y, box.w, box.h, "Eksponenti i region resenja");
+  drawPanelBg(ctx, box.x, box.y, box.w, box.h, "Eksponenti i region resenja", theme);
   const span = Math.max(
     4,
     data.solved.boundary === null ? 4 : Math.abs(data.solved.boundary) + 1.5
@@ -363,7 +407,7 @@ function drawLinearPlot(
   const pad = Math.max(1, (yMax - yMin) * 0.15);
   yMin -= pad;
   yMax += pad;
-  drawAxes(ctx, box, xMin, xMax, yMin, yMax);
+  drawAxes(ctx, box, xMin, xMax, yMin, yMax, theme);
 
   const strips = 80;
   for (let i = 0; i < strips; i++) {
@@ -375,14 +419,14 @@ function drawLinearPlot(
     if (compare(left, data.operator, right)) {
       const px1 = mapValue(xa, xMin, xMax, box.x + 16, box.x + box.w - 16);
       const px2 = mapValue(xb, xMin, xMax, box.x + 16, box.x + box.w - 16);
-      ctx.fillStyle = "rgba(236,91,19,0.10)";
+      ctx.fillStyle = theme.accentShade;
       ctx.fillRect(px1, box.y + 36, px2 - px1, box.h - 60);
     }
   }
 
   const lines = [
-    { m: data.m1, b: data.b1, color: "#ec5b13", label: "f(x)" },
-    { m: data.m2, b: data.b2, color: "#8fd7ff", label: "g(x)" },
+    { m: data.m1, b: data.b1, color: theme.accent, label: "f(x)" },
+    { m: data.m2, b: data.b2, color: theme.lineCurve, label: "g(x)" },
   ];
   lines.forEach((line) => {
     ctx.strokeStyle = line.color;
@@ -419,7 +463,7 @@ function drawLinearPlot(
       box.x + box.w - 16
     );
     ctx.setLineDash([6, 6]);
-    ctx.strokeStyle = "rgba(255,255,255,0.35)";
+    ctx.strokeStyle = theme.dashed;
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.moveTo(bx, box.y + 36);
@@ -435,15 +479,16 @@ function drawNumberLine(
   ctx: CanvasRenderingContext2D,
   box: { x: number; y: number; w: number; h: number },
   range: { xMin: number; xMax: number },
-  data: Data
+  data: Data,
+  theme: ThemePalette
 ) {
-  drawPanelBg(ctx, box.x, box.y, box.w, box.h, "Skup resenja na brojnoj pravoj");
+  drawPanelBg(ctx, box.x, box.y, box.w, box.h, "Skup resenja na brojnoj pravoj", theme);
   const { xMin, xMax } = range;
   const y = box.y + box.h / 2 + 18;
   const left = box.x + 22;
   const right = box.x + box.w - 22;
 
-  ctx.strokeStyle = "rgba(255,255,255,0.35)";
+  ctx.strokeStyle = theme.dashed;
   ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.moveTo(left, y);
@@ -456,7 +501,7 @@ function drawNumberLine(
   ctx.stroke();
 
   if (data.solved.allReal) {
-    ctx.strokeStyle = "#ec5b13";
+    ctx.strokeStyle = theme.accent;
     ctx.lineWidth = 5;
     ctx.beginPath();
     ctx.moveTo(left, y);
@@ -465,7 +510,7 @@ function drawNumberLine(
     return;
   }
   if (data.solved.empty) {
-    ctx.fillStyle = "#ff9b8e";
+    ctx.fillStyle = theme.emptyColor;
     ctx.font = '700 14px "Public Sans", system-ui, sans-serif';
     ctx.fillText("Nema dozvoljenih tacaka.", box.x + 20, box.y + 34);
     return;
@@ -473,12 +518,12 @@ function drawNumberLine(
 
   const boundary = data.solved.boundary!;
   const px = mapValue(boundary, xMin, xMax, left, right);
-  ctx.fillStyle = "#d8c6ba";
+  ctx.fillStyle = theme.muted;
   ctx.font = '600 12px "Public Sans", system-ui, sans-serif';
   ctx.fillText("0", mapValue(0, xMin, xMax, left, right) - 4, y + 24);
   ctx.fillText(numberLabel(boundary), px - 10, y + 24);
 
-  ctx.strokeStyle = "#ec5b13";
+  ctx.strokeStyle = theme.accent;
   ctx.lineWidth = 5;
   ctx.beginPath();
   if (data.solved.finalOp === "<" || data.solved.finalOp === "<=") {
@@ -494,8 +539,9 @@ function drawNumberLine(
     ctx,
     px,
     y,
-    "#ec5b13",
-    data.solved.finalOp === "<=" || data.solved.finalOp === ">="
+    theme.accent,
+    data.solved.finalOp === "<=" || data.solved.finalOp === ">=",
+    theme.openCircleBg
   );
 }
 
@@ -503,6 +549,7 @@ function drawCanvas(canvas: HTMLCanvasElement, state: LabState) {
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
+  const theme = getTheme();
   const data = computeData(state);
   const rect = canvas.getBoundingClientRect();
   const dpr = window.devicePixelRatio || 1;
@@ -520,9 +567,9 @@ function drawCanvas(canvas: HTMLCanvasElement, state: LabState) {
   const leftBox = { x: 12, y: midY, w: plotW, h: height * 0.34 };
   const rightBox = { x: 24 + plotW, y: midY, w: plotW, h: height * 0.34 };
 
-  drawMonotonicPlot(ctx, topBox, data);
-  const range = drawLinearPlot(ctx, leftBox, data);
-  drawNumberLine(ctx, rightBox, range, data);
+  drawMonotonicPlot(ctx, topBox, data, theme);
+  const range = drawLinearPlot(ctx, leftBox, data, theme);
+  drawNumberLine(ctx, rightBox, range, data, theme);
 }
 
 /* ── Component ── */
@@ -563,7 +610,9 @@ export default function ExpInequalityLab() {
     redraw();
     const handleResize = () => redraw();
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    const observer = new MutationObserver(() => redraw());
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => { window.removeEventListener("resize", handleResize); observer.disconnect(); };
   }, [redraw]);
 
   const update = (patch: Partial<LabState>) =>

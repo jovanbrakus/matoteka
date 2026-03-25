@@ -111,6 +111,21 @@ function renderCanvas(
   canvas: HTMLCanvasElement,
   state: PolarLabState
 ) {
+  const isLight = document.documentElement.classList.contains("light");
+  const T = {
+    bg: isLight ? "#f5f0eb" : "rgba(8, 4, 2, 0.95)",
+    text: isLight ? "#2a2420" : "#f6eee9",
+    muted: isLight ? "#7a6f68" : "#cdb8aa",
+    grid: isLight ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.06)",
+    gridStrong: isLight ? "rgba(0,0,0,0.22)" : "rgba(255,255,255,0.24)",
+    gridLabel: isLight ? "rgba(0,0,0,0.35)" : "rgba(255,255,255,0.30)",
+    axisLabel: isLight ? "rgba(0,0,0,0.6)" : "rgba(255,255,255,0.68)",
+    baseCircle: isLight ? "rgba(236,91,19,0.18)" : "rgba(255, 154, 106, 0.18)",
+    powerCircle: isLight ? "rgba(107,223,183,0.18)" : "rgba(107, 223, 183, 0.16)",
+    rootCircle: isLight ? "rgba(192,162,255,0.22)" : "rgba(192, 162, 255, 0.18)",
+    rootPoly: isLight ? "rgba(192,162,255,0.25)" : "rgba(192, 162, 255, 0.2)",
+  };
+
   const base = polarToComplex(state.radius, state.angleDeg);
   const n = state.n;
 
@@ -173,11 +188,11 @@ function renderCanvas(
   const gridMax = Math.ceil(maxCoord / step) * step;
 
   // Background
-  ctx.fillStyle = "rgba(8, 4, 2, 0.95)";
+  ctx.fillStyle = T.bg;
   ctx.fillRect(0, 0, width, height);
 
   // Grid lines
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.06)";
+  ctx.strokeStyle = T.grid;
   ctx.lineWidth = 1;
   for (let v = -gridMax; v <= gridMax; v += step) {
     if (Math.abs(v) < step * 0.01) continue; // skip origin
@@ -192,7 +207,7 @@ function renderCanvas(
   }
 
   // Axes
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.24)";
+  ctx.strokeStyle = T.gridStrong;
   ctx.lineWidth = 1.4;
   ctx.beginPath();
   ctx.moveTo(margin * 0.45, cy);
@@ -204,14 +219,14 @@ function renderCanvas(
   ctx.stroke();
 
   // Axis labels
-  ctx.fillStyle = "rgba(255, 255, 255, 0.68)";
+  ctx.fillStyle = T.axisLabel;
   ctx.font = '600 13px "Public Sans", sans-serif';
   ctx.fillText("Re", width - 28, cy - 10);
   ctx.fillText("Im", cx + 10, 24);
 
   // Grid numbers
   if (state.showLabels) {
-    ctx.fillStyle = "rgba(255, 255, 255, 0.30)";
+    ctx.fillStyle = T.gridLabel;
     ctx.font = '500 11px "Public Sans", sans-serif';
     for (let v = -gridMax; v <= gridMax; v += step) {
       if (Math.abs(v) < step * 0.01) continue;
@@ -224,7 +239,7 @@ function renderCanvas(
   // Base circle
   const baseR = Math.sqrt(base.re ** 2 + base.im ** 2) * scale;
   if (state.showLabels) {
-    ctx.strokeStyle = "rgba(255, 154, 106, 0.18)";
+    ctx.strokeStyle = T.baseCircle;
     ctx.lineWidth = 1.4;
     ctx.beginPath();
     ctx.arc(cx, cy, baseR, 0, Math.PI * 2);
@@ -234,7 +249,7 @@ function renderCanvas(
   // Power circle
   if (powerPoint && state.showLabels) {
     const pR = Math.sqrt(powerPoint.re ** 2 + powerPoint.im ** 2) * scale;
-    ctx.strokeStyle = "rgba(107, 223, 183, 0.16)";
+    ctx.strokeStyle = T.powerCircle;
     ctx.lineWidth = 1.4;
     ctx.beginPath();
     ctx.arc(cx, cy, pR, 0, Math.PI * 2);
@@ -243,7 +258,7 @@ function renderCanvas(
 
   // Root circle
   if (rootRadius && state.showLabels) {
-    ctx.strokeStyle = "rgba(192, 162, 255, 0.18)";
+    ctx.strokeStyle = T.rootCircle;
     ctx.lineWidth = 1.4;
     ctx.beginPath();
     ctx.arc(cx, cy, rootRadius * scale, 0, Math.PI * 2);
@@ -258,7 +273,7 @@ function renderCanvas(
 
   // Root polygon + points
   if (roots.length > 0) {
-    ctx.strokeStyle = "rgba(192, 162, 255, 0.2)";
+    ctx.strokeStyle = T.rootPoly;
     ctx.lineWidth = 1.2;
     ctx.beginPath();
     roots.forEach((root, idx) => {
@@ -348,7 +363,9 @@ export default function PolarLab() {
   useEffect(() => {
     const handleResize = () => draw();
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    const observer = new MutationObserver(() => draw());
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => { window.removeEventListener("resize", handleResize); observer.disconnect(); };
   }, [draw]);
 
   const update = (partial: Partial<PolarLabState>) =>

@@ -213,6 +213,19 @@ export default function SystemLab() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    const isLight = document.documentElement.classList.contains("light");
+
+    // Theme-aware palette
+    const T = {
+      bg: isLight ? "#f5f0eb" : "rgba(9, 4, 3, 0.94)",
+      grid: isLight ? "rgba(0,0,0,0.06)" : "rgba(255, 255, 255, 0.06)",
+      gridStrong: isLight ? "rgba(180,120,80,0.30)" : "rgba(255, 215, 185, 0.34)",
+      pointFill: isLight ? "#d94e0a" : "#ffd7b9",
+      pointStroke: isLight ? "#f5f0eb" : "#090403",
+      pointLabel: isLight ? "rgba(42,36,32,0.90)" : "rgba(255, 240, 230, 0.95)",
+      axisLabel: isLight ? "rgba(42,36,32,0.65)" : "rgba(255, 240, 230, 0.72)",
+    };
+
     const rect = canvas.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
     const w = Math.max(320, Math.floor(rect.width));
@@ -228,16 +241,13 @@ export default function SystemLab() {
       h - ((y - bounds.yMin) / (bounds.yMax - bounds.yMin)) * h;
 
     /* Background */
-    ctx.fillStyle = "rgba(9, 4, 3, 0.94)";
+    ctx.fillStyle = T.bg;
     ctx.fillRect(0, 0, w, h);
 
     /* Grid */
     for (let x = Math.ceil(bounds.xMin); x <= Math.floor(bounds.xMax); x++) {
       const px = mapX(x);
-      ctx.strokeStyle =
-        x === 0
-          ? "rgba(255, 215, 185, 0.34)"
-          : "rgba(255, 255, 255, 0.06)";
+      ctx.strokeStyle = x === 0 ? T.gridStrong : T.grid;
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(px, 0);
@@ -246,10 +256,7 @@ export default function SystemLab() {
     }
     for (let y = Math.ceil(bounds.yMin); y <= Math.floor(bounds.yMax); y++) {
       const py = mapY(y);
-      ctx.strokeStyle =
-        y === 0
-          ? "rgba(255, 215, 185, 0.34)"
-          : "rgba(255, 255, 255, 0.06)";
+      ctx.strokeStyle = y === 0 ? T.gridStrong : T.grid;
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(0, py);
@@ -290,7 +297,7 @@ export default function SystemLab() {
       ctx.restore();
     };
 
-    /* Curves */
+    /* Curves — accent colors stay the same in both themes */
     drawCurve((x) => a1 * x * x + b1 * x + c1, "#ec5b13");
     const fn2 = (x: number) =>
       mode === "line-parabola" ? mL * x + nL : d2 * x * x + e2 * x + f2;
@@ -300,20 +307,20 @@ export default function SystemLab() {
     points.forEach((p, i) => {
       const px = mapX(p.x);
       const py = mapY(p.y);
-      ctx.fillStyle = "#ffd7b9";
-      ctx.strokeStyle = "#090403";
+      ctx.fillStyle = T.pointFill;
+      ctx.strokeStyle = T.pointStroke;
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.arc(px, py, 6, 0, Math.PI * 2);
       ctx.fill();
       ctx.stroke();
       ctx.font = "600 13px Inter, sans-serif";
-      ctx.fillStyle = "rgba(255, 240, 230, 0.95)";
+      ctx.fillStyle = T.pointLabel;
       ctx.fillText(`S${i + 1}`, px + 10, py - 10);
     });
 
     /* Axis labels */
-    ctx.fillStyle = "rgba(255, 240, 230, 0.72)";
+    ctx.fillStyle = T.axisLabel;
     ctx.font = "500 12px Inter, sans-serif";
     ctx.fillText("x", w - 18, mapY(0) - 8);
     ctx.fillText("y", mapX(0) + 8, 16);
@@ -323,7 +330,9 @@ export default function SystemLab() {
     draw();
     const handleResize = () => draw();
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    const observer = new MutationObserver(() => draw());
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => { window.removeEventListener("resize", handleResize); observer.disconnect(); };
   }, [draw]);
 
   /* Slider change helper */

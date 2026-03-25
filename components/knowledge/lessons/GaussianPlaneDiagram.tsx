@@ -18,6 +18,19 @@ export default function GaussianPlaneDiagram() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    const isLight = document.documentElement.classList.contains("light");
+    const T = {
+      bg: isLight ? "#f5f0eb" : "rgba(8, 4, 2, 0.95)",
+      text: isLight ? "#2a2420" : "#f6eee9",
+      muted: isLight ? "#7a6f68" : "#cdb8aa",
+      grid: isLight ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.06)",
+      gridStrong: isLight ? "rgba(0,0,0,0.22)" : "rgba(255,255,255,0.28)",
+      gridLabel: isLight ? "rgba(0,0,0,0.35)" : "rgba(255,255,255,0.3)",
+      axisLabel: isLight ? "rgba(0,0,0,0.6)" : "rgba(255,255,255,0.7)",
+      projection: isLight ? "rgba(236,91,19,0.30)" : "rgba(255, 156, 109, 0.35)",
+      pointGlow: isLight ? "rgba(236,91,19,0.40)" : "rgba(236, 91, 19, 0.5)",
+    };
+
     const dpr = window.devicePixelRatio || 1;
     const w = Math.max(320, canvas.clientWidth || 500);
     const h = Math.max(320, Math.round(w * 0.85));
@@ -36,11 +49,11 @@ export default function GaussianPlaneDiagram() {
     const my = (y: number) => cy - y * scale;
 
     // Background
-    ctx.fillStyle = "rgba(8, 4, 2, 0.95)";
+    ctx.fillStyle = T.bg;
     ctx.fillRect(0, 0, w, h);
 
     // Grid
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.06)";
+    ctx.strokeStyle = T.grid;
     ctx.lineWidth = 1;
     for (let i = -Math.ceil(maxCoord); i <= Math.ceil(maxCoord); i++) {
       ctx.beginPath();
@@ -54,18 +67,18 @@ export default function GaussianPlaneDiagram() {
     }
 
     // Axes
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.28)";
+    ctx.strokeStyle = T.gridStrong;
     ctx.lineWidth = 1.5;
     ctx.beginPath(); ctx.moveTo(margin * 0.4, cy); ctx.lineTo(w - margin * 0.4, cy); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(cx, margin * 0.4); ctx.lineTo(cx, h - margin * 0.4); ctx.stroke();
 
-    ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
+    ctx.fillStyle = T.axisLabel;
     ctx.font = `600 13px ${FONT}`;
     ctx.fillText("Re", w - 30, cy - 10);
     ctx.fillText("Im", cx + 10, 22);
 
     // Grid numbers
-    ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
+    ctx.fillStyle = T.gridLabel;
     ctx.font = `500 11px ${FONT}`;
     for (let i = -Math.ceil(maxCoord); i <= Math.ceil(maxCoord); i++) {
       if (i === 0) continue;
@@ -75,7 +88,7 @@ export default function GaussianPlaneDiagram() {
 
     // Dashed projections
     ctx.setLineDash([6, 4]);
-    ctx.strokeStyle = "rgba(255, 156, 109, 0.35)";
+    ctx.strokeStyle = T.projection;
     ctx.lineWidth = 1.2;
     // Horizontal from point to Im axis
     ctx.beginPath(); ctx.moveTo(mx(a), my(b)); ctx.lineTo(mx(a), cy); ctx.stroke();
@@ -116,7 +129,7 @@ export default function GaussianPlaneDiagram() {
     ctx.beginPath();
     ctx.arc(mx(a), my(b), 6, 0, Math.PI * 2);
     ctx.fill();
-    ctx.strokeStyle = "rgba(236, 91, 19, 0.5)";
+    ctx.strokeStyle = T.pointGlow;
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.arc(mx(a), my(b), 12, 0, Math.PI * 2);
@@ -148,7 +161,7 @@ export default function GaussianPlaneDiagram() {
     ctx.fillText(rLabel, midX - 20, midY - 12);
 
     // z label
-    ctx.fillStyle = "#f6eee9";
+    ctx.fillStyle = T.text;
     ctx.font = `700 14px ${FONT}`;
     ctx.fillText(`z = ${a.toFixed(1)} + ${b.toFixed(1)}i`, mx(a) + 16, my(b) - 4);
   }, [point]);
@@ -157,7 +170,9 @@ export default function GaussianPlaneDiagram() {
   useEffect(() => {
     const h = () => draw();
     window.addEventListener("resize", h);
-    return () => window.removeEventListener("resize", h);
+    const observer = new MutationObserver(() => draw());
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => { window.removeEventListener("resize", h); observer.disconnect(); };
   }, [draw]);
 
   const getCanvasCoords = (e: React.MouseEvent<HTMLCanvasElement>) => {

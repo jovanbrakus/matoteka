@@ -46,6 +46,19 @@ export default function UnitCircleDiagram() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    const isLight = document.documentElement.classList.contains("light");
+    const T = {
+      bg: isLight ? "#f5f0eb" : "rgba(8, 4, 2, 0.95)",
+      text: isLight ? "#2a2420" : "#f6eee9",
+      muted: isLight ? "#7a6f68" : "#cdb8aa",
+      grid: isLight ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.06)",
+      gridStrong: isLight ? "rgba(0,0,0,0.22)" : "rgba(255,255,255,0.22)",
+      gridLabel: isLight ? "rgba(0,0,0,0.35)" : "rgba(255,255,255,0.35)",
+      axisLabel: isLight ? "rgba(0,0,0,0.6)" : "rgba(255,255,255,0.6)",
+      circleStroke: isLight ? "rgba(236,91,19,0.18)" : "rgba(255, 154, 106, 0.15)",
+      dotInactive: isLight ? "rgba(236,91,19,0.50)" : "rgba(255, 156, 109, 0.6)",
+    };
+
     const dpr = window.devicePixelRatio || 1;
     const w = Math.max(300, canvas.clientWidth || 500);
     const h = w;
@@ -59,29 +72,29 @@ export default function UnitCircleDiagram() {
     const R = (w / 2) * 0.7;
 
     // Background
-    ctx.fillStyle = "rgba(8, 4, 2, 0.95)";
+    ctx.fillStyle = T.bg;
     ctx.fillRect(0, 0, w, h);
 
     // Grid circle at r=1
-    ctx.strokeStyle = "rgba(255, 154, 106, 0.15)";
+    ctx.strokeStyle = T.circleStroke;
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.arc(cx, cy, R, 0, Math.PI * 2);
     ctx.stroke();
 
     // Axes
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.22)";
+    ctx.strokeStyle = T.gridStrong;
     ctx.lineWidth = 1.2;
     ctx.beginPath(); ctx.moveTo(20, cy); ctx.lineTo(w - 20, cy); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(cx, 20); ctx.lineTo(cx, h - 20); ctx.stroke();
 
-    ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
+    ctx.fillStyle = T.axisLabel;
     ctx.font = `600 12px ${FONT}`;
     ctx.fillText("Re", w - 22, cy - 8);
     ctx.fillText("Im", cx + 8, 18);
 
     // 1 and -1 labels
-    ctx.fillStyle = "rgba(255, 255, 255, 0.35)";
+    ctx.fillStyle = T.gridLabel;
     ctx.font = `500 11px ${FONT}`;
     ctx.fillText("1", cx + R + 4, cy + 14);
     ctx.fillText("-1", cx - R - 14, cy + 14);
@@ -114,14 +127,14 @@ export default function UnitCircleDiagram() {
       }
 
       // Dot
-      ctx.fillStyle = isActive ? "#ec5b13" : "rgba(255, 156, 109, 0.6)";
+      ctx.fillStyle = isActive ? "#ec5b13" : T.dotInactive;
       ctx.beginPath();
       ctx.arc(px, py, isActive ? 6 : 3.5, 0, Math.PI * 2);
       ctx.fill();
 
       // Degree label near point
       if (isActive) {
-        ctx.fillStyle = "#f6eee9";
+        ctx.fillStyle = T.text;
         ctx.font = `700 11px ${FONT}`;
         const labelDist = R + 18;
         const lx = cx + labelDist * Math.cos(rad);
@@ -137,7 +150,9 @@ export default function UnitCircleDiagram() {
   useEffect(() => {
     const h = () => draw();
     window.addEventListener("resize", h);
-    return () => window.removeEventListener("resize", h);
+    const observer = new MutationObserver(() => draw());
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => { window.removeEventListener("resize", h); observer.disconnect(); };
   }, [draw]);
 
   const handleInteraction = (e: React.MouseEvent<HTMLCanvasElement>) => {
