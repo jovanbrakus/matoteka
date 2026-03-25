@@ -1,7 +1,8 @@
-import { getLessonMeta } from "@/lib/lessons";
+import { getLessonMeta, getAdjacentLessons } from "@/lib/lessons";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
+import { LessonNavContext } from "@/components/knowledge/LessonNavContext";
 
 const Lesson1Page = dynamic(() => import("@/components/knowledge/lessons/Lesson1Page"));
 const Lesson2Page = dynamic(() => import("@/components/knowledge/lessons/Lesson2Page"));
@@ -149,5 +150,16 @@ export default async function LessonPage({ params }: Props) {
     notFound();
   }
 
-  return <LessonComponent />;
+  const { prev, next } = getAdjacentLessons(lessonId);
+
+  return (
+    <LessonNavContext
+      lessonNumber={meta.lessonNumber}
+      lessonTitle={meta.title}
+      prevLesson={prev}
+      nextLesson={next}
+    >
+      <LessonComponent />
+    </LessonNavContext>
+  );
 }

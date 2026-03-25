@@ -77,6 +77,18 @@ export function getTotalLessons(): number {
   return getIndex().totalLessons;
 }
 
+export function getAdjacentLessons(id: string): {
+  prev: { id: string; title: string } | null;
+  next: { id: string; title: string } | null;
+} {
+  const all = getAllLessons();
+  const idx = all.findIndex((l) => l.id === id);
+  return {
+    prev: idx > 0 ? { id: all[idx - 1].id, title: all[idx - 1].title } : null,
+    next: idx < all.length - 1 ? { id: all[idx + 1].id, title: all[idx + 1].title } : null,
+  };
+}
+
 export function getLessonHeroPath(id: string): string | null {
   const heroPath = path.join(process.cwd(), "knowledge", `lesson${id}_hero.png`);
   if (!fs.existsSync(heroPath)) return null;

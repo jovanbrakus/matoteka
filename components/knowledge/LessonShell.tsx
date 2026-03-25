@@ -2,6 +2,8 @@
 
 import { MathJaxContext } from "better-react-mathjax";
 import { MATHJAX_CONFIG, MATHJAX_SRC } from "@/lib/mathjax-config";
+import { useLessonNav } from "./LessonNavContext";
+import { LessonBreadcrumb, LessonFooterNav } from "./LessonNavBar";
 import s from "@/styles/lesson-common.module.css";
 
 interface LessonShellProps {
@@ -9,13 +11,25 @@ interface LessonShellProps {
 }
 
 export default function LessonShell({ children }: LessonShellProps) {
+  const nav = useLessonNav();
+
   return (
     <MathJaxContext config={MATHJAX_CONFIG} src={MATHJAX_SRC}>
       <div className={s.lessonRoot}>
         <div className={`${s.ambientOrb} ${s.ambientOrbOne}`} />
         <div className={`${s.ambientOrb} ${s.ambientOrbTwo}`} />
         <div className={`${s.ambientOrb} ${s.ambientOrbThree}`} />
-        <main className={s.page}>{children}</main>
+        <main className={s.page}>
+          {children}
+          {nav && (
+            <LessonFooterNav
+              lessonNumber={nav.lessonNumber}
+              lessonTitle={nav.lessonTitle}
+              prevLesson={nav.prevLesson}
+              nextLesson={nav.nextLesson}
+            />
+          )}
+        </main>
       </div>
     </MathJaxContext>
   );
