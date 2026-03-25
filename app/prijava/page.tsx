@@ -50,11 +50,12 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-[80vh] items-center justify-center px-4">
       <div className="w-full max-w-md rounded-2xl border border-[var(--glass-border)] bg-card p-8 text-center">
-        <h1 className="mb-2 text-3xl font-bold">
-          <span className="bg-gradient-to-r from-[#ec5b13] to-[#fe9d00] bg-clip-text text-transparent">
+        <div className="mb-2 flex items-center justify-center gap-3">
+          <img src="/logo.svg" alt="Matoteka" className="h-10 w-10" />
+          <span className="text-3xl font-semibold text-heading" style={{ fontFamily: "'Fredoka', sans-serif" }}>
             Matoteka
           </span>
-        </h1>
+        </div>
         <p className="mb-8 text-text-secondary">
           Prijavi se da počneš sa pripremom
         </p>

@@ -76,7 +76,11 @@ function main() {
       continue;
     }
 
-    if (!doc.year) {
+    let year = doc.year;
+    if (!year && meta.document.includes("zbirka_zadataka")) {
+      year = 2026;
+    }
+    if (!year) {
       skipped++;
       continue;
     }
@@ -92,7 +96,7 @@ function main() {
     problemsMap[meta.id] = {
       id: meta.id,
       facultyId,
-      year: doc.year,
+      year,
       problemNumber: meta.order,
       extra: doc.extra || null,
       category: meta.category,
