@@ -6,10 +6,10 @@ import { SessionProvider } from "next-auth/react";
 import { auth } from "@/lib/auth";
 
 export const metadata: Metadata = {
-  title: "Matoteka — 1000+ rešenih zadataka za prijemni ispit",
+  title: "Matoteka — Prijemni ispit iz matematike | 4000+ zadataka",
   description:
-    "Besplatna platforma za pripremu prijemnog ispita iz matematike. 1000+ rešenih zadataka sa ETF, MATF, FON i drugih fakulteta Univerziteta u Beogradu.",
-  keywords: "prijemni ispit, matematika, ETF, MATF, FON, rešeni zadaci, Beograd",
+    "Besplatna platforma za pripremu prijemnog ispita iz matematike. 4000+ rešenih zadataka, 59 interaktivnih lekcija i simulacije ispita za ETF, MATF, FON i druge fakultete Univerziteta u Beogradu.",
+  keywords: "prijemni ispit, matematika, ETF, MATF, FON, rešeni zadaci, Beograd, simulacija ispita, lekcije",
 };
 
 export default async function RootLayout({

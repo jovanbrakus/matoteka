@@ -26,7 +26,7 @@ export default function LandingHero() {
               </h1>
 
               <p className="max-w-xl text-lg leading-relaxed text-text-secondary">
-                Platforma dizajnirana za buduće inženjere. Postigni maksimalan
+                Platforma dizajnirana za buduće studente tehničkih i matematičkih fakulteta. Postigni maksimalan
                 broj poena uz personalizovan plan rada, AI asistenciju i bazu od
                 preko 4000 rešenih zadataka.
               </p>
@@ -260,58 +260,101 @@ export default function LandingHero() {
         </div>
       </section>
 
-      {/* ─── Theory Vault & Simulation Lab ─── */}
+      {/* ─── Theory Vault ─── */}
       <section id="teorija" className="bg-surface-dark py-24">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="grid gap-12 lg:grid-cols-2">
-            {/* Theory Vault */}
-            <div className="glass-card relative overflow-hidden rounded-[2.5rem] border-[#ec5b13]/20 p-10">
+          <div className="glass-card relative overflow-hidden rounded-[2.5rem] border-[#ec5b13]/20 p-10 lg:p-14">
+            <div className="grid items-center gap-12 lg:grid-cols-2">
               <div className="relative z-10">
-                <h3 className="mb-6 text-3xl font-black text-heading">Teorijski kutak</h3>
-                <p className="mb-10 leading-relaxed text-text-secondary">
+                <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#ec5b13]/20 bg-[#ec5b13]/10 px-3 py-1">
+                  <span className="material-symbols-outlined text-sm text-[#ec5b13]">auto_stories</span>
+                  <span className="text-xs font-bold uppercase tracking-widest text-[#ec5b13]">Centar znanja</span>
+                </div>
+                <h3 className="mb-6 text-4xl font-black text-heading">Teorijski kutak</h3>
+                <p className="mb-10 text-lg leading-relaxed text-text-secondary">
                   Pristup elitnoj bazi teorijskih lekcija. Svaka formula,
                   definicija i teorema je objašnjena kroz praktične primere koji
-                  se zapravo pojavljuju na testu.
+                  se zapravo pojavljuju na testu. Interaktivni laboratorijumi
+                  i vežbe na kraju svake lekcije.
                 </p>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-3 gap-4">
                   <div className="flex flex-col gap-2 rounded-2xl border border-[var(--glass-border)] bg-[var(--tint)] p-4">
                     <span className="material-symbols-outlined text-[#ec5b13]">analytics</span>
-                    <span className="text-sm font-bold text-heading">50+ lekcija</span>
+                    <span className="text-sm font-bold text-heading">59 lekcija</span>
                   </div>
                   <div className="flex flex-col gap-2 rounded-2xl border border-[var(--glass-border)] bg-[var(--tint)] p-4">
-                    <span className="material-symbols-outlined text-[#ec5b13]">description</span>
-                    <span className="text-sm font-bold text-heading">PDF podsetnici</span>
+                    <span className="material-symbols-outlined text-[#ec5b13]">science</span>
+                    <span className="text-sm font-bold text-heading">30+ labova</span>
+                  </div>
+                  <div className="flex flex-col gap-2 rounded-2xl border border-[var(--glass-border)] bg-[var(--tint)] p-4">
+                    <span className="material-symbols-outlined text-[#ec5b13]">touch_app</span>
+                    <span className="text-sm font-bold text-heading">Interaktivne vežbe</span>
                   </div>
                 </div>
               </div>
-              <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-[#ec5b13]/10 blur-3xl" />
+              <div className="relative">
+                <div className="overflow-hidden rounded-2xl border border-[var(--glass-border)] shadow-2xl">
+                  <img
+                    src="/screenshots/lekcija.png"
+                    alt="Primer interaktivne lekcije o trigonometrijskom obliku kompleksnog broja"
+                    className="w-full"
+                  />
+                </div>
+                <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-[#ec5b13]/10 blur-3xl" />
+              </div>
             </div>
+          </div>
+        </div>
+      </section>
 
-            {/* Simulation Lab */}
-            <div id="simulacija" className="glass-card relative overflow-hidden rounded-[2.5rem] border-cyan-500/20 p-10">
-              <div className="relative z-10">
-                <h3 className="mb-6 text-3xl font-black text-heading">Simulacija ispita</h3>
-                <p className="mb-10 leading-relaxed text-text-secondary">
-                  Iskusi pravi ispit pre samog ispita. Naš AI Proctor prati
-                  tvoj tempo i identifikuje pod kojim oblastima gubiš najviše
-                  vremena.
-                </p>
-                <div className="flex items-center gap-6">
-                  <div className="flex items-center gap-2 rounded-full border border-cyan-500/20 bg-cyan-500/10 px-4 py-2">
-                    <div className="h-2 w-2 animate-pulse rounded-full bg-cyan-500" />
-                    <span className="text-xs font-bold uppercase tracking-widest text-cyan-500">
-                      AI Monitoring Active
-                    </span>
-                  </div>
-                  <Link
-                    href="/prijava"
-                    className="rounded-xl bg-cyan-500 px-6 py-2.5 text-sm font-bold text-heading"
-                  >
-                    Započni probu
-                  </Link>
+      {/* ─── Simulation Lab ─── */}
+      <section id="simulacija" className="py-24">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="glass-card relative overflow-hidden rounded-[2.5rem] border-cyan-500/20 p-10 lg:p-14">
+            <div className="grid items-center gap-12 lg:grid-cols-2">
+              <div className="relative order-2 lg:order-1">
+                <div className="overflow-hidden rounded-2xl border border-[var(--glass-border)] shadow-2xl">
+                  <img
+                    src="/screenshots/simulacija.png"
+                    alt="Simulacija prijemnog ispita — konfiguracija testa"
+                    className="w-full"
+                  />
                 </div>
+                <div className="pointer-events-none absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-cyan-500/10 blur-3xl" />
               </div>
-              <div className="pointer-events-none absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-cyan-500/10 blur-3xl" />
+              <div className="relative z-10 order-1 lg:order-2">
+                <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1">
+                  <div className="h-2 w-2 animate-pulse rounded-full bg-cyan-500" />
+                  <span className="text-xs font-bold uppercase tracking-widest text-cyan-500">AI Monitoring</span>
+                </div>
+                <h3 className="mb-6 text-4xl font-black text-heading">Simulacija ispita</h3>
+                <p className="mb-10 text-lg leading-relaxed text-text-secondary">
+                  Iskusi pravi ispit pre samog ispita. Izaberi fakultet, broj
+                  zadataka i vremensko ograničenje. AI Proctor prati tvoj tempo
+                  i identifikuje oblasti gde gubiš najviše vremena.
+                </p>
+                <div className="grid grid-cols-3 gap-4 mb-8">
+                  <div className="flex flex-col gap-2 rounded-2xl border border-[var(--glass-border)] bg-[var(--tint)] p-4">
+                    <span className="material-symbols-outlined text-cyan-500">timer</span>
+                    <span className="text-sm font-bold text-heading">Tajmer</span>
+                  </div>
+                  <div className="flex flex-col gap-2 rounded-2xl border border-[var(--glass-border)] bg-[var(--tint)] p-4">
+                    <span className="material-symbols-outlined text-cyan-500">leaderboard</span>
+                    <span className="text-sm font-bold text-heading">Rang lista</span>
+                  </div>
+                  <div className="flex flex-col gap-2 rounded-2xl border border-[var(--glass-border)] bg-[var(--tint)] p-4">
+                    <span className="material-symbols-outlined text-cyan-500">assessment</span>
+                    <span className="text-sm font-bold text-heading">Analiza</span>
+                  </div>
+                </div>
+                <Link
+                  href="/prijava"
+                  className="inline-flex items-center gap-2 rounded-xl bg-cyan-500 px-8 py-3 text-sm font-bold text-white transition-transform hover:scale-105"
+                >
+                  Započni simulaciju
+                  <span className="material-symbols-outlined text-base">arrow_forward</span>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -419,7 +462,7 @@ export default function LandingHero() {
           </h2>
           <p className="mx-auto mb-12 max-w-2xl text-xl leading-relaxed text-text-secondary">
             Ne ostavljaj upis slučaju. Pridruži se stotinama učenika koji
-            osvajaju mesta na najboljim srpskim fakultetima.
+            osvajaju mesta na najboljim tehničkim fakultetima u Srbiji i regionu.
           </p>
 
           <div className="flex flex-col justify-center gap-6 sm:flex-row">
@@ -473,14 +516,13 @@ export default function LandingHero() {
           </div>
 
           <div className="flex gap-8 text-sm text-muted">
-            <span className="cursor-pointer transition-colors hover:text-heading">O nama</span>
-            <span className="cursor-pointer transition-colors hover:text-heading">Kontakt</span>
-            <span className="cursor-pointer transition-colors hover:text-heading">Uslovi korišćenja</span>
-            <span className="cursor-pointer transition-colors hover:text-heading">Privatnost</span>
+            <Link href="/about" className="transition-colors hover:text-heading">O nama</Link>
+            <Link href="/terms" className="transition-colors hover:text-heading">Uslovi korišćenja</Link>
+            <Link href="/privacy" className="transition-colors hover:text-heading">Privatnost</Link>
           </div>
 
           <p className="text-sm text-slate-600">
-            &copy; 2025 Matoteka. Sva prava zadržana.
+            &copy; 2026 Matoteka. Sva prava zadržana.
           </p>
         </div>
       </footer>
