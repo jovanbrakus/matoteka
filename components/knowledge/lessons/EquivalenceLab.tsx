@@ -204,6 +204,30 @@ export default function EquivalenceLab() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     const dpr = window.devicePixelRatio || 1;
+    const isLight = document.documentElement.classList.contains("light");
+
+    // Theme-aware palette
+    const T = {
+      bg1: isLight ? "#f5f0eb" : "#160906",
+      bg2: isLight ? "#ebe5df" : "#0b0403",
+      text: isLight ? "#2a2420" : "#f6eee9",
+      muted: isLight ? "#7a6f68" : "#cdb8aa",
+      accent: isLight ? "#d94e0a" : "#ffb488",
+      success: isLight ? "#1a9e6e" : "#67d7ad",
+      rowBg: isLight ? "rgba(0,0,0,0.01)" : "rgba(255,255,255,0.01)",
+      rowSelBg: isLight ? "rgba(236,91,19,0.10)" : "rgba(236,91,19,0.16)",
+      rowSelBorder: isLight ? "rgba(236,91,19,0.25)" : "rgba(255,154,106,0.34)",
+      rowBorder: isLight ? "rgba(0,0,0,0.06)" : "rgba(236,91,19,0.08)",
+      headerBg: "rgba(236,91,19,0.10)",
+      headerBorder: isLight ? "rgba(236,91,19,0.10)" : "rgba(236,91,19,0.14)",
+      pillBg: isLight ? "rgba(236,91,19,0.12)" : "rgba(236,91,19,0.16)",
+      pillBorder: isLight ? "rgba(236,91,19,0.20)" : "rgba(255,154,106,0.30)",
+      tableBorder: isLight ? "rgba(0,0,0,0.06)" : "rgba(236,91,19,0.14)",
+      trueBg: isLight ? "rgba(26,158,110,0.12)" : "rgba(103,215,173,0.14)",
+      trueBorder: isLight ? "rgba(26,158,110,0.30)" : "rgba(103,215,173,0.34)",
+      falseBg: isLight ? "rgba(217,78,10,0.10)" : "rgba(255,180,136,0.14)",
+      falseBorder: isLight ? "rgba(217,78,10,0.25)" : "rgba(255,180,136,0.34)",
+    };
 
     const rect = canvas.getBoundingClientRect();
     const W = Math.max(320, Math.floor(rect.width));
@@ -217,18 +241,18 @@ export default function EquivalenceLab() {
 
     /* background */
     const bg = ctx.createLinearGradient(0, 0, W, H);
-    bg.addColorStop(0, "#160906");
-    bg.addColorStop(1, "#0b0403");
+    bg.addColorStop(0, T.bg1);
+    bg.addColorStop(1, T.bg2);
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, W, H);
 
     /* title */
-    ctx.fillStyle = "#f6eee9";
+    ctx.fillStyle = T.text;
     ctx.font = '800 24px "Public Sans", system-ui, sans-serif';
     ctx.textAlign = "left";
     ctx.fillText("Laboratorija ekvivalencije", 26, 42);
 
-    ctx.fillStyle = "#cdb8aa";
+    ctx.fillStyle = T.muted;
     ctx.font = '400 14px "Public Sans", system-ui, sans-serif';
     ctx.fillText("Klikni red koji želiš da analiziraš", 26, 66);
 
@@ -239,12 +263,12 @@ export default function EquivalenceLab() {
     const pillX = W - pillW - 30;
     ctx.beginPath();
     ctx.roundRect(pillX, 24, pillW, pillH, 999);
-    ctx.fillStyle = "rgba(236,91,19,0.16)";
+    ctx.fillStyle = T.pillBg;
     ctx.fill();
-    ctx.strokeStyle = "rgba(255,154,106,0.30)";
+    ctx.strokeStyle = T.pillBorder;
     ctx.lineWidth = 1;
     ctx.stroke();
-    ctx.fillStyle = "#f6eee9";
+    ctx.fillStyle = T.text;
     ctx.font = '700 14px "Public Sans", system-ui, sans-serif';
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
@@ -264,9 +288,9 @@ export default function EquivalenceLab() {
 
     ctx.beginPath();
     ctx.roundRect(left, top, tableWidth, headerHeight + rowHeight * scenario.rows.length, 22);
-    ctx.fillStyle = "rgba(255,255,255,0.02)";
+    ctx.fillStyle = isLight ? "rgba(0,0,0,0.02)" : "rgba(255,255,255,0.02)";
     ctx.fill();
-    ctx.strokeStyle = "rgba(236,91,19,0.14)";
+    ctx.strokeStyle = T.tableBorder;
     ctx.lineWidth = 1;
     ctx.stroke();
 
@@ -274,11 +298,11 @@ export default function EquivalenceLab() {
     let x = left;
     scenario.headers.forEach((header, idx) => {
       const w = colWidths[idx];
-      ctx.fillStyle = "rgba(236,91,19,0.10)";
+      ctx.fillStyle = T.headerBg;
       ctx.fillRect(x, top, w, headerHeight);
-      ctx.strokeStyle = "rgba(236,91,19,0.12)";
+      ctx.strokeStyle = T.headerBorder;
       ctx.strokeRect(x, top, w, headerHeight);
-      ctx.fillStyle = "#ffb488";
+      ctx.fillStyle = T.accent;
       ctx.font = '700 13px "Public Sans", system-ui, sans-serif';
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
@@ -307,9 +331,9 @@ export default function EquivalenceLab() {
       const selected = idx === activeRow;
       rowHits.push({ x: left, y, w: tableWidth, h: rowHeight, index: idx });
 
-      ctx.fillStyle = selected ? "rgba(236,91,19,0.16)" : "rgba(255,255,255,0.01)";
+      ctx.fillStyle = selected ? T.rowSelBg : T.rowBg;
       ctx.fillRect(left, y, tableWidth, rowHeight);
-      ctx.strokeStyle = selected ? "rgba(255,154,106,0.34)" : "rgba(236,91,19,0.08)";
+      ctx.strokeStyle = selected ? T.rowSelBorder : T.rowBorder;
       ctx.strokeRect(left, y, tableWidth, rowHeight);
 
       let cells: string[];
@@ -338,22 +362,22 @@ export default function EquivalenceLab() {
           const truthy = cell === "T";
           drawPill(
             centerX - 24, y + 16, 48, 30,
-            truthy ? "rgba(103,215,173,0.14)" : "rgba(255,180,136,0.14)",
-            truthy ? "rgba(103,215,173,0.34)" : "rgba(255,180,136,0.34)",
+            truthy ? T.trueBg : T.falseBg,
+            truthy ? T.trueBorder : T.falseBorder,
             cell,
-            truthy ? "#67d7ad" : "#ffb488"
+            truthy ? T.success : T.accent
           );
         } else if (isDecision) {
           const good = cell === "da" || cell === "uvek drži";
           drawPill(
             centerX - 32, y + 16, 64, 30,
-            good ? "rgba(103,215,173,0.14)" : "rgba(255,180,136,0.14)",
-            good ? "rgba(103,215,173,0.34)" : "rgba(255,180,136,0.34)",
+            good ? T.trueBg : T.falseBg,
+            good ? T.trueBorder : T.falseBorder,
             cell,
-            good ? "#67d7ad" : "#ffb488"
+            good ? T.success : T.accent
           );
         } else {
-          ctx.fillStyle = "#f6eee9";
+          ctx.fillStyle = T.text;
           ctx.font = '700 15px "Public Sans", system-ui, sans-serif';
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
@@ -364,7 +388,7 @@ export default function EquivalenceLab() {
     });
 
     /* footer hint */
-    ctx.fillStyle = "#cdb8aa";
+    ctx.fillStyle = T.muted;
     ctx.font = '400 13px "Public Sans", system-ui, sans-serif';
     ctx.textAlign = "left";
     ctx.fillText(
@@ -380,7 +404,10 @@ export default function EquivalenceLab() {
     draw();
     const onResize = () => draw();
     window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+    // Redraw when theme changes
+    const observer = new MutationObserver(() => draw());
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => { window.removeEventListener("resize", onResize); observer.disconnect(); };
   }, [draw]);
 
   const handlePointer = (e: React.MouseEvent | React.TouchEvent) => {

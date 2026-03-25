@@ -132,7 +132,7 @@ function BoolBadge({ value }: { value: boolean }) {
         border: `1px solid ${
           value ? "rgba(103, 215, 173, 0.34)" : "rgba(255, 180, 136, 0.34)"
         }`,
-        color: value ? "#67d7ad" : "#ffb488",
+        color: value ? "var(--lesson-success)" : "var(--lesson-primary-soft)",
       }}
     >
       {value ? "T" : "N"}
@@ -175,15 +175,7 @@ export default function TruthTableLab() {
       </div>
 
       {/* Truth table */}
-      <div
-        style={{
-          background: "rgba(5, 3, 2, 0.66)",
-          border: "1px solid rgba(255, 255, 255, 0.08)",
-          borderRadius: 24,
-          padding: 18,
-          overflowX: "auto",
-        }}
-      >
+      <div className={s.canvasWrap} style={{ borderRadius: 24, padding: 18, overflowX: "auto" }}>
         <div
           style={{
             display: "flex",
@@ -239,7 +231,7 @@ export default function TruthTableLab() {
                     background: selected
                       ? "rgba(236, 91, 19, 0.16)"
                       : "transparent",
-                    borderTop: "1px solid rgba(236, 91, 19, 0.08)",
+                    borderTop: "1px solid var(--lesson-border)",
                     transition:
                       "background 0.15s ease",
                   }}
@@ -338,11 +330,11 @@ const thStyle: React.CSSProperties = {
   padding: "12px 14px",
   fontWeight: 700,
   fontSize: "0.82rem",
-  color: "#ffb488",
+  color: "var(--lesson-primary-soft)",
   textTransform: "uppercase",
   letterSpacing: "0.06em",
   background: "rgba(236, 91, 19, 0.10)",
-  borderBottom: "1px solid rgba(236, 91, 19, 0.12)",
+  borderBottom: "1px solid var(--lesson-border)",
 };
 
 const tdStyle: React.CSSProperties = {
