@@ -26,12 +26,7 @@ export default function LessonCard({ lesson }: { lesson: LessonMeta }) {
   return (
     <Link href={`/znanje/${lesson.id}`} className="block">
       <div
-        className="group flex flex-col md:flex-row items-center gap-6 p-6 rounded-xl border border-[rgba(73,72,71,0.1)] hover:border-[#FF6B00]/30 transition-all cursor-pointer"
-        style={{
-          background: "rgba(19, 19, 19, 0.8)",
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
-        }}
+        className="group flex flex-col md:flex-row items-center gap-6 p-6 rounded-xl border border-[var(--glass-border)] hover:border-[#FF6B00]/30 transition-all cursor-pointer glass-card"
       >
         {/* Hero image */}
         <div className="w-full md:w-64 h-36 rounded-lg overflow-hidden shrink-0 relative bg-black">
@@ -61,27 +56,21 @@ export default function LessonCard({ lesson }: { lesson: LessonMeta }) {
             <span className="px-3 py-1 bg-[#FF6B00]/20 text-[#FF6B00] text-[10px] font-bold uppercase tracking-widest rounded-full border border-[#FF6B00]/30">
               {categoryLabel}
             </span>
-            <span className="px-3 py-1 bg-[#262626] text-[#adaaaa] text-[10px] font-bold uppercase tracking-widest rounded-full">
+            <span className="px-3 py-1 bg-[var(--tint-strong)] text-text-secondary text-[10px] font-bold uppercase tracking-widest rounded-full">
               Lekcija {lesson.lessonNumber}
             </span>
           </div>
-          <h4
-            className="text-xl font-bold mb-2 text-white group-hover:text-[#FF6B00] transition-colors"
-            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-          >
+          <h4 className="text-xl font-bold mb-2 text-heading group-hover:text-[#FF6B00] transition-colors">
             {lesson.title}
           </h4>
-          <p className="text-[#adaaaa] text-sm line-clamp-2 max-w-3xl">
+          <p className="text-text-secondary text-sm line-clamp-2 max-w-3xl">
             {lesson.description}
           </p>
         </div>
 
         {/* Right side */}
         <div className="flex flex-col items-end gap-4 shrink-0">
-          <span
-            className="text-sm text-[#adaaaa] flex items-center gap-2"
-            style={{ fontFamily: "'Inter', sans-serif" }}
-          >
+          <span className="text-sm text-text-secondary flex items-center gap-2">
             <span className="material-symbols-outlined text-base">
               schedule
             </span>

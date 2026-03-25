@@ -26,34 +26,21 @@ export default function DisciplineFilter({
           <button
             key={cat.id}
             onClick={() => onSelect(isActive ? null : cat.id)}
-            className={`group flex flex-col p-6 rounded-xl transition-all duration-300 text-left ${
+            className={`group flex flex-col p-6 rounded-xl transition-all duration-300 text-left glass-card ${
               isActive
-                ? "border border-[#FF6B00] bg-[rgba(255,107,0,0.05)]"
-                : "border border-[rgba(73,72,71,0.1)] hover:border-[#FF6B00]/40"
+                ? "border border-[#FF6B00] !bg-[rgba(255,107,0,0.08)]"
+                : "border border-[var(--glass-border)] hover:border-[#FF6B00]/40"
             }`}
-            style={{
-              background: isActive
-                ? "rgba(255, 107, 0, 0.05)"
-                : "rgba(38, 38, 38, 0.4)",
-              backdropFilter: "blur(12px)",
-              WebkitBackdropFilter: "blur(12px)",
-            }}
           >
             <div className="w-10 h-10 rounded bg-[#FF6B00]/10 flex items-center justify-center text-[#FF6B00] mb-6 transition-transform group-hover:scale-110">
               <span className="material-symbols-outlined text-2xl">
                 {cat.icon}
               </span>
             </div>
-            <h3
-              className="font-bold text-lg mb-1 text-white"
-              style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-            >
+            <h3 className="font-bold text-lg mb-1 text-heading">
               {cat.name}
             </h3>
-            <span
-              className="text-[10px] uppercase tracking-widest text-[#adaaaa]"
-              style={{ fontFamily: "'Inter', sans-serif" }}
-            >
+            <span className="text-[10px] uppercase tracking-widest text-text-secondary">
               {cat.count} {cat.count === 1 ? "Lekcija" : cat.count < 5 ? "Lekcije" : "Lekcija"}
             </span>
           </button>

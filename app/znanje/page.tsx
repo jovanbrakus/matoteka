@@ -66,10 +66,7 @@ export default function ZnanjePage() {
       {/* Lessons list */}
       <section>
         <div className="flex justify-between items-center mb-8">
-          <h2
-            className="text-2xl font-bold flex items-center gap-3 text-white"
-            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-          >
+          <h2 className="text-2xl font-bold flex items-center gap-3 text-heading">
             <span className="w-2 h-8 bg-[#FF6B00] rounded-full" />
             {activeCategory
               ? categories.find((c) => c.id === activeCategory)?.name ||
@@ -77,7 +74,7 @@ export default function ZnanjePage() {
               : "Sve Lekcije"}
           </h2>
           {!loading && (
-            <span className="text-sm text-[#adaaaa]">
+            <span className="text-sm text-text-secondary">
               {lessons.length}{" "}
               {lessons.length === 1
                 ? "lekcija"
@@ -93,7 +90,7 @@ export default function ZnanjePage() {
             <div className="w-8 h-8 border-2 border-[#FF6B00] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : lessons.length === 0 ? (
-          <p className="text-center text-[#adaaaa] py-20">
+          <p className="text-center text-text-secondary py-20">
             Nema dostupnih lekcija u ovoj kategoriji.
           </p>
         ) : (
