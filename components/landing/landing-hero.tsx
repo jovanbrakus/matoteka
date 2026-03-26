@@ -157,6 +157,16 @@ export default function LandingHero() {
               <div className="h-1 w-12 bg-[#ec5b13] transition-all duration-500 group-hover:w-full" />
             </div>
           </div>
+
+          <div className="mt-12 text-center">
+            <Link
+              href="/primer"
+              className="inline-flex items-center gap-2 rounded-xl border border-primary/20 bg-primary/[0.06] px-6 py-3 text-sm font-bold text-primary transition-all hover:bg-primary/[0.12]"
+            >
+              <span className="material-symbols-outlined text-base">visibility</span>
+              Pogledaj primer zadatka
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -258,6 +268,16 @@ export default function LandingHero() {
               <div className="absolute -bottom-10 -right-10 h-64 w-64 rounded-full bg-cyan-500/20 blur-[100px]" />
             </div>
           </div>
+
+          <div className="mt-12 text-center">
+            <Link
+              href="/primer"
+              className="inline-flex items-center gap-2 text-sm font-bold text-primary transition-colors hover:text-primary-glow"
+            >
+              Pogledaj kako izgleda rešen zadatak
+              <span className="material-symbols-outlined text-base">arrow_forward</span>
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -348,13 +368,6 @@ export default function LandingHero() {
                     <span className="text-sm font-bold text-heading">Analiza</span>
                   </div>
                 </div>
-                <Link
-                  href="/prijava"
-                  className="inline-flex items-center gap-2 rounded-xl bg-cyan-500 px-8 py-3 text-sm font-bold text-white transition-transform hover:scale-105"
-                >
-                  Započni simulaciju
-                  <span className="material-symbols-outlined text-base">arrow_forward</span>
-                </Link>
               </div>
             </div>
           </div>
