@@ -43,7 +43,7 @@ export default function LandingHero() {
                   </span>
                 </Link>
                 <Link
-                  href="/vezbe"
+                  href="/primer"
                   className="rounded-xl border border-[var(--glass-border)] bg-[var(--tint)] px-8 py-4 text-lg font-bold text-heading transition-all hover:bg-[var(--tint-strong)]"
                 >
                   Pogledaj primer

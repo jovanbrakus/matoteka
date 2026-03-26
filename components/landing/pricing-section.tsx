@@ -103,9 +103,6 @@ export default function PricingSection() {
               }`}
             >
               Sezonski
-              <span className="ml-2 rounded-full bg-[#ec5b13]/10 px-2 py-0.5 text-[10px] font-bold text-[#ec5b13]">
-                Uštedi
-              </span>
             </button>
           </div>
         </div>

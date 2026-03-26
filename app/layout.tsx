@@ -22,7 +22,7 @@ export default async function RootLayout({
   const user = isAuthenticated ? (session.user as any) : null;
 
   return (
-    <html lang="sr" className="dark">
+    <html lang="sr" className="dark" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
