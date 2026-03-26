@@ -36,9 +36,10 @@ interface NextProblemInfo {
 
 interface ProblemViewProps {
   problemId: string;
+  onAnswered?: (wasCorrect: boolean) => void;
 }
 
-export default function ProblemView({ problemId }: ProblemViewProps) {
+export default function ProblemView({ problemId, onAnswered }: ProblemViewProps) {
   const { status: sessionStatus } = useSession();
 
   const [problem, setProblem] = useState<ProblemDetail | null>(null);
@@ -107,12 +108,14 @@ export default function ProblemView({ problemId }: ProblemViewProps) {
         isCorrect: data.isCorrect,
         correctAnswer: data.correctAnswer,
       });
+      onAnswered?.(data.isCorrect);
     } catch {
       const isCorrect = selectedAnswer === problem.correctAnswer;
       setAnswerResult({
         isCorrect,
         correctAnswer: problem.correctAnswer,
       });
+      onAnswered?.(isCorrect);
     } finally {
       setSubmitting(false);
     }
