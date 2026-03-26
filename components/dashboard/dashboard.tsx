@@ -22,11 +22,21 @@ interface DashboardProps {
   };
 }
 
+interface CategoryData {
+  id: string;
+  name: string;
+  total: number;
+  solved: number;
+  percent: number;
+}
+
 interface CategoryGroupData {
   id: string;
   name: string;
   total: number;
   solved: number;
+  percent: number;
+  categories: CategoryData[];
 }
 
 interface DashboardData {
@@ -152,6 +162,7 @@ function getMotivationalMessage(): string {
 export default function Dashboard({ user }: DashboardProps) {
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     fetch("/api/user/dashboard")
@@ -338,36 +349,81 @@ export default function Dashboard({ user }: DashboardProps) {
                   Vidi sve
                 </Link>
               </div>
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
                 {categoryGroups.map((group) => {
-                  const pct =
-                    group.total > 0
-                      ? Math.round((group.solved / Math.max(group.total, 1)) * 100)
-                      : 0;
+                  const pct = group.percent ?? 0;
                   const style = getGroupStyle(group.id);
 
                   return (
                     <div
                       key={group.id}
-                      className={`glass-card group rounded-2xl p-5 transition-all ${style.hoverBorder}`}
+                      className={`glass-card flex flex-col rounded-2xl p-5 transition-all ${style.hoverBorder}`}
                     >
-                      <div
-                        className={`mb-4 flex h-10 w-10 items-center justify-center rounded-lg transition-transform group-hover:scale-110 ${style.bgClass}`}
-                      >
-                        <span className={`material-symbols-outlined ${style.color}`}>
-                          {style.icon}
-                        </span>
+                      <div className="mb-3 flex items-center gap-3">
+                        <div
+                          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${style.bgClass}`}
+                        >
+                          <span className={`material-symbols-outlined ${style.color}`}>
+                            {style.icon}
+                          </span>
+                        </div>
+                        <h4 className="flex-grow text-sm font-bold">{group.name}</h4>
+                        <span className="shrink-0 text-sm font-bold" style={{ color: style.barColor }}>{pct}%</span>
                       </div>
-                      <h4 className="mb-3 text-sm font-bold">{group.name}</h4>
-                      <div className="mb-4 h-1 w-full overflow-hidden rounded-full bg-[var(--tint)]">
+                      <div className="mb-4 h-1.5 w-full overflow-hidden rounded-full bg-[var(--tint)]">
                         <div
                           className="h-full rounded-full transition-all duration-700"
                           style={{ width: `${pct}%`, backgroundColor: style.barColor }}
                         />
                       </div>
+
+                      {/* Per-category breakdown (expandable) */}
+                      {group.categories && group.categories.length > 0 && (
+                        <>
+                          <button
+                            onClick={() => setExpandedGroups((prev) => {
+                              const next = new Set(prev);
+                              if (next.has(group.id)) next.delete(group.id);
+                              else next.add(group.id);
+                              return next;
+                            })}
+                            className="flex w-full items-center justify-center gap-1 text-[10px] font-semibold text-muted transition-colors hover:text-text-secondary"
+                          >
+                            <span
+                              className="material-symbols-outlined transition-transform"
+                              style={{ fontSize: 14, transform: expandedGroups.has(group.id) ? "rotate(180deg)" : "rotate(0deg)" }}
+                            >
+                              expand_more
+                            </span>
+                            {expandedGroups.has(group.id) ? "Sakrij" : "Detalji"}
+                          </button>
+                          {expandedGroups.has(group.id) && (
+                            <div className="mt-2 space-y-2 border-t border-[var(--glass-border)] pt-3">
+                              {group.categories.map((cat) => {
+                                const catPct = cat.percent ?? 0;
+                                return (
+                                  <div key={cat.id}>
+                                    <div className="flex items-center justify-between text-[10px]">
+                                      <span className="text-muted truncate mr-2">{cat.name}</span>
+                                      <span className="font-semibold text-text-secondary shrink-0">{catPct}%</span>
+                                    </div>
+                                    <div className="mt-0.5 h-0.5 w-full overflow-hidden rounded-full bg-[var(--tint)]">
+                                      <div
+                                        className="h-full rounded-full transition-all duration-700"
+                                        style={{ width: `${catPct}%`, backgroundColor: style.barColor, opacity: 0.6 }}
+                                      />
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </>
+                      )}
+
                       <Link
                         href="/vezbe"
-                        className="block w-full rounded-lg bg-[var(--tint)] py-2 text-center text-xs font-bold transition-all hover:text-white"
+                        className="mt-3 block w-full rounded-lg bg-[var(--tint)] py-2 text-center text-xs font-bold transition-all hover:text-white"
                         onMouseEnter={(e) => {
                           (e.target as HTMLElement).style.backgroundColor = style.barColor;
                         }}
@@ -375,7 +431,7 @@ export default function Dashboard({ user }: DashboardProps) {
                           (e.target as HTMLElement).style.backgroundColor = "";
                         }}
                       >
-                        VEZBAJ
+                        VEŽBAJ
                       </Link>
                     </div>
                   );

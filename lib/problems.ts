@@ -312,20 +312,31 @@ export function getCategoryGroupsWithCounts(solvedIds?: Set<string>): Array<{
   name: string;
   total: number;
   solved: number;
+  categories: Array<{ id: string; name: string; total: number; solved: number }>;
 }> {
   const index = getIndex();
   return index.categoryGroups.map((group) => {
     let total = 0;
     let solved = 0;
+    const categories: Array<{ id: string; name: string; total: number; solved: number }> = [];
     for (const cat of group.categories) {
       const catIds = index.byCategory[cat] ?? [];
-      total += catIds.length;
+      let catSolved = 0;
       if (solvedIds) {
         for (const id of catIds) {
-          if (solvedIds.has(id)) solved++;
+          if (solvedIds.has(id)) catSolved++;
         }
       }
+      total += catIds.length;
+      solved += catSolved;
+      const catMeta = index.categories.find((c: any) => c.id === cat);
+      categories.push({
+        id: cat,
+        name: catMeta?.sr || catMeta?.en || cat,
+        total: catIds.length,
+        solved: catSolved,
+      });
     }
-    return { id: group.id, name: group.sr, total, solved };
+    return { id: group.id, name: group.sr, total, solved, categories };
   });
 }

@@ -7,6 +7,7 @@ import {
   leaderboardScores,
   users,
   seasons,
+  userAnalytics,
 } from "@/drizzle/schema";
 import { eq, sql, gt, desc, and } from "drizzle-orm";
 import { NextResponse } from "next/server";
@@ -157,7 +158,33 @@ export async function GET() {
 
   // Category groups with solved counts
   const solvedIds = new Set(solvedIdsResult.map((r) => r.problemId));
-  const categoryGroups = getCategoryGroupsWithCounts(solvedIds);
+  const categoryGroupsRaw = getCategoryGroupsWithCounts(solvedIds);
+
+  // Fetch accuracy data from analytics
+  const analyticsRows = await db
+    .select({ categoryBreakdown: userAnalytics.categoryBreakdown })
+    .from(userAnalytics)
+    .where(eq(userAnalytics.userId, userId))
+    .limit(1);
+  const breakdown = (analyticsRows[0]?.categoryBreakdown as Record<string, any>) || {};
+
+  // Merge accuracy into category groups
+  const categoryGroups = categoryGroupsRaw.map((group) => ({
+    ...group,
+    categories: group.categories.map((cat) => {
+      const acc = breakdown[cat.id];
+      return {
+        ...cat,
+        percent: acc?.percent ?? 0,
+        correct: acc?.correct ?? 0,
+        attempted: acc?.total ?? 0,
+      };
+    }),
+    percent: (() => {
+      const percents = group.categories.map((c) => breakdown[c.id]?.percent ?? 0);
+      return Math.round(percents.reduce((s, p) => s + p, 0) / percents.length);
+    })(),
+  }));
 
   return NextResponse.json({
     user: {

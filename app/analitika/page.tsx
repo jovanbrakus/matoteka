@@ -356,9 +356,9 @@ export default function AnalytikaPage() {
                 const childCats = group.categories
                   .map((id) => ({ id, ...(analytics.categoryBreakdown[id] || { name: id, correct: 0, total: 0, percent: 0 }) }))
                   .filter(Boolean);
-                const totalCorrect = childCats.reduce((s, c) => s + (c.correct || 0), 0);
-                const totalAll = childCats.reduce((s, c) => s + (c.total || 0), 0);
-                const groupPercent = totalAll > 0 ? Math.round((totalCorrect / totalAll) * 100) : 0;
+                const groupPercent = childCats.length > 0
+                  ? Math.round(childCats.reduce((s, c) => s + (c.percent || 0), 0) / childCats.length)
+                  : 0;
                 const isExpanded = expandedGroups.has(group.id);
 
                 return (
