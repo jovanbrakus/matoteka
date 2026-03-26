@@ -481,28 +481,19 @@ export default function PrimerPage() {
           </h2>
           <p className="mb-4 leading-relaxed text-text">
             Zbir najveće i najmanje vrednosti funkcije{" "}
-            <M>{"f(x) = -x^2 + 6x + 5"}</M> na segmentu{" "}
-            <M>{"[2,\\, 5]"}</M> jednak je:
+            <span className="inline-block rounded-lg border border-[var(--glass-border)] bg-[var(--tint)] px-3 py-1 align-middle font-semibold">
+              <M>{"f(x) = -x^2 + 6x + 5"}</M>
+            </span>{" "}
+            na segmentu{" "}
+            <span className="inline-block rounded-lg border border-[var(--glass-border)] bg-[var(--tint)] px-3 py-1 align-middle font-semibold">
+              <M>{"[2,\\, 5]"}</M>
+            </span>{" "}
+            jednak je:
           </p>
 
-          {/* Given values */}
-          <div className="mb-4 flex flex-wrap gap-3">
-            <div className="rounded-xl border border-[var(--glass-border)] bg-[var(--tint)] px-5 py-3 text-center">
-              <div className="mb-1 text-xs text-muted">Funkcija</div>
-              <div className="text-base font-semibold text-text">
-                <M>{"f(x) = -x^2 + 6x + 5"}</M>
-              </div>
-            </div>
-            <div className="rounded-xl border border-[var(--glass-border)] bg-[var(--tint)] px-5 py-3 text-center">
-              <div className="mb-1 text-xs text-muted">Segment</div>
-              <div className="text-base font-semibold text-text">
-                <M>{"[2,\\, 5]"}</M>
-              </div>
-            </div>
-          </div>
-
           {/* Answer options */}
-          <div className="flex flex-wrap gap-2.5">
+          <p className="mb-2 mt-4 text-center text-sm font-semibold text-muted">Ponuđeni odgovori</p>
+          <div className="flex flex-wrap justify-center gap-2.5">
             {[
               { label: "A", value: "0" },
               { label: "B", value: "22" },
@@ -512,7 +503,7 @@ export default function PrimerPage() {
             ].map((opt) => (
               <div
                 key={opt.label}
-                className="rounded-xl border border-[var(--glass-border)] bg-[var(--tint)] px-4 py-2.5 text-center"
+                className="min-w-[5rem] rounded-xl border border-[var(--glass-border)] bg-[var(--tint)] px-6 py-2.5 text-center"
               >
                 <div className="mb-0.5 text-xs text-muted">({opt.label})</div>
                 <div className="text-base font-semibold text-text">
@@ -544,29 +535,29 @@ export default function PrimerPage() {
             </summary>
             <div className="pt-4">
               <ul className="space-y-3 text-text">
-                <li className="relative pl-5 before:absolute before:left-0 before:font-bold before:text-accent before:content-['>']">
-                  <strong>Kanonski oblik kvadratne funkcije:</strong>{" "}
+                <li>
+                  <span className="mr-2 font-bold text-primary">{">"}</span><strong>Kanonski oblik kvadratne funkcije:</strong>{" "}
                   <M>
                     {"f(x) = a(x - p)^2 + q"}
                   </M>
                   , gde je <M>{"T(p, q)"}</M> teme parabole, a{" "}
                   <M>{"p = -\\dfrac{b}{2a}"}</M>, <M>{"q = f(p)"}</M>.
                 </li>
-                <li className="relative pl-5 before:absolute before:left-0 before:font-bold before:text-accent before:content-['>']">
-                  <strong>Smer parabole:</strong> Ako je <M>{"a < 0"}</M>,
+                <li>
+                  <span className="mr-2 font-bold text-primary">{">"}</span><strong>Smer parabole:</strong> Ako je <M>{"a < 0"}</M>,
                   parabola je okrenuta nadole &mdash; ima{" "}
                   <em>maksimum</em> u temenu. Ako je <M>{"a > 0"}</M>,
                   parabola je okrenuta nagore &mdash; ima{" "}
                   <em>minimum</em> u temenu.
                 </li>
-                <li className="relative pl-5 before:absolute before:left-0 before:font-bold before:text-accent before:content-['>']">
-                  <strong>Ekstremi na zatvorenom segmentu:</strong> Za
+                <li>
+                  <span className="mr-2 font-bold text-primary">{">"}</span><strong>Ekstremi na zatvorenom segmentu:</strong> Za
                   neprekidnu funkciju na <M>{"[a, b]"}</M>, ekstremne
                   vrednosti se nalaze ili u stacionarnim tačkama unutar
                   intervala ili na krajevima segmenta.
                 </li>
-                <li className="relative pl-5 before:absolute before:left-0 before:font-bold before:text-accent before:content-['>']">
-                  <strong>Kompletiranje kvadrata:</strong>{" "}
+                <li>
+                  <span className="mr-2 font-bold text-primary">{">"}</span><strong>Kompletiranje kvadrata:</strong>{" "}
                   <M>
                     {
                       "ax^2 + bx + c = a\\!\\left(x + \\dfrac{b}{2a}\\right)^2 + c - \\dfrac{b^2}{4a}"
@@ -748,13 +739,16 @@ export default function PrimerPage() {
                 ].map((opt) => (
                   <div
                     key={opt.label}
-                    className={`rounded-xl border px-5 py-2.5 text-base ${
+                    className={`min-w-[5rem] rounded-xl border px-6 py-2.5 text-center ${
                       opt.correct
-                        ? "border-primary bg-primary/15 font-bold text-primary"
-                        : "border-[var(--glass-border)] bg-[var(--tint)] text-muted"
+                        ? "border-primary bg-primary/15"
+                        : "border-[var(--glass-border)] bg-[var(--tint)]"
                     }`}
                   >
-                    ({opt.label}) <M>{opt.value}</M>
+                    <div className={`mb-0.5 text-xs ${opt.correct ? "font-bold text-primary" : "text-muted"}`}>({opt.label})</div>
+                    <div className={`text-base font-semibold ${opt.correct ? "text-primary" : "text-text"}`}>
+                      <M>{opt.value}</M>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -774,15 +768,16 @@ export default function PrimerPage() {
                 Česte greške
               </h2>
               <ul className="space-y-2">
-                <li className="relative pl-5 text-text-secondary before:absolute before:left-0 before:font-bold before:text-primary before:content-['!']">
-                  <strong>Sabiranje vrednosti na krajevima umesto
+                <li className="text-text-secondary">
+                  <span className="mr-2 font-bold text-primary">!</span><strong>Sabiranje vrednosti na krajevima umesto
                   ekstrema:</strong>{" "}
                   Mnogi studenti saberu{" "}
                   <M>{"f(2) + f(5) = 13 + 10 = 23"}</M>, zaboravljajući da
                   provere vrednost u temenu parabole. Zato je ponuđen i
                   odgovor (C) 23 kao zamka.
                 </li>
-                <li className="relative pl-5 text-text-secondary before:absolute before:left-0 before:font-bold before:text-primary before:content-['!']">
+                <li className="text-text-secondary">
+                  <span className="mr-2 font-bold text-primary">!</span>
                   <strong>Zaboravljanje da se proveri da li teme pripada
                   segmentu:</strong>{" "}
                   Da je teme bilo van segmenta <M>{"[2, 5]"}</M>, oba
