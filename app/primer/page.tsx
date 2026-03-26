@@ -439,6 +439,7 @@ function Checkpoint({
 /* ── Main page ── */
 export default function PrimerPage() {
   const [mounted, setMounted] = useState(false);
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   useEffect(() => setMounted(true), []);
 
   if (!mounted) {
@@ -495,23 +496,52 @@ export default function PrimerPage() {
           <p className="mb-2 mt-4 text-center text-sm font-semibold text-muted">Ponuđeni odgovori</p>
           <div className="flex flex-wrap justify-center gap-2.5">
             {[
-              { label: "A", value: "0" },
-              { label: "B", value: "22" },
-              { label: "C", value: "23" },
-              { label: "D", value: "24" },
-              { label: "E", value: "25" },
-            ].map((opt) => (
-              <div
-                key={opt.label}
-                className="min-w-[5rem] rounded-xl border border-[var(--glass-border)] bg-[var(--tint)] px-6 py-2.5 text-center"
-              >
-                <div className="mb-0.5 text-xs text-muted">({opt.label})</div>
-                <div className="text-base font-semibold text-text">
-                  <M>{opt.value}</M>
-                </div>
-              </div>
-            ))}
+              { label: "A", value: "0", correct: false },
+              { label: "B", value: "22", correct: false },
+              { label: "C", value: "23", correct: false },
+              { label: "D", value: "24", correct: true },
+              { label: "E", value: "25", correct: false },
+            ].map((opt) => {
+              const isSelected = selectedAnswer === opt.label;
+              const answered = selectedAnswer !== null;
+              const answeredCorrectly = selectedAnswer === "D";
+              const showCorrect = isSelected && opt.correct;
+              const showWrong = isSelected && !opt.correct;
+
+              return (
+                <button
+                  key={opt.label}
+                  onClick={() => !answered && setSelectedAnswer(opt.label)}
+                  disabled={answered}
+                  className={`min-w-[5rem] rounded-xl border px-6 py-2.5 text-center transition-all ${
+                    showCorrect
+                      ? "border-primary bg-primary/15"
+                      : showWrong
+                        ? "border-error bg-error/10"
+                        : answered
+                          ? "border-[var(--glass-border)] bg-[var(--tint)] opacity-50"
+                          : "border-[var(--glass-border)] bg-[var(--tint)] cursor-pointer hover:border-primary/40 hover:bg-primary/[0.05]"
+                  }`}
+                >
+                  <div className={`mb-0.5 text-xs ${showCorrect ? "font-bold text-primary" : showWrong ? "font-bold text-error" : "text-muted"}`}>
+                    ({opt.label})
+                  </div>
+                  <div className={`text-base font-semibold ${showCorrect ? "text-primary" : showWrong ? "text-error" : "text-text"}`}>
+                    <M>{opt.value}</M>
+                  </div>
+                </button>
+              );
+            })}
           </div>
+          {selectedAnswer && (
+            <p className={`mt-4 text-center text-sm font-semibold ${
+              selectedAnswer === "D" ? "text-primary" : "text-error"
+            }`}>
+              {selectedAnswer === "D"
+                ? "Tačno! Odgovor je (D) 24. Pogledaj rešenje ispod."
+                : `Netačno. Tačan odgovor je (D) 24. Pogledaj rešenje ispod da razumeš zašto.`}
+            </p>
+          )}
         </section>
 
         {/* Plan */}
