@@ -46,6 +46,22 @@ subcategory_score = accuracy × confidence
 
 **Sliding window** — only the last 10 attempts matter. If a student bombed 10 problems last week but then solved 10 new problems correctly, the old mistakes are fully pushed out.
 
+### Duplicate detection
+
+Each problem counts **at most once** in the sliding window. The DB enforces this via a primary key on `(userId, problemId)` — one row per user per problem.
+
+**Rules for re-submissions (same problem, same user):**
+
+1. **Page refresh / re-submit of the same answer** — must be **ignored**. If the user's answer hasn't changed (`lastAnswer` equals the submitted answer), do not increment `attempts` or update `updatedAt`. This prevents a page reload from inflating attempt counts or shifting the problem's position in the sliding window.
+
+2. **Genuine answer change** (user changes their answer to a different option) — this is a legitimate re-attempt. Update `lastAnswer`, `isCorrect`, and `updatedAt`. Increment `attempts`. The problem's window position moves to reflect the new attempt.
+
+3. **Already solved correctly** — if `status = 'solved'`, the status must not downgrade. The `isCorrect` and `lastAnswer` fields should not change. The problem's window position (`updatedAt`) must not move. This prevents a student from accidentally un-solving a problem by revisiting the page.
+
+4. **Simulation/exam context** — problems submitted via mock exam use `onConflictDoNothing()`. If the problem already has a `problem_progress` row (from prior practice or a different exam), the existing row is preserved unchanged.
+
+**Implementation note:** The practice answer endpoint (`/api/practice/[problemId]/answer`) must check `lastAnswer` before updating. If the submitted answer matches the existing `lastAnswer`, return the current state without modifying the row.
+
 ---
 
 ## Layer 2 — Category Group Score (0–100)
