@@ -5,7 +5,6 @@ import { useParams, useRouter } from "next/navigation";
 import { Flag, ChevronLeft, ChevronRight, Award } from "lucide-react";
 import AnswerOptions from "@/components/problems/AnswerOptions";
 import ProblemStatement from "@/components/problems/ProblemStatement";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 interface ExamProblem {
   id: string;
@@ -332,11 +331,6 @@ export default function SimulationPage() {
               {timeLeft !== null ? formatTime(timeLeft) : formatTime(elapsed)}
             </div>
           </div>
-
-          {/* Theme toggle */}
-          <ThemeToggle />
-
-          <div className="h-6 w-px bg-[var(--glass-border)]" />
 
           {/* Submit button */}
           <button

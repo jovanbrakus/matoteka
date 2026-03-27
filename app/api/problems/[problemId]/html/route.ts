@@ -8,15 +8,21 @@ const HEADERS = {
 };
 
 /**
- * Strip CSS properties that cause infinite iframe resize loops.
- * Problem HTML files use `min-height: 100vh` on body, which expands
- * with the iframe viewport, triggering ResizeObserver endlessly.
+ * Strip CSS patterns that cause infinite iframe resize loops and inject
+ * a script to block window resize listeners (which create feedback loops
+ * with the parent's ResizeObserver that manages iframe height).
  */
 function sanitizeForIframe(html: string): string {
-  return html
+  const cleaned = html
     .replace(/min-height:\s*100vh;?/gi, "")
     .replace(/max-width:\s*\d+px;?/gi, "")
     .replace(/margin:\s*0\s+auto;?/gi, "");
+
+  // Inject a script early in <head> to block resize listeners before any problem scripts run.
+  // Canvas draw functions re-read DPR-scaled canvas.width on resize and scale again,
+  // doubling the canvas size each cycle until the page crashes.
+  const blockResize = `<script>(function(){var o=window.addEventListener;window.addEventListener=function(t){if(t==="resize")return;return o.apply(this,arguments)}})();</script>`;
+  return cleaned.replace(/<head([^>]*)>/i, `<head$1>${blockResize}`);
 }
 
 const THEME_LINKS = `<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
