@@ -259,9 +259,9 @@ export default function Dashboard({ user }: DashboardProps) {
                 {recommendations.map((rec) => (
                   <div key={rec.badge} className="flex items-center justify-between rounded-xl border border-[var(--glass-border)] bg-[var(--tint)] p-4">
                     <div className="flex items-center gap-4">
-                      <div className="relative text-3xl font-black text-[#ec5b13]/40">
-                        {rec.badge}
-                        <span className="material-symbols-outlined absolute -bottom-1 -right-1 text-xs text-[#ec5b13]/60">{rec.icon}</span>
+                      <div className="flex flex-col items-center gap-0.5">
+                        <span className="text-2xl font-black leading-none text-[#ec5b13]/30">{rec.badge}</span>
+                        <span className="material-symbols-outlined text-sm text-[#ec5b13]/50">{rec.icon}</span>
                       </div>
                       <div>
                         <h4 className="font-bold text-heading">{rec.title}</h4>
