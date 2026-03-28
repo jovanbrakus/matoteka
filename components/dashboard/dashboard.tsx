@@ -3,9 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  Search,
-  Bell,
-  Settings,
   Flame,
   Sparkles,
   ChevronRight,
@@ -240,32 +237,11 @@ export default function Dashboard({ user }: DashboardProps) {
   return (
     <div className="relative p-8">
         {/* Header */}
-        <header className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h1 className="text-4xl font-black tracking-tight text-heading mb-1">
-              Zdravo, {user.displayName}!
-            </h1>
-            <p className="text-sm text-text-secondary">{getMotivationalMessage()}</p>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="relative group">
-              <input
-                className="rounded-full border border-[var(--glass-border)] bg-card py-2.5 pl-12 pr-6 text-sm w-64 placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-[#ec5b13] focus:border-[#ec5b13] transition-all"
-                placeholder="Pretrazi gradivo..."
-                type="text"
-              />
-              <Search
-                size={18}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-muted"
-              />
-            </div>
-            <button className="flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--glass-border)] bg-[var(--tint)] text-text hover:bg-[var(--tint-strong)]">
-              <Bell size={20} />
-            </button>
-            <button className="flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--glass-border)] bg-[var(--tint)] text-text hover:bg-[var(--tint-strong)]">
-              <Settings size={20} />
-            </button>
-          </div>
+        <header className="mb-10">
+          <h1 className="text-4xl font-black tracking-tight text-heading mb-1">
+            Zdravo, {user.displayName}!
+          </h1>
+          <p className="text-sm text-text-secondary">{getMotivationalMessage()}</p>
         </header>
 
         <div className="grid grid-cols-12 gap-6">
