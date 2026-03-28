@@ -150,6 +150,54 @@ export default function ProfilePage() {
       {/* Divider */}
       <hr className="mb-8 border-[var(--glass-border)]" />
 
+      {/* Account Level */}
+      <section className="mb-10">
+        <h2 className="mb-1.5 text-sm font-semibold text-heading">
+          Nivo naloga
+        </h2>
+        <p className="mb-4 text-sm text-text-secondary">
+          Tvoj trenutni paket i pristup funkcijama platforme.
+        </p>
+        {(() => {
+          const role = user?.role as string | undefined;
+          const isAdmin = role === "admin";
+          const level = isAdmin
+            ? { name: "Administrator", icon: "admin_panel_settings", color: "text-[#ec5b13]", bg: "bg-[#ec5b13]/10", border: "border-[#ec5b13]/30", features: ["Potpun pristup admin panelu", "Upravljanje korisnicima", "Pregled analitike platforme"] }
+            : { name: "Premium", icon: "workspace_premium", color: "text-[#ec5b13]", bg: "bg-[#ec5b13]/10", border: "border-[#ec5b13]/30", features: ["Rešenja svih zadataka sa objašnjenjem", "59 interaktivnih lekcija", "Simulacija ispita sa tajmerom", "Procena znanja i rang lista", "Napredna analitika uspeha"] };
+
+          return (
+            <div className={`rounded-2xl border ${level.border} ${level.bg} p-5`}>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ec5b13]/15">
+                  <span className={`material-symbols-outlined text-xl ${level.color}`}>
+                    {level.icon}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-lg font-black text-heading">{level.name}</p>
+                  {!isAdmin && (
+                    <p className="text-xs font-semibold text-[#ec5b13]">
+                      Besplatno u sezoni 2026
+                    </p>
+                  )}
+                </div>
+              </div>
+              <ul className="space-y-2">
+                {level.features.map((f) => (
+                  <li key={f} className="flex items-center gap-2 text-sm text-text-secondary">
+                    <span className="material-symbols-outlined text-sm text-[#ec5b13]">check_circle</span>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        })()}
+      </section>
+
+      {/* Divider */}
+      <hr className="mb-8 border-[var(--glass-border)]" />
+
       {/* Display Name */}
       <section className="mb-10">
         <label
