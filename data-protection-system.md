@@ -781,14 +781,15 @@ setInterval(() => {
 
 ## Implementation Order
 
-| Phase | Layers | Risk | Impact |
-|---|---|---|---|
-| 1 | Auth gate + cache headers | Low | Stops all anonymous scraping |
-| 2 | View tracking + daily limits | Low | Caps authenticated scraping to 30/day |
-| 3 | Signed ephemeral tokens | Medium | Prevents URL sharing/replay |
-| 4 | Content obfuscation (postMessage rewrite) | Medium-high | Blocks DOM reading by parent |
-| 5 | Watermarking | Low | Enables forensic tracing |
-| 6 | IP rate limiting | Low | Throttles burst abuse |
+| Phase | Layers | Risk | Impact | Status |
+|---|---|---|---|---|
+| 1 | Auth gate + cache headers | Low | Stops all anonymous scraping | **DONE** |
+| 1b | Admin-gate problem list API + /vezbe pages | Low | Prevents catalog enumeration | **DONE** |
+| 2 | View tracking + daily limits | Low | Caps authenticated scraping to 30/day | |
+| 3 | Signed ephemeral tokens | Medium | Prevents URL sharing/replay | |
+| 4 | Content obfuscation (postMessage rewrite) | Medium-high | Blocks DOM reading by parent | |
+| 5 | Watermarking | Low | Enables forensic tracing | |
+| 6 | IP rate limiting | Low | Throttles burst abuse | |
 
 Each phase is independently deployable. Phase 1 alone eliminates the most critical vulnerability (public access to all solutions).
 
@@ -796,8 +797,8 @@ Each phase is independently deployable. Phase 1 alone eliminates the most critic
 
 ## Verification Checklist
 
-- [ ] Unauthenticated `curl /api/problems/{id}/html` returns 401
-- [ ] Unauthenticated `curl /api/problems/{id}/html?section=statement` returns 401
+- [x] Unauthenticated `curl /api/problems/{id}/html` returns 401
+- [x] Unauthenticated `curl /api/problems/{id}/html?section=statement` returns 401
 - [ ] Authenticated user can view 30 unique solutions, 31st shows limit page
 - [ ] Re-viewing a solution already seen today does not consume a view
 - [ ] Admin user bypasses daily limit
@@ -808,9 +809,11 @@ Each phase is independently deployable. Phase 1 alone eliminates the most critic
 - [ ] MathJax renders correctly in sandboxed iframe (without `allow-same-origin`)
 - [ ] Right-click is disabled in solution iframe
 - [ ] Text selection is disabled in solution iframe
-- [ ] `Cache-Control: no-store` header is present on HTML responses
+- [x] `Cache-Control: no-store` header is present on HTML responses
 - [ ] Watermark CSS property, zero-width chars, and invisible spans are present in served HTML
 - [ ] Forensic decoder correctly extracts fingerprint from watermarked HTML
-- [ ] Simulation API response no longer contains `htmlContent`
-- [ ] `/api/problems/{id}` returns 401 without auth
+- [x] Simulation API response no longer contains `htmlContent`
+- [x] `/api/problems/{id}` returns 401 without auth
 - [ ] IP rate limit kicks in after 100 requests in 15 minutes from same IP
+- [x] `/api/problems` list endpoint restricted to admin only
+- [x] `/vezbe` pages restricted to admin only
