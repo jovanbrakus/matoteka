@@ -185,23 +185,29 @@ export async function GET() {
     readinessScore = Math.max(0, Math.round(storedBreakdown.rawScore - freshPenalty));
   }
 
-  // Merge accuracy into category groups
-  const categoryGroups = categoryGroupsRaw.map((group) => ({
-    ...group,
-    categories: group.categories.map((cat) => {
-      const acc = breakdown[cat.id];
-      return {
-        ...cat,
-        percent: acc?.percent ?? 0,
-        correct: acc?.correct ?? 0,
-        attempted: acc?.total ?? 0,
-      };
-    }),
-    percent: (() => {
-      const percents = group.categories.map((c) => breakdown[c.id]?.percent ?? 0);
-      return Math.round(percents.reduce((s, p) => s + p, 0) / percents.length);
-    })(),
-  }));
+  // Merge accuracy + readiness into category groups
+  const groupScores = storedBreakdown?.groupScores ?? {};
+  const categoryGroups = categoryGroupsRaw.map((group) => {
+    const gs = groupScores[group.id];
+    return {
+      ...group,
+      categories: group.categories.map((cat) => {
+        const acc = breakdown[cat.id];
+        return {
+          ...cat,
+          percent: acc?.percent ?? 0,
+          correct: acc?.correct ?? 0,
+          attempted: acc?.total ?? 0,
+          readinessScore: Math.round(gs?.subcategories?.[cat.id]?.score ?? 0),
+        };
+      }),
+      percent: (() => {
+        const percents = group.categories.map((c) => breakdown[c.id]?.percent ?? 0);
+        return Math.round(percents.reduce((s, p) => s + p, 0) / percents.length);
+      })(),
+      readinessScore: Math.round(gs?.score ?? 0),
+    };
+  });
 
   return NextResponse.json({
     user: {

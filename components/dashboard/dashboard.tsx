@@ -77,60 +77,15 @@ interface DashboardData {
   season: { name: string; examPeriodStart: string } | null;
 }
 
-/* ─── category group styling ─── */
+/* ─── category images ─── */
 
-const GROUP_STYLES: Record<
-  string,
-  { color: string; barColor: string; hoverBorder: string; icon: string; bgClass: string }
-> = {
-  algebra: {
-    color: "text-[#ec5b13]",
-    barColor: "#ec5b13",
-    hoverBorder: "hover:border-[#ec5b13]/30",
-    icon: "square_foot",
-    bgClass: "bg-orange-500/10",
-  },
-  trigonometry: {
-    color: "text-rose-500",
-    barColor: "#f43f5e",
-    hoverBorder: "hover:border-rose-500/30",
-    icon: "change_history",
-    bgClass: "bg-rose-500/10",
-  },
-  geometry: {
-    color: "text-[#0ea5e9]",
-    barColor: "#0ea5e9",
-    hoverBorder: "hover:border-[#0ea5e9]/30",
-    icon: "category",
-    bgClass: "bg-sky-500/10",
-  },
-  analysis: {
-    color: "text-cyan-500",
-    barColor: "#06b6d4",
-    hoverBorder: "hover:border-cyan-500/30",
-    icon: "trending_up",
-    bgClass: "bg-cyan-500/10",
-  },
-  combinatorics_and_probability: {
-    color: "text-emerald-500",
-    barColor: "#10b981",
-    hoverBorder: "hover:border-emerald-500/30",
-    icon: "casino",
-    bgClass: "bg-emerald-500/10",
-  },
+const CATEGORY_IMAGES: Record<string, string> = {
+  algebra: "/images/categories/algebra.png",
+  trigonometry: "/images/categories/trigonometry.png",
+  geometry: "/images/categories/geometry.png",
+  analysis: "/images/categories/analysis.png",
+  combinatorics_and_probability: "/images/categories/combinatorics_and_probability.png",
 };
-
-const DEFAULT_GROUP_STYLE = {
-  color: "text-purple-500",
-  barColor: "#a855f7",
-  hoverBorder: "hover:border-purple-500/30",
-  icon: "functions",
-  bgClass: "bg-purple-500/10",
-};
-
-function getGroupStyle(id: string) {
-  return GROUP_STYLES[id] ?? DEFAULT_GROUP_STYLE;
-}
 
 /* ─── helpers ─── */
 
@@ -163,7 +118,6 @@ function getMotivationalMessage(): string {
 export default function Dashboard({ user }: DashboardProps) {
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     fetch("/api/user/dashboard")
@@ -352,91 +306,67 @@ export default function Dashboard({ user }: DashboardProps) {
               </div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5">
                 {categoryGroups.map((group) => {
-                  const pct = group.percent ?? 0;
-                  const style = getGroupStyle(group.id);
+                  const score = (group as any).readinessScore ?? 0;
+                  const image = CATEGORY_IMAGES[group.id];
+                  const sz = 48;
+                  const sw = sz * 0.1;
+                  const r = (sz - sw) / 2;
+                  const circ = 2 * Math.PI * r;
+                  const filled = (score / 100) * circ;
 
                   return (
-                    <div
+                    <Link
                       key={group.id}
-                      className={`glass-card flex flex-col rounded-2xl p-5 transition-all ${style.hoverBorder}`}
+                      href="/vezba"
+                      className="glass-card flex flex-col rounded-2xl p-5 transition-all hover:border-[#ec5b13]/30"
                     >
-                      <div className="mb-3 flex items-start gap-3">
-                        <div
-                          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${style.bgClass}`}
-                        >
-                          <span className={`material-symbols-outlined ${style.color}`}>
-                            {style.icon}
+                      <div className="mb-4 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          {image && (
+                            <img
+                              src={image}
+                              alt={group.name}
+                              className="h-10 w-14 shrink-0 rounded-lg object-cover"
+                            />
+                          )}
+                          <h4 className="text-sm font-bold leading-tight">{group.name}</h4>
+                        </div>
+                        <div className="relative shrink-0" style={{ width: sz, height: sz }}>
+                          <svg width={sz} height={sz} className="-rotate-90">
+                            <circle cx={sz/2} cy={sz/2} r={r} fill="none" stroke="#ec5b13" strokeWidth={sw} opacity={0.15} />
+                            <circle cx={sz/2} cy={sz/2} r={r} fill="none" stroke="#ec5b13" strokeWidth={sw} strokeDasharray={circ} strokeDashoffset={circ - filled} strokeLinecap="round" className="transition-all duration-700" />
+                          </svg>
+                          <span className="absolute inset-0 flex items-center justify-center text-sm font-black text-primary">
+                            {score}
                           </span>
                         </div>
-                        <div className="min-w-0 flex-grow">
-                          <h4 className="text-sm font-bold leading-tight">{group.name}</h4>
-                          <span className="text-xs font-bold" style={{ color: style.barColor }}>{pct}%</span>
-                        </div>
                       </div>
-                      <div className="mb-4 h-1.5 w-full overflow-hidden rounded-full bg-[var(--tint)]">
-                        <div
-                          className="h-full rounded-full transition-all duration-700"
-                          style={{ width: `${pct}%`, backgroundColor: style.barColor }}
-                        />
-                      </div>
-
-                      {/* Per-category breakdown (expandable) */}
-                      {group.categories && group.categories.length > 0 && (
-                        <>
-                          <button
-                            onClick={() => setExpandedGroups((prev) => {
-                              const next = new Set(prev);
-                              if (next.has(group.id)) next.delete(group.id);
-                              else next.add(group.id);
-                              return next;
+                      {/* 3 weakest subcategories */}
+                      {(() => {
+                        const weakest = [...group.categories]
+                          .sort((a, b) => ((a as any).readinessScore ?? 0) - ((b as any).readinessScore ?? 0))
+                          .slice(0, 3);
+                        return (
+                          <div className="mt-3 space-y-1.5 border-t border-[var(--glass-border)] pt-3">
+                            {weakest.map((cat) => {
+                              const catScore = (cat as any).readinessScore ?? 0;
+                              return (
+                                <div key={cat.id} className="flex items-center justify-between text-[10px]">
+                                  <span className="text-muted truncate mr-2">{cat.name}</span>
+                                  <span className={`font-bold shrink-0 ${catScore >= 60 ? "text-emerald-500" : catScore >= 30 ? "text-[#ec5b13]" : "text-red-500"}`}>
+                                    {catScore}
+                                  </span>
+                                </div>
+                              );
                             })}
-                            className="flex w-full items-center justify-center gap-1 text-[10px] font-semibold text-muted transition-colors hover:text-text-secondary"
-                          >
-                            <span
-                              className="material-symbols-outlined transition-transform"
-                              style={{ fontSize: 14, transform: expandedGroups.has(group.id) ? "rotate(180deg)" : "rotate(0deg)" }}
-                            >
-                              expand_more
-                            </span>
-                            {expandedGroups.has(group.id) ? "Sakrij" : "Detalji"}
-                          </button>
-                          {expandedGroups.has(group.id) && (
-                            <div className="mt-2 space-y-2 border-t border-[var(--glass-border)] pt-3">
-                              {group.categories.map((cat) => {
-                                const catPct = cat.percent ?? 0;
-                                return (
-                                  <div key={cat.id}>
-                                    <div className="flex items-center justify-between text-[10px]">
-                                      <span className="text-muted truncate mr-2">{cat.name}</span>
-                                      <span className="font-semibold text-text-secondary shrink-0">{catPct}%</span>
-                                    </div>
-                                    <div className="mt-0.5 h-0.5 w-full overflow-hidden rounded-full bg-[var(--tint)]">
-                                      <div
-                                        className="h-full rounded-full transition-all duration-700"
-                                        style={{ width: `${catPct}%`, backgroundColor: style.barColor, opacity: 0.6 }}
-                                      />
-                                    </div>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          )}
-                        </>
-                      )}
-
-                      <Link
-                        href="/vezbe"
-                        className="mt-3 block w-full rounded-lg bg-[var(--tint)] py-2 text-center text-xs font-bold transition-all hover:text-white"
-                        onMouseEnter={(e) => {
-                          (e.target as HTMLElement).style.backgroundColor = style.barColor;
-                        }}
-                        onMouseLeave={(e) => {
-                          (e.target as HTMLElement).style.backgroundColor = "";
-                        }}
-                      >
+                          </div>
+                        );
+                      })()}
+                      <div className="mt-auto pt-5 flex items-center justify-center gap-1 text-xs font-bold text-primary">
+                        <span className="material-symbols-outlined text-sm">rocket_launch</span>
                         VEŽBAJ
-                      </Link>
-                    </div>
+                      </div>
+                    </Link>
                   );
                 })}
               </div>
@@ -493,6 +423,12 @@ export default function Dashboard({ user }: DashboardProps) {
                     : score >= 40
                       ? "Potrebno još vežbanja"
                       : "Tek na početku";
+              const sz = 120;
+              const sw = sz * 0.08;
+              const r = (sz - sw) / 2;
+              const circ = 2 * Math.PI * r;
+              const filled = (score / 100) * circ;
+
               return (
                 <div className="glass-card relative overflow-hidden rounded-2xl p-6">
                   <div
@@ -504,11 +440,12 @@ export default function Dashboard({ user }: DashboardProps) {
                       Spremnost za ispit
                     </h3>
                     <div className="mb-3 flex justify-center">
-                      <div
-                        className="flex h-28 w-28 items-center justify-center rounded-full border-4"
-                        style={{ borderColor: `${color}40` }}
-                      >
-                        <span className="text-4xl font-black" style={{ color }}>
+                      <div className="relative" style={{ width: sz, height: sz }}>
+                        <svg width={sz} height={sz} className="-rotate-90">
+                          <circle cx={sz/2} cy={sz/2} r={r} fill="none" stroke={color} strokeWidth={sw} opacity={0.15} />
+                          <circle cx={sz/2} cy={sz/2} r={r} fill="none" stroke={color} strokeWidth={sw} strokeDasharray={circ} strokeDashoffset={circ - filled} strokeLinecap="round" className="transition-all duration-700" />
+                        </svg>
+                        <span className="absolute inset-0 flex items-center justify-center text-4xl font-black" style={{ color }}>
                           {score}
                         </span>
                       </div>
@@ -516,12 +453,6 @@ export default function Dashboard({ user }: DashboardProps) {
                     <p className="text-center text-sm font-bold" style={{ color }}>
                       {label}
                     </p>
-                    <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-[var(--tint)]">
-                      <div
-                        className="h-full rounded-full transition-all duration-700"
-                        style={{ width: `${score}%`, backgroundColor: color }}
-                      />
-                    </div>
                   </div>
                 </div>
               );

@@ -11,6 +11,7 @@ interface SubcategoryStat {
   name: string;
   total: number;
   solved: number;
+  readinessScore: number;
 }
 
 interface CategoryGroup {
@@ -19,6 +20,7 @@ interface CategoryGroup {
   totalProblems: number;
   solvedCorrectly: number;
   progressPercent: number;
+  readinessScore: number;
   categories: SubcategoryStat[];
 }
 
@@ -62,6 +64,49 @@ const CATEGORY_NAMES: Record<string, string> = {
   binomial_formula: "Binomna formula",
 };
 
+/* ─── Circular Score Indicator ─── */
+
+function ScoreCircle({ score, size = 64 }: { score: number; size?: number }) {
+  const strokeWidth = size * 0.1;
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const filled = (score / 100) * circumference;
+
+  return (
+    <div className="relative shrink-0" style={{ width: size, height: size }}>
+      <svg width={size} height={size} className="-rotate-90">
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke="#ec5b13"
+          strokeWidth={strokeWidth}
+          opacity={0.15}
+        />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke="#ec5b13"
+          strokeWidth={strokeWidth}
+          strokeDasharray={circumference}
+          strokeDashoffset={circumference - filled}
+          strokeLinecap="round"
+          className="transition-all duration-700"
+        />
+      </svg>
+      <span
+        className="absolute inset-0 flex items-center justify-center font-black text-primary"
+        style={{ fontSize: size * 0.3 }}
+      >
+        {score}
+      </span>
+    </div>
+  );
+}
+
 /* ─── Subcategory Row ─── */
 
 function SubcategoryRow({
@@ -71,7 +116,7 @@ function SubcategoryRow({
   sub: SubcategoryStat;
   onPlay: () => void;
 }) {
-  const pct = sub.total > 0 ? Math.round((sub.solved / sub.total) * 100) : 0;
+  const pct = sub.readinessScore;
   const isComplete = pct === 100;
 
   return (
@@ -84,7 +129,7 @@ function SubcategoryRow({
           {sub.name}
         </span>
         <div className="flex items-center gap-3">
-          <span className="text-[10px] font-bold text-muted">{pct}%</span>
+          <span className="text-[10px] font-bold text-muted">{pct}</span>
           <button
             onClick={onPlay}
             className="w-6 h-6 rounded flex items-center justify-center bg-[var(--tint-strong)] hover:bg-primary hover:text-white transition-all active:scale-90"
@@ -329,14 +374,7 @@ export default function PracticeHub() {
                         )}
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-3xl font-headline font-black text-primary">
-                        {group.progressPercent}%
-                      </div>
-                      <div className="text-[10px] text-muted uppercase tracking-widest font-bold">
-                        Ukupni progres
-                      </div>
-                    </div>
+                    <ScoreCircle score={group.readinessScore} size={72} />
                   </div>
 
                   {/* Subcategories grid */}
@@ -383,9 +421,7 @@ export default function PracticeHub() {
                     {group.name}
                   </h4>
                 </div>
-                <div className="text-2xl font-headline font-black text-primary">
-                  {group.progressPercent}%
-                </div>
+                <ScoreCircle score={group.readinessScore} size={56} />
               </div>
 
               {/* Subcategories */}
