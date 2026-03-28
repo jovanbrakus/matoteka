@@ -26,6 +26,7 @@ interface CategoryData {
   total: number;
   solved: number;
   percent: number;
+  readinessScore?: number;
 }
 
 interface CategoryGroupData {
@@ -34,6 +35,7 @@ interface CategoryGroupData {
   total: number;
   solved: number;
   percent: number;
+  readinessScore?: number;
   categories: CategoryData[];
 }
 
@@ -178,6 +180,8 @@ function getMotivationalMessage(): string {
 export default function Dashboard({ user }: DashboardProps) {
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
+  const [showCategoryBreakdown, setShowCategoryBreakdown] = useState(false);
 
   useEffect(() => {
     fetch("/api/user/dashboard")
@@ -483,6 +487,83 @@ export default function Dashboard({ user }: DashboardProps) {
                     <p className="text-center text-sm font-bold" style={{ color }}>
                       {label}
                     </p>
+
+                    {/* Category breakdown */}
+                    {categoryGroups.length > 0 && (
+                      <div className="mt-5 pt-1">
+                        <button
+                          onClick={() => setShowCategoryBreakdown((v) => !v)}
+                          className="flex w-full items-center justify-center gap-1 text-[10px] font-semibold text-muted transition-colors hover:text-text-secondary"
+                        >
+                          <span
+                            className="material-symbols-outlined transition-transform"
+                            style={{ fontSize: 14, transform: showCategoryBreakdown ? "rotate(180deg)" : "rotate(0deg)" }}
+                          >
+                            expand_more
+                          </span>
+                          {showCategoryBreakdown ? "Sakrij detalje" : "Prikaži detalje"}
+                        </button>
+                        {showCategoryBreakdown && (<div className="mt-3 space-y-2">
+                        {categoryGroups.map((group) => {
+                          const gs = group.readinessScore ?? 0;
+                          const isExpanded = expandedGroups.has(group.id);
+                          return (
+                            <div key={group.id} className="rounded-lg border border-[var(--glass-border)] bg-[var(--tint)] overflow-hidden">
+                              <button
+                                onClick={() => setExpandedGroups((prev) => {
+                                  const next = new Set(prev);
+                                  if (next.has(group.id)) next.delete(group.id);
+                                  else next.add(group.id);
+                                  return next;
+                                })}
+                                className="flex w-full items-center gap-2 px-3 py-2.5 text-left transition-colors hover:bg-[var(--tint-strong)]"
+                              >
+                                <span
+                                  className="material-symbols-outlined text-xs text-muted transition-transform"
+                                  style={{ transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)" }}
+                                >
+                                  chevron_right
+                                </span>
+                                <div className="flex-grow">
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-xs font-bold text-heading">{group.name}</span>
+                                    <span className="text-xs font-bold text-[#ec5b13]">{gs}</span>
+                                  </div>
+                                  <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-card">
+                                    <div
+                                      className="h-full rounded-full bg-[#ec5b13] transition-all duration-700"
+                                      style={{ width: `${gs}%` }}
+                                    />
+                                  </div>
+                                </div>
+                              </button>
+                              {isExpanded && (
+                                <div className="space-y-2 border-t border-[var(--glass-border)] px-3 py-2 pl-7">
+                                  {group.categories.map((cat) => {
+                                    const catScore = cat.readinessScore ?? 0;
+                                    return (
+                                      <div key={cat.id} className="space-y-0.5">
+                                        <div className="flex justify-between text-[10px]">
+                                          <span className="text-text-secondary truncate mr-2">{cat.name}</span>
+                                          <span className="font-semibold text-text-secondary shrink-0">{catScore}</span>
+                                        </div>
+                                        <div className="h-0.5 w-full overflow-hidden rounded-full bg-card">
+                                          <div
+                                            className="h-full rounded-full bg-[#ec5b13]/60 transition-all duration-700"
+                                            style={{ width: `${catScore}%` }}
+                                          />
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>)}
+                      </div>
+                    )}
                   </div>
                 </div>
               );
