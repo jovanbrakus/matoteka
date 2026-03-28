@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { mockExams, mockExamProblems, faculties } from "@/drizzle/schema";
 import { eq, and, asc } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import { getProblemFull, getProblemHtml } from "@/lib/problems";
+import { getProblemFull } from "@/lib/problems";
 
 export async function GET(
   req: Request,
@@ -45,10 +45,9 @@ export async function GET(
     .where(eq(mockExamProblems.examId, id))
     .orderBy(asc(mockExamProblems.position));
 
-  // Enrich each problem with metadata and HTML from the filesystem index
+  // Enrich each problem with metadata from the filesystem index
   const examProblems = examProblemRows.map((row) => {
     const problem = getProblemFull(row.problemId);
-    const htmlContent = getProblemHtml(row.problemId);
     return {
       id: row.id,
       problemId: row.problemId,
@@ -57,7 +56,6 @@ export async function GET(
       answer: row.answer,
       isFlagged: row.isFlagged,
       title: problem?.title ?? row.problemId,
-      htmlContent: htmlContent ?? "",
       problemText: problem?.problemText ?? "",
       answerOptions: problem?.answerOptions ?? [],
       numOptions: problem?.numOptions ?? 5,

@@ -1,3 +1,4 @@
+import { auth } from "@/lib/auth";
 import { getProblemHtml } from "@/lib/problems";
 import { NextResponse } from "next/server";
 
@@ -5,7 +6,23 @@ const HEADERS = {
   "Content-Type": "text/html; charset=utf-8",
   "Content-Security-Policy": "default-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;",
   "X-Frame-Options": "SAMEORIGIN",
+  "Cache-Control": "no-store, no-cache, must-revalidate, private",
+  "X-Content-Type-Options": "nosniff",
 };
+
+const UNAUTHORIZED_HTML = `<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<style>
+  body { font-family: 'Inter', sans-serif; display: flex; align-items: center;
+         justify-content: center; height: 100vh; margin: 0; color: #64748b;
+         background: transparent; }
+  .msg { text-align: center; }
+  h2 { color: #334155; margin-bottom: 8px; }
+</style></head>
+<body><div class="msg">
+  <h2>Potrebna prijava</h2>
+  <p>Prijavi se da bi video resenje.</p>
+</div></body></html>`;
 
 /**
  * Strip CSS patterns that cause infinite iframe resize loops and inject
@@ -170,6 +187,12 @@ export async function GET(req: Request, { params }: { params: Promise<{ problemI
   const url = new URL(req.url);
   const section = url.searchParams.get("section");
   const theme = url.searchParams.get("theme") || "light";
+
+  // All problem HTML (statements and solutions) requires authentication
+  const session = await auth();
+  if (!session?.user) {
+    return new NextResponse(UNAUTHORIZED_HTML, { status: 401, headers: HEADERS });
+  }
 
   const html = getProblemHtml(problemId);
 

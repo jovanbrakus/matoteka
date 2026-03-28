@@ -14,7 +14,6 @@ interface ExamProblem {
   isFlagged: boolean;
   problemId: string;
   title: string;
-  htmlContent: string;
   problemText: string | null;
   answerOptions: string[];
   numOptions: number;
