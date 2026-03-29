@@ -143,16 +143,18 @@ export function parseHtml(htmlContent: string) {
 
   // Map correct answer from original label (e.g. "G") to index-based letter (e.g. "D")
   // since AnswerOptions component uses sequential A, B, C, D, E labels.
-  // Some HTML files use Cyrillic letters (А, Б, В, Г, Д) — normalize to Latin first.
-  const CYRILLIC_TO_LATIN: Record<string, string> = {
-    "А": "A", "Б": "B", "В": "V", "Г": "G", "Д": "D",
-    "Ђ": "DJ", "Е": "E", "Ж": "ZH", "З": "Z",
+  // Some HTML files use Cyrillic letters (А, Б, В, Г, Д) as option labels.
+  // Normalize both correctAnswer and originalLabels from Cyrillic to positional Latin.
+  const CYRILLIC_TO_POSITION: Record<string, string> = {
+    "А": "A", "Б": "B", "В": "C", "Г": "D", "Д": "E",
+    "Ђ": "F", "Е": "G", "Ж": "H", "З": "I",
   };
-  if (correctAnswer && CYRILLIC_TO_LATIN[correctAnswer]) {
-    correctAnswer = CYRILLIC_TO_LATIN[correctAnswer];
+  if (correctAnswer && CYRILLIC_TO_POSITION[correctAnswer]) {
+    correctAnswer = CYRILLIC_TO_POSITION[correctAnswer];
   }
-  if (correctAnswer && originalLabels.length > 0) {
-    const idx = originalLabels.indexOf(correctAnswer);
+  const normalizedLabels = originalLabels.map((l) => CYRILLIC_TO_POSITION[l] || l);
+  if (correctAnswer && normalizedLabels.length > 0) {
+    const idx = normalizedLabels.indexOf(correctAnswer);
     if (idx !== -1) {
       correctAnswer = String.fromCharCode(65 + idx); // A=0, B=1, C=2, ...
     }

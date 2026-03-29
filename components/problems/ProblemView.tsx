@@ -41,7 +41,8 @@ interface ProblemViewProps {
 }
 
 export default function ProblemView({ problemId, onAnswered, onNext }: ProblemViewProps) {
-  const { status: sessionStatus } = useSession();
+  const { data: session, status: sessionStatus } = useSession();
+  const isAdmin = (session?.user as any)?.role === "admin";
 
   const [problem, setProblem] = useState<ProblemDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -168,6 +169,9 @@ export default function ProblemView({ problemId, onAnswered, onNext }: ProblemVi
           <span className="text-sm text-text-secondary">
             Zadatak #{problem.problemNumber}
           </span>
+          {isAdmin && (
+            <span className="font-mono text-xs text-muted">{problem.id} | {problem.correctAnswer}</span>
+          )}
           <div className="ml-auto flex items-center gap-1">
             <Star size={12} className="text-[#ec5b13]" />
             <span className="text-xs font-bold text-text-secondary">
@@ -277,7 +281,7 @@ export default function ProblemView({ problemId, onAnswered, onNext }: ProblemVi
                   onClick={() => setShowSolution(true)}
                   className="rounded-xl border border-[var(--glass-border)] px-6 py-3 text-sm text-text-secondary transition-colors hover:text-heading"
                 >
-                  Preskoci i vidi resenje
+                  Preskoči i vidi rešenje
                 </button>
               </>
             ) : (
@@ -286,7 +290,7 @@ export default function ProblemView({ problemId, onAnswered, onNext }: ProblemVi
                   onClick={() => setShowSolution(true)}
                   className="flex items-center gap-2 rounded-xl bg-[#a78bfa] px-8 py-3 text-sm font-bold text-white shadow-lg transition-all hover:scale-105"
                 >
-                  Vidi resenje
+                  Vidi rešenje
                   <ArrowRight size={16} />
                 </button>
                 {onNext ? (
@@ -294,7 +298,7 @@ export default function ProblemView({ problemId, onAnswered, onNext }: ProblemVi
                     onClick={onNext}
                     className="flex items-center gap-2 rounded-xl border border-[#ec5b13]/30 bg-[#ec5b13]/10 px-6 py-3 text-sm font-bold text-[#ec5b13] transition-all hover:bg-[#ec5b13]/20"
                   >
-                    Sledeci zadatak
+                    Sledeći zadatak
                     <ArrowRight size={16} />
                   </button>
                 ) : nextProblem ? (
@@ -302,7 +306,7 @@ export default function ProblemView({ problemId, onAnswered, onNext }: ProblemVi
                     href={`/vezbe/${nextProblem.id}`}
                     className="flex items-center gap-2 rounded-xl border border-[#ec5b13]/30 bg-[#ec5b13]/10 px-6 py-3 text-sm font-bold text-[#ec5b13] transition-all hover:bg-[#ec5b13]/20"
                   >
-                    Sledeci zadatak
+                    Sledeći zadatak
                     <ArrowRight size={16} />
                   </Link>
                 ) : null}
@@ -318,7 +322,7 @@ export default function ProblemView({ problemId, onAnswered, onNext }: ProblemVi
           <div className="mb-6 overflow-hidden rounded-2xl border border-[var(--glass-border)] glass-card">
             <div className="border-b border-[var(--glass-border)] bg-[var(--tint)] px-6 py-3">
               <h3 className="text-sm font-bold uppercase tracking-widest text-[#ec5b13]">
-                Kompletno Resenje
+                Kompletno rešenje
               </h3>
             </div>
             <ProblemStatement
@@ -354,7 +358,7 @@ export default function ProblemView({ problemId, onAnswered, onNext }: ProblemVi
                   onClick={onNext}
                   className="flex items-center gap-2 rounded-xl bg-[#ec5b13] px-8 py-3 text-sm font-bold text-white shadow-lg shadow-[#ec5b13]/20 transition-all hover:scale-105"
                 >
-                  Sledeci zadatak
+                  Sledeći zadatak
                   <ArrowRight size={16} />
                 </button>
               ) : nextProblem ? (
@@ -362,7 +366,7 @@ export default function ProblemView({ problemId, onAnswered, onNext }: ProblemVi
                   href={`/vezbe/${nextProblem.id}`}
                   className="flex items-center gap-2 rounded-xl bg-[#ec5b13] px-8 py-3 text-sm font-bold text-white shadow-lg shadow-[#ec5b13]/20 transition-all hover:scale-105"
                 >
-                  Sledeci zadatak
+                  Sledeći zadatak
                   <ArrowRight size={16} />
                 </Link>
               ) : null}

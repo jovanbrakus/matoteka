@@ -138,12 +138,34 @@ export default function PracticeSolver() {
     if (topics.length > 0) fetchRandom(topics);
   }, [topics, fetchRandom]);
 
+  const refreshReadiness = useCallback(() => {
+    const groupId = searchParams.get("group");
+    const topicId = searchParams.get("topic");
+    fetch("/api/practice/categories")
+      .then((r) => r.json())
+      .then((data) => {
+        const groups = (data.categories as CategoryGroup[]) ?? [];
+        if (topicId) {
+          for (const group of groups) {
+            const cat = group.categories.find((c) => c.id === topicId);
+            if (cat) { setReadinessScore(cat.readinessScore ?? 0); break; }
+          }
+        } else if (groupId) {
+          const group = groups.find((g) => g.id === groupId);
+          if (group) setReadinessScore(group.readinessScore ?? 0);
+        }
+      })
+      .catch(() => {});
+  }, [searchParams]);
+
   const handleAnswered = useCallback((wasCorrect: boolean) => {
     setSessionScore((prev) => ({
       correct: prev.correct + (wasCorrect ? 1 : 0),
       total: prev.total + 1,
     }));
-  }, []);
+    // Delay re-fetch to give background recalculateAnalytics time to complete
+    setTimeout(refreshReadiness, 2000);
+  }, [refreshReadiness]);
 
   const handleNext = useCallback(() => {
     fetchRandom(topics);
