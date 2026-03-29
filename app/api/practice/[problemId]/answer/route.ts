@@ -68,35 +68,37 @@ export async function POST(
 
   const status = isCorrect ? "solved" : "attempted";
 
-  await db
-    .insert(problemProgress)
-    .values({
-      userId,
-      problemId,
-      status,
-      attempts: 1,
-      lastAnswer: answer,
-      isCorrect,
-      solvedAt: isCorrect ? new Date() : null,
-      updatedAt: new Date(),
-    })
-    .onConflictDoUpdate({
-      target: [problemProgress.userId, problemProgress.problemId],
-      set: {
-        status: isCorrect
-          ? "solved"
-          : sql`CASE WHEN ${problemProgress.status} = 'solved' THEN 'solved' ELSE 'attempted' END`,
-        attempts: sql`${problemProgress.attempts} + 1`,
+  await db.transaction(async (tx) => {
+    await tx
+      .insert(problemProgress)
+      .values({
+        userId,
+        problemId,
+        status,
+        attempts: 1,
         lastAnswer: answer,
-        isCorrect: isCorrect || sql`${problemProgress.isCorrect}`,
-        solvedAt: isCorrect ? new Date() : sql`${problemProgress.solvedAt}`,
+        isCorrect,
+        solvedAt: isCorrect ? new Date() : null,
         updatedAt: new Date(),
-      },
-    });
+      })
+      .onConflictDoUpdate({
+        target: [problemProgress.userId, problemProgress.problemId],
+        set: {
+          status: isCorrect
+            ? "solved"
+            : sql`CASE WHEN ${problemProgress.status} = 'solved' THEN 'solved' ELSE 'attempted' END`,
+          attempts: sql`${problemProgress.attempts} + 1`,
+          lastAnswer: answer,
+          isCorrect: isCorrect || sql`${problemProgress.isCorrect}`,
+          solvedAt: isCorrect ? new Date() : sql`${problemProgress.solvedAt}`,
+          updatedAt: new Date(),
+        },
+      });
 
-  if (isCorrect) {
-    await updateStreakOnCorrectSolve(userId);
-  }
+    if (isCorrect) {
+      await updateStreakOnCorrectSolve(userId, tx);
+    }
+  });
 
   // Recalculate analytics in the background (fire-and-forget)
   recalculateAnalytics(userId).catch(() => {});

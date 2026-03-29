@@ -55,63 +55,22 @@ export async function POST(
   let numBlank = 0;
   let maxScore = 0;
 
-  for (const ep of examProblems) {
+  // Pre-compute scores and correctness (pure, no DB writes)
+  const scored = examProblems.map((ep) => {
     const pv = parseFloat(ep.pointValue);
-    maxScore += pv;
-
-    // Look up correct answer from filesystem
     const problem = getProblemFull(ep.problemId);
     const correctAnswer = problem?.correctAnswer ?? "A";
-
     const isBlank = !ep.answer || ep.answer === "N";
     const isCorrect =
-      !isBlank &&
-      ep.answer?.toUpperCase() === correctAnswer.toUpperCase();
+      !isBlank && ep.answer?.toUpperCase() === correctAnswer.toUpperCase();
 
-    if (isBlank) {
-      // Blank: 0 points
-      score += 0;
-      numBlank++;
-    } else if (isCorrect) {
-      // Correct: full points
-      score += pv;
-      numCorrect++;
-    } else {
-      // Wrong: -16% of point value
-      const penalty = pv * 0.16;
-      score -= penalty;
-      numWrong++;
-    }
+    maxScore += pv;
+    if (isBlank) numBlank++;
+    else if (isCorrect) { score += pv; numCorrect++; }
+    else { score -= pv * 0.16; numWrong++; }
 
-    // Mark correct/wrong on exam problem
-    await db
-      .update(mockExamProblems)
-      .set({ isCorrect: isBlank ? null : isCorrect })
-      .where(eq(mockExamProblems.id, ep.epId));
-
-    // Update problem_progress
-    const status = isCorrect ? "solved" : isBlank ? "unseen" : "attempted";
-    if (!isBlank) {
-      await db
-        .insert(problemProgress)
-        .values({
-          userId,
-          problemId: ep.problemId,
-          status,
-          attempts: 1,
-          lastAnswer: ep.answer,
-          isCorrect,
-          context: "simulation",
-          solvedAt: isCorrect ? new Date() : null,
-          updatedAt: new Date(),
-        })
-        .onConflictDoNothing();
-    }
-  }
-
-  if (numCorrect > 0) {
-    await updateStreakOnCorrectSolve(userId);
-  }
+    return { ...ep, isBlank, isCorrect };
+  });
 
   const timeSpent = Math.floor(
     (Date.now() - new Date(exam[0].startedAt!).getTime()) / 1000
@@ -119,20 +78,52 @@ export async function POST(
   const scorePercent = maxScore > 0 ? (score / maxScore) * 100 : 0;
   const clampedPercent = Math.max(0, scorePercent);
 
-  await db
-    .update(mockExams)
-    .set({
-      status: "completed",
-      finishedAt: new Date(),
-      timeSpent,
-      score: score.toFixed(2),
-      maxScore: maxScore.toFixed(2),
-      scorePercent: clampedPercent.toFixed(2),
-      numCorrect,
-      numWrong,
-      numBlank,
-    })
-    .where(eq(mockExams.id, id));
+  // All DB writes in a single transaction
+  await db.transaction(async (tx) => {
+    for (const ep of scored) {
+      await tx
+        .update(mockExamProblems)
+        .set({ isCorrect: ep.isBlank ? null : ep.isCorrect })
+        .where(eq(mockExamProblems.id, ep.epId));
+
+      if (!ep.isBlank) {
+        const status = ep.isCorrect ? "solved" : "attempted";
+        await tx
+          .insert(problemProgress)
+          .values({
+            userId,
+            problemId: ep.problemId,
+            status,
+            attempts: 1,
+            lastAnswer: ep.answer,
+            isCorrect: ep.isCorrect,
+            context: "simulation",
+            solvedAt: ep.isCorrect ? new Date() : null,
+            updatedAt: new Date(),
+          })
+          .onConflictDoNothing();
+      }
+    }
+
+    if (numCorrect > 0) {
+      await updateStreakOnCorrectSolve(userId, tx);
+    }
+
+    await tx
+      .update(mockExams)
+      .set({
+        status: "completed",
+        finishedAt: new Date(),
+        timeSpent,
+        score: score.toFixed(2),
+        maxScore: maxScore.toFixed(2),
+        scorePercent: clampedPercent.toFixed(2),
+        numCorrect,
+        numWrong,
+        numBlank,
+      })
+      .where(eq(mockExams.id, id));
+  });
 
   // Recalculate analytics in the background (fire-and-forget)
   recalculateAnalytics(userId).catch(() => {});

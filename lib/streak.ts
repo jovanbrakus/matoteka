@@ -2,15 +2,21 @@ import { db } from "@/lib/db";
 import { users } from "@/drizzle/schema";
 import { eq, sql } from "drizzle-orm";
 
+type DbOrTx = Pick<typeof db, "select" | "update">;
+
 /**
  * Update daily streak when a problem is correctly solved.
  * Streak extends when the first correct solve of the day happens.
  * If a day is missed, streak resets to 1.
+ * Accepts optional transaction object for use within db.transaction().
  */
-export async function updateStreakOnCorrectSolve(userId: string): Promise<void> {
+export async function updateStreakOnCorrectSolve(
+  userId: string,
+  txDb: DbOrTx = db
+): Promise<void> {
   const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
 
-  const [user] = await db
+  const [user] = await txDb
     .select({
       lastActiveDate: users.lastActiveDate,
       streakCurrent: users.streakCurrent,
@@ -40,7 +46,7 @@ export async function updateStreakOnCorrectSolve(userId: string): Promise<void> 
 
   const newBest = Math.max(user.streakBest, newStreak);
 
-  await db
+  await txDb
     .update(users)
     .set({
       streakCurrent: newStreak,
