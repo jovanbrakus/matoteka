@@ -199,6 +199,37 @@ export const aiDailyUsage = pgTable(
   (table) => [primaryKey({ columns: [table.userId, table.date] })]
 );
 
+export const solutionViews = pgTable(
+  "solution_views",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    problemId: varchar("problem_id", { length: 20 }).notNull(),
+    viewedAt: timestamp("viewed_at", { withTimezone: true }).defaultNow(),
+    ipAddress: varchar("ip_address", { length: 45 }),
+    userAgent: text("user_agent"),
+  },
+  (table) => [
+    index("idx_solution_views_user").on(table.userId),
+    index("idx_solution_views_user_date").on(table.userId, table.viewedAt),
+    index("idx_solution_views_problem").on(table.problemId),
+  ]
+);
+
+export const solutionDailyUsage = pgTable(
+  "solution_daily_usage",
+  {
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id),
+    date: date("date").notNull().defaultNow(),
+    count: integer("count").notNull().default(0),
+  },
+  (table) => [primaryKey({ columns: [table.userId, table.date] })]
+);
+
 export const userAnalytics = pgTable("user_analytics", {
   userId: uuid("user_id")
     .primaryKey()

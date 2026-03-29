@@ -14,6 +14,13 @@ vi.mock("@/lib/problems", () => ({
   getProblemHtml: vi.fn(() => mockHtml),
 }));
 
+let mockRateLimit = { allowed: true, used: 0, limit: 30 };
+
+vi.mock("@/lib/utils/solution-rate-limit", () => ({
+  checkSolutionRateLimit: vi.fn(() => Promise.resolve(mockRateLimit)),
+  recordSolutionView: vi.fn(() => Promise.resolve({ isNewToday: true })),
+}));
+
 // Import the handler after mocks are set up
 const { GET } = await import("./route");
 
@@ -29,6 +36,7 @@ describe("GET /api/problems/[problemId]/html", () => {
   beforeEach(() => {
     mockSession = null;
     mockHtml = `<!DOCTYPE html><html><head><style>.test{}</style></head><body><div class="card problem-statement">Problem text</div></body></html>`;
+    mockRateLimit = { allowed: true, used: 0, limit: 30 };
   });
 
   describe("full solution (no section param)", () => {
@@ -94,6 +102,65 @@ describe("GET /api/problems/[problemId]/html", () => {
         { params }
       );
       expect(res.status).toBe(404);
+    });
+  });
+
+  describe("rate limiting", () => {
+    it("returns 429 when daily limit exceeded", async () => {
+      mockSession = { user: { id: "user-1", email: "test@test.com" } };
+      mockRateLimit = { allowed: false, used: 30, limit: 30 };
+      const res = await GET(
+        makeRequest("http://localhost/api/problems/etf-2024-1/html?theme=dark"),
+        { params }
+      );
+      expect(res.status).toBe(429);
+      const body = await res.text();
+      expect(body).toContain("Dnevni limit dostignut");
+      expect(body).toContain("30/30");
+    });
+
+    it("admin bypasses rate limit", async () => {
+      mockSession = { user: { id: "admin-1", email: "admin@test.com", role: "admin" } };
+      mockRateLimit = { allowed: false, used: 30, limit: 30 };
+      const res = await GET(
+        makeRequest("http://localhost/api/problems/etf-2024-1/html?theme=dark"),
+        { params }
+      );
+      expect(res.status).toBe(200);
+    });
+
+    it("does not rate limit statements", async () => {
+      mockSession = { user: { id: "user-1", email: "test@test.com" } };
+      mockRateLimit = { allowed: false, used: 30, limit: 30 };
+      const res = await GET(
+        makeRequest("http://localhost/api/problems/etf-2024-1/html?section=statement&theme=light"),
+        { params }
+      );
+      expect(res.status).toBe(200);
+    });
+  });
+
+  describe("watermarking", () => {
+    it("watermarks full solution HTML", async () => {
+      mockSession = { user: { id: "user-1", email: "test@test.com" } };
+      const res = await GET(
+        makeRequest("http://localhost/api/problems/etf-2024-1/html?theme=dark"),
+        { params }
+      );
+      const body = await res.text();
+      expect(body).toMatch(/--wm:"[0-9a-f]{16}"/);
+      expect(body).toMatch(/data-m="[0-9a-f]{4}"/);
+    });
+
+    it("does not watermark statements", async () => {
+      mockSession = { user: { id: "user-1", email: "test@test.com" } };
+      const res = await GET(
+        makeRequest("http://localhost/api/problems/etf-2024-1/html?section=statement&theme=light"),
+        { params }
+      );
+      const body = await res.text();
+      expect(body).not.toMatch(/--wm:/);
+      expect(body).not.toMatch(/data-m=/);
     });
   });
 

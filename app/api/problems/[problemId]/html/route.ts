@@ -1,5 +1,7 @@
 import { auth } from "@/lib/auth";
 import { getProblemHtml } from "@/lib/problems";
+import { checkSolutionRateLimit, recordSolutionView } from "@/lib/utils/solution-rate-limit";
+import { injectWatermark } from "@/lib/utils/watermark";
 import { NextResponse } from "next/server";
 
 const HEADERS = {
@@ -23,6 +25,24 @@ const UNAUTHORIZED_HTML = `<!DOCTYPE html>
   <h2>Potrebna prijava</h2>
   <p>Prijavi se da bi video resenje.</p>
 </div></body></html>`;
+
+function rateLimitHtml(used: number, limit: number): string {
+  return `<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<style>
+  body { font-family: 'Inter', sans-serif; display: flex; align-items: center;
+         justify-content: center; height: 100vh; margin: 0; color: #64748b;
+         background: transparent; }
+  .msg { text-align: center; max-width: 400px; }
+  h2 { color: #334155; margin-bottom: 8px; }
+  .count { font-size: 2rem; color: #f97316; font-weight: 700; }
+</style></head>
+<body><div class="msg">
+  <div class="count">${used}/${limit}</div>
+  <h2>Dnevni limit dostignut</h2>
+  <p>Pregledao si maksimalan broj resenja za danas. Vrati se sutra!</p>
+</div></body></html>`;
+}
 
 /**
  * Strip CSS patterns that cause infinite iframe resize loops and inject
@@ -210,6 +230,23 @@ export async function GET(req: Request, { params }: { params: Promise<{ problemI
     return new NextResponse(statementHtml, { headers: HEADERS });
   }
 
+  const userId = (session.user as any).id;
+  const role = (session.user as any).role;
+
+  // Rate limit full solutions (admins bypass)
+  if (role !== "admin") {
+    const { allowed, used, limit } = await checkSolutionRateLimit(userId);
+    if (!allowed) {
+      return new NextResponse(rateLimitHtml(used, limit), { status: 429, headers: HEADERS });
+    }
+  }
+
+  // Record view (audit log is fire-and-forget)
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null;
+  const ua = req.headers.get("user-agent");
+  await recordSolutionView(userId, problemId, ip, ua);
+
   const themed = injectThemeClass(injectThemeLink(neutralizeAnswerHighlights(safeHtml)), theme);
-  return new NextResponse(themed, { headers: HEADERS });
+  const watermarked = injectWatermark(themed, userId, problemId);
+  return new NextResponse(watermarked, { headers: HEADERS });
 }

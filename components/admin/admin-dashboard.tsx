@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 interface Analytics {
   totalUsers: number;
@@ -113,6 +114,18 @@ export default function AdminDashboard() {
             <p className="text-xs font-medium text-text-secondary">{card.label}</p>
           </div>
         ))}
+      </div>
+
+      {/* Quick links */}
+      <div className="mb-8">
+        <Link
+          href="/admin/solution-views"
+          className="inline-flex items-center gap-2 rounded-xl bg-[var(--tint)] px-5 py-3 text-sm font-bold text-text-secondary hover:bg-[#ec5b13]/10 hover:text-[#ec5b13] transition-colors"
+        >
+          <span className="material-symbols-outlined text-base">visibility</span>
+          Pregledi resenja
+          <span className="material-symbols-outlined text-base">arrow_forward</span>
+        </Link>
       </div>
 
       {/* User management */}
