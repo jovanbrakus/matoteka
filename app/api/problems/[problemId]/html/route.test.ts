@@ -164,6 +164,51 @@ describe("GET /api/problems/[problemId]/html", () => {
     });
   });
 
+  describe("content obfuscation", () => {
+    it("injects postMessage resize script into full solutions", async () => {
+      mockSession = { user: { id: "user-1", email: "test@test.com" } };
+      const res = await GET(
+        makeRequest("http://localhost/api/problems/etf-2024-1/html?theme=dark"),
+        { params }
+      );
+      const body = await res.text();
+      expect(body).toContain("matoteka-resize");
+      expect(body).toContain("matoteka-theme");
+    });
+
+    it("injects postMessage resize script into statements", async () => {
+      mockSession = { user: { id: "user-1", email: "test@test.com" } };
+      const res = await GET(
+        makeRequest("http://localhost/api/problems/etf-2024-1/html?section=statement&theme=light"),
+        { params }
+      );
+      const body = await res.text();
+      expect(body).toContain("matoteka-resize");
+    });
+
+    it("injects anti-copy CSS into full solutions", async () => {
+      mockSession = { user: { id: "user-1", email: "test@test.com" } };
+      const res = await GET(
+        makeRequest("http://localhost/api/problems/etf-2024-1/html?theme=dark"),
+        { params }
+      );
+      const body = await res.text();
+      expect(body).toContain("user-select:none");
+      expect(body).toContain("contextmenu");
+    });
+
+    it("does not inject anti-copy CSS into statements", async () => {
+      mockSession = { user: { id: "user-1", email: "test@test.com" } };
+      const res = await GET(
+        makeRequest("http://localhost/api/problems/etf-2024-1/html?section=statement&theme=light"),
+        { params }
+      );
+      const body = await res.text();
+      expect(body).not.toContain("user-select:none");
+      expect(body).not.toContain("contextmenu");
+    });
+  });
+
   describe("security headers", () => {
     it("includes Cache-Control no-store on solution responses", async () => {
       mockSession = { user: { id: "user-1", email: "test@test.com" } };

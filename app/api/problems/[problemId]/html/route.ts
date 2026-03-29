@@ -71,6 +71,39 @@ function sanitizeForIframe(html: string): string {
 const THEME_LINKS = `<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/solution-theme.css?v=2">`;
 
+/** postMessage-based resize reporting + theme listener (replaces contentDocument access) */
+const POST_MESSAGE_SCRIPT = `<script>(function(){
+  function reportHeight(){
+    var body=document.body;if(!body)return;
+    var s=window.getComputedStyle(body);
+    var h=body.offsetHeight+parseInt(s.marginTop||'0',10)+parseInt(s.marginBottom||'0',10)+1;
+    window.parent.postMessage({type:'matoteka-resize',height:h},'*');
+  }
+  if(window.ResizeObserver)new ResizeObserver(reportHeight).observe(document.body);
+  setTimeout(reportHeight,1000);setTimeout(reportHeight,3000);setTimeout(reportHeight,8000);
+  if(document.readyState==='complete')reportHeight();
+  else window.addEventListener('load',reportHeight);
+  window.addEventListener('message',function(e){
+    if(e.data&&e.data.type==='matoteka-theme')document.documentElement.className=e.data.theme;
+  });
+})();</script>`;
+
+const ANTI_COPY_CSS = `<style>
+  body{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
+  @media print{body{display:none!important}}
+</style>`;
+
+const ANTI_COPY_SCRIPT = `<script>document.addEventListener('contextmenu',function(e){e.preventDefault()});</script>`;
+
+function injectPostMessageScript(html: string): string {
+  return html.replace(/<\/body>/i, `${POST_MESSAGE_SCRIPT}\n</body>`);
+}
+
+function injectAntiCopy(html: string): string {
+  const withCss = html.replace(/<\/head>/i, `${ANTI_COPY_CSS}\n</head>`);
+  return withCss.replace(/<\/body>/i, `${ANTI_COPY_SCRIPT}\n</body>`);
+}
+
 /**
  * Inject the shared theme stylesheet link after the last embedded <style> block
  * so it wins the CSS cascade naturally.
@@ -233,7 +266,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ problemI
     if (!statementHtml) {
       return new NextResponse("Statement not found", { status: 404 });
     }
-    return new NextResponse(statementHtml, { headers: HEADERS });
+    return new NextResponse(injectPostMessageScript(statementHtml), { headers: HEADERS });
   }
 
   const userId = (session.user as any).id;
@@ -254,5 +287,6 @@ export async function GET(req: Request, { params }: { params: Promise<{ problemI
 
   const themed = injectThemeClass(injectThemeLink(neutralizeAnswerHighlights(safeHtml)), theme);
   const watermarked = injectWatermark(themed, userId, problemId);
-  return new NextResponse(watermarked, { headers: HEADERS });
+  const protected_ = injectAntiCopy(injectPostMessageScript(watermarked));
+  return new NextResponse(protected_, { headers: HEADERS });
 }
