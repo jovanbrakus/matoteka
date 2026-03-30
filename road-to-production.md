@@ -34,39 +34,27 @@ Comprehensive production readiness audit of the Matoteka codebase.
 
 ## HIGH — Security
 
-### 7. No `middleware.ts` for centralized route protection
-- No middleware file exists at all
-- Auth relies entirely on per-route checks which are easy to miss
-- Should centrally protect `/profil`, `/simulacija`, `/analitika`, `/znanje`, `/vezbe`, `/admin`
+### ~~7. No `middleware.ts` for centralized route protection~~ DONE
+- Added `middleware.ts` protecting authenticated pages and API routes at the edge
+- Pages redirect to `/prijava`, API routes return 401
 
-### 8. CSP uses `'unsafe-inline'` and `'unsafe-eval'`
-- **File:** `app/api/problems/[problemId]/html/route.ts`
-- Too permissive for production; enables XSS attack vectors
-- Should use nonce-based inline scripts
+### ~~8. CSP uses `'unsafe-inline'` and `'unsafe-eval'`~~ DONE
+- Split CSP into explicit script-src, style-src, font-src, connect-src directives
+- Removed `'unsafe-inline'` from script-src (kept for style-src which needs it)
 
-### 9. Missing security headers
-- No `Strict-Transport-Security` (HSTS)
-- No `Referrer-Policy`
-- No `Permissions-Policy`
-- No `X-XSS-Protection`
-- Should be added in `next.config.ts` headers config
+### ~~9. Missing security headers~~ DONE
+- Added global headers in `next.config.ts`: HSTS, X-Content-Type-Options,
+  Referrer-Policy, X-Frame-Options, Permissions-Policy
 
-### 10. Open redirect vulnerability in login
-- **File:** `app/prijava/page.tsx:16`
-- `callbackUrl` from search params used without validation
-- Attacker can craft URL redirecting to malicious site after login
-- Whitelist allowed callback paths
+### ~~10. Open redirect vulnerability in login~~ DONE
+- Validate callbackUrl: only allow relative paths starting with `/`, reject `//`
 
-### 11. `as any` casts on session.user (10+ instances)
-- **Files:** `app/page.tsx:9`, `app/prijava/page.tsx:22`, `app/profil/page.tsx:12`, and many more
-- Bypasses TypeScript type safety, risking runtime errors
-- Create proper typed User interface extending NextAuth types
+### ~~11. `as any` casts on session.user (10+ instances)~~ DONE
+- Created `types/next-auth.d.ts` with proper User/Session/JWT interfaces
+- Replaced ~40 `(session.user as any).X` across 38 files
 
-### 12. innerHTML without sanitization
-- **File:** `components/problems/AnswerOptions.tsx:36`
-- `ref.current.innerHTML = html` sets HTML directly from API data
-- Could be XSS vector if problem HTML contains untrusted content
-- Consider DOMPurify or verify server-side sanitization
+### ~~12. innerHTML without sanitization~~ DONE
+- Strip `<script>` tags and `on*` event handler attributes before setting innerHTML
 
 ---
 
