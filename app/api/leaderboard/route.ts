@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
-  const limit = parseInt(url.searchParams.get("limit") || "50");
+  const limit = Math.min(parseInt(url.searchParams.get("limit") || "50") || 50, 100);
 
   const result = await db
     .select()

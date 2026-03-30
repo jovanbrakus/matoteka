@@ -11,8 +11,8 @@ export async function GET(req: Request) {
 
   const userId = session.user.id;
   const { searchParams } = new URL(req.url);
-  const page = parseInt(searchParams.get("page") || "1");
-  const perPage = parseInt(searchParams.get("perPage") || "10");
+  const page = Math.max(parseInt(searchParams.get("page") || "1") || 1, 1);
+  const perPage = Math.min(parseInt(searchParams.get("perPage") || "10") || 10, 50);
   const search = searchParams.get("search") || "";
   const typeFilter = searchParams.get("type") || "";
   const statusFilter = searchParams.get("status") || "";

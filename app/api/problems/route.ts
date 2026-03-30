@@ -21,8 +21,8 @@ export async function GET(req: Request) {
   const diffMax = url.searchParams.get("diffMax");
   const search = url.searchParams.get("search") || undefined;
   const status = url.searchParams.get("status") || undefined;
-  const page = parseInt(url.searchParams.get("page") || "1");
-  const limit = parseInt(url.searchParams.get("limit") || "30");
+  const page = Math.max(parseInt(url.searchParams.get("page") || "1") || 1, 1);
+  const limit = Math.min(parseInt(url.searchParams.get("limit") || "30") || 30, 100);
 
   // If status filter is used, we need the user's progress/bookmarks
   let solvedIds: Set<string> | null = null;
