@@ -38,9 +38,11 @@ interface ProblemViewProps {
   problemId: string;
   onAnswered?: (wasCorrect: boolean) => void;
   onNext?: () => void;
+  /** Automatically show the full solution after the user submits an answer */
+  autoShowSolution?: boolean;
 }
 
-export default function ProblemView({ problemId, onAnswered, onNext }: ProblemViewProps) {
+export default function ProblemView({ problemId, onAnswered, onNext, autoShowSolution }: ProblemViewProps) {
   const { data: session, status: sessionStatus } = useSession();
   const isAdmin = session?.user?.role === "admin";
 
@@ -110,6 +112,7 @@ export default function ProblemView({ problemId, onAnswered, onNext }: ProblemVi
         isCorrect: data.isCorrect,
         correctAnswer: data.correctAnswer,
       });
+      if (autoShowSolution) setShowSolution(true);
       onAnswered?.(data.isCorrect);
     } catch {
       const isCorrect = selectedAnswer === problem.correctAnswer;
@@ -117,6 +120,7 @@ export default function ProblemView({ problemId, onAnswered, onNext }: ProblemVi
         isCorrect,
         correctAnswer: problem.correctAnswer,
       });
+      if (autoShowSolution) setShowSolution(true);
       onAnswered?.(isCorrect);
     } finally {
       setSubmitting(false);
@@ -210,7 +214,7 @@ export default function ProblemView({ problemId, onAnswered, onNext }: ProblemVi
       </div>
 
       {/* Answer Section */}
-      {!showSolution && (
+      {(!showSolution || (autoShowSolution && answerResult)) && (
         <div className="mb-8 rounded-2xl border border-[var(--glass-border)] p-6 glass-card">
           <div className="mb-4 flex items-center gap-2">
             <Lightbulb size={18} className="text-[#ec5b13]" />
@@ -261,8 +265,8 @@ export default function ProblemView({ problemId, onAnswered, onNext }: ProblemVi
             />
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex flex-wrap gap-3">
+          {/* Action Buttons — hidden when solution is already showing via autoShowSolution */}
+          {!showSolution && <div className="flex flex-wrap gap-3">
             {!answerResult ? (
               <>
                 <button
@@ -312,7 +316,7 @@ export default function ProblemView({ problemId, onAnswered, onNext }: ProblemVi
                 ) : null}
               </>
             )}
-          </div>
+          </div>}
         </div>
       )}
 

@@ -252,6 +252,7 @@ export default function PracticeSolver() {
           key={currentProblemId}
           onAnswered={handleAnswered}
           onNext={handleNext}
+          autoShowSolution
         />
       ) : (
         <div className="flex h-96 flex-col items-center justify-center gap-4 text-center">
