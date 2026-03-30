@@ -13,7 +13,9 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [hasGoogle, setHasGoogle] = useState(false);
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/vezbe";
+  const rawCallback = searchParams.get("callbackUrl") || "/vezba";
+  // Prevent open redirect: only allow relative paths starting with /
+  const callbackUrl = rawCallback.startsWith("/") && !rawCallback.startsWith("//") ? rawCallback : "/vezba";
 
   useEffect(() => {
     if (status === "authenticated") {
