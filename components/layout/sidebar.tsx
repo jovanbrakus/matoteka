@@ -68,10 +68,10 @@ export default function Sidebar({ user, collapsed, onToggle, onNavigate }: Sideb
           onClick={onNavigate}
           className="flex items-center gap-3"
         >
-          <img src="/logo.svg" alt="Matoteka" className="h-10 w-10 flex-shrink-0" />
+          <img src="/logo.svg" alt="Matoteka" className="h-12 w-12 flex-shrink-0" />
           {!collapsed && (
             <div>
-              <h2 className="text-lg font-semibold tracking-tight text-heading whitespace-nowrap" style={{ fontFamily: "'Fredoka', sans-serif" }}>
+              <h2 className="text-xl font-semibold tracking-tight text-heading whitespace-nowrap" style={{ fontFamily: "'Fredoka', sans-serif" }}>
                 Matoteka
               </h2>
               {facultyShorts.length > 0 && (
