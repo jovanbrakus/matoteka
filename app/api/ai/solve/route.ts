@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { aiSolutions } from "@/drizzle/schema";
 import { NextResponse } from "next/server";
 import { createLLMProvider } from "@/lib/llm/factory";
-import { checkAiRateLimit, incrementAiUsage } from "@/lib/utils/rate-limit";
+import { checkAndIncrementAiUsage } from "@/lib/utils/rate-limit";
 
 export async function POST(req: Request) {
   const session = await auth();
@@ -11,7 +11,7 @@ export async function POST(req: Request) {
 
   const userId = session.user.id;
 
-  const { allowed, used, limit } = await checkAiRateLimit(userId);
+  const { allowed, used, limit } = await checkAndIncrementAiUsage(userId);
   if (!allowed) {
     return NextResponse.json({ error: "Iskoristio si sve AI zahteve za danas. Dođi sutra!", used, limit }, { status: 429 });
   }
@@ -55,8 +55,6 @@ export async function POST(req: Request) {
       costUsd: result.costUsd.toFixed(6),
       latencyMs: result.latencyMs,
     }).returning();
-
-    await incrementAiUsage(userId);
 
     return NextResponse.json({ id: solution.id, title: result.title });
   } catch (error: any) {
