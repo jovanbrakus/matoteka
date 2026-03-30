@@ -177,7 +177,7 @@ export default function AnalytikaPage() {
   };
 
   const userName =
-    (session?.user as any)?.displayName || session?.user?.name || "Korisnik";
+    session?.user?.displayName || session?.user?.name || "Korisnik";
 
   /* ─── chart data ─── */
   const chartData =
