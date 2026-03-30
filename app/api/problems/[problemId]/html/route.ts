@@ -3,10 +3,12 @@ import { getProblemHtml } from "@/lib/problems";
 import { checkSolutionRateLimit, recordSolutionView } from "@/lib/utils/solution-rate-limit";
 import { injectWatermark } from "@/lib/utils/watermark";
 import { NextResponse } from "next/server";
+import fs from "fs";
+import path from "path";
 
 const HEADERS = {
   "Content-Type": "text/html; charset=utf-8",
-  "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self';",
+  "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self';",
   "X-Frame-Options": "SAMEORIGIN",
   "Cache-Control": "no-store, no-cache, must-revalidate, private",
   "X-Content-Type-Options": "nosniff",
@@ -68,8 +70,14 @@ function sanitizeForIframe(html: string): string {
   return cleaned.replace(/<head([^>]*)>/i, `<head$1>${blockResize}`);
 }
 
-const THEME_LINKS = `<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/solution-theme.css?v=2">`;
+// Read solution-theme.css once at startup and inline it as a <style> block.
+// External <link> stylesheets are blocked by CSP in sandboxed iframes (without
+// allow-same-origin, 'self' resolves to the opaque null origin, not the parent).
+const SOLUTION_THEME_CSS = fs.readFileSync(
+  path.join(process.cwd(), "public", "solution-theme.css"),
+  "utf-8"
+);
+const THEME_LINKS = `<style>${SOLUTION_THEME_CSS}</style>`;
 
 /** postMessage-based resize reporting + theme listener (replaces contentDocument access) */
 const POST_MESSAGE_SCRIPT = `<script>(function(){
@@ -237,6 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <div class="container">
   ${statementDiv}
 </div>
+${POST_MESSAGE_SCRIPT}
 </body>
 </html>`;
 }
