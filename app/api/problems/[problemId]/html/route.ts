@@ -108,9 +108,15 @@ function stripRedundantV2Cards(fragment: string): string {
   return result;
 }
 
+function sanitizeV2Fragment(fragment: string): string {
+  return fragment
+    .replace(/<script\s+type="text\/info"\s+id="logic-scratchpad">[\s\S]*?<\/script>/, '')
+    .replace(/<!--BRAINSPARK_META[\s\S]*?BRAINSPARK_META-->/, '');
+}
+
 function wrapV2Fragment(fragment: string, theme: string): string {
   const themeClass = theme === "light" ? "light" : "dark";
-  const solutionOnly = stripRedundantV2Cards(fragment);
+  const solutionOnly = sanitizeV2Fragment(stripRedundantV2Cards(fragment));
   return `<!DOCTYPE html>
 <html lang="sr" class="${themeClass}">
 <head>
