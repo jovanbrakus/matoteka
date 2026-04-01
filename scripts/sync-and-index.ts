@@ -33,19 +33,20 @@ interface DocumentMeta {
 function main() {
   const rootDir = path.resolve(__dirname, "..");
   const dbDir = path.join(rootDir, "database");
-  const dbV2Dir = path.join(rootDir, "database_v2");
+  const dbV1Dir = path.join(dbDir, "v1");
+  const dbV2Dir = path.join(dbDir, "v2");
 
   const v1Problems: ProblemRaw[] = JSON.parse(
-    fs.readFileSync(path.join(dbDir, "problems.json"), "utf-8")
+    fs.readFileSync(path.join(dbV1Dir, "problems.json"), "utf-8")
   );
   const documents: DocumentMeta[] = JSON.parse(
-    fs.readFileSync(path.join(dbDir, "documents.json"), "utf-8")
+    fs.readFileSync(path.join(dbV1Dir, "documents.json"), "utf-8")
   );
   const categories = JSON.parse(
-    fs.readFileSync(path.join(dbDir, "categories.json"), "utf-8")
+    fs.readFileSync(path.join(dbV1Dir, "categories.json"), "utf-8")
   );
   const categoryGroups = JSON.parse(
-    fs.readFileSync(path.join(dbDir, "category_groups.json"), "utf-8")
+    fs.readFileSync(path.join(dbV1Dir, "category_groups.json"), "utf-8")
   );
 
   // Load v2 problems if available
@@ -104,7 +105,9 @@ function main() {
     const v2Entry = v2Lookup.get(v2Key);
     const useV2 = !!v2Entry;
 
-    const solutionPath = useV2 ? v2Entry!.solution_path : meta.solution_path;
+    // Remap source paths to local structure: problems/ → problems/v1/, problems_v2/ → problems/v2/
+    const rawPath = useV2 ? v2Entry!.solution_path : meta.solution_path;
+    const solutionPath = rawPath.replace(/^problems_v2\//, "problems/v2/").replace(/^problems\/(?!v[12]\/)/, "problems/v1/");
     const category = useV2 ? (v2Entry!.category ?? meta.category) : meta.category;
     const difficulty = useV2 ? (v2Entry!.difficulty ?? meta.difficulty) : meta.difficulty;
 

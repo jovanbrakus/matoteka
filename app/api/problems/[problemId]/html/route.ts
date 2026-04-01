@@ -70,11 +70,11 @@ function sanitizeForIframe(html: string): string {
   return cleaned.replace(/<head([^>]*)>/i, `<head$1>${blockResize}`);
 }
 
-// Read solution-theme.css once at startup and inline it as a <style> block.
+// Read solution-v1.css once at startup and inline it as a <style> block.
 // External <link> stylesheets are blocked by CSP in sandboxed iframes (without
 // allow-same-origin, 'self' resolves to the opaque null origin, not the parent).
 const SOLUTION_THEME_CSS = fs.readFileSync(
-  path.join(process.cwd(), "public", "solution-theme.css"),
+  path.join(process.cwd(), "public", "solution-v1.css"),
   "utf-8"
 );
 const THEME_LINKS = `<style>${SOLUTION_THEME_CSS}</style>`;
@@ -226,7 +226,7 @@ function injectThemeLink(html: string): string {
 }
 
 /**
- * Set the theme class on the <html> element so solution-theme.css variables apply.
+ * Set the theme class on the <html> element so solution-v1.css variables apply.
  */
 function injectThemeClass(html: string, theme: string): string {
   const themeClass = theme === "light" ? "light" : "dark";
