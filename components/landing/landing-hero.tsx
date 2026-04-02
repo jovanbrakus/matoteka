@@ -28,8 +28,28 @@ export default function LandingHero() {
 
               <p className="max-w-xl text-lg leading-relaxed text-text-secondary">
                 Platforma dizajnirana za buduće studente tehničkih i matematičkih fakulteta. Postigni maksimalan
-                broj poena uz personalizovan plan rada, AI asistenciju i bazu od
-                preko 4000 rešenih zadataka.
+                broj poena na prijemnom uz:
+              </p>
+              <ul className="max-w-xl space-y-3 text-lg text-text-secondary">
+                <li className="flex items-start gap-3">
+                  <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#ec5b13]" />
+                  Personalizovan plan rada
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#ec5b13]" />
+                  Bazu od preko 4000 detaljno rešenih zadataka sa prijemnih ispita
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#ec5b13]" />
+                  Celokupnu potrebnu teoriju
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#ec5b13]" />
+                  Naprednu analitiku i stalnu procenu tvog znanja
+                </li>
+              </ul>
+              <p className="max-w-xl text-base leading-relaxed text-text-secondary">
+                Bez traženja zadataka, rešenja ili teorije. Imaš 30 minuta? Svih 30 minuta ide na efektivnu pripremu prijemnog.
               </p>
 
               <div className="flex flex-wrap gap-4 pt-4">

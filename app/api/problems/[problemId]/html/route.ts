@@ -424,10 +424,10 @@ export async function GET(req: Request, { params }: { params: Promise<{ problemI
     }
   }
 
-  // Record view (audit log is fire-and-forget)
+  // Record view — non-critical, don't let it crash the response
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null;
   const ua = req.headers.get("user-agent");
-  await recordSolutionView(userId, problemId, ip, ua);
+  await recordSolutionView(userId, problemId, ip, ua).catch(() => {});
 
   const themed = injectThemeClass(injectThemeLink(neutralizeAnswerHighlights(safeHtml)), theme);
   const watermarked = injectWatermark(themed, userId, problemId);
