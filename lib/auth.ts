@@ -68,20 +68,39 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       if (!account || !user.email) return false;
 
-      const existing = await db
+      const existingByGoogleId = await db
         .select()
         .from(users)
         .where(eq(users.googleId, account.providerAccountId))
         .limit(1);
 
-      if (existing.length === 0) {
-        await db.insert(users).values({
-          googleId: account.providerAccountId,
-          email: user.email,
-          displayName: user.name || user.email.split("@")[0],
-          avatarUrl: user.image,
-          role: "student",
-        });
+      if (existingByGoogleId.length === 0) {
+        // Check if a user with this email already exists (e.g. created via password)
+        const existingByEmail = await db
+          .select()
+          .from(users)
+          .where(eq(users.email, user.email))
+          .limit(1);
+
+        if (existingByEmail.length > 0) {
+          // Link Google account to existing user
+          await db
+            .update(users)
+            .set({
+              googleId: account.providerAccountId,
+              avatarUrl: existingByEmail[0].avatarUrl || user.image,
+              updatedAt: new Date(),
+            })
+            .where(eq(users.id, existingByEmail[0].id));
+        } else {
+          await db.insert(users).values({
+            googleId: account.providerAccountId,
+            email: user.email,
+            displayName: user.name || user.email.split("@")[0],
+            avatarUrl: user.image,
+            role: "student",
+          });
+        }
       }
 
       return true;
