@@ -102,7 +102,7 @@ export function getAdjacentLessons(id: string): {
 }
 
 export function getLessonHeroPath(id: string): string | null {
-  const heroPath = path.join(process.cwd(), "knowledge", `lesson${id}_hero.png`);
+  const heroPath = path.join(process.cwd(), "public", "images", "lessons", `lesson${id}_hero.png`);
   if (!fs.existsSync(heroPath)) return null;
   return heroPath;
 }
