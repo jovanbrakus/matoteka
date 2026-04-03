@@ -3,15 +3,12 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  Search,
   ChevronLeft,
   ChevronRight,
   Plus,
   TrendingUp,
   Clock,
   CheckCircle,
-  Filter,
-  Download,
   ClipboardList,
   Zap,
   Edit3,
@@ -166,8 +163,6 @@ function getTestProblemCount(testSize: string): number {
 export default function SimulationHistoryPage() {
   const [data, setData] = useState<HistoryData | null>(null);
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
-  const [typeFilter, setTypeFilter] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -176,8 +171,6 @@ export default function SimulationHistoryPage() {
       page: page.toString(),
       perPage: "10",
     });
-    if (typeFilter) params.set("type", typeFilter);
-    if (search) params.set("search", search);
 
     fetch(`/api/simulation/history?${params}`)
       .then((r) => r.json())
@@ -186,12 +179,7 @@ export default function SimulationHistoryPage() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [page, typeFilter, search]);
-
-  function handleSearch(e: React.FormEvent) {
-    e.preventDefault();
-    setPage(1);
-  }
+  }, [page]);
 
   return (
     <div>
@@ -210,40 +198,6 @@ export default function SimulationHistoryPage() {
           </Link>
         </div>
 
-        {/* Filters */}
-        <div className="rounded-2xl border border-[#ec5b13]/10 bg-[var(--glass-bg)] backdrop-blur-xl p-6 flex flex-wrap items-center gap-4">
-          <form
-            onSubmit={handleSearch}
-            className="flex-1 min-w-[200px] relative"
-          >
-            <Search
-              size={18}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-[#ec5b13]/40"
-            />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Pretraži po datumu ili tipu..."
-              className="w-full bg-[#0a0705]/40 border-none rounded-xl pl-12 pr-4 py-3 text-sm text-slate-200 placeholder:text-[#ec5b13]/20 focus:outline-none focus:ring-2 focus:ring-[#ec5b13]/50"
-            />
-          </form>
-          <div className="flex items-center gap-3">
-            <select
-              value={typeFilter}
-              onChange={(e) => {
-                setTypeFilter(e.target.value);
-                setPage(1);
-              }}
-              className="px-4 py-3 bg-[#0a0705]/40 rounded-xl text-sm font-medium text-text border-none focus:outline-none focus:ring-2 focus:ring-[#ec5b13]/50 cursor-pointer appearance-none"
-            >
-              <option value="">Svi tipovi</option>
-              <option value="full">Kompletan</option>
-              <option value="medium">Srednji</option>
-              <option value="quick">Brzi</option>
-            </select>
-          </div>
-        </div>
 
         {/* Table */}
         <div className="rounded-2xl border border-[#ec5b13]/10 bg-[var(--glass-bg)] backdrop-blur-xl overflow-hidden shadow-2xl">
