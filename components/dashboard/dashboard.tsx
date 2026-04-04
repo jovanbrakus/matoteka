@@ -321,10 +321,12 @@ export default function Dashboard({ user }: DashboardProps) {
                     href={`/zadaci?group=${weakest.id}`}
                     className="block glass-card rounded-2xl p-6 border-2 border-[#ec5b13]/30 transition-all hover:border-[#ec5b13]/60"
                   >
-                    <span className="inline-block rounded-full bg-[#ec5b13]/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-[#ec5b13] mb-3">Fokus</span>
                     <div className="flex items-start justify-between">
                       <div>
-                        <h3 className="text-2xl font-black text-heading">{weakest.name}</h3>
+                        <div className="flex items-center gap-3 mb-1">
+                          <h3 className="text-2xl font-black text-heading">{weakest.name}</h3>
+                          <span className="rounded-full bg-[#ec5b13]/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-[#ec5b13]">Fokus</span>
+                        </div>
                         <p className="text-sm text-text-secondary mt-2">{hint}</p>
                       </div>
                       <p className="text-5xl font-black leading-none" style={{ color: barColor }}>{ws}<span className="text-2xl text-muted font-bold">/100</span></p>
@@ -343,17 +345,22 @@ export default function Dashboard({ user }: DashboardProps) {
                         <Link
                           key={group.id}
                           href={`/zadaci?group=${group.id}`}
-                          className="rounded-xl p-4 transition-all border border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-xl hover:border-[#ec5b13]/50 hover:bg-[#ec5b13]/5 hover:scale-[1.02]"
+                          className="group rounded-xl p-4 transition-all border border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-xl hover:border-[#ec5b13]/50 hover:bg-[#ec5b13]/5 hover:scale-[1.02]"
                         >
                           <div className="flex items-start justify-between mb-3">
                             <h4 className="text-xl font-bold text-heading">{group.name}</h4>
                             <p className="text-3xl font-black leading-none" style={{ color }}>{score}<span className="text-base text-muted font-bold">/100</span></p>
                           </div>
-                          <div className="h-[10px] w-full rounded-full overflow-hidden" style={{ backgroundColor: 'var(--tint-strong)' }}>
-                            <div
-                              className="h-full rounded-full transition-all duration-700"
-                              style={{ width: `${Math.max(score, score === 0 ? 100 : 0)}%`, backgroundColor: color }}
-                            />
+                          <div className="flex items-center gap-3">
+                            <div className="flex-1 h-[10px] rounded-full overflow-hidden" style={{ backgroundColor: 'var(--tint-strong)' }}>
+                              <div
+                                className="h-full rounded-full transition-all duration-700"
+                                style={{ width: `${Math.max(score, score === 0 ? 100 : 0)}%`, backgroundColor: color }}
+                              />
+                            </div>
+                            <span className="text-xs font-bold text-muted group-hover:text-[#ec5b13] transition-colors shrink-0">
+                              VEŽBAJ →
+                            </span>
                           </div>
                         </Link>
                       );
@@ -363,7 +370,7 @@ export default function Dashboard({ user }: DashboardProps) {
               );
             })()}
 
-            {/* Recent Simulations */}
+            {/* Recent Simulations — temporarily hidden
             {data?.recentExams && data.recentExams.length > 0 && (
               <div className="glass-card rounded-2xl border-l-4 border-[#ec5b13] overflow-hidden">
                 <div className="flex items-center justify-between px-6 pt-5 pb-3">
@@ -441,6 +448,7 @@ export default function Dashboard({ user }: DashboardProps) {
                 </div>
               </div>
             )}
+            */}
           </div>
 
           {/* ─── RIGHT COLUMN (3 cols) ─── */}
