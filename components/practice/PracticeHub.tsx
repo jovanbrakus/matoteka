@@ -64,7 +64,7 @@ function SubcategoryRow({ sub }: { sub: SubcategoryStat }) {
           </Link>
           <span className="text-xs font-bold shrink-0 ml-2" style={{ color: pct === 0 ? '#dc2626' : barColor }}>{pct}<span className="text-muted">/100</span></span>
         </div>
-        <div className="h-[6px] w-full rounded-full overflow-hidden" style={{ backgroundColor: trackColor }}>
+        <div className="h-[4px] w-full rounded-full overflow-hidden" style={{ backgroundColor: trackColor }}>
           <div
             className="h-full rounded-full transition-all duration-700"
             style={{ width: `${Math.max(pct, pct === 0 ? 100 : 0)}%`, backgroundColor: barColor }}
