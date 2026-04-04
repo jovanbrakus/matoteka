@@ -295,74 +295,73 @@ export default function Dashboard({ user }: DashboardProps) {
         <div className="grid grid-cols-12 gap-6">
           {/* ─── LEFT COLUMN (9 cols) ─── */}
           <div className="col-span-12 space-y-6 lg:col-span-9">
-            {/* Core Categories */}
-            <div>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5">
-                {categoryGroups.map((group) => {
-                  const score = (group as any).readinessScore ?? 0;
-                  const image = CATEGORY_IMAGES[group.id];
-                  const sz = 48;
-                  const sw = sz * 0.1;
-                  const r = (sz - sw) / 2;
-                  const circ = 2 * Math.PI * r;
-                  const filled = (score / 100) * circ;
+            {/* Focus Card + Subject Grid */}
+            {(() => {
+              const sorted = [...categoryGroups].sort((a, b) => (a.readinessScore ?? 0) - (b.readinessScore ?? 0));
+              const weakest = sorted[0];
+              const rest = sorted.slice(1);
+              if (!weakest) return null;
 
-                  return (
-                    <Link
-                      key={group.id}
-                      href={`/zadaci?group=${group.id}`}
-                      className="glass-card flex flex-col rounded-2xl p-5 transition-all hover:border-[#ec5b13]/30"
-                    >
-                      <div className="mb-4">
-                        <div className="flex items-center justify-between">
-                          {image && (
-                            <>
-                              <img src={image.dark} alt={group.name} className="h-10 w-14 shrink-0 rounded-lg object-cover dark-only" />
-                              <img src={image.light} alt={group.name} className="h-10 w-14 shrink-0 rounded-lg object-cover light-only" />
-                            </>
-                          )}
-                          <div className="relative shrink-0" style={{ width: sz, height: sz }}>
-                            <svg width={sz} height={sz} className="-rotate-90">
-                              <circle cx={sz/2} cy={sz/2} r={r} fill="none" stroke="#ec5b13" strokeWidth={sw} opacity={0.15} />
-                              <circle cx={sz/2} cy={sz/2} r={r} fill="none" stroke="#ec5b13" strokeWidth={sw} strokeDasharray={circ} strokeDashoffset={circ - filled} strokeLinecap="round" className="transition-all duration-700" />
-                            </svg>
-                            <span className="absolute inset-0 flex items-center justify-center text-sm font-black text-primary">
-                              {score}
-                            </span>
-                          </div>
-                        </div>
-                        <h4 className="mt-2 text-sm font-bold leading-tight">{group.name}</h4>
+              const ws = weakest.readinessScore ?? 0;
+              const barColor = ws === 0 ? '#f9a8a8' : ws <= 30 ? '#dc2626' : ws <= 60 ? '#ec5b13' : '#22c55e';
+
+              // Find 2 weakest subcategories for the hint text
+              const weakSubs = [...(weakest.categories || [])]
+                .sort((a, b) => (a.readinessScore ?? 0) - (b.readinessScore ?? 0))
+                .slice(0, 2)
+                .map(c => c.name);
+              const hint = weakSubs.length > 0
+                ? `Najslabija oblast. Fokusiraj se na: ${weakSubs.join(' i ')}.`
+                : 'Najslabija oblast.';
+
+              return (
+                <div className="space-y-6">
+                  {/* Focus Card */}
+                  <Link
+                    href={`/zadaci?group=${weakest.id}`}
+                    className="block glass-card rounded-2xl p-6 border-2 border-[#ec5b13]/30 transition-all hover:border-[#ec5b13]/60"
+                  >
+                    <span className="inline-block rounded-full bg-[#ec5b13]/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-[#ec5b13] mb-3">Fokus</span>
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h3 className="text-2xl font-black text-heading">{weakest.name}</h3>
+                        <p className="text-sm text-text-secondary mt-2">{hint}</p>
                       </div>
-                      {/* 3 weakest subcategories */}
-                      {(() => {
-                        const weakest = [...group.categories]
-                          .sort((a, b) => ((a as any).readinessScore ?? 0) - ((b as any).readinessScore ?? 0))
-                          .slice(0, 3);
-                        return (
-                          <div className="mt-3 space-y-1.5 border-t border-[var(--glass-border)] pt-3">
-                            {weakest.map((cat) => {
-                              const catScore = (cat as any).readinessScore ?? 0;
-                              return (
-                                <div key={cat.id} className="flex items-center justify-between text-[10px]">
-                                  <span className="text-muted truncate mr-2">{cat.name}</span>
-                                  <span className={`font-bold shrink-0 ${catScore >= 60 ? "text-emerald-500" : catScore >= 30 ? "text-[#ec5b13]" : "text-red-500"}`}>
-                                    {catScore}
-                                  </span>
-                                </div>
-                              );
-                            })}
+                      <p className="text-5xl font-black leading-none" style={{ color: barColor }}>{ws}<span className="text-2xl text-muted font-bold">/100</span></p>
+                    </div>
+                    <div className="mt-4 w-full py-3.5 rounded-xl bg-[#ec5b13] text-white font-black uppercase tracking-widest text-sm flex items-center justify-center gap-2">
+                      VEŽBAJ ODMAH <span className="material-symbols-outlined text-base">rocket_launch</span>
+                    </div>
+                  </Link>
+
+                  {/* Subject Grid */}
+                  <div className="grid grid-cols-2 gap-4">
+                    {rest.map((group) => {
+                      const score = group.readinessScore ?? 0;
+                      const color = score === 0 ? '#f9a8a8' : score <= 30 ? '#dc2626' : score <= 60 ? '#ec5b13' : '#0d9488';
+                      return (
+                        <Link
+                          key={group.id}
+                          href={`/zadaci?group=${group.id}`}
+                          className="rounded-xl p-4 transition-all border border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-xl hover:border-[#ec5b13]/50 hover:bg-[#ec5b13]/5 hover:scale-[1.02]"
+                        >
+                          <div className="flex items-start justify-between mb-3">
+                            <h4 className="text-xl font-bold text-heading">{group.name}</h4>
+                            <p className="text-3xl font-black leading-none" style={{ color }}>{score}<span className="text-base text-muted font-bold">/100</span></p>
                           </div>
-                        );
-                      })()}
-                      <div className="mt-auto pt-5 flex items-center justify-center gap-1 text-xs font-bold text-primary">
-                        <span className="material-symbols-outlined text-sm">rocket_launch</span>
-                        VEŽBAJ
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
+                          <div className="h-[10px] w-full rounded-full overflow-hidden" style={{ backgroundColor: 'var(--tint-strong)' }}>
+                            <div
+                              className="h-full rounded-full transition-all duration-700"
+                              style={{ width: `${Math.max(score, score === 0 ? 100 : 0)}%`, backgroundColor: color }}
+                            />
+                          </div>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* Recent Simulations */}
             {data?.recentExams && data.recentExams.length > 0 && (
