@@ -315,7 +315,7 @@ export default function Dashboard({ user }: DashboardProps) {
                 : 'Najslabija oblast.';
 
               return (
-                <div className="space-y-6">
+                <div className="space-y-8">
                   {/* Focus Card */}
                   <Link
                     href={`/zadaci?group=${weakest.id}`}
@@ -337,7 +337,7 @@ export default function Dashboard({ user }: DashboardProps) {
                   </Link>
 
                   {/* Subject Grid */}
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-5">
                     {rest.map((group) => {
                       const score = group.readinessScore ?? 0;
                       const color = score === 0 ? '#f9a8a8' : score <= 30 ? '#dc2626' : score <= 60 ? '#ec5b13' : '#0d9488';
@@ -345,7 +345,7 @@ export default function Dashboard({ user }: DashboardProps) {
                         <Link
                           key={group.id}
                           href={`/zadaci?group=${group.id}`}
-                          className="group rounded-xl p-4 transition-all border border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-xl hover:border-[#ec5b13]/50 hover:bg-[#ec5b13]/5 hover:scale-[1.02]"
+                          className="group rounded-xl p-5 transition-all border border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-xl hover:border-[#ec5b13]/50 hover:bg-[#ec5b13]/5 hover:scale-[1.02]"
                         >
                           <div className="flex items-start justify-between mb-3">
                             <h4 className="text-xl font-bold text-heading">{group.name}</h4>
