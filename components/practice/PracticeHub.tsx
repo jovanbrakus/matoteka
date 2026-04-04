@@ -49,36 +49,39 @@ function SubcategoryRow({ sub }: { sub: SubcategoryStat }) {
   const pct = sub.readinessScore;
   const isComplete = pct === 100;
 
+  const barColor = pct === 0 ? '#f9a8a8' : pct <= 30 ? '#dc2626' : pct <= 60 ? '#f5b731' : '#22c55e';
+  const trackColor = pct === 0 ? '#fdd' : 'var(--tint-strong)';
+
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex justify-between items-center cursor-pointer group/sub">
-        <Link
-          href={`/zadaci?topic=${sub.id}`}
-          className="text-sm font-medium text-text-secondary hover:text-primary transition-colors"
-        >
-          {sub.name}
-        </Link>
-        <div className="flex items-center gap-3">
-          <span className="text-[10px] font-bold text-muted">{pct}</span>
+    <div className="flex items-center gap-3">
+      <div className="flex-1 min-w-0 flex flex-col gap-1.5">
+        <div className="flex justify-between items-center">
           <Link
             href={`/zadaci?topic=${sub.id}`}
-            className="w-6 h-6 rounded flex items-center justify-center bg-[var(--tint-strong)] hover:bg-primary hover:text-white transition-all active:scale-90"
+            className="text-sm font-medium text-text-secondary hover:text-primary transition-colors truncate"
           >
-            <span
-              className="material-symbols-outlined text-xs"
-              style={isComplete ? { fontVariationSettings: "'FILL' 1" } : undefined}
-            >
-              {isComplete ? "check" : "play_arrow"}
-            </span>
+            {sub.name}
           </Link>
+          <span className="text-xs font-bold shrink-0 ml-2" style={{ color: pct === 0 ? '#dc2626' : barColor }}>{pct}<span className="text-muted">/100</span></span>
+        </div>
+        <div className="h-[6px] w-full rounded-full overflow-hidden" style={{ backgroundColor: trackColor }}>
+          <div
+            className="h-full rounded-full transition-all duration-700"
+            style={{ width: `${Math.max(pct, pct === 0 ? 100 : 0)}%`, backgroundColor: barColor }}
+          />
         </div>
       </div>
-      <div className="h-[2px] w-full bg-[var(--tint-strong)] rounded-full overflow-hidden">
-        <div
-          className="h-full bg-primary rounded-full transition-all duration-700"
-          style={{ width: `${pct}%` }}
-        />
-      </div>
+      <Link
+        href={`/zadaci?topic=${sub.id}`}
+        className="w-8 h-8 rounded-lg flex items-center justify-center bg-primary text-white shadow-sm shadow-primary/30 hover:brightness-110 transition-all active:scale-90 shrink-0"
+      >
+        <span
+          className="material-symbols-outlined text-base"
+          style={{ fontVariationSettings: "'FILL' 1" }}
+        >
+          {isComplete ? "check" : "play_arrow"}
+        </span>
+      </Link>
     </div>
   );
 }
@@ -128,9 +131,6 @@ export default function PracticeHub() {
         <h2 className="text-4xl font-black tracking-tight text-heading lg:text-5xl">
           Slobodna <span className="text-primary">Vežba</span>
         </h2>
-        <p className="mt-2 max-w-lg font-medium text-text-secondary">
-          Izaberi oblast ili pojedinačnu temu i vežbaj zadatke uz praćenje napretka po kategorijama.
-        </p>
       </div>
 
       {/* Bento Grid */}
@@ -183,7 +183,7 @@ export default function PracticeHub() {
                     className="w-full py-4 rounded-lg bg-primary text-white font-black uppercase tracking-widest text-sm flex items-center justify-center gap-3 transition-transform active:scale-[0.98]"
                   >
                     <span className="material-symbols-outlined font-black">rocket_launch</span>
-                    Pokreni vežbu
+                    VEŽBAJ CELU OBLAST
                   </Link>
                 </div>
               </section>
@@ -223,10 +223,10 @@ export default function PracticeHub() {
               {/* CTA Button */}
               <Link
                 href={`/zadaci?group=${group.id}`}
-                className="w-full py-4 rounded-lg bg-[var(--tint-strong)] text-primary font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-2 hover:bg-[var(--glass-border)] transition-colors"
+                className="w-full py-4 rounded-lg bg-primary text-white font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-2 hover:brightness-110 transition-all"
               >
                 <span className="material-symbols-outlined text-sm">rocket_launch</span>
-                Pokreni vežbu
+                VEŽBAJ CELU OBLAST
               </Link>
             </section>
           );
