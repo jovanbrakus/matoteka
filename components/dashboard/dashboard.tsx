@@ -387,7 +387,6 @@ export default function Dashboard({ user }: DashboardProps) {
                         <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-[#ec5b13]/60">Tip testa</th>
                         <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-[#ec5b13]/60 text-center">Trajanje</th>
                         <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-[#ec5b13]/60 text-center">Rezultat</th>
-                        <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-[#ec5b13]/60">Status</th>
                         <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-[#ec5b13]/60 text-right">Akcija</th>
                       </tr>
                     </thead>
@@ -425,11 +424,6 @@ export default function Dashboard({ user }: DashboardProps) {
                                 {exam.numCorrect}/{problemCount}
                               </span>
                               <span className="text-xs text-text-secondary block font-bold">{pct.toFixed(0)}%</span>
-                            </td>
-                            <td className="px-8 py-6">
-                              <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-black border uppercase tracking-tight ${badge.color}`}>
-                                {badge.label}
-                              </span>
                             </td>
                             <td className="px-8 py-6 text-right">
                               <Link
