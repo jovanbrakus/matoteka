@@ -238,46 +238,63 @@ export default function Dashboard({ user }: DashboardProps) {
   return (
     <div className="relative p-8">
         {/* Header */}
-        <header className="mb-10">
-          <h1 className="text-4xl font-black tracking-tight text-heading mb-1">
-            Zdravo, {user.displayName}!
-          </h1>
-          <p className="text-sm text-text-secondary">{getMotivationalMessage()}</p>
+        <header className="mb-10 flex items-center gap-4">
+          <div>
+            <h1 className="text-3xl font-black tracking-tight text-heading">
+              Zdravo, {user.displayName}!
+            </h1>
+            <p className="text-sm text-text-secondary mt-1">
+              {progress.solvedToday >= progress.dailyGoal
+                ? <>Dnevni cilj: <span className="font-bold text-emerald-500">ispunjen!</span></>
+                : <>Dnevni cilj: <span className="font-bold text-heading">{progress.solvedToday}/{progress.dailyGoal}</span> rešeno danas</>
+              }
+            </p>
+          </div>
+          {(() => {
+            const sz = 52;
+            const sw = sz * 0.08;
+            const r = (sz - sw) / 2;
+            const circ = 2 * Math.PI * r;
+            const pct = progress.dailyGoal > 0 ? Math.min(progress.solvedToday / progress.dailyGoal, 1) : 0;
+            const filled = pct * circ;
+            return (
+              <div className="relative shrink-0" style={{ width: sz, height: sz }}>
+                <svg width={sz} height={sz} className="-rotate-90">
+                  <circle cx={sz/2} cy={sz/2} r={r} fill="none" stroke="#0d9488" strokeWidth={sw} opacity={0.15} />
+                  <circle cx={sz/2} cy={sz/2} r={r} fill="none" stroke="#0d9488" strokeWidth={sw} strokeDasharray={circ} strokeDashoffset={circ - filled} strokeLinecap="round" className="transition-all duration-700" />
+                </svg>
+                <span className="absolute inset-0 flex items-center justify-center text-[#0d9488]">
+                  <span className="material-symbols-outlined text-xl">rocket_launch</span>
+                </span>
+              </div>
+            );
+          })()}
+          <div className="relative shrink-0" style={{ width: 52, height: 52 }}>
+            {(() => {
+              const fsz = 52;
+              const fsw = fsz * 0.08;
+              const fr = (fsz - fsw) / 2;
+              const fcirc = 2 * Math.PI * fr;
+              const goalMet = progress.solvedToday >= progress.dailyGoal;
+              return (
+                <svg width={fsz} height={fsz} className="-rotate-90">
+                  <circle cx={fsz/2} cy={fsz/2} r={fr} fill="none" stroke={goalMet ? '#ec5b13' : 'var(--glass-border)'} strokeWidth={fsw} opacity={goalMet ? 0.15 : 1} />
+                  {goalMet && <circle cx={fsz/2} cy={fsz/2} r={fr} fill="none" stroke="#ec5b13" strokeWidth={fsw} strokeDasharray={fcirc} strokeDashoffset={0} strokeLinecap="round" />}
+                </svg>
+              );
+            })()}
+            <span className="absolute inset-0 flex items-center justify-center">
+              <Flame size={28} className="text-[#ec5b13]" fill="currentColor" />
+            </span>
+            <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[#ec5b13] px-2.5 py-0.5 text-[10px] font-black text-white">
+              {streak} {streak === 1 ? 'DAN' : 'DANA'}
+            </div>
+          </div>
         </header>
 
         <div className="grid grid-cols-12 gap-6">
           {/* ─── LEFT COLUMN (9 cols) ─── */}
           <div className="col-span-12 space-y-6 lg:col-span-9">
-            {/* AI Recommendations */}
-            <div className="glass-card rounded-2xl border-l-4 border-[#ec5b13] p-6">
-              <div className="mb-4 flex items-center gap-3">
-                <Sparkles size={22} className="text-[#ec5b13]" />
-                <h3 className="text-lg font-bold">Preporuka za danas</h3>
-              </div>
-              <div className="space-y-3">
-                {recommendations.map((rec) => (
-                  <div key={rec.badge} className="flex items-center justify-between rounded-xl border border-[var(--glass-border)] bg-[var(--tint)] p-4">
-                    <div className="flex items-center gap-4">
-                      <div className="flex flex-col items-center gap-0.5">
-                        <span className="text-2xl font-black leading-none text-[#ec5b13]/30">{rec.badge}</span>
-                        <span className="material-symbols-outlined text-sm text-[#ec5b13]/50">{rec.icon}</span>
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-heading">{rec.title}</h4>
-                        <p className="text-xs text-text-secondary">{rec.subtitle}</p>
-                      </div>
-                    </div>
-                    <Link
-                      href={rec.href}
-                      className="flex-shrink-0 rounded-xl bg-[#ec5b13] px-5 py-2.5 text-sm font-bold text-white shadow-[0_0_15px_rgba(236,91,19,0.2)] transition-transform hover:scale-105"
-                    >
-                      KRENI
-                    </Link>
-                  </div>
-                ))}
-              </div>
-            </div>
-
             {/* Core Categories */}
             <div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5">
@@ -454,204 +471,62 @@ export default function Dashboard({ user }: DashboardProps) {
                     : score >= 40
                       ? "Potrebno još vežbanja"
                       : "Tek na početku";
-              const sz = 120;
-              const sw = sz * 0.08;
+              const sz = 80;
+              const sw = sz * 0.1;
               const r = (sz - sw) / 2;
               const circ = 2 * Math.PI * r;
               const filled = (score / 100) * circ;
 
               return (
                 <div className="glass-card relative overflow-hidden rounded-2xl p-6">
-                  <div
-                    className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full blur-3xl"
-                    style={{ backgroundColor: `${color}15` }}
-                  />
-                  <div className="relative z-10">
-                    <h3 className="mb-4 text-center text-xs font-bold uppercase tracking-widest text-text-secondary">
-                      Spremnost za ispit
-                    </h3>
-                    <div className="mb-3 flex justify-center">
-                      <div className="relative" style={{ width: sz, height: sz }}>
-                        <svg width={sz} height={sz} className="-rotate-90">
-                          <circle cx={sz/2} cy={sz/2} r={r} fill="none" stroke={color} strokeWidth={sw} opacity={0.15} />
-                          <circle cx={sz/2} cy={sz/2} r={r} fill="none" stroke={color} strokeWidth={sw} strokeDasharray={circ} strokeDashoffset={circ - filled} strokeLinecap="round" className="transition-all duration-700" />
-                        </svg>
-                        <span className="absolute inset-0 flex items-center justify-center text-4xl font-black" style={{ color }}>
-                          {score}
-                        </span>
-                      </div>
+                  {/* Readiness */}
+                  <div className="flex items-center gap-5">
+                    <div className="relative shrink-0" style={{ width: sz, height: sz }}>
+                      <svg width={sz} height={sz} className="-rotate-90">
+                        <circle cx={sz/2} cy={sz/2} r={r} fill="none" stroke={color} strokeWidth={sw} opacity={0.15} />
+                        <circle cx={sz/2} cy={sz/2} r={r} fill="none" stroke={color} strokeWidth={sw} strokeDasharray={circ} strokeDashoffset={circ - filled} strokeLinecap="round" className="transition-all duration-700" />
+                      </svg>
                     </div>
-                    <p className="text-center text-sm font-bold" style={{ color }}>
-                      {label}
-                    </p>
+                    <div>
+                      <p className="text-3xl font-black text-heading">{score}<span className="text-lg text-muted font-bold">/100</span></p>
+                      <p className="text-sm font-bold text-text-secondary">Spremnost</p>
+                      <p className="text-xs" style={{ color }}>{label}</p>
+                    </div>
+                  </div>
 
-                    {/* Category breakdown */}
-                    {categoryGroups.length > 0 && (
-                      <div className="mt-5 pt-1">
-                        <button
-                          onClick={() => setShowCategoryBreakdown((v) => !v)}
-                          className="flex w-full items-center justify-center gap-1 text-[10px] font-semibold text-muted transition-colors hover:text-text-secondary"
-                        >
-                          <span
-                            className="material-symbols-outlined transition-transform"
-                            style={{ fontSize: 14, transform: showCategoryBreakdown ? "rotate(180deg)" : "rotate(0deg)" }}
-                          >
-                            expand_more
-                          </span>
-                          {showCategoryBreakdown ? "Sakrij detalje" : "Prikaži detalje"}
-                        </button>
-                        {showCategoryBreakdown && (<div className="mt-3 space-y-2">
-                        {categoryGroups.map((group) => {
-                          const gs = group.readinessScore ?? 0;
-                          const isExpanded = expandedGroups.has(group.id);
+                  {/* Separator */}
+                  <div className="my-5 border-t border-[var(--glass-border)]" />
+
+                  {/* Countdown */}
+                  <div className="text-center mb-4">
+                    <p className="text-4xl font-black text-heading uppercase">{countdown.days} DANA</p>
+                    <p className="text-xs font-bold uppercase tracking-widest text-text-secondary mt-1">Do prijemnog ispita</p>
+                  </div>
+                  {data?.facultyExamDates && data.facultyExamDates.length > 0 && (() => {
+                    const sorted = [...data.facultyExamDates]
+                      .filter((f) => f.examDate)
+                      .sort((a, b) => new Date(a.examDate!).getTime() - new Date(b.examDate!).getTime());
+                    if (sorted.length === 0) return null;
+                    const months = ["Jan","Feb","Mar","Apr","Maj","Jun","Jul","Avg","Sep","Okt","Nov","Dec"];
+                    return (
+                      <div className={`grid gap-3 ${sorted.length === 1 ? "grid-cols-1 max-w-[100px] mx-auto" : sorted.length === 2 ? "grid-cols-2" : "grid-cols-3"}`}>
+                        {sorted.map((fac) => {
+                          const d = new Date(fac.examDate!);
+                          const dateStr = `${d.getDate()}. ${months[d.getMonth()]}`;
                           return (
-                            <div key={group.id} className="rounded-lg border border-[var(--glass-border)] bg-[var(--tint)] overflow-hidden">
-                              <button
-                                onClick={() => setExpandedGroups((prev) => {
-                                  const next = new Set(prev);
-                                  if (next.has(group.id)) next.delete(group.id);
-                                  else next.add(group.id);
-                                  return next;
-                                })}
-                                className="flex w-full items-center gap-2 px-3 py-2.5 text-left transition-colors hover:bg-[var(--tint-strong)]"
-                              >
-                                <span
-                                  className="material-symbols-outlined text-xs text-muted transition-transform"
-                                  style={{ transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)" }}
-                                >
-                                  chevron_right
-                                </span>
-                                <div className="flex-grow">
-                                  <div className="flex items-center justify-between">
-                                    <span className="text-xs font-bold text-heading">{group.name}</span>
-                                    <span className="text-xs font-bold text-[#ec5b13]">{gs}</span>
-                                  </div>
-                                  <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-card">
-                                    <div
-                                      className="h-full rounded-full bg-[#ec5b13] transition-all duration-700"
-                                      style={{ width: `${gs}%` }}
-                                    />
-                                  </div>
-                                </div>
-                              </button>
-                              {isExpanded && (
-                                <div className="space-y-2 border-t border-[var(--glass-border)] px-3 py-2 pl-7">
-                                  {group.categories.map((cat) => {
-                                    const catScore = cat.readinessScore ?? 0;
-                                    return (
-                                      <div key={cat.id} className="space-y-0.5">
-                                        <div className="flex justify-between text-[10px]">
-                                          <span className="text-text-secondary truncate mr-2">{cat.name}</span>
-                                          <span className="font-semibold text-text-secondary shrink-0">{catScore}</span>
-                                        </div>
-                                        <div className="h-0.5 w-full overflow-hidden rounded-full bg-card">
-                                          <div
-                                            className="h-full rounded-full bg-[#ec5b13]/60 transition-all duration-700"
-                                            style={{ width: `${catScore}%` }}
-                                          />
-                                        </div>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              )}
+                            <div key={fac.id} className="flex flex-col items-center rounded-xl bg-[var(--tint-strong)] py-3 px-2">
+                              <span className="text-sm font-black text-heading">{fac.shortName}</span>
+                              <span className="text-xs text-text-secondary">{dateStr}</span>
                             </div>
                           );
                         })}
-                      </div>)}
                       </div>
-                    )}
-                  </div>
+                    );
+                  })()}
                 </div>
               );
             })()}
 
-            {/* Countdown Widget */}
-            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#ec5b13] to-[#ff8c00] p-6 text-white shadow-2xl">
-              <div className="pointer-events-none absolute -bottom-10 -right-10 opacity-20">
-                <span className="material-symbols-outlined text-[180px]">schedule</span>
-              </div>
-              <div className="relative z-10">
-                <p className="mb-4 text-center text-sm font-bold uppercase tracking-widest opacity-80">
-                  Do prijemnog ispita
-                </p>
-                <div className="flex items-center justify-center text-center mb-4">
-                  <div className="space-y-1">
-                    <div className="text-5xl font-black">
-                      {countdown.days}
-                    </div>
-                    <p className="text-[10px] font-bold uppercase opacity-80">Dana</p>
-                  </div>
-                </div>
-                {data?.facultyExamDates && data.facultyExamDates.length > 0 && (() => {
-                  const sorted = [...data.facultyExamDates]
-                    .filter((f) => f.examDate)
-                    .sort((a, b) => new Date(a.examDate!).getTime() - new Date(b.examDate!).getTime());
-                  if (sorted.length === 0) return null;
-                  const months = ["jan","feb","mar","apr","maj","jun","jul","avg","sep","okt","nov","dec"];
-                  return (
-                    <div className="border-t border-white/20 pt-4">
-                      <div className={`grid gap-3 ${sorted.length === 1 ? "grid-cols-1 max-w-[80px] mx-auto" : sorted.length === 2 ? "grid-cols-2" : "grid-cols-3"}`}>
-                        {sorted.map((fac) => {
-                          const d = new Date(fac.examDate!);
-                          const dateStr = `${d.getDate()}. ${months[d.getMonth()]}`;
-                          const icon = FACULTY_ICONS[fac.id] ?? "school";
-                          return (
-                            <div key={fac.id} className="flex flex-col items-center text-center">
-                              <span className="material-symbols-outlined text-lg opacity-80">{icon}</span>
-                              <span className="text-[10px] font-bold mt-0.5">{fac.shortName}</span>
-                              <span className="text-[10px] font-bold opacity-70 mt-0.5">{dateStr}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  );
-                })()}
-              </div>
-            </div>
-
-            {/* Streak & Quick Stats */}
-            <div className="glass-card rounded-2xl p-6">
-              <h3 className="mb-6 text-center text-xs font-bold uppercase tracking-widest text-text-secondary">
-                Trenutni niz
-              </h3>
-              <div className="mb-6 flex justify-center">
-                <div className="relative">
-                  <div className="flex h-32 w-32 items-center justify-center rounded-full border-4 border-[var(--glass-border)]">
-                    <Flame
-                      size={64}
-                      className="text-[#ec5b13] drop-shadow-[0_0_10px_rgba(236,91,19,0.5)]"
-                      fill="currentColor"
-                    />
-                  </div>
-                  <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[#ec5b13] px-4 py-1 text-xs font-black text-white">
-                    {streak} DANA
-                  </div>
-                </div>
-              </div>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between rounded-xl bg-[var(--tint)] p-3">
-                  <span className="text-xs text-text-secondary">Današnji cilj</span>
-                  <span className={`font-bold ${progress.solvedToday >= progress.dailyGoal ? "text-emerald-500" : "text-[#ec5b13]"}`}>
-                    {progress.solvedToday}
-                    <span className="text-muted">/{progress.dailyGoal}</span>
-                  </span>
-                </div>
-                <div className="flex items-center justify-between rounded-xl bg-[var(--tint)] p-3">
-                  <span className="text-xs text-text-secondary">Ukupno rešeno</span>
-                  <span className="font-bold">
-                    {(progress.solved ?? 0).toLocaleString("sr")}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between rounded-xl bg-[var(--tint)] p-3">
-                  <span className="text-xs text-text-secondary">Prosečan skor</span>
-                  <span className="font-bold text-[#0ea5e9]">
-                    {rank?.avgScore ? `${parseFloat(rank.avgScore).toFixed(0)}%` : "--"}
-                  </span>
-                </div>
-              </div>
-            </div>
 
           </div>
         </div>
