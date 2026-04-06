@@ -354,9 +354,9 @@ export default function Dashboard({ user }: DashboardProps) {
             if (focus.length === 0) return null;
 
             return (
-              <div className="space-y-8">
+              <div className="space-y-10">
                 {/* Focus Cards */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {focus.map((group) => {
                     const gs = group.readinessScore ?? 0;
                     const gColor = gs === 0 ? '#f9a8a8' : gs <= 30 ? '#dc2626' : gs <= 60 ? '#ec5b13' : '#22c55e';
@@ -368,7 +368,7 @@ export default function Dashboard({ user }: DashboardProps) {
                       <Link
                         key={group.id}
                         href={`/zadaci?group=${group.id}`}
-                        className="block glass-card rounded-2xl p-6 border-2 border-[#ec5b13]/30 transition-all hover:border-[#ec5b13]/60"
+                        className="flex flex-col gap-6 glass-card rounded-2xl p-7 border-2 border-[#ec5b13]/30 transition-all hover:border-[#ec5b13]/60"
                       >
                         <div className="flex items-start justify-between">
                           <div className="flex items-start gap-4">
@@ -383,7 +383,7 @@ export default function Dashboard({ user }: DashboardProps) {
                           </div>
                           <p className="text-5xl font-black leading-none" style={{ color: gColor }}>{gs}<span className="text-2xl text-muted font-bold">/100</span></p>
                         </div>
-                        <div className="mt-4 w-full py-3.5 rounded-xl bg-[#ec5b13] text-white font-black uppercase tracking-widest text-sm flex items-center justify-center gap-2">
+                        <div className="mt-auto w-full py-3.5 rounded-xl bg-[#ec5b13] text-white font-black uppercase tracking-widest text-sm flex items-center justify-center gap-2">
                           VEŽBAJ ODMAH <span className="material-symbols-outlined text-base">rocket_launch</span>
                         </div>
                       </Link>
@@ -392,7 +392,7 @@ export default function Dashboard({ user }: DashboardProps) {
                 </div>
 
                 {/* Subject Grid */}
-                <div className="grid grid-cols-3 gap-5">
+                <div className="grid grid-cols-3 gap-6">
                   {rest.map((group) => {
                     const score = group.readinessScore ?? 0;
                     const color = score === 0 ? '#f9a8a8' : score <= 30 ? '#dc2626' : score <= 60 ? '#ec5b13' : '#0d9488';
@@ -401,7 +401,7 @@ export default function Dashboard({ user }: DashboardProps) {
                       <Link
                         key={group.id}
                         href={`/zadaci?group=${group.id}`}
-                        className="group rounded-xl p-6 transition-all border border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-xl hover:border-[#ec5b13]/50 hover:bg-[#ec5b13]/5 hover:scale-[1.02] flex flex-col"
+                        className="group rounded-xl p-7 transition-all border border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-xl hover:border-[#ec5b13]/50 hover:bg-[#ec5b13]/5 hover:scale-[1.02] flex flex-col"
                       >
                         <div className="flex items-start justify-between flex-1">
                           <div className="flex items-center gap-3">
