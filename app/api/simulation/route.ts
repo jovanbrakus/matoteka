@@ -139,11 +139,10 @@ export async function POST(req: Request) {
     const unseen = pool.filter((p) => !seenIds.has(p.id));
     const seen = pool.filter((p) => seenIds.has(p.id));
 
-    // Shuffle
-    const shuffled = [...unseen].sort(() => Math.random() - 0.5);
-    const seenShuffled = [...seen].sort(() => Math.random() - 0.5);
-
-    const result = [...shuffled, ...seenShuffled].slice(0, count);
+    const result = [
+      ...unseen.sort(() => Math.random() - 0.5),
+      ...seen.sort(() => Math.random() - 0.5),
+    ].slice(0, count);
     return result;
   }
 

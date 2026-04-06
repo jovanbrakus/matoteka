@@ -129,10 +129,8 @@ export async function GET() {
 
   // Sort unseen first (no progress), then failed, then by difficulty ASC
   unseenOrFailed.sort((a, b) => {
-    const aProgress = progressById.get(a.id);
-    const bProgress = progressById.get(b.id);
-    const aUnseen = !aProgress ? 0 : 1;
-    const bUnseen = !bProgress ? 0 : 1;
+    const aUnseen = !progressById.get(a.id) ? 0 : 1;
+    const bUnseen = !progressById.get(b.id) ? 0 : 1;
     if (aUnseen !== bUnseen) return aUnseen - bUnseen;
     return (a.difficulty ?? 5) - (b.difficulty ?? 5);
   });

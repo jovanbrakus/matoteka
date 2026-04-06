@@ -27,7 +27,6 @@ interface ProblemDetail {
   numOptions: number;
   difficulty: string | null;
   category: string | null;
-  format: "v1" | "v2";
 }
 
 interface NextProblemInfo {
@@ -176,7 +175,7 @@ export default function ProblemView({ problemId, onAnswered, onNext, autoShowSol
           </span>
           {isAdmin && (
             <span className="font-mono text-xs text-muted">
-              {problem.id} | {problem.correctAnswer} | {problem.format.toUpperCase()} | <a href={`/vezbe/${problem.id}`} className="underline hover:text-[#ec5b13]">link</a>
+              {problem.id} | {problem.correctAnswer} | <a href={`/vezbe/${problem.id}`} className="underline hover:text-[#ec5b13]">link</a>
             </span>
           )}
           <div className="ml-auto flex items-center gap-1">

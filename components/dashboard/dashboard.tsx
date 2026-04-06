@@ -292,91 +292,178 @@ export default function Dashboard({ user }: DashboardProps) {
           </div>
         </header>
 
-        <div className="grid grid-cols-12 gap-6">
-          {/* ─── LEFT COLUMN (9 cols) ─── */}
-          <div className="col-span-12 space-y-6 lg:col-span-9">
-            {/* Focus Card + Subject Grid */}
-            {(() => {
-              const sorted = [...categoryGroups].sort((a, b) => (a.readinessScore ?? 0) - (b.readinessScore ?? 0));
-              const weakest = sorted[0];
-              const rest = sorted.slice(1);
-              if (!weakest) return null;
-
-              const ws = weakest.readinessScore ?? 0;
-              const barColor = ws === 0 ? '#f9a8a8' : ws <= 30 ? '#dc2626' : ws <= 60 ? '#ec5b13' : '#22c55e';
-
-              // Find 2 weakest subcategories for the hint text
-              const weakSubs = [...(weakest.categories || [])]
-                .sort((a, b) => (a.readinessScore ?? 0) - (b.readinessScore ?? 0))
-                .slice(0, 2)
-                .map(c => c.name);
-              const hint = weakSubs.length > 0
-                ? `Najslabija oblast. Fokusiraj se na: ${weakSubs.join(' i ')}.`
-                : 'Najslabija oblast.';
-
-              return (
-                <div className="space-y-8">
-                  {/* Focus Card */}
-                  <Link
-                    href={`/zadaci?group=${weakest.id}`}
-                    className="block glass-card rounded-2xl p-6 border-2 border-[#ec5b13]/30 transition-all hover:border-[#ec5b13]/60"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <div className="flex items-center gap-3 mb-1">
-                          <h3 className="text-2xl font-black text-heading">{weakest.name}</h3>
-                          <span className="rounded-full bg-[#ec5b13]/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-[#ec5b13]">Fokus</span>
-                        </div>
-                        <p className="text-sm text-text-secondary mt-2">{hint}</p>
-                      </div>
-                      <p className="text-5xl font-black leading-none" style={{ color: barColor }}>{ws}<span className="text-2xl text-muted font-bold">/100</span></p>
-                    </div>
-                    <div className="mt-4 w-full py-3.5 rounded-xl bg-[#ec5b13] text-white font-black uppercase tracking-widest text-sm flex items-center justify-center gap-2">
-                      VEŽBAJ ODMAH <span className="material-symbols-outlined text-base">rocket_launch</span>
-                    </div>
-                  </Link>
-
-                  {/* Subject Grid */}
-                  <div className="grid grid-cols-2 gap-5">
-                    {rest.map((group) => {
-                      const score = group.readinessScore ?? 0;
-                      const color = score === 0 ? '#f9a8a8' : score <= 30 ? '#dc2626' : score <= 60 ? '#ec5b13' : '#0d9488';
-                      return (
-                        <Link
-                          key={group.id}
-                          href={`/zadaci?group=${group.id}`}
-                          className="group rounded-xl p-5 transition-all border border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-xl hover:border-[#ec5b13]/50 hover:bg-[#ec5b13]/5 hover:scale-[1.02]"
-                        >
-                          <div className="flex items-start justify-between mb-3">
-                            <h4 className="text-xl font-bold text-heading">{group.name}</h4>
-                            <p className="text-3xl font-black leading-none" style={{ color }}>{score}<span className="text-base text-muted font-bold">/100</span></p>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <div className="flex-1 h-[10px] rounded-full overflow-hidden" style={{ backgroundColor: 'var(--tint-strong)' }}>
-                              <div
-                                className="h-full rounded-full transition-all duration-700"
-                                style={{ width: `${Math.max(score, score === 0 ? 100 : 0)}%`, backgroundColor: color }}
-                              />
-                            </div>
-                            <span className="text-xs font-bold text-muted group-hover:text-[#ec5b13] transition-colors shrink-0">
-                              VEŽBAJ →
-                            </span>
-                          </div>
-                        </Link>
-                      );
-                    })}
-                  </div>
+        {/* Readiness + Countdown bar */}
+        {(() => {
+          const score = data?.readinessScore ?? 0;
+          const rColor =
+            score >= 80 ? "#10b981" : score >= 60 ? "#f59e0b" : score >= 40 ? "#f97316" : "#ef4444";
+          const rLabel =
+            score >= 80 ? "Odlična pripremljenost" : score >= 60 ? "Dobra pripremljenost" : score >= 40 ? "Potrebno još vežbanja" : "Tek na početku";
+          const sz = 64; const sw = sz * 0.1; const rr = (sz - sw) / 2;
+          const circ = 2 * Math.PI * rr; const filled = (score / 100) * circ;
+          return (
+            <div className="glass-card rounded-2xl p-5 mb-8 flex flex-wrap items-center gap-6">
+              {/* Readiness */}
+              <div className="flex items-center gap-4 flex-1 min-w-[200px]">
+                <div className="relative shrink-0" style={{ width: sz, height: sz }}>
+                  <svg width={sz} height={sz} className="-rotate-90">
+                    <circle cx={sz/2} cy={sz/2} r={rr} fill="none" stroke={rColor} strokeWidth={sw} opacity={0.15} />
+                    <circle cx={sz/2} cy={sz/2} r={rr} fill="none" stroke={rColor} strokeWidth={sw} strokeDasharray={circ} strokeDashoffset={circ - filled} strokeLinecap="round" className="transition-all duration-700" />
+                  </svg>
                 </div>
-              );
-            })()}
+                <div>
+                  <p className="text-4xl font-black text-heading">{score}<span className="text-2xl text-muted font-bold">/100</span></p>
+                  <p className="text-sm font-bold text-text-secondary">Spremnost za ispit</p>
+                </div>
+              </div>
+              {/* Separator */}
+              <div className="hidden sm:block w-px h-12 bg-[var(--glass-border)]" />
+              {/* Countdown */}
+              <div className="flex items-center gap-4 flex-1 min-w-[200px]">
+                <div>
+                  <p className="text-4xl font-black text-heading">{countdown.days} <span className="text-2xl text-muted font-bold">DANA</span></p>
+                  <p className="text-sm font-bold text-text-secondary">Do prijemnog ispita</p>
+                </div>
+              </div>
+              {/* Faculty chips */}
+              {data?.facultyExamDates && data.facultyExamDates.length > 0 && (
+                <div className="flex gap-2">
+                  {[...data.facultyExamDates].filter(f => f.examDate).sort((a, b) => new Date(a.examDate!).getTime() - new Date(b.examDate!).getTime()).map((fac) => {
+                    const d = new Date(fac.examDate!);
+                    const months = ["Jan","Feb","Mar","Apr","Maj","Jun","Jul","Avg","Sep","Okt","Nov","Dec"];
+                    return (
+                      <div key={fac.id} className="flex flex-col items-center rounded-xl bg-[var(--tint-strong)] py-3 px-4">
+                        <span className="text-sm font-black text-heading">{fac.shortName}</span>
+                        <span className="text-xs text-text-secondary">{d.getDate()}. {months[d.getMonth()]}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })()}
 
-            {/* Recent Simulations — temporarily hidden
-            {data?.recentExams && data.recentExams.length > 0 && (
-              <div className="glass-card rounded-2xl border-l-4 border-[#ec5b13] overflow-hidden">
-                <div className="flex items-center justify-between px-6 pt-5 pb-3">
-                  <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-[22px] text-[#ec5b13]">history</span>
-                    <h3 className="text-lg font-bold">Poslednje simulacije</h3>
+        {/* Full-width content */}
+        <div className="space-y-8">
+          {/* Focus Card + Subject Grid */}
+          {(() => {
+            const sorted = [...categoryGroups].sort((a, b) => (a.readinessScore ?? 0) - (b.readinessScore ?? 0));
+            const focus = sorted.slice(0, 2);
+            const rest = sorted.slice(2);
+            if (focus.length === 0) return null;
+
+            return (
+              <div className="space-y-8">
+                {/* Focus Cards */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                  {focus.map((group) => {
+                    const gs = group.readinessScore ?? 0;
+                    const gColor = gs === 0 ? '#f9a8a8' : gs <= 30 ? '#dc2626' : gs <= 60 ? '#ec5b13' : '#22c55e';
+                    const gImage = CATEGORY_IMAGES[group.id];
+                    const weakSubs = [...(group.categories || [])]
+                      .sort((a, b) => (a.readinessScore ?? 0) - (b.readinessScore ?? 0))
+                      .slice(0, 2);
+                    return (
+                      <Link
+                        key={group.id}
+                        href={`/zadaci?group=${group.id}`}
+                        className="block glass-card rounded-2xl p-6 border-2 border-[#ec5b13]/30 transition-all hover:border-[#ec5b13]/60"
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-start gap-4">
+                            {gImage && (<>
+                              <img src={gImage.dark} alt={group.name} className="h-16 w-24 shrink-0 rounded-lg object-cover dark-only" />
+                              <img src={gImage.light} alt={group.name} className="h-16 w-24 shrink-0 rounded-lg object-cover light-only" />
+                            </>)}
+                            <div>
+                              <span className="inline-block rounded-full bg-[#ec5b13]/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-[#ec5b13] mb-2">Fokus</span>
+                              <h3 className="text-2xl font-black text-heading">{group.name}</h3>
+                            </div>
+                          </div>
+                          <p className="text-5xl font-black leading-none" style={{ color: gColor }}>{gs}<span className="text-2xl text-muted font-bold">/100</span></p>
+                        </div>
+                        <div className="mt-4 w-full py-3.5 rounded-xl bg-[#ec5b13] text-white font-black uppercase tracking-widest text-sm flex items-center justify-center gap-2">
+                          VEŽBAJ ODMAH <span className="material-symbols-outlined text-base">rocket_launch</span>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+
+                {/* Subject Grid */}
+                <div className="grid grid-cols-3 gap-5">
+                  {rest.map((group) => {
+                    const score = group.readinessScore ?? 0;
+                    const color = score === 0 ? '#f9a8a8' : score <= 30 ? '#dc2626' : score <= 60 ? '#ec5b13' : '#0d9488';
+                    const image = CATEGORY_IMAGES[group.id];
+                    return (
+                      <Link
+                        key={group.id}
+                        href={`/zadaci?group=${group.id}`}
+                        className="group rounded-xl p-6 transition-all border border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-xl hover:border-[#ec5b13]/50 hover:bg-[#ec5b13]/5 hover:scale-[1.02] flex flex-col"
+                      >
+                        <div className="flex items-start justify-between flex-1">
+                          <div className="flex items-center gap-3">
+                            {image && (<>
+                              <img src={image.dark} alt={group.name} className="h-10 w-14 shrink-0 rounded-lg object-cover dark-only" />
+                              <img src={image.light} alt={group.name} className="h-10 w-14 shrink-0 rounded-lg object-cover light-only" />
+                            </>)}
+                            <h4 className="text-lg font-bold text-heading">{group.name}</h4>
+                          </div>
+                          <p className="text-2xl font-black leading-none shrink-0" style={{ color }}>{score}<span className="text-sm text-muted font-bold">/100</span></p>
+                        </div>
+                        <div className="flex items-center gap-3 mt-4">
+                          <div className="flex-1 h-[10px] rounded-full overflow-hidden" style={{ backgroundColor: 'var(--tint-strong)' }}>
+                            <div
+                              className="h-full rounded-full transition-all duration-700"
+                              style={{ width: `${Math.max(score, score === 0 ? 100 : 0)}%`, backgroundColor: color }}
+                            />
+                          </div>
+                          <span className="text-xs font-bold text-muted group-hover:text-[#ec5b13] transition-colors shrink-0">
+                            VEŽBAJ →
+                          </span>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Simulation CTA */}
+          <div className="glass-card rounded-2xl p-5 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-[#ec5b13]/10 flex items-center justify-center">
+                <span className="material-symbols-outlined text-xl text-[#ec5b13]">quiz</span>
+              </div>
+              <div>
+                <p className="font-bold text-heading">Simulacija prijemnog ispita</p>
+                {data?.recentExams && data.recentExams.length > 0 ? (
+                  <p className="text-xs text-text-secondary">
+                    Poslednji test: {parseFloat(data.recentExams[0].scorePercent || "0").toFixed(0)}% — {new Date(data.recentExams[0].startedAt).toLocaleDateString("sr")}
+                  </p>
+                ) : (
+                  <p className="text-xs text-text-secondary">Proveri svoju spremnost za prijemni</p>
+                )}
+              </div>
+            </div>
+            <Link
+              href="/simulacija"
+              className="rounded-xl bg-[#ec5b13] px-6 py-3 text-sm font-black text-white uppercase tracking-wide hover:brightness-110 transition-all"
+            >
+              POKRENI TEST
+            </Link>
+          </div>
+
+          {/* Recent Simulations — temporarily hidden
+          {data?.recentExams && data.recentExams.length > 0 && (
+            <div className="glass-card rounded-2xl border-l-4 border-[#ec5b13] overflow-hidden">
+              <div className="flex items-center justify-between px-6 pt-5 pb-3">
+                <div className="flex items-center gap-3">
+                  <span className="material-symbols-outlined text-[22px] text-[#ec5b13]">history</span>
+                  <h3 className="text-lg font-bold">Poslednje simulacije</h3>
                   </div>
                   <Link
                     href="/simulacija/istorija"
@@ -449,87 +536,6 @@ export default function Dashboard({ user }: DashboardProps) {
               </div>
             )}
             */}
-          </div>
-
-          {/* ─── RIGHT COLUMN (3 cols) ─── */}
-          <div className="col-span-12 space-y-6 lg:col-span-3">
-            {/* Readiness Score */}
-            {(() => {
-              const score = data?.readinessScore ?? 0;
-              const color =
-                score >= 80
-                  ? "#10b981"
-                  : score >= 60
-                    ? "#f59e0b"
-                    : score >= 40
-                      ? "#f97316"
-                      : "#ef4444";
-              const label =
-                score >= 80
-                  ? "Odlična pripremljenost"
-                  : score >= 60
-                    ? "Dobra pripremljenost"
-                    : score >= 40
-                      ? "Potrebno još vežbanja"
-                      : "Tek na početku";
-              const sz = 80;
-              const sw = sz * 0.1;
-              const r = (sz - sw) / 2;
-              const circ = 2 * Math.PI * r;
-              const filled = (score / 100) * circ;
-
-              return (
-                <div className="glass-card relative overflow-hidden rounded-2xl p-6">
-                  {/* Readiness */}
-                  <div className="flex items-center gap-5">
-                    <div className="relative shrink-0" style={{ width: sz, height: sz }}>
-                      <svg width={sz} height={sz} className="-rotate-90">
-                        <circle cx={sz/2} cy={sz/2} r={r} fill="none" stroke={color} strokeWidth={sw} opacity={0.15} />
-                        <circle cx={sz/2} cy={sz/2} r={r} fill="none" stroke={color} strokeWidth={sw} strokeDasharray={circ} strokeDashoffset={circ - filled} strokeLinecap="round" className="transition-all duration-700" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="text-3xl font-black text-heading">{score}<span className="text-lg text-muted font-bold">/100</span></p>
-                      <p className="text-sm font-bold text-text-secondary">Spremnost</p>
-                      <p className="text-xs" style={{ color }}>{label}</p>
-                    </div>
-                  </div>
-
-                  {/* Separator */}
-                  <div className="my-5 border-t border-[var(--glass-border)]" />
-
-                  {/* Countdown */}
-                  <div className="text-center mb-4">
-                    <p className="text-4xl font-black text-heading uppercase">{countdown.days} DANA</p>
-                    <p className="text-xs font-bold uppercase tracking-widest text-text-secondary mt-1">Do prijemnog ispita</p>
-                  </div>
-                  {data?.facultyExamDates && data.facultyExamDates.length > 0 && (() => {
-                    const sorted = [...data.facultyExamDates]
-                      .filter((f) => f.examDate)
-                      .sort((a, b) => new Date(a.examDate!).getTime() - new Date(b.examDate!).getTime());
-                    if (sorted.length === 0) return null;
-                    const months = ["Jan","Feb","Mar","Apr","Maj","Jun","Jul","Avg","Sep","Okt","Nov","Dec"];
-                    return (
-                      <div className={`grid gap-3 ${sorted.length === 1 ? "grid-cols-1 max-w-[100px] mx-auto" : sorted.length === 2 ? "grid-cols-2" : "grid-cols-3"}`}>
-                        {sorted.map((fac) => {
-                          const d = new Date(fac.examDate!);
-                          const dateStr = `${d.getDate()}. ${months[d.getMonth()]}`;
-                          return (
-                            <div key={fac.id} className="flex flex-col items-center rounded-xl bg-[var(--tint-strong)] py-3 px-2">
-                              <span className="text-sm font-black text-heading">{fac.shortName}</span>
-                              <span className="text-xs text-text-secondary">{dateStr}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    );
-                  })()}
-                </div>
-              );
-            })()}
-
-
-          </div>
         </div>
       </div>
   );

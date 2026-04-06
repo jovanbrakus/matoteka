@@ -13,7 +13,6 @@ export interface ProblemMeta {
   category: string | null;
   difficulty: number | null;
   solutionPath: string;
-  format: "v1" | "v2";
 }
 
 export interface CategoryGroup {
@@ -68,9 +67,7 @@ function getIndex(): ProblemsIndex {
 export function parseHtml(htmlContent: string) {
   const $ = cheerio.load(htmlContent);
 
-  const title = $('[data-card="problem-title"]').text().trim()
-    || $("title").text().trim()
-    || "Zadatak";
+  const title = $('[data-card="problem-title"]').text().trim() || "Zadatak";
 
   // Find correct answer — many class patterns exist across generated files.
   // Match any element whose class contains "correct" but not "incorrect".
@@ -96,83 +93,24 @@ export function parseHtml(htmlContent: string) {
   }
 
   const answerOptions: string[] = [];
-  const originalLabels: string[] = []; // track original labels (A, B, V, G, D, etc.)
-  const LABEL_STRIP_RE = /^\(?([A-Za-zА-ЯЂЉЊЋЏа-яђљњћџ])\)\s*/;
 
-  // Scope to problem-statement card for v2, or any .answer-option for v1
-  const answerOptionSelector = $('[data-card="problem-statement"]').length > 0
-    ? '[data-card="problem-statement"] .answer-option[data-option]'
-    : '.answer-option[data-option]';
-  $(answerOptionSelector).each((_, el) => {
-    const valueEl = $(el).find(".value, .answer-value").first();
-    // Fall back to element's own content when .value/.answer-value div is missing or empty
+  $('[data-card="problem-statement"] .answer-option[data-option]').each((_, el) => {
+    const valueEl = $(el).find(".answer-value").first();
     const value = (valueEl.html() || valueEl.text() || "").trim();
     if (value) {
       answerOptions.push(value);
     } else {
-      // No .value div — extract from element text, strip label prefix
       const html = ($(el).html() || $(el).text() || "").trim();
-      const stripped = html.replace(LABEL_STRIP_RE, "").replace(/<div[^>]*class="label"[^>]*>.*?<\/div>/i, "").trim();
-      answerOptions.push(stripped || html);
+      answerOptions.push(html);
     }
-    originalLabels.push(($(el).attr("data-option") || "").toUpperCase());
   });
-
-  // Fallback 1: .answer-chip
-  if (answerOptions.length === 0) {
-    $(".answer-chip").each((_, el) => {
-      const text = $(el).text().trim();
-      const labelMatch = text.match(LABEL_STRIP_RE);
-      if (labelMatch) originalLabels.push(labelMatch[1].toUpperCase());
-      const stripped = text.replace(/^\([A-Za-zА-Яа-яĐŽĆČŠđžćčš]\)\s*/, "");
-      answerOptions.push(stripped || text);
-    });
-  }
-
-  // Fallback 2: extract from final answer section or inline options —
-  // covers .final-option, .option-btn, .option-card, .option, .opt, etc.
-  if (answerOptions.length === 0) {
-    const OPTION_SELECTORS = ".final-option, .option-btn, .option-card, .option-chip, .option-item, .option-box, .answer-opt, .option-final, .option-pill, .final-opt, .answer-option-final, .opt, .option";
-    $(OPTION_SELECTORS).each((_, el) => {
-      const text = $(el).text().trim();
-      if (/ne\s+znam/i.test(text)) return; // skip "Ne znam" option
-      const cls = $(el).attr("class") || "";
-      if (cls.includes("incorrect")) return; // skip wrong-answer markers
-      const labelMatch = text.match(LABEL_STRIP_RE);
-      if (labelMatch) {
-        originalLabels.push(labelMatch[1].toUpperCase());
-        const html = ($(el).html() || text).trim();
-        const stripped = html.replace(LABEL_STRIP_RE, "");
-        answerOptions.push(stripped);
-      }
-    });
-  }
-
-  // Map correct answer from original label (e.g. "G") to index-based letter (e.g. "D")
-  // since AnswerOptions component uses sequential A, B, C, D, E labels.
-  // Some HTML files use Cyrillic letters (А, Б, В, Г, Д) as option labels.
-  // Normalize both correctAnswer and originalLabels from Cyrillic to positional Latin.
-  const CYRILLIC_TO_POSITION: Record<string, string> = {
-    "А": "A", "Б": "B", "В": "C", "Г": "D", "Д": "E",
-    "Ђ": "F", "Е": "G", "Ж": "H", "З": "I",
-  };
-  if (correctAnswer && CYRILLIC_TO_POSITION[correctAnswer]) {
-    correctAnswer = CYRILLIC_TO_POSITION[correctAnswer];
-  }
-  const normalizedLabels = originalLabels.map((l) => CYRILLIC_TO_POSITION[l] || l);
-  if (correctAnswer && normalizedLabels.length > 0) {
-    const idx = normalizedLabels.indexOf(correctAnswer);
-    if (idx !== -1) {
-      correctAnswer = String.fromCharCode(65 + idx); // A=0, B=1, C=2, ...
-    }
-  }
 
   if (!correctAnswer && answerOptions.length > 0) {
     correctAnswer = "A";
   }
 
   let problemText = "";
-  const problemStatement = $(".problem-statement").first();
+  const problemStatement = $('[data-card="problem-statement"]').first();
   if (problemStatement.length) {
     problemText = problemStatement.text().replace(/\s+/g, " ").trim().slice(0, 2000);
   }
@@ -239,7 +177,6 @@ export interface QueryOptions {
   diffMin?: number;
   diffMax?: number;
   search?: string;
-  format?: "v1" | "v2";
   page?: number;
   limit?: number;
 }
@@ -297,11 +234,6 @@ export function queryProblems(opts: QueryOptions): { problems: ProblemMeta[]; to
       const d = p.difficulty ?? 5;
       return d >= min && d <= max;
     });
-  }
-
-  // Format filter
-  if (opts.format) {
-    results = results.filter((p) => p.format === opts.format);
   }
 
   // Search by id or faculty

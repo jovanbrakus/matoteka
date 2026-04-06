@@ -107,7 +107,6 @@ export default function PracticePage() {
   const [selectedTopics, setSelectedTopics] = useState<Set<string>>(new Set());
   const [diffRange, setDiffRange] = useState<[number, number]>([1, 10]);
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [formatFilter, setFormatFilter] = useState<string>("all");
 
   // Random recommended problem
   const [randomProblemId, setRandomProblemId] = useState<string | null>(null);
@@ -176,11 +175,6 @@ export default function PracticePage() {
         params.set("status", statusFilter);
       }
 
-      // Format filter
-      if (formatFilter !== "all") {
-        params.set("format", formatFilter);
-      }
-
       const res = await fetch(`/api/problems?${params}`);
       const data = await res.json();
 
@@ -193,7 +187,7 @@ export default function PracticePage() {
       setHasMore((data.problems || []).length === 15);
       setLoadingProblems(false);
     },
-    [selectedGroups, selectedTopics, diffRange, statusFilter, formatFilter]
+    [selectedGroups, selectedTopics, diffRange, statusFilter]
   );
 
   useEffect(() => {
@@ -233,7 +227,6 @@ export default function PracticePage() {
     setSelectedGroups(new Set());
     setSelectedTopics(new Set());
     setDiffRange([1, 10]);
-    setFormatFilter("all");
   };
 
   const dailyGoalPercent = Math.min(100, Math.round((solvedToday / Math.max(dailyGoal, 1)) * 100));
@@ -355,32 +348,6 @@ export default function PracticePage() {
                     <span className="text-sm text-text-secondary">Sačuvani</span>
                   </div>
                 </label>
-              </div>
-            </div>
-
-            {/* Format Filter (V1/V2) */}
-            <div className="flex flex-col gap-3">
-              <p className="text-[10px] font-black uppercase tracking-widest text-muted">
-                Format
-              </p>
-              <div className="flex gap-1">
-                {[
-                  { label: "Svi", value: "all" },
-                  { label: "V1", value: "v1" },
-                  { label: "V2", value: "v2" },
-                ].map((opt) => (
-                  <button
-                    key={opt.value}
-                    onClick={() => setFormatFilter(opt.value)}
-                    className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-colors ${
-                      formatFilter === opt.value
-                        ? "bg-[#ec5b13]/20 text-[#ec5b13]"
-                        : "text-text-secondary hover:bg-[var(--tint)]"
-                    }`}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
               </div>
             </div>
 

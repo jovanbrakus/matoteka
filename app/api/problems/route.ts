@@ -20,7 +20,6 @@ export async function GET(req: Request) {
   const diffMin = url.searchParams.get("diffMin");
   const diffMax = url.searchParams.get("diffMax");
   const search = url.searchParams.get("search") || undefined;
-  const format = (url.searchParams.get("format") as "v1" | "v2" | null) || undefined;
   const status = url.searchParams.get("status") || undefined;
   const page = Math.max(parseInt(url.searchParams.get("page") || "1") || 1, 1);
   const limit = Math.min(parseInt(url.searchParams.get("limit") || "30") || 30, 100);
@@ -68,7 +67,6 @@ export async function GET(req: Request) {
     diffMin: diffMin ? parseFloat(diffMin) : undefined,
     diffMax: diffMax ? parseFloat(diffMax) : undefined,
     search,
-    format,
     page: needsPostFilter ? 1 : page,
     limit: needsPostFilter ? 100000 : limit,
   });
