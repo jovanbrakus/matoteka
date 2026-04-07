@@ -1,5 +1,13 @@
-export default function ScoreCircle({ score, size = 64 }: { score: number; size?: number }) {
-  const strokeWidth = size * 0.1;
+export default function ScoreCircle({
+  score,
+  size = 64,
+  strokeRatio = 0.1,
+}: {
+  score: number;
+  size?: number;
+  strokeRatio?: number;
+}) {
+  const strokeWidth = size * strokeRatio;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const filled = (score / 100) * circumference;
