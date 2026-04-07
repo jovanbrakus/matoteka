@@ -35,7 +35,13 @@ const params = Promise.resolve({ problemId: "etf-2024-1" });
 describe("GET /api/problems/[problemId]/html", () => {
   beforeEach(() => {
     mockSession = null;
-    mockHtml = `<!DOCTYPE html><html><head><style>.test{}</style></head><body><div class="card problem-statement">Problem text</div></body></html>`;
+    // v2 fragment shape: a problem-statement card (extracted by ?section=statement
+    // and stripped from full solutions) plus a solution-step card that survives
+    // stripping so the full-solution tests have something to assert against.
+    mockHtml = `<!DOCTYPE html><html><head><style>.test{}</style></head><body>` +
+      `<div data-card="problem-statement"><p>Problem text — statement card</p></div>` +
+      `<div data-card="solution-step"><p>Solution content — visible in full view</p></div>` +
+      `</body></html>`;
     mockRateLimit = { allowed: true, used: 0, limit: 30 };
   });
 
@@ -58,7 +64,11 @@ describe("GET /api/problems/[problemId]/html", () => {
       );
       expect(res.status).toBe(200);
       const body = await res.text();
-      expect(body).toContain("Problem text");
+      // Full-solution path strips the problem-statement card; assert on the
+      // solution-step card content that survives stripping.
+      expect(body).toContain("Solution content");
+      // And the problem-statement card must be gone.
+      expect(body).not.toContain("Problem text — statement card");
     });
 
     it("returns 404 when problem does not exist", async () => {
@@ -91,7 +101,10 @@ describe("GET /api/problems/[problemId]/html", () => {
       );
       expect(res.status).toBe(200);
       const body = await res.text();
-      expect(body).toContain("Problem text");
+      // Statement path extracts only the problem-statement card.
+      expect(body).toContain("Problem text — statement card");
+      // And the solution-step card must be absent.
+      expect(body).not.toContain("Solution content");
     });
 
     it("returns 404 when problem HTML is missing", async () => {
