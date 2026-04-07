@@ -257,7 +257,7 @@ function ViewsTable({ rows }: { rows: ViewRow[] }) {
               <td className="px-6 py-3 text-sm font-mono">
                 <Link
                   href={`/vezbe/${r.problemId}`}
-                  className="text-text-secondary hover:text-[#ec5b13] hover:underline transition-colors"
+                  className="text-[#ec5b13] underline decoration-[#ec5b13]/40 underline-offset-4 hover:decoration-[#ec5b13] transition-colors"
                 >
                   {r.problemId}
                 </Link>
