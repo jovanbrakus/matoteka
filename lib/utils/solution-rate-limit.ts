@@ -1,8 +1,11 @@
 import { db } from "@/lib/db";
 import { solutionDailyUsage, solutionViews } from "@/drizzle/schema";
-import { eq, and, sql, gte } from "drizzle-orm";
+import { eq, and, sql, gte, desc } from "drizzle-orm";
 
 const SOLUTION_DAILY_LIMIT = parseInt(process.env.SOLUTION_DAILY_LIMIT || "30", 10);
+// Audit-log dedup window: collapse duplicate inserts from iframe reloads,
+// React StrictMode double-mounts, and rapid revisits into a single row.
+const AUDIT_DEDUP_WINDOW_MS = 60_000;
 
 export async function checkSolutionRateLimit(
   userId: string
@@ -21,8 +24,10 @@ export async function checkSolutionRateLimit(
 }
 
 /**
- * Record a solution view. Increments the daily counter only for new unique views.
- * The audit log insert is fire-and-forget to avoid slowing down the response.
+ * Record a solution view. Inserts an audit-log row, deduped within
+ * AUDIT_DEDUP_WINDOW_MS to collapse iframe reloads / double-mounts /
+ * rapid revisits into a single row. Increments the daily counter only
+ * for the first view of a given (user, problem) per day.
  */
 export async function recordSolutionView(
   userId: string,
@@ -33,9 +38,11 @@ export async function recordSolutionView(
   const today = new Date().toISOString().split("T")[0];
   const todayStart = new Date(today + "T00:00:00Z");
 
-  // Check if this specific solution was already viewed today
-  const existing = await db
-    .select({ id: solutionViews.id })
+  // Most recent view today for this (user, problem). One query, two facts:
+  //   - is there any row today?       → drives daily-counter dedup
+  //   - is the latest one very recent? → drives audit-row dedup
+  const recent = await db
+    .select({ viewedAt: solutionViews.viewedAt })
     .from(solutionViews)
     .where(
       and(
@@ -44,14 +51,24 @@ export async function recordSolutionView(
         gte(solutionViews.viewedAt, todayStart)
       )
     )
+    .orderBy(desc(solutionViews.viewedAt))
     .limit(1);
 
-  const isNewToday = existing.length === 0;
+  const isNewToday = recent.length === 0;
+  const lastViewedAt = recent[0]?.viewedAt ?? null;
+  const isRecentDuplicate =
+    lastViewedAt !== null &&
+    new Date(lastViewedAt).getTime() > Date.now() - AUDIT_DEDUP_WINDOW_MS;
 
-  // Fire-and-forget: log the view without awaiting
-  db.insert(solutionViews)
-    .values({ userId, problemId, ipAddress, userAgent })
-    .catch(() => {});
+  // Skip the audit insert if we just logged this view — avoids the
+  // 5-rows-per-view explosion caused by iframe reloads. Awaited (not
+  // fire-and-forget) so back-to-back calls in the same request flight
+  // can see each other.
+  if (!isRecentDuplicate) {
+    await db
+      .insert(solutionViews)
+      .values({ userId, problemId, ipAddress, userAgent });
+  }
 
   // Only increment daily counter for new unique views
   if (isNewToday) {

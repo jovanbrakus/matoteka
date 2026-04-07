@@ -15,7 +15,11 @@ export default function ProblemStatement({
   minHeight = "150px",
 }: ProblemStatementProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [theme, setTheme] = useState("light");
+  // null = "not yet initialized from localStorage". The iframe is not
+  // rendered until the real theme is known, so it never has to load with
+  // a default theme and then reload with the real one. That second load
+  // is what was double-counting solution views.
+  const [theme, setTheme] = useState<string | null>(null);
 
   // Listen for height messages from THIS iframe only (match e.source to our contentWindow)
   useEffect(() => {
@@ -32,7 +36,10 @@ export default function ProblemStatement({
     return () => window.removeEventListener("message", handler);
   }, []);
 
-  // Watch for theme changes and post to iframe via postMessage
+  // Initialize theme from localStorage on mount, then push later changes
+  // to the iframe via postMessage only. Crucially we do NOT call setTheme
+  // again — that would re-render the iframe with a new src and re-trigger
+  // the API call (and the audit-log insert).
   useEffect(() => {
     const stored = localStorage.getItem("theme") as string | null;
     setTheme(stored || "dark");
@@ -40,7 +47,6 @@ export default function ProblemStatement({
     const observer = new MutationObserver(() => {
       const isLight = document.documentElement.classList.contains("light");
       const newTheme = isLight ? "light" : "dark";
-      setTheme(newTheme);
       iframeRef.current?.contentWindow?.postMessage(
         { type: "matoteka-theme", theme: newTheme },
         "*"
@@ -54,6 +60,10 @@ export default function ProblemStatement({
 
     return () => observer.disconnect();
   }, []);
+
+  if (theme === null) {
+    return <div className="w-full" style={{ minHeight }} />;
+  }
 
   const src =
     section === "statement"
