@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs";
 
 const nextConfig: NextConfig = {
   images: {
@@ -22,4 +23,18 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  org: "kadino-software-agency",
+  project: "matoteka",
+  // Auth token is read from SENTRY_AUTH_TOKEN env var at build time.
+  // Suppress build-time logs from the Sentry plugin (still surfaces errors).
+  silent: !process.env.CI,
+  // Upload a larger set of source maps for better stack traces, including hidden ones.
+  widenClientFileUpload: true,
+  // Tunnel Sentry events through this Next.js route to bypass ad blockers.
+  tunnelRoute: "/monitoring",
+  // Hide source maps from production client bundles after upload.
+  sourcemaps: { disable: false },
+  // Automatically tree-shake Sentry logger statements to reduce bundle size.
+  disableLogger: true,
+});
