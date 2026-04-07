@@ -11,12 +11,15 @@ import {
   Star,
 } from "lucide-react";
 import ProblemStatement from "@/components/problems/ProblemStatement";
+import AnswerOptions from "@/components/problems/AnswerOptions";
 
 interface SolutionData {
   position: number;
   problemId: string;
   title: string;
   correctAnswer: string;
+  answerOptions: string[];
+  numOptions: number;
   userAnswer: string | null;
   isCorrect: boolean | null;
   pointValue: string;
@@ -109,6 +112,34 @@ export default function SimulationSolutionPage() {
 
         <h1 className="text-2xl font-bold text-heading">{data.title}</h1>
       </div>
+
+      {/* Problem statement (mirrors the in-exam view, since the v2 full
+          solution no longer embeds the statement card) */}
+      <div className="mb-6 overflow-hidden rounded-2xl border border-[var(--glass-border)] glass-card">
+        <div className="border-b border-[var(--glass-border)] bg-[var(--tint)] px-6 py-3">
+          <h3 className="text-sm font-bold uppercase tracking-widest text-[#ec5b13]">
+            Postavka zadatka
+          </h3>
+        </div>
+        <ProblemStatement problemId={data.problemId} section="statement" />
+      </div>
+
+      {/* Answer options with review highlights — green for correct,
+          red strikethrough on user's wrong pick if any */}
+      {data.answerOptions.length > 0 && (
+        <div className="mb-6">
+          <AnswerOptions
+            options={data.answerOptions}
+            selectedAnswer={data.userAnswer}
+            onSelect={() => {}}
+            result={{
+              isCorrect: data.isCorrect === true,
+              correctAnswer: data.correctAnswer,
+            }}
+            mode="practice"
+          />
+        </div>
+      )}
 
       {/* Answer feedback */}
       <div className="mb-6 rounded-2xl border border-[var(--glass-border)] p-6 glass-card">
