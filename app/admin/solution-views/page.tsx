@@ -254,7 +254,14 @@ function ViewsTable({ rows }: { rows: ViewRow[] }) {
                   <p className="text-xs text-text-secondary">{r.email}</p>
                 </div>
               </td>
-              <td className="px-6 py-3 text-sm font-mono text-text-secondary">{r.problemId}</td>
+              <td className="px-6 py-3 text-sm font-mono">
+                <Link
+                  href={`/vezbe/${r.problemId}`}
+                  className="text-text-secondary hover:text-[#ec5b13] hover:underline transition-colors"
+                >
+                  {r.problemId}
+                </Link>
+              </td>
               <td className="px-6 py-3 text-sm text-text-secondary">
                 {new Date(r.viewedAt).toLocaleString("sr-Latn-RS", {
                   day: "2-digit",
