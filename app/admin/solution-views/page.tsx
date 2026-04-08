@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
 
 type Tab = "views" | "daily";
@@ -26,14 +26,18 @@ interface DailyRow {
 export default function SolutionViewsPage() {
   const [tab, setTab] = useState<Tab>("daily");
   const [rows, setRows] = useState<any[]>([]);
+  const [loadedTab, setLoadedTab] = useState<Tab | null>(null);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [loading, setLoading] = useState(true);
+  const requestIdRef = useRef(0);
 
   const fetchData = useCallback(async () => {
+    const requestId = requestIdRef.current + 1;
+    requestIdRef.current = requestId;
     setLoading(true);
     const params = new URLSearchParams({ tab, page: String(page) });
     if (search) params.set("search", search);
@@ -42,8 +46,10 @@ export default function SolutionViewsPage() {
 
     const res = await fetch(`/api/admin/solution-views?${params}`);
     const data = await res.json();
+    if (requestId !== requestIdRef.current) return;
     setRows(data.rows ?? []);
     setTotal(data.total ?? 0);
+    setLoadedTab(tab);
     setLoading(false);
   }, [tab, page, search, dateFrom, dateTo]);
 
@@ -130,7 +136,7 @@ export default function SolutionViewsPage() {
 
       {/* Table */}
       <div className="glass-card rounded-2xl overflow-hidden">
-        {loading ? (
+        {loading || loadedTab !== tab ? (
           <div className="h-96 flex items-center justify-center">
             <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#ec5b13] border-t-transparent" />
           </div>
