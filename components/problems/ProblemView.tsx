@@ -22,7 +22,6 @@ interface ProblemDetail {
   facultyId: string;
   year: number;
   problemNumber: number;
-  correctAnswer: string;
   answerOptions: string[];
   numOptions: number;
   difficulty: string | null;
@@ -107,6 +106,10 @@ export default function ProblemView({ problemId, onAnswered, onNext, autoShowSol
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ answer: selectedAnswer }),
       });
+      if (!res.ok) {
+        setAnswerResult(null);
+        return;
+      }
       const data = await res.json();
       setAnswerResult({
         isCorrect: data.isCorrect,
@@ -115,13 +118,7 @@ export default function ProblemView({ problemId, onAnswered, onNext, autoShowSol
       if (autoShowSolution) setShowSolution(true);
       onAnswered?.(data.isCorrect);
     } catch {
-      const isCorrect = selectedAnswer === problem.correctAnswer;
-      setAnswerResult({
-        isCorrect,
-        correctAnswer: problem.correctAnswer,
-      });
-      if (autoShowSolution) setShowSolution(true);
-      onAnswered?.(isCorrect);
+      setAnswerResult(null);
     } finally {
       setSubmitting(false);
     }
@@ -175,7 +172,7 @@ export default function ProblemView({ problemId, onAnswered, onNext, autoShowSol
           </span>
           {isAdmin && (
             <span className="font-mono text-xs text-muted">
-              {problem.id} | {problem.correctAnswer} | <a href={`/vezbe/${problem.id}`} className="underline hover:text-[#ec5b13]">link</a>
+              {problem.id} | <a href={`/vezbe/${problem.id}`} className="underline hover:text-[#ec5b13]">link</a>
             </span>
           )}
           <div className="ml-auto flex items-center gap-1">

@@ -8,6 +8,26 @@ import bcrypt from "bcryptjs";
 
 const passwordEnabled = process.env.AUTH_PASSWORD_ENABLED !== "false";
 
+// In-memory rate limiter for credential auth (per email)
+const loginAttempts = new Map<string, { count: number; resetAt: number }>();
+const MAX_ATTEMPTS = 5;
+const WINDOW_MS = 15 * 60 * 1000; // 15 minutes
+
+function checkRateLimit(email: string): boolean {
+  const now = Date.now();
+  const entry = loginAttempts.get(email);
+  if (!entry || now > entry.resetAt) {
+    loginAttempts.set(email, { count: 1, resetAt: now + WINDOW_MS });
+    return true;
+  }
+  entry.count++;
+  return entry.count <= MAX_ATTEMPTS;
+}
+
+function clearRateLimit(email: string): void {
+  loginAttempts.delete(email);
+}
+
 const providers = [
   ...(passwordEnabled
     ? [Credentials({
@@ -21,6 +41,8 @@ const providers = [
 
           if (!email || !password) return null;
 
+          if (!checkRateLimit(email)) return null;
+
           const result = await db
             .select()
             .from(users)
@@ -32,6 +54,8 @@ const providers = [
 
           const isValid = await bcrypt.compare(password, user.passwordHash);
           if (!isValid) return null;
+
+          clearRateLimit(email);
 
           return {
             id: user.id,

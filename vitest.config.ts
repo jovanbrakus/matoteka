@@ -4,6 +4,9 @@ import path from "path";
 export default defineConfig({
   test: {
     globals: true,
+    env: {
+      WATERMARK_SECRET: "test-secret",
+    },
   },
   resolve: {
     alias: {

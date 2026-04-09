@@ -23,7 +23,6 @@ export async function GET(req: Request, { params }: { params: Promise<{ problemI
     problemNumber: problem.problemNumber,
     extra: problem.extra,
     title: problem.title,
-    correctAnswer: problem.correctAnswer,
     answerOptions: problem.answerOptions,
     numOptions: problem.numOptions,
     category: problem.category,

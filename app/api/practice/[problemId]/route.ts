@@ -24,7 +24,6 @@ export async function GET(
     facultyId: problem.facultyId,
     year: problem.year,
     problemNumber: problem.problemNumber,
-    correctAnswer: problem.correctAnswer,
     answerOptions: problem.answerOptions,
     numOptions: problem.numOptions,
     difficulty: problem.difficulty,

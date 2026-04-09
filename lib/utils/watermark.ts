@@ -1,13 +1,19 @@
 import crypto from "crypto";
 
-const SECRET = process.env.WATERMARK_SECRET || "dev-watermark-secret";
+function getSecret(): string {
+  const secret = process.env.WATERMARK_SECRET;
+  if (!secret) {
+    throw new Error("WATERMARK_SECRET environment variable is required");
+  }
+  return secret;
+}
 
 /**
  * Generate a 16-hex-char fingerprint unique to a (userId, problemId) pair.
  */
 export function generateFingerprint(userId: string, problemId: string): string {
   return crypto
-    .createHmac("sha256", SECRET)
+    .createHmac("sha256", getSecret())
     .update(`${userId}|${problemId}`)
     .digest("hex")
     .slice(0, 16);
