@@ -43,7 +43,7 @@ export default function Lesson40Page() {
           </>
         }
         description="Na prijemnom složena trigonometrijska jednačina najčešće ne traži &quot;novu&quot; matematiku, već dobru procenu metode. Treba da vidiš da li je pred tobom homogeni obrazac koji vodi ka tan x, ili linearni oblik koji treba sabiti u jedan sinus pomoću ugla φ. Kada to prepoznaš, ostatak zadatka postaje pregledan."
-        heroImageSrc="/api/lessons/40/hero"
+        heroImageSrc="/images/lessons/lesson40_hero.png"
         heroImageAlt="Apstraktna matematička ilustracija sa trigonometrijskim talasom i formulama"
         cards={[
           {

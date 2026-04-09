@@ -45,7 +45,7 @@ export default function Lesson23Page() {
           </>
         }
         description="Ova lekcija te uči kako da sistem sa dve promenljive svedeš na jednu kvadratnu jednačinu, kako da biraš najkraći metod i kako da ne izgubiš nijedno rešenje. Fokus je na tipovima zadataka koji se realno pojavljuju na prijemnim ispitima: linearna plus kvadratna jednačina, dve kvadratne jednačine i homogeni sistemi."
-        heroImageSrc="/api/lessons/23/hero"
+        heroImageSrc="/images/lessons/lesson23_hero.png"
         heroImageAlt="Apstraktna matematička ilustracija sa parabolom i pravom koje se seku, za lekciju o sistemima kvadratnih jednačina"
         cards={[
           {

@@ -47,7 +47,7 @@ export default function Lesson5Page() {
           </>
         }
         description="Od brojeva za prebrojavanje do svih realnih brojeva: ova lekcija gradi mapu N, Z, Q, R, uči te da broj vidiš na brojevnoj pravoj i da bez greške računaš sa razlomcima, decimalama i apsolutnom vrednošću."
-        heroImageSrc="/api/lessons/5/hero"
+        heroImageSrc="/images/lessons/lesson5_hero.png"
         heroImageAlt="Apstraktna matematička tabla sa brojevnom pravom i skupovima brojeva"
         cards={[
           {

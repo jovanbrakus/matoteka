@@ -42,7 +42,7 @@ export default function Lesson32Page() {
           </>
         }
         description="Ovo je deo gradiva u kome se najlakše izgubi smer razmišljanja. Nije dovoljno samo rešiti dobijenu nejednačinu: moraš da proveriš domen, da znaš da li se znak čuva ili obrće i da tek onda presečeš dobijeni skup sa uslovima definisanosti."
-        heroImageSrc="/api/lessons/32/hero"
+        heroImageSrc="/images/lessons/lesson32_hero.png"
         heroImageAlt="Apstraktna matematička tabla sa logaritamskim nejednačinama, brojnom pravom i intervalom rešenja"
         cards={[
           {

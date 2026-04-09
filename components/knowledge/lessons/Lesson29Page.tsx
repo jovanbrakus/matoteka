@@ -45,7 +45,7 @@ export default function Lesson29Page() {
           </>
         }
         description='Logaritam nije nova "cudna" operacija, već drugo lice eksponenciranja. Kada pitas "na koji stepen treba dici bazu da dobijem zadati broj?", već si postavio logaritamsko pitanje. Ova lekcija gradi taj smisao, a zatim pokazuje kako pravila logaritmovanja postaju prirodna posledica rada sa eksponentima.'
-        heroImageSrc="/api/lessons/29/hero"
+        heroImageSrc="/images/lessons/lesson29_hero.png"
         heroImageAlt="Apstraktna matematička ilustracija za lekciju o logaritmima"
         cards={[
           {

@@ -43,7 +43,7 @@ export default function Lesson47Page() {
           </>
         }
         description="U stereometriji je veliki pomak kada shvatiš da mnoga 3D tela nisu 'nova čudna tela', već obične ravne figure koje su se zarotirale oko ose. Tada valjak postaje rotirani pravougaonik, kupa rotirani pravougli trougao, a lopta rotirani polukrug. Iz te slike prirodno dolaze i formule, i baš zato je ova lekcija važna za prijemni: kad razumeš nastanak tela, manje grešiš u izboru formule."
-        heroImageSrc="/api/lessons/47/hero"
+        heroImageSrc="/images/lessons/lesson47_hero.png"
         heroImageAlt="Ilustracija obrtnih tela: valjak, kupa i lopta"
         cards={[
           {

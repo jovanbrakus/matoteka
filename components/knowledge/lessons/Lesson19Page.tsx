@@ -46,7 +46,7 @@ export default function Lesson19Page() {
           </>
         }
         description="Kada vidiš izraz f(x)=ax²+bx+c, ne treba da pamtiš nepovezane formule. Treba da vidiš jednu celinu: smer otvaranja parabole, osu simetrije, teme, preseke sa osama i raspored znaka po intervalima. To je upravo način razmišljanja koji pomaže na prijemnom, jer štedi vreme i smanjuje greške."
-        heroImageSrc="/api/lessons/19/hero"
+        heroImageSrc="/images/lessons/lesson19_hero.png"
         heroImageAlt="Ilustracija kvadratne funkcije, temena, nula i grafika"
         cards={[
           {

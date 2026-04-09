@@ -47,7 +47,7 @@ export default function Lesson1Page() {
           </>
         }
         description="Ovo je prvi ozbiljan korak u matematičkom formalizmu. Ako razumeš šta je iskaz, kako radi implikacija, kada je formula uvek tačna (tautologija) i kada su dve različite formule zapravo ekvivalentne, kasnije ćeš mnogo sigurnije rešavati jednačine, nejednačine i zadatke sa uslovima domena."
-        heroImageSrc="/api/lessons/1/hero"
+        heroImageSrc="/images/lessons/lesson1_hero.png"
         heroImageAlt="Apstraktna matematička tabla sa geometrijskim i simboličkim zapisima"
         cards={[
           {

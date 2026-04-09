@@ -43,7 +43,7 @@ export default function Lesson37Page() {
           </>
         }
         description="Kada na prijemnom vidiš dugačak zbir sinusa ili kosinusa, često nije problem u tome što je izraz težak, nego što još nije spakovan u pravi oblik. Ova lekcija te uči upravo tome: kako da zbir pretvoriš u proizvod radi faktorizacije i skraćivanja, i kako da proizvod pročitaš unazad kada ti treba zbir ili razlika uglova."
-        heroImageSrc="/api/lessons/37/hero"
+        heroImageSrc="/images/lessons/lesson37_hero.png"
         heroImageAlt="Apstraktna matematička tabla sa dva ugla, srednjim uglom i formulama za transformacije zbira i proizvoda"
         cards={[
           {

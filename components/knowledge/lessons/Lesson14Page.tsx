@@ -44,7 +44,7 @@ export default function Lesson14Page() {
           </>
         }
         description="Ovo je lekcija u kojoj deljenje polinoma prestaje da bude duga procedura i postaje jasan obrazac. Ako razumeš da je ostatak pri deljenju sa x-a jednak P(a), odmah dobijaš brži put do deljivosti, nula polinoma i zadataka sa parametrima koji se redovno pojavljuju na prijemnim ispitima."
-        heroImageSrc="/api/lessons/14/hero"
+        heroImageSrc="/images/lessons/lesson14_hero.png"
         heroImageAlt="Ilustracija Bezoutovog stava i Hornerove šeme"
         cards={[
           {

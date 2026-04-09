@@ -45,7 +45,7 @@ export default function Lesson36Page() {
           </>
         }
         description="Ova lekcija je mesto na kom adicioni teoremi prestaju da budu samo &quot;formule za zbir&quot; i postaju alat za stvarni rad. Iz njih sada dobijaš formule za 2α, za α/2, ali i vrlo praktičnu tehniku snižavanja stepena. To je upravo ono što na prijemnom pravi razliku između sporog i elegantnog rešenja."
-        heroImageSrc="/api/lessons/36/hero"
+        heroImageSrc="/images/lessons/lesson36_hero.png"
         heroImageAlt="Apstraktna matematička tabla sa jediničnom kružnicom i formulama za dvostruki ugao i polovinu ugla"
         cards={[
           {

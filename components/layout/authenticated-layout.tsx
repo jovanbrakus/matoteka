@@ -64,7 +64,7 @@ export default function AuthenticatedLayout({
       <div className="fixed left-0 right-0 top-0 z-40 flex items-center justify-between border-b border-[var(--glass-border)] bg-surface-dark/95 px-4 py-3 backdrop-blur lg:hidden">
         <Link href="/" className="flex items-center gap-2">
           <img src="/logo.svg" alt="Matoteka" className="h-8 w-8" />
-          <span className="text-lg font-semibold text-heading" style={{ fontFamily: "'Fredoka', sans-serif" }}>
+          <span className="text-lg font-semibold text-heading" style={{ fontFamily: "var(--font-fredoka), sans-serif" }}>
             Matoteka
           </span>
         </Link>

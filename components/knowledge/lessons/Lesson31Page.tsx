@@ -41,7 +41,7 @@ export default function Lesson31Page() {
           </>
         }
         description={'Suština ove lekcije nije samo da \u201Eskineš\u201C logaritam, već da pre svakog računa proveriš domen, zatim pravilno prevedeš jednačinu u poznat oblik i na kraju presečeš dobijene kandidate sa uslovima definisanosti.'}
-        heroImageSrc="/api/lessons/31/hero"
+        heroImageSrc="/images/lessons/lesson31_hero.png"
         heroImageAlt="Apstraktna matematička tabla sa logaritamskim jednačinama, domenima i kvadratnom smenom"
         cards={[
           {

@@ -47,7 +47,7 @@ export default function Lesson20Page() {
           </>
         }
         description="Na prijemnom nije dovoljno da samo mehanički ubaciš brojeve u formulu. Važno je da odmah vidiš šta jednačina „obećava“: da li će parabola seći x-osu u dve tačke, samo dodirnuti osu ili uopšte neće imati realne preseke. Diskriminanta je upravo taj brzi odgovor, a ova lekcija je tu da poveže račun, geometriju i tipične ispitne zamke u jednu jasnu sliku."
-        heroImageSrc="/api/lessons/20/hero"
+        heroImageSrc="/images/lessons/lesson20_hero.png"
         heroImageAlt="Ilustracija za lekciju o kvadratnim jednačinama i diskriminanti"
         cards={[
           {

@@ -43,7 +43,7 @@ export default function Lesson25Page() {
           </>
         }
         description="Ova lekcija je jedna od poslednjih ozbiljnih provera algebarske zrelosti pred prijemni. Ključ nije u tome da umeš da kvadriraš, nego da znaš kada smeš. Čim vidiš √A(x) □ B(x), prvi posao nije računanje nego logičko grananje po znaku desne strane."
-        heroImageSrc="/api/lessons/25/hero"
+        heroImageSrc="/images/lessons/lesson25_hero.png"
         heroImageAlt="Apstraktna matematička ilustracija za lekciju o iracionalnim nejednačinama"
         cards={[
           {

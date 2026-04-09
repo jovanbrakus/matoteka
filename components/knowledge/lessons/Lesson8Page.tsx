@@ -45,7 +45,7 @@ export default function Lesson8Page() {
           </>
         }
         description="Procenat je samo odnos prema celini, ali se iz te ideje rađaju veoma različiti zadaci: poskupljenja i pojeftinjenja, koncentracije rastvora, legure i tekstualni problemi koje FON redovno koristi da proveri da li umeš da iz teksta izvučeš pravu bazu i pravi faktor promene."
-        heroImageSrc="/api/lessons/8/hero"
+        heroImageSrc="/images/lessons/lesson8_hero.png"
         heroImageAlt="Apstraktna matematička tabla sa procentima, faktorima promene i koncentracijama"
         cards={[
           {

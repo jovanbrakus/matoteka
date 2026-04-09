@@ -516,7 +516,7 @@ export default function Lesson13Page() {
           </>
         }
         description="Ova lekcija uvodi red u računanje sa polinomima: prvo prepoznaš kanonski oblik i stepen, zatim sigurno sabiraš, oduzimaš i množiš, a na kraju razumeš šta zapravo znači zapis P(x)=D(x)·Q(x)+R(x)."
-        heroImageSrc="/api/lessons/13/hero"
+        heroImageSrc="/images/lessons/lesson13_hero.png"
         heroImageAlt="Ilustracija polinoma jedne promenljive i osnovnih operacija"
         cards={[
           {

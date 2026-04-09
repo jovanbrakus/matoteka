@@ -45,7 +45,7 @@ export default function Lesson55Page() {
           </>
         }
         description="Aritmetički niz deluje jednostavno dok ga gledaš kao listu brojeva. Postaje mnogo moćniji kada ga vidiš kao pravilo: svaki sledeći član nastaje istim pomakom. Upravo taj stalni pomak omogućava da brzo računaš bilo koji član, zbir prvih n članova i da tekstualne uslove prevodiš u linearne jednačine koje su veoma česte na prijemnom."
-        heroImageSrc="/api/lessons/55/hero"
+        heroImageSrc="/images/lessons/lesson55_hero.png"
         heroImageAlt="Ilustracija matematičke table za lekciju o aritmetičkom nizu"
         cards={[
           {

@@ -36,7 +36,7 @@ export default function LessonCard({ lesson }: { lesson: LessonMeta }) {
               alt={lesson.title}
               className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-700"
               loading="lazy"
-              src={`/api/lessons/${lesson.id}/hero`}
+              src={`/images/lessons/lesson${lesson.id}_hero.png`}
             />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-[#FF6B00]/20 to-[#FE9D00]/10" />
@@ -79,7 +79,7 @@ export default function LessonCard({ lesson }: { lesson: LessonMeta }) {
             {lesson.readingTimeMin} min
           </span>
           <span className="bg-[#FF6B00] text-black px-6 py-3 rounded-lg font-bold uppercase tracking-widest text-xs transition-all group-hover:bg-[#ff7524] shadow-lg shadow-[#FF6B00]/10"
-            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+            style={{ fontFamily: "var(--font-space-grotesk), sans-serif" }}
           >
             Otvori
           </span>

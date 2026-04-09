@@ -452,7 +452,7 @@ export default function Lesson17Page() {
           </>
         }
         description="Kada vidiš sistem jednačina, ne gledas dve ili tri zasebne formule, već tražis zajedničko rešenje. Upravo ta promena perspektive čini ovu lekciju važnom. Za prijemni nije dovoljno da znaš da računaš: moraš da prepoznaš koji metod je najbrži, kada determinant pomaže, a kada moraš da pređeš na pažljivu diskusiju slučajeva."
-        heroImageSrc="/api/lessons/17/hero"
+        heroImageSrc="/images/lessons/lesson17_hero.png"
         heroImageAlt="Ilustracija sistema linearnih jednačina, Kramerovog pravila i Gausovog algoritma"
         cards={[
           {

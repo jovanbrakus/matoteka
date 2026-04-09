@@ -43,7 +43,7 @@ export default function Lesson46Page() {
           </>
         }
         description="Ova lekcija te vodi kroz prizme, piramide i zarubljene piramide tako da formule ne učiš napamet, nego iz mreže, preseka i jasne slike tela. Glavni cilj je da na prijemnom odmah razlikuješ šta je površina baze B, šta je obim baze O_b, šta je prava visina H, a šta bočna visina s ili bočna ivica."
-        heroImageSrc="/api/lessons/46/hero"
+        heroImageSrc="/images/lessons/lesson46_hero.png"
         heroImageAlt="Ilustracija za lekciju o poliedrima: prizma, piramida, površina i zapremina"
         cards={[
           {

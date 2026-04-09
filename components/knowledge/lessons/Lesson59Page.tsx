@@ -45,7 +45,7 @@ export default function Lesson59Page() {
           </>
         }
         description="Prvi izvod je trenutak kada račun prestaje da bude samo niz formula i postaje alat za razumevanje ponašanja funkcije. Kroz ovu lekciju učiš kako da iz znaka izvoda pročitaš gde funkcija raste ili opada, kako da prepoznaš minimum i maksimum i kako da napišeš jednačinu tangente bez nagađanja."
-        heroImageSrc="/api/lessons/59/hero"
+        heroImageSrc="/images/lessons/lesson59_hero.png"
         heroImageAlt="Apstraktna matematička tabla sa grafikom funkcije, tangentom i označenim ekstremima"
         cards={[
           {

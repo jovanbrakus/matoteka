@@ -42,7 +42,7 @@ export default function Lesson39Page() {
           </>
         }
         description="Na prijemnom nije dovoljno da pronađeš jedan ugao. Kod trigonometrijskih jednačina moraš da vidiš sve uglove koji daju isti sinus, kosinus, tangens ili kotangens, da pravilno zapišeš opšte rešenje i da zatim izdvojiš samo ona rešenja koja pripadaju zadatom intervalu."
-        heroImageSrc="/api/lessons/39/hero"
+        heroImageSrc="/images/lessons/lesson39_hero.png"
         heroImageAlt="Ilustracija za lekciju o osnovnim trigonometrijskim jednačinama"
         cards={[
           {

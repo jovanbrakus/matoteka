@@ -48,7 +48,7 @@ export default function Lesson43Page() {
           </>
         }
         description="Kada trougao nije pravougli, Pitagorina teorema više nije dovoljna. Tada na scenu stupaju sinusna i kosinusna teorema: alati koji ti dozvoljavaju da iz nekoliko pažljivo povezanih podataka odrediš nepoznate stranice, uglove i površinu, baš onako kako se to traži na prijemnim zadacima."
-        heroImageSrc="/api/lessons/43/hero"
+        heroImageSrc="/images/lessons/lesson43_hero.png"
         heroImageAlt="Apstraktna matematička ilustracija sa trouglovima, kružnicama i geometrijskim konstrukcijama"
         cards={[
           {

@@ -43,7 +43,7 @@ export default function Lesson50Page() {
           </>
         }
         description="Jedna prava na prijemnom retko dolazi sama. Nekad treba da iz njenog zapisa pročitaš nagib, nekad da prevedeš oblik, nekad da ispitaš odnos dve prave, a nekad da izračunaš rastojanje tačke od nje. Ključ je da ne učiš formule napamet, već da razumeš šta svaki zapis odmah otkriva."
-        heroImageSrc="/api/lessons/50/hero"
+        heroImageSrc="/images/lessons/lesson50_hero.png"
         heroImageAlt="Ilustracija za lekciju o pravoj, oblicima jednačine, uglu između pravih i udaljenosti tačke od prave"
         cards={[
           {

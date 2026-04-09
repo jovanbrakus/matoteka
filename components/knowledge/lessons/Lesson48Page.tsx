@@ -43,7 +43,7 @@ export default function Lesson48Page() {
           </>
         }
         description="Ovo je lekcija u kojoj stereometrija najviše liči na prijemni ispit: telo je u prostoru, ali se rešenje skoro uvek krije u pažljivo izabranom preseku. Kada lopta postane krug, valjak pravougaonik, a kupa jednakokraki trougao, zadatak se naglo pretvara u poznatu planimetriju. Zato je prava veština ove teme manje u pamćenju formula, a više u tome da vidiš koji se ravni model krije iza 3D slike."
-        heroImageSrc="/api/lessons/48/hero"
+        heroImageSrc="/images/lessons/lesson48_hero.png"
         heroImageAlt="Ilustracija upisanih i opisanih geometrijskih tela"
         cards={[
           {

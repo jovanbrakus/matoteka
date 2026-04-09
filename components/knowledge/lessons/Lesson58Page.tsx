@@ -45,7 +45,7 @@ export default function Lesson58Page() {
           </>
         }
         description="Ova lekcija je mesto gde izvod prestaje da bude apstraktna definicija i postaje alat koji moraš da koristiš brzo, tačno i bez panike. Za prijemni nije dovoljno da znaš šta je izvod; moraš da prepoznaš oblik funkcije i da bez greške aktiviraš pravo pravilo."
-        heroImageSrc="/api/lessons/58/hero"
+        heroImageSrc="/images/lessons/lesson58_hero.png"
         heroImageAlt="Ilustracija za lekciju o diferencijalnom računu: graf funkcije sa tangentom i tablica izvoda"
         cards={[
           {

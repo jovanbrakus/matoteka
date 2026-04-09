@@ -44,7 +44,7 @@ export default function Lesson38Page() {
           </>
         }
         description='U ovoj lekciji ne učiš samo da "prepoznaš" sinus ili tangens, već da iz formule odmah pročitaš kako izgleda grafik, gde se ponavlja, gde seče x-osu i gde funkcija uopšte nije definisana. To je presudno i za ručno skiciranje i za kasnije rešavanje jednačina i nejednačina na prijemnom.'
-        heroImageSrc="/api/lessons/38/hero"
+        heroImageSrc="/images/lessons/lesson38_hero.png"
         heroImageAlt="Ilustracija sa grafikama sinusa, kosinusa, tangensa i kotangensa, periodama, nulama i asimptotama"
         cards={[
           {

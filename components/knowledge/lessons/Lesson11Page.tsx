@@ -891,7 +891,7 @@ export default function Lesson11Page() {
           </>
         }
         description="Ova lekcija je srce algebarske tehnike: umesto da izraz samo razviješ, učiš da ga vratiš unazad u proizvod. To je presudno za sređivanje razlomaka, rešavanje jednačina i brzo prepoznavanje skrivene strukture u prijemnim zadacima."
-        heroImageSrc="/api/lessons/11/hero"
+        heroImageSrc="/images/lessons/lesson11_hero.png"
         heroImageAlt="Ilustracija algebarskih transformacija i rastavljanja na faktore"
         cards={[
           {

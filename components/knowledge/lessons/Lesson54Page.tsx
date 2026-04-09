@@ -43,7 +43,7 @@ export default function Lesson54Page() {
           </>
         }
         description="Parabola izgleda jednostavno dok je samo crtaš, ali na prijemnom ona postaje ozbiljna tek kada je povežeš sa tangentom, fokusom i zadacima o najmanjem rastojanju. Ova lekcija je napravljena tako da učenik ne pamti tri odvojene formule, nego jednu istu ideju vidi iz više uglova: iz slike, iz jednačine i iz tipičnog ispitnog zadatka."
-        heroImageSrc="/api/lessons/54/hero"
+        heroImageSrc="/images/lessons/lesson54_hero.png"
         heroImageAlt="Ilustracija parabole i uslova dodira"
         cards={[
           {

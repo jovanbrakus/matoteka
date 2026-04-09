@@ -46,7 +46,7 @@ export default function Lesson34Page() {
           </>
         }
         description="Ova lekcija je tačka u kojoj trigonometrija postaje alat, a ne zbir nepovezanih formula. Cilj nije da mehanički pamtiš napamet sve oblike, nego da svaku vrednost brzo svedeš na ugao iz prvog kvadranta i da pri tom tačno odredi znak i funkciju koja ostaje."
-        heroImageSrc="/api/lessons/34/hero"
+        heroImageSrc="/images/lessons/lesson34_hero.png"
         heroImageAlt="Jedinična kružnica sa kvadrantima, referentnim uglovima i formulama za svođenje"
         cards={[
           {

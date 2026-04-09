@@ -47,7 +47,7 @@ export default function Lesson22Page() {
           </>
         }
         description="Kada na prijemnom vidiš kvadratnu nejednačinu, cilj nije da mehanički nađeš korene pa nešto napišeš oko njih. Cilj je da iz dve informacije, znaka koeficijenta a i položaja nula, odmah pročitaš gde je parabola iznad, a gde ispod x-ose. Tada rešenje postaje logično, a ne napamet naučen šablon."
-        heroImageSrc="/api/lessons/22/hero"
+        heroImageSrc="/images/lessons/lesson22_hero.png"
         heroImageAlt="Ilustracija za lekciju o kvadratnim nejednačinama"
         cards={[
           {

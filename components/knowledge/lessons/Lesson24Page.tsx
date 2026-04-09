@@ -43,7 +43,7 @@ export default function Lesson24Page() {
           </>
         }
         description="Iracionalne jednačine na prijemnom nisu teške zato što su nepoznate, već zato što traže disciplinu. Ako preskočiš domenu, uslov da druga strana bude nenegativna i proveru u originalu, lako dobiješ lepo izračunato, a pogrešno rešenje. Ova lekcija te uči upravo toj disciplini."
-        heroImageSrc="/api/lessons/24/hero"
+        heroImageSrc="/images/lessons/lesson24_hero.png"
         heroImageAlt="Apstraktna matematička ilustracija za lekciju o iracionalnim jednačinama"
         cards={[
           {

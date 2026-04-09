@@ -43,7 +43,7 @@ export default function Lesson27Page() {
           </>
         }
         description="Kod ove lekcije najvažnije je da prestaneš da gledaš jednačinu kao gomilu brojeva i da počneš da tražiš obrazac. Nekad treba samo da prepoznaš istu osnovu, nekad da izdvojiš zajednički faktor, a nekad da uvedeš smenu u=a^x i ceo zadatak pretvoriš u kvadratnu jednačinu. Kada jednom savladaš tu logiku, veliki broj prijemnih zadataka postaje rutinski i pregledan."
-        heroImageSrc="/api/lessons/27/hero"
+        heroImageSrc="/images/lessons/lesson27_hero.png"
         heroImageAlt="Apstraktna matematička ilustracija za lekciju o eksponencijalnim jednačinama"
         cards={[
           {

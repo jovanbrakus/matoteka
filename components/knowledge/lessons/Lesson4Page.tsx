@@ -46,7 +46,7 @@ export default function Lesson4Page() {
           </>
         }
         description="Funkcija je jedno od najvažnijih matematičkih oruđa: svakom dozvoljenom ulazu dodeljuje tačno jedan izlaz. Iz te ideje nastaju kompozicija, inverzna funkcija i veliki deo zadataka na prijemnim ispitima gde moraš da proveriš domen, kodomen i ponašanje formule."
-        heroImageSrc="/api/lessons/4/hero"
+        heroImageSrc="/images/lessons/lesson4_hero.png"
         heroImageAlt="Apstraktna matematička tabla sa preslikavanjima i funkcijama"
         cards={[
           {

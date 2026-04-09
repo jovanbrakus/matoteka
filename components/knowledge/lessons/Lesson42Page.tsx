@@ -693,7 +693,7 @@ export default function Lesson42Page() {
           </>
         }
         description="Ovo je lekcija u kojoj geometrija prestaje da bude skup nepovezanih formula. Kada razumeš kako se iz uglova prelazi na podudarnost, iz paralelnosti na sličnost, a iz konstrukcije na značajne tačke trougla, dobijaš alat koji rešava veliki broj planimetrijskih zadataka na prijemnom ispitu."
-        heroImageSrc="/api/lessons/42/hero"
+        heroImageSrc="/images/lessons/lesson42_hero.png"
         heroImageAlt="Apstraktna matematička ilustracija sa geometrijskim konstrukcijama, trouglovima i linijama"
         cards={[
           {

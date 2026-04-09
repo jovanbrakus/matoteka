@@ -497,7 +497,7 @@ export default function LandingHero() {
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-8 px-6 md:flex-row">
           <div className="flex items-center gap-3">
             <img src="/logo.svg" alt="Matoteka" className="h-8 w-8" />
-            <span className="text-lg font-semibold text-heading" style={{ fontFamily: "'Fredoka', sans-serif" }}>
+            <span className="text-lg font-semibold text-heading" style={{ fontFamily: "var(--font-fredoka), sans-serif" }}>
               Matoteka
             </span>
           </div>

@@ -41,7 +41,7 @@ export default function Lesson35Page() {
           </>
         }
         description="Ovo je lekcija u kojoj trigonometrija prelazi iz pukog čitanja vrednosti u pravo računanje sa uglovima. Adicioni teoremi ti omogućavaju da rastaviš težak ugao na dva lakša, da izvedeš specijalne vrednosti bez tablice i da u dugačkom izrazu prepoznaš skriven obrazac koji vodi do kratkog rešenja."
-        heroImageSrc="/api/lessons/35/hero"
+        heroImageSrc="/images/lessons/lesson35_hero.png"
         heroImageAlt="Jedinična kružnica sa uglovima alfa, beta i alfa plus beta, formule za sinus i kosinus zbira"
         cards={[
           {

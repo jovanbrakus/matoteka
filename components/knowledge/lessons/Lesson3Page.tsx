@@ -44,7 +44,7 @@ export default function Lesson3Page() {
           </>
         }
         description="Relacija govori koji su uređeni parovi dozvoljeni. Iz te jednostavne ideje nastaju klase ekvivalencije, poredak brojeva, matrice relacije i veliki deo jezika kojim matematika opisuje strukturu nekog skupa."
-        heroImageSrc="/api/lessons/3/hero"
+        heroImageSrc="/images/lessons/lesson3_hero.png"
         heroImageAlt="Apstraktna matematička tabla sa relacijama i strukturama"
         cards={[
           {

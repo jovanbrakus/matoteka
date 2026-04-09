@@ -45,7 +45,7 @@ export default function Lesson57Page() {
           </>
         }
         description="Limes je prvi veliki korak iz školske algebre ka matematičkoj analizi. U ovoj lekciji nećeš samo računati rezultate, nego ćeš naučiti šta zaista znači da se niz ili funkcija približava nekom broju, kako da prepoznaš neodređenost i kako da iz limesa pročitaš asimptotu bez haotičnog računanja."
-        heroImageSrc="/api/lessons/57/hero"
+        heroImageSrc="/images/lessons/lesson57_hero.png"
         heroImageAlt="Ilustracija za lekciju o graničnoj vrednosti niza i funkcije"
         cards={[
           {

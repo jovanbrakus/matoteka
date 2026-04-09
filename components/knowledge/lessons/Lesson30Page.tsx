@@ -45,7 +45,7 @@ export default function Lesson30Page() {
           </>
         }
         description="Logaritamski grafik ne treba učiti kao izolovanu sliku. On je ogledalo eksponencijalnog grafa preko prave y=x. Kada to zaista vidiš, odmah postaju prirodni domen x>0, vertikalna asimptota, rast ili pad i ponašanje pomerenih grafika."
-        heroImageSrc="/api/lessons/30/hero"
+        heroImageSrc="/images/lessons/lesson30_hero.png"
         heroImageAlt="Apstraktna matematička ilustracija za lekciju o logaritamskoj funkciji"
         cards={[
           {

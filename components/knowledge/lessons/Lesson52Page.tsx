@@ -425,7 +425,7 @@ export default function Lesson52Page() {
           </>
         }
         description="Elipsa na prijemnom nije samo &laquo;ona kriva sa dva imenitelja&raquo;. Moraš da umeš da pročitaš poluose, temena i žiže, ali i da prepoznaš kada prava dodiruje elipsu u jednoj jedinoj tački. Tu se spajaju geometrijska intuicija, diskriminanta i dobra kontrola formule."
-        heroImageSrc="/api/lessons/52/hero"
+        heroImageSrc="/images/lessons/lesson52_hero.png"
         heroImageAlt="Ilustracija za lekciju o elipsi i uslovu dodira"
         cards={[
           {

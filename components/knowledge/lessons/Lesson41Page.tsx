@@ -41,7 +41,7 @@ export default function Lesson41Page() {
           </>
         }
         description="Kod jednačina si tražio pojedinačne uglove. Kod nejednačina tražiš čitave lukove i intervale. Zato ovde nije dovoljno da pronađeš granične tačke. Moraš da razumeš gde je funkcija iznad, a gde ispod zadate vrednosti, kako radi perioda i kada krajnje tačke ulaze u rešenje."
-        heroImageSrc="/api/lessons/41/hero"
+        heroImageSrc="/images/lessons/lesson41_hero.png"
         heroImageAlt="Apstraktna matematička ilustracija sa trigonometrijskim talasom, kružnicom i intervalima"
         cards={[
           {

@@ -44,7 +44,7 @@ export default function Lesson21Page() {
           </>
         }
         description="Ova lekcija je prelomna tačka u algebri: prvi put vidiš da o korenovima kvadratne jednačine možeš da govoriš bez njihovog direktnog računanja. Na prijemnom to znači manje računanja, više kontrole i mnogo brže rešavanje zadataka sa parametrima."
-        heroImageSrc="/api/lessons/21/hero"
+        heroImageSrc="/images/lessons/lesson21_hero.png"
         heroImageAlt="Apstraktna matematička tabla sa kvadratnom jednačinom, parabolom i vezom između korenova i koeficijenata"
         cards={[
           {

@@ -43,7 +43,7 @@ export default function Lesson2Page() {
           </>
         }
         description="Skupovi su jezik kojim matematika vrlo precizno govori o tome šta pripada, šta ne pripada, šta je zajedničko i kako se uslovi međusobno presecaju. Bez ovog jezika teško je sigurno raditi sa intervalima, domenima i sistemima nejednačina."
-        heroImageSrc="/api/lessons/2/hero"
+        heroImageSrc="/images/lessons/lesson2_hero.png"
         heroImageAlt="Apstraktna matematička tabla sa simboličkim zapisima teorije skupova"
         cards={[
           {

@@ -47,7 +47,7 @@ export default function Lesson10Page() {
           </>
         }
         description="Kada kompleksan broj napišeš preko modula i argumenta, množenje postaje sabiranje uglova, stepenovanje postaje množenje ugla, a korenovanje se pretvara u uredan raspored tačaka na kružnici. Upravo zato je ova lekcija standardni filter na tehničkim prijemnim ispitima."
-        heroImageSrc="/api/lessons/10/hero"
+        heroImageSrc="/images/lessons/lesson10_hero.png"
         heroImageAlt="Ilustracija za lekciju o trigonometrijskom obliku kompleksnog broja"
         cards={[
           {

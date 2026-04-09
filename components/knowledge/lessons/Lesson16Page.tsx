@@ -45,7 +45,7 @@ export default function Lesson16Page() {
           </>
         }
         description="Kada vidiš zapis y = kx + n, treba odmah da znaš tri stvari: kako prava izgleda, gde seče ose i da li raste ili opada. To je jedan od osnovnih modela na prijemnim ispitima, jer povezuje algebru, koordinatni sistem i čitanje uslova iz zadatka."
-        heroImageSrc="/api/lessons/16/hero"
+        heroImageSrc="/images/lessons/lesson16_hero.png"
         heroImageAlt="Ilustracija linearne funkcije i njenog grafika"
         cards={[
           {

@@ -45,7 +45,7 @@ export default function Lesson7Page() {
           </>
         }
         description="Ova lekcija uči kako da odnos između veličina prevedeš u tačan račun. Kada znaš da razlikuješ direktnu od obrnute proporcionalnosti, tekstualni zadatak više nije zagonetka nego uredno postavljena proporcija."
-        heroImageSrc="/api/lessons/7/hero"
+        heroImageSrc="/images/lessons/lesson7_hero.png"
         heroImageAlt="Apstraktna matematička tabla sa proporcijama i odnosima između veličina"
         cards={[
           {

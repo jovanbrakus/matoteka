@@ -45,7 +45,7 @@ export default function Lesson6Page() {
           </>
         }
         description="Ova lekcija pretvara ostatke pri deljenju u ozbiljan alat. Učiš kako da razdvojiš proste i složene brojeve, kako da brzo nađeš NZD i NZS, i kako da modularno razmišljaš kada tražiš poslednju cifru ili ispituješ ostatke."
-        heroImageSrc="/api/lessons/6/hero"
+        heroImageSrc="/images/lessons/lesson6_hero.png"
         heroImageAlt="Apstraktna matematička tabla sa deljivošću, ostacima i algoritmima"
         cards={[
           {

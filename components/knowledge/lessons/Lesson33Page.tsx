@@ -46,7 +46,7 @@ export default function Lesson33Page() {
           </>
         }
         description={'Ovo je lekcija koja otvara celu trigonometriju. Kada razume\u0161 \u0161ta je radijan i kako ugao odre\u0111uje ta\u010dku na jedini\u010dnoj kru\u017enici, sinus i kosinus prestaju da budu \u201Eformule iz trougla\u201C i postaju koordinate ta\u010dke za svaki realan ugao.'}
-        heroImageSrc="/api/lessons/33/hero"
+        heroImageSrc="/images/lessons/lesson33_hero.png"
         heroImageAlt="Apstraktna matematička tabla sa jediničnom kružnicom, radijanima i standardnim uglovima"
         cards={[
           {

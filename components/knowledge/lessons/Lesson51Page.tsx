@@ -44,7 +44,7 @@ export default function Lesson51Page() {
           </>
         }
         description="Kada vidiš kružnicu na prijemnom, skoro nikada nije dovoljno samo prepoznati formulu. Moraš da znaš da pročitaš centar i poluprečnik, da iz geometrijskih uslova sastaviš jednačinu i da shvatiš zašto je tangenta poseban položaj u kome je rastojanje centra od prave tačno jednako poluprečniku."
-        heroImageSrc="/api/lessons/51/hero"
+        heroImageSrc="/images/lessons/lesson51_hero.png"
         heroImageAlt="Ilustracija za lekciju o kružnici i uslovu dodira prave i kružnice"
         cards={[
           {

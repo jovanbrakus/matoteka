@@ -44,7 +44,7 @@ export default function Lesson28Page() {
           </>
         }
         description="Ovde nije dovoljno da znaš kako se rešavaju eksponencijalne jednačine. Moraš da razumeš i kako se ponaša funkcija y = a^x: ako raste, znak ostaje isti; ako opada, znak se okreće. Upravo na toj tački prijemni najčešće odvaja sigurno znanje od rutinskog računanja."
-        heroImageSrc="/api/lessons/28/hero"
+        heroImageSrc="/images/lessons/lesson28_hero.png"
         heroImageAlt="Apstraktna matematička ilustracija za lekciju o eksponencijalnim nejednačinama"
         cards={[
           {

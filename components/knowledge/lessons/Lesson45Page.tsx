@@ -709,7 +709,7 @@ export default function Lesson45Page() {
           </>
         }
         description={'Ova lekcija spaja dve stvari koje u\u010Denici \u010Desto u\u010De odvojeno, a na prijemnom se pojavljuju zajedno: ra\u010Dunanje obima, povr\u0161ine, luka i kru\u017Enog ise\u010Dka, kao i prepoznavanje osobina tetivnih i tangentnih \u010Detvorouglova. Kada razume\u0161 da je centralni ugao glavna \u201Ekomanda\u201C koja upravlja lukom, tetivom i ise\u010Dkom, formule prestaju da budu ne\u0161to za bubanje i postaju logi\u010Dne.'}
-        heroImageSrc="/api/lessons/45/hero"
+        heroImageSrc="/images/lessons/lesson45_hero.png"
         heroImageAlt="Ilustracija kruga i delova kruga"
         cards={[
           {

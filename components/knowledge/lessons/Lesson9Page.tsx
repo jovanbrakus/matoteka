@@ -44,7 +44,7 @@ export default function Lesson9Page() {
           </>
         }
         description="Kompleksan broj nije nekakav dodatak matematici, već uredan način da rešimo jednačine poput x² + 1 = 0, jasno računamo sa izrazima a + bi i sigurnije prolazimo kroz zadatke sa ETF-a i FON-a. Cilj ove lekcije je da svaki račun svedeš na prepoznatljiv oblik i da odmah vidiš gde je realni, a gde imaginarni deo."
-        heroImageSrc="/api/lessons/9/hero"
+        heroImageSrc="/images/lessons/lesson9_hero.png"
         heroImageAlt="Ilustracija za lekciju o kompleksnim brojevima"
         cards={[
           {

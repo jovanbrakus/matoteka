@@ -56,7 +56,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md rounded-2xl border border-[var(--glass-border)] bg-card p-8 text-center">
         <div className="mb-2 flex items-center justify-center gap-3">
           <img src="/logo.svg" alt="Matoteka" className="h-10 w-10" />
-          <span className="text-3xl font-semibold text-heading" style={{ fontFamily: "'Fredoka', sans-serif" }}>
+          <span className="text-3xl font-semibold text-heading" style={{ fontFamily: "var(--font-fredoka), sans-serif" }}>
             Matoteka
           </span>
         </div>

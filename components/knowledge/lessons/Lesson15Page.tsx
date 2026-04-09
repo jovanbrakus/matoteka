@@ -45,7 +45,7 @@ export default function Lesson15Page() {
           </>
         }
         description={'Ova lekcija povezuje tri ideje koje se na prijemnom stalno ukrštaju: nule polinoma, faktorski zapis i koeficijente polinoma. Kada razumeš kako se korenovi \u201Eupisuju\u201C u koeficijente, mnogi zadaci prestaju da budu nasumično računanje i postaju jasan sistem uslova.'}
-        heroImageSrc="/api/lessons/15/hero"
+        heroImageSrc="/images/lessons/lesson15_hero.png"
         heroImageAlt="Ilustracija nula polinoma i Vijetovih formula"
         cards={[
           {

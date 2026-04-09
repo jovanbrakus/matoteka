@@ -43,7 +43,7 @@ export default function Lesson44Page() {
           </>
         }
         description={'U zadacima iz planimetrije nije dovoljno da vidiš samo \u201Eneki četvorougao\u201C. Potrebno je da odmah prepoznaš porodicu lika, znaš koje osobine dijagonala i uglova su sigurne, a koje važe samo u specijalnim slučajevima. Tada se crtež otvara: jedan trapez postaje zbir pravougaonika i trouglova, jedan romb krije dva prava trougla, a pravilan mnogougao se rastavlja na jednostavne delove.'}
-        heroImageSrc="/api/lessons/44/hero"
+        heroImageSrc="/images/lessons/lesson44_hero.png"
         heroImageAlt="Apstraktna matematička ilustracija sa četvorouglovima, mnogouglovima i geometrijskim konstrukcijama"
         cards={[
           {

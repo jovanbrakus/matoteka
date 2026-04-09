@@ -44,7 +44,7 @@ export default function Lesson49Page() {
           </>
         }
         description="Analitička geometrija počinje onog trenutka kada sliku prevedeš u brojeve. Tačka postaje uređeni par, duž postaje razlika koordinata, a površina trougla izlazi iz jednog urednog determinantnog zapisa. Ako ovu lekciju razumeš kako treba, naredne teme o pravoj, kružnici i tangenti biće znatno mirnije."
-        heroImageSrc="/api/lessons/49/hero"
+        heroImageSrc="/images/lessons/lesson49_hero.png"
         heroImageAlt="Ilustracija za lekciju o tački, rastojanju i površini trougla preko koordinata"
         cards={[
           {

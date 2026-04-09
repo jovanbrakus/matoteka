@@ -683,7 +683,7 @@ export default function Lesson12Page() {
           </>
         }
         description='Ova lekcija nije samo "račun sa slovima u razlomku". Ovde postaje presudno da poštuješ red rada: prvo domen, zatim faktorizacija, onda NZS ili recipročni oblik, pa tek na kraju skraćivanje i konačno sređivanje.'
-        heroImageSrc="/api/lessons/12/hero"
+        heroImageSrc="/images/lessons/lesson12_hero.png"
         heroImageAlt="Ilustracija racionalnih algebarskih izraza i operacija sa razlomcima"
         cards={[
           {

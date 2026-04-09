@@ -44,7 +44,7 @@ export default function Lesson53Page() {
           </>
         }
         description="Hiperbola je lekcija u kojoj učenik konačno mora da poveže formulu, sliku i prijemni refleks. Nije dovoljno znati samo kanonsku jednačinu: moraš da vidiš kako grane prate asimptote, kako se iz parametara čitaju žiže i kada prava zaista može da bude tangenta."
-        heroImageSrc="/api/lessons/53/hero"
+        heroImageSrc="/images/lessons/lesson53_hero.png"
         heroImageAlt="Ilustracija za lekciju o hiperboli i uslovu dodira"
         cards={[
           {

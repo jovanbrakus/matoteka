@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { TopNav } from "@/components/nav/top-nav";
-import AuthenticatedLayout from "@/components/layout/authenticated-layout";
 import { SessionProvider } from "next-auth/react";
-import { auth } from "@/lib/auth";
 import { Analytics } from "@vercel/analytics/next";
 import { absoluteUrl, createMetadata, serializeJsonLd, SITE_NAME, SITE_URL } from "@/lib/seo";
+import { Inter, Fredoka, Space_Grotesk, Manrope, Public_Sans } from "next/font/google";
+
+const inter = Inter({ subsets: ["latin", "latin-ext"], variable: "--font-inter", display: "swap" });
+const fredoka = Fredoka({ subsets: ["latin", "latin-ext"], variable: "--font-fredoka", display: "swap" });
+const spaceGrotesk = Space_Grotesk({ subsets: ["latin", "latin-ext"], variable: "--font-space-grotesk", display: "swap" });
+const manrope = Manrope({ subsets: ["latin", "latin-ext"], variable: "--font-manrope", display: "swap" });
+const publicSans = Public_Sans({ subsets: ["latin", "latin-ext"], variable: "--font-public-sans", display: "swap" });
 
 export const metadata: Metadata = {
   ...createMetadata({
@@ -39,28 +43,18 @@ export const metadata: Metadata = {
     : undefined,
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth();
-  const isAuthenticated = !!session?.user;
-  const user = isAuthenticated ? session.user : null;
-
   return (
-    <html lang="sr" className="dark" suppressHydrationWarning>
+    <html lang="sr" className={`dark ${inter.variable} ${fredoka.variable} ${spaceGrotesk.variable} ${manrope.variable} ${publicSans.variable}`} suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
             __html: `try{var t=localStorage.getItem("theme");if(t==="light"){document.documentElement.classList.remove("dark");document.documentElement.classList.add("light")}}catch(e){}`,
           }}
-        />
-        <link href="https://fonts.googleapis.com" rel="preconnect" />
-        <link crossOrigin="" href="https://fonts.gstatic.com" rel="preconnect" />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fredoka:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap"
         />
         <link
           rel="stylesheet"
@@ -101,22 +95,7 @@ export default async function RootLayout({
           }}
         />
         <SessionProvider>
-          {isAuthenticated ? (
-            <AuthenticatedLayout
-              user={{
-                displayName:
-                  user?.displayName || user?.name || "Korisnik",
-                avatarUrl: user?.image || null,
-              }}
-            >
-              {children}
-            </AuthenticatedLayout>
-          ) : (
-            <>
-              <TopNav />
-              <main>{children}</main>
-            </>
-          )}
+          {children}
         </SessionProvider>
         <Analytics />
       </body>

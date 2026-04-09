@@ -45,7 +45,7 @@ export default function Lesson26Page() {
           </>
         }
         description="Kada je promenljiva u eksponentu, grafik više ne liči ni na pravu ni na parabolu. Upravo zato ova lekcija traži novi mentalni model: baza određuje da li funkcija raste ili opada, a pomeraji menjaju položaj cele krive i njene asimptote. Ako ovo razumeš kako treba, sledeće lekcije o eksponencijalnim jednačinama i logaritmima postaju mnogo preglednije."
-        heroImageSrc="/api/lessons/26/hero"
+        heroImageSrc="/images/lessons/lesson26_hero.png"
         heroImageAlt="Apstraktna matematička ilustracija za lekciju o eksponencijalnoj funkciji"
         cards={[
           {

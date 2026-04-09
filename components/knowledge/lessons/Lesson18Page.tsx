@@ -44,7 +44,7 @@ export default function Lesson18Page() {
           </>
         }
         description="Apsolutna vrednost ne traži brzinu bez razmišljanja, već disciplinu. Na prijemnom te najčešće ne obori sam račun, nego pogrešan znak, zaboravljen uslov ili propušten presek sa intervalom. Zato ovu lekciju učimo kao spoj intuicije o rastojanju i precizne intervalne logike."
-        heroImageSrc="/api/lessons/18/hero"
+        heroImageSrc="/images/lessons/lesson18_hero.png"
         heroImageAlt="Ilustracija matematičke table za lekciju o apsolutnoj vrednosti"
         cards={[
           {

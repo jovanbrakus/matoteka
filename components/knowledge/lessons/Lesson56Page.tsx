@@ -47,7 +47,7 @@ export default function Lesson56Page() {
           </>
         }
         description="Kada se svaki sledeći član dobija množenjem istim brojem, ulaziš u svet geometrijskog niza. Ova lekcija te vodi od osnovne ideje količnika q, preko opšteg člana i sume prvih n članova, do prvog ozbiljnog susreta sa beskonačnim sabiranjem koje ipak daje konačan rezultat."
-        heroImageSrc="/api/lessons/56/hero"
+        heroImageSrc="/images/lessons/lesson56_hero.png"
         heroImageAlt="Ilustracija za lekciju o geometrijskom nizu i beskonačnom geometrijskom redu"
         cards={[
           {
