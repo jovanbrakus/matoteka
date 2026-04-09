@@ -36,5 +36,9 @@ export default withSentryConfig(nextConfig, {
   // Hide source maps from production client bundles after upload.
   sourcemaps: { disable: false },
   // Automatically tree-shake Sentry logger statements to reduce bundle size.
-  disableLogger: true,
+  webpack: {
+    treeshake: {
+      removeDebugLogging: true,
+    },
+  },
 });
