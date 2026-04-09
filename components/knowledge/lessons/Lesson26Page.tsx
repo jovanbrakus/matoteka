@@ -37,7 +37,7 @@ export default function Lesson26Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 26"
+        eyebrow="Matoteka · Centar znanja · Lekcija 26"
         title={
           <>
             Eksponencijalna funkcija{" "}

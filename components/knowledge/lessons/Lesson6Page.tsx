@@ -35,7 +35,7 @@ export default function Lesson6Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 6"
+        eyebrow="Matoteka · Centar znanja · Lekcija 6"
         title={
           <>
             Deljivost celih brojeva{" "}

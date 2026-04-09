@@ -37,7 +37,7 @@ export default function Lesson5Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 5"
+        eyebrow="Matoteka · Centar znanja · Lekcija 5"
         title={
           <>
             Skupovi brojeva{" "}

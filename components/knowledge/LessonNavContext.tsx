@@ -4,6 +4,7 @@ import { createContext, useContext } from "react";
 
 interface AdjacentLesson {
   id: string;
+  slug: string;
   title: string;
 }
 

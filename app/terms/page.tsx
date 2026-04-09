@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
+import { createMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Uslovi korišćenja — Matoteka",
-  description: "Uslovi korišćenja Matoteka platforme za pripremu prijemnog ispita iz matematike.",
+  ...createMetadata({
+    title: "Uslovi korišćenja — Matoteka",
+    description:
+      "Uslovi korišćenja Matoteka platforme za pripremu prijemnog ispita iz matematike.",
+    path: "/terms",
+  }),
 };
 
 export default function TermsPage() {

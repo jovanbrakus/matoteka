@@ -38,7 +38,7 @@ export default function Lesson59Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 59"
+        eyebrow="Matoteka · Centar znanja · Lekcija 59"
         title={
           <>
             Primena <span className={cs.tHeroAccent}>izvoda</span>

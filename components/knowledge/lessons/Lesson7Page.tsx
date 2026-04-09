@@ -35,7 +35,7 @@ export default function Lesson7Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 7"
+        eyebrow="Matoteka · Centar znanja · Lekcija 7"
         title={
           <>
             Razmere i proporcije{" "}

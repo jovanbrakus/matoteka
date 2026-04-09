@@ -33,7 +33,7 @@ export default function Lesson35Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 35"
+        eyebrow="Matoteka · Centar znanja · Lekcija 35"
         title={
           <>
             Adicioni{" "}

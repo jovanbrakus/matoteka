@@ -36,7 +36,7 @@ export default function Lesson34Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 34"
+        eyebrow="Matoteka · Centar znanja · Lekcija 34"
         title={
           <>
             Osnovni trigonometrijski identiteti{" "}

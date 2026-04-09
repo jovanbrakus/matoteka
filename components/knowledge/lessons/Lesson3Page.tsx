@@ -36,7 +36,7 @@ export default function Lesson3Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 3"
+        eyebrow="Matoteka · Centar znanja · Lekcija 3"
         title={
           <>
             Binarne relacije{" "}

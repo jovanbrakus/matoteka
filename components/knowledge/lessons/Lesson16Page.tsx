@@ -37,7 +37,7 @@ export default function Lesson16Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 16"
+        eyebrow="Matoteka · Centar znanja · Lekcija 16"
         title={
           <>
             Linearna funkcija i njen{" "}

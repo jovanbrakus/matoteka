@@ -36,7 +36,7 @@ export default function Lesson9Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 9"
+        eyebrow="Matoteka · Centar znanja · Lekcija 9"
         title={
           <>
             Kompleksni brojevi{" "}

@@ -35,7 +35,7 @@ export default function Lesson44Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 44"
+        eyebrow="Matoteka · Centar znanja · Lekcija 44"
         title={
           <>
             Četvorouglovi i mnogouglovi{" "}

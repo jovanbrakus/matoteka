@@ -38,7 +38,7 @@ export default function Lesson43Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 43"
+        eyebrow="Matoteka · Centar znanja · Lekcija 43"
         title={
           <>
             Primena trigonometrije u planimetriji{" "}

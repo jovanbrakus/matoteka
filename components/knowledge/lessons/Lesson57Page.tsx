@@ -37,7 +37,7 @@ export default function Lesson57Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 57"
+        eyebrow="Matoteka · Centar znanja · Lekcija 57"
         title={
           <>
             Granična vrednost{" "}

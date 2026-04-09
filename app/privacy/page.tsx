@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
+import { createMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Politika privatnosti — Matoteka",
-  description: "Politika privatnosti Matoteka platforme — kako prikupljamo, koristimo i štitimo vaše podatke.",
+  ...createMetadata({
+    title: "Politika privatnosti — Matoteka",
+    description:
+      "Politika privatnosti Matoteka platforme — kako prikupljamo, koristimo i štitimo vaše podatke.",
+    path: "/privacy",
+  }),
 };
 
 export default function PrivacyPage() {

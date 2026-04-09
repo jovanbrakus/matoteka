@@ -37,7 +37,7 @@ export default function Lesson55Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 55"
+        eyebrow="Matoteka · Centar znanja · Lekcija 55"
         title={
           <>
             Aritmetički niz i{" "}

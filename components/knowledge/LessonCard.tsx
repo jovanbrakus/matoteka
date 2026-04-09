@@ -4,6 +4,7 @@ import Link from "next/link";
 
 interface LessonMeta {
   id: string;
+  slug: string;
   lessonNumber: number;
   title: string;
   description: string;
@@ -24,7 +25,7 @@ export default function LessonCard({ lesson }: { lesson: LessonMeta }) {
   const categoryLabel = CATEGORY_LABELS[lesson.category] || lesson.category;
 
   return (
-    <Link href={`/znanje/${lesson.id}`} className="block">
+    <Link href={`/znanje/${lesson.slug}`} className="block">
       <div
         className="group flex flex-col md:flex-row items-center gap-6 p-6 rounded-xl border border-[var(--glass-border)] hover:border-[#FF6B00]/30 transition-all cursor-pointer glass-card"
       >

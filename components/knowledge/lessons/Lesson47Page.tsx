@@ -35,7 +35,7 @@ export default function Lesson47Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 47"
+        eyebrow="Matoteka · Centar znanja · Lekcija 47"
         title={
           <>
             Obrtna tela:{" "}

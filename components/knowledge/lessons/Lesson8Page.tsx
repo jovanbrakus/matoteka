@@ -35,7 +35,7 @@ export default function Lesson8Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 8"
+        eyebrow="Matoteka · Centar znanja · Lekcija 8"
         title={
           <>
             Procentni račun{" "}

@@ -5,12 +5,37 @@ import AuthenticatedLayout from "@/components/layout/authenticated-layout";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/lib/auth";
 import { Analytics } from "@vercel/analytics/next";
+import { absoluteUrl, createMetadata, serializeJsonLd, SITE_NAME, SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Matoteka — Prijemni ispit iz matematike | 4000+ zadataka",
-  description:
-    "Besplatna platforma za pripremu prijemnog ispita iz matematike. 4000+ rešenih zadataka, 59 interaktivnih lekcija i simulacije ispita za ETF, MATF, FON i druge fakultete Univerziteta u Beogradu.",
-  keywords: "prijemni ispit, matematika, ETF, MATF, FON, rešeni zadaci, Beograd, simulacija ispita, lekcije",
+  ...createMetadata({
+    title: "Matoteka — Prijemni ispit iz matematike | 4000+ zadataka",
+    description:
+      "Besplatna platforma za pripremu prijemnog ispita iz matematike. 4000+ rešenih zadataka, 59 interaktivnih lekcija i simulacije ispita za ETF, MATF, FON i druge fakultete Univerziteta u Beogradu.",
+    path: "/",
+    keywords: [
+      "prijemni ispit",
+      "matematika",
+      "ETF",
+      "MATF",
+      "FON",
+      "rešeni zadaci",
+      "Beograd",
+      "simulacija ispita",
+      "lekcije",
+    ],
+  }),
+  icons: {
+    icon: [
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
+  verification: process.env.GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+    : undefined,
 };
 
 export default async function RootLayout({
@@ -42,6 +67,38 @@ export default async function RootLayout({
         />
       </head>
       <body className="m-0 p-0">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: serializeJsonLd({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "Organization",
+                  "@id": `${SITE_URL}#organization`,
+                  name: SITE_NAME,
+                  url: SITE_URL,
+                  logo: {
+                    "@type": "ImageObject",
+                    url: absoluteUrl("/logo-256.png"),
+                    width: 256,
+                    height: 256,
+                  },
+                },
+                {
+                  "@type": "WebSite",
+                  "@id": `${SITE_URL}#website`,
+                  name: SITE_NAME,
+                  url: SITE_URL,
+                  description:
+                    "Besplatna platforma za pripremu prijemnog ispita iz matematike.",
+                  inLanguage: "sr-RS",
+                  publisher: { "@id": `${SITE_URL}#organization` },
+                },
+              ],
+            }),
+          }}
+        />
         <SessionProvider>
           {isAuthenticated ? (
             <AuthenticatedLayout

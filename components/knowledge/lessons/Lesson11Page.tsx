@@ -883,7 +883,7 @@ export default function Lesson11Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 11"
+        eyebrow="Matoteka · Centar znanja · Lekcija 11"
         title={
           <>
             Transformacije izraza i{" "}

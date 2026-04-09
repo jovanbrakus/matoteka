@@ -442,7 +442,7 @@ export default function Lesson17Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 17"
+        eyebrow="Matoteka · Centar znanja · Lekcija 17"
         title={
           <>
             Sistemi linearnih jednačina{" "}

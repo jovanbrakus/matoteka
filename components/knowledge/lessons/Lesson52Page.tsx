@@ -417,7 +417,7 @@ export default function Lesson52Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 52"
+        eyebrow="Matoteka · Centar znanja · Lekcija 52"
         title={
           <>
             Elipsa{" "}

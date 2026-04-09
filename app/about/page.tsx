@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
+import { createMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "O nama — Matoteka",
-  description: "Saznaj više o Matoteka platformi za pripremu prijemnog ispita iz matematike.",
+  ...createMetadata({
+    title: "O nama — Matoteka",
+    description:
+      "Saznaj više o Matoteka platformi za pripremu prijemnog ispita iz matematike.",
+    path: "/about",
+  }),
 };
 
 export default function AboutPage() {

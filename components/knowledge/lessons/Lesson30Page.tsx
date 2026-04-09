@@ -37,7 +37,7 @@ export default function Lesson30Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 30"
+        eyebrow="Matoteka · Centar znanja · Lekcija 30"
         title={
           <>
             Logaritamska funkcija i njen{" "}

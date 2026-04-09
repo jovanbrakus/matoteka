@@ -35,7 +35,7 @@ export default function Lesson2Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 2"
+        eyebrow="Matoteka · Centar znanja · Lekcija 2"
         title={
           <>
             Teorija skupova i{" "}

@@ -3,6 +3,7 @@ import path from "path";
 
 export interface LessonMeta {
   id: string;
+  slug: string;
   lessonNumber: number;
   title: string;
   description: string;
@@ -57,6 +58,10 @@ export function getLessonMeta(id: string): LessonMeta | null {
   return getIndex().lessons[id] ?? null;
 }
 
+export function getLessonBySlug(slug: string): LessonMeta | null {
+  return getAllLessons().find((l) => l.slug === slug) ?? null;
+}
+
 export function getAllLessons(): LessonMeta[] {
   if (!_allLessons) {
     _allLessons = Object.values(getIndex().lessons).sort(
@@ -85,19 +90,28 @@ export function getLessonCategories(): Array<{ id: string; name: string; icon: s
   }));
 }
 
+export function getLessonCategoryName(categoryId: string): string | null {
+  const category = getIndex().categories.find((entry) => entry.id === categoryId);
+  return category?.name ?? null;
+}
+
 export function getTotalLessons(): number {
   return getIndex().totalLessons;
 }
 
+export function getLessonsGeneratedAt(): string | null {
+  return getIndex().generatedAt || null;
+}
+
 export function getAdjacentLessons(id: string): {
-  prev: { id: string; title: string } | null;
-  next: { id: string; title: string } | null;
+  prev: { id: string; title: string; slug: string } | null;
+  next: { id: string; title: string; slug: string } | null;
 } {
   const all = getAllLessons();
   const idx = all.findIndex((l) => l.id === id);
   return {
-    prev: idx > 0 ? { id: all[idx - 1].id, title: all[idx - 1].title } : null,
-    next: idx < all.length - 1 ? { id: all[idx + 1].id, title: all[idx + 1].title } : null,
+    prev: idx > 0 ? { id: all[idx - 1].id, title: all[idx - 1].title, slug: all[idx - 1].slug } : null,
+    next: idx < all.length - 1 ? { id: all[idx + 1].id, title: all[idx + 1].title, slug: all[idx + 1].slug } : null,
   };
 }
 
@@ -106,4 +120,3 @@ export function getLessonHeroPath(id: string): string | null {
   if (!fs.existsSync(heroPath)) return null;
   return heroPath;
 }
-

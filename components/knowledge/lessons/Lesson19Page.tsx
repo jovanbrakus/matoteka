@@ -38,7 +38,7 @@ export default function Lesson19Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 19"
+        eyebrow="Matoteka · Centar znanja · Lekcija 19"
         title={
           <>
             Kvadratna funkcija i njena{" "}

@@ -37,7 +37,7 @@ export default function Lesson15Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 15"
+        eyebrow="Matoteka · Centar znanja · Lekcija 15"
         title={
           <>
             Nule polinoma i{" "}

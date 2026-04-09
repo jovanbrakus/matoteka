@@ -35,7 +35,7 @@ export default function Lesson58Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 58"
+        eyebrow="Matoteka · Centar znanja · Lekcija 58"
         title={
           <>
             Diferencijalni račun{" "}

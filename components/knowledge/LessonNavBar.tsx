@@ -5,6 +5,7 @@ import s from "@/styles/lesson-layout.module.css";
 
 interface AdjacentLesson {
   id: string;
+  slug: string;
   title: string;
 }
 
@@ -36,7 +37,7 @@ export function LessonFooterNav({ prevLesson, nextLesson }: LessonNavBarProps) {
   return (
     <nav className={s.lessonFooterNav}>
       {prevLesson ? (
-        <Link href={`/znanje/${prevLesson.id}`} className={s.footerNavCard}>
+        <Link href={`/znanje/${prevLesson.slug}`} className={s.footerNavCard}>
           <span className={s.footerNavDirection}>
             <span className="material-symbols-outlined" style={{ fontSize: 16 }}>
               arrow_back
@@ -57,7 +58,7 @@ export function LessonFooterNav({ prevLesson, nextLesson }: LessonNavBarProps) {
       </Link>
 
       {nextLesson ? (
-        <Link href={`/znanje/${nextLesson.id}`} className={`${s.footerNavCard} ${s.footerNavCardRight}`}>
+        <Link href={`/znanje/${nextLesson.slug}`} className={`${s.footerNavCard} ${s.footerNavCardRight}`}>
           <span className={s.footerNavDirection}>
             Sledeća lekcija
             <span className="material-symbols-outlined" style={{ fontSize: 16 }}>

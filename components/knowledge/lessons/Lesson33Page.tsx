@@ -36,7 +36,7 @@ export default function Lesson33Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 33"
+        eyebrow="Matoteka · Centar znanja · Lekcija 33"
         title={
           <>
             Mere ugla{" "}

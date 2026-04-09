@@ -675,7 +675,7 @@ export default function Lesson12Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 12"
+        eyebrow="Matoteka · Centar znanja · Lekcija 12"
         title={
           <>
             Racionalni izrazi i{" "}

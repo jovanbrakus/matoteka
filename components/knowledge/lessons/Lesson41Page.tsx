@@ -33,7 +33,7 @@ export default function Lesson41Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 41"
+        eyebrow="Matoteka · Centar znanja · Lekcija 41"
         title={
           <>
             Trigonometrijske{" "}

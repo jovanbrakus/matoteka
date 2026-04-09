@@ -36,7 +36,7 @@ export default function Lesson18Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 18"
+        eyebrow="Matoteka · Centar znanja · Lekcija 18"
         title={
           <>
             Linearne jednačine i nejednačine sa{" "}

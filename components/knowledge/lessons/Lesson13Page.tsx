@@ -508,7 +508,7 @@ export default function Lesson13Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 13"
+        eyebrow="Matoteka · Centar znanja · Lekcija 13"
         title={
           <>
             Polinomi jedne promenljive i{" "}

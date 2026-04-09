@@ -37,7 +37,7 @@ export default function Lesson29Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 29"
+        eyebrow="Matoteka · Centar znanja · Lekcija 29"
         title={
           <>
             Pojam logaritma i{" "}

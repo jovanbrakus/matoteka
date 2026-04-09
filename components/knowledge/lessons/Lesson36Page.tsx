@@ -35,7 +35,7 @@ export default function Lesson36Page() {
     <LessonShell>
       {/* ═══════════ HERO ═══════════ */}
       <LessonHero
-        eyebrow="Matoteka znanje · Lekcija 36"
+        eyebrow="Matoteka · Centar znanja · Lekcija 36"
         title={
           <>
             Trigonometrijske funkcije{" "}

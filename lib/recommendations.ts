@@ -127,7 +127,7 @@ function makeLessonRec(
         type: "lesson",
         title: `Prouči: ${lesson.title}`,
         subtitle: `Lekcija iz oblasti ${group.name.toLowerCase()}. Vreme čitanja: ~${lesson.readingTimeMin} min.`,
-        href: `/znanje/${lesson.id}`,
+        href: `/znanje/${lesson.slug}`,
         icon: "menu_book",
         badge: "03",
       };
@@ -143,7 +143,7 @@ function makeLessonRec(
       type: "lesson",
       title: `Prouči: ${lesson.title}`,
       subtitle: `Lekcija iz oblasti ${group.name.toLowerCase()}. Vreme čitanja: ~${lesson.readingTimeMin} min.`,
-      href: `/znanje/${lesson.id}`,
+      href: `/znanje/${lesson.slug}`,
       icon: "menu_book",
       badge: "03",
     };
@@ -158,7 +158,7 @@ function makeLessonRec(
         type: "lesson",
         title: `Prouči: ${lesson.title}`,
         subtitle: `Lekcija iz oblasti ${group.name.toLowerCase()}. Vreme čitanja: ~${lesson.readingTimeMin} min.`,
-        href: `/znanje/${lesson.id}`,
+        href: `/znanje/${lesson.slug}`,
         icon: "menu_book",
         badge: "03",
       };
