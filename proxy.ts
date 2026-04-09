@@ -9,6 +9,8 @@ const publicPaths = [
   "/privacy",
   "/primer",
   "/znanje",
+  "/sitemap.xml",
+  "/robots.txt",
   "/api/auth",
   "/api/lessons",
   "/api/faculties",

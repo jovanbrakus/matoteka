@@ -89,11 +89,11 @@ export default function AboutPage() {
           Za pitanja, predloge ili prijavu grešaka, piši nam na:
         </p>
         <a
-          href="mailto:support@puzzolve.com"
+          href="mailto:support@matoteka.com"
           className="mt-3 inline-flex items-center gap-2 text-[#ec5b13] font-semibold transition-colors hover:text-[#ff7a3d]"
         >
           <span className="material-symbols-outlined text-base">mail</span>
-          support@puzzolve.com
+          support@matoteka.com
         </a>
       </section>
 

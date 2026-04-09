@@ -318,6 +318,13 @@ export default function LandingHero() {
                   se zapravo pojavljuju na testu. Interaktivni laboratorijumi
                   i vežbe na kraju svake lekcije.
                 </p>
+                <Link
+                  href="/znanje"
+                  className="mb-10 inline-flex items-center gap-2 rounded-xl bg-[#ec5b13] px-6 py-3 text-sm font-bold text-white transition-all hover:bg-[#ec5b13]/90"
+                >
+                  <span className="material-symbols-outlined text-base">auto_stories</span>
+                  Istraži lekcije
+                </Link>
                 <div className="grid grid-cols-3 gap-4">
                   <div className="flex flex-col gap-2 rounded-2xl border border-[var(--glass-border)] bg-[var(--tint)] p-4">
                     <span className="material-symbols-outlined text-[#ec5b13]">analytics</span>

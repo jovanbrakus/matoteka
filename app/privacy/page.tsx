@@ -135,8 +135,8 @@ export default function PrivacyPage() {
           <h2 className="mb-3 text-xl font-bold text-heading">9. Kontakt</h2>
           <p>
             Za sva pitanja u vezi sa privatnošću vaših podataka:{" "}
-            <a href="mailto:support@puzzolve.com" className="text-[#ec5b13] font-semibold hover:text-[#ff7a3d]">
-              support@puzzolve.com
+            <a href="mailto:support@matoteka.com" className="text-[#ec5b13] font-semibold hover:text-[#ff7a3d]">
+              support@matoteka.com
             </a>
           </p>
         </section>

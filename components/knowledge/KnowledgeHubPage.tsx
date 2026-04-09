@@ -68,9 +68,9 @@ export default function KnowledgeHubPage({
   return (
     <div className="w-full max-w-[1400px] mx-auto px-6 pt-8 pb-20 lg:px-12">
       <section className="mb-12 max-w-4xl">
-        <h2 className="text-4xl font-black tracking-tight text-heading lg:text-5xl">
+        <h1 className="text-4xl font-black tracking-tight text-heading lg:text-5xl">
           Centar <span className="text-[#ec5b13]">Znanja</span>
-        </h2>
+        </h1>
         <p className="mt-2 max-w-lg font-medium text-text-secondary">
           Ovladajte gradivom kroz interaktivne module. Izaberite lekciju i počnite sa istraživanjem.
         </p>
