@@ -6,7 +6,7 @@ const STATIC_ROUTES = [
   { path: "/", changeFrequency: "daily", priority: 1 },
   { path: "/znanje", changeFrequency: "weekly", priority: 0.9 },
   { path: "/about", changeFrequency: "monthly", priority: 0.6 },
-  { path: "/primer", changeFrequency: "monthly", priority: 0.5 },
+  { path: "/primer", changeFrequency: "monthly", priority: 0.9 },
   { path: "/privacy", changeFrequency: "yearly", priority: 0.2 },
   { path: "/terms", changeFrequency: "yearly", priority: 0.2 },
 ] as const;
