@@ -7,7 +7,7 @@ const DEFAULT_OG_IMAGE = {
   url: "/hero-3d.png",
   width: 512,
   height: 512,
-  alt: "Matoteka",
+  alt: "Matoteka — Prijemni ispit iz matematike",
 };
 
 type CreateMetadataInput = {
