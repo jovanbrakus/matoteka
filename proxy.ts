@@ -16,6 +16,7 @@ const publicPaths = [
   "/api/faculties",
   "/api/leaderboard",
   "/api/cron",
+  "/monitoring",
 ];
 
 export default auth((req) => {
