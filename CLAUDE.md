@@ -86,3 +86,47 @@ page.evaluate('localStorage.setItem("theme", "dark"); document.documentElement.c
 **Scrollable content**: The main content area uses `overflow-y: auto` on `<main>`. Use `element.scroll_into_view_if_needed()` on a locator rather than `window.scrollTo()`.
 
 **MathJax pages**: Wait at least 8-10 seconds after navigation for MathJax to render (`page.wait_for_timeout(10000)`).
+
+## E2E Tests (Playwright)
+
+22 end-to-end tests using `@playwright/test` with a dedicated **Neon DB branch** for test data.
+
+**Structure:**
+```
+e2e/
+├── playwright.config.ts   — config (webServer, projects, timeouts)
+├── global-setup.ts        — drizzle-kit push + truncate + seed users/faculties
+├── global-teardown.ts     — no-op (data preserved for debugging)
+├── auth.setup.ts          — logs in as student + admin, saves storageState
+├── .env.e2e               — E2E DATABASE_URL + auth config (gitignored)
+├── .env.e2e.example       — committed template
+├── .auth/                 — session cookies (gitignored)
+├── fixtures/test-data.ts  — test user credentials, faculty seed data
+└── tests/
+    ├── public-pages.spec.ts    — landing, login, about, terms, privacy
+    ├── auth.spec.ts            — login, invalid creds, redirect, dashboard
+    ├── problem-solving.spec.ts — practice hub, topic solver, answer submit
+    ├── mock-exam.spec.ts       — create exam, answer, submit, results
+    ├── bookmarks.spec.ts       — bookmark/unbookmark toggle
+    ├── profile.spec.ts         — profile load, display name update
+    └── admin.spec.ts           — admin dashboard, role-based redirect
+```
+
+**How it works:**
+- `global-setup.ts` pushes schema to the E2E Neon branch, truncates all tables, seeds 9 faculties + 2 test users (student + admin with bcrypt-hashed passwords)
+- `auth.setup.ts` logs in via the `/prijava` UI and saves JWT cookies to `.auth/student.json` and `.auth/admin.json`
+- Tests run sequentially (`workers: 1`) since they share a single DB
+- Dev server is started automatically by Playwright's `webServer` config on port 3500 (avoids conflict with the dev server on 3000)
+
+**Running:**
+```bash
+npm run test:e2e          # run all tests (~48s)
+npm run test:e2e:ui       # interactive Playwright UI
+npm run test:e2e:headed   # visible browser
+```
+
+**Setup for a new machine:**
+1. Copy `e2e/.env.e2e.example` to `e2e/.env.e2e`
+2. Fill in `DATABASE_URL` pointing to the E2E Neon branch
+3. Run `npx playwright install chromium`
+4. Run `npm run test:e2e`

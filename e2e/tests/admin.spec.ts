@@ -29,10 +29,10 @@ test.describe("Admin dashboard", () => {
     });
     const page = await context.newPage();
 
-    await page.goto("http://localhost:3000/admin");
+    await page.goto("http://localhost:3500/admin");
 
     // Should be redirected to "/" (non-admin redirect)
-    await page.waitForURL("http://localhost:3000/", { timeout: 15_000 });
+    await page.waitForURL("http://localhost:3500/", { timeout: 15_000 });
     await expect(page).not.toHaveURL(/\/admin/);
 
     await context.close();
