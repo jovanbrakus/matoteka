@@ -160,7 +160,7 @@ export default function AnswerOptions({
         if (result) {
           if (isCorrectAnswer) {
             btnClass =
-              "border-[#4ade80] bg-[#4ade80]/20 text-[#4ade80] ring-2 ring-[#4ade80]/30";
+              "border-[#16a34a] bg-[#16a34a]/20 text-[#16a34a] ring-2 ring-[#16a34a]/30";
           } else if (isWrongSelection) {
             btnClass =
               "border-[#f87171] bg-[#f87171]/20 text-[#f87171] line-through";

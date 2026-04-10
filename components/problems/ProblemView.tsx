@@ -227,12 +227,12 @@ export default function ProblemView({ problemId, onAnswered, onNext, autoShowSol
             <div
               className={`mb-4 flex items-center gap-3 rounded-xl border px-5 py-4 ${
                 answerResult.isCorrect
-                  ? "border-[#4ade80]/30 bg-[#4ade80]/10"
+                  ? "border-[#16a34a]/30 bg-[#16a34a]/10"
                   : "border-[#f87171]/30 bg-[#f87171]/10"
               }`}
             >
               {answerResult.isCorrect ? (
-                <CheckCircle2 size={24} className="text-[#4ade80]" />
+                <CheckCircle2 size={24} className="text-[#16a34a]" />
               ) : (
                 <XCircle size={24} className="text-[#f87171]" />
               )}
@@ -240,7 +240,7 @@ export default function ProblemView({ problemId, onAnswered, onNext, autoShowSol
                 <p
                   className={`text-sm font-bold ${
                     answerResult.isCorrect
-                      ? "text-[#4ade80]"
+                      ? "text-[#16a34a]"
                       : "text-[#f87171]"
                   }`}
                 >
