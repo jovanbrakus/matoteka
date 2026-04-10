@@ -4,10 +4,10 @@ export const SITE_NAME = "Matoteka";
 export const SITE_URL = "https://matoteka.com";
 
 const DEFAULT_OG_IMAGE = {
-  url: "/hero-3d.png",
-  width: 512,
-  height: 512,
-  alt: "Matoteka — Prijemni ispit iz matematike",
+  url: "/images/og/default.jpg",
+  width: 1200,
+  height: 630,
+  alt: "Matoteka — Centar znanja za prijemni ispit iz matematike",
 };
 
 type CreateMetadataInput = {
