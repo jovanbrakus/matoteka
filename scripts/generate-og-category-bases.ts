@@ -184,23 +184,26 @@ async function compositeText(
   lesson: LessonEntry
 ): Promise<void> {
   const logo = await sharp(LOGO_PATH)
-    .resize(68, 68, {
+    .resize(84, 84, {
       fit: "contain",
       background: { r: 0, g: 0, b: 0, alpha: 0 },
     })
     .toBuffer();
 
-  const textLeft = 540;
-  const textAreaWidth = OG_WIDTH - textLeft - 40;
-  const eyebrowY = 140;
-  const titleStartY = 195;
-  const titleLineHeight = 60;
-  const titleFontSize = 50;
-  const maxCharsPerLine = 24;
+  const textLeft = 500;
+  const textAreaWidth = OG_WIDTH - textLeft - 30;
+  const eyebrowY = 105;
+  const maxCharsPerLine = 22;
 
+  // Dynamic title size: scale down for long titles that wrap to many lines
   const titleLines = wrapTitle(lesson.title, maxCharsPerLine);
+  const lineCount = titleLines.length;
+  const titleFontSize = lineCount <= 2 ? 62 : lineCount <= 3 ? 54 : 46;
+  const titleLineHeight = titleFontSize + 12;
+  const titleStartY = lineCount <= 2 ? 175 : lineCount <= 3 ? 160 : 150;
+
   const titleEndY = titleStartY + titleLines.length * titleLineHeight;
-  const hashtagY = titleEndY + 30;
+  const hashtagY = titleEndY + 40;
 
   const titleTspans = titleLines
     .map(
@@ -219,16 +222,16 @@ async function compositeText(
 
   const textSvg = Buffer.from(`
     <svg xmlns="http://www.w3.org/2000/svg" width="${textAreaWidth}" height="${OG_HEIGHT}">
-      <text x="0" y="${eyebrowY}" font-family="sans-serif" font-weight="600" font-size="16" fill="#FF6B00" letter-spacing="2">${escapeXml(eyebrow)}</text>
+      <text x="0" y="${eyebrowY}" font-family="sans-serif" font-weight="600" font-size="22" fill="#FF6B00" letter-spacing="3">${escapeXml(eyebrow)}</text>
       <text x="0" y="${titleStartY}" font-family="sans-serif" font-weight="700" font-size="${titleFontSize}" fill="white">${titleTspans}</text>
-      <text x="0" y="${hashtagY}" font-family="sans-serif" font-weight="400" font-size="30" fill="#888888">#${escapeXml(categoryDisplay)}</text>
+      <text x="0" y="${hashtagY}" font-family="sans-serif" font-weight="400" font-size="38" fill="#888888">#${escapeXml(categoryDisplay)}</text>
     </svg>
   `);
   const textBuf = await sharp(textSvg).png().toBuffer();
 
   const wordmarkSvg = Buffer.from(`
-    <svg xmlns="http://www.w3.org/2000/svg" width="220" height="48">
-      <text x="0" y="36" font-family="sans-serif" font-weight="600" font-size="36" fill="white">Matoteka</text>
+    <svg xmlns="http://www.w3.org/2000/svg" width="280" height="58">
+      <text x="0" y="44" font-family="sans-serif" font-weight="600" font-size="44" fill="white">Matoteka</text>
     </svg>
   `);
   const wordmarkBuf = await sharp(wordmarkSvg).png().toBuffer();
@@ -236,10 +239,10 @@ async function compositeText(
   const wordmarkWidth = wordmarkMeta.width ?? 220;
   const wordmarkHeight = wordmarkMeta.height ?? 48;
 
-  const logoSize = 68;
-  const logoGap = 14;
+  const logoSize = 84;
+  const logoGap = 16;
   const marginRight = 30;
-  const marginBottom = 20;
+  const marginBottom = 18;
   const totalBrandWidth = logoSize + logoGap + wordmarkWidth;
   const brandLeft = OG_WIDTH - totalBrandWidth - marginRight;
   const logoTop = OG_HEIGHT - marginBottom - logoSize;
