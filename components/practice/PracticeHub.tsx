@@ -354,8 +354,18 @@ export default function PracticeHub() {
     }
     return all
       .sort((a, b) => a.topic.readinessScore - b.topic.readinessScore)
-      .slice(0, 3);
+      .slice(0, 2);
   }, [groups]);
+
+  const [savedCount, setSavedCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (sessionStatus !== "authenticated") return;
+    fetch("/api/bookmarks/saved")
+      .then((r) => r.json())
+      .then((data) => setSavedCount(Array.isArray(data) ? data.length : 0))
+      .catch(() => setSavedCount(0));
+  }, [sessionStatus]);
 
   const selectedGroup =
     groups.find((g) => g.id === selectedGroupId) ?? groups[0];
@@ -404,7 +414,7 @@ export default function PracticeHub() {
       </div>
 
       {/* Zone 1: Recommendations */}
-      {weakestTopics.length > 0 && (
+      {(weakestTopics.length > 0 || savedCount !== null) && (
         <section className="mb-8">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-xl font-black tracking-tight text-heading">
@@ -419,6 +429,39 @@ export default function PracticeHub() {
                 groupName={groupName}
               />
             ))}
+
+            {/* Saved problems card — always shown as 3rd */}
+            <Link
+              href="/sacuvano"
+              className="glass-card rounded-2xl p-6 flex items-center justify-between gap-4 group transition-all hover:border-[#ec5b13]/40 hover:bg-[#ec5b13]/5"
+            >
+              <div className="min-w-0 flex-1">
+                <p className="text-[10px] font-black uppercase tracking-widest mb-1 text-[#ec5b13]">
+                  Sačuvano
+                </p>
+                <h4 className="text-lg font-bold text-heading mb-3">
+                  Sačuvani zadaci
+                </h4>
+                <p className="text-sm text-text-secondary">
+                  {savedCount === null
+                    ? "..."
+                    : savedCount === 0
+                      ? "Nema sačuvanih"
+                      : `${savedCount} zadata${savedCount === 1 ? "k" : savedCount < 5 ? "ka" : "ka"}`}
+                </p>
+              </div>
+              <span
+                className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center shadow-md shadow-primary/30 group-hover:scale-110 transition-transform shrink-0"
+                aria-hidden
+              >
+                <span
+                  className="material-symbols-outlined"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                >
+                  play_arrow
+                </span>
+              </span>
+            </Link>
           </div>
         </section>
       )}

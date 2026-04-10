@@ -21,6 +21,7 @@ interface SidebarProps {
 const NAV_ITEMS = [
   { href: "/", label: "Kontrolna tabla", shortLabel: "Početna", icon: "dashboard" },
   { href: "/vezba", label: "Slobodna vežba", shortLabel: "Vežba", icon: "menu_book" },
+  { href: "/sacuvano", label: "Sačuvani zadaci", shortLabel: "Sačuvano", icon: "bookmark" },
   { href: "/simulacija", label: "Simulacija testa", shortLabel: "Simulacija", icon: "quiz" },
   { href: "/simulacija/istorija", label: "Istorija testova", shortLabel: "Istorija", icon: "history" },
   { href: "/znanje", label: "Centar znanja", shortLabel: "Znanje", icon: "auto_stories" },

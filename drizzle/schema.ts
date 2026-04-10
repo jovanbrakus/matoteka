@@ -55,6 +55,7 @@ export const bookmarks = pgTable(
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     problemId: varchar("problem_id", { length: 20 }).notNull(),
+    title: varchar("title", { length: 500 }),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   },
   (table) => [primaryKey({ columns: [table.userId, table.problemId] })]

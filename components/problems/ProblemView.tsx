@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import ProblemStatement from "./ProblemStatement";
 import AnswerOptions from "./AnswerOptions";
+import MathTitle from "@/components/ui/math-title";
 
 interface ProblemDetail {
   id: string;
@@ -40,9 +41,11 @@ interface ProblemViewProps {
   onNext?: () => void;
   /** Automatically show the full solution after the user submits an answer */
   autoShowSolution?: boolean;
+  /** Pre-set the bookmark state (e.g. when viewing from /sacuvano) */
+  initialBookmarked?: boolean;
 }
 
-export default function ProblemView({ problemId, onAnswered, onNext, autoShowSolution }: ProblemViewProps) {
+export default function ProblemView({ problemId, onAnswered, onNext, autoShowSolution, initialBookmarked }: ProblemViewProps) {
   const { data: session, status: sessionStatus } = useSession();
   const isAdmin = session?.user?.role === "admin";
 
@@ -55,7 +58,7 @@ export default function ProblemView({ problemId, onAnswered, onNext, autoShowSol
     correctAnswer: string;
   } | null>(null);
   const [showSolution, setShowSolution] = useState(false);
-  const [bookmarked, setBookmarked] = useState(false);
+  const [bookmarked, setBookmarked] = useState(initialBookmarked ?? false);
   const [nextProblem, setNextProblem] = useState<NextProblemInfo | null>(null);
 
   useEffect(() => {
@@ -193,7 +196,7 @@ export default function ProblemView({ problemId, onAnswered, onNext, autoShowSol
         )}
 
         <div className="flex items-center justify-between gap-4">
-          <h1 className="text-2xl font-bold text-heading">{problem.title}</h1>
+          <MathTitle text={problem.title} as="h1" className="text-2xl font-bold text-heading" />
           <button
             onClick={handleToggleBookmark}
             className="flex shrink-0 items-center gap-2 rounded-lg border border-[var(--glass-border)] px-3 py-2 text-sm text-text-secondary transition-colors hover:text-[#fbbf24]"
