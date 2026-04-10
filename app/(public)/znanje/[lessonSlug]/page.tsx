@@ -42,9 +42,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraphType: "article",
     images: [
       {
-        url: `/images/lessons/lesson${meta.id}_hero.png`,
-        width: 896,
-        height: 1200,
+        url: `/images/og/lesson${meta.lessonNumber}.jpg`,
+        width: 1200,
+        height: 630,
         alt: meta.title,
       },
     ],

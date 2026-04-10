@@ -6,7 +6,7 @@ Each lesson's hero image is 896x1200 (portrait). Social media platforms (Faceboo
 
 ## Goal
 
-Generate a branded, landscape (1200x630) OG image for each lesson at build time using Next.js `ImageResponse`. When someone shares `https://matoteka.com/znanje/aritmeticki-niz-progresija`, the link preview shows a polished card with the lesson's hero image, title, and Matoteka branding.
+Generate a branded, landscape (1200x630) OG image for each lesson using **Gemini `gemini-3.1-flash-image-preview`** image generation. When someone shares `https://matoteka.com/znanje/aritmeticki-niz-progresija`, the link preview shows a polished card with the lesson's hero image, title, and Matoteka branding.
 
 ## Design Spec
 
@@ -18,11 +18,11 @@ Generate a branded, landscape (1200x630) OG image for each lesson at build time 
 |  |   Hero Image     |                                              |
 |  |   (portrait,     |    Aritmeticki niz (progresija)              |
 |  |    cropped to    |                                              |
-|  |    fill box)     |    ~40 min citanja                           |
-|  |                  |    #algebra                                   |
+|  |    fill box)     |                                              |
+|  |                  |    #algebra                                  |
 |  +------------------+                                              |
 |                                                                    |
-|                                           [beaver logo]  Matoteka  |
+|                                           [brain logo]   Matoteka  |
 +------------------------------------------------------------------+
 ```
 
@@ -32,7 +32,7 @@ Generate a branded, landscape (1200x630) OG image for each lesson at build time 
 - Eyebrow: small, uppercase, orange (#FF6B00), letter-spaced — "MATOTEKA · CENTAR ZNANJA · LEKCIJA {N}"
 - Title: large, bold, white — lesson title (may need line clamping for long titles)
 - Meta line: small, muted gray — reading time + category badge
-- Bottom-right: Matoteka logo (beaver) + "Matoteka" wordmark
+- Bottom-right: Matoteka logo (pixel-art brain) + "Matoteka" wordmark
 
 **Colors**:
 - Background: `#0a0a0a` (dark, matches site dark theme)
@@ -42,79 +42,64 @@ Generate a branded, landscape (1200x630) OG image for each lesson at build time 
 
 ## Implementation
 
-### File: `app/znanje/[lessonSlug]/opengraph-image.tsx`
+### Approach: Gemini `gemini-3.1-flash-image-preview` Image Generation
 
-Next.js convention file. When placed in a route directory, Next.js automatically:
-- Generates the image at build time (for static routes with `generateStaticParams`)
-- Sets the `<meta property="og:image">` tag
-- Sets proper `Content-Type`, `width`, and `height` meta tags
+Use the **`gemini-3.1-flash-image-preview`** model from Google GenAI to generate OG images. This is the **only** model to use — do not use Satori, `next/og` `ImageResponse`, DALL-E, or any other image generation approach.
 
-This **replaces** the manual `images` array in `generateMetadata()` — Next.js handles it automatically.
+### Script: `scripts/generate-og-images.ts`
 
-### What to use
+A standalone script (similar to `scripts/generate-category-images.ts`) that:
+1. Reads lesson metadata from `database/lessons-index.json`
+2. Sends a detailed prompt to `gemini-3.1-flash-image-preview` describing the desired OG card layout (without logo — the prompt tells Gemini to leave the bottom-right corner empty)
+3. Composites the real `public/logo-brain.png` (pixel-art brain) + "Matoteka" wordmark onto the bottom-right corner using **sharp**
+4. Saves the final PNG to `public/images/og/lesson{N}.png` (1200x630)
 
-- `next/og` `ImageResponse` — renders JSX to a PNG using Satori (SVG-based renderer)
-- Satori supports a subset of CSS (flexbox, basic text styling, borders, images)
-- Satori does **NOT** support: CSS Grid, `position: absolute` inside `position: relative` (use flexbox instead), `box-shadow`, `text-shadow`, `background-blend-mode`, `filter`, gradients on text
-- Fonts must be loaded explicitly as ArrayBuffer (not CSS @font-face)
+### Prompt Design
 
-### Font loading
+Each prompt should instruct Gemini to generate a 1200x630 landscape image that matches the design spec above, including:
+- Dark background with the lesson title as prominent text
+- Category color accent
+- Math-themed decorative elements relevant to the lesson topic
+- **No logo or branding in the bottom-right** — that area is reserved for the composited real logo
 
-Load Inter (bold + regular) from the local `public/` or `node_modules` directory. Satori requires `.ttf` or `.woff` font files passed as ArrayBuffer:
+### Logo Compositing (post-generation)
+
+After Gemini generates the base image, the script uses **sharp** to composite:
+- The pixel-art brain logo (`public/logo-brain.png`) resized to 56x56px
+- A "Matoteka" wordmark rendered as SVG text (30px, white, semi-bold)
+- Positioned in the bottom-right corner with consistent margins
+
+### Integration with Next.js
+
+After generation, update `generateMetadata()` in `app/znanje/[lessonSlug]/page.tsx` to reference the static OG image:
 
 ```typescript
-const interBold = fetch(new URL('/fonts/Inter-Bold.ttf', import.meta.url))
-  .then(res => res.arrayBuffer());
+images: [{ url: `/images/og/lesson${lesson.lessonNumber}.png`, width: 1200, height: 630 }]
 ```
-
-Alternatively, fetch from Google Fonts CDN at build time. Since this runs at build time for static pages, network fetches are fine.
-
-**Note**: Fredoka (the logo font) can be loaded similarly if the wordmark should match exact branding. Otherwise, Inter Bold is acceptable for the wordmark.
-
-### Hero image loading
-
-The hero images are in `public/images/lessons/`. Since `opengraph-image.tsx` runs server-side, read the image via:
-- `fs.readFileSync()` to get the buffer, then convert to base64 data URL, OR
-- Reference via absolute URL: `https://matoteka.com/api/lessons/{id}/hero` (works at build time if the dev server is running)
-- Simplest: use a relative file path read with `fs` since this is a build-time operation
 
 ### Dimensions
 
-```typescript
-export const size = { width: 1200, height: 630 };
-export const contentType = 'image/png';
-```
-
-### Static generation
-
-Add `generateStaticParams` (can re-export from the page) so OG images are generated at build time for all 59 lessons:
-
-```typescript
-export { generateStaticParams } from './page';
-```
-
-### After implementation
-
-Remove the `images` array from `generateMetadata()` in the page — Next.js will auto-detect the `opengraph-image.tsx` file and inject the correct `<meta>` tags with proper dimensions.
+Output images must be **1200x630** pixels (landscape, standard OG ratio).
 
 ## Edge Cases
 
 - **Long titles**: Some lesson titles are very long (e.g., "Funkcije (preslikavanja, injekcija, surjekcija, bijekcija i inverzna funkcija)"). The title text must truncate or wrap gracefully within the available space. Use `text-overflow: ellipsis` or limit to 2-3 lines.
 - **Missing hero images**: 3 lessons (45, 47, 48) have empty `heroImage` fields but the hero files exist at `knowledge/lesson{N}_hero.png`. The `getLessonHeroPath()` function handles this. Fall back to a default gradient if the image truly doesn't exist.
 - **Cyrillic/Latin Serbian**: All titles are Latin Serbian. No special character rendering issues expected with Inter font.
-- **Build time**: 59 PNG images at 1200x630 will add some build time. Satori is fast (~100ms per image), so expect ~6-10 seconds total.
+- **Generation time**: Gemini image generation takes ~5-15 seconds per image. Generate in batches with delays to avoid rate limiting. Full 59-lesson run may take ~5-10 minutes.
 
 ## Files to Modify
 
 | File | Change |
 |------|--------|
-| `app/znanje/[lessonSlug]/opengraph-image.tsx` | **New** — OG image generation |
-| `app/znanje/[lessonSlug]/page.tsx` | Remove `images` array from `generateMetadata()` return |
+| `scripts/generate-og-images.ts` | **New** — Gemini-based OG image generation script |
+| `app/znanje/[lessonSlug]/page.tsx` | Update `images` array in `generateMetadata()` to point to static OG images |
 
 ## Verification
 
-1. `npm run build` — should generate 59 OG images without errors
-2. Check a generated image: `curl http://localhost:3000/znanje/aritmeticki-niz-progresija/opengraph-image` — should return a 1200x630 PNG
-3. View page source — `<meta property="og:image">` should point to the auto-generated image URL
-4. Test with https://developers.facebook.com/tools/debug/ or https://cards-dev.twitter.com/validator (after deployment)
-5. Verify long-title lessons render without text overflow issues
+1. Run `GEMINI_API_KEY=... npx tsx scripts/generate-og-images.ts --lesson 1` to test a single lesson
+2. Verify the output image at `public/images/og/lesson1.png` is 1200x630 and looks correct
+3. Run full generation: `GEMINI_API_KEY=... npx tsx scripts/generate-og-images.ts`
+4. `npm run build` — verify no errors
+5. View page source — `<meta property="og:image">` should point to the static OG image URL
+6. Test with https://developers.facebook.com/tools/debug/ or https://cards-dev.twitter.com/validator (after deployment)
