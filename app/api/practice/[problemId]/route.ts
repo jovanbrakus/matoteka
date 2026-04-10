@@ -18,7 +18,7 @@ export async function GET(
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  return NextResponse.json({
+  const response: Record<string, unknown> = {
     id: problem.id,
     title: problem.title,
     facultyId: problem.facultyId,
@@ -28,5 +28,11 @@ export async function GET(
     numOptions: problem.numOptions,
     difficulty: problem.difficulty,
     category: problem.category,
-  });
+  };
+
+  if (session.user.role === "admin") {
+    response.correctAnswer = problem.correctAnswer;
+  }
+
+  return NextResponse.json(response);
 }
