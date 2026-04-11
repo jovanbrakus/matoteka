@@ -21,10 +21,22 @@ export const MATHJAX_CONFIG = {
     packages: { "[+]": ["ams"] },
   },
   svg: { fontCache: "global" },
+  // v4: auto-break long equations at the container edge instead of clipping
+  // or scrolling. `output.{}` is the shared CHTML/SVG block so the behavior
+  // survives a renderer toggle. `linebreaks.inline: true` makes long inline
+  // math wrap too, not just display math — that was impossible in v3.
+  output: {
+    displayOverflow: "linebreak",
+    linebreaks: {
+      inline: true,
+      width: "100%",
+    },
+  },
 };
 
+// v4 CDN path drops the `/es5/` segment — major change from v3.
 export const MATHJAX_SRC =
-  "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js";
+  "https://cdn.jsdelivr.net/npm/mathjax@4/tex-svg.js";
 
 /**
  * Config for the iframe path. Historically accepts `$...$` as an inline
