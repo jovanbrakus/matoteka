@@ -515,7 +515,7 @@ export default function PrimerPage() {
                   disabled={answered}
                   className={`min-w-[5rem] rounded-xl border px-6 py-2.5 text-center transition-all ${
                     showCorrect
-                      ? "border-primary bg-primary/15"
+                      ? "border-[#16a34a] bg-[#16a34a]/15"
                       : showWrong
                         ? "border-error bg-error/10"
                         : answered
@@ -523,10 +523,10 @@ export default function PrimerPage() {
                           : "border-[var(--glass-border)] bg-[var(--tint)] cursor-pointer hover:border-primary/40 hover:bg-primary/[0.05]"
                   }`}
                 >
-                  <div className={`mb-0.5 text-xs ${showCorrect ? "font-bold text-primary" : showWrong ? "font-bold text-error" : "text-muted"}`}>
+                  <div className={`mb-0.5 text-xs ${showCorrect ? "font-bold text-[#16a34a]" : showWrong ? "font-bold text-error" : "text-muted"}`}>
                     ({opt.label})
                   </div>
-                  <div className={`text-base font-semibold ${showCorrect ? "text-primary" : showWrong ? "text-error" : "text-text"}`}>
+                  <div className={`text-base font-semibold ${showCorrect ? "text-[#16a34a]" : showWrong ? "text-error" : "text-text"}`}>
                     <M>{opt.value}</M>
                   </div>
                 </button>
