@@ -3,7 +3,7 @@ import { createMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = {
   ...createMetadata({
-    title: "Lekcije — Matoteka",
+    title: "Centar znanja — Matoteka",
     description:
       "Interaktivne lekcije iz matematike za pripremu prijemnog ispita. Teorija, primeri i objašnjenja.",
     path: "/znanje",
