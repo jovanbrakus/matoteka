@@ -128,8 +128,13 @@ export default function SavedProblemViewer({
         </div>
       </div>
 
-      {/* Problem viewer */}
-      <ProblemView problemId={problemId} initialBookmarked />
+      {/* Problem viewer — wrap in px-4 so cards don't go edge-to-edge on
+          mobile. ProblemView itself is px-0 on mobile (so the PracticeSolver
+          route doesn't double-pad), so the 16px side gap needs to come from
+          the call-site wrapper when there's no outer layout wrapper. */}
+      <div className="px-4">
+        <ProblemView problemId={problemId} initialBookmarked />
+      </div>
 
       {/* Problem picker dialog */}
       {pickerOpen && (

@@ -163,7 +163,7 @@ export default function ProblemView({ problemId, onAnswered, onNext, autoShowSol
   const diff = problem.difficulty ? parseFloat(problem.difficulty) : 5;
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8 lg:px-8">
+    <div className="mx-auto max-w-5xl px-0 py-8 sm:px-4 lg:px-8">
       {/* Problem header */}
       <div className="mb-6">
         <div className="mb-3 flex flex-wrap items-center gap-3">
