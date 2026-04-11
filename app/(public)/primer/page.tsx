@@ -15,8 +15,17 @@ function M({ children }: { children: string }) {
 }
 
 function MBlock({ children }: { children: string }) {
+  // `overflow-x-auto` handles horizontal scroll for equations wider than the
+  // container. Mobile browsers hide the scrollbar, so fade the right edge via
+  // `mask-image` as a visual affordance that there's more to the right. The
+  // 20px fade is subtle enough to leave alone on desktop too.
+  const fadeMask =
+    "linear-gradient(to right, black calc(100% - 20px), transparent 100%)";
   return (
-    <div className="my-3 overflow-x-auto rounded-xl border border-[var(--glass-border)] bg-[var(--tint)] px-5 py-4">
+    <div
+      className="my-3 overflow-x-auto rounded-xl border border-[var(--glass-border)] bg-[var(--tint)] px-5 py-4"
+      style={{ WebkitMaskImage: fadeMask, maskImage: fadeMask }}
+    >
       <MathJax>{`\\[${children}\\]`}</MathJax>
     </div>
   );
@@ -408,7 +417,7 @@ function Step({
       <div className="mt-0.5 flex h-8 w-8 min-w-[2rem] items-center justify-center rounded-full bg-primary text-sm font-bold text-white">
         {num}
       </div>
-      <div className="flex-1">
+      <div className="min-w-0 flex-1">
         <h3 className="mb-2 text-[1.15rem] font-semibold text-heading">
           {title}
         </h3>
@@ -587,12 +596,12 @@ export default function PrimerPage() {
                   intervala ili na krajevima segmenta.
                 </li>
                 <li>
-                  <span className="mr-2 font-bold text-primary">{">"}</span><strong>Kompletiranje kvadrata:</strong>{" "}
-                  <M>
+                  <span className="mr-2 font-bold text-primary">{">"}</span><strong>Kompletiranje kvadrata:</strong>
+                  <MBlock>
                     {
                       "ax^2 + bx + c = a\\!\\left(x + \\dfrac{b}{2a}\\right)^2 + c - \\dfrac{b^2}{4a}"
                     }
-                  </M>
+                  </MBlock>
                 </li>
               </ul>
             </div>
@@ -646,14 +655,13 @@ export default function PrimerPage() {
                   Teme parabole je <M>{"T(3,\\, 14)"}</M>.
                 </p>
                 <p className="mt-1 text-sm italic text-muted">
-                  Alternativno, kompletiranjem kvadrata:{" "}
-                  <M>
-                    {
-                      "f(x) = -(x^2 - 6x) + 5 = -(x-3)^2 + 9 + 5 = -(x-3)^2 + 14"
-                    }
-                  </M>
-                  .
+                  Alternativno, kompletiranjem kvadrata:
                 </p>
+                <MBlock>
+                  {
+                    "f(x) = -(x^2 - 6x) + 5 = -(x-3)^2 + 9 + 5 = -(x-3)^2 + 14"
+                  }
+                </MBlock>
               </Step>
 
               <Checkpoint

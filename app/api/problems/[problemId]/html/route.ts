@@ -1,4 +1,5 @@
 import { auth } from "@/lib/auth";
+import { MATHJAX_INLINE_SCRIPT, MATHJAX_SRC } from "@/lib/mathjax-config";
 import { getProblemHtml } from "@/lib/problems";
 import { checkSolutionRateLimit, recordSolutionView } from "@/lib/utils/solution-rate-limit";
 import { injectWatermark } from "@/lib/utils/watermark";
@@ -89,8 +90,8 @@ function wrapV2Fragment(fragment: string, theme: string): string {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>MathJax={tex:{inlineMath:[['\\\\(','\\\\)'],['$','$']],displayMath:[['\\\\[','\\\\]']]},svg:{fontCache:'global'}};</script>
-<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<script>${MATHJAX_INLINE_SCRIPT}</script>
+<script async src="${MATHJAX_SRC}"></script>
 <style>${SOLUTION_V2_CSS}</style>
 ${ANTI_COPY_CSS}
 </head>
@@ -125,8 +126,8 @@ function extractV2StatementHtml(fragment: string, theme: string): string {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>MathJax={tex:{inlineMath:[['\\\\(','\\\\)'],['$','$']],displayMath:[['\\\\[','\\\\]']]},svg:{fontCache:'global'}};</script>
-<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<script>${MATHJAX_INLINE_SCRIPT}</script>
+<script async src="${MATHJAX_SRC}"></script>
 <style>${SOLUTION_V2_CSS}</style>
 <style>
   body { padding: 10px; margin: 0; }
