@@ -39,11 +39,14 @@ test.describe("Saved problems", () => {
   }
 
   test.beforeEach(async ({ page }) => {
-    // Clean up any stale bookmarks from previous test runs
+    // Clean up any stale bookmarks from previous test runs.
+    // Wait for the /vezba page heading specifically — the old `text=Slobodna`
+    // matcher now hits a strict-mode violation because the sidebar also
+    // contains "Slobodna vežba".
     await page.goto("/vezba");
-    await expect(page.locator("text=Slobodna")).toBeVisible({
-      timeout: 15_000,
-    });
+    await expect(
+      page.getByRole("heading", { name: /Slobodna Vežba/i }),
+    ).toBeVisible({ timeout: 15_000 });
     await clearAllBookmarks(page);
   });
 
@@ -130,8 +133,12 @@ test.describe("Saved problems", () => {
     // URL should change to a different token
     await page.waitForURL("**/sacuvano/**", { timeout: 15_000 });
 
-    // Should now show "2 / 2"
-    await expect(page.locator("text=2")).toBeVisible({ timeout: 10_000 });
+    // Should now show "2 / 2" in the sticky nav counter. The old plain
+    // `text=2` matcher now hits dozens of unrelated "2"s on the page
+    // (MathJax <mn>2</mn> in answer options, the problem year, etc).
+    await expect(
+      page.locator(".sticky span.text-sm.font-bold.text-heading"),
+    ).toContainText("2 / 2", { timeout: 10_000 });
 
     // Problem should still render
     await expect(page.locator("text=Tvoj odgovor")).toBeVisible({
@@ -173,8 +180,11 @@ test.describe("Saved problems", () => {
     // Should show "Trenutni" badge on the active problem
     await expect(page.locator("text=Trenutni")).toBeVisible();
 
-    // Close the dialog by clicking the X button
-    const closeBtn = page.locator(".fixed button").filter({ has: page.locator("svg") }).first();
+    // Close the dialog by clicking the X button. Scope to `.max-w-lg`
+    // (the dialog box's unique class) so we don't accidentally pick up
+    // the mobile hamburger button in `authenticated-layout.tsx`, which
+    // also lives inside a `.fixed` container and comes first in DOM order.
+    const closeBtn = page.locator(".max-w-lg").locator("button").first();
     await closeBtn.click();
 
     // Dialog should be gone
