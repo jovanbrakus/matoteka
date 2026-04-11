@@ -231,8 +231,11 @@ li {
 
 /* Base card: glass-morphism container with rounded corners.
    Scoped to div[data-card] so h1[data-card="problem-title"] and
-   p[data-card="problem-subtitle"] don't get card styling. */
+   p[data-card="problem-subtitle"] don't get card styling.
+   position:relative so .matoteka-comment-btn can absolutely position
+   itself in the card's top-right corner. */
 div[data-card] {
+  position: relative;
   background: var(--sol-card-bg);
   border: 1px solid var(--sol-card-border);
   border-radius: 14px;
@@ -443,8 +446,10 @@ div[data-card] {
    Steps highlight on hover with an orange left border.
    ========================================================================== */
 
-/* Step container — flex row with badge on left, content on right */
+/* Step container — flex row with badge on left, content on right.
+   position:relative anchors the per-step .matoteka-comment-btn. */
 .step {
+  position: relative;
   display: flex;
   gap: 16px;
   margin-bottom: 24px;
@@ -897,6 +902,86 @@ html.light mjx-msqrt {
 
 
 /* ==========================================================================
+   COMMENT BUTTON
+   Medium-style chat icon injected into the top-right corner of every
+   [data-card] and every .step inside [data-card="step-solution"].
+   Clicking it posts `matoteka-comment-open` to the parent window, which
+   opens the CommentPanel for that anchor.
+   ========================================================================== */
+
+.matoteka-comment-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--sol-card-border);
+  background: var(--sol-tint);
+  color: var(--sol-text-secondary);
+  font: 600 0.75rem/1 'Inter', system-ui, sans-serif;
+  cursor: pointer;
+  opacity: 0.55;
+  transition: opacity 0.15s, color 0.15s, border-color 0.15s, background 0.15s;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Parent card/step hover reveals the button at full opacity. */
+div[data-card]:hover > .matoteka-comment-btn,
+.step:hover > .matoteka-comment-btn,
+.matoteka-comment-btn:hover,
+.matoteka-comment-btn:focus-visible {
+  opacity: 1;
+  color: var(--sol-heading);
+  border-color: var(--sol-accent-border);
+  background: var(--sol-accent-tint);
+}
+
+/* When the anchor already has at least one comment, keep the button
+   visible so other users can see where discussion is happening. */
+.matoteka-comment-btn.has-comments {
+  opacity: 1;
+  color: var(--sol-heading);
+  border-color: var(--sol-accent-border);
+  background: var(--sol-accent-tint);
+}
+
+.matoteka-comment-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+}
+
+.matoteka-comment-count {
+  min-width: 14px;
+  padding: 0 4px;
+  border-radius: 7px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-align: center;
+  color: #fff;
+  background: var(--sol-heading);
+}
+
+/* Counter is reset to hidden via the `hidden` attribute when 0. */
+.matoteka-comment-count[hidden] {
+  display: none;
+}
+
+/* Don't let the .step hover effect push the button around. */
+.step .matoteka-comment-btn {
+  top: 8px;
+  right: 8px;
+}
+
+
+/* ==========================================================================
    RESPONSIVE
    At ≤700px (mobile): reduce padding, stack flex layouts vertically,
    shrink step badges, and stack answer options.
@@ -927,6 +1012,18 @@ html.light mjx-msqrt {
     height: 28px;
     min-width: 28px;
     font-size: 0.8rem;
+  }
+
+  .matoteka-comment-btn {
+    top: 8px;
+    right: 8px;
+    padding: 4px 6px;
+    opacity: 1; /* always visible on mobile (no hover) */
+  }
+
+  .step .matoteka-comment-btn {
+    top: 6px;
+    right: 6px;
   }
 
   .answer-grid {

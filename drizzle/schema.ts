@@ -188,6 +188,56 @@ export const solutionDailyUsage = pgTable(
   (table) => [primaryKey({ columns: [table.userId, table.date] })]
 );
 
+export const cardComments = pgTable(
+  "card_comments",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    problemId: varchar("problem_id", { length: 20 }).notNull(),
+    cardType: varchar("card_type", { length: 40 }).notNull(),
+    stepNumber: integer("step_number"),
+    parentCommentId: uuid("parent_comment_id"),
+    kind: varchar("kind", { length: 20 }).notNull(),
+    body: text("body").notNull(),
+    status: varchar("status", { length: 20 }).notNull().default("open"),
+    reportCount: integer("report_count").notNull().default(0),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+  },
+  (table) => [
+    index("idx_card_comments_anchor").on(
+      table.problemId,
+      table.cardType,
+      table.stepNumber
+    ),
+    index("idx_card_comments_problem").on(table.problemId),
+    index("idx_card_comments_user").on(table.userId),
+    index("idx_card_comments_parent").on(table.parentCommentId),
+    index("idx_card_comments_mod").on(table.status, table.reportCount),
+  ]
+);
+
+export const cardCommentReports = pgTable(
+  "card_comment_reports",
+  {
+    commentId: uuid("comment_id")
+      .notNull()
+      .references(() => cardComments.id, { onDelete: "cascade" }),
+    reporterUserId: uuid("reporter_user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    reason: varchar("reason", { length: 40 }).notNull(),
+    note: text("note"),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  },
+  (table) => [
+    primaryKey({ columns: [table.commentId, table.reporterUserId] }),
+    index("idx_card_comment_reports_comment").on(table.commentId),
+  ]
+);
+
 export const userAnalytics = pgTable("user_analytics", {
   userId: uuid("user_id")
     .primaryKey()

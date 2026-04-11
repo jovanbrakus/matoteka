@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import {
@@ -16,6 +16,13 @@ import {
 import ProblemStatement from "./ProblemStatement";
 import AnswerOptions from "./AnswerOptions";
 import MathTitle from "@/components/ui/math-title";
+import CommentPanel from "@/components/comments/CommentPanel";
+import {
+  anchorKey,
+  CardType,
+  CommentsResponse,
+  CommentThread,
+} from "@/lib/comments";
 
 interface ProblemDetail {
   id: string;
@@ -48,6 +55,7 @@ interface ProblemViewProps {
 export default function ProblemView({ problemId, onAnswered, onNext, autoShowSolution, initialBookmarked }: ProblemViewProps) {
   const { data: session, status: sessionStatus } = useSession();
   const isAdmin = session?.user?.role === "admin";
+  const currentUserId = session?.user?.id ?? null;
 
   const [problem, setProblem] = useState<ProblemDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -61,6 +69,43 @@ export default function ProblemView({ problemId, onAnswered, onNext, autoShowSol
   const [bookmarked, setBookmarked] = useState(initialBookmarked ?? false);
   const [nextProblem, setNextProblem] = useState<NextProblemInfo | null>(null);
 
+  // Comment state
+  const [commentsData, setCommentsData] = useState<CommentsResponse>({
+    anchors: {},
+    counts: {},
+  });
+  const [panelAnchor, setPanelAnchor] = useState<{
+    cardType: CardType;
+    stepNumber: number | null;
+  } | null>(null);
+
+  const fetchComments = useCallback(
+    async (id: string) => {
+      try {
+        const res = await fetch(`/api/problems/${id}/comments`);
+        if (!res.ok) return;
+        const data = (await res.json()) as CommentsResponse;
+        setCommentsData(data);
+      } catch {}
+    },
+    []
+  );
+
+  const handleCommentOpen = useCallback(
+    (cardType: CardType, stepNumber: number | null) => {
+      setPanelAnchor({ cardType, stepNumber });
+    },
+    []
+  );
+
+  const handleCommentRefresh = useCallback(() => {
+    if (problem) fetchComments(problem.id);
+  }, [problem, fetchComments]);
+
+  const panelThreads: CommentThread[] = panelAnchor
+    ? commentsData.anchors[anchorKey(panelAnchor.cardType, panelAnchor.stepNumber)] ?? []
+    : [];
+
   useEffect(() => {
     if (sessionStatus !== "authenticated") return;
 
@@ -69,6 +114,8 @@ export default function ProblemView({ problemId, onAnswered, onNext, autoShowSol
     setAnswerResult(null);
     setShowSolution(false);
     setNextProblem(null);
+    setCommentsData({ anchors: {}, counts: {} });
+    setPanelAnchor(null);
 
     fetch(`/api/practice/${problemId}`)
       .then((r) => {
@@ -79,12 +126,13 @@ export default function ProblemView({ problemId, onAnswered, onNext, autoShowSol
         setProblem(data);
         setLoading(false);
         fetchNextProblem(data.id);
+        fetchComments(data.id);
       })
       .catch(() => {
         setProblem(null);
         setLoading(false);
       });
-  }, [problemId, sessionStatus]);
+  }, [problemId, sessionStatus, fetchComments]);
 
   const fetchNextProblem = (currentId: string) => {
     fetch("/api/practice/recommended")
@@ -213,7 +261,12 @@ export default function ProblemView({ problemId, onAnswered, onNext, autoShowSol
 
       {/* Problem content iframe */}
       <div className="mb-8 overflow-hidden rounded-2xl border border-[var(--glass-border)] glass-card">
-        <ProblemStatement problemId={problem.id} section="statement" />
+        <ProblemStatement
+          problemId={problem.id}
+          section="statement"
+          commentCounts={commentsData.counts}
+          onCommentOpen={handleCommentOpen}
+        />
       </div>
 
       {/* Answer Section */}
@@ -334,6 +387,8 @@ export default function ProblemView({ problemId, onAnswered, onNext, autoShowSol
               problemId={problem.id}
               section="full"
               minHeight="400px"
+              commentCounts={commentsData.counts}
+              onCommentOpen={handleCommentOpen}
             />
           </div>
 
@@ -379,6 +434,17 @@ export default function ProblemView({ problemId, onAnswered, onNext, autoShowSol
           </div>
         </>
       )}
+
+      <CommentPanel
+        open={panelAnchor !== null}
+        problemId={problem.id}
+        anchor={panelAnchor}
+        threads={panelThreads}
+        currentUserId={currentUserId}
+        isAdmin={isAdmin}
+        onClose={() => setPanelAnchor(null)}
+        onRefresh={handleCommentRefresh}
+      />
     </div>
   );
 }
