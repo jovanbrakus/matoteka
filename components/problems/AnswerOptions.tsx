@@ -7,6 +7,25 @@ interface AnswerResult {
   correctAnswer: string;
 }
 
+/**
+ * Estimate a rendered answer-option's natural pixel width from its raw LaTeX
+ * source. Ratio verified empirically against measured MathJax SVG widths on
+ * the GRF 2012 logarithmic-inequality problem (px/char came out 8.2–10.9);
+ * ×12 adds a ~20% safety margin. The +40 accounts for button `p-4` padding.
+ *
+ * Used by the 5-option grid branch below to pick a column count that gives
+ * every cell enough room for its widest content without overlapping.
+ */
+function estimateOptionWidth(html: string): number {
+  const normalized = html
+    .replace(/<[^>]*>/g, "")           // strip HTML tags
+    .replace(/\\[a-zA-Z]+\*?/g, "X")   // collapse LaTeX \command to 1 char
+    .replace(/[{}]/g, "")               // drop braces
+    .replace(/&[^;]+;/g, " ")           // HTML entities → 1 char
+    .replace(/\s+/g, "");               // drop whitespace
+  return normalized.length * 12 + 40;
+}
+
 interface AnswerOptionsProps {
   options: string[];
   selectedAnswer: string | null;
@@ -138,15 +157,43 @@ export default function AnswerOptions({
       ? options.length
       : 5);
 
-  const gridClass = `grid gap-3 ${
-    gridCols === 2
-      ? "grid-cols-1 sm:grid-cols-2"
-      : gridCols === 3
-      ? "grid-cols-1 sm:grid-cols-3"
-      : gridCols === 4
-      ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-4"
-      : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5"
-  }`;
+  let gridClass: string;
+  if (gridCols === 2) {
+    gridClass = "grid gap-3 grid-cols-1 sm:grid-cols-2";
+  } else if (gridCols === 3) {
+    gridClass = "grid gap-3 grid-cols-1 sm:grid-cols-3";
+  } else if (gridCols === 4) {
+    gridClass = "grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-4";
+  } else {
+    // 5-option case: content-aware column count. Estimate each option's
+    // rendered width from its LaTeX source length, take the widest, and pick
+    // a responsive grid that keeps every cell wide enough for the widest
+    // answer across all breakpoints.
+    //
+    // Thresholds are tuned to the content area inside `PracticeSolver`:
+    //   lg   → ~910px,  md → ~686px,  sm → ~558px,  xl → ~1180px.
+    //
+    //   - ≤170px estimate → up to 5 cols at lg (5×172 fits). Short numeric
+    //     answers stay in a single row on desktop.
+    //   - ≤290px estimate → up to 3 cols at md, 2 at sm. Medium-width
+    //     answers get 3+2 layout without overlap.
+    //   - Otherwise → 2 cols only at xl (1280+ where container ≥ 900). At
+    //     lg (1024) and below we stack because 2 cols × ~320px isn't wide
+    //     enough for the widest intervals (e.g. option C at ~389px on the
+    //     GRF 2012 logarithmic problem).
+    //
+    // Every tier keeps `grid-cols-1` on mobile. All tiers use equal 1fr
+    // columns, so every button on a row has identical width.
+    const maxEstimate = Math.max(...options.map(estimateOptionWidth));
+    if (maxEstimate <= 170) {
+      gridClass =
+        "grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5";
+    } else if (maxEstimate <= 290) {
+      gridClass = "grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-3";
+    } else {
+      gridClass = "grid gap-3 grid-cols-1 xl:grid-cols-2";
+    }
+  }
 
   return (
     <div className={gridClass}>
