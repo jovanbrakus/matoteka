@@ -50,7 +50,7 @@ export default function CommentPanel({
     <div className="fixed inset-0 z-50 flex justify-end">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/20 backdrop-blur-[1px]"
         onClick={onClose}
       />
 
@@ -58,7 +58,7 @@ export default function CommentPanel({
       <aside
         role="dialog"
         aria-label="Komentari"
-        className="relative flex h-full w-full max-w-lg flex-col border-l border-border bg-card shadow-2xl"
+        className="relative flex h-full w-full max-w-sm flex-col border-l border-border bg-card shadow-2xl"
       >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border px-5 py-4">
