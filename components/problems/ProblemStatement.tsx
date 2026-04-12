@@ -105,7 +105,8 @@ export default function ProblemStatement({
       ref={iframeRef}
       src={src}
       sandbox="allow-scripts"
-      className="w-full border-none"
+      scrolling="no"
+      className="w-full border-none overflow-hidden"
       title={section === "statement" ? "Postavka zadatka" : "Resenje"}
       style={{ minHeight }}
     />

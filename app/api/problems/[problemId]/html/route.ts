@@ -187,7 +187,7 @@ function extractV2StatementHtml(fragment: string, theme: string): string {
 <script async src="${MATHJAX_SRC}"></script>
 <style>${SOLUTION_V2_CSS}</style>
 <style>
-  body { padding: 10px; margin: 0; }
+  body { padding: 0; margin: 0; }
   .answer-option, .answer-grid { display: none !important; }
 </style>
 </head>

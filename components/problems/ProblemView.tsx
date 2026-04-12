@@ -260,7 +260,7 @@ export default function ProblemView({ problemId, onAnswered, onNext, autoShowSol
       </div>
 
       {/* Problem content iframe */}
-      <div className="mb-8 overflow-hidden rounded-2xl border border-[var(--glass-border)] glass-card">
+      <div className="mb-8">
         <ProblemStatement
           problemId={problem.id}
           section="statement"
@@ -377,8 +377,8 @@ export default function ProblemView({ problemId, onAnswered, onNext, autoShowSol
       {/* Full Solution */}
       {showSolution && (
         <>
-          <div className="mb-6 overflow-hidden rounded-2xl border border-[var(--glass-border)] glass-card">
-            <div className="border-b border-[var(--glass-border)] bg-[var(--tint)] px-6 py-3">
+          <div className="mb-6">
+            <div className="mb-4 px-2">
               <h3 className="text-sm font-bold uppercase tracking-widest text-[#ec5b13]">
                 Kompletno rešenje
               </h3>
