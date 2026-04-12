@@ -146,8 +146,33 @@ test.describe("Card comments", () => {
     }, marker);
   });
 
-  test("comment persists across page reload", async ({ page }) => {
+  test("comment persists across navigation", async ({ page }) => {
+    // This test verifies comments survive a full server roundtrip: post a
+    // comment, navigate away + back to the SAME problem via a stable URL,
+    // and confirm the badge count + thread contents are restored.
+    //
+    // Note: /zadaci?topic=... randomly picks a problem per visit, so
+    // page.reload() would show a different problem. The student-facing
+    // stable URL for a specific problem is /sacuvano/<token>, which requires
+    // bookmarking first. We use that path here.
     await openProblemAndShowSolution(page);
+
+    // Bookmark the current problem so we can revisit it via a stable URL.
+    // The bookmark button lives outside the iframe in the problem header.
+    await page.locator("button", { hasText: "Sačuvaj" }).first().click();
+    await expect(
+      page.locator("button", { hasText: "Sačuvano" })
+    ).toBeVisible({ timeout: 5_000 });
+
+    // Capture the problem ID from the iframe src for later cleanup + assertions.
+    const problemId = await page.evaluate(() => {
+      const iframe = document.querySelector(
+        "iframe[src*='/api/problems/']"
+      ) as HTMLIFrameElement | null;
+      const match = iframe?.src.match(/\/api\/problems\/([^/]+)\//);
+      return match ? match[1] : null;
+    });
+    expect(problemId).toBeTruthy();
 
     const solutionFrame = page.frameLocator(
       "iframe[src*='/api/problems/'][src*='theme']:not([src*='section=statement'])"
@@ -167,8 +192,11 @@ test.describe("Card comments", () => {
       timeout: 10_000,
     });
 
-    // Reload the page.
-    await page.reload();
+    // Navigate away, then back to the bookmarked problem via /sacuvano.
+    // /sacuvano redirects to /sacuvano/<token> — a stable URL for this
+    // bookmark, backed by the same problem ID.
+    await page.goto("/sacuvano");
+    await page.waitForURL("**/sacuvano/**", { timeout: 15_000 });
     await expect(page.locator("text=Tvoj odgovor")).toBeVisible({
       timeout: 20_000,
     });
@@ -197,25 +225,23 @@ test.describe("Card comments", () => {
       timeout: 5_000,
     });
 
-    // Cleanup.
-    await page.evaluate(async (m: string) => {
-      const iframe = document.querySelector(
-        "iframe[src*='/api/problems/']"
-      ) as HTMLIFrameElement | null;
-      if (!iframe) return;
-      const match = iframe.src.match(/\/api\/problems\/([^/]+)\//);
-      if (!match) return;
-      const problemId = match[1];
-      const res = await fetch(`/api/problems/${problemId}/comments`);
-      if (!res.ok) return;
-      const data = await res.json();
-      for (const threads of Object.values(data.anchors) as any[]) {
-        for (const t of threads as any[]) {
-          if (t.comment.body.includes(m)) {
-            await fetch(`/api/comments/${t.comment.id}`, { method: "DELETE" });
+    // Cleanup: delete the comment and remove the bookmark.
+    await page.evaluate(
+      async ({ pid, m }: { pid: string; m: string }) => {
+        const res = await fetch(`/api/problems/${pid}/comments`);
+        if (res.ok) {
+          const data = await res.json();
+          for (const threads of Object.values(data.anchors) as any[]) {
+            for (const t of threads as any[]) {
+              if (t.comment.body.includes(m)) {
+                await fetch(`/api/comments/${t.comment.id}`, { method: "DELETE" });
+              }
+            }
           }
         }
-      }
-    }, marker);
+        await fetch(`/api/bookmarks/${pid}`, { method: "POST" });
+      },
+      { pid: problemId!, m: marker }
+    );
   });
 });
