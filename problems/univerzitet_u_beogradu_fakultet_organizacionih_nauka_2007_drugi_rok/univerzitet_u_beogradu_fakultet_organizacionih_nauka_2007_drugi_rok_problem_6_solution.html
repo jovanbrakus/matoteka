@@ -1,0 +1,874 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: A right trapezoid has bases of length 12 cm and 4 cm. A circle is inscribed in it.
+  Find the radius of the inscribed circle.
+
+  Setup: Let the trapezoid be ABCD where:
+  - AB = 12 (longer base, bottom)
+  - CD = 4 (shorter base, top)
+  - Angle at A = 90° (right angle)
+  - AD is the perpendicular side (height)
+
+  For a tangential polygon (one with an inscribed circle), the sum of opposite sides must be equal:
+    AB + CD = AD + BC
+
+  The height of the trapezoid:
+  Since angle A = 90°, AD is perpendicular to AB.
+  AD = h (height of trapezoid).
+
+  The inscribed circle has radius r. Since the circle is tangent to all four sides:
+  - Tangent to AB (bottom) and CD (top): the distance between these parallel sides is h = AD
+  - So the diameter = h, meaning r = h/2... wait, that's only if both bases are tangent.
+  Actually, the center is at distance r from all four sides.
+  Distance from center to AB = r, distance from center to CD = r.
+  Since AB and CD are parallel and h apart: 2r = h, so h = 2r.
+
+  Now using the tangential condition:
+    AB + CD = AD + BC
+    12 + 4 = h + BC
+    16 = h + BC
+    BC = 16 - h = 16 - 2r
+
+  For the non-right side BC: Drop a perpendicular from D to AB. Since angle A = 90°,
+  D is directly above A at height h.
+
+  Actually, let me set coordinates:
+  A = (0, 0), B = (12, 0), and since angle A = 90°, D = (0, h).
+  CD = 4, so C = (4, h).
+
+  BC = distance from B(12,0) to C(4,h) = sqrt((12-4)^2 + h^2) = sqrt(64 + h^2)
+
+  From the tangential condition:
+    12 + 4 = h + sqrt(64 + h^2)
+    16 - h = sqrt(64 + h^2)
+
+  Squaring both sides:
+    (16-h)^2 = 64 + h^2
+    256 - 32h + h^2 = 64 + h^2
+    256 - 32h = 64
+    192 = 32h
+    h = 6
+
+  So r = h/2 = 3.
+
+  Verification:
+    h = 6, BC = sqrt(64 + 36) = sqrt(100) = 10
+    AB + CD = 12 + 4 = 16
+    AD + BC = 6 + 10 = 16 ✓
+
+  Answer: B) 3
+</script>
+
+<h1 data-card="problem-title">Poluprečnik upisane kružnice u pravouglom trapezu</h1>
+<p data-card="problem-subtitle" class="subtitle">Geometrija — upisana kružnica i tangentni mnogougao</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>U pravougli trapez čije osnovice imaju dužine 12 cm i 4 cm upisana je kružnica. Dužina poluprečnika te kružnice (u cm) je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 2\sqrt{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 2\sqrt{3} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \dfrac{5}{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 4 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">
+    Postavićemo koordinatni sistem tako da je pravi ugao u temenu \( A \). Iskoristićemo osobinu tangentnog četvorougla (zbir naspramnih stranica je jednak), zatim Pitagorinu teoremu za kosu stranicu, i činjenicu da je visina trapeza jednaka prečniku upisane kružnice.
+  </p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Tangentni četvorougao:</strong> Ako je u četvorougao upisana kružnica (tangira sve četiri stranice), tada je zbir naspramnih stranica jednak: \( AB + CD = AD + BC \).</li>
+        <li><strong>Upisana kružnica i visina:</strong> U trapezu sa upisanom kružnicom, prečnik kružnice jednak je visini trapeza: \( h = 2r \).</li>
+        <li><strong>Pitagorina teorema:</strong> U pravouglom trouglu važi \( c^2 = a^2 + b^2 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Pravougli trapez sa upisanom kružnicom">
+  <h2>📐 Pravougli trapez sa upisanom kružnicom</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-p6a" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Pravougli trapez \( ABCD \) sa upisanom kružnicom poluprečnika \( r \)</p>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-p6a');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Trapezoid ABCD: A(0,0), B(12,0), C(4,6), D(0,6)
+    // Scale: 1 cm = 35 px
+    var scale = 35;
+    var ox = 120, oy = H - 80;
+
+    function tx(x) { return ox + x * scale; }
+    function ty(y) { return oy - y * scale; }
+
+    var Ax = tx(0), Ay = ty(0);
+    var Bx = tx(12), By = ty(0);
+    var Cx = tx(4), Cy = ty(6);
+    var Dx = tx(0), Dy = ty(6);
+
+    // Fill trapezoid
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.08);
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay);
+    ctx.lineTo(Bx, By);
+    ctx.lineTo(Cx, Cy);
+    ctx.lineTo(Dx, Dy);
+    ctx.closePath();
+    ctx.fill();
+
+    // Draw trapezoid
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay);
+    ctx.lineTo(Bx, By);
+    ctx.lineTo(Cx, Cy);
+    ctx.lineTo(Dx, Dy);
+    ctx.closePath();
+    ctx.stroke();
+
+    // Right angle mark at A
+    var sq = 12;
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(Ax + sq, Ay);
+    ctx.lineTo(Ax + sq, Ay - sq);
+    ctx.lineTo(Ax, Ay - sq);
+    ctx.stroke();
+
+    // Inscribed circle: center at (r, r) = (3, 3), radius = 3
+    var ccx = tx(3), ccy = ty(3), cr = 3 * scale;
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.arc(ccx, ccy, cr, 0, 2 * Math.PI);
+    ctx.stroke();
+
+    // Center dot
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(ccx, ccy, 4, 0, 2 * Math.PI);
+    ctx.fill();
+
+    // Radius line
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath();
+    ctx.moveTo(ccx, ccy);
+    ctx.lineTo(ccx, ty(0));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // r label
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 16px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('r = 3', ccx + 8, ccy + 25);
+
+    // Center label O
+    ctx.fillText('O', ccx + 8, ccy - 8);
+
+    // Vertex labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('A', Ax - 10, Ay + 6);
+    ctx.textAlign = 'left';
+    ctx.fillText('B', Bx + 8, By + 6);
+    ctx.fillText('C', Cx + 8, Cy - 6);
+    ctx.textAlign = 'right';
+    ctx.fillText('D', Dx - 10, Dy - 6);
+
+    // Side labels
+    ctx.fillStyle = secondary;
+    ctx.font = '15px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('AB = 12', (Ax + Bx) / 2, Ay + 25);
+    ctx.fillText('CD = 4', (Cx + Dx) / 2, Cy - 15);
+    ctx.textAlign = 'right';
+    ctx.fillText('AD = 6', Ax - 18, (Ay + Dy) / 2 + 4);
+
+    // BC label
+    ctx.save();
+    ctx.translate((Bx + Cx) / 2 + 16, (By + Cy) / 2);
+    var angle = Math.atan2(Cy - By, Cx - Bx);
+    ctx.rotate(angle);
+    ctx.textAlign = 'center';
+    ctx.fillText('BC = 10', 0, -12);
+    ctx.restore();
+
+    // Tangent points markers
+    var tangentPoints = [
+      {x: tx(3), y: ty(0)},    // on AB
+      {x: tx(0), y: ty(3)},    // on AD
+      {x: tx(3), y: ty(6)},    // on CD  (tangent on top is at x = r = 3, since center is at (3,3) and top is horizontal)
+    ];
+
+    // Tangent on BC: need to find it.
+    // BC goes from B(12,0) to C(4,6). Direction (4-12, 6-0) = (-8, 6). Length = 10.
+    // Unit normal to BC pointing inward: (6, 8)/10 = (0.6, 0.8) (pointing left and up)
+    // Actually, let me compute. The foot of perpendicular from center (3,3) to line BC.
+    // Line BC: parametric: (12,0) + t(-8,6), t in [0,1]
+    // Point on line: (12-8t, 6t)
+    // Vector from this point to center: (3-(12-8t), 3-6t) = (8t-9, 3-6t)
+    // This must be perpendicular to direction (-8,6):
+    // -8(8t-9) + 6(3-6t) = 0 => -64t + 72 + 18 - 36t = 0 => -100t + 90 = 0 => t = 0.9
+    // Tangent point: (12-7.2, 5.4) = (4.8, 5.4)
+    tangentPoints.push({x: tx(4.8), y: ty(5.4)});
+
+    tangentPoints.forEach(function(pt) {
+      ctx.fillStyle = highlight;
+      ctx.beginPath();
+      ctx.arc(pt.x, pt.y, 4, 0, 2 * Math.PI);
+      ctx.fill();
+    });
+
+    // Dimension arrows for height
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(tx(13), ty(0));
+    ctx.lineTo(tx(13), ty(6));
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = muted;
+    ctx.font = '13px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('h = 6 = 2r', tx(13.3), ty(3) + 4);
+  }
+
+  draw();
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<div data-card="visual-aid" data-title="Osobina tangentnog četvorougla">
+  <h2>📐 Osobina tangentnog četvorougla</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-p6b" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Tangentne dužine iz svakog temena su jednake — ključna osobina tangentnog četvorougla</p>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-p6b');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    var scale = 35;
+    var ox = 120, oy = H - 80;
+
+    function tx(x) { return ox + x * scale; }
+    function ty(y) { return oy - y * scale; }
+
+    var Ax = tx(0), Ay = ty(0);
+    var Bx = tx(12), By = ty(0);
+    var Cx = tx(4), Cy = ty(6);
+    var Dx = tx(0), Dy = ty(6);
+
+    // Fill trapezoid
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.05);
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay);
+    ctx.lineTo(Bx, By);
+    ctx.lineTo(Cx, Cy);
+    ctx.lineTo(Dx, Dy);
+    ctx.closePath();
+    ctx.fill();
+
+    // Tangent points
+    // From A: tangent to AB at (3,0) and to AD at (0,3) => length = 3
+    // From D: tangent to AD at (0,3) and to DC at (3,6) => length = 3
+    // From C: tangent to DC at (3,6) and to BC at (4.8,5.4) => length = 1
+    //   Check: dist C(4,6) to (3,6) = 1, dist C(4,6) to (4.8,5.4) = sqrt(0.64+0.36)=1 ✓
+    // From B: tangent to AB at (3,0) and to BC at (4.8,5.4) => length = 9
+    //   Check: dist B(12,0) to (3,0) = 9, dist B(12,0) to (4.8,5.4) = sqrt(51.84+29.16)=sqrt(81)=9 ✓
+
+    var tangPts = {
+      P: {x: 3, y: 0},   // on AB
+      Q: {x: 0, y: 3},   // on AD
+      R: {x: 3, y: 6},   // on CD
+      S: {x: 4.8, y: 5.4} // on BC
+    };
+
+    // Color segments by vertex
+    var colors = [accent, secondary, highlight, primary];
+
+    // From A: A to P (on AB) and A to Q (on AD)
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay);
+    ctx.lineTo(tx(tangPts.P.x), ty(tangPts.P.y));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay);
+    ctx.lineTo(tx(tangPts.Q.x), ty(tangPts.Q.y));
+    ctx.stroke();
+
+    // From D: D to Q (on AD) and D to R (on CD)
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(Dx, Dy);
+    ctx.lineTo(tx(tangPts.Q.x), ty(tangPts.Q.y));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(Dx, Dy);
+    ctx.lineTo(tx(tangPts.R.x), ty(tangPts.R.y));
+    ctx.stroke();
+
+    // From C: C to R (on CD) and C to S (on BC)
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(Cx, Cy);
+    ctx.lineTo(tx(tangPts.R.x), ty(tangPts.R.y));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(Cx, Cy);
+    ctx.lineTo(tx(tangPts.S.x), ty(tangPts.S.y));
+    ctx.stroke();
+
+    // From B: B to P (on AB) and B to S (on BC)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(Bx, By);
+    ctx.lineTo(tx(tangPts.P.x), ty(tangPts.P.y));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(Bx, By);
+    ctx.lineTo(tx(tangPts.S.x), ty(tangPts.S.y));
+    ctx.stroke();
+
+    // Inscribed circle (faint)
+    ctx.strokeStyle = cvAlpha('--sol-canvas-muted', 0.4);
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath();
+    ctx.arc(tx(3), ty(3), 3 * scale, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Tangent points dots
+    Object.keys(tangPts).forEach(function(key) {
+      var pt = tangPts[key];
+      ctx.fillStyle = danger;
+      ctx.beginPath();
+      ctx.arc(tx(pt.x), ty(pt.y), 5, 0, 2 * Math.PI);
+      ctx.fill();
+    });
+
+    // Tangent point labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('P', tx(tangPts.P.x), ty(tangPts.P.y) + 20);
+    ctx.textAlign = 'right';
+    ctx.fillText('Q', tx(tangPts.Q.x) - 10, ty(tangPts.Q.y) + 4);
+    ctx.textAlign = 'center';
+    ctx.fillText('R', tx(tangPts.R.x), ty(tangPts.R.y) - 10);
+    ctx.textAlign = 'left';
+    ctx.fillText('S', tx(tangPts.S.x) + 10, ty(tangPts.S.y) - 4);
+
+    // Vertex labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('A', Ax - 10, Ay + 6);
+    ctx.textAlign = 'left';
+    ctx.fillText('B', Bx + 8, By + 6);
+    ctx.fillText('C', Cx + 8, Cy - 6);
+    ctx.textAlign = 'right';
+    ctx.fillText('D', Dx - 10, Dy - 6);
+
+    // Length labels
+    ctx.font = 'bold 13px sans-serif';
+    ctx.textAlign = 'center';
+
+    ctx.fillStyle = accent;
+    ctx.fillText('3', tx(1.5), ty(0) + 32);
+    ctx.fillText('3', tx(0) - 24, ty(1.5) + 4);
+
+    ctx.fillStyle = secondary;
+    ctx.fillText('3', tx(0) - 24, ty(4.5) + 4);
+    ctx.fillText('3', tx(1.5), ty(6) - 14);
+
+    ctx.fillStyle = highlight;
+    ctx.fillText('1', tx(3.5), ty(6) - 14);
+
+    ctx.fillStyle = primary;
+    ctx.fillText('9', tx(7.5), ty(0) + 32);
+
+    // Legend box
+    var lx = W - 230, ly = 20;
+    ctx.font = '13px sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'left';
+    ctx.fillText('Tangentne du\u017Eine:', lx, ly + 15);
+
+    ctx.fillStyle = accent;
+    ctx.fillText('Iz A: AP = AQ = 3', lx + 10, ly + 35);
+    ctx.fillStyle = secondary;
+    ctx.fillText('Iz D: DQ = DR = 3', lx + 10, ly + 55);
+    ctx.fillStyle = highlight;
+    ctx.fillText('Iz C: CR = CS = 1', lx + 10, ly + 75);
+    ctx.fillStyle = primary;
+    ctx.fillText('Iz B: BP = BS = 9', lx + 10, ly + 95);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px sans-serif';
+    ctx.fillText('AB + CD = 12 + 4 = 16', lx, ly + 125);
+    ctx.fillText('AD + BC = 6 + 10 = 16 \u2713', lx, ly + 145);
+  }
+
+  draw();
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<div data-card="visual-aid" data-title="Pitagorina teorema za kosu stranicu">
+  <h2>📐 Pitagorina teorema za kosu stranicu</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-p6c" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Pravougli trougao \( BCE \) za izračunavanje kose stranice \( BC \) pomoću Pitagorine teoreme</p>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-p6c');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    var scale = 40;
+    var ox = 140, oy = H - 100;
+
+    function tx(x) { return ox + x * scale; }
+    function ty(y) { return oy - y * scale; }
+
+    // Full trapezoid faint
+    var Ax = tx(0), Ay = ty(0);
+    var Bx = tx(12), By = ty(0);
+    var Cx = tx(4), Cy = ty(6);
+    var Dx = tx(0), Dy = ty(6);
+
+    ctx.strokeStyle = cvAlpha('--sol-canvas-muted', 0.3);
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 5]);
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay);
+    ctx.lineTo(Bx, By);
+    ctx.lineTo(Cx, Cy);
+    ctx.lineTo(Dx, Dy);
+    ctx.closePath();
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Drop perpendicular from C to AB => E = (4, 0)
+    var Ex = tx(4), Ey = ty(0);
+
+    // Highlight triangle BCE
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.1);
+    ctx.beginPath();
+    ctx.moveTo(Bx, By);
+    ctx.lineTo(Cx, Cy);
+    ctx.lineTo(Ex, Ey);
+    ctx.closePath();
+    ctx.fill();
+
+    // Triangle BCE sides
+    // BE = 12 - 4 = 8 (horizontal)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(Ex, Ey);
+    ctx.lineTo(Bx, By);
+    ctx.stroke();
+
+    // CE = 6 (vertical)
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(Ex, Ey);
+    ctx.lineTo(Cx, Cy);
+    ctx.stroke();
+
+    // BC (hypotenuse)
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(Bx, By);
+    ctx.lineTo(Cx, Cy);
+    ctx.stroke();
+
+    // Right angle at E
+    var sq = 12;
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(Ex + sq, Ey);
+    ctx.lineTo(Ex + sq, Ey - sq);
+    ctx.lineTo(Ex, Ey - sq);
+    ctx.stroke();
+
+    // Labels for vertices
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('A', Ax - 10, Ay + 6);
+    ctx.textAlign = 'left';
+    ctx.fillText('B', Bx + 8, By + 6);
+    ctx.fillText('C', Cx + 8, Cy - 8);
+    ctx.textAlign = 'right';
+    ctx.fillText('D', Dx - 10, Dy - 6);
+    ctx.textAlign = 'center';
+    ctx.fillText('E', Ex, Ey + 22);
+
+    // Side labels
+    ctx.font = 'bold 15px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = primary;
+    ctx.fillText('BE = 8', (Ex + Bx) / 2, Ey + 40);
+
+    ctx.fillStyle = secondary;
+    ctx.textAlign = 'right';
+    ctx.fillText('CE = h = 6', Ex - 12, (Ey + Cy) / 2 + 4);
+
+    ctx.fillStyle = accent;
+    ctx.save();
+    ctx.translate((Bx + Cx) / 2 + 18, (By + Cy) / 2);
+    var angle = Math.atan2(Cy - By, Cx - Bx);
+    ctx.rotate(angle);
+    ctx.textAlign = 'center';
+    ctx.fillText('BC = 10', 0, -14);
+    ctx.restore();
+
+    // Pythagorean formula
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('BC\u00B2 = BE\u00B2 + CE\u00B2', W / 2, 40);
+    ctx.fillText('10\u00B2 = 8\u00B2 + 6\u00B2', W / 2, 65);
+    ctx.fillText('100 = 64 + 36 \u2713', W / 2, 90);
+
+    // Dashed line from C down to E
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(Dx, Dy);
+    ctx.lineTo(Dx, Ay);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  draw();
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavimo trapez u koordinatni sistem</h3>
+      <p>Neka je \( ABCD \) pravougli trapez sa pravim uglom u temenu \( A \):</p>
+      <ul>
+        <li>\( A = (0, 0) \), \( B = (12, 0) \) — duža osnovica \( AB = 12 \)</li>
+        <li>\( D = (0, h) \) — vertikalna stranica (visina trapeza)</li>
+        <li>\( C = (4, h) \) — kraća osnovica \( CD = 4 \)</li>
+      </ul>
+      <p>Nepoznata je visina \( h \), koja je ujedno i dužina stranice \( AD \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Iskoristimo vezu visine i poluprečnika</h3>
+      <p>Upisana kružnica tangira obe osnovice (gornju i donju). Pošto su one paralelne i na rastojanju \( h \), centar kružnice je na sredini, pa je:</p>
+      <div class="math-block">
+        \[ h = 2r \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto je prečnik kružnice jednak visini trapeza?</summary>
+          <div class="detail-content"><p>Centar upisane kružnice je na rastojanju \( r \) od gornje i od donje osnovice. Ukupno rastojanje između osnovica (visina) je \( r + r = 2r \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Primenimo osobinu tangentnog četvorougla</h3>
+      <p>Za svaki četvorougao u koji je upisana kružnica važi da je <strong>zbir naspramnih stranica jednak</strong>:</p>
+      <div class="math-block">
+        \[ AB + CD = AD + BC \]
+      </div>
+      <p>Zamenom poznatih vrednosti:</p>
+      <div class="math-block">
+        \[ 12 + 4 = h + BC \implies BC = 16 - h \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Izrazimo \( BC \) pomoću Pitagorine teoreme</h3>
+      <p>Spustimo normalu iz \( C \) na \( AB \). Nožište normale je tačka \( E = (4, 0) \). U pravouglom trouglu \( BCE \):</p>
+      <div class="math-block">
+        \[ BE = AB - AE = 12 - 4 = 8, \quad CE = h \]
+      </div>
+      <div class="math-block">
+        \[ BC = \sqrt{BE^2 + CE^2} = \sqrt{64 + h^2} \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Rešimo jednačinu po \( h \)</h3>
+      <p>Izjednačimo dva izraza za \( BC \):</p>
+      <div class="math-block">
+        \[ 16 - h = \sqrt{64 + h^2} \]
+      </div>
+      <p>Kvadriramo obe strane (obe su pozitivne jer \( h < 16 \)):</p>
+      <div class="math-block">
+        \[ (16 - h)^2 = 64 + h^2 \]
+      </div>
+      <div class="math-block">
+        \[ 256 - 32h + h^2 = 64 + h^2 \]
+      </div>
+      <p>Član \( h^2 \) se pojavljuje na obe strane i skraćuje se:</p>
+      <div class="math-block">
+        \[ 256 - 32h = 64 \]
+      </div>
+      <div class="math-block">
+        \[ 32h = 192 \implies h = 6 \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunajmo poluprečnik</h3>
+      <div class="math-block">
+        \[ r = \frac{h}{2} = \frac{6}{2} = 3 \]
+      </div>
+      <p><strong>Verifikacija:</strong></p>
+      <div class="math-block">
+        \[ BC = \sqrt{64 + 36} = \sqrt{100} = 10 \]
+      </div>
+      <div class="math-block">
+        \[ AB + CD = 12 + 4 = 16 = 6 + 10 = AD + BC \quad \checkmark \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Da li su tangentne dužine iz svakog temena konzistentne?</summary>
+          <div class="detail-content">
+            <p>Iz temena \( A \): \( AP = AQ = r = 3 \). Iz temena \( D \): \( DQ = DR = h - r = 3 \). Iz temena \( C \): \( CR = CS = CD - DR = 4 - 3 = 1 \). Iz temena \( B \): \( BP = BS = AB - AP = 12 - 3 = 9 \). Provera: \( BS + SC = 9 + 1 = 10 = BC \) \( \checkmark \)</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kombinacija dve osobine — da je visina trapeza jednaka prečniku upisane kružnice (\( h = 2r \)) i da zbir naspramnih stranica tangentnog četvorougla mora biti jednak (\( AB + CD = AD + BC \)) — daje elegantnu jednačinu sa jednom nepoznatom. Ključno je primetiti da se \( h^2 \) javlja na obe strane i skraćuje, ostavljajući linearnu jednačinu.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ r = 3 \text{ cm} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 2\sqrt{2} \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( 3 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 2\sqrt{3} \)</span>
+    <span class="answer-option" data-option="D">(D) \( \dfrac{5}{2} \)</span>
+    <span class="answer-option" data-option="E">(E) \( 4 \)</span>
+  </div>
+  <p class="verification">Verifikacija: Trapez sa stranicama \( AB = 12 \), \( BC = 10 \), \( CD = 4 \), \( DA = 6 \) zadovoljava uslov tangentnog četvorougla: \( 12 + 4 = 6 + 10 = 16 \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Zaboraviti osobinu tangentnog četvorougla \( AB + CD = AD + BC \). Bez nje nije moguće povezati stranice.</li>
+    <li>Mešanje prečnika i poluprečnika: visina je \( 2r \), ne \( r \).</li>
+    <li>Pogrešno računanje \( BE \): horizontalna projekcija kose stranice je \( AB - CD = 12 - 4 = 8 \), ne \( AB = 12 \).</li>
+    <li>Zaboraviti proveriti da je \( 16 - h > 0 \) pre kvadriranja jednačine (za \( h = 6 \) važi \( 16 - 6 = 10 > 0 \)).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>U pravougli trapez sa osnovicama \( a \) i \( b \) (\( a > b \)) upisana je kružnica. Pokaži da je poluprečnik upisane kružnice \( r = \dfrac{ab}{a + b} \cdot \dfrac{2}{1} \)... zapravo, dokaži opštu formulu: \( r = \dfrac{a + b - \sqrt{(a-b)^2 + (a+b)^2 - (a+b)^2}}{2} \). Pojednostavi ovo: pokaži da za pravougli trapez sa osnovicama \( a \) i \( b \) važi \( r = \dfrac{a + b - \sqrt{(a-b)^2 + h^2}}{2} \), gde \( h = 2r \), i nađi \( r \) u funkciji od \( a \) i \( b \).</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Koristi isti postupak kao u zadatku: postavi \( h = 2r \) i \( BC = a + b - h \). Iz Pitagorine teoreme: \( BC^2 = (a-b)^2 + h^2 \). Dobićeš kvadratnu jednačinu po \( r \), čije je rešenje \( r = \dfrac{ab}{a+b} \). Proveri: za \( a = 12 \), \( b = 4 \): \( r = \dfrac{48}{16} = 3 \).</p></div>
+  </details>
+</div>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Poluprečnik upisane kružnice u pravouglom trapezu",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["trapez", "upisana_kružnica", "tangentni_četvorougao", "pitagorina_teorema"]
+}
+BRAINSPARK_META-->

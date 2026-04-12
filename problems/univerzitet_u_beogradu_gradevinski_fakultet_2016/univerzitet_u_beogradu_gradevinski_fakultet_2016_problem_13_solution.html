@@ -1,0 +1,696 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Compute ((1 - i√3)/(1 - i))^2016
+
+  Step 1: Convert to polar form
+  1 - i√3: modulus = √(1 + 3) = 2, argument = arctan(-√3/1) = -π/3 (fourth quadrant of real axis positive, imaginary negative)
+  So 1 - i√3 = 2·e^(-iπ/3)
+
+  1 - i: modulus = √(1 + 1) = √2, argument = arctan(-1/1) = -π/4
+  So 1 - i = √2·e^(-iπ/4)
+
+  Step 2: Compute quotient
+  (1 - i√3)/(1 - i) = (2/√2)·e^(-iπ/3 + iπ/4) = √2·e^(-iπ/12)
+
+  Argument of quotient: -π/3 + π/4 = -4π/12 + 3π/12 = -π/12
+
+  Step 3: Raise to 2016th power
+  (√2)^2016 · e^(-i·2016π/12)
+  = (2^(1/2))^2016 · e^(-i·168π)
+  = 2^1008 · e^(-i·168π)
+
+  e^(-i·168π) = cos(168π) - i·sin(168π) = 1 - 0 = 1
+  (since 168 is even, 168π is a multiple of 2π)
+
+  Result: 2^1008
+
+  Check options:
+  (A) 2^2016
+  (B) 2^2016·i
+  (V) 2^2016·(1+i)
+  (G) 2^1008  ← correct
+  (D) 2^1008·(1+i)
+
+  Answer: (G) 2^1008
+</script>
+
+<h1 data-card="problem-title">Stepen kompleksnog razlomka</h1>
+<p data-card="problem-subtitle" class="subtitle">Kompleksni brojevi — eksponencijalni oblik i stepenovanje</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Vrednost izraza \( \left(\dfrac{1 - i\sqrt{3}}{1 - i}\right)^{2016} \) jednaka je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 2^{2016} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 2^{2016} \, i \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(V)</span>
+      <span class="answer-value">\( 2^{2016}(1+i) \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(G)</span>
+      <span class="answer-value">\( 2^{1008} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 2^{1008}(1+i) \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">
+    Prevešćemo brojilac i imenilac u trigonometrijski (polarni) oblik, izračunati količnik, a zatim primeniti De Moavrov (De Moivre) obrazac za stepenovanje. Ključ je prepoznati da se argument poništava kada je eksponent deljiv sa odgovarajućim brojem.
+  </p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Trigonometrijski oblik</span> \( z = r(\cos\varphi + i\sin\varphi) = r \cdot e^{i\varphi} \), gde je \( r = |z| \) i \( \varphi = \arg(z) \).</li>
+        <li><span class="formula-label">De Moavrov obrazac</span> \( \left[r(\cos\varphi + i\sin\varphi)\right]^n = r^n(\cos(n\varphi) + i\sin(n\varphi)) \)</li>
+        <li>Množenje/deljenje: moduli se množe/dele, argumenti se sabiraju/oduzimaju.</li>
+        <li>\( e^{i \cdot 2k\pi} = 1 \) za svako \( k \in \mathbb{Z} \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Kompleksni brojevi u polarnom obliku">
+  <h2>📐 Kompleksni brojevi u polarnom obliku</h2>
+  <div class="canvas-wrapper">
+    <canvas id="complex-plane-p13" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Brojilac \( 1 - i\sqrt{3} \) i imenilac \( 1 - i \) prikazani u kompleksnoj ravni sa svojim modulima i argumentima</p>
+</div>
+
+<div data-card="visual-aid" data-title="Količnik i stepenovanje">
+  <h2>📐 Količnik i stepenovanje</h2>
+  <div class="canvas-wrapper">
+    <canvas id="quotient-p13" width="700" height="450"></canvas>
+  </div>
+  <p class="canvas-caption">Količnik \( \frac{1 - i\sqrt{3}}{1 - i} = \sqrt{2} \cdot e^{-i\pi/12} \) i efekat stepenovanja na 2016 — argument se „namota" tačno ceo broj krugova</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Polarni oblik brojioca \( 1 - i\sqrt{3} \)</h3>
+      <p>Izračunajmo modul:</p>
+      <div class="math-block">\[ |1 - i\sqrt{3}| = \sqrt{1^2 + (\sqrt{3})^2} = \sqrt{1 + 3} = 2 \]</div>
+      <p>Argument: realni deo je \( 1 > 0 \), imaginarni je \( -\sqrt{3} < 0 \), dakle tačka je u četvrtom kvadrantu:</p>
+      <div class="math-block">\[ \arg(1 - i\sqrt{3}) = -\arctan\frac{\sqrt{3}}{1} = -\frac{\pi}{3} \]</div>
+      <p>Prema tome:</p>
+      <div class="math-block">\[ 1 - i\sqrt{3} = 2 \cdot e^{-i\pi/3} \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto je argument baš \( -\pi/3 \)?</summary>
+          <div class="detail-content">
+            <p>Jer je \( \tan(\pi/3) = \sqrt{3} \), a tačka \( (1, -\sqrt{3}) \) leži ispod realne ose (četvrti kvadrant), pa je argument negativan: \( -\pi/3 \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Polarni oblik imenioca \( 1 - i \)</h3>
+      <p>Modul:</p>
+      <div class="math-block">\[ |1 - i| = \sqrt{1^2 + 1^2} = \sqrt{2} \]</div>
+      <p>Argument: tačka \( (1, -1) \) je u četvrtom kvadrantu:</p>
+      <div class="math-block">\[ \arg(1 - i) = -\frac{\pi}{4} \]</div>
+      <p>Dakle:</p>
+      <div class="math-block">\[ 1 - i = \sqrt{2} \cdot e^{-i\pi/4} \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunajmo količnik</h3>
+      <p>Pri deljenju kompleksnih brojeva u polarnom obliku, moduli se dele a argumenti oduzimaju:</p>
+      <div class="math-block">\[ \frac{1 - i\sqrt{3}}{1 - i} = \frac{2}{\sqrt{2}} \cdot e^{i\left(-\frac{\pi}{3} - \left(-\frac{\pi}{4}\right)\right)} = \sqrt{2} \cdot e^{-i\pi/12} \]</div>
+      <p>Proverimo argument:</p>
+      <div class="math-block">\[ -\frac{\pi}{3} + \frac{\pi}{4} = -\frac{4\pi}{12} + \frac{3\pi}{12} = -\frac{\pi}{12} \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Koliko iznosi modul količnika?</summary>
+          <div class="detail-content">
+            <p>\( \frac{2}{\sqrt{2}} = \frac{2\sqrt{2}}{2} = \sqrt{2} \). Dakle modul je \( \sqrt{2} = 2^{1/2} \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Stepenujemo na 2016</h3>
+      <p>Primenom De Moavrovog obrasca:</p>
+      <div class="math-block">\[ \left(\sqrt{2} \cdot e^{-i\pi/12}\right)^{2016} = (\sqrt{2})^{2016} \cdot e^{-i \cdot 2016\pi/12} \]</div>
+      <p>Izračunajmo modul:</p>
+      <div class="math-block">\[ (\sqrt{2})^{2016} = (2^{1/2})^{2016} = 2^{1008} \]</div>
+      <p>Izračunajmo argument:</p>
+      <div class="math-block">\[ -\frac{2016\pi}{12} = -168\pi \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Odredimo vrednost \( e^{-i \cdot 168\pi} \)</h3>
+      <p>Broj \( 168 \) je paran, pa je \( 168\pi = 84 \cdot 2\pi \), što je ceo broj punih krugova:</p>
+      <div class="math-block">\[ e^{-i \cdot 168\pi} = \cos(168\pi) - i\sin(168\pi) = 1 - 0 = 1 \]</div>
+      <p>Konačno:</p>
+      <div class="math-block">\[ \left(\frac{1 - i\sqrt{3}}{1 - i}\right)^{2016} = 2^{1008} \cdot 1 = 2^{1008} \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Šta bi se desilo da eksponent nije delio argument na ceo broj krugova?</summary>
+          <div class="detail-content">
+            <p>Rezultat ne bi bio realan broj — imao bi i imaginarni deo. Baš zato što je \( 2016/12 = 168 \) paran ceo broj, kompleksni deo se poništava i ostaje samo realni deo \( 2^{1008} \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kad god stepenujemo kompleksni razlomak na veliki eksponent, <strong>polarni oblik</strong> je jedini praktičan pristup. Modul se stepenuje „obično", a argument se množi eksponentom. Ako se argument pomnožen eksponentom svede na celobrojni umnožak od \( 2\pi \), rezultat je čisto realan broj. Ovde je \( -\frac{\pi}{12} \cdot 2016 = -168\pi = -84 \cdot 2\pi \), pa je \( e^{-i \cdot 168\pi} = 1 \).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \left(\frac{1 - i\sqrt{3}}{1 - i}\right)^{2016} = 2^{1008} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 2^{2016} \)</span>
+    <span class="answer-option" data-option="B">(B) \( 2^{2016} \, i \)</span>
+    <span class="answer-option" data-option="C">(V) \( 2^{2016}(1+i) \)</span>
+    <span class="answer-option correct" data-option="D">(G) \( 2^{1008} \)</span>
+    <span class="answer-option" data-option="E">(D) \( 2^{1008}(1+i) \)</span>
+  </div>
+  <p class="verification">Verifikacija: Modul količnika je \( \sqrt{2} \), stepenovan na 2016 daje \( 2^{1008} \). Argument \( -\pi/12 \cdot 2016 = -168\pi \) je celobrojni umnožak od \( 2\pi \), pa je rezultat realan i pozitivan.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešan modul:</strong> Ako se zaboravi da je modul \( 1 - i\sqrt{3} \) jednak 2 (a ne \( \sqrt{2} \) ili 4), dobija se potpuno pogrešan rezultat. Uvek proveriti: \( 1^2 + (\sqrt{3})^2 = 4 \), dakle modul je \( \sqrt{4} = 2 \).</li>
+    <li><strong>Grešak u argumentu količnika:</strong> Argument razlike \( -\frac{\pi}{3} - (-\frac{\pi}{4}) = -\frac{\pi}{3} + \frac{\pi}{4} = -\frac{\pi}{12} \). Ako se predznaci zamene, dobija se \( -\frac{7\pi}{12} \) i rezultat neće biti realan.</li>
+    <li><strong>Zamena \( (\sqrt{2})^{2016} \) sa \( 2^{2016} \):</strong> Česta greška je da se zanemari da je baza \( \sqrt{2} = 2^{1/2} \), pa je \( (2^{1/2})^{2016} = 2^{1008} \), a ne \( 2^{2016} \).</li>
+    <li><strong>Neprepoznavanje da je \( 168\pi \) celobrojni umnožak od \( 2\pi \):</strong> Moramo proveriti da li se \( 168/2 = 84 \) — ceo broj, dakle argument je \( 84 \cdot 2\pi \) i \( e^{-i \cdot 84 \cdot 2\pi} = 1 \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Odredite vrednost izraza \( \left(\dfrac{1 - i\sqrt{3}}{1 - i}\right)^{2018} \). Da li je rezultat realan broj, čisto imaginaran, ili ima oba dela?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Količnik je \( \sqrt{2} \cdot e^{-i\pi/12} \). Za eksponent 2018: modul je \( 2^{1009} \), a argument je \( -\frac{2018\pi}{12} = -\frac{1009\pi}{6} \). Kako je \( \frac{1009}{6} = 168 + \frac{1}{6} \), dobijamo \( e^{-i\pi/6} = \frac{\sqrt{3}}{2} - \frac{1}{2}i \). Rezultat je \( 2^{1009}\left(\frac{\sqrt{3}}{2} - \frac{1}{2}i\right) = 2^{1008}(\sqrt{3} - i) \) — ima oba dela!</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('complex-plane-p13');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var tertiary  = cv('--sol-canvas-tertiary');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    var cx = 300;
+    var cy = 250;
+    var scale = 90;
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Kompleksna ravan — polarni oblik brojioca i imenioca', W / 2, 25);
+
+    // Grid circles
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 0.5;
+    for (var r = 1; r <= 3; r++) {
+      ctx.beginPath();
+      ctx.arc(cx, cy, r * scale, 0, 2 * Math.PI);
+      ctx.stroke();
+    }
+
+    // Grid labels
+    ctx.fillStyle = muted;
+    ctx.font = '11px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    for (var r = 1; r <= 3; r++) {
+      ctx.fillText(r.toString(), cx + r * scale + 3, cy - 3);
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(30, cy);
+    ctx.lineTo(W - 30, cy);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(cx, 40);
+    ctx.lineTo(cx, H - 40);
+    ctx.stroke();
+
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Re', W - 20, cy - 8);
+    ctx.fillText('Im', cx + 15, 50);
+
+    // Point z1 = 1 - i√3 = (1, -√3) ≈ (1, -1.732)
+    var z1x = cx + 1 * scale;
+    var z1y = cy + Math.sqrt(3) * scale;
+
+    // Point z2 = 1 - i = (1, -1)
+    var z2x = cx + 1 * scale;
+    var z2y = cy + 1 * scale;
+
+    // Draw radius to z1
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(z1x, z1y);
+    ctx.stroke();
+
+    // Draw arc for arg(z1) = -π/3
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 45, 0, Math.PI / 3, false);
+    ctx.stroke();
+
+    // Label arg z1
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('-\u03c0/3', cx + 48, cy + 22);
+
+    // Draw radius to z2
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(z2x, z2y);
+    ctx.stroke();
+
+    // Draw arc for arg(z2) = -π/4
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath();
+    ctx.arc(cx, cy, 65, 0, Math.PI / 4, false);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Label arg z2
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('-\u03c0/4', cx + 68, cy + 14);
+
+    // Point z1
+    ctx.beginPath();
+    ctx.arc(z1x, z1y, 6, 0, 2 * Math.PI);
+    ctx.fillStyle = primary;
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Label z1
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('z\u2081 = 1 - i\u221a3', z1x + 10, z1y + 5);
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('|z\u2081| = 2', z1x + 10, z1y + 22);
+
+    // Point z2
+    ctx.beginPath();
+    ctx.arc(z2x, z2y, 6, 0, 2 * Math.PI);
+    ctx.fillStyle = secondary;
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Label z2
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('z\u2082 = 1 - i', z2x + 10, z2y + 5);
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('|z\u2082| = \u221a2', z2x + 10, z2y + 22);
+
+    // Dashed projections z1
+    ctx.setLineDash([4, 4]);
+    ctx.strokeStyle = cvAlpha('--sol-canvas-primary', 0.4);
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(z1x, z1y);
+    ctx.lineTo(z1x, cy);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(z1x, z1y);
+    ctx.lineTo(cx, z1y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Projection labels z1
+    ctx.fillStyle = muted;
+    ctx.font = '11px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('1', z1x, cy - 6);
+    ctx.textAlign = 'right';
+    ctx.fillText('-\u221a3', cx - 6, z1y + 4);
+
+    // Dashed projections z2
+    ctx.setLineDash([4, 4]);
+    ctx.strokeStyle = cvAlpha('--sol-canvas-secondary', 0.4);
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(z2x, z2y);
+    ctx.lineTo(cx, z2y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Projection labels z2
+    ctx.fillStyle = muted;
+    ctx.font = '11px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('-1', cx - 6, z2y + 4);
+
+    // Legend
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    var legY = H - 25;
+
+    ctx.fillStyle = primary;
+    ctx.beginPath();
+    ctx.arc(50, legY, 5, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.fillText('Brojilac: 2\u00b7e^(-i\u03c0/3)', 62, legY + 4);
+
+    ctx.fillStyle = secondary;
+    ctx.beginPath();
+    ctx.arc(310, legY, 5, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.fillText('Imenilac: \u221a2\u00b7e^(-i\u03c0/4)', 322, legY + 4);
+  }
+
+  draw();
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('quotient-p13');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Količnik i efekat stepenovanja na 2016', W / 2, 25);
+
+    // Left side: quotient on unit-ish circle
+    var lcx = 180;
+    var lcy = 230;
+    var lR = 130;
+
+    // Circle with radius √2
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(lcx, lcy, lR, 0, 2 * Math.PI);
+    ctx.stroke();
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(lcx - lR - 20, lcy);
+    ctx.lineTo(lcx + lR + 20, lcy);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(lcx, lcy - lR - 20);
+    ctx.lineTo(lcx, lcy + lR + 20);
+    ctx.stroke();
+
+    ctx.fillStyle = muted;
+    ctx.font = '11px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('\u221a2', lcx + lR + 5, lcy - 5);
+
+    // Quotient point: √2 · e^(-iπ/12), angle = -15°
+    var qAngle = -Math.PI / 12;
+    var qx = lcx + lR * Math.cos(qAngle);
+    var qy = lcy - lR * Math.sin(qAngle);
+
+    // Radius to quotient
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(lcx, lcy);
+    ctx.lineTo(qx, qy);
+    ctx.stroke();
+
+    // Arc for -π/12
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(lcx, lcy, 40, 0, Math.PI / 12, false);
+    ctx.stroke();
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('-\u03c0/12', lcx + 42, lcy + 14);
+
+    // Point
+    ctx.beginPath();
+    ctx.arc(qx, qy, 6, 0, 2 * Math.PI);
+    ctx.fillStyle = accent;
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('w = \u221a2\u00b7e^(-i\u03c0/12)', qx + 10, qy - 8);
+
+    // Left label
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Količnik w', lcx, 55);
+
+    // Right side: stepenovanje summary
+    var rx = 430;
+    var ry = 100;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Stepenovanje w\u00b2\u2070\u00b9\u2076:', rx, ry);
+
+    ctx.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Modul:', rx, ry + 35);
+    ctx.fillStyle = primary;
+    ctx.fillText('(\u221a2)\u00b2\u2070\u00b9\u2076 = 2\u00b9\u2070\u2070\u2078', rx + 60, ry + 35);
+
+    ctx.fillStyle = muted;
+    ctx.fillText('Argument:', rx, ry + 65);
+    ctx.fillStyle = primary;
+    ctx.fillText('-\u03c0/12 \u00d7 2016 = -168\u03c0', rx + 75, ry + 65);
+
+    ctx.fillStyle = muted;
+    ctx.fillText('Pošto je:', rx, ry + 100);
+    ctx.fillStyle = secondary;
+    ctx.fillText('-168\u03c0 = -84 \u00d7 2\u03c0', rx + 65, ry + 100);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('to je e^(-i\u00b7168\u03c0) = 1', rx, ry + 135);
+
+    // Result box
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    var boxX = rx - 10;
+    var boxY = ry + 165;
+    var boxW = 220;
+    var boxH = 40;
+    var radius = 8;
+    ctx.moveTo(boxX + radius, boxY);
+    ctx.lineTo(boxX + boxW - radius, boxY);
+    ctx.quadraticCurveTo(boxX + boxW, boxY, boxX + boxW, boxY + radius);
+    ctx.lineTo(boxX + boxW, boxY + boxH - radius);
+    ctx.quadraticCurveTo(boxX + boxW, boxY + boxH, boxX + boxW - radius, boxY + boxH);
+    ctx.lineTo(boxX + radius, boxY + boxH);
+    ctx.quadraticCurveTo(boxX, boxY + boxH, boxX, boxY + boxH - radius);
+    ctx.lineTo(boxX, boxY + radius);
+    ctx.quadraticCurveTo(boxX, boxY, boxX + radius, boxY);
+    ctx.closePath();
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.1);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Rezultat = 2\u00b9\u2070\u2070\u2078', boxX + boxW / 2, boxY + 26);
+
+    // Arrow showing 84 full rotations
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 1.5;
+    var arrowR = 60;
+    var arrowCx = lcx;
+    var arrowCy = lcy;
+    ctx.beginPath();
+    ctx.arc(arrowCx, arrowCy, arrowR, -0.3, -5.7, true);
+    ctx.stroke();
+    // Arrowhead
+    var aEndAngle = -5.7;
+    var aex = arrowCx + arrowR * Math.cos(aEndAngle);
+    var aey = arrowCy - arrowR * Math.sin(aEndAngle);
+    ctx.beginPath();
+    ctx.moveTo(aex, aey);
+    ctx.lineTo(aex - 6, aey - 8);
+    ctx.lineTo(aex + 6, aey - 4);
+    ctx.closePath();
+    ctx.fillStyle = highlight;
+    ctx.fill();
+
+    ctx.fillStyle = highlight;
+    ctx.font = '11px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('84 punih', lcx, lcy + lR + 45);
+    ctx.fillText('krugova', lcx, lcy + lR + 60);
+  }
+
+  draw();
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Stepenovanje kompleksnog razlomka pomoću polarnog oblika",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["kompleksni brojevi", "polarni oblik", "De Moavrov obrazac", "stepenovanje", "eksponencijalni oblik"]
+}
+BRAINSPARK_META-->

@@ -1,0 +1,417 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Zadatak: Tangente parabole y = x² u tačkama (1, 1) i (−2, 4) seku se u tački M(a, b). Tada je ab jednako?
+
+y = x², y' = 2x
+
+Tangenta u tački (1, 1):
+Nagib: k₁ = 2·1 = 2
+Jednačina: y − 1 = 2(x − 1) → y = 2x − 1
+
+Tangenta u tački (−2, 4):
+Nagib: k₂ = 2·(−2) = −4
+Jednačina: y − 4 = −4(x + 2) → y − 4 = −4x − 8 → y = −4x − 4
+
+Presek tangenti:
+2x − 1 = −4x − 4
+6x = −3
+x = −1/2
+
+y = 2·(−1/2) − 1 = −1 − 1 = −2
+
+Dakle M(−1/2, −2), pa je:
+ab = (−1/2)·(−2) = 1
+
+Odgovor: B) 1
+</script>
+
+<h1 data-card="problem-title">Presek tangenti parabole</h1>
+<p data-card="problem-subtitle" class="subtitle">Izvod · Tangenta krive · Parabola</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Tangente parabole \( y = x^2 \) u tačkama \( (1, 1) \) i \( (-2, 4) \) seku se u tački \( M(a, b) \). Tada je \( ab \) jednako:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( -1 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( -\dfrac{1}{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \dfrac{1}{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Odredimo jednačine tangenti parabole \( y = x^2 \) u datim tačkama koristeći izvod \( y' = 2x \) za nagib. Zatim rešimo sistem dve linearne jednačine da bismo pronašli koordinate presečne tačke \( M(a, b) \), i konačno izračunamo proizvod \( ab \).</p>
+</div>
+
+<div data-card="theory" data-title="Teorija">
+  <h2>📖 Teorija</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <p><strong>Jednačina tangente na krivu \( y = f(x) \) u tački \( (x_0, y_0) \):</strong></p>
+      <p class="math-block">\[ y - y_0 = f'(x_0) \cdot (x - x_0) \]</p>
+      <p><strong>Izvod funkcije \( y = x^n \):</strong></p>
+      <p class="math-block">\[ y' = n \cdot x^{n-1} \]</p>
+      <p>Za \( y = x^2 \) važi \( y' = 2x \), što znači da je nagib tangente u tački sa apscisom \( x_0 \) jednak \( 2x_0 \).</p>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📊 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-p18" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Parabola \( y = x^2 \) sa tangentama u tačkama \( (1, 1) \) i \( (-2, 4) \) — presek u \( M(-\frac{1}{2}, -2) \)</p>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+
+  var canvas = document.getElementById('diagram-p18');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+    var warning = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Coordinate system centered so parabola and tangents are visible
+    // Need to see: x from -3.5 to 3, y from -3 to 6
+    var ox = 320;
+    var oy = 340;
+    var scaleX = 80;
+    var scaleY = 50;
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 0.5;
+    for (var gx = -4; gx <= 4; gx++) {
+      ctx.beginPath();
+      ctx.moveTo(ox + gx * scaleX, 20);
+      ctx.lineTo(ox + gx * scaleX, H - 20);
+      ctx.stroke();
+    }
+    for (var gy = -4; gy <= 7; gy++) {
+      ctx.beginPath();
+      ctx.moveTo(20, oy - gy * scaleY);
+      ctx.lineTo(W - 20, oy - gy * scaleY);
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(20, oy);
+    ctx.lineTo(W - 20, oy);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(ox, H - 15);
+    ctx.lineTo(ox, 15);
+    ctx.stroke();
+
+    // Axis arrows
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(W - 20, oy);
+    ctx.lineTo(W - 28, oy - 4);
+    ctx.lineTo(W - 28, oy + 4);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(ox, 15);
+    ctx.lineTo(ox - 4, 23);
+    ctx.lineTo(ox + 4, 23);
+    ctx.fill();
+
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = '14px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('x', W - 15, oy - 10);
+    ctx.fillText('y', ox + 14, 22);
+
+    // Tick labels
+    ctx.font = '11px serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    for (var tx = -3; tx <= 3; tx++) {
+      if (tx === 0) continue;
+      ctx.fillText(String(tx), ox + tx * scaleX, oy + 15);
+    }
+    ctx.textAlign = 'right';
+    for (var ty = -3; ty <= 6; ty++) {
+      if (ty === 0) continue;
+      if (ty % 2 === 0 || ty === 1 || ty === -1) {
+        ctx.fillText(String(ty), ox - 6, oy - ty * scaleY + 4);
+      }
+    }
+
+    function toScreen(xr, yr) {
+      return [ox + xr * scaleX, oy - yr * scaleY];
+    }
+
+    // Plot parabola y = x²
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    var first = true;
+    for (var px = -3.0; px <= 3.0; px += 0.02) {
+      var py = px * px;
+      var sp = toScreen(px, py);
+      if (sp[1] < 15 || sp[1] > H - 15) { first = true; continue; }
+      if (first) { ctx.moveTo(sp[0], sp[1]); first = false; }
+      else { ctx.lineTo(sp[0], sp[1]); }
+    }
+    ctx.stroke();
+
+    // Label parabola
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 14px serif';
+    ctx.textAlign = 'left';
+    var lp = toScreen(2.3, 5.29);
+    ctx.fillText('y = x²', lp[0] + 5, lp[1] - 5);
+
+    // Tangent 1: y = 2x - 1 (through (1,1))
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    var t1a = toScreen(-1.5, 2 * (-1.5) - 1);
+    var t1b = toScreen(3.5, 2 * 3.5 - 1);
+    // Clip to canvas
+    ctx.moveTo(t1a[0], t1a[1]);
+    ctx.lineTo(t1b[0], t1b[1]);
+    ctx.stroke();
+
+    // Label tangent 1
+    ctx.fillStyle = secondary;
+    ctx.font = '13px serif';
+    ctx.textAlign = 'left';
+    var lt1 = toScreen(2.6, 2 * 2.6 - 1);
+    ctx.fillText('y = 2x − 1', lt1[0] + 5, lt1[1] - 8);
+
+    // Tangent 2: y = -4x - 4 (through (-2,4))
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    var t2a = toScreen(-3.2, -4 * (-3.2) - 4);
+    var t2b = toScreen(0.8, -4 * 0.8 - 4);
+    // Need to clip to visible region
+    // y = -4x - 4, visible when y between -3 and 7
+    // y = 7: -4x - 4 = 7 → x = -2.75
+    // y = -3: -4x - 4 = -3 → x = -0.25
+    var t2start = toScreen(-2.75, 7);
+    var t2end = toScreen(0.5, -4 * 0.5 - 4);
+    ctx.moveTo(t2start[0], t2start[1]);
+    ctx.lineTo(t2end[0], t2end[1]);
+    ctx.stroke();
+
+    // Label tangent 2
+    ctx.fillStyle = accent;
+    ctx.font = '13px serif';
+    ctx.textAlign = 'right';
+    var lt2 = toScreen(-2.6, -4 * (-2.6) - 4);
+    ctx.fillText('y = −4x − 4', lt2[0] - 5, lt2[1] - 8);
+
+    // Point (1, 1) on parabola
+    ctx.fillStyle = secondary;
+    var p1 = toScreen(1, 1);
+    ctx.beginPath();
+    ctx.arc(p1[0], p1[1], 6, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.font = 'bold 12px serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('(1, 1)', p1[0] + 10, p1[1] - 8);
+
+    // Point (-2, 4) on parabola
+    ctx.fillStyle = accent;
+    var p2 = toScreen(-2, 4);
+    ctx.beginPath();
+    ctx.arc(p2[0], p2[1], 6, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.font = 'bold 12px serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('(−2, 4)', p2[0] - 10, p2[1] - 8);
+
+    // Intersection point M(-1/2, -2)
+    ctx.fillStyle = danger;
+    var pM = toScreen(-0.5, -2);
+    ctx.beginPath();
+    ctx.arc(pM[0], pM[1], 8, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Label M
+    ctx.fillStyle = danger;
+    ctx.font = 'bold 14px serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('M(−½, −2)', pM[0] + 12, pM[1] + 5);
+
+    // Result box
+    ctx.fillStyle = danger;
+    ctx.globalAlpha = 0.1;
+    ctx.fillRect(pM[0] + 10, pM[1] + 12, 145, 26);
+    ctx.globalAlpha = 1.0;
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(pM[0] + 10, pM[1] + 12, 145, 26);
+    ctx.fillStyle = danger;
+    ctx.font = 'bold 13px serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('ab = (−½)(−2) = 1', pM[0] + 16, pM[1] + 30);
+  }
+
+  draw();
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<div data-card="step-solution" data-title="Rešenje po koracima">
+  <h2>🔢 Rešenje po koracima</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Odredimo izvod funkcije</h3>
+      <p>Za parabolu \( y = x^2 \), izvod je:</p>
+      <p class="math-block">\[ y' = 2x \]</p>
+      <p>Izvod u datoj tački daje nagib tangente u toj tački.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Tangenta u tački \( (1, 1) \)</h3>
+      <p>Nagib tangente u tački sa \( x_0 = 1 \):</p>
+      <p class="math-block">\[ k_1 = y'(1) = 2 \cdot 1 = 2 \]</p>
+      <p>Jednačina tangente:</p>
+      <p class="math-block">\[ y - 1 = 2(x - 1) \implies y = 2x - 1 \]</p>
+      <div class="checkpoint">✔ Prva tangenta: \( y = 2x - 1 \)</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Tangenta u tački \( (-2, 4) \)</h3>
+      <p>Nagib tangente u tački sa \( x_0 = -2 \):</p>
+      <p class="math-block">\[ k_2 = y'(-2) = 2 \cdot (-2) = -4 \]</p>
+      <p>Jednačina tangente:</p>
+      <p class="math-block">\[ y - 4 = -4(x + 2) \implies y - 4 = -4x - 8 \implies y = -4x - 4 \]</p>
+      <div class="checkpoint">✔ Druga tangenta: \( y = -4x - 4 \)</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Presek tangenti</h3>
+      <p>Rešavamo sistem jednačina izjednačavanjem:</p>
+      <p class="math-block">\[ 2x - 1 = -4x - 4 \]</p>
+      <p class="math-block">\[ 2x + 4x = -4 + 1 \]</p>
+      <p class="math-block">\[ 6x = -3 \implies x = -\frac{1}{2} \]</p>
+      <p>Zamenom u prvu jednačinu:</p>
+      <p class="math-block">\[ y = 2 \cdot \left(-\frac{1}{2}\right) - 1 = -1 - 1 = -2 \]</p>
+      <div class="checkpoint">✔ Presečna tačka: \( M\!\left(-\dfrac{1}{2},\; -2\right) \)</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunavanje proizvoda \( ab \)</h3>
+      <p>Koordinate tačke \( M \) su \( a = -\frac{1}{2} \) i \( b = -2 \), pa je:</p>
+      <p class="math-block">\[ ab = \left(-\frac{1}{2}\right) \cdot (-2) = \frac{2}{2} = 1 \]</p>
+      <div class="checkpoint">✔ Proizvod koordinata je 1.</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Za parabolu \( y = x^2 \), tangenta u tački \( (x_0, x_0^2) \) ima jednačinu \( y = 2x_0 x - x_0^2 \). Ovo je opšta formula koju vredi zapamtiti. Presek dve tangente u tačkama \( x_1 \) i \( x_2 \) uvek ima apscisu \( \frac{x_1 + x_2}{2} \) — što je aritmetička sredina apscisa dodirnih tačaka. U našem slučaju: \( \frac{1 + (-2)}{2} = -\frac{1}{2} \).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ ab = \left(-\frac{1}{2}\right) \cdot (-2) = 1 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( -1 \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( 1 \)</span>
+    <span class="answer-option" data-option="C">(V) \( -\dfrac{1}{2} \)</span>
+    <span class="answer-option" data-option="D">(G) \( \dfrac{1}{2} \)</span>
+    <span class="answer-option" data-option="E">(D) \( 2 \)</span>
+  </div>
+  <p class="verification">Provera: Tačka \( M(-\frac{1}{2}, -2) \) leži na obe tangente: \( 2 \cdot (-\frac{1}{2}) - 1 = -2 \) ✓ i \( -4 \cdot (-\frac{1}{2}) - 4 = 2 - 4 = -2 \) ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Zamke">
+  <h2>⚠️ Česte zamke</h2>
+  <ul class="pitfall-list">
+    <li><strong>Greška u znaku nagiba:</strong> U tački \( (-2, 4) \), nagib je \( 2 \cdot (-2) = -4 \), a ne \( 4 \). Negativan predznak se ne sme izgubiti.</li>
+    <li><strong>Pogrešno raspisivanje jednačine tangente:</strong> Za tačku \( (-2, 4) \): \( y - 4 = -4(x - (-2)) = -4(x + 2) \). Česta greška je pisati \( x - 2 \) umesto \( x + 2 \).</li>
+    <li><strong>Računanje \( ab \) sa pogrešnim znakom:</strong> Obe koordinate su negativne, pa je njihov proizvod pozitivan. Ako se zanemari jedan minus, dobija se \( ab = -1 \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Nađi površinu trougla ograničenog parabolom \( y = x^2 \) i tangentama u tačkama \( (1, 1) \) i \( (-2, 4) \).</p>
+  <details>
+    <summary>Pomoć</summary>
+    <div class="detail-content">
+      <p>Površina se računa integracijom: treba naći oblast između parabole i dve tangente. Temena trougla su \( (1, 1) \), \( (-2, 4) \) i \( M(-\frac{1}{2}, -2) \). Površina trougla sa datim temenima: \( P = \frac{1}{2} |x_1(y_2 - y_3) + x_2(y_3 - y_1) + x_3(y_1 - y_2)| = \frac{1}{2} |1(4-(-2)) + (-2)((-2)-1) + (-\frac{1}{2})(1-4)| = \frac{1}{2}|6 + 6 + \frac{3}{2}| = \frac{27}{4} \).</p>
+    </div>
+  </details>
+</div>
+
+<!--BRAINSPARK_META
+{"format":"v2","title":"Presek tangenti parabole y = x²","subject":"math","unit":"analiza","topic_tags":["izvod","tangenta","parabola","sistemi_jednacina"]}
+BRAINSPARK_META-->

@@ -1,0 +1,509 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Broj 1234512345...1234512 ima 2007 cifara.
+Precrtavamo sve cifre na neparnim mestima (1., 3., 5., ...).
+U preostalom broju ponovo precrtavamo cifre na neparnim mestima.
+Ponavljamo dok ne ostane jedna cifra. Koja je to cifra?
+
+Broj se ponavlja sa periodom 12345 (dužine 5).
+2007 = 401 * 5 + 2, dakle: 401 punih ciklusa "12345" plus "12".
+
+Eliminacija neparnih pozicija:
+Posle svake runde, ostaju cifre sa parnih pozicija.
+Posle runde 1: pozicije 2, 4, 6, ..., 2006 (floor(2007/2) = 1003 cifara)
+Posle runde 2: od tih 1003, uzimamo parne => pozicije 4, 8, 12, ..., 2004
+  (floor(1003/2) = 501 cifara)
+Posle runde 3: pozicije 8, 16, 24, ..., 2000
+  (floor(501/2) = 250 cifara)
+Posle runde 4: pozicije 16, 32, ..., 2000
+  (floor(250/2) = 125 cifara)
+Posle runde 5: pozicije 32, 64, ..., 1984
+  (floor(125/2) = 62 cifre)
+Posle runde 6: pozicije 64, 128, ..., 1984
+  (floor(62/2) = 31 cifra)
+Posle runde 7: pozicije 128, 256, ..., 1920
+  (floor(31/2) = 15 cifara)
+Posle runde 8: pozicije 256, 512, ..., 1792
+  (floor(15/2) = 7 cifara)
+Posle runde 9: pozicije 512, 1024, 1536
+  (floor(7/2) = 3 cifre)
+Posle runde 10: pozicija 1024
+  (floor(3/2) = 1 cifra)
+
+Provera detaljno runde 8 i 9:
+Posle runde 7: 128, 256, 384, 512, 640, 768, 896, 1024, 1152, 1280, 1408, 1536, 1664, 1792, 1920
+  (to je 15 pozicija, korak 128)
+
+Posle runde 8: uzmemo parne iz ovih 15 => na pozicijama (u ovom nizu):
+  2., 4., 6., 8., 10., 12., 14.
+  = 256, 512, 768, 1024, 1280, 1536, 1792
+  (7 pozicija, korak 256)
+
+Posle runde 9: od 7 uzmemo parne => 2., 4., 6.
+  = 512, 1024, 1536
+  (3 pozicije, korak 512)
+
+Posle runde 10: od 3 uzmemo parnu => 2.
+  = 1024
+  (1 pozicija)
+
+Dakle, preživela cifra je na poziciji 1024 u originalnom broju.
+
+Koji je to karakter u nizu 1234512345...1234512?
+Obrazac: 12345 se ponavlja. Pozicija 1024 mod 5:
+1024 / 5 = 204 ostatak 4.
+Dakle, 1024-ta cifra je 4-ta u obrascu "12345", a to je cifra 4.
+
+Odgovor: D) 4
+</script>
+
+<h1 data-card="problem-title">Poslednja preostala cifra u procesu eliminacije</h1>
+<p data-card="problem-subtitle" class="subtitle">Teorija brojeva — prepoznavanje obrazaca i stepen dvojke</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>U broju \( 1234512345 \ldots 1234512 \) koji ima 2007 cifara precrtane su sve cifre na neparnim mestima (počinjući s leve strane). U tako dobijenom broju ponovo su precrtane sve cifre na neparnim mestima. Ova operacija je ponovljena dok na kraju nije ostala samo jedna cifra. Koja je to cifra?</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 4 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 5 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Umesto da simuliramo ceo proces eliminacije, uočićemo da nakon svake runde preživljavaju cifre na parnim pozicijama. Praćenjem pozicija kroz runde, poslednja preostala cifra odgovara poziciji koja je najveći stepen dvojke manji ili jednak od broja cifara. Zatim ćemo odrediti koja cifra zauzima tu poziciju u periodičnom nizu.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Eliminacija neparnih pozicija:</strong> Kad brišemo neparno-indeksirane elemente iz niza dužine \( n \), preživljava \( \lfloor n/2 \rfloor \) elemenata na originalnim parnim pozicijama.</li>
+        <li><strong>Preživela pozicija:</strong> Ponovljenim brisanjem neparnih pozicija, poslednja preostala cifra je na poziciji \( 2^k \), gde je \( 2^k \) najveći stepen dvojke \( \leq n \).</li>
+        <li><strong>Periodični niz:</strong> Cifra na poziciji \( p \) u nizu koji ponavlja obrazac dužine \( d \) jednaka je cifri na poziciji \( ((p - 1) \bmod d) + 1 \) u obrascu.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-p18" width="700" height="700"></canvas>
+  </div>
+  <p class="canvas-caption">Proces eliminacije cifara na neparnim pozicijama — prikazan na manjem primeru (16 cifara), a zatim ključni zaključak za 2007 cifara</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Razumemo strukturu broja</h3>
+      <p>Broj se formira ponavljanjem obrasca \( 12345 \). Pošto ima 2007 cifara:</p>
+      <div class="math-block">\[ 2007 = 401 \times 5 + 2 \]</div>
+      <p>Dakle, imamo 401 punu grupu „12345" i na kraju još „12". Cifra na poziciji \( p \) je:</p>
+      <div class="math-block">\[ c(p) = ((p - 1) \bmod 5) + 1 \]</div>
+      <p>Na primer: pozicija 1 daje cifru 1, pozicija 4 daje cifru 4, pozicija 6 daje cifru 1, itd.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Analiziramo proces eliminacije</h3>
+      <p>U svakoj rundi brišemo cifre na neparnim pozicijama (1., 3., 5., ...) i zadržavamo one na parnim (2., 4., 6., ...).</p>
+      <p>Posle <strong>1. runde</strong>: preživljavaju cifre sa originalnih pozicija \( 2, 4, 6, \ldots, 2006 \) — ukupno 1003 cifre.</p>
+      <p>Posle <strong>2. runde</strong>: od preostalih biramo parne, tj. originalne pozicije \( 4, 8, 12, \ldots, 2004 \) — ukupno 501 cifra.</p>
+      <p>Uočavamo obrazac: posle \( k \) rundi, preživljavaju pozicije koje su umnošci od \( 2^k \).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto posle 3. runde preživljavaju umnošci od 8?</summary>
+          <div class="detail-content"><p>Posle 1. runde: umnošci od 2. Posle 2. runde: svaki drugi od tih, tj. umnošci od 4. Posle 3. runde: svaki drugi od tih, tj. umnošci od 8. Svaka nova runda udvostručuje korak.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Pratimo broj cifara kroz runde</h3>
+      <p>Vodimo evidenciju o broju preostalih cifara i koraku (razmaku između preživelih pozicija):</p>
+      <div class="math-block">\[ \begin{array}{c|c|c}
+        \text{Runda} & \text{Broj cifara} & \text{Korak} \\
+        \hline
+        0 & 2007 & 1 \\
+        1 & 1003 & 2 \\
+        2 & 501 & 4 \\
+        3 & 250 & 8 \\
+        4 & 125 & 16 \\
+        5 & 62 & 32 \\
+        6 & 31 & 64 \\
+        7 & 15 & 128 \\
+        8 & 7 & 256 \\
+        9 & 3 & 512 \\
+        10 & 1 & 1024
+      \end{array} \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Odredimo poziciju poslednje preostale cifre</h3>
+      <p>Pratimo detaljno poslednje runde. Posle runde 8 preostalo je 7 cifara na pozicijama:</p>
+      <div class="math-block">\[ 256,\; 512,\; 768,\; 1024,\; 1280,\; 1536,\; 1792 \]</div>
+      <p>Posle runde 9 (brišemo 1., 3., 5., 7.): ostaju pozicije \( 512,\; 1024,\; 1536 \) — 3 cifre.</p>
+      <p>Posle runde 10 (brišemo 1. i 3.): ostaje pozicija \( \mathbf{1024} \).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto je preživela pozicija 1024, a ne neka druga?</summary>
+          <div class="detail-content"><p>Jer je \( 1024 = 2^{10} \) najveći stepen dvojke koji ne prelazi 2007. Upravo ta pozicija preživljava sve runde eliminacije — ona je uvek na parnom mestu u svakom preostalom nizu.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Odredimo cifru na poziciji 1024</h3>
+      <p>Obrazac „12345" ima period 5. Delimo 1024 sa 5:</p>
+      <div class="math-block">\[ 1024 = 204 \times 5 + 4 \]</div>
+      <p>Ostatak je 4, što znači da je cifra na poziciji 1024 ista kao cifra na 4. mestu u obrascu „12345":</p>
+      <div class="math-block">\[ \underbrace{1}_{1.} \; \underbrace{2}_{2.} \; \underbrace{3}_{3.} \; \underbrace{\mathbf{4}}_{4.} \; \underbrace{5}_{5.} \quad \Rightarrow \quad c(1024) = \mathbf{4} \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Eliminacija neparnih pozicija je ekvivalentna traženju najvećeg stepena dvojke \( 2^k \leq n \). Ovo je opšti princip: u nizu od \( n \) elemenata, ponovljenim brisanjem neparno-indeksiranih, preživljava element na poziciji \( 2^{\lfloor \log_2 n \rfloor} \). Za 2007 cifara to je \( 2^{10} = 1024 \).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \text{Poslednja preostala cifra je } \mathbf{4} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 1 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 2 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 3 \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 4 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 5 \)</span>
+  </div>
+  <p class="verification">Provera: \( 2^{10} = 1024 \leq 2007 < 2048 = 2^{11} \), i \( 1024 \bmod 5 = 4 \), pa je cifra na poziciji 1024 jednaka 4.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pokušaj simulacije celog procesa ručno za 2007 cifara — gubi se vreme i pravi greške. Koristite obrazac sa stepenom dvojke.</li>
+    <li>Pogrešno brojanje pozicija: zaboraviti da se neparan broj elemenata menja na \( \lfloor n/2 \rfloor \), a ne \( \lceil n/2 \rceil \).</li>
+    <li>Greška pri deljenju: \( 1024 \div 5 = 204 \) ostatak \( 4 \), ne ostatak \( 0 \) ili \( 5 \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta bi se desilo da umesto brisanja cifara na neparnim mestima, brišemo cifre na parnim mestima? Koja cifra bi preostala u istom broju od 2007 cifara?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Kad brišemo parne pozicije, preživljavaju neparno-indeksirane. Posle prve runde ostaju pozicije 1, 3, 5, ..., 2007 (1004 cifre). Posle svake runde, preživela pozicija je \( 2^k - 1 \) (pomeren obrazac). Analiza je slična, ali vodi ka drugom rezultatu. Pokušaj da pratiš preživele pozicije i vidiš koji obrazac se formira.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-p18');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var tertiary  = cv('--sol-canvas-tertiary');
+    var warning   = cv('--sol-canvas-warning');
+
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Demonstrate elimination on a 16-digit example: 1234512345123451
+    var digits = [1,2,3,4,5,1,2,3,4,5,1,2,3,4,5,1];
+    var n = digits.length;
+
+    // Track which positions survive each round
+    var rounds = [];
+    var alive = [];
+    for (var i = 0; i < n; i++) alive.push(i);
+    rounds.push(alive.slice());
+
+    while (alive.length > 1) {
+      var next = [];
+      for (var j = 1; j < alive.length; j += 2) {
+        next.push(alive[j]);
+      }
+      alive = next;
+      rounds.push(alive.slice());
+    }
+
+    // Layout
+    var startY = 45;
+    var rowH = 52;
+    var cellW = 38;
+    var startX = 30;
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Primer sa 16 cifara: 1234512345123451', startX, 25);
+
+    // Draw each round
+    for (var rd = 0; rd < rounds.length; rd++) {
+      var y = startY + rd * rowH;
+      var currentAlive = rounds[rd];
+
+      // Round label
+      ctx.fillStyle = muted;
+      ctx.font = '11px sans-serif';
+      ctx.textAlign = 'right';
+      if (rd === 0) {
+        ctx.fillText('Početak:', startX + n * cellW + 55, y + 18);
+      } else {
+        ctx.fillText('Runda ' + rd + ':', startX + n * cellW + 55, y + 18);
+      }
+      ctx.fillStyle = muted;
+      ctx.font = '11px sans-serif';
+      ctx.fillText('(' + currentAlive.length + ')', startX + n * cellW + 75, y + 32);
+
+      // Draw all 16 cells
+      for (var ci = 0; ci < n; ci++) {
+        var x = startX + ci * cellW;
+        var isAlive = currentAlive.indexOf(ci) !== -1;
+        var willDie = false;
+
+        if (rd < rounds.length - 1) {
+          var nextAlive = rounds[rd + 1];
+          if (isAlive && nextAlive.indexOf(ci) === -1) {
+            willDie = true;
+          }
+        }
+
+        // Cell background
+        if (!isAlive) {
+          ctx.fillStyle = cvAlpha('--sol-canvas-muted', 0.1);
+        } else if (willDie) {
+          ctx.fillStyle = cvAlpha('--sol-canvas-danger', 0.15);
+        } else if (rounds.length - 1 === rd && isAlive) {
+          ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.3);
+        } else {
+          ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.1);
+        }
+        ctx.fillRect(x, y, cellW - 2, rowH - 8);
+
+        // Cell border
+        if (isAlive) {
+          ctx.strokeStyle = willDie ? danger : (rounds.length - 1 === rd ? accent : primary);
+          ctx.lineWidth = willDie ? 1.5 : 1;
+        } else {
+          ctx.strokeStyle = cvAlpha('--sol-canvas-muted', 0.3);
+          ctx.lineWidth = 0.5;
+        }
+        ctx.strokeRect(x, y, cellW - 2, rowH - 8);
+
+        // Digit text
+        if (isAlive) {
+          ctx.fillStyle = willDie ? danger : (rounds.length - 1 === rd ? accent : text);
+          ctx.font = (rounds.length - 1 === rd) ? 'bold 18px sans-serif' : (willDie ? '14px sans-serif' : 'bold 15px sans-serif');
+          ctx.textAlign = 'center';
+          ctx.fillText(digits[ci].toString(), x + (cellW - 2) / 2, y + 28);
+
+          // Strikethrough for dying digits
+          if (willDie) {
+            ctx.strokeStyle = danger;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(x + 4, y + 22);
+            ctx.lineTo(x + cellW - 6, y + 22);
+            ctx.stroke();
+          }
+        } else {
+          ctx.fillStyle = cvAlpha('--sol-canvas-muted', 0.3);
+          ctx.font = '12px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(digits[ci].toString(), x + (cellW - 2) / 2, y + 26);
+        }
+
+        // Position number (only in first round)
+        if (rd === 0) {
+          ctx.fillStyle = muted;
+          ctx.font = '9px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText((ci + 1).toString(), x + (cellW - 2) / 2, y + rowH - 12);
+        }
+      }
+    }
+
+    // Arrow to final answer
+    var finalY = startY + (rounds.length - 1) * rowH;
+    var finalIdx = rounds[rounds.length - 1][0];
+    var finalX = startX + finalIdx * cellW + (cellW - 2) / 2;
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('\u2191 Cifra: ' + digits[finalIdx], finalX, finalY + rowH + 5);
+
+    // Bottom section: the real problem
+    var botY = 410;
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Stvarni zadatak: 2007 cifara', startX, botY);
+
+    // Show the key reasoning
+    ctx.font = '14px sans-serif';
+    ctx.fillStyle = text;
+    ctx.fillText('Preživljava pozicija koja je najveći stepen 2 \u2264 2007:', startX, botY + 30);
+
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 14px sans-serif';
+    ctx.fillText('2\u00B9\u2070 = 1024 \u2264 2007 < 2048 = 2\u00B9\u00B9', startX + 20, botY + 58);
+
+    ctx.fillStyle = text;
+    ctx.font = '14px sans-serif';
+    ctx.fillText('Cifra na poziciji 1024 u nizu 12345|12345|...:', startX, botY + 92);
+
+    // Show the modular arithmetic
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 14px sans-serif';
+    ctx.fillText('1024 = 204 \u00D7 5 + 4', startX + 20, botY + 118);
+
+    // Show pattern with highlight
+    var patX = startX + 20;
+    var patY = botY + 155;
+    var patDigits = [1, 2, 3, 4, 5];
+    var patW = 50;
+
+    for (var pi = 0; pi < 5; pi++) {
+      var px = patX + pi * patW;
+      if (pi === 3) {
+        ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.3);
+        ctx.fillRect(px - 2, patY - 20, patW - 4, 30);
+        ctx.strokeStyle = accent;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(px - 2, patY - 20, patW - 4, 30);
+      }
+      ctx.fillStyle = (pi === 3) ? accent : text;
+      ctx.font = (pi === 3) ? 'bold 22px sans-serif' : '18px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(patDigits[pi].toString(), px + patW / 2 - 2, patY + 2);
+
+      // Position label
+      ctx.fillStyle = muted;
+      ctx.font = '10px sans-serif';
+      ctx.fillText((pi + 1) + '. mesto', px + patW / 2 - 2, patY + 20);
+    }
+
+    // Final answer box
+    var boxX = patX + 300;
+    var boxY = patY - 30;
+    var boxW = 200;
+    var boxH = 60;
+
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.15);
+    ctx.fillRect(boxX, boxY, boxW, boxH);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(boxX, boxY, boxW, boxH);
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 20px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Odgovor: 4', boxX + boxW / 2, boxY + 37);
+
+    // Arrow from pattern to box
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath();
+    ctx.moveTo(patX + 3 * patW + patW / 2, patY - 22);
+    ctx.lineTo(boxX, boxY + boxH / 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Poslednja preostala cifra pri eliminaciji neparnih pozicija",
+  "subject": "math",
+  "unit": "number-theory",
+  "topic_tags": ["teorija brojeva", "stepen dvojke", "periodični niz", "eliminacija"]
+}
+BRAINSPARK_META-->

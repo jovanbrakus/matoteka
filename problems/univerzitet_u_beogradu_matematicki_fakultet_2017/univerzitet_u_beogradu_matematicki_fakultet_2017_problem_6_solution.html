@@ -1,0 +1,910 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Find the largest among 2^(1/2), 3^(1/3), 4^(1/4), 5^(1/5), 6^(1/6).
+
+  Approach: Pairwise comparison using the trick that to compare a^(1/n) and b^(1/m),
+  raise both to the (nm)-th power and compare a^m vs b^n.
+
+  Step 1: Compare 2^(1/2) and 3^(1/3).
+    Raise to 6th power: (2^(1/2))^6 = 2^3 = 8, (3^(1/3))^6 = 3^2 = 9.
+    Since 9 > 8, 3^(1/3) > 2^(1/2).
+
+  Step 2: Compare 3^(1/3) and 4^(1/4).
+    Raise to 12th power: (3^(1/3))^12 = 3^4 = 81, (4^(1/4))^12 = 4^3 = 64.
+    Since 81 > 64, 3^(1/3) > 4^(1/4).
+
+  Step 3: Compare 3^(1/3) and 5^(1/5).
+    Raise to 15th power: (3^(1/3))^15 = 3^5 = 243, (5^(1/5))^15 = 5^3 = 125.
+    Since 243 > 125, 3^(1/3) > 5^(1/5).
+
+  Step 4: Compare 3^(1/3) and 6^(1/6).
+    Raise to 6th power: (3^(1/3))^6 = 3^2 = 9, (6^(1/6))^6 = 6.
+    Since 9 > 6, 3^(1/3) > 6^(1/6).
+
+  Therefore 3^(1/3) is the largest. Answer: D.
+
+  Elegant reason: f(x) = x^(1/x), ln f(x) = ln(x)/x, g(x) = ln(x)/x.
+  g'(x) = (1 - ln(x))/x^2. g'(x) = 0 when ln(x) = 1, i.e. x = e ≈ 2.718.
+  g is increasing on (0, e), decreasing on (e, +∞).
+  Among positive integers, the max of x^(1/x) is at x = 2 or x = 3.
+  Comparing them directly: 3^(1/3) > 2^(1/2).
+  So the integer maximum is at x = 3.
+
+  Numerical values:
+    2^(1/2) ≈ 1.41421
+    3^(1/3) ≈ 1.44225  <- MAX
+    4^(1/4) = sqrt(sqrt(4)) = sqrt(2) ≈ 1.41421
+    5^(1/5) ≈ 1.37973
+    6^(1/6) ≈ 1.34801
+
+  Interesting observation: 2^(1/2) = 4^(1/4) exactly.
+  Because 4^(1/4) = (2^2)^(1/4) = 2^(2/4) = 2^(1/2).
+</script>
+
+<h1 data-card="problem-title">Najveći od pet n-tih korena</h1>
+<p data-card="problem-subtitle" class="subtitle">Poređenje brojeva oblika \( n^{1/n} \) — stepenovanje i monotonost</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Najveći od brojeva \( 2^{1/2} \), \( 3^{1/3} \), \( 4^{1/4} \), \( 5^{1/5} \) i \( 6^{1/6} \) je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 6^{1/6} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 5^{1/5} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 4^{1/4} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 3^{1/3} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 2^{1/2} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">
+    Pošto svi brojevi imaju različite osnove i različite eksponente, uporedićemo ih parovima pomoću trika: da bismo uporedili \( a^{1/n} \) i \( b^{1/m} \), podižemo obe strane na stepen \( nm \) i poredimo \( a^m \) sa \( b^n \). Tako ćemo pokazati da je \( 3^{1/3} \) veći od svakog od preostala četiri broja.
+  </p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Stepen stepena:</strong> \( \left(x^{p}\right)^{q} = x^{pq} \). Specijalno, \( \left(a^{1/n}\right)^{nm} = a^{m} \).</li>
+        <li><strong>Monotonost stepenovanja:</strong> Za pozitivne brojeve \( u, v > 0 \) i ceo broj \( k > 0 \) važi \( u &lt; v \iff u^{k} &lt; v^{k} \). Znak nejednakosti se čuva jer je funkcija \( t \mapsto t^{k} \) strogo rastuća na \( (0, +\infty) \).</li>
+        <li><strong>Trik za poređenje korena:</strong> Da uporedimo \( a^{1/n} \) i \( b^{1/m} \), podižemo oba broja na \( nm \)-ti stepen i poredimo cele brojeve \( a^{m} \) i \( b^{n} \).</li>
+        <li><strong>Specijalan identitet:</strong> \( 4^{1/4} = (2^{2})^{1/4} = 2^{2/4} = 2^{1/2} \). Dakle, \( 2^{1/2} \) i \( 4^{1/4} \) su <em>tačno jednaki</em>.</li>
+        <li><strong>Kontinuirani vid (za uvid):</strong> Funkcija \( f(x) = x^{1/x} \), \( x &gt; 0 \), dostiže maksimum u \( x = e \approx 2{,}718 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Brojevna osa sa pet vrednosti">
+  <h2>📐 Brojevna osa sa pet vrednosti</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-numberline" width="780" height="400"></canvas>
+  </div>
+  <p class="canvas-caption">Približne vrednosti pet brojeva na brojevnoj osi. Broj \( 3^{1/3} \approx 1{,}442 \) je najveći (označen zeleno). Obratite pažnju: \( 2^{1/2} \) i \( 4^{1/4} \) padaju na isto mesto \( \approx 1{,}414 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Glavni trik: stepenovanje i poređenje</h3>
+      <p>Direktno poređenje brojeva oblika \( a^{1/n} \) je teško jer su osnove i eksponenti različiti. Zato koristimo <strong>monotonost</strong> funkcije \( t \mapsto t^{k} \) na \( (0, +\infty) \): za pozitivne brojeve \( u, v \), nejednakost \( u &lt; v \) je ekvivalentna sa \( u^{k} &lt; v^{k} \).</p>
+      <p>Da uporedimo \( a^{1/n} \) i \( b^{1/m} \), podižemo obe vrednosti na \( nm \)-ti stepen:</p>
+      <div class="math-block">
+        \[ \left(a^{1/n}\right)^{nm} = a^{m}, \qquad \left(b^{1/m}\right)^{nm} = b^{n}. \]
+      </div>
+      <p>Tako umesto korena poredimo dva obična cela broja \( a^{m} \) i \( b^{n} \).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto je važno da su brojevi pozitivni?</summary>
+          <div class="detail-content">
+            <p>Jer se monotonost funkcije \( t^{k} \) čuva samo na \( (0, +\infty) \). Ako bismo dozvolili negativne vrednosti, za parno \( k \) nejednakost bi mogla da promeni smer (npr. \( -2 &lt; 1 \), ali \( (-2)^{2} = 4 &gt; 1 \)). Ovde su svi brojevi veći od 1, pa je sve u redu.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Poređenje: \( 2^{1/2} \) i \( 3^{1/3} \)</h3>
+      <p>Zajednički stepen je \( 2 \cdot 3 = 6 \):</p>
+      <div class="math-block">
+        \[ \left(2^{1/2}\right)^{6} = 2^{3} = 8, \qquad \left(3^{1/3}\right)^{6} = 3^{2} = 9. \]
+      </div>
+      <p>Pošto je \( 9 &gt; 8 \), zaključujemo:</p>
+      <div class="math-block">
+        \[ 3^{1/3} &gt; 2^{1/2}. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Poređenje: \( 3^{1/3} \) i \( 4^{1/4} \)</h3>
+      <p>Zajednički stepen je \( 3 \cdot 4 = 12 \):</p>
+      <div class="math-block">
+        \[ \left(3^{1/3}\right)^{12} = 3^{4} = 81, \qquad \left(4^{1/4}\right)^{12} = 4^{3} = 64. \]
+      </div>
+      <p>Pošto je \( 81 &gt; 64 \), dobijamo:</p>
+      <div class="math-block">
+        \[ 3^{1/3} &gt; 4^{1/4}. \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto je \( 4^{1/4} = 2^{1/2} \)?</summary>
+          <div class="detail-content">
+            <p>Jer je \( 4 = 2^{2} \), pa \( 4^{1/4} = (2^{2})^{1/4} = 2^{2/4} = 2^{1/2} \). Dakle, ova dva broja su <em>tačno</em> jednaka. To znači da nam korak 2 i korak 3 zapravo daju isti rezultat — u oba slučaja poredimo \( 3^{1/3} \) sa \( 2^{1/2} \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Poređenje: \( 3^{1/3} \) i \( 5^{1/5} \)</h3>
+      <p>Zajednički stepen je \( 3 \cdot 5 = 15 \):</p>
+      <div class="math-block">
+        \[ \left(3^{1/3}\right)^{15} = 3^{5} = 243, \qquad \left(5^{1/5}\right)^{15} = 5^{3} = 125. \]
+      </div>
+      <p>Pošto je \( 243 &gt; 125 \), imamo:</p>
+      <div class="math-block">
+        \[ 3^{1/3} &gt; 5^{1/5}. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Poređenje: \( 3^{1/3} \) i \( 6^{1/6} \)</h3>
+      <p>Zajednički stepen je \( \mathrm{NZS}(3, 6) = 6 \) (možemo koristiti i \( 3 \cdot 6 = 18 \), ali \( 6 \) je dovoljno):</p>
+      <div class="math-block">
+        \[ \left(3^{1/3}\right)^{6} = 3^{2} = 9, \qquad \left(6^{1/6}\right)^{6} = 6. \]
+      </div>
+      <p>Pošto je \( 9 &gt; 6 \), zaključujemo:</p>
+      <div class="math-block">
+        \[ 3^{1/3} &gt; 6^{1/6}. \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto nije potrebno porediti sve parove?</summary>
+          <div class="detail-content">
+            <p>Jer smo pokazali da je \( 3^{1/3} \) veći od svakog od ostala četiri broja pojedinačno. Time je automatski \( 3^{1/3} \) najveći od svih pet. Nije potrebno porediti, recimo, \( 4^{1/4} \) sa \( 6^{1/6} \) — već znamo da su oba manja od \( 3^{1/3} \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Zaključak</h3>
+      <p>Iz koraka 2–5 dobijamo niz nejednakosti:</p>
+      <div class="math-block">
+        \[ 3^{1/3} &gt; 2^{1/2}, \quad 3^{1/3} &gt; 4^{1/4}, \quad 3^{1/3} &gt; 5^{1/5}, \quad 3^{1/3} &gt; 6^{1/6}. \]
+      </div>
+      <p>Dakle, najveći broj među datih pet je \( \boxed{3^{1/3}} \).</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="visual-aid" data-title="Funkcija f(x) = x^(1/x)">
+  <h2>📐 Funkcija \( f(x) = x^{1/x} \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-function" width="780" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Grafik funkcije \( f(x) = x^{1/x} \) na intervalu \( [1, 8] \). Funkcija dostiže maksimum u tački \( x = e \approx 2{,}718 \). Pet celih brojeva iz zadatka označeno je tačkama; zelenom je istaknut \( (3,\; 3^{1/3}) \), najveća vrednost među celim brojevima.</p>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Zadatak postaje mnogo jasniji ako pogledamo <strong>kontinuirani</strong> oblik izraza. Definišimo funkciju \( f(x) = x^{1/x} \) za \( x &gt; 0 \). Logaritmovanjem imamo \( \ln f(x) = \dfrac{\ln x}{x} \), pa je umesto \( f \) pogodnije proučavati funkciju</p>
+  <div class="math-block">
+    \[ g(x) = \frac{\ln x}{x}. \]
+  </div>
+  <p>Njen izvod je \( g'(x) = \dfrac{1 - \ln x}{x^{2}} \), što je nula za \( \ln x = 1 \), odnosno \( x = e \approx 2{,}718 \). Za \( x &lt; e \) je \( g'(x) &gt; 0 \) (funkcija raste), a za \( x &gt; e \) je \( g'(x) &lt; 0 \) (funkcija opada). Dakle, \( g \) (pa i \( f \)) dostiže <strong>globalni maksimum</strong> upravo u \( x = e \).</p>
+  <p>Među celim brojevima najbliži broju \( e \) su \( 2 \) i \( 3 \). Direktnim poređenjem (korak 2 u rešenju) vidimo da je \( 3^{1/3} &gt; 2^{1/2} \), pa je \( \mathbf{3^{1/3}} \) najveći u celom nizu \( n^{1/n} \), \( n = 1, 2, 3, \ldots \). Ovo je <em>opšta činjenica</em> — ne samo odgovor na ovaj zadatak.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Log-odnos g(x) = ln(x)/x">
+  <h2>📐 Funkcija \( g(x) = \ln x / x \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-log" width="780" height="480"></canvas>
+  </div>
+  <p class="canvas-caption">Grafik funkcije \( g(x) = \dfrac{\ln x}{x} \) na intervalu \( [1, 8] \). Izvod \( g'(x) = \dfrac{1 - \ln x}{x^{2}} \) postaje nula u \( x = e \), gde \( g \) dostiže maksimum. Pošto je \( f(x) = x^{1/x} = e^{g(x)} \), i \( f \) tu ima maksimum.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \max\left\{2^{1/2},\; 3^{1/3},\; 4^{1/4},\; 5^{1/5},\; 6^{1/6}\right\} = 3^{1/3} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 6^{1/6} \)</span>
+    <span class="answer-option" data-option="B">(B) \( 5^{1/5} \)</span>
+    <span class="answer-option" data-option="C">(C) \( 4^{1/4} \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 3^{1/3} \)</span>
+    <span class="answer-option" data-option="E">(E) \( 2^{1/2} \)</span>
+  </div>
+  <p class="verification">Numerička provera: \( 2^{1/2} \approx 1{,}4142 \), \( 3^{1/3} \approx 1{,}4422 \), \( 4^{1/4} \approx 1{,}4142 \), \( 5^{1/5} \approx 1{,}3797 \), \( 6^{1/6} \approx 1{,}3480 \). Najveća vrednost je \( 3^{1/3} \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Intuicija "veća osnova = veći broj":</strong> Naglo se pomisli da je \( 6^{1/6} \) najveći jer ima najveću osnovu, ili \( 2^{1/2} \) jer ima najveći eksponent. Ni jedno ni drugo nije tačno — potrebno je stvarno porediti vrednosti.</li>
+    <li><strong>Zaborav da je \( 2^{1/2} = 4^{1/4} \):</strong> Lako je previdjeti da su ova dva broja <em>tačno</em> jednaka. Ako neko zaključi da je jedan od njih najveći, ne može dati jedinstveni odgovor — jer je i onaj drugi jednak.</li>
+    <li><strong>Pogrešno stepenovanje:</strong> Pri poređenju \( 3^{1/3} \) i \( 5^{1/5} \), greška je podići na stepen \( 3 + 5 = 8 \). Ispravno je podići na <strong>proizvod</strong> \( 3 \cdot 5 = 15 \) (ili bar na \( \mathrm{NZS}(3, 5) = 15 \)), da bi se u oba slučaja dobio ceo broj.</li>
+    <li><strong>Promena smera nejednakosti:</strong> Neki misle da se pri podizanju na stepen smer nejednakosti može promeniti. Na \( (0, +\infty) \), za pozitivan ceo stepen, smer nejednakosti se <em>čuva</em>: \( u &lt; v \iff u^{k} &lt; v^{k} \).</li>
+    <li><strong>Brzi preskok na kalkulator:</strong> Na prijemnom ispitu kalkulator obično nije dozvoljen. Tehniku "podigni na \( nm \)-ti stepen" morate raditi napamet — uvežbajte je.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Dokažite da je za svaki prirodan broj \( n \geq 3 \) niz \( a_{n} = n^{1/n} \) strogo opadajući, tj. da važi \( (n+1)^{1/(n+1)} &lt; n^{1/n} \) za sve \( n \geq 3 \). Ekvivalentno, dokažite da je \( n^{n+1} &gt; (n+1)^{n} \) za sve \( n \geq 3 \).</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Uzmite logaritam: nejednakost \( (n+1)^{1/(n+1)} &lt; n^{1/n} \) je ekvivalentna sa \( \dfrac{\ln(n+1)}{n+1} &lt; \dfrac{\ln n}{n} \), tj. \( g(n+1) &lt; g(n) \), gde je \( g(x) = \ln x / x \). Pokazali smo u "Ključnom uvidu" da je \( g \) opadajuća za \( x &gt; e \approx 2{,}718 \). Pošto je \( 3 &gt; e \), funkcija \( g \) je strogo opadajuća na celoj oblasti \( x \geq 3 \), odakle sledi tvrđenje.</p>
+      <p>Alternativno, nejednakost \( n^{n+1} &gt; (n+1)^{n} \) se može dokazati i elementarno preko \( \left(1 + \dfrac{1}{n}\right)^{n} &lt; n \) za \( n \geq 3 \), jer je \( \left(1 + \dfrac{1}{n}\right)^{n} &lt; e &lt; 3 \leq n \).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+
+  var canvas = document.getElementById('diagram-numberline');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  // Values (x-coordinate on number line)
+  var values = [
+    { label: '6^{1/6}', symbol: '6\u2076\u221A6', val: Math.pow(6, 1/6), color: 'tertiary', offset: -24 },
+    { label: '5^{1/5}', symbol: '5\u2075\u221A5', val: Math.pow(5, 1/5), color: 'secondary', offset: -50 },
+    { label: '2^{1/2}', symbol: '\u221A2', val: Math.pow(2, 1/2), color: 'primary', offset: -24 },
+    { label: '4^{1/4}', symbol: '4\u2074\u221A4', val: Math.pow(4, 1/4), color: 'primary', offset: -50 },
+    { label: '3^{1/3}', symbol: '3\u221B3', val: Math.pow(3, 1/3), color: 'highlight', offset: -24 }
+  ];
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var tertiary  = cv('--sol-canvas-tertiary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    var colorMap = {
+      primary: primary,
+      secondary: secondary,
+      tertiary: tertiary,
+      accent: accent,
+      highlight: highlight
+    };
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Uporedni prikaz vrednosti na brojevnoj osi', W / 2, 28);
+
+    // Number line parameters
+    var xMin = 1.33;
+    var xMax = 1.46;
+    var margin = 70;
+    var axisY = H - 120;
+
+    function toX(v) {
+      return margin + (v - xMin) / (xMax - xMin) * (W - 2 * margin);
+    }
+
+    // Axis line
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(toX(xMin), axisY);
+    ctx.lineTo(toX(xMax), axisY);
+    ctx.stroke();
+
+    // Arrowhead on right
+    ctx.beginPath();
+    ctx.moveTo(toX(xMax), axisY);
+    ctx.lineTo(toX(xMax) - 10, axisY - 5);
+    ctx.lineTo(toX(xMax) - 10, axisY + 5);
+    ctx.closePath();
+    ctx.fillStyle = axis;
+    ctx.fill();
+
+    // Major ticks every 0.01
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.fillStyle = muted;
+    ctx.font = '11px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var t = 1.34; t <= 1.46 + 1e-9; t += 0.01) {
+      var tx = toX(t);
+      ctx.beginPath();
+      ctx.moveTo(tx, axisY - 4);
+      ctx.lineTo(tx, axisY + 4);
+      ctx.stroke();
+      ctx.fillText(t.toFixed(2).replace('.', ','), tx, axisY + 22);
+    }
+
+    // Axis label
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('vrednost', toX(xMax) + 4, axisY + 4);
+
+    // Plot dots and labels
+    for (var i = 0; i < values.length; i++) {
+      var item = values[i];
+      var cx = toX(item.val);
+      var cy = axisY;
+      var color = colorMap[item.color];
+
+      // Vertical tick connecting label to dot
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([3, 3]);
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - 6);
+      ctx.lineTo(cx, cy + item.offset + 10);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Dot
+      var radius = (item.label === '3^{1/3}') ? 9 : 6;
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
+      ctx.fill();
+      if (item.label === '3^{1/3}') {
+        ctx.strokeStyle = text;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+
+      // Label box above
+      ctx.fillStyle = color;
+      ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      var labelY = cy + item.offset;
+      ctx.fillText(item.symbol, cx, labelY);
+      ctx.font = '11px Segoe UI, system-ui, sans-serif';
+      ctx.fillStyle = muted;
+      ctx.fillText('\u2248 ' + item.val.toFixed(4).replace('.', ','), cx, labelY + 14);
+    }
+
+    // MAX marker for 3^(1/3)
+    var maxX = toX(Math.pow(3, 1/3));
+    ctx.fillStyle = cv('--sol-canvas-highlight');
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('MAX', maxX, axisY - 82);
+
+    // Arrow pointing from MAX label to dot
+    ctx.strokeStyle = cv('--sol-canvas-highlight');
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(maxX, axisY - 72);
+    ctx.lineTo(maxX, axisY - 38);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(maxX - 4, axisY - 42);
+    ctx.lineTo(maxX, axisY - 34);
+    ctx.lineTo(maxX + 4, axisY - 42);
+    ctx.closePath();
+    ctx.fill();
+
+    // Note about 2^(1/2) = 4^(1/4)
+    ctx.fillStyle = text;
+    ctx.font = 'italic 12px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Napomena: 2^(1/2) = 4^(1/4) = \u221A2 (iste vrednosti)', W / 2, H - 30);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+
+  var canvas = document.getElementById('diagram-function');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  var xMin = 1;
+  var xMax = 8;
+  var yMin = 1.0;
+  var yMax = 1.55;
+
+  var marginL = 80;
+  var marginR = 40;
+  var marginT = 60;
+  var marginB = 70;
+
+  function toX(x) {
+    return marginL + (x - xMin) / (xMax - xMin) * (W - marginL - marginR);
+  }
+  function toY(y) {
+    return H - marginB - (y - yMin) / (yMax - yMin) * (H - marginT - marginB);
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var tertiary  = cv('--sol-canvas-tertiary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('f(x) = x^(1/x)  \u2014  maksimum u x = e', W / 2, 28);
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 0.5;
+    for (var gx = 1; gx <= 8; gx++) {
+      ctx.beginPath();
+      ctx.moveTo(toX(gx), toY(yMin));
+      ctx.lineTo(toX(gx), toY(yMax));
+      ctx.stroke();
+    }
+    for (var gy = 1.0; gy <= 1.55 + 1e-9; gy += 0.1) {
+      ctx.beginPath();
+      ctx.moveTo(toX(xMin), toY(gy));
+      ctx.lineTo(toX(xMax), toY(gy));
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(toX(xMin), toY(yMin));
+    ctx.lineTo(toX(xMax), toY(yMin));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(toX(xMin), toY(yMin));
+    ctx.lineTo(toX(xMin), toY(yMax));
+    ctx.stroke();
+
+    // Tick labels x
+    ctx.fillStyle = muted;
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var lx = 1; lx <= 8; lx++) {
+      ctx.fillText(String(lx), toX(lx), toY(yMin) + 18);
+    }
+
+    // Tick labels y
+    ctx.textAlign = 'right';
+    for (var ly = 1.0; ly <= 1.55 + 1e-9; ly += 0.1) {
+      ctx.fillText(ly.toFixed(1).replace('.', ','), toX(xMin) - 8, toY(ly) + 4);
+    }
+
+    // Axis titles
+    ctx.fillStyle = axis;
+    ctx.font = 'italic 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('x', toX(xMax), toY(yMin) + 40);
+    ctx.save();
+    ctx.translate(toX(xMin) - 52, (toY(yMin) + toY(yMax)) / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('f(x) = x^(1/x)', 0, 0);
+    ctx.restore();
+
+    // Plot f(x) = x^(1/x)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.8;
+    ctx.beginPath();
+    var first = true;
+    for (var px = xMin; px <= xMax + 1e-9; px += 0.02) {
+      var fy = Math.pow(px, 1 / px);
+      if (fy < yMin || fy > yMax) { first = true; continue; }
+      var cx = toX(px), cy = toY(fy);
+      if (first) { ctx.moveTo(cx, cy); first = false; }
+      else { ctx.lineTo(cx, cy); }
+    }
+    ctx.stroke();
+
+    // Vertical line at x = e
+    var e = Math.E;
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(toX(e), toY(yMin));
+    ctx.lineTo(toX(e), toY(Math.pow(e, 1 / e)));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Dot at maximum
+    ctx.fillStyle = warning;
+    ctx.beginPath();
+    ctx.arc(toX(e), toY(Math.pow(e, 1 / e)), 6, 0, 2 * Math.PI);
+    ctx.fill();
+
+    // Label x = e
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('x = e \u2248 2,718', toX(e), toY(yMin) + 36);
+    ctx.textAlign = 'left';
+    ctx.fillText('maksimum', toX(e) + 10, toY(Math.pow(e, 1 / e)) - 10);
+
+    // Integer points n = 2..6 with dashed vertical lines and dots
+    var integers = [2, 3, 4, 5, 6];
+    for (var i = 0; i < integers.length; i++) {
+      var n = integers[i];
+      var fn = Math.pow(n, 1 / n);
+      var isMax = (n === 3);
+      var dotColor = isMax ? highlight : secondary;
+
+      // Dashed line
+      ctx.strokeStyle = dotColor;
+      ctx.lineWidth = 1.2;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(toX(n), toY(yMin));
+      ctx.lineTo(toX(n), toY(fn));
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Dot
+      ctx.fillStyle = dotColor;
+      ctx.beginPath();
+      ctx.arc(toX(n), toY(fn), isMax ? 8 : 5, 0, 2 * Math.PI);
+      ctx.fill();
+      if (isMax) {
+        ctx.strokeStyle = text;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+
+      // Label
+      ctx.fillStyle = dotColor;
+      ctx.font = (isMax ? 'bold ' : '') + '12px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      var labelText = n + '^(1/' + n + ') \u2248 ' + fn.toFixed(4).replace('.', ',');
+      var lx2 = toX(n) + 8;
+      var ly2 = toY(fn) - 8;
+      if (n === 2) { lx2 = toX(n) - 4; ly2 = toY(fn) - 12; ctx.textAlign = 'right'; }
+      if (n === 3) { lx2 = toX(n) + 10; ly2 = toY(fn) - 12; }
+      ctx.fillText(labelText, lx2, ly2);
+    }
+
+    // Legend box top-right
+    var boxX = W - 230;
+    var boxY = 50;
+    ctx.fillStyle = bg;
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.fillRect(boxX, boxY, 200, 60);
+    ctx.strokeRect(boxX, boxY, 200, 60);
+
+    ctx.fillStyle = primary;
+    ctx.fillRect(boxX + 10, boxY + 14, 16, 3);
+    ctx.fillStyle = text;
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('f(x) = x^(1/x)', boxX + 32, boxY + 18);
+
+    ctx.fillStyle = highlight;
+    ctx.beginPath();
+    ctx.arc(boxX + 18, boxY + 35, 5, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.strokeStyle = text;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.fillText('maks. u celim brojevima: n = 3', boxX + 32, boxY + 39);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+
+  var canvas = document.getElementById('diagram-log');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  var xMin = 1;
+  var xMax = 8;
+  var yMin = 0;
+  var yMax = 0.45;
+
+  var marginL = 80;
+  var marginR = 40;
+  var marginT = 60;
+  var marginB = 70;
+
+  function toX(x) {
+    return marginL + (x - xMin) / (xMax - xMin) * (W - marginL - marginR);
+  }
+  function toY(y) {
+    return H - marginB - (y - yMin) / (yMax - yMin) * (H - marginT - marginB);
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('g(x) = ln(x) / x  \u2014  izvod je nula u x = e', W / 2, 28);
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 0.5;
+    for (var gx = 1; gx <= 8; gx++) {
+      ctx.beginPath();
+      ctx.moveTo(toX(gx), toY(yMin));
+      ctx.lineTo(toX(gx), toY(yMax));
+      ctx.stroke();
+    }
+    for (var gy = 0; gy <= yMax + 1e-9; gy += 0.05) {
+      ctx.beginPath();
+      ctx.moveTo(toX(xMin), toY(gy));
+      ctx.lineTo(toX(xMax), toY(gy));
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(toX(xMin), toY(yMin));
+    ctx.lineTo(toX(xMax), toY(yMin));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(toX(xMin), toY(yMin));
+    ctx.lineTo(toX(xMin), toY(yMax));
+    ctx.stroke();
+
+    // Tick labels x
+    ctx.fillStyle = muted;
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var lx = 1; lx <= 8; lx++) {
+      ctx.fillText(String(lx), toX(lx), toY(yMin) + 18);
+    }
+
+    // Tick labels y
+    ctx.textAlign = 'right';
+    for (var ly = 0; ly <= yMax + 1e-9; ly += 0.05) {
+      ctx.fillText(ly.toFixed(2).replace('.', ','), toX(xMin) - 8, toY(ly) + 4);
+    }
+
+    // Axis titles
+    ctx.fillStyle = axis;
+    ctx.font = 'italic 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('x', toX(xMax), toY(yMin) + 40);
+    ctx.save();
+    ctx.translate(toX(xMin) - 52, (toY(yMin) + toY(yMax)) / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('g(x) = ln(x) / x', 0, 0);
+    ctx.restore();
+
+    // Plot g(x) = ln(x)/x
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2.8;
+    ctx.beginPath();
+    var first = true;
+    for (var px = xMin; px <= xMax + 1e-9; px += 0.02) {
+      var gy2 = Math.log(px) / px;
+      if (gy2 < yMin || gy2 > yMax) { first = true; continue; }
+      var cx = toX(px), cy = toY(gy2);
+      if (first) { ctx.moveTo(cx, cy); first = false; }
+      else { ctx.lineTo(cx, cy); }
+    }
+    ctx.stroke();
+
+    // Increasing / decreasing shading hints (subtle)
+    var e = Math.E;
+    ctx.fillStyle = accent;
+    ctx.globalAlpha = 0.08;
+    ctx.fillRect(toX(xMin), toY(yMax), toX(e) - toX(xMin), toY(yMin) - toY(yMax));
+    ctx.fillStyle = warning;
+    ctx.fillRect(toX(e), toY(yMax), toX(xMax) - toX(e), toY(yMin) - toY(yMax));
+    ctx.globalAlpha = 1;
+
+    // Max annotations
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 12px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('g\u2032(x) > 0', toX((xMin + e) / 2), toY(yMax) + 14);
+    ctx.fillText('(rastuća)', toX((xMin + e) / 2), toY(yMax) + 28);
+    ctx.fillText('g\u2032(x) < 0', toX((e + xMax) / 2), toY(yMax) + 14);
+    ctx.fillText('(opadajuća)', toX((e + xMax) / 2), toY(yMax) + 28);
+
+    // Vertical dashed line at x = e
+    var gMax = Math.log(e) / e;
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(toX(e), toY(yMin));
+    ctx.lineTo(toX(e), toY(gMax));
+    ctx.stroke();
+    // Horizontal dashed to y-axis
+    ctx.beginPath();
+    ctx.moveTo(toX(xMin), toY(gMax));
+    ctx.lineTo(toX(e), toY(gMax));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Maximum dot
+    ctx.fillStyle = warning;
+    ctx.beginPath();
+    ctx.arc(toX(e), toY(gMax), 7, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.strokeStyle = text;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Labels
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('(e,  1/e)', toX(e) + 12, toY(gMax) - 8);
+    ctx.textAlign = 'center';
+    ctx.fillText('x = e', toX(e), toY(yMin) + 38);
+
+    // ln 3 / 3 and ln 2 / 2 marks
+    var points = [
+      { x: 2, color: primary, label: 'ln 2 / 2' },
+      { x: 3, color: highlight, label: 'ln 3 / 3' }
+    ];
+    for (var i = 0; i < points.length; i++) {
+      var p = points[i];
+      var py = Math.log(p.x) / p.x;
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(toX(p.x), toY(py), (p.x === 3 ? 7 : 5), 0, 2 * Math.PI);
+      ctx.fill();
+      if (p.x === 3) {
+        ctx.strokeStyle = text;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+    }
+
+    // Formula box
+    var boxX = W - 230;
+    var boxY = 50;
+    ctx.fillStyle = bg;
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.fillRect(boxX, boxY, 200, 72);
+    ctx.strokeRect(boxX, boxY, 200, 72);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('g\u2032(x) = (1 \u2212 ln x) / x\u00B2', boxX + 10, boxY + 20);
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('g\u2032(x) = 0 \u27F9 ln x = 1', boxX + 10, boxY + 38);
+    ctx.fillText('\u27F9 x = e \u2248 2,718', boxX + 10, boxY + 54);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Najveći od pet n-tih korena",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["stepenovanje", "poređenje brojeva", "n-ti koren", "monotonost", "funkcija x^(1/x)"]
+}
+BRAINSPARK_META-->

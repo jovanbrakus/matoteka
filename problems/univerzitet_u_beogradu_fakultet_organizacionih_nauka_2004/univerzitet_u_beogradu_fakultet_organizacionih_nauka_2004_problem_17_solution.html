@@ -1,0 +1,572 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Solve the inequality sqrt(x+3) - sqrt(7-x) > sqrt(2x-8)
+
+  Step 1: Domain.
+    sqrt(x+3): x + 3 >= 0 => x >= -3
+    sqrt(7-x): 7 - x >= 0 => x <= 7
+    sqrt(2x-8): 2x - 8 >= 0 => x >= 4
+    Domain: x >= 4 AND x <= 7, i.e., [4, 7].
+
+  Step 2: Rewrite inequality.
+    sqrt(x+3) - sqrt(7-x) > sqrt(2x-8)
+
+    Note that x + 3 + (7 - x) = 10, and 2x - 8 = 2(x - 4).
+    Also: (x+3) - (7-x) = 2x - 4. Hmm, not quite 2x-8.
+    Actually: sqrt(x+3)^2 - sqrt(7-x)^2 = (x+3) - (7-x) = 2x - 4.
+    And the RHS squared is 2x - 8.
+
+    Let a = sqrt(x+3), b = sqrt(7-x). Then a^2 + b^2 = 10, and a^2 - b^2 = 2x - 4.
+    The inequality is: a - b > sqrt(2x - 8).
+
+    For the LHS to be positive, we need a > b, i.e., x + 3 > 7 - x, i.e., x > 2.
+    On domain [4, 7], we always have x > 2, so LHS > 0 (except maybe at boundary).
+    At x = 4: sqrt(7) - sqrt(3) ≈ 2.646 - 1.732 = 0.914; RHS = sqrt(0) = 0. So 0.914 > 0 ✓.
+    At x = 7: sqrt(10) - sqrt(0) = sqrt(10); RHS = sqrt(6). sqrt(10) > sqrt(6) ✓.
+
+    Let me square both sides (both are non-negative for x in [4, 7]):
+    (sqrt(x+3) - sqrt(7-x))^2 > 2x - 8
+    (x+3) - 2*sqrt((x+3)(7-x)) + (7-x) > 2x - 8
+    10 - 2*sqrt((x+3)(7-x)) > 2x - 8
+    18 - 2x > 2*sqrt((x+3)(7-x))
+    9 - x > sqrt((x+3)(7-x))
+
+    For this to be valid, we need 9 - x > 0, i.e., x < 9 (always true on [4,7]).
+    Also need 9 - x >= 0, which is true.
+
+    Square again (both sides non-negative):
+    (9 - x)^2 > (x+3)(7-x)
+    81 - 18x + x^2 > 7x - x^2 + 21 - 3x
+    81 - 18x + x^2 > -x^2 + 4x + 21
+    2x^2 - 22x + 60 > 0
+    x^2 - 11x + 30 > 0
+    (x - 5)(x - 6) > 0
+
+    This gives x < 5 or x > 6.
+
+    Combined with domain [4, 7]:
+    [4, 5) union (6, 7]
+
+    Wait, but I need to check boundary values carefully.
+    At x = 4: sqrt(7) - sqrt(3) > sqrt(0) = 0. sqrt(7) > sqrt(3) ✓. And (4-5)(4-6) = (-1)(-2) = 2 > 0 ✓.
+    At x = 5: sqrt(8) - sqrt(2) vs sqrt(2). sqrt(8) - sqrt(2) = 2sqrt(2) - sqrt(2) = sqrt(2).
+              sqrt(2) > sqrt(2)? NO, it's equal. So x = 5 is NOT included.
+    At x = 6: sqrt(9) - sqrt(1) = 3 - 1 = 2. sqrt(4) = 2. 2 > 2? NO, equal. So x = 6 NOT included.
+    At x = 7: sqrt(10) - sqrt(0) = sqrt(10). sqrt(6). sqrt(10) > sqrt(6) ✓. And (7-5)(7-6) = 2 > 0 ✓.
+
+    So the solution is [4, 5) ∪ (6, 7].
+
+    Answer: C) [4, 5) ∪ (6, 7]
+</script>
+
+<h1 data-card="problem-title">Iracionalna nejednačina sa tri korena</h1>
+<p data-card="problem-subtitle" class="subtitle">Iracionalne nejednačine — dvostruko kvadriranje i analiza domena</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Skup svih rešenja nejednačine \( \sqrt{x+3} - \sqrt{7-x} > \sqrt{2x-8} \) je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( [4,\, 7] \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( [4,\, 5] \cup (6,\, 7] \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( [4,\, 5) \cup (6,\, 7] \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( [4,\, 5) \cup [6,\, 7) \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( [4,\, 5] \cup [6,\, 7] \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">
+    Prvo nalazimo domen nejednačine (presek uslova za sva tri korena). Zatim dva puta kvadriramo obe strane (uz proveru uslova za kvadriranje) i dobijamo kvadratnu nejednačinu. Na kraju pažljivo proveravamo granične tačke.
+  </p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li>Kvadratni koren \( \sqrt{f(x)} \) je definisan kada je \( f(x) \geq 0 \).</li>
+        <li>Kvadriranje nejednačine \( A > B \) je dozvoljeno samo kada su <strong>obe strane nenegativne</strong>. Rezultat je ekvivalentan original ako \( A \geq 0 \) i \( B \geq 0 \).</li>
+        <li>Razlika kvadrata: \( a^2 - b^2 = (a-b)(a+b) \), korisno za uprošćavanje razlike korenova.</li>
+        <li>Kvadratna nejednačina \( (x - p)(x - q) > 0 \) sa \( p < q \): rešenje je \( x < p \) ili \( x > q \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Grafički prikaz funkcija">
+  <h2>📐 Grafički prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram17" width="700" height="450"></canvas>
+  </div>
+  <p class="canvas-caption">Grafici leve strane \( \sqrt{x+3} - \sqrt{7-x} \) (plavo) i desne strane \( \sqrt{2x-8} \) (ljubičasto) na domenu \( [4, 7] \). Zelene oblasti označavaju gde je leva strana veća.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Odredimo domen</h3>
+      <p>Sva tri korena moraju biti definisana:</p>
+      <div class="math-block">\[ \sqrt{x + 3}: \quad x + 3 \geq 0 \implies x \geq -3 \]</div>
+      <div class="math-block">\[ \sqrt{7 - x}: \quad 7 - x \geq 0 \implies x \leq 7 \]</div>
+      <div class="math-block">\[ \sqrt{2x - 8}: \quad 2x - 8 \geq 0 \implies x \geq 4 \]</div>
+      <p>Presek sva tri uslova:</p>
+      <div class="math-block">\[ \mathcal{D} = [4,\, 7] \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto je najstrožiji uslov \( x \geq 4 \)?</summary>
+          <div class="detail-content">
+            <p>Jer \( x \geq 4 \) automatski zadovoljava \( x \geq -3 \). Gornja granica je \( x \leq 7 \). Dakle, domen je \( [4, 7] \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Proverimo znak leve strane</h3>
+      <p>Da bismo mogli da kvadriramo, moramo osigurati da je leva strana nenegativna. Leva strana je:</p>
+      <div class="math-block">\[ \sqrt{x+3} - \sqrt{7-x} \]</div>
+      <p>Ovo je nenegativno kada \( x + 3 \geq 7 - x \), tj. \( x \geq 2 \). Na domenu \( [4, 7] \) uvek važi \( x \geq 4 > 2 \), pa je leva strana nenegativna.</p>
+      <p>Desna strana \( \sqrt{2x-8} \geq 0 \) je uvek nenegativna. Dakle, obe strane su nenegativne i smemo kvadrirati.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Prvo kvadriranje</h3>
+      <p>Kvadriramo obe strane nejednačine \( \sqrt{x+3} - \sqrt{7-x} > \sqrt{2x-8} \):</p>
+      <div class="math-block">\[ \left(\sqrt{x+3} - \sqrt{7-x}\right)^2 > 2x - 8 \]</div>
+      <div class="math-block">\[ (x+3) - 2\sqrt{(x+3)(7-x)} + (7-x) > 2x - 8 \]</div>
+      <div class="math-block">\[ 10 - 2\sqrt{(x+3)(7-x)} > 2x - 8 \]</div>
+      <p>Sredimo:</p>
+      <div class="math-block">\[ 18 - 2x > 2\sqrt{(x+3)(7-x)} \]</div>
+      <div class="math-block">\[ 9 - x > \sqrt{(x+3)(7-x)} \]</div>
+      <p>Na domenu \( [4, 7] \): \( 9 - x \geq 9 - 7 = 2 > 0 \), pa je leva strana pozitivna. Možemo ponovo kvadrirati.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto smemo deliti sa 2?</summary>
+          <div class="detail-content">
+            <p>Delimo nejednačinu sa \( 2 > 0 \), pa se smer nejednačine ne menja. Rezultat je ekvivalentna nejednačina.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Drugo kvadriranje</h3>
+      <p>Kvadriramo \( 9 - x > \sqrt{(x+3)(7-x)} \):</p>
+      <div class="math-block">\[ (9 - x)^2 > (x+3)(7-x) \]</div>
+      <p>Razvijemo obe strane:</p>
+      <div class="math-block">\[ 81 - 18x + x^2 > 7x - x^2 + 21 - 3x \]</div>
+      <div class="math-block">\[ 81 - 18x + x^2 > -x^2 + 4x + 21 \]</div>
+      <p>Prenesemo sve na levu stranu:</p>
+      <div class="math-block">\[ 2x^2 - 22x + 60 > 0 \]</div>
+      <div class="math-block">\[ x^2 - 11x + 30 > 0 \]</div>
+      <p>Faktorišemo:</p>
+      <div class="math-block">\[ (x - 5)(x - 6) > 0 \]</div>
+      <p>Rešenje kvadratne nejednačine:</p>
+      <div class="math-block">\[ x < 5 \quad \text{ili} \quad x > 6 \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Presek sa domenom i provera granica</h3>
+      <p>Presecamo sa domenom \( [4, 7] \):</p>
+      <div class="math-block">\[ \big([4, 7] \cap \{x < 5\}\big) \cup \big([4, 7] \cap \{x > 6\}\big) = [4,\, 5) \cup (6,\, 7] \]</div>
+      <p>Proverimo granične tačke:</p>
+      <ul>
+        <li>\( x = 5 \): \( \sqrt{8} - \sqrt{2} = 2\sqrt{2} - \sqrt{2} = \sqrt{2} \), a \( \sqrt{2} \). Dakle \( \sqrt{2} > \sqrt{2} \) — <strong>netačno</strong> (jednakost, ne stroga nejednačina).</li>
+        <li>\( x = 6 \): \( \sqrt{9} - \sqrt{1} = 3 - 1 = 2 \), a \( \sqrt{4} = 2 \). Dakle \( 2 > 2 \) — <strong>netačno</strong>.</li>
+        <li>\( x = 4 \): \( \sqrt{7} - \sqrt{3} \approx 0{,}914 \), a \( \sqrt{0} = 0 \). Dakle \( 0{,}914 > 0 \) — <strong>tačno</strong> ✓.</li>
+        <li>\( x = 7 \): \( \sqrt{10} - 0 \approx 3{,}162 \), a \( \sqrt{6} \approx 2{,}449 \). Dakle \( 3{,}162 > 2{,}449 \) — <strong>tačno</strong> ✓.</li>
+      </ul>
+      <p>Tačke \( x = 5 \) i \( x = 6 \) daju jednakost, ne strogu nejednačinu, pa se isključuju.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto je \( x = 4 \) uključeno a \( x = 5 \) nije?</summary>
+          <div class="detail-content">
+            <p>Za \( x = 4 \) važi stroga nejednačina (\( \sqrt{7} - \sqrt{3} > 0 \)), dok za \( x = 5 \) dobijamo jednakost (\( \sqrt{2} = \sqrt{2} \)). Nejednačina je stroga (\( > \)), pa jednakost ne zadovoljava uslov.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Dva kvadriranja su neophodna za eliminaciju korenova, ali nakon svakog moramo proveriti da su obe strane nenegativne — inače kvadriranje može promeniti smer nejednačine ili uneti lažna rešenja. U ovom zadatku, oba uslova su automatski ispunjena na domenu \( [4, 7] \), što čini postupak korektnim. Ključna je i <strong>pažljiva provera graničnih tačaka</strong> \( x = 5 \) i \( x = 6 \) — one daju jednakost, a mi tražimo <em>strogu</em> nejednačinu.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ x \in [4,\, 5) \cup (6,\, 7] \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( [4,\, 7] \)</span>
+    <span class="answer-option" data-option="B">(B) \( [4,\, 5] \cup (6,\, 7] \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( [4,\, 5) \cup (6,\, 7] \)</span>
+    <span class="answer-option" data-option="D">(D) \( [4,\, 5) \cup [6,\, 7) \)</span>
+    <span class="answer-option" data-option="E">(E) \( [4,\, 5] \cup [6,\, 7] \)</span>
+  </div>
+  <p class="verification">Verifikacija: Za \( x = 4{,}5 \): \( \sqrt{7{,}5} - \sqrt{2{,}5} \approx 1{,}156 \), \( \sqrt{1} = 1 \). Važi \( 1{,}156 > 1 \) ✓. Za \( x = 6{,}5 \): \( \sqrt{9{,}5} - \sqrt{0{,}5} \approx 2{,}376 \), \( \sqrt{5} \approx 2{,}236 \). Važi \( 2{,}376 > 2{,}236 \) ✓. Za \( x = 5{,}5 \): \( \sqrt{8{,}5} - \sqrt{1{,}5} \approx 1{,}691 \), \( \sqrt{3} \approx 1{,}732 \). Važi \( 1{,}691 < 1{,}732 \) — ne zadovoljava ✓.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zaboravljanje provere graničnih tačaka:</strong> Mnogi učenici uključe \( x = 5 \) ili \( x = 6 \) ne proverivši da li je nejednačina stroga ili neostroga. Za \( > \) granične tačke (gde važi jednakost) se isključuju.</li>
+    <li><strong>Kvadriranje bez provere znaka:</strong> Ako leva strana \( \sqrt{x+3} - \sqrt{7-x} \) nije nenegativna, kvadriranje daje pogrešan rezultat. Srećom, na \( [4, 7] \) jeste, ali to treba eksplicitno proveriti.</li>
+    <li><strong>Zaboravljanje domena:</strong> Rešenje \( (x-5)(x-6) > 0 \) daje i \( x < 5 \) i \( x > 6 \) bez ograničenja, ali mi moramo presecati sa domenom \( [4, 7] \).</li>
+    <li><strong>Pogrešno razvijanje:</strong> Najčešća računska greška je u razvijanju \( (9-x)^2 \) ili \( (x+3)(7-x) \). Proverite oba razvoja pažljivo.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta bi se promenilo da je nejednačina neostroga: \( \sqrt{x+3} - \sqrt{7-x} \geq \sqrt{2x-8} \)? Koje tačke bi se dodale u skup rešenja?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Sa neostrogom nejednačinom (\( \geq \)), tačke gde važi jednakost bi bile uključene. To su \( x = 5 \) (gde je \( \sqrt{2} = \sqrt{2} \)) i \( x = 6 \) (gde je \( 2 = 2 \)).</p>
+      <p>Rešenje bi tada bilo \( [4, 5] \cup [6, 7] \) — odgovor (E).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram17');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Graph area
+    var padL = 70, padR = 40, padT = 40, padB = 80;
+    var gW = W - padL - padR;
+    var gH = H - padT - padB;
+
+    var xMin = 3.5, xMax = 7.5;
+    var yMin = -0.5, yMax = 3.5;
+
+    function toX(x) { return padL + (x - xMin) / (xMax - xMin) * gW; }
+    function toY(y) { return padT + gH - (y - yMin) / (yMax - yMin) * gH; }
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 0.5;
+    for (var gx = 4; gx <= 7; gx++) {
+      ctx.beginPath();
+      ctx.moveTo(toX(gx), padT);
+      ctx.lineTo(toX(gx), padT + gH);
+      ctx.stroke();
+    }
+    for (var gy = 0; gy <= 3; gy++) {
+      ctx.beginPath();
+      ctx.moveTo(padL, toY(gy));
+      ctx.lineTo(padL + gW, toY(gy));
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(padL, toY(0));
+    ctx.lineTo(padL + gW, toY(0));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(toX(xMin), padT);
+    ctx.lineTo(toX(xMin), padT + gH);
+    ctx.stroke();
+
+    // Tick marks and labels
+    ctx.fillStyle = muted;
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var tx = 4; tx <= 7; tx++) {
+      ctx.beginPath();
+      ctx.moveTo(toX(tx), toY(0) - 4);
+      ctx.lineTo(toX(tx), toY(0) + 4);
+      ctx.stroke();
+      ctx.fillText(String(tx), toX(tx), toY(0) + 20);
+    }
+    ctx.textAlign = 'right';
+    for (var ty = 0; ty <= 3; ty++) {
+      ctx.fillText(String(ty), padL - 8, toY(ty) + 4);
+    }
+
+    // Functions
+    var lhs = function(x) {
+      if (x + 3 < 0 || 7 - x < 0) return null;
+      return Math.sqrt(x + 3) - Math.sqrt(7 - x);
+    };
+    var rhs = function(x) {
+      if (2 * x - 8 < 0) return null;
+      return Math.sqrt(2 * x - 8);
+    };
+
+    // Shade solution regions [4, 5) and (6, 7]
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.15);
+    var step = 0.01;
+
+    // Region [4, 5)
+    ctx.beginPath();
+    ctx.moveTo(toX(4), toY(0));
+    for (var sx = 4; sx < 5; sx += step) {
+      var lv = lhs(sx);
+      if (lv !== null) ctx.lineTo(toX(sx), toY(lv));
+    }
+    ctx.lineTo(toX(4.99), toY(0));
+    ctx.closePath();
+    ctx.fill();
+
+    // Region (6, 7]
+    ctx.beginPath();
+    ctx.moveTo(toX(6.01), toY(0));
+    for (var sx2 = 6.01; sx2 <= 7; sx2 += step) {
+      var lv2 = lhs(sx2);
+      if (lv2 !== null) ctx.lineTo(toX(sx2), toY(lv2));
+    }
+    for (var sx3 = 7; sx3 >= 6.01; sx3 -= step) {
+      var rv2 = rhs(sx3);
+      if (rv2 !== null) ctx.lineTo(toX(sx3), toY(rv2));
+    }
+    ctx.closePath();
+    ctx.fill();
+
+    // Plot LHS: sqrt(x+3) - sqrt(7-x)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    var started = false;
+    for (var px = 4; px <= 7; px += 0.02) {
+      var val = lhs(px);
+      if (val !== null) {
+        if (!started) { ctx.moveTo(toX(px), toY(val)); started = true; }
+        else ctx.lineTo(toX(px), toY(val));
+      }
+    }
+    ctx.stroke();
+
+    // Plot RHS: sqrt(2x-8)
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    started = false;
+    for (var px2 = 4; px2 <= 7; px2 += 0.02) {
+      var val2 = rhs(px2);
+      if (val2 !== null) {
+        if (!started) { ctx.moveTo(toX(px2), toY(val2)); started = true; }
+        else ctx.lineTo(toX(px2), toY(val2));
+      }
+    }
+    ctx.stroke();
+
+    // Intersection points at x = 5 and x = 6
+    var intPts = [
+      {x: 5, y: Math.sqrt(2), label: 'x = 5'},
+      {x: 6, y: 2, label: 'x = 6'}
+    ];
+    intPts.forEach(function(pt) {
+      ctx.beginPath();
+      ctx.arc(toX(pt.x), toY(pt.y), 6, 0, Math.PI * 2);
+      ctx.fillStyle = bg;
+      ctx.fill();
+      ctx.strokeStyle = danger;
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      ctx.fillStyle = danger;
+      ctx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(pt.label, toX(pt.x), toY(pt.y) - 12);
+    });
+
+    // Domain endpoints
+    // x = 4 (filled, included)
+    ctx.beginPath();
+    ctx.arc(toX(4), toY(lhs(4)), 5, 0, Math.PI * 2);
+    ctx.fillStyle = accent;
+    ctx.fill();
+
+    // x = 7 (filled, included)
+    ctx.beginPath();
+    ctx.arc(toX(7), toY(lhs(7)), 5, 0, Math.PI * 2);
+    ctx.fillStyle = accent;
+    ctx.fill();
+
+    // Legend
+    var legX = padL + 15;
+    var legY = padT + 15;
+
+    ctx.fillStyle = primary;
+    ctx.fillRect(legX, legY, 20, 3);
+    ctx.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillStyle = text;
+    ctx.fillText('\u221A(x+3) \u2212 \u221A(7\u2212x)', legX + 26, legY + 5);
+
+    ctx.fillStyle = secondary;
+    ctx.fillRect(legX, legY + 22, 20, 3);
+    ctx.fillStyle = text;
+    ctx.fillText('\u221A(2x\u22128)', legX + 26, legY + 27);
+
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.3);
+    ctx.fillRect(legX, legY + 44, 20, 12);
+    ctx.fillStyle = text;
+    ctx.fillText('Oblast rešenja', legX + 26, legY + 54);
+
+    // Axis labels
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('x', padL + gW + 20, toY(0) + 5);
+    ctx.fillText('y', padL - 5, padT - 10);
+
+    // Number line at bottom showing solution
+    var nlY = H - 25;
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(toX(3.8), nlY);
+    ctx.lineTo(toX(7.3), nlY);
+    ctx.stroke();
+
+    // Solution segments
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.moveTo(toX(4), nlY);
+    ctx.lineTo(toX(5), nlY);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(toX(6), nlY);
+    ctx.lineTo(toX(7), nlY);
+    ctx.stroke();
+
+    // Endpoints
+    // x=4 filled
+    ctx.beginPath();
+    ctx.arc(toX(4), nlY, 5, 0, Math.PI * 2);
+    ctx.fillStyle = accent;
+    ctx.fill();
+    // x=5 open
+    ctx.beginPath();
+    ctx.arc(toX(5), nlY, 5, 0, Math.PI * 2);
+    ctx.fillStyle = bg;
+    ctx.fill();
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    // x=6 open
+    ctx.beginPath();
+    ctx.arc(toX(6), nlY, 5, 0, Math.PI * 2);
+    ctx.fillStyle = bg;
+    ctx.fill();
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    // x=7 filled
+    ctx.beginPath();
+    ctx.arc(toX(7), nlY, 5, 0, Math.PI * 2);
+    ctx.fillStyle = accent;
+    ctx.fill();
+
+    // Labels under number line
+    ctx.fillStyle = muted;
+    ctx.font = '11px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('4', toX(4), nlY + 15);
+    ctx.fillText('5', toX(5), nlY + 15);
+    ctx.fillText('6', toX(6), nlY + 15);
+    ctx.fillText('7', toX(7), nlY + 15);
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('[4, 5) \u222A (6, 7]', (toX(5) + toX(6)) / 2, nlY + 14);
+  }
+
+  draw();
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Iracionalna nejednačina sa tri korena i dvostrukim kvadriranjem",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["iracionalne nejednačine", "kvadriranje nejednačine", "domen funkcije", "kvadratna nejednačina", "granične tačke"]
+}
+BRAINSPARK_META-->

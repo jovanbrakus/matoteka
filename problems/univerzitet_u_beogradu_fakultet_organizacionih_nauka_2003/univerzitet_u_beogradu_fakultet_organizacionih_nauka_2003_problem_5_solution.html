@@ -1,0 +1,709 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: In a right triangle, the foot of the altitude from the right angle vertex
+  divides the hypotenuse into segments of length 9cm and 16cm.
+  Find the perimeter of the triangle.
+
+  Strategy 1 (geometric mean / altitude theorem):
+  Let the right angle be at C, hypotenuse AB, foot of altitude D on AB.
+  AD = 9, DB = 16 (or vice versa). AB = 9 + 16 = 25.
+
+  By the geometric mean relations in a right triangle:
+  - h^2 = AD * DB = 9 * 16 = 144, so h = 12 (altitude from C to AB)
+  - AC^2 = AD * AB = 9 * 25 = 225, so AC = 15
+  - BC^2 = DB * AB = 16 * 25 = 400, so BC = 20
+
+  Wait, let me be careful with which segment corresponds to which leg.
+  In a right triangle with right angle at C:
+  - The leg AC is adjacent to vertex A (which is at one end of hypotenuse)
+  - The altitude from C meets AB at D
+  - AD is the projection of AC onto AB, DB is the projection of BC onto AB
+
+  So: AC^2 = AD * AB and BC^2 = DB * AB
+
+  If AD = 9: AC^2 = 9 * 25 = 225, AC = 15
+  If DB = 16: BC^2 = 16 * 25 = 400, BC = 20
+
+  Perimeter = AC + BC + AB = 15 + 20 + 25 = 60
+
+  Answer: B) 60
+
+  Verification with Pythagorean theorem:
+  AC^2 + BC^2 = 15^2 + 20^2 = 225 + 400 = 625 = 25^2 = AB^2 ✓
+
+  Also check altitude: h = AC * BC / AB = 15 * 20 / 25 = 300/25 = 12
+  h^2 = 144 = 9 * 16 ✓
+
+  This is a 3-4-5 right triangle scaled by 5: (15, 20, 25) = 5*(3, 4, 5).
+
+  Strategy 2 (similar triangles - synthetic approach):
+  Triangle ACD ~ Triangle CBD ~ Triangle ABC (by AA similarity)
+  From ACD ~ ABC: AC/AB = AD/AC => AC^2 = AD * AB
+  From CBD ~ ABC: BC/AB = DB/BC => BC^2 = DB * AB
+
+  These are the same relations, confirming the approach.
+</script>
+
+<h1 data-card="problem-title">Obim pravouglog trougla sa visinom na hipotenuzu</h1>
+<p data-card="problem-subtitle" class="subtitle">Geometrija — pravougli trougao, visina na hipotenuzu, sličnost trouglova</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>U pravougaonom trouglu podnožje visine iz temena pravog ugla deli hipotenuzu na odsečke dužine \( 9\,\text{cm} \) i \( 16\,\text{cm} \). Obim trougla (u cm) je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 56 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 60 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 25(1+\sqrt{2}) \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \dfrac{25}{2}(2+\sqrt{3}) \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 25(1+\sqrt{3}) \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">
+    Iskoristićemo svojstvo sličnosti trouglova koji nastaju spuštanjem visine na hipotenuzu: svaka kateta je geometrijska sredina između hipotenuze i njene projekcije na hipotenuzu. Odatle nalazimo obe katete, pa sabiramo sve tri stranice.
+  </p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Euklidova teorema (1. stavak):</strong> U pravouglom trouglu, svaka kateta je geometrijska sredina hipotenuze i projekcije te katete na hipotenuzu: \( a^2 = c_a \cdot c \), gde je \( c_a \) projekcija katete \( a \), a \( c \) hipotenuza.</li>
+        <li><strong>Euklidova teorema (2. stavak):</strong> Visina na hipotenuzu je geometrijska sredina odsečaka hipotenuze: \( h^2 = c_a \cdot c_b \).</li>
+        <li><strong>Pitagorina teorema:</strong> \( a^2 + b^2 = c^2 \)</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Pravougli trougao sa visinom">
+  <h2>📐 Pravougli trougao sa visinom na hipotenuzu</h2>
+  <div class="canvas-wrapper">
+    <canvas id="mainTriangle" width="700" height="420"></canvas>
+  </div>
+  <p class="canvas-caption">Pravougli trougao \( ABC \) sa visinom \( CD \) na hipotenuzu \( AB \)</p>
+</div>
+
+<div data-card="visual-aid" data-title="Slični trouglovi">
+  <h2>📐 Tri slična trougla</h2>
+  <div class="canvas-wrapper">
+    <canvas id="similarTriangles" width="700" height="400"></canvas>
+  </div>
+  <p class="canvas-caption">Visina iz pravog ugla deli polazni trougao na dva manja trougla — sva tri su međusobno slična</p>
+</div>
+
+<div data-card="visual-aid" data-title="Rezultat — obim trougla">
+  <h2>📐 Konačne dimenzije trougla</h2>
+  <div class="canvas-wrapper">
+    <canvas id="finalTriangle" width="700" height="400"></canvas>
+  </div>
+  <p class="canvas-caption">Trougao \( 15{-}20{-}25 \) je peterostruko uvećani Pitagorin trougao \( 3{-}4{-}5 \)</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavimo oznake</h3>
+      <p>Neka je \( \triangle ABC \) pravougli trougao sa pravim uglom u temenu \( C \). Visina iz \( C \) pada na hipotenuzu \( AB \) u tačku \( D \).</p>
+      <p>Dato je da \( D \) deli hipotenuzu na odsečke:</p>
+      <div class="math-block">
+        \[ AD = 9\,\text{cm}, \quad DB = 16\,\text{cm} \]
+      </div>
+      <p>Odatle je hipotenuza:</p>
+      <div class="math-block">
+        \[ AB = AD + DB = 9 + 16 = 25\,\text{cm} \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Prepoznajmo slične trouglove</h3>
+      <p>Visina \( CD \) deli trougao \( ABC \) na dva manja trougla: \( \triangle ACD \) i \( \triangle BCD \). Ključno zapažanje je da su sva tri trougla međusobno slična:</p>
+      <div class="math-block">
+        \[ \triangle ACD \sim \triangle ABC \sim \triangle CBD \]
+      </div>
+      <p>To važi jer svi imaju zajednički ugao i po jedan prav ugao (u \( C \), odnosno u \( D \)).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto su trouglovi ACD i ABC slični?</summary>
+          <div class="detail-content">
+            <p>Ugao \( A \) im je zajednički. Ugao \( ACD = 90° - A = B \) (jer u trouglu \( ABC \) važi \( A + B = 90° \)), a ugao \( ADC = 90° \). Dakle, po stavu UU (dva jednaka ugla), trouglovi su slični.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Nađimo katetu \( AC \) (Euklidova teorema)</h3>
+      <p>Iz sličnosti \( \triangle ACD \sim \triangle ACB \) sledi proporcija:</p>
+      <div class="math-block">
+        \[ \frac{AC}{AB} = \frac{AD}{AC} \]
+      </div>
+      <p>Odatle dobijamo:</p>
+      <div class="math-block">
+        \[ AC^2 = AD \cdot AB = 9 \cdot 25 = 225 \]
+      </div>
+      <div class="math-block">
+        \[ AC = 15\,\text{cm} \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Nađimo katetu \( BC \)</h3>
+      <p>Analogno, iz sličnosti \( \triangle BCD \sim \triangle BCA \):</p>
+      <div class="math-block">
+        \[ \frac{BC}{AB} = \frac{DB}{BC} \]
+      </div>
+      <p>Odatle:</p>
+      <div class="math-block">
+        \[ BC^2 = DB \cdot AB = 16 \cdot 25 = 400 \]
+      </div>
+      <div class="math-block">
+        \[ BC = 20\,\text{cm} \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Važi li Pitagorina teorema za ove dimenzije?</summary>
+          <div class="detail-content">
+            <p>Da! \( AC^2 + BC^2 = 225 + 400 = 625 = 25^2 = AB^2 \). Pitagorina teorema je zadovoljena, što potvrđuje korektnost.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunajmo obim</h3>
+      <p>Obim trougla je zbir svih stranica:</p>
+      <div class="math-block">
+        \[ O = AC + BC + AB = 15 + 20 + 25 = 60\,\text{cm} \]
+      </div>
+      <p>Primetimo da je ovo Pitagorin trougao \( 3{-}4{-}5 \) uvećan 5 puta: \( (15, 20, 25) = 5 \cdot (3, 4, 5) \).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Kolika je visina \( h = CD \)?</summary>
+          <div class="detail-content">
+            <p>Po drugom Euklidovom stavku: \( h^2 = AD \cdot DB = 9 \cdot 16 = 144 \), pa je \( h = 12\,\text{cm} \). Ili: \( h = \frac{AC \cdot BC}{AB} = \frac{15 \cdot 20}{25} = 12\,\text{cm} \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Visina iz pravog ugla na hipotenuzu je moćan alat! Ona deli polazni trougao na dva manja trougla koji su <strong>slični polaznom i međusobno</strong>. Iz te sličnosti direktno slede Euklidove teoreme: \( a^2 = c_a \cdot c \) i \( h^2 = c_a \cdot c_b \). Čim vidite odsečke na hipotenuzi, odmah primenjujte ove formule — bez koordinata, brzo i elegantno!</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ O = AC + BC + AB = 15 + 20 + 25 = 60\,\text{cm} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 56 \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( 60 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 25(1+\sqrt{2}) \)</span>
+    <span class="answer-option" data-option="D">(D) \( \frac{25}{2}(2+\sqrt{3}) \)</span>
+    <span class="answer-option" data-option="E">(E) \( 25(1+\sqrt{3}) \)</span>
+  </div>
+  <p class="verification">Provera: \( 15^2 + 20^2 = 225 + 400 = 625 = 25^2 \) (Pitagorina teorema važi). Visina: \( h^2 = 9 \cdot 16 = 144 \), \( h = 12 \). Sve se poklapa!</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zamena odsečaka:</strong> Odsečak \( AD = 9 \) odgovara kateti \( AC \), a \( DB = 16 \) kateti \( BC \). Ako ih zamenite, dobićete pogrešne katete (ali obim će biti isti jer se isti brojevi pojavljuju u zbiru).</li>
+    <li><strong>Mešanje prvog i drugog Euklidovog stavka:</strong> Za katete koristimo \( a^2 = c_a \cdot c \) (odsečak puta cela hipotenuza), a za visinu \( h^2 = c_a \cdot c_b \) (proizvod odsečaka). Nemojte ih mešati!</li>
+    <li><strong>Zaborav da se sabere hipotenuza:</strong> Obim uključuje sve tri stranice, ne samo dve katete.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Ako su odsečci hipotenuze \( p \) i \( q \), pokaži da je površina trougla jednaka \( P = \frac{1}{2}(p+q)\sqrt{pq} \). Zatim izračunaj površinu za \( p = 9 \) i \( q = 16 \).</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Površina trougla je \( P = \frac{1}{2} \cdot AB \cdot h \), gde je \( AB = p + q \), a \( h = \sqrt{pq} \) (po drugom Euklidovom stavku).</p>
+      <p>Dakle: \( P = \frac{1}{2}(p+q)\sqrt{pq} = \frac{1}{2} \cdot 25 \cdot \sqrt{144} = \frac{1}{2} \cdot 25 \cdot 12 = 150\,\text{cm}^2 \).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  // ===== Canvas 1: Main triangle with altitude =====
+  var c1 = document.getElementById('mainTriangle');
+  if (!c1) return;
+  var ctx1 = c1.getContext('2d');
+  var W1 = c1.width, H1 = c1.height;
+
+  // ===== Canvas 2: Similar triangles =====
+  var c2 = document.getElementById('similarTriangles');
+  var ctx2 = c2 ? c2.getContext('2d') : null;
+  var W2 = c2 ? c2.width : 0, H2 = c2 ? c2.height : 0;
+
+  // ===== Canvas 3: Final triangle =====
+  var c3 = document.getElementById('finalTriangle');
+  var ctx3 = c3 ? c3.getContext('2d') : null;
+  var W3 = c3 ? c3.width : 0, H3 = c3 ? c3.height : 0;
+
+  function drawAll() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+
+    // Helper: draw right angle marker
+    function drawRightAngle(ctx, x, y, dx1, dy1, dx2, dy2, size, color) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(x + dx1 * size, y + dy1 * size);
+      ctx.lineTo(x + dx1 * size + dx2 * size, y + dy1 * size + dy2 * size);
+      ctx.lineTo(x + dx2 * size, y + dy2 * size);
+      ctx.stroke();
+    }
+
+    // ==========================================
+    // CANVAS 1: Main right triangle with altitude
+    // ==========================================
+    ctx1.clearRect(0, 0, W1, H1);
+    ctx1.fillStyle = bg;
+    ctx1.fillRect(0, 0, W1, H1);
+
+    // Triangle coordinates (A at left, B at right, C at top)
+    var scale1 = 11;
+    var baseY = H1 - 70;
+    var leftPad = 100;
+
+    // A is at left of hypotenuse, B at right
+    var Ax = leftPad;
+    var Ay = baseY;
+    var Bx = leftPad + 25 * scale1;
+    var By = baseY;
+
+    // D divides AB: AD = 9, DB = 16
+    var Dx = leftPad + 9 * scale1;
+    var Dy = baseY;
+
+    // C is above D at height h=12
+    var Cx = Dx;
+    var Cy = baseY - 12 * scale1;
+
+    // Draw filled triangle
+    ctx1.fillStyle = cvAlpha('--sol-canvas-primary', 0.06);
+    ctx1.beginPath();
+    ctx1.moveTo(Ax, Ay); ctx1.lineTo(Bx, By); ctx1.lineTo(Cx, Cy); ctx1.closePath();
+    ctx1.fill();
+
+    // Draw triangle sides
+    ctx1.strokeStyle = primary;
+    ctx1.lineWidth = 2.5;
+    ctx1.beginPath();
+    ctx1.moveTo(Ax, Ay); ctx1.lineTo(Bx, By); ctx1.lineTo(Cx, Cy); ctx1.closePath();
+    ctx1.stroke();
+
+    // Draw altitude CD (dashed)
+    ctx1.strokeStyle = danger;
+    ctx1.lineWidth = 2;
+    ctx1.setLineDash([6, 4]);
+    ctx1.beginPath();
+    ctx1.moveTo(Cx, Cy);
+    ctx1.lineTo(Dx, Dy);
+    ctx1.stroke();
+    ctx1.setLineDash([]);
+
+    // Right angle at C
+    var angSize = 12;
+    var caLen = Math.sqrt((Ax - Cx) * (Ax - Cx) + (Ay - Cy) * (Ay - Cy));
+    var cbLen = Math.sqrt((Bx - Cx) * (Bx - Cx) + (By - Cy) * (By - Cy));
+    var dxCA = (Ax - Cx) / caLen;
+    var dyCA = (Ay - Cy) / caLen;
+    var dxCB = (Bx - Cx) / cbLen;
+    var dyCB = (By - Cy) / cbLen;
+    drawRightAngle(ctx1, Cx, Cy, dxCA, dyCA, dxCB, dyCB, angSize, accent);
+
+    // Right angle at D
+    drawRightAngle(ctx1, Dx, Dy, 0, -1, -1, 0, angSize, danger);
+
+    // Labels for vertices
+    ctx1.font = 'bold 18px Segoe UI, system-ui, sans-serif';
+    ctx1.textAlign = 'center';
+    ctx1.fillStyle = text;
+    ctx1.fillText('A', Ax - 18, Ay + 5);
+    ctx1.fillText('B', Bx + 18, By + 5);
+    ctx1.fillText('C', Cx - 5, Cy - 15);
+    ctx1.fillStyle = danger;
+    ctx1.fillText('D', Dx + 3, Dy + 22);
+
+    // Segment labels on hypotenuse
+    ctx1.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx1.fillStyle = secondary;
+    ctx1.fillText('9', (Ax + Dx) / 2, Ay + 38);
+    ctx1.fillStyle = highlight;
+    ctx1.fillText('16', (Dx + Bx) / 2, By + 38);
+
+    // Side labels
+    ctx1.fillStyle = primary;
+    ctx1.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    // AC label
+    var acMx = (Ax + Cx) / 2 - 22;
+    var acMy = (Ay + Cy) / 2;
+    ctx1.fillText('AC = ?', acMx, acMy);
+    // BC label
+    var bcMx = (Bx + Cx) / 2 + 28;
+    var bcMy = (By + Cy) / 2;
+    ctx1.fillText('BC = ?', bcMx, bcMy);
+
+    // Altitude label
+    ctx1.fillStyle = danger;
+    ctx1.font = '14px Segoe UI, system-ui, sans-serif';
+    ctx1.fillText('h = ?', Dx + 28, (Cy + Dy) / 2);
+
+    // Tick marks for 9 and 16 segments
+    ctx1.strokeStyle = secondary;
+    ctx1.lineWidth = 2;
+    var tickH = 6;
+    // Tick on AD
+    var adMidX = (Ax + Dx) / 2;
+    ctx1.beginPath(); ctx1.moveTo(adMidX, Ay - tickH); ctx1.lineTo(adMidX, Ay + tickH); ctx1.stroke();
+    // Tick on DB
+    ctx1.strokeStyle = highlight;
+    var dbMidX = (Dx + Bx) / 2;
+    ctx1.beginPath(); ctx1.moveTo(dbMidX - 4, By - tickH); ctx1.lineTo(dbMidX - 4, By + tickH); ctx1.stroke();
+    ctx1.beginPath(); ctx1.moveTo(dbMidX + 4, By - tickH); ctx1.lineTo(dbMidX + 4, By + tickH); ctx1.stroke();
+
+    // Title
+    ctx1.fillStyle = muted;
+    ctx1.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx1.textAlign = 'center';
+    ctx1.fillText('Pravougli trougao sa visinom na hipotenuzu', W1 / 2, 25);
+
+    // ==========================================
+    // CANVAS 2: Similar triangles side by side
+    // ==========================================
+    if (!ctx2) return;
+    ctx2.clearRect(0, 0, W2, H2);
+    ctx2.fillStyle = bg;
+    ctx2.fillRect(0, 0, W2, H2);
+
+    var s2 = 5.5;
+    var baseY2 = H2 - 80;
+    var gap = 30;
+
+    // Triangle 1: ACD (small, left) - sides AD=9, CD=12, AC=15
+    var t1x = 40;
+    var t1Ax = t1x;
+    var t1Ay = baseY2;
+    var t1Dx = t1x + 9 * s2;
+    var t1Dy = baseY2;
+    var t1Cx = t1Dx;
+    var t1Cy = baseY2 - 12 * s2;
+
+    ctx2.fillStyle = cvAlpha('--sol-canvas-secondary', 0.1);
+    ctx2.beginPath();
+    ctx2.moveTo(t1Ax, t1Ay); ctx2.lineTo(t1Dx, t1Dy); ctx2.lineTo(t1Cx, t1Cy); ctx2.closePath();
+    ctx2.fill();
+    ctx2.strokeStyle = secondary;
+    ctx2.lineWidth = 2.5;
+    ctx2.stroke();
+
+    drawRightAngle(ctx2, t1Dx, t1Dy, 0, -1, -1, 0, 10, secondary);
+
+    ctx2.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx2.textAlign = 'center';
+    ctx2.fillStyle = secondary;
+    ctx2.fillText('A', t1Ax - 12, t1Ay + 5);
+    ctx2.fillText('D', t1Dx + 12, t1Dy + 18);
+    ctx2.fillText('C', t1Cx + 14, t1Cy - 8);
+    ctx2.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx2.fillText('9', (t1Ax + t1Dx) / 2, t1Ay + 18);
+    ctx2.fillText('12', t1Dx + 18, (t1Dy + t1Cy) / 2);
+    ctx2.save();
+    ctx2.translate((t1Ax + t1Cx) / 2 - 18, (t1Ay + t1Cy) / 2);
+    ctx2.fillText('15', 0, 0);
+    ctx2.restore();
+
+    // Triangle 2: ABC (main, center) - sides AC=15, BC=20, AB=25
+    var t2x = t1Dx + gap + 40;
+    var t2Ax = t2x;
+    var t2Ay = baseY2;
+    var t2Bx = t2x + 25 * s2;
+    var t2By = baseY2;
+    var t2Dx2 = t2x + 9 * s2;
+    var t2Cx = t2Dx2;
+    var t2Cy = baseY2 - 12 * s2;
+
+    ctx2.fillStyle = cvAlpha('--sol-canvas-primary', 0.06);
+    ctx2.beginPath();
+    ctx2.moveTo(t2Ax, t2Ay); ctx2.lineTo(t2Bx, t2By); ctx2.lineTo(t2Cx, t2Cy); ctx2.closePath();
+    ctx2.fill();
+    ctx2.strokeStyle = primary;
+    ctx2.lineWidth = 2.5;
+    ctx2.stroke();
+
+    var t2caLen = Math.sqrt((t2Ax - t2Cx) * (t2Ax - t2Cx) + (t2Ay - t2Cy) * (t2Ay - t2Cy));
+    var t2cbLen = Math.sqrt((t2Bx - t2Cx) * (t2Bx - t2Cx) + (t2By - t2Cy) * (t2By - t2Cy));
+    drawRightAngle(ctx2, t2Cx, t2Cy,
+      (t2Ax - t2Cx) / t2caLen, (t2Ay - t2Cy) / t2caLen,
+      (t2Bx - t2Cx) / t2cbLen, (t2By - t2Cy) / t2cbLen,
+      10, accent);
+
+    ctx2.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx2.fillStyle = primary;
+    ctx2.textAlign = 'center';
+    ctx2.fillText('A', t2Ax - 12, t2Ay + 5);
+    ctx2.fillText('B', t2Bx + 12, t2By + 5);
+    ctx2.fillText('C', t2Cx - 5, t2Cy - 12);
+    ctx2.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx2.fillText('25', (t2Ax + t2Bx) / 2, t2Ay + 20);
+    ctx2.fillText('15', (t2Ax + t2Cx) / 2 - 18, (t2Ay + t2Cy) / 2);
+    ctx2.fillText('20', (t2Bx + t2Cx) / 2 + 20, (t2By + t2Cy) / 2);
+
+    // Triangle 3: BCD (right) - sides BD=16, CD=12, BC=20
+    // But BCD has right angle at D. B at left-bottom, D above B...
+    // Actually: In BCD: B is bottom-right of orig, D is foot, C is top.
+    // Let's draw it nicely: right angle at D, horizontal BD=16, vertical DC=12
+    var t3x = t2Bx + gap + 20;
+    var t3Bx = t3x;
+    var t3By = baseY2;
+    var t3Dx = t3x + 16 * s2;
+    var t3Dy = baseY2;
+    var t3Cx = t3Dx;
+    var t3Cy = baseY2 - 12 * s2;
+
+    ctx2.fillStyle = cvAlpha('--sol-canvas-highlight', 0.1);
+    ctx2.beginPath();
+    ctx2.moveTo(t3Bx, t3By); ctx2.lineTo(t3Dx, t3Dy); ctx2.lineTo(t3Cx, t3Cy); ctx2.closePath();
+    ctx2.fill();
+    ctx2.strokeStyle = highlight;
+    ctx2.lineWidth = 2.5;
+    ctx2.stroke();
+
+    drawRightAngle(ctx2, t3Dx, t3Dy, 0, -1, -1, 0, 10, highlight);
+
+    ctx2.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx2.fillStyle = highlight;
+    ctx2.textAlign = 'center';
+    ctx2.fillText('B', t3Bx - 12, t3By + 5);
+    ctx2.fillText('D', t3Dx + 12, t3Dy + 18);
+    ctx2.fillText('C', t3Cx + 14, t3Cy - 8);
+    ctx2.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx2.fillText('16', (t3Bx + t3Dx) / 2, t3By + 18);
+    ctx2.fillText('12', t3Dx + 18, (t3Dy + t3Cy) / 2);
+    ctx2.save();
+    ctx2.translate((t3Bx + t3Cx) / 2 - 18, (t3By + t3Cy) / 2);
+    ctx2.fillText('20', 0, 0);
+    ctx2.restore();
+
+    // Similarity labels
+    ctx2.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx2.textAlign = 'center';
+    ctx2.fillStyle = secondary;
+    ctx2.fillText('\u25B3ACD', (t1Ax + t1Dx) / 2, 25);
+    ctx2.fillStyle = text;
+    ctx2.fillText('~', ((t1Dx + gap + 40) + t2Ax) / 2, 25);
+    ctx2.fillStyle = primary;
+    ctx2.fillText('\u25B3ABC', (t2Ax + t2Bx) / 2, 25);
+    ctx2.fillStyle = text;
+    ctx2.fillText('~', ((t2Bx + gap + 20) + t3Bx) / 2, 25);
+    ctx2.fillStyle = highlight;
+    ctx2.fillText('\u25B3BCD', (t3Bx + t3Dx) / 2, 25);
+
+    // Bottom text
+    ctx2.fillStyle = muted;
+    ctx2.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx2.textAlign = 'center';
+    ctx2.fillText('Sva tri trougla su slična (UU sličnost)', W2 / 2, H2 - 15);
+
+    // ==========================================
+    // CANVAS 3: Final triangle with all measurements
+    // ==========================================
+    if (!ctx3) return;
+    ctx3.clearRect(0, 0, W3, H3);
+    ctx3.fillStyle = bg;
+    ctx3.fillRect(0, 0, W3, H3);
+
+    var s3 = 12;
+    var baseY3 = H3 - 80;
+    var padL3 = 80;
+
+    var fAx = padL3;
+    var fAy = baseY3;
+    var fBx = padL3 + 25 * s3;
+    var fBy = baseY3;
+    var fDx = padL3 + 9 * s3;
+    var fDy = baseY3;
+    var fCx = fDx;
+    var fCy = baseY3 - 12 * s3;
+
+    // Filled triangle
+    ctx3.fillStyle = cvAlpha('--sol-canvas-accent', 0.08);
+    ctx3.beginPath();
+    ctx3.moveTo(fAx, fAy); ctx3.lineTo(fBx, fBy); ctx3.lineTo(fCx, fCy); ctx3.closePath();
+    ctx3.fill();
+
+    // Sides with different colors
+    // AC = 15
+    ctx3.strokeStyle = secondary;
+    ctx3.lineWidth = 3;
+    ctx3.beginPath(); ctx3.moveTo(fAx, fAy); ctx3.lineTo(fCx, fCy); ctx3.stroke();
+
+    // BC = 20
+    ctx3.strokeStyle = highlight;
+    ctx3.lineWidth = 3;
+    ctx3.beginPath(); ctx3.moveTo(fBx, fBy); ctx3.lineTo(fCx, fCy); ctx3.stroke();
+
+    // AB = 25
+    ctx3.strokeStyle = primary;
+    ctx3.lineWidth = 3;
+    ctx3.beginPath(); ctx3.moveTo(fAx, fAy); ctx3.lineTo(fBx, fBy); ctx3.stroke();
+
+    // Altitude (dashed)
+    ctx3.strokeStyle = muted;
+    ctx3.lineWidth = 1.5;
+    ctx3.setLineDash([5, 4]);
+    ctx3.beginPath(); ctx3.moveTo(fCx, fCy); ctx3.lineTo(fDx, fDy); ctx3.stroke();
+    ctx3.setLineDash([]);
+
+    // Right angle at C
+    var fcaLen = Math.sqrt((fAx - fCx) * (fAx - fCx) + (fAy - fCy) * (fAy - fCy));
+    var fcbLen = Math.sqrt((fBx - fCx) * (fBx - fCx) + (fBy - fCy) * (fBy - fCy));
+    drawRightAngle(ctx3, fCx, fCy,
+      (fAx - fCx) / fcaLen, (fAy - fCy) / fcaLen,
+      (fBx - fCx) / fcbLen, (fBy - fCy) / fcbLen,
+      14, accent);
+
+    // Vertex labels
+    ctx3.font = 'bold 20px Segoe UI, system-ui, sans-serif';
+    ctx3.textAlign = 'center';
+    ctx3.fillStyle = text;
+    ctx3.fillText('A', fAx - 20, fAy + 5);
+    ctx3.fillText('B', fBx + 20, fBy + 5);
+    ctx3.fillText('C', fCx - 8, fCy - 18);
+
+    // Side labels with values
+    ctx3.font = 'bold 18px Segoe UI, system-ui, sans-serif';
+    ctx3.fillStyle = secondary;
+    ctx3.fillText('15', (fAx + fCx) / 2 - 28, (fAy + fCy) / 2);
+    ctx3.fillStyle = highlight;
+    ctx3.fillText('20', (fBx + fCx) / 2 + 30, (fBy + fCy) / 2);
+    ctx3.fillStyle = primary;
+    ctx3.fillText('25', (fAx + fBx) / 2, fAy + 28);
+
+    // Altitude label
+    ctx3.fillStyle = muted;
+    ctx3.font = '14px Segoe UI, system-ui, sans-serif';
+    ctx3.fillText('h = 12', fDx + 35, (fCy + fDy) / 2);
+
+    // Hypotenuse segments
+    ctx3.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx3.fillStyle = muted;
+    ctx3.fillText('9', (fAx + fDx) / 2, fAy + 48);
+    ctx3.fillText('16', (fDx + fBx) / 2, fBy + 48);
+
+    // Point D
+    ctx3.beginPath();
+    ctx3.arc(fDx, fDy, 4, 0, 2 * Math.PI);
+    ctx3.fillStyle = muted;
+    ctx3.fill();
+
+    // Perimeter sum at top
+    ctx3.fillStyle = accent;
+    ctx3.font = 'bold 20px Segoe UI, system-ui, sans-serif';
+    ctx3.textAlign = 'center';
+    ctx3.fillText('Obim = 15 + 20 + 25 = 60 cm', W3 / 2, 35);
+
+    // 3-4-5 note
+    ctx3.fillStyle = muted;
+    ctx3.font = '14px Segoe UI, system-ui, sans-serif';
+    ctx3.fillText('Pitagorin trougao 3-4-5 (\u00D75)', W3 / 2, 58);
+
+    // Dots at vertices
+    var dots = [[fAx, fAy], [fBx, fBy], [fCx, fCy]];
+    for (var d = 0; d < dots.length; d++) {
+      ctx3.beginPath();
+      ctx3.arc(dots[d][0], dots[d][1], 5, 0, 2 * Math.PI);
+      ctx3.fillStyle = text;
+      ctx3.fill();
+    }
+  }
+
+  drawAll();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); drawAll(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Obim pravouglog trougla — visina na hipotenuzu",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["pravougli trougao", "Euklidova teorema", "visina na hipotenuzu", "sličnost trouglova", "obim", "Pitagorin trougao"]
+}
+BRAINSPARK_META-->

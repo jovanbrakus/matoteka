@@ -1,0 +1,514 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Three married couples need to be seated on 6 different seats in a single row
+  of a cinema hall with 12 numbered seats. Each couple must sit on two adjacent seats.
+  Find the number of ways.
+
+  Step 1: Identify adjacent pairs in a row of 12.
+  Adjacent pairs: (1,2), (2,3), ..., (11,12) — total 11 possible pairs.
+
+  Step 2: Choose 3 non-overlapping adjacent pairs from 11 possible.
+  This is equivalent to placing 3 non-overlapping dominoes on 12 squares in a row.
+
+  Standard combinatorial technique: After placing 3 dominoes (using 6 squares),
+  6 squares remain empty. Think of the 6 empty squares as creating 7 gaps
+  (including ends). We place 3 dominoes into these 7 gaps.
+
+  Actually, more standard approach: n cells, k non-overlapping dominoes.
+  Model: place 3 dominoes + 6 singles in a row. Total "objects" = 3 + 6 = 9.
+  Choose which 3 of the 9 positions are dominoes: C(9, 3) = 84.
+
+  Wait, let me verify more carefully. We have 12 squares. Place 3 dominoes (each
+  covers 2 consecutive squares). The remaining 6 are singles.
+
+  Think of it as arranging 3 D-blocks (size 2) and 6 S-blocks (size 1) in a line.
+  Total objects = 9. The number of arrangements = C(9, 3) = 84.
+
+  This works because each arrangement of these 9 objects gives a unique way to
+  tile the 12 squares.
+
+  Step 3: Assign couples to the 3 chosen pairs of adjacent seats.
+  3 couples → 3 pairs: 3! = 6 ways.
+
+  Step 4: Within each couple, arrange who sits left and who sits right.
+  Each couple has 2 arrangements: 2^3 = 8 ways.
+
+  Total = 84 × 6 × 8 = 84 × 48 = 4032
+
+  Answer: (A) 4032 ✓
+</script>
+
+<h1 data-card="problem-title">Raspoređivanje bračnih parova u bioskopu</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika — raspoređivanje sa uslovom susednosti</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Tri bračna para treba rasporediti na 6 različitih sedišta u jednom redu bioskopske sale sa 12 numerisanih sedišta. Broj načina na koji se to može učiniti tako da svaki par bude raspoređen na dva susedna sedišta jednak je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 4032 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 4080 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 4128 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 3936 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 3984 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Problem rešavamo u tri faze: (1) odredimo na koliko načina možemo izabrati 3 para susednih sedišta iz reda od 12 — modelujemo to kao raspoređivanje „domina" i „pojedinačnih" polja, (2) rasporedimo parove na izabrane pozicije, i (3) unutar svakog para rasporedimo supružnike.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Kombinacije:</strong> \( \binom{n}{k} = \dfrac{n!}{k!(n-k)!} \) — broj načina da izaberemo \( k \) elemenata od \( n \).</li>
+        <li><strong>Permutacije:</strong> \( n! \) — broj načina da rasporedimo \( n \) različitih objekata.</li>
+        <li><strong>Princip proizvoda:</strong> Ako se nezavisni izbori vrše u fazama, ukupan broj je proizvod brojeva izbora u svakoj fazi.</li>
+        <li><strong>Domino-tiling model:</strong> Broj načina da se postavi \( k \) nenalepljujućih domina u red od \( n \) polja jednak je \( \binom{n-k}{k} \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-p16" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Red od 12 sedišta sa prikazom jednog mogućeg rasporeda tri bračna para na susedna sedišta</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Identifikujmo moguće parove susednih sedišta</h3>
+      <p>U redu od 12 numerisanih sedišta, susedni parovi su:</p>
+      <div class="math-block">
+        \[ (1,2),\; (2,3),\; (3,4),\; \ldots,\; (11,12) \]
+      </div>
+      <p>Ukupno ima <strong>11</strong> mogućih parova susednih sedišta.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Koliko ima načina da izaberemo 3 para koji se ne preklapaju?</h3>
+      <p>Trebamo izabrati 3 para susednih sedišta tako da se nijedna dva para ne preklapaju (ne dele isto sedište). Ovo je ekvivalentno postavljanju 3 <strong>domina</strong> (svaki pokriva 2 susedna polja) u red od 12 polja, bez preklapanja.</p>
+      <p>Koristimo elegantan kombinatorni trik: zamislimo da imamo 3 domina (D) i 6 pojedinačnih praznih polja (P). Svaki raspored ovih 9 objekata u niz daje tačno jedan validan način postavljanja u red od 12 polja, jer:</p>
+      <div class="math-block">
+        \[ 3 \times 2 + 6 \times 1 = 6 + 6 = 12 \text{ polja} \]
+      </div>
+      <p>Broj takvih rasporeda je broj načina da izaberemo koje 3 od 9 pozicija zauzimaju domina:</p>
+      <div class="math-block">
+        \[ \binom{9}{3} = \frac{9!}{3! \cdot 6!} = \frac{9 \cdot 8 \cdot 7}{3 \cdot 2 \cdot 1} = 84 \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto baš 9 objekata, a ne 12?</summary>
+          <div class="detail-content">
+            <p>Svaki domino zauzima 2 polja ali se posmatra kao 1 objekat. Dakle imamo 3 domina + 6 pojedinačnih polja = 9 objekata ukupno. Kada ih rasporedimo u niz, oni popunjavaju tačno 12 pozicija (3×2 + 6×1 = 12).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Rasporedimo parove na izabrane pozicije</h3>
+      <p>Imamo 3 bračna para i 3 izabrana para susednih sedišta. Treba odrediti koji par sedi na koji par sedišta. To je permutacija 3 elementa:</p>
+      <div class="math-block">
+        \[ 3! = 6 \text{ načina} \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto nije \( \binom{3}{3} = 1 \)?</summary>
+          <div class="detail-content">
+            <p>Jer parovi nisu identični! Par Petrović sedi na sedišta (3,4), a par Jovanović na (7,8) — to je različit raspored od obrnutog. Dakle bitno je <em>koji</em> par sedi <em>gde</em>, što daje \( 3! \) permutacija.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Rasporedimo supružnike unutar svakog para</h3>
+      <p>Unutar svakog para susednih sedišta, muž i žena mogu sedeti u 2 različita redosleda (muž levo ili desno). Pošto imamo 3 para:</p>
+      <div class="math-block">
+        \[ 2^3 = 8 \text{ načina} \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunajmo ukupan broj rasporeda</h3>
+      <p>Primenom principa proizvoda (sve tri faze su nezavisne):</p>
+      <div class="math-block">
+        \[ N = \underbrace{84}_{\text{izbor sedišta}} \times \underbrace{6}_{\text{raspored parova}} \times \underbrace{8}_{\text{unutar parova}} = 84 \times 48 = 4032 \]
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Ključni trik u ovom zadatku je <strong>modelovanje svake bračne pare kao jednog „domina"</strong> koji pokriva dva susedna polja. Umesto da direktno biramo sedišta i proveravamo uslov susednosti (što bi bilo veoma komplikovano), problem svodimo na pitanje: „Na koliko načina možemo postaviti 3 domina u red od 12 polja?" — a to je klasičan kombinatorni problem sa elegantnom formulom \( \binom{n-k}{k} \).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ N = \binom{9}{3} \times 3! \times 2^3 = 84 \times 6 \times 8 = 4032 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 4032 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 4080 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 4128 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 3936 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 3984 \)</span>
+  </div>
+  <p class="verification">Provera: 84 mogućih pozicija domina, 6 načina da dodelimo parove pozicijama, 8 načina da rasporedimo supružnike. \( 84 \times 48 = 4032 \). Rezultat se poklapa sa odgovorom (A).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zaboravljanje uslova nepreklapanja:</strong> Neki studenti biraju 3 od 11 parova susednih sedišta kao \( \binom{11}{3} = 165 \), ali to uključuje i preklapajuće parove poput (2,3) i (3,4) koji dele sedište 3.</li>
+    <li><strong>Izostavljanje permutacija unutar parova:</strong> Ne smemo zaboraviti da svaki supružnik može sedeti levo ili desno — to daje faktor \( 2^3 = 8 \).</li>
+    <li><strong>Pogrešno korišćenje formule za domina:</strong> Formula \( \binom{n-k}{k} \) važi samo kada se domina postavljaju u niz (linearno), ne u krug.</li>
+    <li><strong>Brkanje sa rasporedom u krug:</strong> Ovde je red u bioskopu <em>linearan</em> (sedišta su numerisana od 1 do 12), ne cirkularan.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta ako bioskopska sala nema red nego <strong>kružni sto</strong> sa 12 numerisanih stolica? Koliko bi tada bilo načina da rasporedimo 3 bračna para tako da svaki par sedi na dve susedne stolice?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>U kružnom rasporedu, postoji još jedan par susednih sedišta — (12, 1). Dakle imamo 12 mogućih parova umesto 11. Formula za postavljanje \( k \) nenalepljujućih domina u krug od \( n \) polja je \( \frac{n}{n-k} \binom{n-k}{k} \). Za \( n = 12 \), \( k = 3 \): \( \frac{12}{9} \cdot \binom{9}{3} = \frac{12}{9} \cdot 84 = 112 \). Ukupno: \( 112 \times 6 \times 8 = 5376 \).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+
+  var canvas = document.getElementById('diagram-p16');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 17px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Red od 12 sedišta u bioskopu', W / 2, 30);
+
+    // Draw 12 seats - row
+    var seatW = 46;
+    var seatH = 46;
+    var gap = 4;
+    var totalSeatsW = 12 * seatW + 11 * gap;
+    var startX = (W - totalSeatsW) / 2;
+    var seatsY = 55;
+
+    // Draw all 12 seats
+    for (var i = 0; i < 12; i++) {
+      var sx = startX + i * (seatW + gap);
+      ctx.strokeStyle = grid;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.roundRect(sx, seatsY, seatW, seatH, 6);
+      ctx.stroke();
+
+      ctx.fillStyle = muted;
+      ctx.font = '13px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('' + (i + 1), sx + seatW / 2, seatsY + seatH / 2 + 5);
+    }
+
+    // Example arrangement: couples on seats (3,4), (7,8), (10,11)
+    var couples = [
+      { seats: [2, 3], color: primary, label: 'Par 1' },
+      { seats: [6, 7], color: secondary, label: 'Par 2' },
+      { seats: [9, 10], color: highlight, label: 'Par 3' }
+    ];
+
+    // Highlight the couple seats
+    for (var c = 0; c < couples.length; c++) {
+      var couple = couples[c];
+      for (var j = 0; j < 2; j++) {
+        var si = couple.seats[j];
+        var sx = startX + si * (seatW + gap);
+        ctx.fillStyle = cvAlpha(couple.color === primary ? '--sol-canvas-primary' :
+                                couple.color === secondary ? '--sol-canvas-secondary' :
+                                '--sol-canvas-highlight', 0.2);
+        ctx.beginPath();
+        ctx.roundRect(sx, seatsY, seatW, seatH, 6);
+        ctx.fill();
+
+        ctx.strokeStyle = couple.color;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.roundRect(sx, seatsY, seatW, seatH, 6);
+        ctx.stroke();
+      }
+
+      // Draw bracket under couple
+      var x1 = startX + couple.seats[0] * (seatW + gap) + seatW / 2;
+      var x2 = startX + couple.seats[1] * (seatW + gap) + seatW / 2;
+      var bracketY = seatsY + seatH + 8;
+      ctx.strokeStyle = couple.color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x1, bracketY);
+      ctx.lineTo(x1, bracketY + 10);
+      ctx.lineTo(x2, bracketY + 10);
+      ctx.lineTo(x2, bracketY);
+      ctx.stroke();
+
+      ctx.fillStyle = couple.color;
+      ctx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(couple.label, (x1 + x2) / 2, bracketY + 24);
+    }
+
+    // Section 2: The domino model
+    var modelY = 160;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Model sa dominima: 3 domina + 6 polja = 9 objekata', W / 2, modelY);
+
+    // Draw the 9 objects: D P P D P P P D P
+    // positions correspond to example: domino at positions 1, 3, 6 (0-based among 9)
+    var objW = 40;
+    var domW = 70;
+    var objH = 36;
+    var objGap = 8;
+    var objects = [
+      { type: 'P', label: 'P' },
+      { type: 'D', label: 'D₁' },
+      { type: 'P', label: 'P' },
+      { type: 'P', label: 'P' },
+      { type: 'D', label: 'D₂' },
+      { type: 'P', label: 'P' },
+      { type: 'P', label: 'P' },
+      { type: 'D', label: 'D₃' },
+      { type: 'P', label: 'P' }
+    ];
+
+    var totalObjW = 0;
+    for (var i = 0; i < objects.length; i++) {
+      totalObjW += (objects[i].type === 'D' ? domW : objW);
+      if (i < objects.length - 1) totalObjW += objGap;
+    }
+    var objStartX = (W - totalObjW) / 2;
+    var objY = modelY + 15;
+    var curX = objStartX;
+
+    var domColors = [primary, secondary, highlight];
+    var domIdx = 0;
+
+    for (var i = 0; i < objects.length; i++) {
+      var w = objects[i].type === 'D' ? domW : objW;
+      if (objects[i].type === 'D') {
+        var dc = domColors[domIdx++];
+        ctx.fillStyle = cvAlpha(dc === primary ? '--sol-canvas-primary' :
+                                dc === secondary ? '--sol-canvas-secondary' :
+                                '--sol-canvas-highlight', 0.15);
+        ctx.beginPath();
+        ctx.roundRect(curX, objY, w, objH, 6);
+        ctx.fill();
+        ctx.strokeStyle = dc;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.roundRect(curX, objY, w, objH, 6);
+        ctx.stroke();
+        ctx.fillStyle = dc;
+        ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(objects[i].label, curX + w / 2, objY + objH / 2 + 5);
+      } else {
+        ctx.strokeStyle = grid;
+        ctx.lineWidth = 1;
+        ctx.setLineDash([4, 3]);
+        ctx.beginPath();
+        ctx.roundRect(curX, objY, w, objH, 6);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = muted;
+        ctx.font = '13px Segoe UI, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(objects[i].label, curX + w / 2, objY + objH / 2 + 5);
+      }
+      curX += w + objGap;
+    }
+
+    // Section 3: Calculation breakdown
+    var calcY = 290;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Računanje ukupnog broja', W / 2, calcY);
+
+    var factors = [
+      { value: 'C(9,3) = 84', desc: 'Izbor pozicija\nza domine', color: primary },
+      { sign: '\u00D7' },
+      { value: '3! = 6', desc: 'Raspored parova\nna pozicije', color: secondary },
+      { sign: '\u00D7' },
+      { value: '2\u00B3 = 8', desc: 'Redosled unutar\nsvakog para', color: highlight },
+      { sign: '=' },
+      { value: '4032', desc: '', color: accent }
+    ];
+
+    var fBoxW = 100;
+    var fBoxH = 50;
+    var signW = 30;
+    var totalFW = 4 * fBoxW + 3 * signW;
+    var fStartX = (W - totalFW) / 2;
+    var fY = calcY + 15;
+    var fx = fStartX;
+
+    for (var i = 0; i < factors.length; i++) {
+      var f = factors[i];
+      if (f.sign) {
+        ctx.fillStyle = text;
+        ctx.font = 'bold 22px Segoe UI, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(f.sign, fx + signW / 2, fY + fBoxH / 2 + 7);
+        fx += signW;
+      } else {
+        var isResult = (f.value === '4032');
+        if (isResult) {
+          ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.12);
+          ctx.beginPath();
+          ctx.roundRect(fx, fY, fBoxW, fBoxH, 8);
+          ctx.fill();
+        }
+        ctx.strokeStyle = f.color;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.roundRect(fx, fY, fBoxW, fBoxH, 8);
+        ctx.stroke();
+
+        ctx.fillStyle = isResult ? accent : text;
+        ctx.font = (isResult ? 'bold 22px' : 'bold 16px') + ' Segoe UI, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(f.value, fx + fBoxW / 2, fY + fBoxH / 2 + 6);
+
+        if (f.desc) {
+          var lines = f.desc.split('\n');
+          ctx.fillStyle = muted;
+          ctx.font = '11px Segoe UI, system-ui, sans-serif';
+          for (var l = 0; l < lines.length; l++) {
+            ctx.fillText(lines[l], fx + fBoxW / 2, fY + fBoxH + 16 + l * 14);
+          }
+        }
+        fx += fBoxW;
+      }
+    }
+
+    // Section 4: All 11 adjacent pairs shown
+    var pairsY = 420;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('11 mogućih parova susednih sedišta:', W / 2, pairsY);
+
+    var pairStr = '';
+    for (var i = 1; i <= 11; i++) {
+      pairStr += '(' + i + ',' + (i+1) + ')';
+      if (i < 11) pairStr += '  ';
+    }
+    ctx.fillStyle = muted;
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.fillText(pairStr, W / 2, pairsY + 20);
+
+    // Note about choosing 3 non-overlapping
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('Biramo 3 koji se ne preklapaju \u2192 C(9, 3) = 84 načina', W / 2, pairsY + 45);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Raspoređivanje bračnih parova na susedna sedišta",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["kombinatorika", "domino model", "raspoređivanje", "binomni koeficijent", "princip proizvoda"]
+}
+BRAINSPARK_META-->

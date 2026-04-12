@@ -1,0 +1,432 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Zadatak: Rastući geometrijski niz (a_n), proizvod prva tri člana je 1000, zbir je 35. Naći a₆.
+
+Neka su prva tri člana a/q, a, aq (gde je q količnik niza).
+
+Proizvod: (a/q) · a · (aq) = a³ = 1000, dakle a = 10.
+
+Zbir: a/q + a + aq = 35
+10/q + 10 + 10q = 35
+10/q + 10q = 25
+Množimo sa q:
+10 + 10q² = 25q
+10q² - 25q + 10 = 0
+2q² - 5q + 2 = 0
+
+Diskriminanta: 25 - 16 = 9
+q = (5 ± 3)/4
+q₁ = 2, q₂ = 1/2
+
+Pošto je niz rastući, q > 1, dakle q = 2.
+
+Članovi: a₁ = 10/2 = 5, a₂ = 10, a₃ = 20
+
+a₆ = a₁ · q⁵ = 5 · 2⁵ = 5 · 32 = 160
+
+Odgovor: (A) 160
+</script>
+
+<h1 data-card="problem-title">Šesti član rastućeg geometrijskog niza</h1>
+<p data-card="problem-subtitle" class="subtitle">Geometrijski niz · Proizvod i zbir članova · Količnik niza</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Ako je \( (a_n) \) rastući geometrijski niz, takav da je proizvod prva tri člana 1000, a njihov zbir 35, onda je \( a_6 \) jednako:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 160 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 80 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(V)</span>
+      <span class="answer-value">\( 180 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 80 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 100 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Označimo prva tri člana kao \( a/q,\; a,\; aq \). Iz proizvoda nalazimo srednji član \( a \), a iz zbira postavljamo kvadratnu jednačinu po količniku \( q \). Uslov da je niz rastući određuje jedinstven \( q \), nakon čega lako nalazimo \( a_6 = a_1 \cdot q^5 \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <p><strong>Geometrijski niz:</strong></p>
+      <div class="math-block">\[ a_n = a_1 \cdot q^{n-1} \]</div>
+      <p><strong>Osobina tri uzastopna člana:</strong></p>
+      <p>Ako su \( a_1, a_2, a_3 \) uzastopni članovi geometrijskog niza, tada:</p>
+      <div class="math-block">\[ a_2^2 = a_1 \cdot a_3, \qquad a_1 \cdot a_2 \cdot a_3 = a_2^3 \]</div>
+      <p><strong>Zgodno označavanje:</strong></p>
+      <p>Tri uzastopna člana se označavaju kao \( a/q,\; a,\; aq \) --- tako se proizvod odmah uprošćava u \( a^3 \).</p>
+      <p><strong>Uslov rastućeg niza:</strong></p>
+      <p>Za pozitivne članove, niz je rastući ako i samo ako je \( q > 1 \).</p>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Geometrijski niz sa količnikom 2</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-p15-geom" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Članovi geometrijskog niza \( 5, 10, 20, 40, 80, 160 \) --- svaki naredni je dvostruko veći od prethodnog</p>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-p15-geom');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+    var tertiary = cv('--sol-canvas-tertiary');
+    var warning = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    var members = [5, 10, 20, 40, 80, 160];
+    var labels = ['a\u2081 = 5', 'a\u2082 = 10', 'a\u2083 = 20', 'a\u2084 = 40', 'a\u2085 = 80', 'a\u2086 = 160'];
+    var maxVal = 160;
+
+    var padLeft = 90;
+    var padRight = 40;
+    var padTop = 60;
+    var padBottom = 70;
+    var chartW = W - padLeft - padRight;
+    var chartH = H - padTop - padBottom;
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(padLeft, padTop);
+    ctx.lineTo(padLeft, H - padBottom);
+    ctx.lineTo(W - padRight, H - padBottom);
+    ctx.stroke();
+
+    // Y-axis labels and horizontal grid
+    ctx.fillStyle = muted;
+    ctx.font = '11px serif';
+    ctx.textAlign = 'right';
+    var yTicks = [0, 20, 40, 60, 80, 100, 120, 140, 160];
+    for (var yi = 0; yi < yTicks.length; yi++) {
+      var yv = yTicks[yi];
+      var yy = H - padBottom - (yv / maxVal) * chartH;
+      ctx.strokeStyle = grid;
+      ctx.lineWidth = 0.5;
+      ctx.beginPath();
+      ctx.moveTo(padLeft, yy);
+      ctx.lineTo(W - padRight, yy);
+      ctx.stroke();
+      ctx.fillStyle = muted;
+      ctx.fillText('' + yv, padLeft - 8, yy + 4);
+    }
+
+    // Bar width
+    var barW = chartW / (members.length * 2);
+    var barGap = barW;
+
+    var colors = [secondary, secondary, secondary, muted, muted, highlight];
+
+    // Draw bars
+    for (var i = 0; i < members.length; i++) {
+      var barH = (members[i] / maxVal) * chartH;
+      var bx = padLeft + barGap + i * (barW + barGap);
+      var by = H - padBottom - barH;
+
+      // Bar with rounded top
+      ctx.fillStyle = colors[i];
+      ctx.beginPath();
+      var radius = 4;
+      ctx.moveTo(bx + radius, by);
+      ctx.lineTo(bx + barW - radius, by);
+      ctx.quadraticCurveTo(bx + barW, by, bx + barW, by + radius);
+      ctx.lineTo(bx + barW, H - padBottom);
+      ctx.lineTo(bx, H - padBottom);
+      ctx.lineTo(bx, by + radius);
+      ctx.quadraticCurveTo(bx, by, bx + radius, by);
+      ctx.fill();
+
+      // Value on top
+      ctx.fillStyle = text;
+      ctx.font = 'bold 13px serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('' + members[i], bx + barW / 2, by - 8);
+
+      // Label below
+      ctx.fillStyle = text;
+      ctx.font = '12px serif';
+      ctx.fillText(labels[i], bx + barW / 2, H - padBottom + 18);
+
+      // Multiplication arrow between bars
+      if (i < members.length - 1) {
+        var arrowX1 = bx + barW + 4;
+        var arrowX2 = bx + barW + barGap - 4;
+        var arrowY = by - 22;
+        ctx.strokeStyle = cvAlpha('--sol-canvas-accent', 0.7);
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(arrowX1, arrowY + 10);
+        ctx.quadraticCurveTo((arrowX1 + arrowX2) / 2, arrowY - 5, arrowX2, arrowY + 10);
+        ctx.stroke();
+        ctx.fillStyle = accent;
+        ctx.font = '11px serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('\u00D72', (arrowX1 + arrowX2) / 2, arrowY - 2);
+      }
+    }
+
+    // Highlight a₆
+    var lastBx = padLeft + barGap + 5 * (barW + barGap);
+    var lastBy = H - padBottom - (160 / maxVal) * chartH;
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 3;
+    ctx.setLineDash([5, 3]);
+    ctx.strokeRect(lastBx - 4, lastBy - 4, barW + 8, (160 / maxVal) * chartH + 4);
+    ctx.setLineDash([]);
+
+    // Info boxes
+    // Product info
+    ctx.fillStyle = bg;
+    ctx.fillRect(420, 18, 260, 55);
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(420, 18, 260, 55);
+    ctx.fillStyle = text;
+    ctx.font = '12px serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Proizvod prvih 3: 5 \u00B7 10 \u00B7 20 = 1000 \u2713', 430, 38);
+    ctx.fillText('Zbir prvih 3: 5 + 10 + 20 = 35 \u2713', 430, 58);
+
+    // Result box
+    ctx.fillStyle = bg;
+    ctx.fillRect(420, 85, 260, 45);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(420, 85, 260, 45);
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 14px serif';
+    ctx.fillText('a\u2086 = 5 \u00B7 2\u2075 = 5 \u00B7 32 = 160', 430, 113);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Geometrijski niz: a\u2081 = 5, q = 2', W / 2 - 40, 38);
+  }
+
+  draw();
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Označavanje tri uzastopna člana</h3>
+      <p>Neka su prva tri člana geometrijskog niza \( \frac{a}{q},\; a,\; aq \), gde je \( a \) srednji član, a \( q \) količnik niza.</p>
+      <p>Ovo označavanje je zgodno jer se u proizvodu tri uzastopna člana količnik \( q \) skraćuje.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Provera koraka</summary>
+          <div class="detail-content">
+            <p>Tri uzastopna člana geometrijskog niza su u odnosu \( 1 : q : q^2 \), pa ih je prirodno zapisati oko srednjeg ✓</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Nalaženje srednjeg člana iz proizvoda</h3>
+      <p>Proizvod tri člana:</p>
+      <div class="math-block">\[ \frac{a}{q} \cdot a \cdot aq = a^3 = 1000 \]</div>
+      <p>Dakle:</p>
+      <div class="math-block">\[ a = \sqrt[3]{1000} = 10 \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Provera koraka</summary>
+          <div class="detail-content">
+            <p>\( 10^3 = 1000 \) ✓</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Jednačina po količniku \( q \) iz zbira</h3>
+      <p>Zbir tri člana je 35:</p>
+      <div class="math-block">\[ \frac{10}{q} + 10 + 10q = 35 \]</div>
+      <p>Oduzimamo 10 sa obe strane i množimo sa \( q \):</p>
+      <div class="math-block">\[ \frac{10}{q} + 10q = 25 \implies 10 + 10q^2 = 25q \implies 10q^2 - 25q + 10 = 0 \]</div>
+      <p>Delimo sa 5:</p>
+      <div class="math-block">\[ 2q^2 - 5q + 2 = 0 \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Provera koraka</summary>
+          <div class="detail-content">
+            <p>Pravilno smo sveli na kvadratnu jednačinu po \( q \) ✓</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Rešavanje kvadratne jednačine</h3>
+      <p>Primenjujemo formulu za rešenja kvadratne jednačine:</p>
+      <div class="math-block">\[ q = \frac{5 \pm \sqrt{25 - 16}}{4} = \frac{5 \pm \sqrt{9}}{4} = \frac{5 \pm 3}{4} \]</div>
+      <p>Dva rešenja:</p>
+      <div class="math-block">\[ q_1 = \frac{5 + 3}{4} = 2, \qquad q_2 = \frac{5 - 3}{4} = \frac{1}{2} \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Provera koraka</summary>
+          <div class="detail-content">
+            <p>Provera: \( 2 \cdot 2^2 - 5 \cdot 2 + 2 = 8 - 10 + 2 = 0 \) ✓ i \( 2 \cdot (1/2)^2 - 5 \cdot (1/2) + 2 = 1/2 - 5/2 + 2 = 0 \) ✓</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Izbor količnika na osnovu uslova rastućeg niza</h3>
+      <p>Niz je <strong>rastući</strong>, pa mora biti \( q > 1 \). Dakle:</p>
+      <div class="math-block">\[ q = 2 \]</div>
+      <p>Članovi niza su: \( a_1 = \frac{10}{2} = 5 \), \( a_2 = 10 \), \( a_3 = 20 \).</p>
+      <p>Provera: \( 5 < 10 < 20 \) --- zaista rastući niz.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Provera koraka</summary>
+          <div class="detail-content">
+            <p>Proizvod: \( 5 \cdot 10 \cdot 20 = 1000 \) ✓. Zbir: \( 5 + 10 + 20 = 35 \) ✓.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Računanje šestog člana</h3>
+      <p>Koristimo formulu za \( n \)-ti član geometrijskog niza:</p>
+      <div class="math-block">\[ a_6 = a_1 \cdot q^{5} = 5 \cdot 2^5 = 5 \cdot 32 = 160 \]</div>
+      <p>Ili redom: \( a_4 = 40 \), \( a_5 = 80 \), \( a_6 = 160 \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Provera koraka</summary>
+          <div class="detail-content">
+            <p>\( 5 \to 10 \to 20 \to 40 \to 80 \to 160 \), svaki put množimo sa 2 ✓</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Označavanje tri uzastopna člana geometrijskog niza kao \( a/q,\; a,\; aq \) je ključna tehnika koja maksimalno uprošćava račun: proizvod odmah daje \( a^3 \), eliminišući količnik. Zbir zatim vodi na kvadratnu jednačinu po \( q \), koja uvek ima dva recipročna rešenja \( (q \) i \( 1/q) \) --- uslov monotonosti niza bira jedno od njih.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ a_6 = 5 \cdot 2^5 = 160 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 160 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 80 \)</span>
+    <span class="answer-option" data-option="C">(V) \( 180 \)</span>
+    <span class="answer-option" data-option="D">(G) \( 80 \)</span>
+    <span class="answer-option" data-option="E">(D) \( 100 \)</span>
+  </div>
+  <p class="verification">Provera: \( a_1 = 5,\; q = 2 \). Proizvod prvih 3: \( 5 \cdot 10 \cdot 20 = 1000 \) ✓. Zbir prvih 3: \( 5 + 10 + 20 = 35 \) ✓. Niz je rastući: \( 5 < 10 < 20 < \ldots \) ✓. \( a_6 = 5 \cdot 32 = 160 \) ✓.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešan izbor količnika:</strong> Oba rešenja \( q = 2 \) i \( q = 1/2 \) zadovoljavaju uslove za proizvod i zbir, ali samo \( q = 2 \) daje rastući niz. Za \( q = 1/2 \) niz bi bio opadajući: \( 20, 10, 5, \ldots \)</li>
+    <li><strong>Mešanje indeksa:</strong> Pošto su prva tri člana \( 5, 10, 20 \), šesti član je \( a_6 = a_1 \cdot q^5 = 5 \cdot 32 = 160 \), ne \( a_1 \cdot q^6 \).</li>
+    <li><strong>Greška kod korena:</strong> \( \sqrt[3]{1000} = 10 \), ne \( \sqrt{1000} \approx 31{,}6 \). Iz proizvoda tri člana sledi \( a^3 = 1000 \), ne \( a^2 = 1000 \).</li>
+    <li><strong>Zaboravljanje da je \( a \) srednji član:</strong> Ako se greškom uzme \( a = 10 \) kao prvi član, onda \( a_6 = 10 \cdot 2^5 = 320 \), što nije među ponuđenim odgovorima.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Odredite zbir prvih 10 članova ovog geometrijskog niza.</p>
+  <details>
+    <summary>Pomoć</summary>
+    <div class="detail-content">
+      <p>Koristite formulu za zbir prvih \( n \) članova geometrijskog niza: \( S_n = a_1 \cdot \frac{q^n - 1}{q - 1} \). Za \( a_1 = 5 \), \( q = 2 \), \( n = 10 \): \( S_{10} = 5 \cdot \frac{2^{10} - 1}{2 - 1} = 5 \cdot (1024 - 1) = 5 \cdot 1023 = 5115 \).</p>
+    </div>
+  </details>
+</div>
+
+<!--BRAINSPARK_META
+{"format":"v2","title":"Šesti član rastućeg geometrijskog niza","subject":"math","unit":"algebra","topic_tags":["geometrijski_niz","kolicnik_niza","kvadratna_jednacina","nizovi"]}
+BRAINSPARK_META-->

@@ -1,0 +1,1240 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: U pravu kružnu kupu upisan je prav valjak najveće moguće zapremine. Naći interval kome pripada odnos visine valjka i visine kupe.
+
+  Postavka:
+    Neka kupa ima poluprečnik osnove R i visinu H.
+    Upisani valjak ima poluprečnik r i visinu h, sa istom osom kao kupa.
+    Tražimo α = h/H ∈ (0, 1) za koje je zapremina valjka maksimalna.
+
+  Korak 1: Geometrijska veza r ↔ h.
+    Posmatramo osni presek (presek ravni kroz osu kupe). Kupa daje jednakokraki trougao ABS:
+      AB = 2R, S = vrh, SO = H gde je O sredina AB.
+    Upisani valjak daje pravougaonik CDD'C' sa C, D na AB i C', D' na bočnim stranicama SA, SB.
+    CD = 2r, CC' = DD' = h.
+
+    Slični trougli: △SAO ~ △C'AC (oba prav-ugaona, dele ugao kod A).
+      AC/AO = CC'/SO
+      AC/R = h/H = α
+      AC = αR
+    Sada: r = CO = AO − AC = R − αR = (1 − α)R.
+
+  Korak 2: Zapremine.
+    V_kupe = R²·π·H/3
+    V_valjka = r²·π·h
+              = ((1−α)R)² · π · (αH)
+              = R²·π·H · α(1−α)²
+              = 3·V_kupe · α(1−α)²
+
+    Dakle V_valjka je proporcionalna funkciji f(α) = α(1−α)².
+    Maksimizacija ne zavisi od R i H!
+
+  Korak 3: Maksimum f(α) = α(1−α)² na (0, 1).
+    f'(α) = (1−α)² + α · 2(1−α) · (−1)
+          = (1−α)² − 2α(1−α)
+          = (1−α) · [(1−α) − 2α]
+          = (1−α) · (1 − 3α)
+
+    f'(α) = 0  ⇒  α = 1 (granica) ili α = 1/3.
+    Tabela znaka:
+      α ∈ (0, 1/3):  (1−α) > 0, (1 − 3α) > 0  ⇒  f' > 0  (raste)
+      α ∈ (1/3, 1):  (1−α) > 0, (1 − 3α) < 0  ⇒  f' < 0  (opada)
+    Maksimum se dostiže u α = 1/3.
+
+  Korak 4: Provera intervala.
+    1/5 = 0.2,  2/5 = 0.4,  1/3 ≈ 0.333...
+    Pošto 0.2 ≤ 1/3 ≤ 0.4, vrednost α = 1/3 pripada zatvorenom intervalu [1/5, 2/5].
+    Odgovor: (B) [1/5, 2/5].
+
+  Bonus — alternativa preko AM-GM bez izvoda:
+    Posmatrajmo izraz 2α · (1−α) · (1−α). Sabirci:
+      2α + (1−α) + (1−α) = 2α + 2 − 2α = 2  (konstanta!)
+    Po nejednakosti AM-GM (geometrijska sredina ≤ aritmetičkoj):
+      ∛(2α(1−α)²) ≤ (2α + (1−α) + (1−α))/3 = 2/3
+      2α(1−α)² ≤ 8/27
+      α(1−α)² ≤ 4/27
+    Jednakost u AM-GM važi kada su svi sabirci jednaki:
+      2α = 1−α  ⇒  3α = 1  ⇒  α = 1/3.
+
+  Bonus 2 — kolika je maksimalna zapremina valjka u odnosu na zapreminu kupe?
+    V_max/V_kupe = 3 · f(1/3) = 3 · (1/3) · (2/3)² = (2/3)² = 4/9 ≈ 0.444.
+    Najveći upisani valjak zauzima 4/9 zapremine kupe (oko 44.4%).
+
+  Numerička provera:
+    α = 1/3:  r = (2/3)R,  h = H/3
+    V = (2R/3)² · π · H/3 = (4R²/9)·(πH/3) = 4πR²H/27
+    V_kupe = πR²H/3 = 9πR²H/27
+    Odnos = 4/9. ✓
+
+  Plan grafika:
+    1) Osni presek: trougao ABS sa upisanim pravougaonikom CDD'C'.
+    2) Interaktivni klizač za α ∈ (0, 1) — dinamička slika koja pokazuje kako pravougaonik raste/opada, sa indikatorom V_valjka/V_kupe.
+    3) Grafik f(α) = α(1−α)² na (0, 1) sa maksimumom u α = 1/3 i istaknutim opsegom [1/5, 2/5].
+</script>
+
+<h1 data-card="problem-title">Najveći valjak upisan u kupu</h1>
+<p data-card="problem-subtitle" class="subtitle">Optimizacija — slični trougli, zapremine i izvod</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>Tekst zadatka</h2>
+  <p>U pravu kružnu kupu upisan je prav valjak najveće moguće zapremine. Odnos visina valjka i kupe pripada intervalu:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \left(0, \dfrac{1}{5}\right) \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \left[\dfrac{1}{5}, \dfrac{2}{5}\right] \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \left(\dfrac{2}{5}, \dfrac{3}{5}\right) \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \left[\dfrac{3}{5}, \dfrac{4}{5}\right] \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \left(\dfrac{4}{5}, 1\right) \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>Plan rešavanja</h2>
+  <p class="plan-text">
+    Posmatraćemo osni presek kupe i upisanog valjka. Iz sličnih trouglova izvedemo vezu između poluprečnika valjka \( r \) i njegove visine \( h \), izražene preko odnosa \( \alpha = h/H \). Time se zapremina valjka svodi na funkciju \( f(\alpha) = \alpha(1-\alpha)^2 \) (do na konstantu koja ne zavisi od \( \alpha \)). Maksimum te funkcije nalazimo izvodom — i konačno proveravamo u koji interval upada dobijena vrednost.
+  </p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>Podsetnik iz teorije</h2>
+  <details>
+    <summary>Slični trougli, zapremine i ekstremi</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Slični trougli:</strong> Ako su dva trougla slična, odgovarajuće stranice su proporcionalne. Konkretno, ako u jednakokrakom trouglu povučemo paralelu sa osnovicom, dobijamo manji jednakokraki trougao sličan polaznom.</li>
+        <li><strong>Zapremina kupe:</strong> \( V_K = \dfrac{R^2 \pi H}{3} \), gde su \( R \) poluprečnik osnove i \( H \) visina kupe.</li>
+        <li><strong>Zapremina valjka:</strong> \( V = r^2 \pi h \), gde su \( r \) poluprečnik osnove i \( h \) visina valjka.</li>
+        <li><strong>Ekstremi diferencijabilne funkcije:</strong> U tački lokalnog maksimuma na otvorenom intervalu mora biti \( f'(\alpha) = 0 \). Znak prvog izvoda levo i desno od stacionarne tačke određuje da li je u pitanju maksimum ili minimum.</li>
+        <li><strong>AM-GM nejednakost (bonus):</strong> Za nenegativne brojeve \( a_1, a_2, a_3 \) važi \( \dfrac{a_1 + a_2 + a_3}{3} \ge \sqrt[3]{a_1 a_2 a_3} \), sa jednakošću kada je \( a_1 = a_2 = a_3 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Osni presek kupe i valjka">
+  <h2>Osni presek — slični trougli</h2>
+  <div class="canvas-wrapper">
+    <canvas id="crossSection" width="780" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Presek ravni kroz osu daje jednakokraki trougao \( ABS \) (kupa) i upisani pravougaonik \( CDD'C' \) (valjak). Iz sličnih trouglova \( \triangle SAO \sim \triangle C'AC \) dobijamo \( r = (1-\alpha)R \), gde je \( \alpha = h/H \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Interaktivni klizač">
+  <h2>Klizač: kako se menja zapremina valjka</h2>
+  <div class="canvas-wrapper">
+    <canvas id="interactiveSlider" width="780" height="540"></canvas>
+  </div>
+  <p class="canvas-caption">Pomeraj klizač i posmatraj kako se menja oblik upisanog valjka i odnos \( V_{valjka}/V_{kupe} \). Maksimum se dostiže tačno u \( \alpha = 1/3 \), gde valjak zauzima čak \( 4/9 \approx 44{,}4\% \) zapremine kupe.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Grafik funkcije f(α)">
+  <h2>Grafik \( f(\alpha) = \alpha(1-\alpha)^2 \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="alphaGraph" width="780" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Funkcija \( f(\alpha) = \alpha(1-\alpha)^2 \) na intervalu \( (0,1) \) ima maksimum u \( \alpha = 1/3 \), sa vrednošću \( 4/27 \). Žuto je istaknut interval odgovora \( [1/5, 2/5] \), u koji upada \( 1/3 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavimo oznake i napravimo osni presek</h3>
+      <p>Neka su \( R \) i \( H \) poluprečnik i visina date kupe, a \( r \) i \( h \) odgovarajuće veličine upisanog valjka. Posmatramo osni presek (ravan koja sadrži osu kupe). Tada kupa postaje jednakokraki trougao \( ABS \) sa osnovom \( AB = 2R \), vrhom \( S \) i visinom \( SO = H \), gde je \( O \) sredina osnove. Upisani valjak postaje pravougaonik \( CDD'C' \) sa stranicama paralelnim osnovi i visini, pri čemu su \( C, D \) na \( AB \), a \( C', D' \) na bočnim stranicama \( SA, SB \). Tada je</p>
+      <div class="math-block">
+        \[ CD = 2r, \qquad CC' = DD' = h. \]
+      </div>
+      <p>Uvedemo bezdimenzioni odnos:</p>
+      <div class="math-block">
+        \[ \alpha = \frac{h}{H}, \qquad \alpha \in (0, 1). \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Iz sličnih trouglova izrazimo \( r \) preko \( \alpha \)</h3>
+      <p>Trougli \( \triangle SAO \) i \( \triangle C'AC \) su slični: oba su prav-ugaona (kod \( O \), odnosno kod \( C \)) i dele ugao kod tačke \( A \). Iz sličnosti sledi:</p>
+      <div class="math-block">
+        \[ \frac{AC}{AO} = \frac{CC'}{SO}, \qquad \text{tj.} \qquad \frac{AC}{R} = \frac{h}{H} = \alpha. \]
+      </div>
+      <p>Dakle \( AC = \alpha R \), pa je</p>
+      <div class="math-block">
+        \[ r = CO = AO - AC = R - \alpha R = (1 - \alpha)\,R. \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Šta se dešava sa valjkom u graničnim slučajevima?</summary>
+          <div class="detail-content">
+            <p>Kada \( \alpha \to 0^+ \) (vrlo nizak valjak), \( r \to R \) — valjak postaje pljosnata ploča pri dnu kupe; visina je mala, pa zapremina teži nuli. Kada \( \alpha \to 1^- \) (vrlo visok valjak), \( r \to 0 \) — valjak postaje tanka igla kraj vrha kupe; poluprečnik je mali, pa zapremina opet teži nuli. Negde između mora postojati maksimum.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Zapisujemo zapreminu valjka kao funkciju od \( \alpha \)</h3>
+      <p>Po formuli \( V = r^2 \pi h \) imamo:</p>
+      <div class="math-block">
+        \[ V(\alpha) = \big((1-\alpha)R\big)^2 \cdot \pi \cdot (\alpha H) = R^2 \pi H \cdot \alpha (1-\alpha)^2. \]
+      </div>
+      <p>Pošto je \( V_K = \dfrac{R^2 \pi H}{3} \) zapremina kupe, korisno je zapisati i odnos:</p>
+      <div class="math-block">
+        \[ \frac{V(\alpha)}{V_K} = 3\,\alpha(1-\alpha)^2. \]
+      </div>
+      <p>Maksimizacija \( V(\alpha) \) je <strong>ekvivalentna</strong> maksimizaciji funkcije</p>
+      <div class="math-block">
+        \[ f(\alpha) = \alpha(1-\alpha)^2, \qquad \alpha \in (0,1), \]
+      </div>
+      <p>jer su \( R \), \( H \) i \( \pi \) pozitivne konstante koje ne zavise od \( \alpha \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Nalazimo maksimum funkcije \( f(\alpha) \) izvodom</h3>
+      <p>Računamo prvi izvod (proizvod plus pravilo lančanog izvoda):</p>
+      <div class="math-block">
+        \[ \begin{aligned}
+        f'(\alpha) &= (1-\alpha)^2 + \alpha \cdot 2(1-\alpha) \cdot (-1) \\[4pt]
+        &= (1-\alpha)^2 - 2\alpha(1-\alpha) \\[4pt]
+        &= (1-\alpha)\big[(1-\alpha) - 2\alpha\big] \\[4pt]
+        &= (1-\alpha)(1 - 3\alpha).
+        \end{aligned} \]
+      </div>
+      <p>Stacionarne tačke iz \( f'(\alpha) = 0 \): ili \( \alpha = 1 \) (granica intervala, ne uzimamo) ili</p>
+      <div class="math-block">
+        \[ 1 - 3\alpha = 0 \quad \Longrightarrow \quad \alpha = \frac{1}{3}. \]
+      </div>
+      <p>Analiza znaka izvoda na \( (0,1) \): faktor \( (1-\alpha) \) je tu uvek pozitivan, pa znak \( f'(\alpha) \) zavisi samo od \( (1 - 3\alpha) \):</p>
+      <ul>
+        <li>za \( \alpha \in (0, 1/3) \): \( 1 - 3\alpha > 0 \), pa \( f'(\alpha) > 0 \) — funkcija <em>raste</em>;</li>
+        <li>za \( \alpha \in (1/3, 1) \): \( 1 - 3\alpha < 0 \), pa \( f'(\alpha) < 0 \) — funkcija <em>opada</em>.</li>
+      </ul>
+      <p>Dakle u \( \alpha = 1/3 \) je <span class="result">strogi globalni maksimum</span> na \( (0,1) \).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Kolika je maksimalna vrednost \( f \)?</summary>
+          <div class="detail-content">
+            <p>\( f(1/3) = \dfrac{1}{3}\cdot\left(\dfrac{2}{3}\right)^2 = \dfrac{1}{3}\cdot\dfrac{4}{9} = \dfrac{4}{27} \). Odatle je odnos zapremina \( \dfrac{V_{\max}}{V_K} = 3\cdot \dfrac{4}{27} = \dfrac{4}{9} \approx 0{,}444 \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Određujemo interval kome pripada \( \alpha = 1/3 \)</h3>
+      <p>Pretvorimo granice ponuđenih intervala u decimale:</p>
+      <div class="math-block">
+        \[ \frac{1}{5} = 0{,}2; \quad \frac{2}{5} = 0{,}4; \quad \frac{3}{5} = 0{,}6; \quad \frac{4}{5} = 0{,}8; \quad \frac{1}{3} \approx 0{,}333\ldots \]
+      </div>
+      <p>Kako je \( 0{,}2 \le 0{,}333 \le 0{,}4 \), to je</p>
+      <div class="math-block">
+        \[ \frac{1}{3} \in \left[\frac{1}{5},\, \frac{2}{5}\right]. \]
+      </div>
+      <p>Dakle traženi odnos pripada intervalu (B).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Egzaktna provera da je \( 1/3 \in [1/5, 2/5] \)</summary>
+          <div class="detail-content">
+            <p>Sve razlomke svedemo na zajednički imenilac \( 15 \): \( \dfrac{1}{5} = \dfrac{3}{15} \), \( \dfrac{1}{3} = \dfrac{5}{15} \), \( \dfrac{2}{5} = \dfrac{6}{15} \). Tada je \( 3 \le 5 \le 6 \), pa \( \dfrac{1}{3} \in \left[\dfrac{1}{5}, \dfrac{2}{5}\right] \). Potvrđeno.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>Ključni uvid</h2>
+  <p>Konkretne vrednosti \( R \) i \( H \) za ovaj zadatak <strong>nisu potrebne</strong>. Odgovor je bezdimenzioni odnos \( \alpha = h/H \), pa se cela analiza svodi na maksimizaciju univerzalne funkcije \( f(\alpha) = \alpha(1-\alpha)^2 \) na \( (0, 1) \). Ova funkcija se javlja u mnogim drugim optimizacijama (npr. najveća zapremina kvadra upisanog u sferu polulopte), pa vredi zapamtiti njen maksimum:</p>
+  <div class="math-block">
+    \[ \max_{\alpha \in (0,1)} \alpha(1-\alpha)^2 = \frac{4}{27} \quad \text{u tački} \quad \alpha^* = \frac{1}{3}. \]
+  </div>
+  <p>Kao posledica, najveći upisani valjak zauzima tačno \( \dfrac{4}{9} \approx 44{,}4\% \) zapremine kupe — gotovo polovinu! To je iznenađujuće mnogo i pokazuje da geometrijsko ograničenje nije strogo.</p>
+
+  <details>
+    <summary>Bonus: rešenje bez izvoda (AM-GM nejednakost)</summary>
+    <div class="detail-content">
+      <p>Posmatramo izraz \( 2\alpha \cdot (1-\alpha) \cdot (1-\alpha) \). Sabiramo tri faktora:</p>
+      <div class="math-block">
+        \[ 2\alpha + (1-\alpha) + (1-\alpha) = 2\alpha + 2 - 2\alpha = 2 \quad (\text{konstanta!}) \]
+      </div>
+      <p>Po nejednakosti aritmetičke i geometrijske sredine za tri nenegativna broja:</p>
+      <div class="math-block">
+        \[ \sqrt[3]{2\alpha(1-\alpha)^2} \;\le\; \frac{2\alpha + (1-\alpha) + (1-\alpha)}{3} = \frac{2}{3}. \]
+      </div>
+      <p>Kubiranjem dobijamo \( 2\alpha(1-\alpha)^2 \le \dfrac{8}{27} \), tj. \( \alpha(1-\alpha)^2 \le \dfrac{4}{27} \). Jednakost u AM-GM važi tačno onda kada su sva tri sabirka jednaka:</p>
+      <div class="math-block">
+        \[ 2\alpha = 1 - \alpha \quad \Longrightarrow \quad 3\alpha = 1 \quad \Longrightarrow \quad \alpha = \frac{1}{3}. \]
+      </div>
+      <p>Isti odgovor — bez ijednog izvoda!</p>
+    </div>
+  </details>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \frac{h}{H} = \frac{1}{3} \in \left[\frac{1}{5},\, \frac{2}{5}\right] \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( \left(0, \dfrac{1}{5}\right) \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( \left[\dfrac{1}{5}, \dfrac{2}{5}\right] \)</span>
+    <span class="answer-option" data-option="C">(C) \( \left(\dfrac{2}{5}, \dfrac{3}{5}\right) \)</span>
+    <span class="answer-option" data-option="D">(D) \( \left[\dfrac{3}{5}, \dfrac{4}{5}\right] \)</span>
+    <span class="answer-option" data-option="E">(E) \( \left(\dfrac{4}{5}, 1\right) \)</span>
+  </div>
+  <p class="verification">Verifikacija: za \( \alpha = 1/3 \) je \( h = H/3 \) i \( r = 2R/3 \). Tada je zapremina valjka \( V = (2R/3)^2 \pi (H/3) = \dfrac{4 R^2 \pi H}{27} \), a zapremina kupe \( V_K = \dfrac{R^2 \pi H}{3} = \dfrac{9 R^2 \pi H}{27} \). Odnos je \( V/V_K = 4/9 \approx 0{,}444 \). Probno: za \( \alpha = 0{,}3 \) imamo \( f = 0{,}3 \cdot 0{,}49 = 0{,}147 < 4/27 \approx 0{,}1481 \), a za \( \alpha = 0{,}4 \) je \( f = 0{,}4 \cdot 0{,}36 = 0{,}144 < 4/27 \). Maksimum je zaista u \( \alpha = 1/3 \). Potvrđeno.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Postavljanje pogrešne veze između \( r \) i \( h \):</strong> Iz sličnih trouglova mora ispravno biti \( r = (1-\alpha)R \), a ne \( r = \alpha R \). Skica osnog preseka i pažljiva identifikacija odgovarajućih stranica štedi greške.</li>
+    <li><strong>Brkanje \( r \) i \( R \), odnosno \( h \) i \( H \):</strong> Mala slova su za valjak (manji oblik), velika za kupu. Kada se zamene, formule i dalje izgledaju ispravno, ali vode na pogrešan odgovor.</li>
+    <li><strong>Traženje pogrešne veličine:</strong> U pitanju je odnos \( h/H \), a ne sama visina \( h \) ili poluprečnik \( r \). Često se kao odgovor pogrešno javi \( r/R = 2/3 \), što daje opciju (D).</li>
+    <li><strong>Pokušaj da se uvede konkretno \( R \) i \( H \):</strong> Iako bi i to dalo isti rezultat, gubi se vreme. Bezdimenzioni pristup sa \( \alpha = h/H \) je elegantniji i pokazuje da odgovor ne zavisi od dimenzija kupe.</li>
+    <li><strong>Zaboravljanje provere drugog reda:</strong> Stacionarna tačka može biti i minimum ili prevoj. Tabela znaka izvoda ili drugi izvod \( f''(1/3) = -2 < 0 \) potvrđuju da je u pitanju maksimum.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>Dodatni izazov</h2>
+  <p>Razmisli o sličnoj optimizaciji u <em>obrnutom</em> smeru: kupa je upisana u valjak (visina i poluprečnik kupe poklapaju se sa visinom i poluprečnikom valjka). Koliki je tada odnos zapremina? A šta ako u datu kupu upišemo <em>najveći mogući kvadar</em> sa kvadratnom osnovom (umesto valjka)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Za kvadar sa kvadratnom osnovom upisan u kupu, neka stranica kvadrata bude \( 2a \) i visina kvadra \( h \). Uslov upisanosti znači da gornja četiri temena leže na omotaču kupe. Iz osnog preseka (sada se gleda dijagonala) dobija se veza \( a\sqrt{2} = (1 - h/H)R \), pa je zapremina \( V = 4a^2 h \) opet svodljiva na funkciju oblika \( h(\text{const} - h)^2 \), sa istim oblikom maksimuma u \( h/H = 1/3 \). Iznenađenje: jedna trećina visine se javlja kao optimum u <em>celom familiju</em> ovakvih problema!</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('crossSection');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+    var tertiary = cv('--sol-canvas-tertiary');
+    var warning = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Osni presek kupe sa upisanim valjkom', W / 2, 28);
+
+    // Geometry: cone triangle ABS, cylinder rectangle CDD'C'
+    var Hcone = 360;            // visual height of cone
+    var Rcone = 240;            // visual half-base of cone
+    var ox = W / 2;             // center x of base
+    var by = 460;               // base y
+    var apexY = by - Hcone;     // apex y
+
+    // Choose alpha for the static drawing (use the optimal 1/3 to motivate)
+    var alpha = 1/3;
+    var rRel = 1 - alpha;       // r/R
+    var hRel = alpha;           // h/H
+
+    var rCyl = Rcone * rRel;    // visual r
+    var hCyl = Hcone * hRel;    // visual h
+
+    // Cone triangle ABS
+    var Ax = ox - Rcone, Ay = by;
+    var Bx = ox + Rcone, By = by;
+    var Sx = ox,         Sy = apexY;
+    var Ox = ox,         Oy = by;
+
+    // Faint axis
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(Sx, Sy - 8);
+    ctx.lineTo(Ox, Oy + 8);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Filled triangle (cone) — light fill
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.10);
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay);
+    ctx.lineTo(Bx, By);
+    ctx.lineTo(Sx, Sy);
+    ctx.closePath();
+    ctx.fill();
+
+    // Triangle outline
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay);
+    ctx.lineTo(Bx, By);
+    ctx.lineTo(Sx, Sy);
+    ctx.closePath();
+    ctx.stroke();
+
+    // Inscribed rectangle CDD'C'
+    // C = (ox - rCyl, by), D = (ox + rCyl, by), C' = (ox - rCyl, by - hCyl), D' = (ox + rCyl, by - hCyl)
+    var Cx = ox - rCyl, Cy = by;
+    var Dx = ox + rCyl, Dy = by;
+    var Cpx = ox - rCyl, Cpy = by - hCyl;
+    var Dpx = ox + rCyl, Dpy = by - hCyl;
+
+    // Filled rectangle
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.22);
+    ctx.fillRect(Cx, Cpy, 2 * rCyl, hCyl);
+
+    // Rectangle outline
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(Cx, Cpy, 2 * rCyl, hCyl);
+
+    // Highlight similar triangle SAO with thicker stroke
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay);
+    ctx.lineTo(Ox, Oy);
+    ctx.lineTo(Sx, Sy);
+    ctx.closePath();
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Highlight similar triangle C'AC
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay);
+    ctx.lineTo(Cx, Cy);
+    ctx.lineTo(Cpx, Cpy);
+    ctx.closePath();
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Vertices: small circles
+    function dot(px, py, color) {
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(px, py, 4.5, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.strokeStyle = bg;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+    dot(Ax, Ay, primary);
+    dot(Bx, By, primary);
+    dot(Sx, Sy, primary);
+    dot(Ox, Oy, secondary);
+    dot(Cx, Cy, accent);
+    dot(Dx, Dy, accent);
+    dot(Cpx, Cpy, accent);
+    dot(Dpx, Dpy, accent);
+
+    // Labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('A', Ax - 4, Ay + 8);
+    ctx.fillText('B', Bx + 4, By + 8);
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('S', Sx, Sy - 8);
+
+    ctx.fillStyle = secondary;
+    ctx.textBaseline = 'top';
+    ctx.fillText('O', Ox + 12, Oy + 8);
+
+    ctx.fillStyle = accent;
+    ctx.textBaseline = 'top';
+    ctx.fillText('C', Cx - 6, Cy + 8);
+    ctx.fillText('D', Dx + 6, Dy + 8);
+    ctx.textBaseline = 'bottom';
+    ctx.fillText("C'", Cpx - 8, Cpy - 6);
+    ctx.fillText("D'", Dpx + 8, Dpy - 6);
+
+    // Length labels
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('AB = 2R', ox, by + 28);
+
+    // Height H label on the right
+    ctx.save();
+    ctx.translate(Bx + 50, (Sy + by) / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillStyle = primary;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('SO = H', 0, 0);
+    ctx.restore();
+
+    // Dimension lines for H
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(Bx + 22, Sy);
+    ctx.lineTo(Bx + 38, Sy);
+    ctx.moveTo(Bx + 30, Sy);
+    ctx.lineTo(Bx + 30, by);
+    ctx.moveTo(Bx + 22, by);
+    ctx.lineTo(Bx + 38, by);
+    ctx.stroke();
+
+    // Cylinder labels
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('CD = 2r', ox, by - hCyl - 22);
+
+    // Height h label on the left of rectangle
+    ctx.save();
+    ctx.translate(Cx - 30, (Cpy + Cy) / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillStyle = accent;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText("CC' = h", 0, 0);
+    ctx.restore();
+
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(Cx - 16, Cpy);
+    ctx.lineTo(Cx - 4, Cpy);
+    ctx.moveTo(Cx - 10, Cpy);
+    ctx.lineTo(Cx - 10, Cy);
+    ctx.moveTo(Cx - 16, Cy);
+    ctx.lineTo(Cx - 4, Cy);
+    ctx.stroke();
+
+    // Info box bottom — relation
+    var ix = 30;
+    var iy = H - 70;
+    var iw = W - 60;
+    var ih = 56;
+    ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.10);
+    ctx.fillRect(ix, iy, iw, ih);
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 1.2;
+    ctx.strokeRect(ix, iy, iw, ih);
+
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Iz \u25B3SAO ~ \u25B3C\u2032AC:    AC/R = h/H = \u03B1    \u21D2    AC = \u03B1R    \u21D2    r = R \u2212 \u03B1R = (1 \u2212 \u03B1) R', ix + 14, iy + 10);
+    ctx.fillStyle = text;
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('Slika je crtana za optimalno \u03B1 = 1/3 (h = H/3, r = 2R/3).', ix + 14, iy + 32);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('interactiveSlider');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var Hc = canvas.height;
+
+  // State: alpha in (0, 1), starts near optimum
+  var alpha = 1/3;
+  var dragging = false;
+
+  // Slider geometry
+  var sliderX = 60;
+  var sliderY = 470;
+  var sliderW = W - 120;
+
+  function alphaToX(a) { return sliderX + a * sliderW; }
+  function xToAlpha(x) {
+    var a = (x - sliderX) / sliderW;
+    if (a < 0.02) a = 0.02;
+    if (a > 0.98) a = 0.98;
+    return a;
+  }
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+    var warning = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, Hc);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, Hc);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Pomeraj klizač i prati promenu zapremine valjka', W / 2, 28);
+
+    // Cone region (left side)
+    var Hcone = 340;
+    var Rcone = 180;
+    var ox = 230;
+    var by = 420;
+    var apexY = by - Hcone;
+
+    var rRel = 1 - alpha;
+    var hRel = alpha;
+    var rCyl = Rcone * rRel;
+    var hCyl = Hcone * hRel;
+
+    // Triangle (cone)
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.10);
+    ctx.beginPath();
+    ctx.moveTo(ox - Rcone, by);
+    ctx.lineTo(ox + Rcone, by);
+    ctx.lineTo(ox, apexY);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    // Inscribed rectangle (cylinder cross-section)
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.30);
+    ctx.fillRect(ox - rCyl, by - hCyl, 2 * rCyl, hCyl);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(ox - rCyl, by - hCyl, 2 * rCyl, hCyl);
+
+    // Optimum dashed marker (h = H/3)
+    var optY = by - Hcone / 3;
+    ctx.strokeStyle = cvAlpha('--sol-canvas-warning', 0.7);
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(ox - Rcone - 8, optY);
+    ctx.lineTo(ox + Rcone + 8, optY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = warning;
+    ctx.font = '11px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('h = H/3 (optimum)', ox + Rcone + 14, optY);
+
+    // Cone base label
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('AB = 2R', ox, by + 8);
+
+    // Info panel (right side)
+    var panelX = 470;
+    var panelY = 70;
+    var panelW = 280;
+    var panelH = 360;
+
+    ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.06);
+    ctx.fillRect(panelX, panelY, panelW, panelH);
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(panelX, panelY, panelW, panelH);
+
+    ctx.fillStyle = muted;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Trenutne vrednosti:', panelX + 16, panelY + 14);
+
+    var lineY = panelY + 42;
+    var lineGap = 26;
+
+    ctx.fillStyle = text;
+    ctx.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('\u03B1 = h / H', panelX + 16, lineY);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText(alpha.toFixed(3), panelX + panelW - 16, lineY);
+
+    lineY += lineGap;
+    ctx.textAlign = 'left';
+    ctx.fillStyle = text;
+    ctx.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('h = \u03B1 \u00B7 H', panelX + 16, lineY);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText((alpha * 1).toFixed(3) + ' H', panelX + panelW - 16, lineY);
+
+    lineY += lineGap;
+    ctx.textAlign = 'left';
+    ctx.fillStyle = text;
+    ctx.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('r = (1 \u2212 \u03B1) R', panelX + 16, lineY);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText((1 - alpha).toFixed(3) + ' R', panelX + panelW - 16, lineY);
+
+    lineY += lineGap + 4;
+    // Separator
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(panelX + 14, lineY - 6);
+    ctx.lineTo(panelX + panelW - 14, lineY - 6);
+    ctx.stroke();
+
+    // Volume ratio
+    var ratio = 3 * alpha * (1 - alpha) * (1 - alpha);
+    ctx.textAlign = 'left';
+    ctx.fillStyle = text;
+    ctx.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('V_valjka / V_kupe', panelX + 16, lineY);
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText(ratio.toFixed(4), panelX + panelW - 16, lineY);
+
+    lineY += lineGap;
+    ctx.textAlign = 'left';
+    ctx.fillStyle = muted;
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('= 3 \u00B7 \u03B1(1\u2212\u03B1)\u00B2', panelX + 16, lineY);
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'right';
+    ctx.fillText('(' + (ratio * 100).toFixed(2) + ' %)', panelX + panelW - 16, lineY);
+
+    // Bar chart of ratio (0 to 4/9)
+    lineY += 30;
+    var barX = panelX + 20;
+    var barW = panelW - 40;
+    var barY = lineY;
+    var barH = 16;
+
+    ctx.fillStyle = cvAlpha('--sol-canvas-axis', 0.35);
+    ctx.fillRect(barX, barY, barW, barH);
+
+    var maxRatio = 4/9;
+    var fillFrac = Math.min(1, ratio / maxRatio);
+    var fillColor = (Math.abs(alpha - 1/3) < 0.005) ? warning : primary;
+    ctx.fillStyle = fillColor;
+    ctx.fillRect(barX, barY, barW * fillFrac, barH);
+
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(barX, barY, barW, barH);
+
+    // Tick at 1.0 (= max = 4/9)
+    ctx.fillStyle = muted;
+    ctx.font = '10px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('0', barX, barY + barH + 4);
+    ctx.textAlign = 'right';
+    ctx.fillText('4/9', barX + barW, barY + barH + 4);
+    ctx.textAlign = 'center';
+    ctx.fillText('odnos zapremina (relativno na maksimum)', barX + barW / 2, barY + barH + 18);
+
+    // Status message
+    var statusY = panelY + panelH - 36;
+    ctx.textAlign = 'center';
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    if (Math.abs(alpha - 1/3) < 0.01) {
+      ctx.fillStyle = warning;
+      ctx.fillText('OPTIMUM \u03B1 = 1/3', panelX + panelW / 2, statusY);
+      ctx.fillStyle = accent;
+      ctx.font = '11px Segoe UI, system-ui, sans-serif';
+      ctx.fillText('Najveća zapremina valjka!', panelX + panelW / 2, statusY + 16);
+    } else if (alpha < 1/3) {
+      ctx.fillStyle = muted;
+      ctx.fillText('valjak je preširok i prenizak', panelX + panelW / 2, statusY);
+      ctx.font = '11px Segoe UI, system-ui, sans-serif';
+      ctx.fillText('povećaj \u03B1 za veću zapreminu', panelX + panelW / 2, statusY + 16);
+    } else {
+      ctx.fillStyle = muted;
+      ctx.fillText('valjak je previsok i pretanak', panelX + panelW / 2, statusY);
+      ctx.font = '11px Segoe UI, system-ui, sans-serif';
+      ctx.fillText('smanji \u03B1 za veću zapreminu', panelX + panelW / 2, statusY + 16);
+    }
+
+    // Slider track
+    ctx.fillStyle = cvAlpha('--sol-canvas-axis', 0.4);
+    ctx.fillRect(sliderX, sliderY + 12, sliderW, 6);
+
+    // Optimum tick on slider
+    var optX = alphaToX(1/3);
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(optX, sliderY + 6);
+    ctx.lineTo(optX, sliderY + 24);
+    ctx.stroke();
+    ctx.fillStyle = warning;
+    ctx.font = '10px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('1/3', optX, sliderY + 26);
+
+    // Filled portion
+    var fillX = alphaToX(alpha);
+    ctx.fillStyle = primary;
+    ctx.fillRect(sliderX, sliderY + 12, fillX - sliderX, 6);
+
+    // Slider thumb
+    ctx.beginPath();
+    ctx.arc(fillX, sliderY + 15, 11, 0, 2 * Math.PI);
+    ctx.fillStyle = primary;
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Slider value above thumb
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('\u03B1 = ' + alpha.toFixed(3), fillX, sliderY + 2);
+
+    // Slider endpoints
+    ctx.fillStyle = muted;
+    ctx.font = '11px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('0', sliderX - 4, sliderY + 26);
+    ctx.textAlign = 'right';
+    ctx.fillText('1', sliderX + sliderW + 4, sliderY + 26);
+    ctx.textAlign = 'center';
+    ctx.fillText('Povuci tačku — izaberi \u03B1 = h/H', sliderX + sliderW / 2, sliderY + 44);
+  }
+
+  // Interaction
+  function getCanvasPos(e) {
+    var rect = canvas.getBoundingClientRect();
+    var scaleX = W / rect.width;
+    var scaleY = Hc / rect.height;
+    var clientX, clientY;
+    if (e.touches) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else {
+      clientX = e.clientX;
+      clientY = e.clientY;
+    }
+    return {
+      x: (clientX - rect.left) * scaleX,
+      y: (clientY - rect.top) * scaleY
+    };
+  }
+
+  function isNearSlider(pos) {
+    var thumbX = alphaToX(alpha);
+    if (Math.abs(pos.x - thumbX) < 22 && Math.abs(pos.y - (sliderY + 15)) < 22) return true;
+    // Also allow clicking anywhere on the track
+    if (pos.x >= sliderX - 6 && pos.x <= sliderX + sliderW + 6 &&
+        pos.y >= sliderY && pos.y <= sliderY + 30) return true;
+    return false;
+  }
+
+  function handleStart(e) {
+    e.preventDefault();
+    var pos = getCanvasPos(e);
+    if (isNearSlider(pos)) {
+      dragging = true;
+      alpha = xToAlpha(pos.x);
+      draw();
+    }
+  }
+
+  function handleMove(e) {
+    if (!dragging) return;
+    e.preventDefault();
+    var pos = getCanvasPos(e);
+    alpha = xToAlpha(pos.x);
+    draw();
+  }
+
+  function handleEnd(e) {
+    if (dragging) e.preventDefault();
+    dragging = false;
+  }
+
+  canvas.addEventListener('mousedown', handleStart);
+  canvas.addEventListener('mousemove', handleMove);
+  canvas.addEventListener('mouseup', handleEnd);
+  canvas.addEventListener('mouseleave', handleEnd);
+  canvas.addEventListener('touchstart', handleStart);
+  canvas.addEventListener('touchmove', handleMove);
+  canvas.addEventListener('touchend', handleEnd);
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('alphaGraph');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var Hc = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+    var warning = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, Hc);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, Hc);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('f(\u03B1) = \u03B1(1\u2212\u03B1)\u00B2 na intervalu (0, 1)', W / 2, 26);
+
+    // Plot area
+    var padL = 70, padR = 40, padT = 60, padB = 80;
+    var plotW = W - padL - padR;
+    var plotH = Hc - padT - padB;
+
+    var xMin = 0, xMax = 1;
+    var yMin = 0, yMax = 0.18;  // a bit above 4/27 ≈ 0.148
+
+    function toX(x) { return padL + (x - xMin) / (xMax - xMin) * plotW; }
+    function toY(y) { return padT + (yMax - y) / (yMax - yMin) * plotH; }
+
+    // Background highlight: answer interval [1/5, 2/5]
+    var x1 = toX(0.2);
+    var x2 = toX(0.4);
+    ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.18);
+    ctx.fillRect(x1, padT, x2 - x1, plotH);
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 0.5;
+    var xTicks = [0, 0.2, 0.4, 0.6, 0.8, 1.0];
+    for (var i = 0; i < xTicks.length; i++) {
+      var gx = toX(xTicks[i]);
+      ctx.beginPath();
+      ctx.moveTo(gx, padT);
+      ctx.lineTo(gx, padT + plotH);
+      ctx.stroke();
+    }
+    var yTicks = [0, 0.04, 0.08, 0.12, 0.16];
+    for (var j = 0; j < yTicks.length; j++) {
+      var gy = toY(yTicks[j]);
+      ctx.beginPath();
+      ctx.moveTo(padL, gy);
+      ctx.lineTo(padL + plotW, gy);
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(padL, toY(0));
+    ctx.lineTo(padL + plotW, toY(0));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(padL, padT);
+    ctx.lineTo(padL, padT + plotH);
+    ctx.stroke();
+
+    // Y axis labels
+    ctx.fillStyle = muted;
+    ctx.font = '11px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (var j = 0; j < yTicks.length; j++) {
+      ctx.fillText(yTicks[j].toFixed(2), padL - 8, toY(yTicks[j]));
+    }
+    // Mark 4/27 specifically
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 11px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('4/27', padL - 8, toY(4/27));
+
+    // X axis labels with fractions
+    var xLabels = [
+      {v: 0, l: '0'},
+      {v: 0.2, l: '1/5'},
+      {v: 1/3, l: '1/3'},
+      {v: 0.4, l: '2/5'},
+      {v: 0.6, l: '3/5'},
+      {v: 0.8, l: '4/5'},
+      {v: 1.0, l: '1'}
+    ];
+    ctx.fillStyle = muted;
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (var i = 0; i < xLabels.length; i++) {
+      if (xLabels[i].v === 1/3) {
+        ctx.fillStyle = warning;
+        ctx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
+        ctx.fillText(xLabels[i].l, toX(xLabels[i].v), toY(0) + 8);
+        ctx.fillStyle = muted;
+        ctx.font = '12px Segoe UI, system-ui, sans-serif';
+      } else {
+        ctx.fillText(xLabels[i].l, toX(xLabels[i].v), toY(0) + 8);
+      }
+    }
+
+    // Axis title
+    ctx.fillStyle = text;
+    ctx.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('\u03B1 = h / H', padL + plotW / 2, toY(0) + 32);
+
+    ctx.save();
+    ctx.translate(20, padT + plotH / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('f(\u03B1)', 0, 0);
+    ctx.restore();
+
+    // Plot the function
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    var steps = 600;
+    for (var s = 0; s <= steps; s++) {
+      var ax = s / steps;
+      var ay = ax * (1 - ax) * (1 - ax);
+      var px = toX(ax);
+      var py = toY(ay);
+      if (s === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+
+    // Vertical line at α = 1/3
+    var optX = toX(1/3);
+    var optY = toY(4/27);
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(optX, toY(0));
+    ctx.lineTo(optX, optY);
+    ctx.stroke();
+    // Horizontal at f = 4/27
+    ctx.beginPath();
+    ctx.moveTo(padL, optY);
+    ctx.lineTo(optX, optY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Maximum point
+    ctx.fillStyle = warning;
+    ctx.beginPath();
+    ctx.arc(optX, optY, 8, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Label maximum
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('max: f(1/3) = 4/27', optX + 12, optY - 4);
+
+    // Endpoints (boundary, value 0)
+    ctx.fillStyle = muted;
+    ctx.beginPath();
+    ctx.arc(toX(0), toY(0), 5, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(toX(1), toY(0), 5, 0, 2 * Math.PI);
+    ctx.fill();
+
+    // Mark answer interval boundaries on x-axis
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(toX(0.2), toY(0));
+    ctx.lineTo(toX(0.4), toY(0));
+    ctx.stroke();
+
+    // Tick caps at 1/5 and 2/5
+    ctx.beginPath();
+    ctx.moveTo(toX(0.2), toY(0) - 6);
+    ctx.lineTo(toX(0.2), toY(0) + 6);
+    ctx.moveTo(toX(0.4), toY(0) - 6);
+    ctx.lineTo(toX(0.4), toY(0) + 6);
+    ctx.stroke();
+
+    // Legend
+    var legY = Hc - 20;
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.textBaseline = 'middle';
+
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(70, legY);
+    ctx.lineTo(100, legY);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.textAlign = 'left';
+    ctx.fillText('f(\u03B1) = \u03B1(1\u2212\u03B1)\u00B2', 108, legY);
+
+    ctx.fillStyle = warning;
+    ctx.beginPath();
+    ctx.arc(260, legY, 6, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.fillText('Maksimum u \u03B1 = 1/3', 272, legY);
+
+    ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.5);
+    ctx.fillRect(450, legY - 8, 28, 16);
+    ctx.fillStyle = text;
+    ctx.fillText('Interval odgovora [1/5, 2/5]', 484, legY);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Najveći valjak upisan u kupu — optimizacija odnosa visina",
+  "subject": "math",
+  "unit": "calculus",
+  "topic_tags": ["optimizacija", "izvod", "ekstremi funkcije", "slični trougli", "zapremina kupe", "zapremina valjka", "AM-GM nejednakost", "stereometrija"]
+}
+BRAINSPARK_META-->

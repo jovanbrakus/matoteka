@@ -1,0 +1,469 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: A 2013-digit number 1234512345...12345123.
+The repeating pattern is 12345, repeated 402 times gives 2010 digits, plus 123 = 2013 digits.
+
+Going left to right, cross out all digits at odd positions.
+Remaining digits (at even positions) form a new number. Repeat until all digits are crossed out.
+Which digit is the last one crossed out?
+
+Analysis:
+The last digit to survive is the one whose original position is the largest power of 2 ≤ 2013.
+Why? After round 1: positions 2,4,6,...,2012 survive (they become new positions 1,2,...,1006).
+After round 2: of those, positions 2,4,...,1006 survive → original positions 4,8,12,...,2012.
+After k rounds: original position must be divisible by 2^k, and the position
+in the k-th round list must be even.
+
+The last surviving digit is at the original position equal to the highest power of 2 ≤ 2013.
+2^10 = 1024 ≤ 2013, 2^11 = 2048 > 2013.
+So the last digit crossed out is at original position 1024.
+
+The digit pattern: 1,2,3,4,5,1,2,3,4,5,...
+Position p has digit: ((p-1) mod 5) + 1
+p = 1024: (1024-1) mod 5 = 1023 mod 5 = 1023 - 204*5 = 1023 - 1020 = 3.
+So digit = 3 + 1 = 4.
+
+Answer: D) 4
+
+Wait, let me verify more carefully with a small example.
+Positions: 1 2 3 4 5 6 7 8
+
+Round 1: cross out positions 1,3,5,7. Remaining: 2,4,6,8 → new positions 1,2,3,4
+Round 2: cross out new positions 1,3 → original 2,6. Remaining: 4,8 → new positions 1,2
+Round 3: cross out new position 1 → original 4. Remaining: 8 → new position 1
+Round 4: cross out new position 1 → original 8.
+
+Last crossed: position 8 = 2^3. Largest power of 2 ≤ 8 = 8. Correct!
+
+Another example: positions 1-6.
+Round 1: cross 1,3,5. Remain: 2,4,6 → 1,2,3
+Round 2: cross 1,3 (original 2,6). Remain: 4 → 1
+Round 3: cross 1 (original 4).
+Last crossed: position 4 = 2^2. Largest power of 2 ≤ 6 = 4. Correct!
+
+So for 2013 digits, last position = 1024 = 2^10.
+Digit at position 1024: (1024-1) mod 5 = 1023 mod 5.
+1023 / 5 = 204 remainder 3. So (1023 mod 5) = 3.
+Digit = 3 + 1 = 4.
+
+Answer: D) 4
+</script>
+
+<h1 data-card="problem-title">Poslednja precrtana cifra u nizu</h1>
+<p data-card="problem-subtitle" class="subtitle">Teorija brojeva &mdash; Algoritam precrtavanja i stepeni dvojke</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Dat je 2013-cifren broj \(1234512345\ldots12345123\). U broju se, idući sleva na desno, redom precrtavaju sve cifre na neparnim mestima. Neprecrtane cifre u postojećem poretku čine novi broj u kome se ponavlja isti postupak precrtavanja. Ovaj se postupak ponavlja sve dok ne budu precrtane sve cifre. Koja je cifra poslednja precrtana?</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 4 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 5 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Posle svakog kruga precrtavanja preživljavaju samo cifre na parnim pozicijama. Poslednja preživela cifra je ona čija je originalna pozicija jednaka najvećem stepenu broja 2 koji ne prelazi 2013. Zatim određujemo koja cifra stoji na toj poziciji u periodičnom nizu.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Precrtavanje neparnih pozicija</span> Posle jednog kruga, preživele pozicije su: 2, 4, 6, ... Ove pozicije postaju nove pozicije 1, 2, 3, ... Originalna pozicija \(2k\) postaje nova pozicija \(k\).</li>
+        <li><span class="formula-label">Posle \(k\) krugova</span> Preživele su samo originalne pozicije deljive sa \(2^k\). Poslednja preživela pozicija je \(2^{\lfloor \log_2 n \rfloor}\) gde je \(n\) ukupan broj cifara.</li>
+        <li><span class="formula-label">Periodičnost</span> U nizu \(1, 2, 3, 4, 5, 1, 2, 3, 4, 5, \ldots\), cifra na poziciji \(p\) je \(((p-1) \bmod 5) + 1\).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz precrtavanja">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-p9-crossing" width="700" height="550"></canvas>
+  </div>
+  <p class="canvas-caption">Ilustracija postupka precrtavanja na primeru od 8 cifara: posle svakog kruga preživljavaju samo parne pozicije</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Struktura broja</h3>
+      <p>Broj ima 2013 cifara i nastaje ponavljanjem bloka \(12345\):</p>
+      <div class="math-block">
+        \[ 2013 = 402 \times 5 + 3 \]
+      </div>
+      <p>Dakle, blok \(12345\) se ponavlja 402 puta (daje 2010 cifara), pa slede još cifre \(1, 2, 3\). Cifra na poziciji \(p\) je:</p>
+      <div class="math-block">
+        \[ c(p) = ((p - 1) \bmod 5) + 1 \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Šta se dešava u jednom krugu?</h3>
+      <p>Precrtavamo cifre na neparnim pozicijama (1, 3, 5, ...). Preživljavaju samo cifre na <strong>parnim pozicijama</strong> (2, 4, 6, ...), koje zatim dobijaju nove pozicije 1, 2, 3, ...</p>
+      <p>Originalna pozicija \(2k\) postaje nova pozicija \(k\).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Koliko cifara preživi jedan krug?</summary>
+          <div class="detail-content"><p>Od \(n\) cifara preživi \(\lfloor n/2 \rfloor\). Na primer, od 2013 cifara preživi \(\lfloor 2013/2 \rfloor = 1006\).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Ključno zapažanje &mdash; stepeni dvojke</h3>
+      <p>Posle <strong>prvog</strong> kruga preživljavaju pozicije deljive sa \(2\).</p>
+      <p>Posle <strong>drugog</strong> kruga preživljavaju pozicije deljive sa \(4 = 2^2\).</p>
+      <p>Posle <strong>trećeg</strong> kruga preživljavaju pozicije deljive sa \(8 = 2^3\).</p>
+      <p>Uopšteno, posle \(k\) krugova preživljavaju samo originalne pozicije deljive sa \(2^k\).</p>
+      <div class="math-block">
+        \[ \text{Posle } k \text{ krugova:} \quad 2^k,\; 2 \cdot 2^k,\; 3 \cdot 2^k,\; \ldots \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Pronalaženje poslednje preživele pozicije</h3>
+      <p>Poslednja cifra koja preživi je ona čija originalna pozicija je <strong>najveći stepen dvojke</strong> koji ne prelazi 2013:</p>
+      <div class="math-block">
+        \[ 2^{10} = 1024 \leq 2013 < 2048 = 2^{11} \]
+      </div>
+      <p>Dakle, poslednja preživela pozicija je <span class="result">\(1024\)</span>.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto baš najveći stepen dvojke?</summary>
+          <div class="detail-content"><p>Posle 10 krugova, jedina preživela pozicija deljiva sa \(2^{10} = 1024\) i manja ili jednaka 2013 je upravo 1024. Pozicija 2048 prelazi 2013, pa ne postoji. Dakle, posle 10 krugova ostaje samo jedna cifra &mdash; ona na poziciji 1024.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Određivanje cifre na poziciji 1024</h3>
+      <p>Koristimo formulu za cifru na poziciji \(p\):</p>
+      <div class="math-block">
+        \[ c(1024) = ((1024 - 1) \bmod 5) + 1 = (1023 \bmod 5) + 1 \]
+      </div>
+      <p>Izračunavamo:</p>
+      <div class="math-block">
+        \[ 1023 = 204 \times 5 + 3 \implies 1023 \bmod 5 = 3 \]
+      </div>
+      <p>Prema tome:</p>
+      <div class="math-block">
+        \[ c(1024) = 3 + 1 = \boxed{4} \]
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Precrtavanje neparnih pozicija je zapravo <strong>binarno filtriranje</strong>: u svakom krugu prepolovimo broj preživelih, a preživljavaju one na parnim pozicijama. Posle \(k\) krugova, originalna pozicija mora biti deljiva sa \(2^k\). Poslednja preživela cifra je uvek na poziciji koja je <strong>najveći stepen dvojke</strong> u opsegu &mdash; elegantan rezultat koji povezuje kombinatoriku sa binarnim sistemom!</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \text{Poslednja precrtana cifra je } 4 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 1 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 2 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 3 \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 4 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 5 \)</span>
+  </div>
+  <p class="verification">Provera na malom primeru: za 8 cifara (12345123), poslednja preživela pozicija je \(2^3 = 8\), a cifra na poziciji 8 je \(((8-1) \bmod 5) + 1 = (7 \bmod 5) + 1 = 2 + 1 = 3\). Ručna simulacija potvrđuje: krugovi daju 2,4,6,8 → 4,8 → 8, pa je poslednja cifra zaista na poziciji 8.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Brojanje od 0 umesto od 1:</strong> Pozicije se broje od 1, pa je formula \(((p-1) \bmod 5) + 1\), ne \(p \bmod 5\).</li>
+    <li><strong>Pogrešan stepen dvojke:</strong> \(2^{11} = 2048 > 2013\), pa se ne može koristiti. Najveći mogući stepen je \(2^{10} = 1024\).</li>
+    <li><strong>Zaborav da se „poslednja precrtana" ne odnosi na prvu krug:</strong> Traži se cifra koja preživljava najduže, ne poslednja precrtana u prvom krugu.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta ako umesto precrtavanja cifara na neparnim mestima, precrtavamo cifre na <strong>parnim</strong> mestima? Koja bi cifra bila poslednja precrtana u istom 2013-cifrenom broju?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Kada precrtavamo parne pozicije, preživljavaju neparne: 1, 3, 5, ... Pozicija \(2k-1\) postaje nova pozicija \(k\). Posle \(k\) krugova, originalna pozicija poslednje preživele cifre je \(2^k - 1\) (Mersenov broj). Najveći takav ≤ 2013 je \(2^{11} - 1 = 2047\). Cifra: \(((2047 - 1) \bmod 5) + 1 = (2046 \bmod 5) + 1 = 1 + 1 = 2\).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-p9-crossing');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+    var tertiary = cv('--sol-canvas-tertiary');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Postupak precrtavanja (primer sa 8 cifara)', W / 2, 28);
+
+    // Example: 8 digits: 1 2 3 4 5 1 2 3
+    var digits = [1, 2, 3, 4, 5, 1, 2, 3];
+    var cellW = 60;
+    var cellH = 40;
+    var totalCellW = 8 * cellW + 7 * 6;
+    var startX = (W - totalCellW) / 2;
+    var rowGap = 85;
+
+    // Round labels
+    var roundLabels = [
+      'Početak: sve cifre',
+      'Krug 1: precrtavamo neparne pozicije',
+      'Krug 2: precrtavamo neparne pozicije',
+      'Krug 3: precrtavamo neparnu poziciju',
+      'Krug 4: precrtavamo poslednju cifru'
+    ];
+
+    // State after each round:
+    // Round 0: all alive: [0,1,2,3,4,5,6,7]
+    // Round 1: cross 0,2,4,6 → alive: [1,3,5,7]
+    // Round 2: cross 1,5 → alive: [3,7]
+    // Round 3: cross 3 → alive: [7]
+    // Round 4: cross 7 → alive: []
+
+    var rounds = [
+      { alive: [0,1,2,3,4,5,6,7], crossed: [] },
+      { alive: [1,3,5,7], crossed: [0,2,4,6] },
+      { alive: [3,7], crossed: [0,2,4,6,1,5] },
+      { alive: [7], crossed: [0,2,4,6,1,5,3] },
+      { alive: [], crossed: [0,2,4,6,1,5,3,7] }
+    ];
+
+    for (var r = 0; r < 5; r++) {
+      var rowY = 50 + r * rowGap;
+      var round = rounds[r];
+
+      // Round label
+      ctx.fillStyle = text;
+      ctx.font = '12px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(roundLabels[r], W / 2, rowY);
+
+      var cellY = rowY + 10;
+
+      // Determine which are newly crossed this round
+      var prevCrossed = r > 0 ? rounds[r - 1].crossed : [];
+      var newlyCrossed = [];
+      for (var nc = 0; nc < round.crossed.length; nc++) {
+        var found = false;
+        for (var pc = 0; pc < prevCrossed.length; pc++) {
+          if (round.crossed[nc] === prevCrossed[pc]) { found = true; break; }
+        }
+        if (!found) newlyCrossed.push(round.crossed[nc]);
+      }
+
+      for (var d = 0; d < 8; d++) {
+        var cx = startX + d * (cellW + 6);
+
+        // Check status
+        var isAlive = false;
+        for (var a = 0; a < round.alive.length; a++) {
+          if (round.alive[a] === d) { isAlive = true; break; }
+        }
+        var isNewlyCrossed = false;
+        for (var n2 = 0; n2 < newlyCrossed.length; n2++) {
+          if (newlyCrossed[n2] === d) { isNewlyCrossed = true; break; }
+        }
+        var isPrevCrossed = false;
+        for (var p2 = 0; p2 < prevCrossed.length; p2++) {
+          if (prevCrossed[p2] === d) { isPrevCrossed = true; break; }
+        }
+
+        // Determine if this is the LAST surviving digit (position 7, digit 3)
+        var isLastSurvivor = (d === 7 && r >= 3 && r <= 3);
+
+        if (isPrevCrossed) {
+          // Already crossed - draw faded
+          ctx.fillStyle = cvAlpha('--sol-canvas-muted', 0.1);
+          ctx.beginPath();
+          ctx.roundRect(cx, cellY, cellW, cellH, 6);
+          ctx.fill();
+
+          ctx.fillStyle = muted;
+          ctx.globalAlpha = 0.3;
+          ctx.font = '16px Segoe UI, system-ui, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(String(digits[d]), cx + cellW / 2, cellY + 26);
+          ctx.globalAlpha = 1.0;
+        } else if (isNewlyCrossed) {
+          // Newly crossed - red background with strikethrough
+          ctx.fillStyle = cvAlpha('--sol-canvas-danger', 0.15);
+          ctx.beginPath();
+          ctx.roundRect(cx, cellY, cellW, cellH, 6);
+          ctx.fill();
+
+          ctx.strokeStyle = danger;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.roundRect(cx, cellY, cellW, cellH, 6);
+          ctx.stroke();
+
+          ctx.fillStyle = danger;
+          ctx.font = '16px Segoe UI, system-ui, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(String(digits[d]), cx + cellW / 2, cellY + 26);
+
+          // Strikethrough
+          ctx.strokeStyle = danger;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(cx + 10, cellY + cellH / 2);
+          ctx.lineTo(cx + cellW - 10, cellY + cellH / 2);
+          ctx.stroke();
+        } else if (isAlive) {
+          // Alive
+          var cellColor = isLastSurvivor ? accent : primary;
+          ctx.fillStyle = cvAlpha(isLastSurvivor ? '--sol-canvas-accent' : '--sol-canvas-primary', 0.15);
+          ctx.beginPath();
+          ctx.roundRect(cx, cellY, cellW, cellH, 6);
+          ctx.fill();
+
+          ctx.strokeStyle = cellColor;
+          ctx.lineWidth = isLastSurvivor ? 3 : 2;
+          ctx.beginPath();
+          ctx.roundRect(cx, cellY, cellW, cellH, 6);
+          ctx.stroke();
+
+          ctx.fillStyle = cellColor;
+          ctx.font = 'bold 18px Segoe UI, system-ui, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(String(digits[d]), cx + cellW / 2, cellY + 27);
+        }
+
+        // Position number below (only for round 0)
+        if (r === 0) {
+          ctx.fillStyle = muted;
+          ctx.font = '10px Segoe UI, system-ui, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('poz. ' + (d + 1), cx + cellW / 2, cellY + cellH + 14);
+        }
+      }
+
+      // Show which digit is the last survivor at round 3
+      if (r === 3) {
+        var lastCx = startX + 7 * (cellW + 6);
+        ctx.fillStyle = accent;
+        ctx.font = 'bold 11px Segoe UI, system-ui, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText('\u2190 poslednja!', lastCx + cellW + 8, cellY + 26);
+      }
+    }
+
+    // Summary section
+    var sumY = 480;
+    ctx.fillStyle = accent;
+    ctx.globalAlpha = 0.1;
+    ctx.beginPath();
+    ctx.roundRect(50, sumY - 10, W - 100, 55, 10);
+    ctx.fill();
+    ctx.globalAlpha = 1.0;
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(50, sumY - 10, W - 100, 55, 10);
+    ctx.stroke();
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Za 2013 cifara: poslednja pozicija = 2\u00B9\u2070 = 1024', W / 2, sumY + 10);
+    ctx.fillText('Cifra na poziciji 1024: ((1024\u22121) mod 5) + 1 = 3 + 1 = 4', W / 2, sumY + 32);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Poslednja precrtana cifra u periodičnom nizu",
+  "subject": "math",
+  "unit": "number-theory",
+  "topic_tags": ["stepeni dvojke", "periodični niz", "algoritam precrtavanja", "modularna aritmetika", "binarna struktura"]
+}
+BRAINSPARK_META-->

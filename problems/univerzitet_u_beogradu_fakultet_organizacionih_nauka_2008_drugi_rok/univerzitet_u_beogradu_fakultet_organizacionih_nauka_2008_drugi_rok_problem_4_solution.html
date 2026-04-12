@@ -1,0 +1,454 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Compute (i^2008 + i^2009) / (i^2006 - i^2007) * 16^(-2^(-2)), where i^2 = -1.
+
+  Step 1: Powers of i cycle with period 4: i^0=1, i^1=i, i^2=-1, i^3=-i, i^4=1, ...
+    i^n depends on n mod 4.
+
+  Step 2: Compute each power:
+    2008 mod 4 = 0 => i^2008 = 1
+    2009 mod 4 = 1 => i^2009 = i
+    2006 mod 4 = 2 => i^2006 = -1
+    2007 mod 4 = 3 => i^2007 = -i
+
+  Step 3: Numerator = i^2008 + i^2009 = 1 + i
+  Step 4: Denominator = i^2006 - i^2007 = -1 - (-i) = -1 + i
+
+  Step 5: Fraction = (1 + i) / (-1 + i)
+    Multiply by conjugate: (1+i)(-1-i) / ((-1+i)(-1-i))
+    Numerator: (1+i)(-1-i) = -1 - i - i - i^2 = -1 - 2i + 1 = -2i
+    Denominator: (-1)^2 - (i)^2 = 1 - (-1) = 2
+    Fraction = -2i / 2 = -i
+
+  Step 6: Exponent part: 16^(-2^(-2))
+    First compute the exponent: -2^(-2) = -(2^(-2)) = -1/4
+    (Exponentiation has higher precedence than unary minus)
+    So 16^(-1/4) = (2^4)^(-1/4) = 2^(-1) = 1/2
+
+  Step 7: Final result = -i * (1/2) = -i/2
+
+  Answer: E) -i/2
+</script>
+
+<h1 data-card="problem-title">Stepeni imaginarne jedinice i stepenovanje</h1>
+<p data-card="problem-subtitle" class="subtitle">Kompleksni brojevi — cikličnost stepena imaginarne jedinice</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Vrednost izraza \( \dfrac{i^{2008} + i^{2009}}{i^{2006} - i^{2007}} \cdot 16^{-2^{-2}} \), gde je \( i^2 = -1 \), jednaka je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \dfrac{1}{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( -\dfrac{1}{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( -2i \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \dfrac{i}{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( -\dfrac{i}{2} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">
+    Iskoristićemo cikličnost stepena imaginarne jedinice (period 4) da izračunamo svaki stepen, zatim pojednostavimo razlomak množenjem konjugatom, i na kraju izračunamo eksponencijalni deo \( 16^{-2^{-2}} \).
+  </p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Ciklus stepena i</span> Stepeni imaginarne jedinice se ponavljaju sa periodom 4: \( i^0 = 1,\; i^1 = i,\; i^2 = -1,\; i^3 = -i,\; i^4 = 1, \ldots \)</li>
+        <li><span class="formula-label">Konjugat</span> Za deljenje kompleksnih brojeva: množimo brojilac i imenilac konjugatom imenioca \( \frac{z}{w} = \frac{z \cdot \overline{w}}{|w|^2} \)</li>
+        <li><span class="formula-label">Stepenovanje</span> \( a^{-n} = \frac{1}{a^n} \) i \( (a^m)^n = a^{mn} \)</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Ciklus stepena imaginarne jedinice">
+  <h2>📐 Ciklus stepena imaginarne jedinice</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-cycle" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Stepeni imaginarne jedinice kruže po jediničnom krugu: \( 1 \to i \to -1 \to -i \to 1 \to \cdots \)</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Odredimo stepene imaginarne jedinice</h3>
+      <p>Stepeni \( i \) se ciklično ponavljaju sa periodom 4. Dovoljno je da nađemo ostatak pri deljenju eksponenta sa 4:</p>
+      <div class="math-block">
+        \[ 2008 = 4 \cdot 502 + 0 \implies i^{2008} = i^0 = 1 \]
+      </div>
+      <div class="math-block">
+        \[ 2009 = 4 \cdot 502 + 1 \implies i^{2009} = i^1 = i \]
+      </div>
+      <div class="math-block">
+        \[ 2006 = 4 \cdot 501 + 2 \implies i^{2006} = i^2 = -1 \]
+      </div>
+      <div class="math-block">
+        \[ 2007 = 4 \cdot 501 + 3 \implies i^{2007} = i^3 = -i \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Kako brzo nađemo ostatak pri deljenju sa 4?</summary>
+          <div class="detail-content">
+            <p>Dovoljno je pogledati poslednje dve cifre broja! Na primer, 2008: poslednje dve cifre su 08, a \( 8 \div 4 = 2 \) bez ostatka, pa je ostatak 0. Za 2009: poslednje dve cifre su 09, \( 9 = 4 \cdot 2 + 1 \), ostatak je 1.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Uvrstimo u razlomak</h3>
+      <p>Sada uvrstimo izračunate vrednosti u razlomak:</p>
+      <div class="math-block">
+        \[ \frac{i^{2008} + i^{2009}}{i^{2006} - i^{2007}} = \frac{1 + i}{-1 - (-i)} = \frac{1 + i}{-1 + i} \]
+      </div>
+      <p>Dobili smo razlomak dva kompleksna broja. Da bismo ga pojednostavili, pomnožićemo brojilac i imenilac <strong>konjugatom imenioca</strong>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Pomnožimo konjugatom imenioca</h3>
+      <p>Konjugat broja \( -1 + i \) je \( -1 - i \). Množimo:</p>
+      <div class="math-block">
+        \[ \frac{1 + i}{-1 + i} \cdot \frac{-1 - i}{-1 - i} = \frac{(1+i)(-1-i)}{(-1+i)(-1-i)} \]
+      </div>
+      <p><strong>Imenilac:</strong></p>
+      <div class="math-block">
+        \[ (-1+i)(-1-i) = (-1)^2 - i^2 = 1 - (-1) = 2 \]
+      </div>
+      <p><strong>Brojilac:</strong></p>
+      <div class="math-block">
+        \[ (1+i)(-1-i) = -1 - i - i - i^2 = -1 - 2i -(-1) = -2i \]
+      </div>
+      <p>Dakle:</p>
+      <div class="math-block">
+        \[ \frac{1+i}{-1+i} = \frac{-2i}{2} = -i \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto koristimo konjugat?</summary>
+          <div class="detail-content">
+            <p>Množenje kompleksnog broja njegovim konjugatom uvek daje realan broj: \( (a+bi)(a-bi) = a^2 + b^2 \). Time eliminišemo \( i \) iz imenioca, što nam omogućava da razlomak zapišemo u standardnom obliku.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunajmo eksponencijalni deo</h3>
+      <p>Sada treba da izračunamo \( 16^{-2^{-2}} \). Pažljivo sa prioritetom operacija!</p>
+      <p>Prvo izračunamo eksponent. Stepenovanje se izvršava zdesna ulevo:</p>
+      <div class="math-block">
+        \[ -2^{-2} = -(2^{-2}) = -\frac{1}{4} \]
+      </div>
+      <p>Zatim:</p>
+      <div class="math-block">
+        \[ 16^{-1/4} = \left(2^4\right)^{-1/4} = 2^{4 \cdot (-1/4)} = 2^{-1} = \frac{1}{2} \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto je \( -2^{-2} = -\frac{1}{4} \) a ne \( \frac{1}{4} \)?</summary>
+          <div class="detail-content">
+            <p>Stepenovanje ima viši prioritet od unarnog minusa. Dakle, \( -2^{-2} \) se tumači kao \( -(2^{-2}) = -\frac{1}{4} \), a ne kao \( (-2)^{-2} = \frac{1}{4} \). U zadatku piše \( 16^{-2^{-2}} \), gde je eksponent \( -2^{-2} = -\frac{1}{4} \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Pomnožimo oba dela</h3>
+      <p>Konačno, pomnožimo rezultat razlomka sa eksponencijalnim delom:</p>
+      <div class="math-block">
+        \[ (-i) \cdot \frac{1}{2} = -\frac{i}{2} \]
+      </div>
+      <p>Rezultat je <span class="result">\( -\dfrac{i}{2} \)</span>.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kada se suočimo sa ogromnim stepenima imaginarne jedinice poput \( i^{2008} \), ne treba da paničimo! Stepeni \( i \) se ponavljaju sa periodom 4, pa je dovoljno naći <strong>ostatak pri deljenju eksponenta sa 4</strong>. Ovo je isti princip koji važi za sve periodične pojave u matematici — ako znamo period, znamo ponašanje u svakoj tački.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \frac{i^{2008} + i^{2009}}{i^{2006} - i^{2007}} \cdot 16^{-2^{-2}} = -\frac{i}{2} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( \dfrac{1}{2} \)</span>
+    <span class="answer-option" data-option="B">(B) \( -\dfrac{1}{2} \)</span>
+    <span class="answer-option" data-option="C">(C) \( -2i \)</span>
+    <span class="answer-option" data-option="D">(D) \( \dfrac{i}{2} \)</span>
+    <span class="answer-option correct" data-option="E">(E) \( -\dfrac{i}{2} \)</span>
+  </div>
+  <p class="verification">Verifikacija: \( i^{2008} = 1 \), \( i^{2009} = i \), \( i^{2006} = -1 \), \( i^{2007} = -i \). Razlomak \( \frac{1+i}{-1+i} = -i \). Eksponent \( 16^{-1/4} = \frac{1}{2} \). Proizvod: \( -i \cdot \frac{1}{2} = -\frac{i}{2} \). Tačno!</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešan prioritet u eksponentu:</strong> Tumačenje \( -2^{-2} \) kao \( (-2)^{-2} = \frac{1}{4} \) umesto \( -(2^{-2}) = -\frac{1}{4} \). Stepenovanje ima viši prioritet od unarnog minusa!</li>
+    <li><strong>Greška u deljenju kompleksnih brojeva:</strong> Zaboraviti da se pomnoži konjugatom, ili pogrešno izračunati proizvod u brojiocu. Uvek pažljivo raspišite i proverite znak svakog člana.</li>
+    <li><strong>Pogrešan ostatak pri deljenju:</strong> Računanje \( 2007 \mod 4 \) kao 1 umesto 3. Uvek proverite: \( 2007 = 4 \cdot 501 + 3 \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Pojednostavite izraz \( \dfrac{i^{n} + i^{n+1}}{i^{n-2} - i^{n-1}} \) za proizvoljno \( n \in \mathbb{N} \). Da li rezultat zavisi od \( n \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Izvucite \( i^n \) iz brojioca i \( i^{n-2} \) iz imenioca:</p>
+      <p>\( \frac{i^n(1 + i)}{i^{n-2}(1 - i)} = \frac{i^2(1+i)}{1-i} = \frac{-(1+i)}{1-i} \)</p>
+      <p>Sada pomnožite konjugatom: \( \frac{-(1+i)(1+i)}{(1-i)(1+i)} = \frac{-(1+2i-1)}{2} = \frac{-2i}{2} = -i \)</p>
+      <p>Rezultat je uvek \( -i \), nezavisno od \( n \)!</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+
+  var canvas = document.getElementById('diagram-cycle');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    var cx = 220;
+    var cy = 230;
+    var R = 130;
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 18px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Ciklus stepena imaginarne jedinice', cx, 35);
+
+    // Draw axes
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(cx - R - 40, cy);
+    ctx.lineTo(cx + R + 40, cy);
+    ctx.moveTo(cx, cy - R - 40);
+    ctx.lineTo(cx, cy + R + 40);
+    ctx.stroke();
+
+    // Axis labels
+    ctx.fillStyle = muted;
+    ctx.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Re', cx + R + 50, cy + 5);
+    ctx.fillText('Im', cx + 5, cy - R - 48);
+
+    // Draw unit circle
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Points on the unit circle
+    var points = [
+      { x: cx + R, y: cy, label: '1', sublabel: 'i\u2070 = i\u2074 = i\u2078 = ...', color: accent, align: 'left', voff: -18 },
+      { x: cx, y: cy - R, label: 'i', sublabel: 'i\u00B9 = i\u2075 = i\u2079 = ...', color: primary, align: 'center', voff: -18 },
+      { x: cx - R, y: cy, label: '\u22121', sublabel: 'i\u00B2 = i\u2076 = ...', color: danger, align: 'right', voff: -18 },
+      { x: cx, y: cy + R, label: '\u2212i', sublabel: 'i\u00B3 = i\u2077 = ...', color: highlight, align: 'center', voff: 30 }
+    ];
+
+    for (var k = 0; k < points.length; k++) {
+      var p = points[k];
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 8, 0, 2 * Math.PI);
+      ctx.fill();
+
+      ctx.fillStyle = p.color;
+      ctx.font = 'bold 18px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = p.align;
+      var lx = p.x + (p.align === 'left' ? 14 : p.align === 'right' ? -14 : 0);
+      ctx.fillText(p.label, lx, p.y + p.voff);
+
+      ctx.fillStyle = muted;
+      ctx.font = '12px Segoe UI, system-ui, sans-serif';
+      ctx.fillText(p.sublabel, lx, p.y + p.voff + 15);
+    }
+
+    // Draw arrows between points (cycle)
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2;
+    var arrowAngles = [
+      { start: 0, end: -Math.PI / 2 },
+      { start: -Math.PI / 2, end: -Math.PI },
+      { start: Math.PI, end: Math.PI / 2 },
+      { start: Math.PI / 2, end: 0 }
+    ];
+    for (var a = 0; a < arrowAngles.length; a++) {
+      var sa = arrowAngles[a].start;
+      var ea = arrowAngles[a].end;
+      ctx.beginPath();
+      ctx.arc(cx, cy, R + 20, sa + 0.15, ea - 0.15, true);
+      ctx.stroke();
+      // Arrowhead
+      var tipAngle = ea - 0.15;
+      var tx = cx + (R + 20) * Math.cos(tipAngle);
+      var ty = cy + (R + 20) * Math.sin(tipAngle);
+      var headLen = 10;
+      var dir = tipAngle + Math.PI / 2 + 0.3;
+      ctx.fillStyle = secondary;
+      ctx.beginPath();
+      ctx.moveTo(tx, ty);
+      ctx.lineTo(tx + headLen * Math.cos(dir + 2.5), ty + headLen * Math.sin(dir + 2.5));
+      ctx.lineTo(tx + headLen * Math.cos(dir - 2.5), ty + headLen * Math.sin(dir - 2.5));
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    // Right side: computation summary
+    var rx = 480;
+    var ry = 70;
+    var lineH = 32;
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Naš zadatak:', rx, ry);
+
+    ctx.font = '14px Segoe UI, system-ui, sans-serif';
+    var compLines = [
+      { t: '2008 mod 4 = 0', c: accent, result: '\u2192 i\u00B2\u2070\u2070\u2078 = 1' },
+      { t: '2009 mod 4 = 1', c: primary, result: '\u2192 i\u00B2\u2070\u2070\u2079 = i' },
+      { t: '2006 mod 4 = 2', c: danger, result: '\u2192 i\u00B2\u2070\u2070\u2076 = \u22121' },
+      { t: '2007 mod 4 = 3', c: highlight, result: '\u2192 i\u00B2\u2070\u2070\u2077 = \u2212i' }
+    ];
+
+    for (var j = 0; j < compLines.length; j++) {
+      var line = compLines[j];
+      var ly = ry + 30 + j * lineH;
+      ctx.fillStyle = line.c;
+      ctx.beginPath();
+      ctx.arc(rx, ly - 4, 5, 0, 2 * Math.PI);
+      ctx.fill();
+
+      ctx.fillStyle = text;
+      ctx.font = '14px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(line.t, rx + 14, ly);
+
+      ctx.fillStyle = line.c;
+      ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+      ctx.fillText(line.result, rx + 150, ly);
+    }
+
+    // Show the computation chain
+    var sy = ry + 30 + 4 * lineH + 20;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Razlomak:', rx, sy);
+
+    ctx.font = '14px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.fillText('(1 + i) / (\u22121 + i) = \u2212i', rx, sy + 28);
+
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('Eksponent:', rx, sy + 68);
+
+    ctx.font = '14px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('16^(\u22121/4) = 1/2', rx, sy + 96);
+
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('Rezultat:', rx, sy + 136);
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 20px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('\u2212i \u00D7 1/2 = \u2212i/2', rx, sy + 168);
+
+    // Box around result
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(rx - 10, sy + 148, 200, 30);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Stepeni imaginarne jedinice i stepenovanje",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["kompleksni brojevi", "imaginarna jedinica", "stepeni i", "cikličnost", "stepenovanje"]
+}
+BRAINSPARK_META-->

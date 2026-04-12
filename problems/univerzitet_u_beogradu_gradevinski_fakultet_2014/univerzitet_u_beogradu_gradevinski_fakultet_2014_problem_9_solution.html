@@ -1,0 +1,403 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Zadatak: Zbir svih kompleksnih brojeva z = x + iy takvih da je z̄ + |2z + i| = 3 + i.
+
+z = x + iy, z̄ = x − iy
+|2z + i| = |2x + i(2y+1)| = √(4x² + (2y+1)²) — realan broj
+
+Jednačina: (x − iy) + √(4x² + (2y+1)²) = 3 + i
+
+Razdvajamo realni i imaginarni deo:
+Imaginarni: −y = 1  →  y = −1
+Realni: x + √(4x² + (2y+1)²) = 3
+
+Za y = −1:
+x + √(4x² + (−2+1)²) = 3
+x + √(4x² + 1) = 3
+√(4x² + 1) = 3 − x
+
+Uslov: 3 − x ≥ 0, tj. x ≤ 3
+
+Kvadriramo:
+4x² + 1 = 9 − 6x + x²
+3x² + 6x − 8 = 0
+
+x = (−6 ± √(36 + 96)) / 6 = (−6 ± √132) / 6 = (−6 ± 2√33) / 6 = (−3 ± √33) / 3
+
+x₁ = (−3 + √33)/3 ≈ 0,91 (zadovoljava x ≤ 3) ✓
+x₂ = (−3 − √33)/3 ≈ −2,91 (zadovoljava x ≤ 3) ✓
+
+Provera: oba rešenja zadovoljavaju 3 − x > 0. ✓
+
+z₁ + z₂ = (x₁ + x₂) + i(y₁ + y₂) = −2 + i(−1 − 1) = −2 − 2i
+
+Odgovor: (B) −2 − 2i
+</script>
+
+<h1 data-card="problem-title">Zbir kompleksnih brojeva sa modulom</h1>
+<p data-card="problem-subtitle" class="subtitle">Kompleksni brojevi · Modul · Konjugovani</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>Tekst zadatka</h2>
+  <p>Zbir svih kompleksnih brojeva \( z = x + iy \) (\( x, y \in \mathbb{R} \), \( i^2 = -1 \)), takvih da je \( \bar{z} + |2z + i| = 3 + i \), je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( -2 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( -2 - 2i \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(V)</span>
+      <span class="answer-value">\( -2i \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(G)</span>
+      <span class="answer-value">\( 2i \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>Plan rešavanja</h2>
+  <p class="plan-text">Zapisujemo \( z = x + iy \) i zamenjujemo u jednačinu. Pošto je \( |2z + i| \) realan broj, izjednačavamo imaginarne delove leve i desne strane da nađemo \( y \), a zatim iz realnih delova dobijamo jednačinu po \( x \). Na kraju sabiramo sva rešenja.</p>
+</div>
+
+<div data-card="theory" data-title="Teorija">
+  <h2>Teorija</h2>
+  <details>
+    <summary>Kompleksni brojevi — osnovni pojmovi</summary>
+    <div class="detail-content">
+      <p><strong>Konjugovani broj:</strong> Za \( z = x + iy \), konjugovani je \( \bar{z} = x - iy \).</p>
+      <p><strong>Modul kompleksnog broja:</strong> \( |z| = \sqrt{x^2 + y^2} \in \mathbb{R} \), uvek je realan i nenegativan.</p>
+      <p class="callout"><strong>Ključno zapažanje:</strong> Modul je uvek realan broj, pa u jednačini sa kompleksnim brojevima jedino konjugovani član ima imaginarni deo.</p>
+      <p><strong>Vijetove formule:</strong> Za korene jednačine \( ax^2 + bx + c = 0 \): \( x_1 + x_2 = -\frac{b}{a} \).</p>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-p9" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Rešenja u kompleksnoj ravni — oba leže na pravoj \( y = -1 \)</p>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+  var canvas = document.getElementById('diagram-p9');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    var ox = 380;
+    var oy = 200;
+    var scale = 70;
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 0.5;
+    for (var gx = -5; gx <= 4; gx++) {
+      ctx.beginPath();
+      ctx.moveTo(ox + gx * scale, 20);
+      ctx.lineTo(ox + gx * scale, H - 20);
+      ctx.stroke();
+    }
+    for (var gy = -3; gy <= 3; gy++) {
+      ctx.beginPath();
+      ctx.moveTo(20, oy - gy * scale);
+      ctx.lineTo(W - 20, oy - gy * scale);
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(20, oy);
+    ctx.lineTo(W - 20, oy);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(ox, H - 20);
+    ctx.lineTo(ox, 20);
+    ctx.stroke();
+
+    // Arrows
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(W - 20, oy);
+    ctx.lineTo(W - 30, oy - 5);
+    ctx.lineTo(W - 30, oy + 5);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(ox, 20);
+    ctx.lineTo(ox - 5, 30);
+    ctx.lineTo(ox + 5, 30);
+    ctx.fill();
+
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = '14px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Re', W - 18, oy - 10);
+    ctx.textAlign = 'left';
+    ctx.fillText('Im', ox + 8, 28);
+
+    // Tick labels
+    ctx.font = '12px serif';
+    ctx.textAlign = 'center';
+    for (var t = -4; t <= 3; t++) {
+      if (t === 0) continue;
+      ctx.fillText(String(t), ox + t * scale, oy + 18);
+    }
+    ctx.textAlign = 'right';
+    for (var ti = -3; ti <= 3; ti++) {
+      if (ti === 0) continue;
+      ctx.fillText(String(ti), ox - 8, oy - ti * scale + 4);
+    }
+
+    // Line y = -1
+    var lineY = oy - (-1) * scale;
+    ctx.strokeStyle = cvAlpha('--sol-canvas-secondary', 0.4);
+    ctx.lineWidth = 2;
+    ctx.setLineDash([8, 5]);
+    ctx.beginPath();
+    ctx.moveTo(20, lineY);
+    ctx.lineTo(W - 20, lineY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = secondary;
+    ctx.font = '13px serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('y = \u22121', 30, lineY - 8);
+
+    // Solution points
+    var sqrt33 = Math.sqrt(33);
+    var x1 = (-3 + sqrt33) / 3;
+    var x2 = (-3 - sqrt33) / 3;
+    var y_val = -1;
+
+    // Point z1
+    var sx1 = ox + x1 * scale;
+    var sy1 = oy - y_val * scale;
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(sx1, sy1, 7, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('z\u2081 \u2248 0,91 \u2212 i', sx1 + 10, sy1 - 10);
+
+    // Point z2
+    var sx2 = ox + x2 * scale;
+    var sy2 = oy - y_val * scale;
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(sx2, sy2, 7, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('z\u2082 \u2248 \u22122,91 \u2212 i', sx2 - 10, sy2 - 10);
+
+    // Sum point
+    var sumX = x1 + x2;
+    var sumY = y_val + y_val;
+    var sxs = ox + sumX * scale;
+    var sys = oy - sumY * scale;
+    ctx.fillStyle = danger;
+    ctx.beginPath();
+    ctx.arc(sxs, sys, 7, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.fillStyle = danger;
+    ctx.font = 'bold 13px serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('z\u2081 + z\u2082 = \u22122 \u2212 2i', sxs + 10, sys + 5);
+
+    // Dashed lines from z1 and z2 to sum
+    ctx.strokeStyle = cvAlpha('--sol-canvas-muted', 0.5);
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(sx1, sy1);
+    ctx.lineTo(sxs, sys);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(sx2, sy2);
+    ctx.lineTo(sxs, sys);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  draw();
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<div data-card="step-solution" data-title="Rešenje po koracima">
+  <h2>Rešenje po koracima</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Zapisivanje jednačine u algebarskom obliku</h3>
+      <p>Neka je \( z = x + iy \). Tada je \( \bar{z} = x - iy \) i:</p>
+      <p class="math-block">\[ 2z + i = 2x + i(2y + 1) \]</p>
+      <p class="math-block">\[ |2z + i| = \sqrt{4x^2 + (2y+1)^2} \]</p>
+      <p>Jednačina postaje:</p>
+      <p class="math-block">\[ (x - iy) + \sqrt{4x^2 + (2y+1)^2} = 3 + i \]</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Razdvajanje na realni i imaginarni deo</h3>
+      <p>Modul \( |2z + i| \) je realan broj, pa ga tretiramo kao realni deo:</p>
+      <p><strong>Imaginarni deo:</strong></p>
+      <p class="math-block">\[ -y = 1 \implies y = -1 \]</p>
+      <p><strong>Realni deo:</strong></p>
+      <p class="math-block">\[ x + \sqrt{4x^2 + (2y+1)^2} = 3 \]</p>
+      <div class="checkpoint">Oba rešenja imaju istu imaginarnu komponentu \( y = -1 \).</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Rešavanje jednačine po x</h3>
+      <p>Za \( y = -1 \):</p>
+      <p class="math-block">\[ x + \sqrt{4x^2 + (-2+1)^2} = 3 \implies x + \sqrt{4x^2 + 1} = 3 \]</p>
+      <p>Izolujemo koren i kvadriramo (uz uslov \( 3 - x \ge 0 \)):</p>
+      <p class="math-block">\[ \sqrt{4x^2 + 1} = 3 - x \]</p>
+      <p class="math-block">\[ 4x^2 + 1 = 9 - 6x + x^2 \]</p>
+      <p class="math-block">\[ 3x^2 + 6x - 8 = 0 \]</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Nalaženje rešenja za x</h3>
+      <p>Primenjujemo formulu za rešenja kvadratne jednačine:</p>
+      <p class="math-block">\[ x = \frac{-6 \pm \sqrt{36 + 96}}{6} = \frac{-6 \pm \sqrt{132}}{6} = \frac{-6 \pm 2\sqrt{33}}{6} = \frac{-3 \pm \sqrt{33}}{3} \]</p>
+      <p>Proveravamo uslov \( x \le 3 \):</p>
+      <p class="math-block">\[ x_1 = \frac{-3 + \sqrt{33}}{3} \approx 0{,}91 \le 3 \quad \checkmark \]</p>
+      <p class="math-block">\[ x_2 = \frac{-3 - \sqrt{33}}{3} \approx -2{,}91 \le 3 \quad \checkmark \]</p>
+      <div class="checkpoint">Oba rešenja zadovoljavaju uslov, pa su oba validna.</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunavanje zbira</h3>
+      <p>Zbir kompleksnih brojeva:</p>
+      <p class="math-block">\[ z_1 + z_2 = (x_1 + x_2) + i(y_1 + y_2) \]</p>
+      <p>Po Vijetovim formulama za \( 3x^2 + 6x - 8 = 0 \):</p>
+      <p class="math-block">\[ x_1 + x_2 = -\frac{6}{3} = -2 \]</p>
+      <p>Za imaginarne delove: \( y_1 + y_2 = -1 + (-1) = -2 \), pa:</p>
+      <p class="math-block">\[ z_1 + z_2 = -2 + i(-2) = -2 - 2i \]</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>Ključni uvid</h2>
+  <p>Modul kompleksnog broja je uvek <strong>realan</strong>. Zato u jednačini \( \bar{z} + |2z + i| = 3 + i \) jedini izvor imaginarne jedinice na levoj strani je član \( \bar{z} = x - iy \). Ovo nam odmah daje \( y = -1 \) bez ikakvog računanja sa korenom, čime se problem značajno pojednostavljuje.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ z_1 + z_2 = -2 - 2i \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( -2 \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( -2 - 2i \)</span>
+    <span class="answer-option" data-option="C">(V) \( -2i \)</span>
+    <span class="answer-option" data-option="D">(G) \( 2i \)</span>
+    <span class="answer-option" data-option="E">(D) \( 2 \)</span>
+  </div>
+  <p class="verification">Provera za \( z_1 \approx 0{,}91 - i \): \( \bar{z}_1 \approx 0{,}91 + i \), \( |2z_1 + i| = |1{,}82 - i| = \sqrt{1{,}82^2 + 1} \approx \sqrt{4{,}31} \approx 2{,}08 \). Suma: \( 0{,}91 + 2{,}08 + i = 2{,}99 + i \approx 3 + i \) ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Zamke">
+  <h2>Česte zamke</h2>
+  <ul class="pitfall-list">
+    <li><strong>Tretiranje modula kao kompleksnog:</strong> Modul \( |2z+i| \) je uvek realan i nenegativan. Ne treba ga razdvajati na realni i imaginarni deo.</li>
+    <li><strong>Gubitak rešenja pri kvadriranju:</strong> Kvadriranjem jednačine mogu nastati lažna rešenja. Uvek proveriti uslov \( 3 - x \ge 0 \).</li>
+    <li><strong>Zaboravljanje jednog rešenja:</strong> Oba korena kvadratne jednačine zadovoljavaju uslov, pa postoje dva kompleksna broja \( z \) koja zadovoljavaju polaznu jednačinu.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Izazov">
+  <h2>Dodatni izazov</h2>
+  <p>Odredi proizvod \( z_1 \cdot z_2 \) za ista rešenja iz zadatka.</p>
+  <details>
+    <summary>Pomoć</summary>
+    <div class="detail-content">
+      <p>Koristimo \( z_1 \cdot z_2 = (x_1 + iy_1)(x_2 + iy_2) = (x_1 x_2 - y_1 y_2) + i(x_1 y_2 + x_2 y_1) \). Znamo da je \( y_1 = y_2 = -1 \) i po Vijetovim formulama \( x_1 x_2 = -\frac{8}{3} \). Dakle: \( z_1 z_2 = (-\frac{8}{3} - 1) + i(-x_1 - x_2) = -\frac{11}{3} + 2i \).</p>
+    </div>
+  </details>
+</div>
+
+<!--BRAINSPARK_META
+{"format":"v2","title":"Zbir kompleksnih brojeva sa uslovom na modul","subject":"math","unit":"algebra","topic_tags":["kompleksni_brojevi","modul_kompleksnog_broja","konjugovani_broj","kvadratne_jednacine"]}
+BRAINSPARK_META-->

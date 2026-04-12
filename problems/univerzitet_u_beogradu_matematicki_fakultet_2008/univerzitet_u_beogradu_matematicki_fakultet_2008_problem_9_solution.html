@@ -1,0 +1,467 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Koliko celih brojeva x zadovoljava jednačinu x · 3^{log_x 5} = 15?
+
+  Constraints: x > 0, x ≠ 1 (for log_x 5 to be defined)
+
+  Let t = log_x 5, so x^t = 5.
+  The equation becomes: x · 3^t = 15
+
+  From x^t = 5: x = 5^{1/t}
+  Substituting: 5^{1/t} · 3^t = 15 = 3 · 5
+
+  So we need: 5^{1/t} · 3^t = 3^1 · 5^1
+
+  Comparing exponents (since 3 and 5 are coprime):
+    1/t = 1  and  t = 1
+    → t = 1, x = 5^1 = 5
+
+  Wait, let me think more carefully. This gives only one solution.
+  But 5^{1/t} · 3^t = 3 · 5 could also work with:
+    3^t = 3 → t = 1 → x = 5 (integer ✓)
+
+  But are there other possibilities? Let me try a different approach.
+
+  Using the identity: a^{log_b c} = c^{log_b a}
+
+  So 3^{log_x 5} = 5^{log_x 3}
+
+  The equation becomes: x · 5^{log_x 3} = 15
+
+  Let u = log_x 3, so x^u = 3.
+  Then: x · 5^u = 15
+  And: x = 3^{1/u}
+  So: 3^{1/u} · 5^u = 3 · 5
+  This gives: 1/u = 1 and u = 1, so u = 1, x = 3.
+
+  Check x = 3: 3 · 3^{log_3 5} = 3^{1 + log_3 5} = 3^{log_3 3 + log_3 5} = 3^{log_3 15} = 15 ✓
+
+  Check x = 5: 5 · 3^{log_5 5} = 5 · 3^1 = 15 ✓
+
+  So we have two integer solutions: x = 3 and x = 5.
+
+  Are there more? Going back to 5^{1/t} · 3^t = 3 · 5:
+  Take log: (1/t)ln5 + t·ln3 = ln3 + ln5
+  Let f(t) = (1/t)ln5 + t·ln3
+  f'(t) = -(1/t²)ln5 + ln3 = 0 → t² = ln5/ln3 → t = √(ln5/ln3)
+  This is a convex function for t > 0, so f(t) = ln3 + ln5 has at most 2 solutions.
+  We found t = 1 gives x = 5, and the other solution?
+
+  Actually, from 5^{1/t} · 3^t = 3 · 5:
+  If t = log_5 3 ≈ 0.682, then 1/t = log_3 5 ≈ 1.465
+  5^{log_3 5} · 3^{log_5 3} — this is not necessarily 15.
+
+  Let me reconsider. The equation 5^{1/t} · 3^t = 15 with t > 0:
+  At t = 1: 5 · 3 = 15 ✓
+
+  For t < 0 (which happens when 0 < x < 1):
+  5^{1/t} · 3^t = 15 with t < 0
+  5^{negative} · 3^{negative} = small number, can't be 15.
+
+  So t = 1 giving x = 5.
+
+  But I also found x = 3 via the identity approach. Let me reconcile.
+  When x = 3: log_3 5 = log_3 5 (≠ 1), so t ≈ 1.465
+  5^{1/1.465} · 3^{1.465} = 5^{0.682} · 3^{1.465} = 3 · 5 = 15?
+  5^{0.682} = 5^{log_5 3} = 3
+  3^{1.465} = 3^{log_3 5} = 5
+  So yes! 3 · 5 = 15 ✓
+
+  So there are exactly 2 solutions where 5^{1/t} · 3^t = 15:
+  t = 1 (giving x = 5) and t = log_3 5 (giving x = 3).
+
+  Both x = 3 and x = 5 are integers. Answer: C) 2.
+</script>
+
+<h1 data-card="problem-title">Eksponencijalno-logaritamska jednačina</h1>
+<p data-card="problem-subtitle" class="subtitle">Logaritmi — svojstvo \( a^{\log_a b} = b \) i analiza rešenja</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>Tekst zadatka</h2>
+  <p>Koliko celih brojeva \( x \) zadovoljava jednačinu \( x \cdot 3^{\log_x 5} = 15 \)?</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 0 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">više od \( 3 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>Plan rešavanja</h2>
+  <p class="plan-text">Uvešćemo smenu \( t = \log_x 5 \) da bismo transformisali jednačinu. Iskoristićemo i identitet \( a^{\log_b c} = c^{\log_b a} \) za alternativni pristup. Tražićemo sva celobrojna rešenja vodeći računa o uslovima za postojanje logaritma (\( x > 0 \), \( x \neq 1 \)).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule za logaritme i eksponente</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Definicija logaritma</span> \( \log_x 5 = t \iff x^t = 5 \) (za \( x > 0 \), \( x \neq 1 \)).</li>
+        <li><span class="formula-label">Identitet za promenu</span> \( a^{\log_b c} = c^{\log_b a} \) — eksponent i osnova mogu da zamene uloge.</li>
+        <li><span class="formula-label">Osnovno svojstvo</span> \( x^{\log_x a} = a \) — eksponent poništava logaritam iste osnove.</li>
+        <li><span class="formula-label">Veza logaritama</span> \( \log_x 5 = \dfrac{\ln 5}{\ln x} = \dfrac{1}{\log_5 x} \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-p9" width="700" height="450"></canvas>
+  </div>
+  <p class="canvas-caption">Dijagram rešavanja: dva puta do rešenja jednačine \( x \cdot 3^{\log_x 5} = 15 \)</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Definišemo uslove i uvedemo smenu</h3>
+      <p>Da bi \( \log_x 5 \) bilo definisano, mora da važi \( x > 0 \) i \( x \neq 1 \).</p>
+      <p>Neka je \( t = \log_x 5 \), pa je \( x^t = 5 \), tj. \( x = 5^{1/t} \). Jednačina postaje:</p>
+      <div class="math-block">
+        \[ 5^{1/t} \cdot 3^t = 15 = 3 \cdot 5 \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Analiziramo jednačinu</h3>
+      <p>Pošto su \( 3 \) i \( 5 \) prosti brojevi (međusobno nesvodivi), jednačina \( 5^{1/t} \cdot 3^t = 3^1 \cdot 5^1 \) nema jednostavno poređenje eksponenata za različite osnove u opštem slučaju. Isprobajmo specijalne vrednosti.</p>
+      <p>Za \( t = 1 \): \( 5^1 \cdot 3^1 = 15 \, \checkmark \), pa je \( x = 5^{1/1} = 5 \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Ima li drugih rešenja?</summary>
+          <div class="detail-content">
+            <p>Da! Koristićemo identitet za zamenu baze eksponenta da pronađemo drugo rešenje.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Primenimo identitet \( a^{\log_b c} = c^{\log_b a} \)</h3>
+      <p>Transformišemo izraz \( 3^{\log_x 5} \) koristeći identitet:</p>
+      <div class="math-block">
+        \[ 3^{\log_x 5} = 5^{\log_x 3} \]
+      </div>
+      <p>Jednačina sada glasi:</p>
+      <div class="math-block">
+        \[ x \cdot 5^{\log_x 3} = 15 \]
+      </div>
+      <p>Neka je \( u = \log_x 3 \), pa \( x^u = 3 \), tj. \( x = 3^{1/u} \). Jednačina postaje:</p>
+      <div class="math-block">
+        \[ 3^{1/u} \cdot 5^u = 3 \cdot 5 \]
+      </div>
+      <p>Za \( u = 1 \): \( 3^1 \cdot 5^1 = 15 \, \checkmark \), pa je \( x = 3^{1/1} = 3 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Verifikujemo oba rešenja</h3>
+      <p><strong>Za \( x = 5 \):</strong></p>
+      <div class="math-block">
+        \[ 5 \cdot 3^{\log_5 5} = 5 \cdot 3^1 = 5 \cdot 3 = 15 \quad \checkmark \]
+      </div>
+      <p><strong>Za \( x = 3 \):</strong></p>
+      <div class="math-block">
+        \[ 3 \cdot 3^{\log_3 5} = 3^{1 + \log_3 5} = 3^{\log_3 3 + \log_3 5} = 3^{\log_3 15} = 15 \quad \checkmark \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Dokažemo da nema drugih rešenja</h3>
+      <p>Vratimo se na jednačinu \( 5^{1/t} \cdot 3^t = 15 \). Logaritmujemo obe strane:</p>
+      <div class="math-block">
+        \[ \frac{\ln 5}{t} + t \cdot \ln 3 = \ln 15 \]
+      </div>
+      <p>Definišemo \( f(t) = \frac{\ln 5}{t} + t \cdot \ln 3 \) za \( t > 0 \). Izvod je:</p>
+      <div class="math-block">
+        \[ f'(t) = -\frac{\ln 5}{t^2} + \ln 3 = 0 \implies t^2 = \frac{\ln 5}{\ln 3} = \log_3 5 \]
+      </div>
+      <p>Funkcija \( f \) je konveksna (jer je \( f''(t) = \frac{2\ln 5}{t^3} > 0 \)), pa jednačina \( f(t) = \ln 15 \) ima <strong>najviše dva rešenja</strong>. Našli smo oba: \( t = 1 \) (daje \( x = 5 \)) i \( t = \log_3 5 \) (daje \( x = 3 \)).</p>
+      <div class="callout">
+        <p>Za \( t < 0 \) (što odgovara \( 0 < x < 1 \)), važi \( 5^{1/t} < 1 \) i \( 3^t < 1 \), pa je \( f(t) < 1 < 15 \). Dakle, nema rešenja za \( t < 0 \).</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>Ključni uvid</h2>
+  <p>Identitet \( a^{\log_b c} = c^{\log_b a} \) je izuzetno moćan alat. Primenom ovog identiteta, ista jednačina se može posmatrati na dva načina — jednom sa smenom \( t = \log_x 5 \) i jednom sa \( u = \log_x 3 \). Svaki pristup prirodno otkriva po jedno rešenje (\( x = 5 \) i \( x = 3 \)). Analiza konveksnosti potvrđuje da su to jedina dva rešenja.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">Jednačinu zadovoljavaju \( 2 \) cela broja: \( x = 3 \) i \( x = 5 \).</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) 0</span>
+    <span class="answer-option" data-option="B">(B) 1</span>
+    <span class="answer-option correct" data-option="C">(C) 2</span>
+    <span class="answer-option" data-option="D">(D) 3</span>
+    <span class="answer-option" data-option="E">(E) više od 3</span>
+  </div>
+  <p class="verification">Verifikacija: \( x = 5 \Rightarrow 5 \cdot 3^1 = 15 \, \checkmark \); \( x = 3 \Rightarrow 3 \cdot 3^{\log_3 5} = 3^{\log_3 15} = 15 \, \checkmark \). Tačno dva cela broja. Odgovor je C.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Nalaženje samo jednog rešenja:</strong> Većina učenika pronađe \( x = 5 \) (jer daje \( \log_5 5 = 1 \)), ali previdi \( x = 3 \). Ključ je sistematičan pristup — smena ili identitet za zamenu baze.</li>
+    <li><strong>Zaboravljanje uslova za logaritam:</strong> Mora da važi \( x > 0 \) i \( x \neq 1 \). Na primer, \( x = 1 \) nije dozvoljeno jer \( \log_1 5 \) nije definisano.</li>
+    <li><strong>Pokušaj sa \( x = 15 \):</strong> Provera: \( 15 \cdot 3^{\log_{15} 5} = 15 \cdot 3^{0{,}594} \approx 15 \cdot 1{,}946 \approx 29{,}2 \neq 15 \). Ne zadovoljava.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>Dodatni izazov</h2>
+  <p>Koliko celih brojeva \( x \) zadovoljava jednačinu \( x \cdot 2^{\log_x 7} = 14 \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Potpuno analogan postupak! Sa smenom \( t = \log_x 7 \): \( 7^{1/t} \cdot 2^t = 14 = 2 \cdot 7 \). Za \( t = 1 \): \( x = 7 \). Koristeći identitet: \( x \cdot 7^{\log_x 2} = 14 \), sa smenom \( u = \log_x 2 \): \( 2^{1/u} \cdot 7^u = 14 \). Za \( u = 1 \): \( x = 2 \). Odgovor: 2 cela broja (\( x = 2 \) i \( x = 7 \)).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name); if (c.startsWith('#')) { var r = parseInt(c.slice(1,3),16); var g = parseInt(c.slice(3,5),16); var b = parseInt(c.slice(5,7),16); return 'rgba('+r+','+g+','+b+','+alpha+')'; } return c;
+  }
+  var canvas = document.getElementById('diagram-p9');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+    var tertiary = cv('--sol-canvas-tertiary');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Dva pristupa istoj jednačini', W / 2, 25);
+
+    // Central equation
+    ctx.fillStyle = cvAlpha('--sol-canvas-axis', 0.1);
+    ctx.fillRect(W / 2 - 150, 38, 300, 35);
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(W / 2 - 150, 38, 300, 35);
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('x \u00B7 3^(log\u2093 5) = 15', W / 2, 61);
+
+    // Arrows diverging
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.5;
+    // Left arrow
+    ctx.beginPath();
+    ctx.moveTo(W / 2 - 40, 73);
+    ctx.lineTo(175, 105);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(175, 105);
+    ctx.lineTo(182, 97);
+    ctx.lineTo(179, 107);
+    ctx.fillStyle = muted;
+    ctx.fill();
+    // Right arrow
+    ctx.beginPath();
+    ctx.moveTo(W / 2 + 40, 73);
+    ctx.lineTo(525, 105);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(525, 105);
+    ctx.lineTo(518, 97);
+    ctx.lineTo(521, 107);
+    ctx.fill();
+
+    // ---- Left path: t = log_x 5 ----
+    var lx = 25;
+    var ly = 110;
+    var lw = 300;
+    var lh = 175;
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.07);
+    ctx.fillRect(lx, ly, lw, lh);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(lx, ly, lw, lh);
+
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('PRISTUP 1: t = log\u2093 5', lx + lw / 2, ly + 22);
+
+    ctx.fillStyle = text;
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('x\u1D57 = 5  \u21D2  x = 5^(1/t)', lx + lw / 2, ly + 48);
+    ctx.fillText('5^(1/t) \u00B7 3\u1D57 = 3 \u00B7 5', lx + lw / 2, ly + 72);
+
+    ctx.fillStyle = muted;
+    ctx.font = '11px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('Za t = 1:', lx + lw / 2, ly + 100);
+
+    ctx.fillStyle = text;
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('5\u00B9 \u00B7 3\u00B9 = 15  \u2713', lx + lw / 2, ly + 120);
+
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('x = 5', lx + lw / 2, ly + 155);
+
+    // ---- Right path: identity ----
+    var rx = 375;
+    var ry = 110;
+    var rw = 300;
+    var rh = 175;
+    ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.07);
+    ctx.fillRect(rx, ry, rw, rh);
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(rx, ry, rw, rh);
+
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('PRISTUP 2: identitet', rx + rw / 2, ry + 22);
+
+    ctx.fillStyle = text;
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('3^(log\u2093 5) = 5^(log\u2093 3)', rx + rw / 2, ry + 48);
+    ctx.fillText('x \u00B7 5^(log\u2093 3) = 15', rx + rw / 2, ry + 72);
+
+    ctx.fillStyle = muted;
+    ctx.font = '11px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('Za u = log\u2093 3 = 1, tj. x = 3:', rx + rw / 2, ry + 100);
+
+    ctx.fillStyle = text;
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('3 \u00B7 5\u00B9 = 15  \u2713', rx + rw / 2, ry + 120);
+
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('x = 3', rx + rw / 2, ry + 155);
+
+    // Arrows converging to verification
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(lx + lw / 2, ly + lh);
+    ctx.lineTo(lx + lw / 2, ly + lh + 20);
+    ctx.lineTo(W / 2, ly + lh + 45);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(rx + rw / 2, ry + rh);
+    ctx.lineTo(rx + rw / 2, ry + rh + 20);
+    ctx.lineTo(W / 2, ry + rh + 45);
+    ctx.stroke();
+
+    // Verification section
+    var vy = ly + lh + 50;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.1);
+    ctx.fillRect(100, vy, W - 200, 80);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(100, vy, W - 200, 80);
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('VERIFIKACIJA', W / 2, vy + 20);
+
+    ctx.fillStyle = text;
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('x = 5:  5 \u00B7 3^(log\u2085 5) = 5 \u00B7 3\u00B9 = 15  \u2713', W / 2, vy + 42);
+    ctx.fillText('x = 3:  3 \u00B7 3^(log\u2083 5) = 3^(1+log\u2083 5) = 3^(log\u2083 15) = 15  \u2713', W / 2, vy + 62);
+
+    // Final result
+    var fy = vy + 95;
+    ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.2);
+    ctx.fillRect(W / 2 - 160, fy, 320, 50);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 3;
+    ctx.strokeRect(W / 2 - 160, fy, 320, 50);
+
+    ctx.fillStyle = text;
+    ctx.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Celi brojevi koji zadovoljavaju jednačinu:', W / 2, fy + 20);
+
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 18px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('x = 3  i  x = 5  \u2192  ukupno 2', W / 2, fy + 43);
+  }
+
+  draw();
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') { setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50); }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Eksponencijalno-logaritamska jednačina sa celobrojnim rešenjima",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["logaritmi", "eksponencijalne jednačine", "identitet promene baze", "analiza rešenja"]
+}
+BRAINSPARK_META-->

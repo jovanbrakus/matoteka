@@ -1,0 +1,408 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Compare A, B, C, D where:
+  A = sum(n=1 to 2024) 1/(n(n+1))
+  B = sin(pi/6)
+  C = sin(pi/3) + sin(3pi/4)
+  D = sum(n=1 to 2024) 1/2^n
+
+  Step 1: Compute A (telescoping sum)
+  1/(n(n+1)) = 1/n - 1/(n+1)
+  A = (1 - 1/2) + (1/2 - 1/3) + ... + (1/2024 - 1/2025)
+  A = 1 - 1/2025 = 2024/2025
+
+  Step 2: Compute B
+  B = sin(pi/6) = 1/2
+
+  Step 3: Compute C
+  sin(pi/3) = sqrt(3)/2
+  sin(3pi/4) = sin(pi - pi/4) = sin(pi/4) = sqrt(2)/2
+  C = sqrt(3)/2 + sqrt(2)/2 = (sqrt(3) + sqrt(2))/2
+  sqrt(3) ~ 1.732, sqrt(2) ~ 1.414
+  C ~ (1.732 + 1.414)/2 = 3.146/2 ~ 1.573
+
+  Step 4: Compute D (geometric sum)
+  D = sum(n=1 to 2024) (1/2)^n = (1/2)(1 - (1/2)^2024)/(1 - 1/2)
+  D = (1/2) * (1 - 1/2^2024) / (1/2) = 1 - 1/2^2024
+
+  Step 5: Compare
+  B = 1/2 = 0.5
+  A = 1 - 1/2025 = 2024/2025 ~ 0.999506...
+  D = 1 - 1/2^2024 ~ 0.999999... (extremely close to 1)
+  C ~ 1.573
+
+  Now order: 1/2 < 1 - 1/2025 < 1 - 1/2^2024 < (sqrt(3)+sqrt(2))/2
+  Since 1/2025 > 1/2^2024 (for large n, 2^2024 >> 2025), we have A < D.
+  B = 0.5 < A ~ 0.9995 < D ~ 1 - tiny < C ~ 1.573
+
+  So B < A < D < C => answer (A)
+</script>
+
+<h1 data-card="problem-title">Poređenje suma i trigonometrijskih vrednosti</h1>
+<p data-card="problem-subtitle" class="subtitle">Redovi, teleskopski zbir, geometrijski zbir i trigonometrija</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Ako je:</p>
+  <div class="math-block">
+    \[ A = \sum_{n=1}^{2024} \frac{1}{n(n+1)}, \quad B = \sin\frac{\pi}{6}, \quad C = \sin\frac{\pi}{3} + \sin\frac{3\pi}{4}, \quad D = \sum_{n=1}^{2024} \frac{1}{2^n} \]
+  </div>
+  <p>onda je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( B < A < D < C \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( B < D < A < C \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( A < D < B < C \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( C < B < A < D \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">nijedan od ponuđenih odgovora</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">
+    Izračunamo svaku od četiri vrednosti zasebno: \( A \) teleskopskim zbirom, \( B \) kao poznatu vrednost sinusa, \( C \) kao zbir dva sinusa, a \( D \) kao parcijalni zbir geometrijskog reda. Zatim ih poređamo po veličini.
+  </p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Teleskopski zbir:</strong> \( \dfrac{1}{n(n+1)} = \dfrac{1}{n} - \dfrac{1}{n+1} \) — članovi se uzastopno poništavaju.</li>
+        <li><strong>Geometrijski red:</strong> \( \displaystyle\sum_{n=1}^{N} q^n = q \cdot \frac{1-q^N}{1-q} \) za \( q \neq 1 \).</li>
+        <li><strong>Poznate vrednosti:</strong> \( \sin\frac{\pi}{6} = \frac{1}{2} \), \( \sin\frac{\pi}{3} = \frac{\sqrt{3}}{2} \), \( \sin\frac{3\pi}{4} = \frac{\sqrt{2}}{2} \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz poređenja">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram1" width="700" height="450"></canvas>
+  </div>
+  <p class="canvas-caption">Brojna prava sa položajima vrednosti A, B, C i D</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunajmo \( A \) — teleskopski zbir</h3>
+      <p>Razlaganjem na parcijalne razlomke:</p>
+      <div class="math-block">
+        \[ \frac{1}{n(n+1)} = \frac{1}{n} - \frac{1}{n+1} \]
+      </div>
+      <p>Zbir se teleskopski sažima:</p>
+      <div class="math-block">
+        \[ A = \left(\frac{1}{1} - \frac{1}{2}\right) + \left(\frac{1}{2} - \frac{1}{3}\right) + \cdots + \left(\frac{1}{2024} - \frac{1}{2025}\right) = 1 - \frac{1}{2025} = \frac{2024}{2025} \]
+      </div>
+      <p>Dakle, \( A \) je veoma blizu \( 1 \), ali malo manje od \( 1 \).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto ostaje samo prvi i poslednji član?</summary>
+          <div class="detail-content">
+            <p>Jer se svaki \( -\frac{1}{k} \) u jednom članu poništava sa \( +\frac{1}{k} \) u sledećem. Ostaju samo \( \frac{1}{1} \) sa početka i \( -\frac{1}{2025} \) sa kraja.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunajmo \( B \) i \( C \)</h3>
+      <p>Vrednost \( B \) je direktno:</p>
+      <div class="math-block">
+        \[ B = \sin\frac{\pi}{6} = \frac{1}{2} \]
+      </div>
+      <p>Za \( C \) koristimo poznate vrednosti sinusa:</p>
+      <div class="math-block">
+        \[ C = \sin\frac{\pi}{3} + \sin\frac{3\pi}{4} = \frac{\sqrt{3}}{2} + \frac{\sqrt{2}}{2} = \frac{\sqrt{3} + \sqrt{2}}{2} \]
+      </div>
+      <p>Numerički: \( C \approx \frac{1{,}732 + 1{,}414}{2} \approx 1{,}573 \). Znači \( C > 1 \).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Koliko je \( \sin\frac{3\pi}{4} \)?</summary>
+          <div class="detail-content">
+            <p>Ugao \( \frac{3\pi}{4} = 135° \) leži u drugom kvadrantu gde je sinus pozitivan. Koristimo \( \sin(\pi - x) = \sin x \), pa je \( \sin\frac{3\pi}{4} = \sin\frac{\pi}{4} = \frac{\sqrt{2}}{2} \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunajmo \( D \) — geometrijski zbir</h3>
+      <p>Ovo je parcijalni zbir geometrijskog reda sa količnikom \( q = \frac{1}{2} \):</p>
+      <div class="math-block">
+        \[ D = \sum_{n=1}^{2024} \frac{1}{2^n} = \frac{\frac{1}{2}\left(1 - \frac{1}{2^{2024}}\right)}{1 - \frac{1}{2}} = 1 - \frac{1}{2^{2024}} \]
+      </div>
+      <p>Vrednost \( D \) je izuzetno blizu \( 1 \), ali malo manje od \( 1 \).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Koji je veći: \( \frac{1}{2025} \) ili \( \frac{1}{2^{2024}} \)?</summary>
+          <div class="detail-content">
+            <p>Vrednost \( 2^{2024} \) je astronomski velik broj (mnogo veći od \( 2025 \)), pa je \( \frac{1}{2^{2024}} \) enormno manji od \( \frac{1}{2025} \). To znači da je \( D \) bliži jedinici nego \( A \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Poredimo vrednosti</h3>
+      <p>Sakupljamo rezultate:</p>
+      <div class="math-block">
+        \[ B = \frac{1}{2}, \quad A = 1 - \frac{1}{2025}, \quad D = 1 - \frac{1}{2^{2024}}, \quad C = \frac{\sqrt{3} + \sqrt{2}}{2} \approx 1{,}573 \]
+      </div>
+      <p>Pošto je \( \frac{1}{2025} > \frac{1}{2^{2024}} \), važi \( A < D \). Sve vrednosti u poretku:</p>
+      <div class="math-block">
+        \[ \underbrace{\frac{1}{2}}_{B} < \underbrace{1 - \frac{1}{2025}}_{A} < \underbrace{1 - \frac{1}{2^{2024}}}_{D} < \underbrace{\frac{\sqrt{3}+\sqrt{2}}{2}}_{C} \]
+      </div>
+      <p>Dakle: \( B < A < D < C \).</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Teleskopski zbir \( A = 1 - \frac{1}{2025} \) i geometrijski zbir \( D = 1 - \frac{1}{2^{2024}} \) su oba blizu \( 1 \), ali se razlikuju po tome <strong>koliko su daleko od 1</strong>. Ključ je uporediti \( \frac{1}{2025} \) i \( \frac{1}{2^{2024}} \): pošto eksponencijalni rast dramatično nadmašuje linearni, važi \( 2^{2024} \gg 2025 \), pa je \( D \) bliži jedinici nego \( A \).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ B < A < D < C \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( B < A < D < C \)</span>
+    <span class="answer-option" data-option="B">(B) \( B < D < A < C \)</span>
+    <span class="answer-option" data-option="C">(C) \( A < D < B < C \)</span>
+    <span class="answer-option" data-option="D">(D) \( C < B < A < D \)</span>
+    <span class="answer-option" data-option="E">(E) nijedan od ponuđenih odgovora</span>
+  </div>
+  <p class="verification">Verifikacija: \( B = 0{,}5 \), \( A \approx 0{,}9995 \), \( D \approx 1 - 10^{-610} \), \( C \approx 1{,}573 \). Poredak se slaže sa odgovorom (A).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zamena \( A \) i \( D \):</strong> Oba su blizu \( 1 \), ali se mora pažljivo uporediti \( \frac{1}{2025} \) i \( \frac{1}{2^{2024}} \). Veći „ostatak od 1" daje manju vrednost, pa je \( A < D \).</li>
+    <li><strong>Pogrešna vrednost \( \sin\frac{3\pi}{4} \):</strong> Neki studenti pomešaju sa \( -\frac{\sqrt{2}}{2} \) (treći umesto drugog kvadranta) i dobiju pogrešnu vrednost za \( C \).</li>
+    <li><strong>Geometrijski zbir od \( n = 0 \):</strong> Zbir \( D \) kreće od \( n = 1 \), ne od \( n = 0 \). Da kreće od \( 0 \), imali bismo \( D = 2 - \frac{1}{2^{2024}} \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta se dešava ako umesto konačnih suma pustimo \( N \to \infty \)? Da li \( A_\infty \) i \( D_\infty \) konvergiraju ka istoj vrednosti?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Za \( N \to \infty \): teleskopski zbir daje \( A_\infty = 1 \), a geometrijski red takođe daje \( D_\infty = 1 \). Obe sume konvergiraju ka istoj vrednosti, ali na potpuno različite načine — teleskopski zbir „polako" (harmonički), a geometrijski „brzo" (eksponencijalno).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+
+  var canvas = document.getElementById('diagram1');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Brojna prava: položaj vrednosti A, B, C, D', W / 2, 35);
+
+    // Number line parameters
+    var lineY = 200;
+    var lineLeft = 80;
+    var lineRight = W - 60;
+    var lineLen = lineRight - lineLeft;
+
+    // Map value 0..1.8 to x coordinate
+    var minVal = 0;
+    var maxVal = 1.8;
+    function valToX(v) {
+      return lineLeft + (v - minVal) / (maxVal - minVal) * lineLen;
+    }
+
+    // Draw number line
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(lineLeft - 10, lineY);
+    ctx.lineTo(lineRight + 10, lineY);
+    ctx.stroke();
+
+    // Arrow at right
+    ctx.beginPath();
+    ctx.moveTo(lineRight + 5, lineY - 5);
+    ctx.lineTo(lineRight + 15, lineY);
+    ctx.lineTo(lineRight + 5, lineY + 5);
+    ctx.stroke();
+
+    // Tick marks
+    var ticks = [0, 0.5, 1.0, 1.5];
+    ctx.fillStyle = muted;
+    ctx.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var i = 0; i < ticks.length; i++) {
+      var tx = valToX(ticks[i]);
+      ctx.strokeStyle = grid;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(tx, lineY - 6);
+      ctx.lineTo(tx, lineY + 6);
+      ctx.stroke();
+      ctx.fillText(ticks[i].toString().replace('.', ','), tx, lineY + 22);
+    }
+
+    // Values to plot
+    var values = [
+      { label: 'B = 1/2', val: 0.5, color: danger, yOff: -55 },
+      { label: 'A = 2024/2025', val: 2024/2025, color: primary, yOff: -55 },
+      { label: 'D \u2248 1', val: 0.997, color: secondary, yOff: 45 },
+      { label: 'C \u2248 1,573', val: 1.573, color: accent, yOff: -55 }
+    ];
+
+    for (var j = 0; j < values.length; j++) {
+      var v = values[j];
+      var vx = valToX(v.val);
+
+      // Dot on line
+      ctx.fillStyle = v.color;
+      ctx.beginPath();
+      ctx.arc(vx, lineY, 7, 0, 2 * Math.PI);
+      ctx.fill();
+
+      // Vertical line from dot to label
+      ctx.strokeStyle = v.color;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([3, 3]);
+      ctx.beginPath();
+      if (v.yOff < 0) {
+        ctx.moveTo(vx, lineY - 10);
+        ctx.lineTo(vx, lineY + v.yOff + 18);
+      } else {
+        ctx.moveTo(vx, lineY + 10);
+        ctx.lineTo(vx, lineY + v.yOff - 8);
+      }
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Label
+      ctx.fillStyle = v.color;
+      ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(v.label, vx, lineY + v.yOff);
+    }
+
+    // Inequality arrows between points at bottom
+    var arrowY = lineY + 80;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('B  <  A  <  D  <  C', W / 2, arrowY);
+
+    // Value boxes at bottom
+    var boxY = arrowY + 25;
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('0,5     <     0,9995...     <     0,999...9     <     1,573...', W / 2, boxY);
+
+    // Zoom-in annotation between A and D
+    var ax = valToX(2024/2025);
+    var dx = valToX(0.997);
+    var zoomY = lineY + 55;
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 2]);
+    ctx.beginPath();
+    ctx.moveTo(ax, lineY + 10);
+    ctx.lineTo(ax, zoomY - 5);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(dx, lineY + 10);
+    ctx.lineTo(dx, zoomY - 5);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = highlight;
+    ctx.font = '11px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('1/2025 > 1/2\u00B2\u2070\u00B2\u2074 \u21D2 A < D', (ax + dx) / 2, zoomY + 8);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Poređenje teleskopskog zbira, geometrijskog reda i trigonometrijskih vrednosti",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["teleskopski zbir", "geometrijski red", "trigonometrija", "poređenje vrednosti", "parcijalni razlomci"]
+}
+BRAINSPARK_META-->

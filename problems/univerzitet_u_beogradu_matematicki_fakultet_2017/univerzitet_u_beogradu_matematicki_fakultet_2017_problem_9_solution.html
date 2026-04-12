@@ -1,0 +1,849 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+PROBLEM: Trapez ABCD sa osnovicama AB = 30 i CD = 20. Na kraku BC izabrana je tacka E tako da je BE:EC = 2:1. Ako je povrsina trapeza P, naci povrsinu trougla AED.
+
+A) P/2     B) 7P/15     C) 2P/5     D) 8P/15     E) 2P/3
+
+STRATEGIJA (sinteticko rezonovanje — dekompozicija povrsine):
+Trougao AED ne racunamo direktno — umesto toga, trapez razlozimo na tri trougla:
+  P(ABCD) = P(ABE) + P(AED) + P(ECD)
+pa je P(AED) = P − P(ABE) − P(ECD).
+
+KORAK 1: Visina trapeza.
+Neka je h visina trapeza (rastojanje izmedju paralelnih osnovica AB i CD).
+P = (AB + CD)/2 · h = (30 + 20)/2 · h = 25h
+=> h = P/25.
+
+KORAK 2: Polozaj tacke E u odnosu na osnovice.
+Tacka E je na kraku BC, pri cemu je B na osnovici AB a C na osnovici CD.
+Rastojanje tacke od linije AB linearno raste duz segmenta BC: u tacki B je 0, u tacki C je h.
+Posto je BE:EC = 2:1, tacka E je na 2/3 puta od B do C.
+Dakle:
+  rastojanje od E do prave AB = (2/3) h   [to je visina trougla ABE nad osnovicom AB]
+  rastojanje od E do prave CD = (1/3) h   [to je visina trougla ECD nad osnovicom CD]
+
+Dokaz kroz paralelne linije: Neka je E' projekcija tacke E na AB a E'' projekcija na CD. Povuci kroz E pravu paralelnu osnovicama — ona sece krak BC samo u E, a rastojanja do obe paralele dele se u odnosu BE:EC = 2:1. Dakle EE' = (2/3) h i EE'' = (1/3) h. (Tvrdjenje o paralelnim pravama: ako dve paralelne prave razdvajaju duz BC, a E deli BC u odnosu 2:1, onda i njene visine nad tim pravama stoje u odnosu 2:1.)
+
+KORAK 3: Povrsina trougla ABE.
+Osnovica AB, visina iz E = (2/3) h.
+P(ABE) = (1/2) · AB · (2/3) h = (1/2) · 30 · (2/3) h = 10 h = 10 · P/25 = 2P/5.
+
+KORAK 4: Povrsina trougla ECD.
+Osnovica CD, visina iz E = (1/3) h.
+P(ECD) = (1/2) · CD · (1/3) h = (1/2) · 20 · (1/3) h = (10/3) h = (10/3) · P/25 = 10P/75 = 2P/15.
+
+KORAK 5: Povrsina trougla AED.
+P(AED) = P − P(ABE) − P(ECD)
+       = P − 2P/5 − 2P/15
+Zajednicki imenilac 15:
+       = 15P/15 − 6P/15 − 2P/15
+       = 7P/15.
+
+ODGOVOR: B) 7P/15. ✓
+
+VERIFIKACIJA KOORDINATAMA (samo za proveru, nije glavni pristup):
+A=(0,0), B=(30,0), D=(5,h), C=(25,h).
+E = B + (2/3)(C − B) = (30,0) + (2/3)(−5, h) = (80/3, 2h/3).
+P(AED) pomocu Gaussove (shoelace) formule:
+  = (1/2) |x_A(y_E − y_D) + x_E(y_D − y_A) + x_D(y_A − y_E)|
+  = (1/2) |0·(2h/3 − h) + (80/3)·(h − 0) + 5·(0 − 2h/3)|
+  = (1/2) |80h/3 − 10h/3|
+  = (1/2) · 70h/3
+  = 35h/3.
+P = 25h, pa je P(AED)/P = (35h/3)/(25h) = 35/75 = 7/15. ✓
+
+NAPOMENA: Rezultat ne zavisi od oblika trapeza (pomaka gornje osnovice), niti od duzine kraka BC — samo od AB, CD i odnosa 2:1 na kraku BC. Ovo cini zadatak robusnim: svaki trapez sa osnovicama 30 i 20 i tackom E na BC u odnosu 2:1 daje P(AED) = 7P/15.
+
+ZAMKE:
+- Pretpostavka „E deli BC na trecine, pa je AED = P/3" je neispravna: visine trouglova ABE i ECD nisu jednake jer su osnovice razlicite (30 vs 20).
+- Koristiti formulu (a+b)·h umesto (a+b)·h/2 za povrsinu trapeza.
+- Pogresno citati odnos: BE:EC = 2:1 znaci BE = 2·EC, tj. E je blize tacki C... NE! Znaci E je blize tacki C? BE=2EC znaci da je BE duze, pa je E blize tacki C. Ali visina iz E u odnosu na AB je (2/3)h (jer je E udaljen od B za 2/3 duzine BC), a u odnosu na CD je (1/3)h.
+</script>
+
+<h1 data-card="problem-title">Površina trougla AED u trapezu</h1>
+<p data-card="problem-subtitle" class="subtitle">Geometrija — trapez, dekompozicija površine, odnosi na kraku</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Neka je \( ABCD \) trapez čije su osnovice \( AB = 30 \) i \( CD = 20 \). Na kraku \( BC \) izabrana je tačka \( E \) takva da je \( BE : EC = 2 : 1 \). Ako je površina datog trapeza jednaka \( P \), tada je površina trougla \( AED \) jednaka:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \dfrac{1}{2} P \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \dfrac{7}{15} P \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \dfrac{2}{5} P \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \dfrac{8}{15} P \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \dfrac{2}{3} P \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Trougao \( AED \) nećemo računati direktno. Umesto toga, trapez \( ABCD \) razložićemo na tri trougla — \( ABE \), \( ECD \) i \( AED \) — i od ukupne površine \( P \) oduzeti površine dva „ugaona" trougla \( ABE \) i \( ECD \). Ključno je što tačka \( E \), koja deli krak \( BC \) u odnosu \( 2 : 1 \), deli i rastojanje između paralelnih osnovica u istom odnosu: udaljena je \( \tfrac{2}{3} h \) od osnovice \( AB \) i \( \tfrac{1}{3} h \) od osnovice \( CD \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Površina trapeza</span>: \( P = \dfrac{(a + b) \cdot h}{2} \), gde su \( a \) i \( b \) dužine osnovica a \( h \) visina (rastojanje između paralelnih osnovica).</li>
+        <li><span class="formula-label">Površina trougla</span>: \( P_{\triangle} = \dfrac{1}{2} \cdot \text{osnovica} \cdot \text{visina} \).</li>
+        <li><span class="formula-label">Tačka na kraku trapeza</span>: Ako tačka \( E \) deli krak \( BC \) trapeza sa paralelnim osnovicama u odnosu \( BE : EC = m : n \), onda je rastojanje od \( E \) do osnovice koja sadrži \( B \) jednako \( \dfrac{m}{m+n} \cdot h \), a rastojanje do osnovice koja sadrži \( C \) jednako \( \dfrac{n}{m+n} \cdot h \). To je posledica Talesove teoreme (paralelne prave seku duž \( BC \) proporcionalno).</li>
+        <li><span class="formula-label">Aditivnost površine</span>: Ako je poligon razložen na nekoliko delova bez preklapanja, zbir njihovih površina jednak je ukupnoj površini.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Trapez ABCD sa tačkom E">
+  <h2>📐 Trapez ABCD sa tačkom E na kraku BC</h2>
+  <div class="canvas-wrapper">
+    <canvas id="p9-trapezoid" width="720" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Trapez ABCD sa osnovicama \( AB = 30 \) i \( CD = 20 \), tačkom \( E \) na kraku \( BC \) u odnosu \( BE : EC = 2 : 1 \) i istaknutim trouglom \( AED \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Visina trapeza u funkciji od P</h3>
+      <p>Neka je \( h \) visina trapeza, tj. rastojanje između paralelnih osnovica \( AB \) i \( CD \). Iz formule za površinu trapeza:</p>
+      <div class="math-block">\[ P = \frac{(AB + CD)\cdot h}{2} = \frac{(30 + 20)\cdot h}{2} = 25\,h \]</div>
+      <p>Odavde izražavamo \( h \) preko \( P \):</p>
+      <div class="math-block">\[ h = \frac{P}{25} \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto nam uopšte treba \( h \)?</summary>
+          <div class="detail-content"><p>Da bismo izračunali površine trouglova \( ABE \) i \( ECD \), potrebne su nam njihove visine — a one su delovi visine trapeza \( h \). Na kraju ćemo rezultat izraziti preko \( P \), pa sama \( h \) neće biti u konačnom odgovoru.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Visine trouglova ABE i ECD iz tačke E</h3>
+      <p>Tačka \( B \) leži na pravoj \( AB \) (na „dnu") a tačka \( C \) leži na pravoj \( CD \) (na „vrhu"). Krak \( BC \) povezuje te dve paralelne prave. Ako se od \( B \) pomerimo do \( C \), rastojanje do donje osnovice \( AB \) raste linearno od \( 0 \) do \( h \).</p>
+      <p>Tačka \( E \) deli krak \( BC \) u odnosu \( BE : EC = 2 : 1 \), pa je \( E \) na \( \dfrac{2}{3} \) puta od \( B \) ka \( C \). Po Talesovoj teoremi (paralelne prave seku duž \( BC \) proporcionalno):</p>
+      <div class="math-block">\[ \text{rastojanje}(E, AB) = \frac{2}{3}\,h, \qquad \text{rastojanje}(E, CD) = \frac{1}{3}\,h \]</div>
+      <p>Prvo od ovih rastojanja je visina trougla \( ABE \) spuštena iz \( E \) na osnovicu \( AB \). Drugo je visina trougla \( ECD \) spuštena iz \( E \) na osnovicu \( CD \).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto je visina iz \( E \) baš \( \tfrac{2}{3} h \), a ne \( \tfrac{1}{3} h \)?</summary>
+          <div class="detail-content"><p>Zato što je \( BE : EC = 2 : 1 \) znači \( BE \) je <em>veći</em> deo kraka. Od tačke \( B \) (koja je na donjoj osnovici, rastojanje 0) do tačke \( C \) (koja je na gornjoj osnovici, rastojanje \( h \)), tačka \( E \) je prošla \( \tfrac{2}{3} \) puta. Dakle, \( E \) se „popela" \( \tfrac{2}{3} h \) iznad donje osnovice \( AB \) i preostalo je još \( \tfrac{1}{3} h \) do gornje osnovice \( CD \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Površina trougla ABE</h3>
+      <p>Trougao \( ABE \) ima osnovicu \( AB = 30 \) i visinu iz \( E \) jednaku \( \dfrac{2}{3} h \):</p>
+      <div class="math-block">\[ P_{ABE} = \frac{1}{2}\cdot AB \cdot \frac{2}{3}\,h = \frac{1}{2}\cdot 30 \cdot \frac{2}{3}\,h = 10\,h \]</div>
+      <p>Uvrstimo \( h = \dfrac{P}{25} \):</p>
+      <div class="math-block">\[ P_{ABE} = 10 \cdot \frac{P}{25} = \frac{10P}{25} = \frac{2P}{5} \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Površina trougla ECD</h3>
+      <p>Trougao \( ECD \) ima osnovicu \( CD = 20 \) i visinu iz \( E \) jednaku \( \dfrac{1}{3} h \):</p>
+      <div class="math-block">\[ P_{ECD} = \frac{1}{2}\cdot CD \cdot \frac{1}{3}\,h = \frac{1}{2}\cdot 20 \cdot \frac{1}{3}\,h = \frac{10\,h}{3} \]</div>
+      <p>Uvrstimo \( h = \dfrac{P}{25} \):</p>
+      <div class="math-block">\[ P_{ECD} = \frac{10}{3}\cdot \frac{P}{25} = \frac{10P}{75} = \frac{2P}{15} \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Dekompozicija trapeza i površina trougla AED</h3>
+      <p>Duži \( AE \) i \( ED \) razlažu trapez \( ABCD \) na tačno tri trougla bez preklapanja: \( ABE \), \( AED \) i \( ECD \). Njihove površine se sabiraju do \( P \):</p>
+      <div class="math-block">\[ P = P_{ABE} + P_{AED} + P_{ECD} \]</div>
+      <p>Odavde izražavamo traženu površinu:</p>
+      <div class="math-block">\[ P_{AED} = P - P_{ABE} - P_{ECD} = P - \frac{2P}{5} - \frac{2P}{15} \]</div>
+      <p>Svedemo sve na zajednički imenilac \( 15 \):</p>
+      <div class="math-block">\[ P_{AED} = \frac{15P}{15} - \frac{6P}{15} - \frac{2P}{15} = \frac{15P - 6P - 2P}{15} = \frac{7P}{15} \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Da li su tri trougla zaista razlaganje trapeza?</summary>
+          <div class="detail-content"><p>Da. Tačka \( E \) leži <em>unutar</em> trapeza (na kraku \( BC \), strogo između \( B \) i \( C \)), pa duži \( EA \) i \( ED \) dele četvorougao \( ABCD \) na tri trougla: \( \triangle ABE \) (sa temenima \( A, B, E \)), \( \triangle AED \) (sa temenima \( A, E, D \)) i \( \triangle ECD \) (sa temenima \( E, C, D \)). Oni pokrivaju trapez bez preklapanja.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="visual-aid" data-title="Dekompozicija trapeza na tri trougla">
+  <h2>📐 Razlaganje trapeza na tri trougla</h2>
+  <div class="canvas-wrapper">
+    <canvas id="p9-decomposition" width="720" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Trapez \( ABCD \) razložen na trouglove \( ABE \) (površina \( \tfrac{2P}{5} \)), \( ECD \) (površina \( \tfrac{2P}{15} \)) i \( AED \) (površina \( \tfrac{7P}{15} \)).</p>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Rezultat \( P_{AED} = \dfrac{7P}{15} \) ne zavisi ni od dužine kraka \( BC \), ni od nagiba krakova, ni od toga da li je trapez jednakokraki, pravougli ili opšti — zavisi <em>samo</em> od dve osnovice \( a = 30 \), \( b = 20 \) i odnosa \( 2 : 1 \) u kome \( E \) deli krak \( BC \). Razlog je suptilan: Talesova teorema nam garantuje da je visina tačke \( E \) nad osnovicama proporcionalna tome kako \( E \) deli \( BC \), a za površine trouglova je bitna samo ta visina — ne i horizontalni položaj tačke \( E \). Dakle, bilo koji trapez sa istim osnovicama i istim odnosom na kraku daje istu površinu za trougao \( AED \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Visine iz tačke E">
+  <h2>📐 Zašto su visine iz E jednake \( \tfrac{2}{3} h \) i \( \tfrac{1}{3} h \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="p9-heights" width="720" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Paralela kroz \( E \) pokazuje da je rastojanje od \( E \) do \( AB \) jednako \( \tfrac{2}{3} h \) (jer je \( BE = \tfrac{2}{3} BC \)), a rastojanje od \( E \) do \( CD \) jednako \( \tfrac{1}{3} h \).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ P_{AED} = P - \frac{2P}{5} - \frac{2P}{15} = \frac{7P}{15} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( \dfrac{1}{2} P \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( \dfrac{7}{15} P \)</span>
+    <span class="answer-option" data-option="C">(C) \( \dfrac{2}{5} P \)</span>
+    <span class="answer-option" data-option="D">(D) \( \dfrac{8}{15} P \)</span>
+    <span class="answer-option" data-option="E">(E) \( \dfrac{2}{3} P \)</span>
+  </div>
+  <p class="verification">Provera: \( \tfrac{2P}{5} + \tfrac{7P}{15} + \tfrac{2P}{15} = \tfrac{6P}{15} + \tfrac{7P}{15} + \tfrac{2P}{15} = \tfrac{15P}{15} = P \) ✓. Tri trougla pokrivaju ceo trapez bez preklapanja. Alternativna provera Gaussovom formulom za \( A = (0,0) \), \( B = (30, 0) \), \( C = (25, h) \), \( D = (5, h) \), \( E = (80/3,\; 2h/3) \) daje \( P_{AED} = 35h/3 \), a \( P = 25h \), pa je odnos \( 35/75 = 7/15 \) ✓.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešna pretpostavka „AED = P/3"</strong>: mnogi zaključuju da pošto \( E \) deli \( BC \) u odnosu \( 2:1 \), trougao \( AED \) zauzima jednu trećinu trapeza. Ali trouglovi \( ABE \) i \( ECD \) imaju različite osnovice (30 i 20), pa njihove površine nisu simetrično raspoređene.</li>
+    <li><strong>Zaboravljanje faktora \( \tfrac{1}{2} \) u formuli trapeza</strong>: formula je \( P = \dfrac{(a+b) \cdot h}{2} \), a ne \( (a+b) \cdot h \). Ova greška udvostručuje \( h \) i ruši sve naredne račune.</li>
+    <li><strong>Zamena brojilaca \( \tfrac{2}{3} \) i \( \tfrac{1}{3} \)</strong>: smer računanja je ključan. Tačka \( E \) je na \( \tfrac{2}{3} \) puta <em>od \( B \) ka \( C \)</em>, pa je \( E \) udaljena \( \tfrac{2}{3} h \) od osnovice \( AB \) (koja sadrži \( B \)), a \( \tfrac{1}{3} h \) od osnovice \( CD \) (koja sadrži \( C \)).</li>
+    <li><strong>Pogrešna osnovica za trougao \( ABE \)</strong>: neki studenti pokušaju da koriste duž \( BE \) (deo kraka) kao osnovicu sa visinom kraka \( BC \). To radi, ali tu visinu nije lako izraziti. Mnogo je jednostavnije uzeti \( AB \) za osnovicu — tada se visina čita direktno iz položaja tačke \( E \).</li>
+    <li><strong>Korišćenje brojnih vrednosti za \( h \)</strong>: neki proizvoljno biraju \( h = 1 \) ili \( h = 10 \), dobiju numerički odgovor i onda ne mogu da ga vrate u izraz preko \( P \). Uvek treba raditi simbolički, pa \( h \) eliminisati na kraju.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Uopšti rezultat: neka trapez ima osnovice \( AB = a \) i \( CD = b \), a tačka \( E \) na kraku \( BC \) deli ga u odnosu \( BE : EC = m : n \). Ako je površina trapeza \( P \), dokaži da je:</p>
+  <div class="math-block">\[ P_{AED} \;=\; \frac{m\,b + n\,a}{(m+n)(a+b)} \cdot P \]</div>
+  <p>Proveri da za \( a = 30 \), \( b = 20 \), \( m = 2 \), \( n = 1 \) ta formula daje \( \dfrac{7}{15} P \).</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Ponovi iste korake: \( h = \dfrac{2P}{a+b} \), visina iz \( E \) na \( AB \) je \( \dfrac{m}{m+n} h \), visina na \( CD \) je \( \dfrac{n}{m+n} h \). Onda izračunaj \( P_{ABE} = \dfrac{1}{2} a \cdot \dfrac{m}{m+n} h \) i \( P_{ECD} = \dfrac{1}{2} b \cdot \dfrac{n}{m+n} h \), pa oduzmi od \( P \). Za proveru sa datim brojevima: \( \dfrac{2 \cdot 20 + 1 \cdot 30}{3 \cdot 50} = \dfrac{40 + 30}{150} = \dfrac{70}{150} = \dfrac{7}{15} \) ✓.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  // ── Shared trapezoid geometry (in "problem units", not pixels) ──
+  // AB = 30 (bottom), CD = 20 (top), with a slight horizontal offset so it's clearly a non-rectangular trapezoid.
+  // Vertices in problem-coordinates:
+  var Axu = 0,  Ayu = 0;
+  var Bxu = 30, Byu = 0;
+  var Dxu = 6,  Dyu = 14;   // height h = 14 chosen for good visual aspect ratio
+  var Cxu = 26, Cyu = 14;   // Dxu + 20 = 26
+  var hU  = 14;
+
+  // Point E on BC with BE:EC = 2:1, so E = B + (2/3)(C - B)
+  var Exu = Bxu + (2/3) * (Cxu - Bxu);   // 30 + (2/3)(26 - 30) = 30 - 8/3 = 82/3 ≈ 27.333
+  var Eyu = Byu + (2/3) * (Cyu - Byu);   // 0  + (2/3)(14 - 0)  = 28/3 ≈ 9.333
+
+  // ── Canvas 1: trapezoid with triangle AED highlighted ──
+  var c1 = document.getElementById('p9-trapezoid');
+  if (c1) {
+    var ctx1 = c1.getContext('2d');
+    var W1 = c1.width, H1 = c1.height;
+
+    function drawTrapezoid() {
+      var bg        = cv('--sol-canvas-bg');
+      var primary   = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent    = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text      = cv('--sol-canvas-text');
+      var muted     = cv('--sol-canvas-muted');
+      var warning   = cv('--sol-canvas-warning');
+
+      ctx1.clearRect(0, 0, W1, H1);
+      ctx1.fillStyle = bg;
+      ctx1.fillRect(0, 0, W1, H1);
+
+      // Title
+      ctx1.fillStyle = text;
+      ctx1.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+      ctx1.textAlign = 'center';
+      ctx1.fillText('Trapez ABCD sa tačkom E na kraku BC (BE : EC = 2 : 1)', W1/2, 30);
+
+      // Transform: scale problem-units to pixels, center
+      var scale = 16;
+      var offX  = (W1 - 30 * scale) / 2;
+      var offY  = H1 - 90;
+      function tx(x) { return offX + x * scale; }
+      function ty(y) { return offY - y * scale; }
+
+      // ── Fill triangle AED first (underneath) ──
+      ctx1.fillStyle = cvAlpha('--sol-canvas-accent', 0.22);
+      ctx1.beginPath();
+      ctx1.moveTo(tx(Axu), ty(Ayu));
+      ctx1.lineTo(tx(Exu), ty(Eyu));
+      ctx1.lineTo(tx(Dxu), ty(Dyu));
+      ctx1.closePath();
+      ctx1.fill();
+
+      // ── Outline trapezoid ──
+      ctx1.strokeStyle = primary;
+      ctx1.lineWidth = 2.5;
+      ctx1.beginPath();
+      ctx1.moveTo(tx(Axu), ty(Ayu));
+      ctx1.lineTo(tx(Bxu), ty(Byu));
+      ctx1.lineTo(tx(Cxu), ty(Cyu));
+      ctx1.lineTo(tx(Dxu), ty(Dyu));
+      ctx1.closePath();
+      ctx1.stroke();
+
+      // ── Segments AE and ED (boundary of the highlighted triangle) ──
+      ctx1.strokeStyle = accent;
+      ctx1.lineWidth = 2.5;
+      ctx1.beginPath();
+      ctx1.moveTo(tx(Axu), ty(Ayu));
+      ctx1.lineTo(tx(Exu), ty(Eyu));
+      ctx1.lineTo(tx(Dxu), ty(Dyu));
+      ctx1.stroke();
+
+      // ── Tick marks on BC to show 2:1 ratio ──
+      // BE is divided in two equal parts, EC is one equal part.
+      // Parameterize BC: P(t) = B + t*(C-B). BE corresponds to t in [0, 2/3], EC to [2/3, 1].
+      // Tick at t = 1/3 (midpoint of BE), t = 2/3 (which is E), and t = 5/6 (midpoint of EC).
+      function bcPoint(t) {
+        return { x: Bxu + t*(Cxu - Bxu), y: Byu + t*(Cyu - Byu) };
+      }
+      // Direction perpendicular to BC (for tick orientation)
+      var bcDx = Cxu - Bxu, bcDy = Cyu - Byu;
+      var bcLen = Math.sqrt(bcDx*bcDx + bcDy*bcDy);
+      var perpX = -bcDy / bcLen, perpY = bcDx / bcLen;
+      var tickLen = 0.6; // in problem units
+
+      function drawTick(t) {
+        var p = bcPoint(t);
+        ctx1.beginPath();
+        ctx1.moveTo(tx(p.x - perpX*tickLen/2), ty(p.y - perpY*tickLen/2));
+        ctx1.lineTo(tx(p.x + perpX*tickLen/2), ty(p.y + perpY*tickLen/2));
+        ctx1.stroke();
+      }
+      ctx1.strokeStyle = warning;
+      ctx1.lineWidth = 2;
+      drawTick(1/3);  // middle of BE first half
+      drawTick(2/3);  // at E itself
+      // A double tick on BE near E to indicate "2 parts":
+      drawTick(0.5);
+
+      // ── Vertex markers ──
+      function dot(x, y, color, r) {
+        ctx1.fillStyle = color;
+        ctx1.beginPath();
+        ctx1.arc(tx(x), ty(y), r || 5, 0, 2*Math.PI);
+        ctx1.fill();
+      }
+      dot(Axu, Ayu, primary);
+      dot(Bxu, Byu, primary);
+      dot(Cxu, Cyu, primary);
+      dot(Dxu, Dyu, primary);
+      dot(Exu, Eyu, accent, 6);
+
+      // ── Vertex labels ──
+      ctx1.fillStyle = text;
+      ctx1.font = 'bold 17px Segoe UI, system-ui, sans-serif';
+      ctx1.textAlign = 'center';
+      ctx1.fillText('A', tx(Axu) - 14, ty(Ayu) + 6);
+      ctx1.fillText('B', tx(Bxu) + 14, ty(Byu) + 6);
+      ctx1.fillText('C', tx(Cxu) + 14, ty(Cyu) - 8);
+      ctx1.fillText('D', tx(Dxu) - 14, ty(Dyu) - 8);
+
+      ctx1.fillStyle = accent;
+      ctx1.fillText('E', tx(Exu) + 18, ty(Eyu) + 4);
+
+      // ── Side labels ──
+      ctx1.font = '14px Segoe UI, system-ui, sans-serif';
+      ctx1.fillStyle = muted;
+      ctx1.textAlign = 'center';
+      ctx1.fillText('AB = 30', tx((Axu+Bxu)/2), ty(0) + 26);
+      ctx1.fillText('CD = 20', tx((Dxu+Cxu)/2), ty(hU) - 14);
+
+      // BE and EC labels along the leg BC
+      ctx1.fillStyle = warning;
+      var beMx = (Bxu + Exu)/2, beMy = (Byu + Eyu)/2;
+      var ecMx = (Exu + Cxu)/2, ecMy = (Eyu + Cyu)/2;
+      ctx1.textAlign = 'left';
+      ctx1.fillText('BE = 2', tx(beMx) + 8, ty(beMy) + 4);
+      ctx1.fillText('EC = 1', tx(ecMx) + 8, ty(ecMy) + 4);
+
+      // ── Label the shaded triangle ──
+      ctx1.fillStyle = accent;
+      ctx1.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+      ctx1.textAlign = 'center';
+      // centroid of AED
+      var cxA = (Axu + Exu + Dxu)/3, cyA = (Ayu + Eyu + Dyu)/3;
+      ctx1.fillText('△ AED', tx(cxA), ty(cyA));
+
+      // ── Legend ──
+      ctx1.font = '13px Segoe UI, system-ui, sans-serif';
+      ctx1.textAlign = 'left';
+      ctx1.fillStyle = muted;
+      ctx1.fillText('Senčeni trougao AED je tražena figura; BE : EC = 2 : 1.', 20, H1 - 20);
+    }
+
+    drawTrapezoid();
+    window.addEventListener('message', function(e) {
+      if (e && e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() { styles = getComputedStyle(root); drawTrapezoid(); }, 50);
+      }
+    });
+  }
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  // Same trapezoid geometry as canvas 1
+  var Axu = 0,  Ayu = 0;
+  var Bxu = 30, Byu = 0;
+  var Dxu = 6,  Dyu = 14;
+  var Cxu = 26, Cyu = 14;
+  var Exu = Bxu + (2/3) * (Cxu - Bxu);
+  var Eyu = Byu + (2/3) * (Cyu - Byu);
+  var hU  = 14;
+
+  var c2 = document.getElementById('p9-decomposition');
+  if (!c2) return;
+  var ctx2 = c2.getContext('2d');
+  var W2 = c2.width, H2 = c2.height;
+
+  function drawDecomp() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var warning   = cv('--sol-canvas-warning');
+    var tertiary  = cv('--sol-canvas-tertiary');
+
+    ctx2.clearRect(0, 0, W2, H2);
+    ctx2.fillStyle = bg;
+    ctx2.fillRect(0, 0, W2, H2);
+
+    // Title
+    ctx2.fillStyle = text;
+    ctx2.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx2.textAlign = 'center';
+    ctx2.fillText('Razlaganje trapeza na trouglove ABE, AED i ECD', W2/2, 30);
+
+    // Transform
+    var scale = 16;
+    var offX  = (W2 - 30 * scale) / 2;
+    var offY  = H2 - 110;
+    function tx(x) { return offX + x * scale; }
+    function ty(y) { return offY - y * scale; }
+
+    // ── Fill the three triangles with distinct colors ──
+    // Triangle ABE — danger/red
+    ctx2.fillStyle = cvAlpha('--sol-canvas-danger', 0.28);
+    ctx2.beginPath();
+    ctx2.moveTo(tx(Axu), ty(Ayu));
+    ctx2.lineTo(tx(Bxu), ty(Byu));
+    ctx2.lineTo(tx(Exu), ty(Eyu));
+    ctx2.closePath();
+    ctx2.fill();
+
+    // Triangle ECD — warning/amber
+    ctx2.fillStyle = cvAlpha('--sol-canvas-warning', 0.32);
+    ctx2.beginPath();
+    ctx2.moveTo(tx(Exu), ty(Eyu));
+    ctx2.lineTo(tx(Cxu), ty(Cyu));
+    ctx2.lineTo(tx(Dxu), ty(Dyu));
+    ctx2.closePath();
+    ctx2.fill();
+
+    // Triangle AED — accent/green
+    ctx2.fillStyle = cvAlpha('--sol-canvas-accent', 0.30);
+    ctx2.beginPath();
+    ctx2.moveTo(tx(Axu), ty(Ayu));
+    ctx2.lineTo(tx(Exu), ty(Eyu));
+    ctx2.lineTo(tx(Dxu), ty(Dyu));
+    ctx2.closePath();
+    ctx2.fill();
+
+    // ── Interior diagonals AE and ED ──
+    ctx2.strokeStyle = text;
+    ctx2.lineWidth = 1.5;
+    ctx2.setLineDash([5, 4]);
+    ctx2.beginPath();
+    ctx2.moveTo(tx(Axu), ty(Ayu));
+    ctx2.lineTo(tx(Exu), ty(Eyu));
+    ctx2.moveTo(tx(Exu), ty(Eyu));
+    ctx2.lineTo(tx(Dxu), ty(Dyu));
+    ctx2.stroke();
+    ctx2.setLineDash([]);
+
+    // ── Outline trapezoid ──
+    ctx2.strokeStyle = primary;
+    ctx2.lineWidth = 2.5;
+    ctx2.beginPath();
+    ctx2.moveTo(tx(Axu), ty(Ayu));
+    ctx2.lineTo(tx(Bxu), ty(Byu));
+    ctx2.lineTo(tx(Cxu), ty(Cyu));
+    ctx2.lineTo(tx(Dxu), ty(Dyu));
+    ctx2.closePath();
+    ctx2.stroke();
+
+    // ── Vertex markers & labels ──
+    function dot(x, y, color, r) {
+      ctx2.fillStyle = color;
+      ctx2.beginPath();
+      ctx2.arc(tx(x), ty(y), r || 5, 0, 2*Math.PI);
+      ctx2.fill();
+    }
+    dot(Axu, Ayu, primary);
+    dot(Bxu, Byu, primary);
+    dot(Cxu, Cyu, primary);
+    dot(Dxu, Dyu, primary);
+    dot(Exu, Eyu, text, 6);
+
+    ctx2.fillStyle = text;
+    ctx2.font = 'bold 17px Segoe UI, system-ui, sans-serif';
+    ctx2.textAlign = 'center';
+    ctx2.fillText('A', tx(Axu) - 14, ty(Ayu) + 6);
+    ctx2.fillText('B', tx(Bxu) + 14, ty(Byu) + 6);
+    ctx2.fillText('C', tx(Cxu) + 14, ty(Cyu) - 8);
+    ctx2.fillText('D', tx(Dxu) - 14, ty(Dyu) - 8);
+    ctx2.fillText('E', tx(Exu) + 18, ty(Eyu) + 4);
+
+    // ── Area labels inside each triangle ──
+    ctx2.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+
+    // Centroid of ABE
+    var g1x = (Axu + Bxu + Exu)/3, g1y = (Ayu + Byu + Eyu)/3;
+    ctx2.fillStyle = danger;
+    ctx2.fillText('△ ABE', tx(g1x), ty(g1y) - 8);
+    ctx2.fillText('= 2P/5', tx(g1x), ty(g1y) + 8);
+
+    // Centroid of ECD
+    var g2x = (Exu + Cxu + Dxu)/3, g2y = (Eyu + Cyu + Dyu)/3;
+    ctx2.fillStyle = warning;
+    ctx2.fillText('△ ECD', tx(g2x), ty(g2y) - 8);
+    ctx2.fillText('= 2P/15', tx(g2x), ty(g2y) + 8);
+
+    // Centroid of AED
+    var g3x = (Axu + Exu + Dxu)/3, g3y = (Ayu + Eyu + Dyu)/3;
+    ctx2.fillStyle = accent;
+    ctx2.fillText('△ AED', tx(g3x), ty(g3y) - 8);
+    ctx2.fillText('= 7P/15', tx(g3x), ty(g3y) + 8);
+
+    // ── Legend at the bottom ──
+    ctx2.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx2.textAlign = 'left';
+    var legX = 30, legY = H2 - 60, boxW = 18, boxH = 14, gap = 8;
+
+    function legendRow(y, color, alphaVar, label) {
+      ctx2.fillStyle = cvAlpha(alphaVar, 0.35);
+      ctx2.fillRect(legX, y, boxW, boxH);
+      ctx2.strokeStyle = color;
+      ctx2.lineWidth = 1.5;
+      ctx2.strokeRect(legX, y, boxW, boxH);
+      ctx2.fillStyle = text;
+      ctx2.textAlign = 'left';
+      ctx2.fillText(label, legX + boxW + gap, y + 12);
+    }
+    legendRow(legY,       danger,  '--sol-canvas-danger',  'ABE: P_ABE = (1/2)·30·(2h/3) = 10h = 2P/5');
+    legendRow(legY + 20,  warning, '--sol-canvas-warning', 'ECD: P_ECD = (1/2)·20·(h/3)  = 10h/3 = 2P/15');
+    legendRow(legY + 40,  accent,  '--sol-canvas-accent',  'AED: P − P_ABE − P_ECD = 15P/15 − 6P/15 − 2P/15 = 7P/15');
+  }
+
+  drawDecomp();
+  window.addEventListener('message', function(e) {
+    if (e && e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); drawDecomp(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  // Same trapezoid geometry
+  var Axu = 0,  Ayu = 0;
+  var Bxu = 30, Byu = 0;
+  var Dxu = 6,  Dyu = 14;
+  var Cxu = 26, Cyu = 14;
+  var Exu = Bxu + (2/3) * (Cxu - Bxu);
+  var Eyu = Byu + (2/3) * (Cyu - Byu);
+  var hU  = 14;
+
+  var c3 = document.getElementById('p9-heights');
+  if (!c3) return;
+  var ctx3 = c3.getContext('2d');
+  var W3 = c3.width, H3 = c3.height;
+
+  function drawHeights() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+    var danger    = cv('--sol-canvas-danger');
+    var tertiary  = cv('--sol-canvas-tertiary');
+
+    ctx3.clearRect(0, 0, W3, H3);
+    ctx3.fillStyle = bg;
+    ctx3.fillRect(0, 0, W3, H3);
+
+    // Title
+    ctx3.fillStyle = text;
+    ctx3.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx3.textAlign = 'center';
+    ctx3.fillText('Visina tačke E nad osnovicama (Talesova teorema)', W3/2, 30);
+
+    // Transform
+    var scale = 16;
+    var offX  = (W3 - 30 * scale) / 2 + 40;
+    var offY  = H3 - 90;
+    function tx(x) { return offX + x * scale; }
+    function ty(y) { return offY - y * scale; }
+
+    // ── Outline trapezoid ──
+    ctx3.fillStyle = cvAlpha('--sol-canvas-primary', 0.06);
+    ctx3.beginPath();
+    ctx3.moveTo(tx(Axu), ty(Ayu));
+    ctx3.lineTo(tx(Bxu), ty(Byu));
+    ctx3.lineTo(tx(Cxu), ty(Cyu));
+    ctx3.lineTo(tx(Dxu), ty(Dyu));
+    ctx3.closePath();
+    ctx3.fill();
+
+    ctx3.strokeStyle = primary;
+    ctx3.lineWidth = 2.5;
+    ctx3.beginPath();
+    ctx3.moveTo(tx(Axu), ty(Ayu));
+    ctx3.lineTo(tx(Bxu), ty(Byu));
+    ctx3.lineTo(tx(Cxu), ty(Cyu));
+    ctx3.lineTo(tx(Dxu), ty(Dyu));
+    ctx3.closePath();
+    ctx3.stroke();
+
+    // ── Horizontal dashed line through E (parallel to both bases) ──
+    // Extend from left edge of trapezoid at that height to right edge, and beyond for visibility.
+    // At y = Eyu = 2h/3, the trapezoid sides give x-range:
+    // Left side AD goes from (0,0) to (Dxu, hU) => at y = Eyu, x = Dxu * (Eyu/hU) = 6*(2/3) = 4
+    // Right side BC goes from (Bxu, 0) to (Cxu, hU) => at y = Eyu, x = Bxu + (Cxu-Bxu)*(Eyu/hU) = 30 + (-4)*(2/3) = 82/3 ≈ 27.333
+    var yLine = Eyu;
+    var xLeftPara  = Dxu * (yLine / hU);
+    var xRightPara = Bxu + (Cxu - Bxu) * (yLine / hU);
+
+    ctx3.strokeStyle = accent;
+    ctx3.lineWidth = 2;
+    ctx3.setLineDash([6, 4]);
+    ctx3.beginPath();
+    ctx3.moveTo(tx(xLeftPara - 3), ty(yLine));
+    ctx3.lineTo(tx(xRightPara + 3), ty(yLine));
+    ctx3.stroke();
+    ctx3.setLineDash([]);
+
+    // Label the paralle line
+    ctx3.fillStyle = accent;
+    ctx3.font = 'italic 13px Segoe UI, system-ui, sans-serif';
+    ctx3.textAlign = 'left';
+    ctx3.fillText('paralela kroz E (∥ AB, ∥ CD)', tx(xRightPara + 3) + 8, ty(yLine) + 4);
+
+    // ── Vertical dimension markers on the LEFT side showing 2h/3 and h/3 ──
+    // Place at x = -2 (to the left of A), from y=0 to y=Eyu and from y=Eyu to y=hU.
+    var dimX = -2.2;
+
+    // 2h/3 bracket (from AB level up to E's level)
+    ctx3.strokeStyle = warning;
+    ctx3.lineWidth = 2;
+    ctx3.beginPath();
+    // main vertical
+    ctx3.moveTo(tx(dimX), ty(0));
+    ctx3.lineTo(tx(dimX), ty(yLine));
+    // arrow caps
+    ctx3.moveTo(tx(dimX - 0.4), ty(0));
+    ctx3.lineTo(tx(dimX + 0.4), ty(0));
+    ctx3.moveTo(tx(dimX - 0.4), ty(yLine));
+    ctx3.lineTo(tx(dimX + 0.4), ty(yLine));
+    ctx3.stroke();
+
+    ctx3.fillStyle = warning;
+    ctx3.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx3.textAlign = 'right';
+    ctx3.fillText('2h/3', tx(dimX) - 6, ty(yLine/2) + 5);
+
+    // h/3 bracket (from E's level up to CD level)
+    ctx3.strokeStyle = tertiary;
+    ctx3.beginPath();
+    ctx3.moveTo(tx(dimX), ty(yLine));
+    ctx3.lineTo(tx(dimX), ty(hU));
+    ctx3.moveTo(tx(dimX - 0.4), ty(yLine));
+    ctx3.lineTo(tx(dimX + 0.4), ty(yLine));
+    ctx3.moveTo(tx(dimX - 0.4), ty(hU));
+    ctx3.lineTo(tx(dimX + 0.4), ty(hU));
+    ctx3.stroke();
+
+    ctx3.fillStyle = tertiary;
+    ctx3.textAlign = 'right';
+    ctx3.fillText('h/3', tx(dimX) - 6, ty((yLine + hU)/2) + 5);
+
+    // ── Full height h on the far right ──
+    var dimXR = 31.5;
+    ctx3.strokeStyle = muted;
+    ctx3.lineWidth = 1.5;
+    ctx3.setLineDash([3, 3]);
+    ctx3.beginPath();
+    ctx3.moveTo(tx(dimXR), ty(0));
+    ctx3.lineTo(tx(dimXR), ty(hU));
+    ctx3.stroke();
+    ctx3.setLineDash([]);
+    ctx3.fillStyle = muted;
+    ctx3.textAlign = 'left';
+    ctx3.fillText('h', tx(dimXR) + 6, ty(hU/2) + 5);
+
+    // ── Leg BC — highlight it to show the 2:1 division ──
+    ctx3.strokeStyle = highlight;
+    ctx3.lineWidth = 3;
+    ctx3.beginPath();
+    ctx3.moveTo(tx(Bxu), ty(Byu));
+    ctx3.lineTo(tx(Cxu), ty(Cyu));
+    ctx3.stroke();
+
+    // Mark ratio 2:1 on BC
+    ctx3.fillStyle = highlight;
+    ctx3.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    var beMx = (Bxu + Exu)/2, beMy = (Byu + Eyu)/2;
+    var ecMx = (Exu + Cxu)/2, ecMy = (Eyu + Cyu)/2;
+    ctx3.textAlign = 'left';
+    ctx3.fillText('BE (2 dela)', tx(beMx) + 10, ty(beMy) + 2);
+    ctx3.fillText('EC (1 deo)', tx(ecMx) + 10, ty(ecMy) + 2);
+
+    // ── Vertex markers ──
+    function dot(x, y, color, r) {
+      ctx3.fillStyle = color;
+      ctx3.beginPath();
+      ctx3.arc(tx(x), ty(y), r || 5, 0, 2*Math.PI);
+      ctx3.fill();
+    }
+    dot(Axu, Ayu, primary);
+    dot(Bxu, Byu, primary);
+    dot(Cxu, Cyu, primary);
+    dot(Dxu, Dyu, primary);
+    dot(Exu, Eyu, accent, 6);
+
+    ctx3.fillStyle = text;
+    ctx3.font = 'bold 17px Segoe UI, system-ui, sans-serif';
+    ctx3.textAlign = 'center';
+    ctx3.fillText('A', tx(Axu) - 14, ty(Ayu) + 6);
+    ctx3.fillText('B', tx(Bxu) + 14, ty(Byu) + 6);
+    ctx3.fillText('C', tx(Cxu) + 14, ty(Cyu) - 8);
+    ctx3.fillText('D', tx(Dxu) - 14, ty(Dyu) - 8);
+    ctx3.fillStyle = accent;
+    ctx3.fillText('E', tx(Exu) - 14, ty(Eyu) - 6);
+
+    // ── Caption at bottom ──
+    ctx3.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx3.fillStyle = muted;
+    ctx3.textAlign = 'left';
+    ctx3.fillText('Pošto je BE : EC = 2 : 1, tačka E se „popela" za 2/3 visine iznad AB i preostaje joj 1/3 do CD.', 20, H3 - 40);
+    ctx3.fillText('Ista proporcija važi za rastojanja jer su AB i CD paralelne (Talesova teorema).', 20, H3 - 20);
+  }
+
+  drawHeights();
+  window.addEventListener('message', function(e) {
+    if (e && e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); drawHeights(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Površina trougla AED u trapezu sa tačkom na kraku",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["trapez", "površina", "dekompozicija", "Talesova teorema", "odnos na kraku"]
+}
+BRAINSPARK_META-->

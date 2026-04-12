@@ -1,0 +1,449 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: From 8 mathematicians and 6 programmers, form a committee of 5 members
+  with at least 2 mathematicians and at least 1 programmer. How many ways?
+
+  Approach: Total ways minus invalid configurations.
+
+  Total ways to choose 5 from 14: C(14,5) = 2002
+
+  Invalid configurations:
+  1) All 5 are mathematicians (0 programmers): C(8,5) = 56
+  2) 0 mathematicians (5 programmers from 6): C(6,5) = 6
+  3) Exactly 1 mathematician (4 programmers): C(8,1)·C(6,4) = 8·15 = 120
+
+  Invalid cases (at most 1 math OR 0 programmers): 56 + 6 + 120 = 182
+
+  Wait, let me be more careful. The condition is:
+  - at least 2 mathematicians AND at least 1 programmer
+
+  The complement is: fewer than 2 mathematicians OR 0 programmers.
+
+  By inclusion-exclusion:
+  |A ∪ B| = |A| + |B| - |A ∩ B|
+
+  A = fewer than 2 mathematicians = {0 math, 1 math}
+    0 math: C(6,5) = 6
+    1 math: C(8,1)·C(6,4) = 8·15 = 120
+    |A| = 126
+
+  B = 0 programmers (all 5 math): C(8,5) = 56
+    |B| = 56
+
+  A ∩ B = fewer than 2 math AND 0 programmers = 0 or 1 math AND all from math
+    0 math and 0 programmers: impossible (need 5 people)
+    1 math and 0 programmers: impossible (need 5 people but only 1 person total)
+    Actually A ∩ B means "at most 1 mathematician" AND "all mathematicians (no programmers)".
+    If we have no programmers, all 5 are mathematicians, so we have 5 math ≥ 2.
+    This contradicts "at most 1 mathematician". So A ∩ B = ∅.
+
+  |A ∪ B| = 126 + 56 - 0 = 182
+
+  Answer: 2002 - 182 = 1820
+
+  Alternatively, direct count:
+  (2M,3P): C(8,2)·C(6,3) = 28·20 = 560
+  (3M,2P): C(8,3)·C(6,2) = 56·15 = 840
+  (4M,1P): C(8,4)·C(6,1) = 70·6 = 420
+
+  Total: 560 + 840 + 420 = 1820 ✓
+
+  Answer: B) 1820
+</script>
+
+<h1 data-card="problem-title">Formiranje komisije sa ograničenjima</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika — kombinacije sa uslovima</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Od \( 8 \) matematičara i \( 6 \) programera treba formirati komisiju od \( 5 \) članova u kojoj će biti bar dva matematičara i bar jedan programer. Broj načina na koji se to može učiniti jednak je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 1876 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 1820 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 1024 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 195 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 256 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Razbićemo problem na sve dozvoljene kombinacije broja matematičara i programera u komisiji (2M+3P, 3M+2P, 4M+1P) i za svaku izračunati broj kombinacija, a zatim ih sabrati. Alternativno, od ukupnog broja oduzimamo nedozvoljene slučajeve.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Kombinacije bez ponavljanja:</strong> \( \binom{n}{k} = \frac{n!}{k!(n-k)!} \) — broj načina da se izabere \( k \) elemenata od \( n \) bez obzira na redosled</li>
+        <li><strong>Pravilo proizvoda:</strong> Ako se jedan izbor može napraviti na \( m \) načina, a drugi nezavisno na \( n \) načina, ukupno ima \( m \cdot n \) mogućnosti</li>
+        <li><strong>Pravilo zbira:</strong> Ako se nešto može postići na više međusobno isključivih načina, ukupan broj je zbir pojedinačnih</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-p18" width="700" height="480"></canvas>
+  </div>
+  <p class="canvas-caption">Prikaz tri dozvoljene kombinacije komisije: struktura i broj načina za svaku</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Odredimo dozvoljene sastave komisije</h3>
+      <p>Komisija ima \( 5 \) članova, uz uslove: bar \( 2 \) matematičara i bar \( 1 \) programer. Ako sa \( m \) označimo broj matematičara, a sa \( p \) broj programera, važi \( m + p = 5 \), \( m \geq 2 \), \( p \geq 1 \).</p>
+      <p>Mogući sastavi su:</p>
+      <div class="math-block">
+        \[ (m, p) \in \{(2, 3),\; (3, 2),\; (4, 1)\} \]
+      </div>
+      <p class="note">Sastav \( (5, 0) \) ne zadovoljava uslov \( p \geq 1 \), pa ga isključujemo.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto nema sastava sa \( 5 \) matematičara?</summary>
+          <div class="detail-content">
+            <p>Jer tada \( p = 0 \), a uslov traži bar jednog programera. Zato \( (5, 0) \) nije dozvoljen.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj 1: \( 2 \) matematičara i \( 3 \) programera</h3>
+      <p>Biramo \( 2 \) od \( 8 \) matematičara i \( 3 \) od \( 6 \) programera:</p>
+      <div class="math-block">
+        \[ \binom{8}{2} \cdot \binom{6}{3} = 28 \cdot 20 = 560 \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj 2: \( 3 \) matematičara i \( 2 \) programera</h3>
+      <p>Biramo \( 3 \) od \( 8 \) matematičara i \( 2 \) od \( 6 \) programera:</p>
+      <div class="math-block">
+        \[ \binom{8}{3} \cdot \binom{6}{2} = 56 \cdot 15 = 840 \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Koliko je \( \binom{8}{3} \)?</summary>
+          <div class="detail-content">
+            <p>\( \binom{8}{3} = \frac{8!}{3! \cdot 5!} = \frac{8 \cdot 7 \cdot 6}{3 \cdot 2 \cdot 1} = \frac{336}{6} = 56 \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj 3: \( 4 \) matematičara i \( 1 \) programer</h3>
+      <p>Biramo \( 4 \) od \( 8 \) matematičara i \( 1 \) od \( 6 \) programera:</p>
+      <div class="math-block">
+        \[ \binom{8}{4} \cdot \binom{6}{1} = 70 \cdot 6 = 420 \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Saberemo sve dozvoljene mogućnosti</h3>
+      <p>Ova tri slučaja su međusobno isključiva (različit broj matematičara), pa primenjujemo pravilo zbira:</p>
+      <div class="math-block">
+        \[ N = 560 + 840 + 420 = 1820 \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Kako da proverimo rezultat alternativnim putem?</summary>
+          <div class="detail-content">
+            <p>Ukupan broj komisija je \( \binom{14}{5} = 2002 \). Nedozvoljeni slučajevi: sve matematičari \( \binom{8}{5} = 56 \), nijedan matematičar \( \binom{6}{5} = 6 \), tačno jedan matematičar \( \binom{8}{1} \cdot \binom{6}{4} = 120 \). Nedozvoljeno ukupno: \( 56 + 6 + 120 = 182 \). Dozvoljeno: \( 2002 - 182 = 1820 \). ✓</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kada imamo uslove tipa „bar \( k \) od jednog tipa i bar \( j \) od drugog", najčistiji pristup je direktno nabrojati sve dozvoljene sastave. Alternativno, metoda komplementa (ukupno minus nedozvoljeno) daje isti rezultat i služi kao odlična provera. Ovde oba pristupa vode do \( 1820 \), što potvrđuje tačnost.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ N = \binom{8}{2}\binom{6}{3} + \binom{8}{3}\binom{6}{2} + \binom{8}{4}\binom{6}{1} = 560 + 840 + 420 = 1820 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 1876 \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( 1820 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 1024 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 195 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 256 \)</span>
+  </div>
+  <p class="verification">Provera metodom komplementa: \( \binom{14}{5} - \binom{8}{5} - \binom{6}{5} - \binom{8}{1}\binom{6}{4} = 2002 - 56 - 6 - 120 = 1820 \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zaboraviti sastav \( (4, 1) \):</strong> Mnogi se sete samo za \( (2, 3) \) i \( (3, 2) \), dajući \( 560 + 840 = 1400 \) umesto tačnih \( 1820 \).</li>
+    <li><strong>Uključiti \( (5, 0) \):</strong> Komisija od \( 5 \) matematičara ne zadovoljava uslov „bar jedan programer". Dodavanjem \( \binom{8}{5} = 56 \) bi se dobilo pogrešnih \( 1876 \) (što je tačno odgovor A — zamka!).</li>
+    <li><strong>Koristiti permutacije umesto kombinacija:</strong> Redosled izbora članova ne igra ulogu — koriste se kombinacije \( \binom{n}{k} \), ne permutacije.</li>
+    <li><strong>Pogrešno izračunati binomne koeficijente:</strong> Posebno \( \binom{8}{3} = 56 \) i \( \binom{6}{3} = 20 \) — lako je pogrešiti pri ručnom računanju.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Kako bi se promenio odgovor da komisija mora da ima tačno jednog predsednika koji mora biti matematičar? Drugim rečima, biramo jednog matematičara za predsednika, a zatim preostala \( 4 \) člana uz iste uslove (bar još \( 1 \) matematičar i bar \( 1 \) programer).</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Predsednika biramo na \( 8 \) načina. Preostala \( 4 \) člana biramo od \( 7 \) matematičara i \( 6 \) programera, uz uslove: bar \( 1 \) matematičar i bar \( 1 \) programer. Dozvoljeni sastavi preostalih: (1M, 3P), (2M, 2P), (3M, 1P). Izračunajte \( 8 \cdot \left[\binom{7}{1}\binom{6}{3} + \binom{7}{2}\binom{6}{2} + \binom{7}{3}\binom{6}{1}\right] \) i uporedite sa originalnim rezultatom.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-p18');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText('Tri dozvoljene kombinacije za komisiju od 5 \u010Dlanova', W / 2, 28);
+
+    // Layout: 3 columns, each showing a case
+    var cases = [
+      { m: 2, p: 3, cm: 28, cp: 20, total: 560 },
+      { m: 3, p: 2, cm: 56, cp: 15, total: 840 },
+      { m: 4, p: 1, cm: 70, cp: 6, total: 420 }
+    ];
+    var colW = 200;
+    var gap = 25;
+    var totalW = 3 * colW + 2 * gap;
+    var startX = (W - totalW) / 2;
+    var topY = 55;
+
+    for (var c = 0; c < 3; c++) {
+      var cx = startX + c * (colW + gap);
+      var cas = cases[c];
+
+      // Column box
+      ctx.fillStyle = cvAlpha('--sol-canvas-grid', 0.3);
+      ctx.beginPath();
+      ctx.roundRect(cx, topY, colW, 340, 12);
+      ctx.fill();
+      ctx.strokeStyle = grid;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.roundRect(cx, topY, colW, 340, 12);
+      ctx.stroke();
+
+      // Case label
+      ctx.fillStyle = text;
+      ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Slu\u010Daj ' + (c + 1), cx + colW / 2, topY + 25);
+
+      // Math/Prog counts
+      ctx.font = '13px Segoe UI, system-ui, sans-serif';
+      ctx.fillStyle = primary;
+      ctx.fillText(cas.m + ' matemati\u010Dara', cx + colW / 2, topY + 50);
+      ctx.fillStyle = secondary;
+      ctx.fillText(cas.p + ' programera', cx + colW / 2, topY + 70);
+
+      // Draw person icons - mathematicians
+      var iconStartY = topY + 90;
+      var iconSize = 18;
+      var iconGap = 6;
+
+      // Math row
+      var mathRowW = cas.m * (iconSize + iconGap) - iconGap;
+      var mathRowX = cx + (colW - mathRowW) / 2;
+      for (var i = 0; i < cas.m; i++) {
+        var ix = mathRowX + i * (iconSize + iconGap);
+        // Circle head
+        ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.25);
+        ctx.beginPath();
+        ctx.arc(ix + iconSize / 2, iconStartY, iconSize / 2, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.strokeStyle = primary;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(ix + iconSize / 2, iconStartY, iconSize / 2, 0, 2 * Math.PI);
+        ctx.stroke();
+        // Body
+        ctx.beginPath();
+        ctx.moveTo(ix + iconSize / 2, iconStartY + iconSize / 2);
+        ctx.lineTo(ix + iconSize / 2, iconStartY + iconSize + 5);
+        ctx.stroke();
+        // Label M
+        ctx.fillStyle = primary;
+        ctx.font = 'bold 10px Segoe UI, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('M', ix + iconSize / 2, iconStartY + 2);
+      }
+
+      // Prog row
+      var progStartY = iconStartY + iconSize + 25;
+      var progRowW = cas.p * (iconSize + iconGap) - iconGap;
+      var progRowX = cx + (colW - progRowW) / 2;
+      for (var j = 0; j < cas.p; j++) {
+        var jx = progRowX + j * (iconSize + iconGap);
+        ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.25);
+        ctx.beginPath();
+        ctx.arc(jx + iconSize / 2, progStartY, iconSize / 2, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.strokeStyle = secondary;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(jx + iconSize / 2, progStartY, iconSize / 2, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(jx + iconSize / 2, progStartY + iconSize / 2);
+        ctx.lineTo(jx + iconSize / 2, progStartY + iconSize + 5);
+        ctx.stroke();
+        ctx.fillStyle = secondary;
+        ctx.font = 'bold 10px Segoe UI, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('P', jx + iconSize / 2, progStartY + 2);
+      }
+
+      // Formula
+      var formulaY = progStartY + iconSize + 40;
+      ctx.fillStyle = text;
+      ctx.font = '12px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('C(8,' + cas.m + ') \u00D7 C(6,' + cas.p + ')', cx + colW / 2, formulaY);
+
+      ctx.fillStyle = muted;
+      ctx.font = '12px Segoe UI, system-ui, sans-serif';
+      ctx.fillText(cas.cm + ' \u00D7 ' + cas.cp, cx + colW / 2, formulaY + 20);
+
+      // Result
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 22px Segoe UI, system-ui, sans-serif';
+      ctx.fillText(cas.total.toString(), cx + colW / 2, formulaY + 55);
+    }
+
+    // Plus signs between columns
+    ctx.fillStyle = text;
+    ctx.font = 'bold 24px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    var plusY = topY + 170;
+    ctx.fillText('+', startX + colW + gap / 2, plusY);
+    ctx.fillText('+', startX + 2 * colW + gap + gap / 2, plusY);
+
+    // Bottom total bar
+    var totalY = topY + 360;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.15);
+    ctx.beginPath();
+    ctx.roundRect(startX, totalY, totalW, 50, 10);
+    ctx.fill();
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(startX, totalY, totalW, 50, 10);
+    ctx.stroke();
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Ukupno: 560 + 840 + 420 = ', startX + totalW / 2 - 40, totalY + 25);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 22px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('1820', startX + totalW / 2 + 110, totalY + 25);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Formiranje komisije od matematičara i programera",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["kombinacije", "kombinatorika", "binomni koeficijenti", "pravilo zbira", "pravilo proizvoda"]
+}
+BRAINSPARK_META-->

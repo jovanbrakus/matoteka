@@ -1,0 +1,546 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Find the area of the figure defined by x^2 + y^2 <= 1 + 2|x|.
+
+  Step 1: Rewrite the inequality
+  x^2 + y^2 <= 1 + 2|x|
+  x^2 - 2|x| + y^2 <= 1
+  (|x| - 1)^2 + y^2 <= 1 + 1 = 2
+
+  Wait, let me redo: x^2 - 2|x| + 1 + y^2 <= 1 + 1
+  (|x| - 1)^2 + y^2 <= 2
+
+  So this is the union of two circles:
+  - (x - 1)^2 + y^2 <= 2 (for x >= 0, |x| = x)
+  - (x + 1)^2 + y^2 <= 2 (for x < 0, |x| = -x)
+
+  Actually since (|x| - 1)^2 + y^2 <= 2, this is equivalent to the union of:
+  - Circle C1: center (1, 0), radius sqrt(2)
+  - Circle C2: center (-1, 0), radius sqrt(2)
+
+  Step 2: Find the area
+  Each circle has area pi * (sqrt(2))^2 = 2*pi.
+
+  The two circles overlap. We need: Area(C1 union C2) = Area(C1) + Area(C2) - Area(intersection).
+
+  Find intersection: distance between centers = 2, radius = sqrt(2).
+  Since d = 2 and r = sqrt(2), d/(2r) = 2/(2*sqrt(2)) = 1/sqrt(2), so half-angle alpha satisfies cos(alpha) = d/(2r) = 1/sqrt(2), alpha = pi/4.
+
+  Actually let me use the standard formula. Two circles of radius r with centers distance d apart.
+  r = sqrt(2), d = 2.
+
+  The area of intersection of two circles:
+  A_int = 2r^2 * arccos(d/(2r)) - (d/2)*sqrt(4r^2 - d^2)
+  = 2*2 * arccos(2/(2*sqrt(2))) - 1 * sqrt(8 - 4)
+  = 4 * arccos(1/sqrt(2)) - sqrt(4)
+  = 4 * (pi/4) - 2
+  = pi - 2
+
+  Total area = 2 * 2*pi - (pi - 2) = 4*pi - pi + 2 = 3*pi + 2.
+
+  Answer: (A) 3*pi + 2.
+
+  Alternative approach (from official solution):
+  The region for x >= 0 consists of 3/4 of circle C1 plus half of a square with side sqrt(2).
+
+  Actually, let me think about this differently. The circle C1 centered at (1,0) with radius sqrt(2) extends from x = 1-sqrt(2) to x = 1+sqrt(2). The part for x >= 0 is 3/4 of the circle plus the triangle/region for x < 0.
+
+  Hmm, let me just use the inclusion-exclusion approach:
+  Area = 2 * pi * 2 - (pi - 2) = 4pi - pi + 2 = 3pi + 2. This checks out.
+
+  Verification of intersection area:
+  The circles intersect where (x-1)^2 + y^2 = 2 and (x+1)^2 + y^2 = 2.
+  Subtracting: (x-1)^2 - (x+1)^2 = 0 => -4x = 0 => x = 0.
+  At x = 0: 1 + y^2 = 2 => y = +/-1.
+
+  So the circles intersect at (0, 1) and (0, -1).
+
+  For circle C1 centered at (1,0), the angle to (0,1):
+  vector from (1,0) to (0,1) = (-1, 1), angle = 3pi/4
+  vector from (1,0) to (0,-1) = (-1, -1), angle = -3pi/4 = 5pi/4
+
+  The sector angle for the intersection piece of C1 is the angle subtended at center (1,0) between (0,1) and (0,-1) on the side x < 1... that's the angle from 3pi/4 to 5pi/4 going through pi, which is pi/2... wait.
+
+  Angle from center (1,0) to (0,1): atan2(1-0, 0-1) = atan2(1,-1) = 3pi/4
+  Angle from center (1,0) to (0,-1): atan2(-1,-1) = -3pi/4 = 5pi/4
+
+  The sector from 3pi/4 to 5pi/4 (going counterclockwise through pi) subtends an angle of pi/2.
+  Wait no: from 3pi/4 to 5pi/4 is 5pi/4 - 3pi/4 = 2pi/4 = pi/2.
+
+  Area of circular segment = sector - triangle
+  Sector: (1/2) * r^2 * theta = (1/2) * 2 * (pi/2) = pi/2
+  Triangle: vertices (1,0), (0,1), (0,-1). Area = (1/2) * base * height = (1/2) * 2 * 1 = 1.
+  Segment = pi/2 - 1.
+
+  Two segments (one from each circle): 2 * (pi/2 - 1) = pi - 2. ✓
+
+  So area of union = 2 * 2pi - (pi - 2) = 3pi + 2. ✓ Answer (A).
+</script>
+
+<h1 data-card="problem-title">Površina figure određene nejednačinom sa apsolutnom vrednošću</h1>
+<p data-card="problem-subtitle" class="subtitle">Analitička geometrija — unija dva kruga, inkluzija-ekskluzija</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Figura u ravni koja je u pravouglom Dekartovom koordinatnom sistemu određena sa \( x^2 + y^2 \leqslant 1 + 2|x| \) ima površinu jednaku:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 3\pi + 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \dfrac{10}{3}\pi + \sqrt{3} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 3\pi - 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 4\pi - 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 4\pi \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">
+    Transformisaćemo nejednačinu dopunom do potpunog kvadrata po \( |x| \), čime ćemo prepoznati da je oblast unija dva kruga. Zatim ćemo površinu unije izračunati formulom inkluzije-ekskluzije: \( P(\text{unija}) = P(C_1) + P(C_2) - P(\text{presek}) \).
+  </p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Jednačina kruga:</strong> \( (x - a)^2 + (y - b)^2 = r^2 \) — krug sa centrom \( (a, b) \) i poluprečnikom \( r \).</li>
+        <li><strong>Dopuna do potpunog kvadrata:</strong> \( x^2 - 2ax = (x - a)^2 - a^2 \).</li>
+        <li><strong>Površina kružnog isečka:</strong> \( P = \frac{1}{2} r^2 \theta \), gde je \( \theta \) centralni ugao u radijanima.</li>
+        <li><strong>Inkluzija-ekskluzija:</strong> \( P(A \cup B) = P(A) + P(B) - P(A \cap B) \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram5" width="700" height="550"></canvas>
+  </div>
+  <p class="canvas-caption">Dva kruga sa centrima u \( (\pm 1, 0) \) i poluprečnikom \( \sqrt{2} \). Osenčena oblast je tražena figura — unija dva kruga.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Transformišemo nejednačinu</h3>
+      <p>Polazna nejednačina je:</p>
+      <div class="math-block">
+        \[ x^2 + y^2 \leqslant 1 + 2|x| \]
+      </div>
+      <p>Prebacimo \( 2|x| \) na levu stranu i dopunimo do potpunog kvadrata:</p>
+      <div class="math-block">
+        \[ x^2 - 2|x| + y^2 \leqslant 1 \]
+      </div>
+      <div class="math-block">
+        \[ \underbrace{x^2 - 2|x| + 1}_{(|x| - 1)^2} + y^2 \leqslant 1 + 1 \]
+      </div>
+      <div class="math-block">
+        \[ (|x| - 1)^2 + y^2 \leqslant 2 \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto pišemo \( (|x| - 1)^2 \) a ne \( (x - 1)^2 \)?</summary>
+          <div class="detail-content">
+            <p>Zato što u polaznoj nejednačini imamo \( 2|x| \), ne \( 2x \). Dopuna do kvadrata sa \( |x| \) daje \( |x|^2 - 2|x| + 1 = (|x| - 1)^2 \). Pritom, \( |x|^2 = x^2 \) jer je kvadrat uvek nenegativan.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Rastavimo na dva slučaja po znaku \( x \)</h3>
+      <p>Za \( x \geqslant 0 \): \( |x| = x \), pa nejednačina postaje:</p>
+      <div class="math-block">
+        \[ (x - 1)^2 + y^2 \leqslant 2 \quad \Longleftrightarrow \quad C_1: \text{krug sa centrom } (1, 0), \; r = \sqrt{2} \]
+      </div>
+      <p>Za \( x < 0 \): \( |x| = -x \), pa nejednačina postaje:</p>
+      <div class="math-block">
+        \[ (x + 1)^2 + y^2 \leqslant 2 \quad \Longleftrightarrow \quad C_2: \text{krug sa centrom } (-1, 0), \; r = \sqrt{2} \]
+      </div>
+      <p>Tražena oblast je <strong>unija</strong> \( C_1 \cup C_2 \).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Da li se ova dva kruga seku?</summary>
+          <div class="detail-content">
+            <p>Rastojanje između centara je \( d = 2 \), a poluprečnik svakog kruga je \( r = \sqrt{2} \approx 1{,}414 \). Pošto je \( d = 2 < 2r = 2\sqrt{2} \approx 2{,}828 \), krugovi se seku u dve tačke.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Nađemo tačke preseka</h3>
+      <p>Iz sistema \( (x-1)^2 + y^2 = 2 \) i \( (x+1)^2 + y^2 = 2 \), oduzimanjem dobijamo:</p>
+      <div class="math-block">
+        \[ (x-1)^2 - (x+1)^2 = 0 \implies -4x = 0 \implies x = 0 \]
+      </div>
+      <p>Za \( x = 0 \): \( 1 + y^2 = 2 \implies y = \pm 1 \). Tačke preseka su \( (0, 1) \) i \( (0, -1) \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunamo površinu preseka dva kruga</h3>
+      <p>Presek se sastoji od dva kružna odsečka (po jedan od svakog kruga). Zbog simetrije, oba su jednaka.</p>
+      <p>Za krug \( C_1 \) sa centrom \( (1, 0) \), ugao pod kojim se vide tačke preseka iz centra:</p>
+      <div class="math-block">
+        \[ \cos\alpha = \frac{d/2}{r} = \frac{1}{\sqrt{2}} \implies \alpha = \frac{\pi}{4} \]
+      </div>
+      <p>Centralni ugao odsečka je \( 2\alpha = \frac{\pi}{2} \). Površina jednog odsečka:</p>
+      <div class="math-block">
+        \[ P_{\text{odsečak}} = \frac{1}{2}r^2(\theta - \sin\theta) = \frac{1}{2} \cdot 2 \cdot \left(\frac{\pi}{2} - \sin\frac{\pi}{2}\right) = \frac{\pi}{2} - 1 \]
+      </div>
+      <p>Površina preseka (dva odsečka):</p>
+      <div class="math-block">
+        \[ P(C_1 \cap C_2) = 2 \cdot \left(\frac{\pi}{2} - 1\right) = \pi - 2 \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Šta je to kružni odsečak?</summary>
+          <div class="detail-content">
+            <p>Kružni odsečak je oblast omeđena lukom kruga i tetivom koja spaja krajeve tog luka. Njegova površina je razlika površine kružnog isečka i trougla: \( P = \frac{1}{2}r^2(\theta - \sin\theta) \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Primenimo inkluziju-ekskluziju</h3>
+      <p>Površina svakog kruga je \( P(C_i) = \pi r^2 = \pi \cdot 2 = 2\pi \). Dakle:</p>
+      <div class="math-block">
+        \[ P(C_1 \cup C_2) = P(C_1) + P(C_2) - P(C_1 \cap C_2) = 2\pi + 2\pi - (\pi - 2) = 3\pi + 2 \]
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Ključ zadatka je <strong>dopuna do potpunog kvadrata</strong> u promenljivoj \( |x| \). Izraz \( x^2 - 2|x| + 1 \) se prepoznaje kao \( (|x| - 1)^2 \), čime se nejednačina svodi na uniju dva kruga — poznatu geometrijsku figuru čija se površina računa inkluzijom-ekskluzijom.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ P = 3\pi + 2 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 3\pi + 2 \)</span>
+    <span class="answer-option" data-option="B">(B) \( \dfrac{10}{3}\pi + \sqrt{3} \)</span>
+    <span class="answer-option" data-option="C">(C) \( 3\pi - 2 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 4\pi - 2 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 4\pi \)</span>
+  </div>
+  <p class="verification">Verifikacija: \( 2 \cdot 2\pi - (\pi - 2) = 4\pi - \pi + 2 = 3\pi + 2 \approx 11{,}42 \). Numerički: oblast je malo veća od dve trećine zbira površina oba kruga, što se slaže sa vizuelnim prikazom.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zaboravljanje preseka:</strong> Računanje \( 2 \cdot 2\pi = 4\pi \) bez oduzimanja površine preseka daje pogrešan odgovor (E).</li>
+    <li><strong>Pogrešan znak pri dopuni:</strong> Pisanje \( (x - 1)^2 \) umesto \( (|x| - 1)^2 \) daje samo jedan krug za \( x \geqslant 0 \), ali ne i celu oblast.</li>
+    <li><strong>Greška u površini preseka:</strong> Zamena \( \pi - 2 \) sa \( \pi + 2 \) daje \( 4\pi - \pi - 2 = 3\pi - 2 \), što je mamac (C).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Kolika bi bila površina figure određene nejednačinom \( x^2 + y^2 \leqslant 4 + 4|x| \)? Uporedi sa rezultatom iz ovog zadatka.</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Nejednačina se svodi na \( (|x| - 2)^2 + y^2 \leqslant 8 \), dakle dva kruga sa centrima \( (\pm 2, 0) \) i poluprečnikom \( 2\sqrt{2} \). Rastojanje centara je 4, a poluprečnik \( 2\sqrt{2} \approx 2{,}83 \), pa se krugovi seku. Površina preseka je \( 4(\pi - 2) \), a ukupna: \( 2 \cdot 8\pi - 4(\pi - 2) = 12\pi + 8 \). Primetite skaliranje: sve dimenzije su udvostručene, pa površina raste 4 puta.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram5');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Coordinate system
+    var cx = W / 2;
+    var cy = H / 2 - 10;
+    var scale = 120; // pixels per unit
+
+    function toX(x) { return cx + x * scale; }
+    function toY(y) { return cy - y * scale; }
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Unija dva kruga: (|x| \u2212 1)\u00B2 + y\u00B2 \u2264 2', W / 2, 28);
+
+    // Grid lines
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 0.5;
+    for (var gx = -3; gx <= 3; gx++) {
+      ctx.beginPath();
+      ctx.moveTo(toX(gx), toY(-2.5));
+      ctx.lineTo(toX(gx), toY(2.5));
+      ctx.stroke();
+    }
+    for (var gy = -2; gy <= 2; gy++) {
+      ctx.beginPath();
+      ctx.moveTo(toX(-3), toY(gy));
+      ctx.lineTo(toX(3), toY(gy));
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(toX(-3.2), toY(0));
+    ctx.lineTo(toX(3.2), toY(0));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(toX(0), toY(-2.3));
+    ctx.lineTo(toX(0), toY(2.5));
+    ctx.stroke();
+
+    // Axis labels
+    ctx.fillStyle = muted;
+    ctx.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('x', toX(3.2), toY(0) - 10);
+    ctx.textAlign = 'left';
+    ctx.fillText('y', toX(0) + 8, toY(2.4));
+
+    // Tick labels
+    ctx.fillStyle = muted;
+    ctx.font = '11px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    var ticks = [-3, -2, -1, 1, 2, 3];
+    for (var ti = 0; ti < ticks.length; ti++) {
+      ctx.fillText(ticks[ti].toString(), toX(ticks[ti]), toY(0) + 15);
+    }
+    ctx.textAlign = 'right';
+    var yticks = [-2, -1, 1, 2];
+    for (var yi = 0; yi < yticks.length; yi++) {
+      ctx.fillText(yticks[yi].toString(), toX(0) - 8, toY(yticks[yi]) + 4);
+    }
+
+    // Draw filled union region using clipping
+    // First, fill circle C1 with transparency
+    var r = Math.sqrt(2);
+    var c1x = toX(1);
+    var c1y = toY(0);
+    var c2x = toX(-1);
+    var c2y = toY(0);
+    var rPx = r * scale;
+
+    // Fill union
+    ctx.save();
+    ctx.globalAlpha = 0.15;
+    ctx.fillStyle = primary;
+    ctx.beginPath();
+    ctx.arc(c1x, c1y, rPx, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.fillStyle = secondary;
+    ctx.beginPath();
+    ctx.arc(c2x, c2y, rPx, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.restore();
+
+    // Highlight intersection with darker shade
+    ctx.save();
+    ctx.globalAlpha = 0.2;
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(c1x, c1y, rPx, 0, 2 * Math.PI);
+    ctx.clip();
+    ctx.beginPath();
+    ctx.arc(c2x, c2y, rPx, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.restore();
+
+    // Draw circle outlines
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = primary;
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.arc(c1x, c1y, rPx, 0, 2 * Math.PI);
+    ctx.stroke();
+
+    ctx.strokeStyle = secondary;
+    ctx.beginPath();
+    ctx.arc(c2x, c2y, rPx, 0, 2 * Math.PI);
+    ctx.stroke();
+
+    // Mark centers
+    ctx.fillStyle = primary;
+    ctx.beginPath();
+    ctx.arc(c1x, c1y, 4, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.fillStyle = secondary;
+    ctx.beginPath();
+    ctx.arc(c2x, c2y, 4, 0, 2 * Math.PI);
+    ctx.fill();
+
+    // Center labels
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = primary;
+    ctx.fillText('C\u2081(1, 0)', c1x, c1y + 20);
+    ctx.fillStyle = secondary;
+    ctx.fillText('C\u2082(\u22121, 0)', c2x, c2y + 20);
+
+    // Intersection points
+    var intPts = [[0, 1], [0, -1]];
+    for (var p = 0; p < 2; p++) {
+      var px = toX(intPts[p][0]);
+      var py = toY(intPts[p][1]);
+      ctx.fillStyle = danger;
+      ctx.beginPath();
+      ctx.arc(px, py, 5, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+
+    // Labels for intersection points
+    ctx.fillStyle = danger;
+    ctx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('(0, 1)', toX(0) + 8, toY(1) - 5);
+    ctx.fillText('(0, \u22121)', toX(0) + 8, toY(-1) + 15);
+
+    // Radius annotation for C1
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath();
+    ctx.moveTo(c1x, c1y);
+    var rAngle = Math.PI / 6;
+    ctx.lineTo(c1x + rPx * Math.cos(rAngle), c1y - rPx * Math.sin(rAngle));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = primary;
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('r = \u221A2', c1x + rPx * 0.55 * Math.cos(rAngle), c1y - rPx * 0.55 * Math.sin(rAngle) - 8);
+
+    // Angle arc at C1 showing pi/2 sector
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 1.5;
+    var angStart = Math.atan2(-(toY(1) - c1y), toX(0) - c1x);
+    var angEnd = Math.atan2(-(toY(-1) - c1y), toX(0) - c1x);
+    ctx.beginPath();
+    ctx.arc(c1x, c1y, 25, angStart, angEnd);
+    ctx.stroke();
+
+    ctx.fillStyle = highlight;
+    ctx.font = '11px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('\u03C0/2', c1x - 28, c1y + 4);
+
+    // Legend
+    var legY = H - 55;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('P(unija) = P(C\u2081) + P(C\u2082) \u2212 P(presek) = 2\u03C0 + 2\u03C0 \u2212 (\u03C0 \u2212 2) = 3\u03C0 + 2', W / 2, legY);
+
+    // Labels for regions
+    ctx.font = '11px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = accent;
+    ctx.textAlign = 'center';
+    ctx.fillText('presek', toX(0), toY(0) - 5);
+    ctx.fillText('\u03C0 \u2212 2', toX(0), toY(0) + 10);
+
+    ctx.fillStyle = primary;
+    ctx.fillText('samo C\u2081', toX(1.8), toY(0.5));
+
+    ctx.fillStyle = secondary;
+    ctx.fillText('samo C\u2082', toX(-1.8), toY(0.5));
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Površina figure date nejednačinom sa apsolutnom vrednošću",
+  "subject": "math",
+  "unit": "analitička_geometrija",
+  "topic_tags": ["nejednačina", "apsolutna vrednost", "krug", "površina", "inkluzija-ekskluzija", "dopuna do potpunog kvadrata"]
+}
+BRAINSPARK_META-->

@@ -1,0 +1,806 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Square ABCD with side 2 cm. Two triangles cut out:
+  - Triangle 1: vertex B, midpoints of AB and BC (call them M_AB and M_BC)
+  - Triangle 2: vertex D, midpoints of CD and DA (call them M_CD and M_DA)
+  Remaining shape rotated around line containing AB. Find volume.
+
+  Setup coordinates: A = (0,0), B = (0,2), C = (2,2), D = (2,0).
+  AB is along y-axis (rotation axis).
+
+  Midpoints:
+  M_AB = (0,1), M_BC = (1,2), M_CD = (2,1), M_DA = (1,0)
+
+  Triangle 1: B(0,2), M_AB(0,1), M_BC(1,2)
+    For y in [1,2], occupies x in [0, y-1]
+
+  Triangle 2: D(2,0), M_CD(2,1), M_DA(1,0)
+    For y in [0,1], occupies x in [y+1, 2]
+
+  Strategy: V = V_cylinder - V_tri1 - V_tri2
+
+  V_cyl = pi * 2^2 * 2 = 8pi
+
+  V_tri1 = pi * integral_1^2 (y-1)^2 dy = pi * [(y-1)^3/3]_1^2 = pi/3
+  (This is a cone with r=1, h=1)
+
+  V_tri2 = pi * integral_0^1 [4 - (y+1)^2] dy
+         = pi * [4y - (y+1)^3/3]_0^1
+         = pi * [(4 - 8/3) - (0 - 1/3)]
+         = pi * [4/3 + 1/3] = 5pi/3
+
+  V = 8pi - pi/3 - 5pi/3 = 8pi - 6pi/3 = 8pi - 2pi = 6pi
+
+  Answer: (C) 6pi cm^3
+
+  Verification by direct integration:
+  y in [0,1]: remaining is x in [0, y+1], disk R = y+1
+    V1 = pi * integral_0^1 (y+1)^2 dy = pi * [(y+1)^3/3]_0^1 = pi*(8/3 - 1/3) = 7pi/3
+
+  y in [1,2]: remaining is x in [y-1, 2], washer R=2, r=y-1
+    V2 = pi * integral_1^2 [4 - (y-1)^2] dy = pi * [4y - (y-1)^3/3]_1^2
+       = pi * [(8 - 1/3) - (4 - 0)] = pi * [4 - 1/3] = 11pi/3
+
+  Total = 7pi/3 + 11pi/3 = 18pi/3 = 6pi. Confirmed.
+</script>
+
+<h1 data-card="problem-title">Zapremina rotacionog tela iz kvadrata</h1>
+<p data-card="problem-subtitle" class="subtitle">Stereometrija — zapremina tela dobijenog rotacijom</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Iz kvadrata \( ABCD \), čija stranica je dužine 2 cm, isečena su dva trougla čija su temena tačka \( B \) i središta stranica \( AB \) i \( BC \), odnosno tačka \( D \) i središta stranica \( CD \) i \( DA \). Zapremina tela nastalog rotacijom preostalog dela kvadrata oko prave koja sadrži stranicu \( AB \) jednaka je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 4\pi \ \text{cm}^3 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 5\pi \ \text{cm}^3 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 6\pi \ \text{cm}^3 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 7\pi \ \text{cm}^3 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 8\pi \ \text{cm}^3 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">
+    Postavićemo koordinatni sistem tako da stranica \( AB \) leži na \( y \)-osi (osa rotacije). Odredićemo granice preostale figure, pa ćemo zapreminu izračunati tako što od zapremine punog cilindra (rotiranog kvadrata) oduzmemo zapremine rotiranih isečenih trouglova.
+  </p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Metoda diskova:</strong> \( V = \pi \int_a^b [R(y)]^2 \, dy \), gde je \( R(y) \) rastojanje spoljne ivice od ose rotacije.</li>
+        <li><strong>Metoda prstenova (vašera):</strong> \( V = \pi \int_a^b \big([R(y)]^2 - [r(y)]^2\big) \, dy \), gde su \( R \) i \( r \) spoljni i unutrašnji poluprečnik.</li>
+        <li><strong>Zapremina cilindra:</strong> \( V = \pi r^2 h \)</li>
+        <li><strong>Zapremina kupe:</strong> \( V = \frac{1}{3}\pi r^2 h \)</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Kvadrat sa isečenim trouglovima">
+  <h2>📐 Kvadrat sa isečenim trouglovima</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-shape" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Kvadrat \( ABCD \) sa označenim isečenim trouglovima i osom rotacije \( AB \)</p>
+</div>
+
+<div data-card="visual-aid" data-title="Poprečni preseci rotacionog tela">
+  <h2>📐 Poprečni preseci rotacionog tela</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-cross" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Poprečni preseci: dole diskovi poluprečnika \( y+1 \), gore prstenovi sa \( R=2 \), \( r=y-1 \)</p>
+</div>
+
+<div data-card="visual-aid" data-title="Dekompozicija zapremine">
+  <h2>📐 Dekompozicija: cilindar minus dva rotaciona tela</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-decomp" width="700" height="460"></canvas>
+  </div>
+  <p class="canvas-caption">Zapremina = cilindar \( 8\pi \) minus rotirani trougao 1 (\( \frac{\pi}{3} \)) minus rotirani trougao 2 (\( \frac{5\pi}{3} \))</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavimo koordinatni sistem</h3>
+      <p>Neka je \( A = (0, 0) \) i \( B = (0, 2) \), tako da stranica \( AB \) leži na \( y \)-osi — to je naša osa rotacije. Kvadrat se prostire udesno:</p>
+      <div class="math-block">
+        \[ A = (0,0), \quad B = (0,2), \quad C = (2,2), \quad D = (2,0) \]
+      </div>
+      <p>Središta stranica su:</p>
+      <div class="math-block">
+        \[ M_{AB} = (0,1), \quad M_{BC} = (1,2), \quad M_{CD} = (2,1), \quad M_{DA} = (1,0) \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Odredimo isečene trouglove</h3>
+      <p><strong>Trougao 1</strong> (gornji): temena \( B(0,2) \), \( M_{AB}(0,1) \), \( M_{BC}(1,2) \).</p>
+      <p>Na visini \( y \in [1,2] \), ovaj trougao zauzima \( x \in [0,\, y-1] \). Hipotenuza ide od \( (0,1) \) do \( (1,2) \), tj. \( x = y - 1 \).</p>
+      <p><strong>Trougao 2</strong> (donji): temena \( D(2,0) \), \( M_{CD}(2,1) \), \( M_{DA}(1,0) \).</p>
+      <p>Na visini \( y \in [0,1] \), ovaj trougao zauzima \( x \in [y+1,\, 2] \). Hipotenuza ide od \( (1,0) \) do \( (2,1) \), tj. \( x = y + 1 \).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto je hipotenuza trougla 2 data sa \( x = y+1 \)?</summary>
+          <div class="detail-content">
+            <p>Prava kroz tačke \( (1,0) \) i \( (2,1) \) ima nagib \( \frac{1-0}{2-1} = 1 \) i odsečak \( b = -1 \), tj. \( y = x - 1 \), odakle \( x = y + 1 \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Strategija: cilindar minus dva rotaciona tela</h3>
+      <p>Rotacijom punog kvadrata oko \( AB \) (tj. \( y \)-ose) dobijamo <strong>cilindar</strong> poluprečnika 2 i visine 2:</p>
+      <div class="math-block">
+        \[ V_{\text{cil}} = \pi \cdot 2^2 \cdot 2 = 8\pi \]
+      </div>
+      <p>Zapremina preostalog tela je:</p>
+      <div class="math-block">
+        \[ V = V_{\text{cil}} - V_{\triangle 1} - V_{\triangle 2} \]
+      </div>
+      <p>gde su \( V_{\triangle 1} \) i \( V_{\triangle 2} \) zapremine tela dobijenih rotacijom isečenih trouglova.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Zapremina rotiranog trougla 1</h3>
+      <p>Trougao 1 za \( y \in [1,2] \) zauzima \( x \in [0, y-1] \). Pošto mu je leva ivica na osi (\( x = 0 \)), rotacijom dobijamo <strong>diskove</strong> poluprečnika \( R = y - 1 \):</p>
+      <div class="math-block">
+        \[ V_{\triangle 1} = \pi \int_1^2 (y-1)^2 \, dy \]
+      </div>
+      <p>Uvedemo smenu \( u = y - 1 \), \( du = dy \), granice: \( u \in [0, 1] \):</p>
+      <div class="math-block">
+        \[ V_{\triangle 1} = \pi \int_0^1 u^2 \, du = \pi \cdot \frac{u^3}{3}\bigg|_0^1 = \frac{\pi}{3} \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Koje telo nastaje rotacijom ovog trougla?</summary>
+          <div class="detail-content">
+            <p>To je <strong>kupa</strong> (konus) sa poluprečnikom osnove 1 i visinom 1. Zaista, \( V = \frac{1}{3}\pi \cdot 1^2 \cdot 1 = \frac{\pi}{3} \). ✓</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Zapremina rotiranog trougla 2</h3>
+      <p>Trougao 2 za \( y \in [0,1] \) zauzima \( x \in [y+1, 2] \). Rotacijom dobijamo <strong>prstenove</strong> sa \( R = 2 \) i \( r = y+1 \):</p>
+      <div class="math-block">
+        \[ V_{\triangle 2} = \pi \int_0^1 \big[2^2 - (y+1)^2\big] \, dy = \pi \int_0^1 \big[4 - (y+1)^2\big] \, dy \]
+      </div>
+      <p>Računamo:</p>
+      <div class="math-block">
+        \[ V_{\triangle 2} = \pi \left[4y - \frac{(y+1)^3}{3}\right]_0^1 = \pi \left[\left(4 - \frac{8}{3}\right) - \left(0 - \frac{1}{3}\right)\right] \]
+      </div>
+      <div class="math-block">
+        \[ = \pi \left[\frac{4}{3} + \frac{1}{3}\right] = \frac{5\pi}{3} \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto ovde imamo prstenove, a ne diskove?</summary>
+          <div class="detail-content">
+            <p>Zato što trougao 2 ne dodiruje osu rotacije (\( x = 0 \)). Njegov najmanji \( x \) je \( y + 1 \geq 1 > 0 \), pa rotacijom nastaje telo sa šupljinom u sredini — odatle prstenovi.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Konačna zapremina</h3>
+      <p>Sada oduzmemo zapremine isečenih delova od cilindra:</p>
+      <div class="math-block">
+        \[ V = 8\pi - \frac{\pi}{3} - \frac{5\pi}{3} = 8\pi - \frac{6\pi}{3} = 8\pi - 2\pi = 6\pi \ \text{cm}^3 \]
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Umesto da direktno integraliimo složenu figuru, <strong>mnogo je lakše</strong> izračunati zapreminu celog cilindra (rotirani kvadrat) i od nje oduzeti zapremine rotiranih isečenih trouglova. Trougao uz osu daje kupu (\( \frac{\pi}{3} \)), a trougao daleko od ose daje veće telo (\( \frac{5\pi}{3} \)) — jer su mu tačke dalje od ose, pa pri rotaciji „opisuju" veće krugove.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ V = 8\pi - \frac{\pi}{3} - \frac{5\pi}{3} = 6\pi \ \text{cm}^3 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 4\pi \ \text{cm}^3 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 5\pi \ \text{cm}^3 \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( 6\pi \ \text{cm}^3 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 7\pi \ \text{cm}^3 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 8\pi \ \text{cm}^3 \)</span>
+  </div>
+  <p class="verification">Provera: \( 8\pi - \frac{1}{3}\pi - \frac{5}{3}\pi = 8\pi - 2\pi = 6\pi \). Alternativno, direktnom integracijom: \( \frac{7\pi}{3} + \frac{11\pi}{3} = \frac{18\pi}{3} = 6\pi \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zaboraviti da trougao 2 stvara prstenove:</strong> Trougao 2 (kod temena \( D \)) ne dodiruje osu rotacije, pa rotacijom nastaje telo sa šupljinom. Ako se računa kao da su diskovi, dobija se pogrešan rezultat.</li>
+    <li><strong>Pomešati osu rotacije:</strong> Rotiramo oko prave kroz \( AB \), ne kroz dijagonalu ili drugu stranicu. Uvek pažljivo pročitajte oko čega se rotira!</li>
+    <li><strong>Pogrešne granice integracije:</strong> Trougao 1 postoji samo za \( y \in [1,2] \), a trougao 2 za \( y \in [0,1] \). Ne mešati domene!</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta bi se desilo ako bismo preostalu figuru rotirali oko prave koja sadrži stranicu \( AD \) umesto \( AB \)? Da li bi zapremina bila ista, ili različita? Razmisli o simetriji figure.</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Figura preostalog dela <strong>nije simetrična</strong> u odnosu na dijagonalu \( AC \), iako jeste u odnosu na dijagonalu \( BD \). Pri rotaciji oko \( AD \), uloge trouglova se menjaju — trougao 1 (kod \( B \)) je sada daleko od ose, a trougao 2 (kod \( D \)) je uz osu. Račun daje istu zapreminu \( 6\pi \) — pokušaj da to proveriš!</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-shape');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    var scale = 160;
+    var ox = 120;
+    var oy = H - 80;
+
+    function tx(x) { return ox + x * scale; }
+    function ty(y) { return oy - y * scale; }
+
+    // Draw remaining shape (filled)
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.15);
+    ctx.beginPath();
+    ctx.moveTo(tx(0), ty(0));
+    ctx.lineTo(tx(1), ty(0));
+    ctx.lineTo(tx(2), ty(1));
+    ctx.lineTo(tx(2), ty(2));
+    ctx.lineTo(tx(1), ty(2));
+    ctx.lineTo(tx(0), ty(1));
+    ctx.closePath();
+    ctx.fill();
+
+    // Draw remaining shape outline
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(tx(0), ty(0));
+    ctx.lineTo(tx(1), ty(0));
+    ctx.lineTo(tx(2), ty(1));
+    ctx.lineTo(tx(2), ty(2));
+    ctx.lineTo(tx(1), ty(2));
+    ctx.lineTo(tx(0), ty(1));
+    ctx.closePath();
+    ctx.stroke();
+
+    // Draw cut triangles (hatched)
+    // Triangle 1: B, M_AB, M_BC
+    ctx.fillStyle = cvAlpha('--sol-canvas-danger', 0.15);
+    ctx.beginPath();
+    ctx.moveTo(tx(0), ty(2));
+    ctx.lineTo(tx(0), ty(1));
+    ctx.lineTo(tx(1), ty(2));
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Triangle 2: D, M_CD, M_DA
+    ctx.fillStyle = cvAlpha('--sol-canvas-danger', 0.15);
+    ctx.beginPath();
+    ctx.moveTo(tx(2), ty(0));
+    ctx.lineTo(tx(2), ty(1));
+    ctx.lineTo(tx(1), ty(0));
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Square outline (dashed)
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.strokeRect(tx(0), ty(2), 2 * scale, 2 * scale);
+    ctx.setLineDash([]);
+
+    // Rotation axis (AB extended)
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.5;
+    ctx.setLineDash([8, 4]);
+    ctx.beginPath();
+    ctx.moveTo(tx(0), ty(-0.3));
+    ctx.lineTo(tx(0), ty(2.5));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Axis label
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('osa rotacije (AB)', tx(0), ty(2.65));
+
+    // Point labels
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+
+    var A = [0, 0], B = [0, 2], C = [2, 2], D = [2, 0];
+    var MAB = [0, 1], MBC = [1, 2], MCD = [2, 1], MDA = [1, 0];
+
+    ctx.fillStyle = text;
+    ctx.fillText('A', tx(A[0]) - 18, ty(A[1]) + 6);
+    ctx.fillText('B', tx(B[0]) - 18, ty(B[1]) + 6);
+    ctx.fillText('C', tx(C[0]) + 18, ty(C[1]) + 6);
+    ctx.fillText('D', tx(D[0]) + 18, ty(D[1]) + 6);
+
+    ctx.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('M_AB', tx(MAB[0]) - 30, ty(MAB[1]) + 4);
+    ctx.fillText('M_BC', tx(MBC[0]) + 4, ty(MBC[1]) - 12);
+    ctx.fillText('M_CD', tx(MCD[0]) + 30, ty(MCD[1]) + 4);
+    ctx.fillText('M_DA', tx(MDA[0]) + 4, ty(MDA[1]) + 20);
+
+    // Dots at vertices and midpoints
+    var pts = [A, B, C, D, MAB, MBC, MCD, MDA];
+    ctx.fillStyle = text;
+    for (var i = 0; i < pts.length; i++) {
+      ctx.beginPath();
+      ctx.arc(tx(pts[i][0]), ty(pts[i][1]), 4, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+
+    // Triangle labels
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = danger;
+    ctx.fillText('\u25B3 1', tx(0.25), ty(1.7));
+    ctx.fillText('\u25B3 2', tx(1.75), ty(0.3));
+
+    // Side label "2"
+    ctx.fillStyle = muted;
+    ctx.font = '14px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('2', tx(1), ty(-0.15));
+    ctx.save();
+    ctx.translate(tx(-0.2), ty(1));
+    ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center';
+    ctx.fillText('2', 0, 0);
+    ctx.restore();
+
+    // Legend
+    ctx.font = '13px Segoe UI, system-ui, sans-serif';
+    var legX = tx(2.5);
+    var legY = ty(1.8);
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.3);
+    ctx.fillRect(legX, legY, 16, 12);
+    ctx.fillStyle = text;
+    ctx.textAlign = 'left';
+    ctx.fillText('Preostala figura', legX + 22, legY + 11);
+
+    ctx.fillStyle = cvAlpha('--sol-canvas-danger', 0.3);
+    ctx.fillRect(legX, legY + 24, 16, 12);
+    ctx.fillStyle = text;
+    ctx.fillText('Iseceni trouglovi', legX + 22, legY + 35);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-cross');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var axis = cv('--sol-canvas-axis');
+    var danger = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    var scale = 130;
+    var ox = 100;
+    var oy = H - 60;
+
+    function tx(x) { return ox + x * scale; }
+    function ty(y) { return oy - y * scale; }
+
+    // Axis (y-axis = rotation axis)
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([8, 4]);
+    ctx.beginPath();
+    ctx.moveTo(tx(0), ty(-0.2));
+    ctx.lineTo(tx(0), ty(2.4));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Profile of remaining shape
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.12);
+    ctx.beginPath();
+    ctx.moveTo(tx(0), ty(0));
+    ctx.lineTo(tx(1), ty(0));
+    ctx.lineTo(tx(2), ty(1));
+    ctx.lineTo(tx(2), ty(2));
+    ctx.lineTo(tx(1), ty(2));
+    ctx.lineTo(tx(0), ty(1));
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Cross-section at y=0.5 (disk)
+    var y1 = 0.5;
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(tx(0), ty(y1));
+    ctx.lineTo(tx(y1 + 1), ty(y1));
+    ctx.stroke();
+
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('R = y+1', tx((y1 + 1) / 2), ty(y1) - 8);
+    ctx.fillText('(disk)', tx((y1 + 1) / 2), ty(y1) + 20);
+
+    // Cross-section at y=1.5 (washer)
+    var y2 = 1.5;
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(tx(y2 - 1), ty(y2));
+    ctx.lineTo(tx(2), ty(y2));
+    ctx.stroke();
+
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath();
+    ctx.moveTo(tx(0), ty(y2));
+    ctx.lineTo(tx(y2 - 1), ty(y2));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('R = 2', tx((y2 - 1 + 2) / 2), ty(y2) - 8);
+    ctx.fillStyle = danger;
+    ctx.fillText('r = y\u22121', tx((y2 - 1) / 2), ty(y2) - 8);
+    ctx.fillStyle = highlight;
+    ctx.fillText('(prstenovi)', tx(1.3), ty(y2) + 22);
+
+    // y labels
+    ctx.fillStyle = muted;
+    ctx.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('y = 0', tx(-0.1), ty(0) + 4);
+    ctx.fillText('y = 1', tx(-0.1), ty(1) + 4);
+    ctx.fillText('y = 2', tx(-0.1), ty(2) + 4);
+
+    // Dashed line at y=1 boundary
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(tx(-0.05), ty(1));
+    ctx.lineTo(tx(2.2), ty(1));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'left';
+    ctx.fillText('granica zona', tx(2.25), ty(1) + 4);
+
+    // Axis label
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('osa rotacije', tx(0), ty(2.55));
+
+    // x-axis labels
+    ctx.fillStyle = muted;
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('0', tx(0), ty(-0.35));
+    ctx.fillText('1', tx(1), ty(-0.35));
+    ctx.fillText('2', tx(2), ty(-0.35));
+    ctx.fillText('x', tx(2.3), ty(-0.35));
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-decomp');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    var boxW = 150;
+    var boxH = 200;
+    var gap = 40;
+    var startX = 30;
+    var topY = 80;
+
+    // Cylinder
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.15);
+    ctx.fillRect(startX, topY, boxW, boxH);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(startX, topY, boxW, boxH);
+
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Cilindar', startX + boxW / 2, topY - 15);
+    ctx.font = '14px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('8\u03C0', startX + boxW / 2, topY + boxH / 2 + 5);
+
+    // Minus
+    var x2 = startX + boxW + gap / 2;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 28px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('\u2212', x2, topY + boxH / 2 + 8);
+
+    // Triangle 1 (cone shape)
+    var x3 = startX + boxW + gap;
+    var triW = 100;
+    var triH = boxH / 2;
+    ctx.fillStyle = cvAlpha('--sol-canvas-danger', 0.15);
+    ctx.beginPath();
+    ctx.moveTo(x3 + triW / 2, topY + 20);
+    ctx.lineTo(x3, topY + triH);
+    ctx.lineTo(x3 + triW, topY + triH);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.fillStyle = danger;
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('\u25B3 1 (kupa)', x3 + triW / 2, topY - 5);
+    ctx.font = '14px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('\u03C0/3', x3 + triW / 2, topY + triH / 2 + 15);
+
+    // Minus
+    var x4 = x3 + triW + gap / 2;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 28px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('\u2212', x4, topY + boxH / 2 + 8);
+
+    // Triangle 2 (washer body)
+    var x5 = x3 + triW + gap;
+    ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.15);
+    ctx.beginPath();
+    ctx.moveTo(x5, topY + 30);
+    ctx.lineTo(x5, topY + triH + 30);
+    ctx.lineTo(x5 + triW, topY + triH + 30);
+    ctx.lineTo(x5 + triW, topY + 30);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = bg;
+    ctx.beginPath();
+    ctx.moveTo(x5, topY + 30);
+    ctx.lineTo(x5 + triW / 2, topY + triH + 30);
+    ctx.lineTo(x5, topY + triH + 30);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x5, topY + 30);
+    ctx.lineTo(x5 + triW, topY + 30);
+    ctx.lineTo(x5 + triW, topY + triH + 30);
+    ctx.lineTo(x5, topY + triH + 30);
+    ctx.closePath();
+    ctx.stroke();
+    ctx.setLineDash([5, 3]);
+    ctx.beginPath();
+    ctx.moveTo(x5, topY + 30);
+    ctx.lineTo(x5 + triW / 2, topY + triH + 30);
+    ctx.lineTo(x5, topY + triH + 30);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('\u25B3 2 (prstenovi)', x5 + triW / 2, topY - 5);
+    ctx.font = '14px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('5\u03C0/3', x5 + triW / 2 + 15, topY + triH / 2 + 30);
+
+    // Equals
+    var x6 = x5 + triW + gap / 2;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 28px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('=', x6, topY + boxH / 2 + 8);
+
+    // Result
+    var x7 = x5 + triW + gap;
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 28px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('6\u03C0', x7 + 30, topY + boxH / 2 + 10);
+
+    ctx.font = '15px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('cm\u00B3', x7 + 30, topY + boxH / 2 + 32);
+
+    // Bottom equation
+    ctx.fillStyle = text;
+    ctx.font = '16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('8\u03C0 \u2212 \u03C0/3 \u2212 5\u03C0/3 = 8\u03C0 \u2212 2\u03C0 = 6\u03C0', W / 2, H - 25);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Zapremina rotacionog tela iz kvadrata sa isečenim trouglovima",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["zapremina rotacionog tela", "metoda diskova i prstenova", "rotacija", "kvadrat", "integracija"]
+}
+BRAINSPARK_META-->

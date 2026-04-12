@@ -1,0 +1,636 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: How many 5-digit natural numbers divisible by 5 can be formed from digits {1, 3, 5, 7, 9}?
+
+Step 1: A number is divisible by 5 if its last digit is 0 or 5.
+The set {1, 3, 5, 7, 9} does not contain 0, so the last digit MUST be 5.
+
+Step 2: Determine if repetition is allowed.
+The problem says "composed of digits from the set" — does not say "each used exactly once".
+Since we need 5 digits from a set of 5, and the problem doesn't restrict repetition,
+we interpret this as: digits can be repeated (standard interpretation for such problems).
+
+Step 3: Count the possibilities.
+- Position 1 (ten-thousands): any of {1, 3, 5, 7, 9} = 5 choices
+- Position 2 (thousands): any of {1, 3, 5, 7, 9} = 5 choices
+- Position 3 (hundreds): any of {1, 3, 5, 7, 9} = 5 choices
+- Position 4 (tens): any of {1, 3, 5, 7, 9} = 5 choices
+- Position 5 (units): must be 5 = 1 choice
+
+Total = 5 × 5 × 5 × 5 × 1 = 5^4 = 625
+
+Step 4: Verify — the smallest such number is 11115, the largest is 99995.
+All are 5-digit numbers (no leading zero issue since set has no 0).
+
+Answer: 625
+</script>
+
+<h1 data-card="problem-title">Brojanje petocifrenih brojeva deljivih sa 5</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika — pravilo proizvoda i deljivost</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Koliko ima petocifrenih prirodnih brojeva deljivih sa 5 sastavljenih od cifara iz skupa \( \{1, 3, 5, 7, 9\} \)?</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 120 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 625 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 3125 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 24 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 500 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Prvo ćemo utvrditi koji uslov mora biti ispunjen da bi broj bio deljiv sa 5 (poslednja cifra 0 ili 5), a zatim ćemo primeniti pravilo proizvoda da prebrojimo sve moguće kombinacije za preostala mesta.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Deljivost sa 5</span> Broj je deljiv sa 5 ako i samo ako mu je poslednja cifra \( 0 \) ili \( 5 \).</li>
+        <li><span class="formula-label">Pravilo proizvoda</span> Ako se prvi izbor može napraviti na \( n_1 \) načina, drugi na \( n_2 \) načina, ..., onda je ukupan broj načina \( n_1 \cdot n_2 \cdot \ldots \cdot n_k \).</li>
+        <li><span class="formula-label">Varijacije s ponavljanjem</span> Broj \( k \)-cifrenih nizova od \( n \) cifara (s ponavljanjem) je \( n^k \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Dijagram izbora cifara">
+  <h2>📐 Dijagram izbora cifara</h2>
+  <div class="canvas-wrapper">
+    <canvas id="p12-diagram1" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Pet pozicija petocifrenog broja: prve četiri pozicije imaju po 5 mogućnosti, a peta (poslednja) je fiksirana na cifru 5.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Analiziramo uslov deljivosti sa 5</h3>
+      <p>Broj je deljiv sa 5 ako mu je poslednja cifra \( 0 \) ili \( 5 \). Pošto naš skup \( \{1, 3, 5, 7, 9\} \) ne sadrži cifru \( 0 \), jedina mogućnost je da poslednja cifra bude <span class="result">5</span>.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto ne može biti 0 na poslednjem mestu?</summary>
+          <div class="detail-content"><p>Zato što se koriste samo cifre iz skupa \( \{1, 3, 5, 7, 9\} \), a \( 0 \) nije element tog skupa.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Fiksiramo poslednju cifru</h3>
+      <p>Poslednja (peta) pozicija je određena — tu mora stajati cifra \( 5 \). Na tom mestu imamo samo <strong>1 mogućnost</strong>.</p>
+      <div class="math-block">\[
+        \text{5. pozicija: } 1 \text{ mogućnost (cifra 5)}
+      \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Prebrojimo mogućnosti za preostale pozicije</h3>
+      <p>Za svaku od preostalih četiri pozicija (1. do 4.) možemo koristiti bilo koju cifru iz skupa \( \{1, 3, 5, 7, 9\} \) — dakle 5 mogućnosti po poziciji. Ponavljanje cifara je dozvoljeno!</p>
+      <div class="math-block">\[
+        \text{1. pozicija: } 5 \text{ mogućnosti}
+      \]</div>
+      <div class="math-block">\[
+        \text{2. pozicija: } 5 \text{ mogućnosti}
+      \]</div>
+      <div class="math-block">\[
+        \text{3. pozicija: } 5 \text{ mogućnosti}
+      \]</div>
+      <div class="math-block">\[
+        \text{4. pozicija: } 5 \text{ mogućnosti}
+      \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Da li postoji problem sa vodećom nulom?</summary>
+          <div class="detail-content"><p>Ne! Budući da su sve cifre u skupu neparne i različite od nule, prva cifra je uvek \( \geq 1 \), pa je broj uvek petocifren.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Primenimo pravilo proizvoda</h3>
+      <p>Prema pravilu proizvoda, ukupan broj petocifrenih brojeva deljivih sa 5 je:</p>
+      <div class="math-block">\[
+        5 \times 5 \times 5 \times 5 \times 1 = 5^4 \times 1 = 625
+      \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Koliko je \( 5^4 \)?</summary>
+          <div class="detail-content"><p>\( 5^1 = 5 \), \( 5^2 = 25 \), \( 5^3 = 125 \), \( 5^4 = 625 \). Tačno!</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="visual-aid" data-title="Stablo mogućnosti — princip množenja">
+  <h2>📐 Stablo mogućnosti — princip množenja</h2>
+  <div class="canvas-wrapper">
+    <canvas id="p12-diagram2" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Ilustracija pravila proizvoda: svaka pozicija množi ukupan broj mogućnosti. Rezultat: \( 5 \times 5 \times 5 \times 5 \times 1 = 625 \).</p>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Ključ ovog zadatka je prepoznati da skup \( \{1, 3, 5, 7, 9\} \) ne sadrži nulu, pa jedini način da broj bude deljiv sa 5 jeste da se na poslednjem mestu nađe cifra 5. Time se problem svodi na prebrojavanje četvorocifrenih nizova od 5 cifara — a to je prosto \( 5^4 \). Nema brige oko vodeće nule jer su sve cifre pozitivne!</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ 625 \]</p>
+    <p class="verification">Verifikacija: Najmanji takav broj je \( 11115 \), a najveći \( 99995 \). Svi su petocifreni i deljivi sa 5. Ukupno: \( 5^4 = 625 \) brojeva.</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 120 \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( 625 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 3125 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 24 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 500 \)</span>
+  </div>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pretpostavka da su cifre bez ponavljanja: u tom slučaju bi se dobilo \( 4! \cdot 1 = 24 \), što nije tačno. Zadatak ne kaže „različite cifre".</li>
+    <li>Računanje svih petocifrenih brojeva (\( 5^5 = 3125 \)) bez uslova deljivosti sa 5 — zaboravlja se ograničenje poslednje cifre.</li>
+    <li>Uključivanje cifre 0 kao mogućnosti za poslednje mesto, iako \( 0 \notin \{1, 3, 5, 7, 9\} \).</li>
+    <li>Konfuzija sa permutacijama: \( 5! = 120 \) broji rasporede svih 5 različitih cifara bez ponavljanja, ali ovde ponavljanje jeste dozvoljeno.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koliko ima petocifrenih prirodnih brojeva deljivih sa 5 sastavljenih od cifara iz skupa \( \{0, 1, 3, 5, 7\} \)? Pazi: sada u skupu postoji cifra 0!</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Poslednja cifra mora biti \( 0 \) ili \( 5 \) — dakle 2 mogućnosti za peto mesto. Prva cifra ne sme biti \( 0 \) (inače broj nije petocifren), pa ima 4 mogućnosti. Preostale tri pozicije imaju po 5 mogućnosti.</p>
+      <div class="math-block">\[
+        4 \times 5 \times 5 \times 5 \times 2 = 1000
+      \]</div>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('p12-diagram1');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var tertiary  = cv('--sol-canvas-tertiary');
+    var warning   = cv('--sol-canvas-warning');
+
+    var W = canvas.width;
+    var H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 18px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Petocifreni broj deljiv sa 5', W / 2, 20);
+
+    // Draw 5 boxes for the 5-digit number
+    var boxW = 90;
+    var boxH = 80;
+    var gap = 15;
+    var totalW = 5 * boxW + 4 * gap;
+    var startX = (W - totalW) / 2;
+    var boxY = 70;
+
+    var positions = [
+      { label: '1. mesto', choices: 5, color: primary, digits: '1, 3, 5, 7, 9' },
+      { label: '2. mesto', choices: 5, color: secondary, digits: '1, 3, 5, 7, 9' },
+      { label: '3. mesto', choices: 5, color: tertiary, digits: '1, 3, 5, 7, 9' },
+      { label: '4. mesto', choices: 5, color: warning, digits: '1, 3, 5, 7, 9' },
+      { label: '5. mesto', choices: 1, color: accent, digits: 'samo 5' }
+    ];
+
+    for (var i = 0; i < 5; i++) {
+      var bx = startX + i * (boxW + gap);
+      var pos = positions[i];
+
+      // Box background
+      ctx.fillStyle = cvAlpha('--sol-canvas-text', 0.04);
+      ctx.fillRect(bx, boxY, boxW, boxH);
+      ctx.strokeStyle = pos.color;
+      ctx.lineWidth = 3;
+      ctx.strokeRect(bx, boxY, boxW, boxH);
+
+      // Position label above
+      ctx.fillStyle = muted;
+      ctx.font = '12px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(pos.label, bx + boxW / 2, boxY - 4);
+
+      // Question mark or digit inside
+      ctx.font = 'bold 28px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      if (i < 4) {
+        ctx.fillStyle = pos.color;
+        ctx.fillText('?', bx + boxW / 2, boxY + boxH / 2);
+      } else {
+        ctx.fillStyle = accent;
+        ctx.fillText('5', bx + boxW / 2, boxY + boxH / 2);
+      }
+
+      // Number of choices below
+      ctx.fillStyle = pos.color;
+      ctx.font = 'bold 16px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText(pos.choices + ' izbor' + (pos.choices > 1 ? 'a' : ''), bx + boxW / 2, boxY + boxH + 10);
+
+      // Available digits
+      ctx.fillStyle = muted;
+      ctx.font = '11px sans-serif';
+      ctx.fillText(pos.digits, bx + boxW / 2, boxY + boxH + 30);
+
+      // Multiplication signs between boxes
+      if (i < 4) {
+        ctx.fillStyle = text;
+        ctx.font = 'bold 20px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('\u00D7', bx + boxW + gap / 2, boxY + boxH / 2);
+      }
+    }
+
+    // Calculation line
+    var calcY = boxY + boxH + 70;
+
+    ctx.fillStyle = cvAlpha('--sol-canvas-text', 0.06);
+    ctx.fillRect(startX, calcY, totalW, 50);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 18px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('5 \u00D7 5 \u00D7 5 \u00D7 5 \u00D7 1 = 5\u2074 = 625', W / 2, calcY + 25);
+
+    // Arrow pointing to result
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 22px sans-serif';
+    ctx.fillText('\u2193', W / 2, calcY + 55);
+
+    // Result box
+    var resY = calcY + 80;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.12);
+    ctx.fillRect(W / 2 - 80, resY, 160, 50);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 3;
+    ctx.strokeRect(W / 2 - 80, resY, 160, 50);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 24px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('625 brojeva', W / 2, resY + 25);
+
+    // Example numbers at the bottom
+    var exY = resY + 70;
+    ctx.fillStyle = muted;
+    ctx.font = '13px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Primeri: 11115, 13575, 37955, 99995, ...', W / 2, exY);
+
+    // Highlight that last digit is locked
+    var lastBoxX = startX + 4 * (boxW + gap);
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath();
+    ctx.moveTo(lastBoxX + boxW / 2, boxY + boxH + 50);
+    ctx.lineTo(lastBoxX + boxW / 2, boxY + boxH + 60);
+    ctx.lineTo(lastBoxX + boxW + 25, boxY + boxH + 60);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = danger;
+    ctx.font = '12px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('fiksirana (deljivost sa 5)', lastBoxX + boxW + 30, boxY + boxH + 60);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('p12-diagram2');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var tertiary  = cv('--sol-canvas-tertiary');
+    var warning   = cv('--sol-canvas-warning');
+
+    var W = canvas.width;
+    var H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Princip množenja — stablo izbora', W / 2, 15);
+
+    // Draw a partial tree showing how choices multiply
+    // Level 0: root
+    // Level 1: 5 branches (first digit)
+    // Level 2: show 5 branches from just one (to avoid clutter)
+    // ... etc
+
+    var treeTop = 55;
+    var levelH = 80;
+
+    // Level labels on the left
+    var labels = ['1. cifra', '2. cifra', '3. cifra', '4. cifra', '5. cifra'];
+    var counts = ['5 izbora', '5 izbora', '5 izbora', '5 izbora', '1 izbor'];
+    var colors = [primary, secondary, tertiary, warning, accent];
+
+    for (var lv = 0; lv < 5; lv++) {
+      var ly = treeTop + lv * levelH;
+      ctx.fillStyle = colors[lv];
+      ctx.font = 'bold 12px sans-serif';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(labels[lv], 90, ly + 15);
+      ctx.fillStyle = muted;
+      ctx.font = '11px sans-serif';
+      ctx.fillText(counts[lv], 90, ly + 30);
+    }
+
+    // Draw tree
+    var rootX = W / 2;
+    var rootY = treeTop;
+
+    // Root node
+    ctx.fillStyle = text;
+    ctx.beginPath();
+    ctx.arc(rootX, rootY, 5, 0, 2 * Math.PI);
+    ctx.fill();
+
+    // Level 1: show 5 branches
+    var digits = [1, 3, 5, 7, 9];
+    var l1Spread = 260;
+    var l1Y = treeTop + levelH;
+    var l1Nodes = [];
+
+    for (var d = 0; d < 5; d++) {
+      var nx = rootX - l1Spread / 2 + d * (l1Spread / 4);
+      l1Nodes.push(nx);
+
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(rootX, rootY + 5);
+      ctx.lineTo(nx, l1Y - 12);
+      ctx.stroke();
+
+      ctx.fillStyle = primary;
+      ctx.beginPath();
+      ctx.arc(nx, l1Y, 12, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.fillStyle = bg;
+      ctx.font = 'bold 11px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('' + digits[d], nx, l1Y);
+    }
+
+    // Level 2: show 5 branches from just the first node (digit 1), dots for others
+    var l2Y = treeTop + 2 * levelH;
+    var l2Spread = 50;
+    var baseNode = l1Nodes[0];
+
+    for (var d2 = 0; d2 < 5; d2++) {
+      var nx2 = baseNode - l2Spread / 2 + d2 * (l2Spread / 4);
+
+      ctx.strokeStyle = secondary;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(baseNode, l1Y + 12);
+      ctx.lineTo(nx2, l2Y - 8);
+      ctx.stroke();
+
+      ctx.fillStyle = secondary;
+      ctx.beginPath();
+      ctx.arc(nx2, l2Y, 8, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.fillStyle = bg;
+      ctx.font = '9px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('' + digits[d2], nx2, l2Y);
+    }
+
+    // Dots for other branches at level 2
+    for (var o = 1; o < 5; o++) {
+      ctx.fillStyle = muted;
+      ctx.font = '16px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('\u22EF', l1Nodes[o], l2Y);
+
+      ctx.strokeStyle = cvAlpha('--sol-canvas-secondary', 0.3);
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 3]);
+      ctx.beginPath();
+      ctx.moveTo(l1Nodes[o], l1Y + 12);
+      ctx.lineTo(l1Nodes[o], l2Y - 10);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // Level 3-4: show dots
+    var l3Y = treeTop + 3 * levelH;
+    var l4Y = treeTop + 4 * levelH;
+
+    ctx.fillStyle = muted;
+    ctx.font = '18px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('\u22EE', baseNode - l2Spread / 2, l3Y);
+    ctx.fillText('\u22EE', baseNode, l3Y);
+    ctx.fillText('\u22EE', baseNode + l2Spread / 2, l3Y);
+    ctx.fillText('\u22EF \u22EF \u22EF', rootX + 50, l3Y);
+
+    // Level 5: just show "5" in accent circle
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(baseNode - l2Spread / 2, l4Y, 10, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.fillStyle = bg;
+    ctx.font = 'bold 11px sans-serif';
+    ctx.fillText('5', baseNode - l2Spread / 2, l4Y);
+
+    ctx.fillStyle = muted;
+    ctx.font = '14px sans-serif';
+    ctx.fillText('\u22EF', baseNode + 10, l4Y);
+
+    // Right side: running total
+    var rx = W - 180;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Ukupno:', rx, treeTop);
+
+    var totals = [
+      { after: 'posle 1. cifre:', val: '5', y: l1Y },
+      { after: 'posle 2. cifre:', val: '5\u00D75 = 25', y: l2Y },
+      { after: 'posle 3. cifre:', val: '25\u00D75 = 125', y: l3Y },
+      { after: 'posle 4. cifre:', val: '125\u00D75 = 625', y: l3Y + 45 },
+      { after: 'posle 5. cifre:', val: '625\u00D71 = 625', y: l4Y }
+    ];
+
+    for (var t = 0; t < totals.length; t++) {
+      ctx.fillStyle = colors[t];
+      ctx.font = '12px sans-serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(totals[t].after, rx, totals[t].y - 6);
+      ctx.font = 'bold 13px sans-serif';
+      ctx.fillText(totals[t].val, rx, totals[t].y + 10);
+    }
+
+    // Final result
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.12);
+    ctx.fillRect(rx - 5, l4Y + 30, 165, 35);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(rx - 5, l4Y + 30, 165, 35);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 16px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Ukupno: 625', rx + 78, l4Y + 47);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Petocifreni brojevi deljivi sa 5 od neparnih cifara",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["kombinatorika", "pravilo proizvoda", "deljivost", "varijacije sa ponavljanjem", "brojanje"]
+}
+BRAINSPARK_META-->

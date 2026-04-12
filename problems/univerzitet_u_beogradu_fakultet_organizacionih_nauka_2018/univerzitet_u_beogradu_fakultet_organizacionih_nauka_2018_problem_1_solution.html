@@ -1,0 +1,409 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Simplify the expression
+  (2a + sqrt(a^2-1)) / ((sqrt(a-1) + sqrt(a+1)) * ((a-1)^(3/2) - (a+1)^(3/2)))
+  where a >= 1.
+
+  Strategy: Let u = sqrt(a-1) and v = sqrt(a+1).
+
+  Then:
+  - a^2 - 1 = (a-1)(a+1) = u^2 * v^2, so sqrt(a^2-1) = uv
+  - Numerator = 2a + uv
+  - (a-1)^(3/2) = u^3, (a+1)^(3/2) = v^3
+  - Denominator factor 1: (u + v)
+  - Denominator factor 2: u^3 - v^3 = (u - v)(u^2 + uv + v^2)
+  - u^2 + v^2 = (a-1) + (a+1) = 2a
+  - So u^2 + uv + v^2 = 2a + uv
+  - (u + v)(u - v) = u^2 - v^2 = (a-1) - (a+1) = -2
+  - Denominator = (u+v)(u-v)(u^2+uv+v^2) = -2(2a + uv)
+
+  Expression = (2a + uv) / (-2(2a + uv)) = -1/2
+
+  Verification with a = 1:
+  - Numerator: 2(1) + sqrt(0) = 2
+  - Denominator: (0 + sqrt(2)) * (0 - 2sqrt(2)) = sqrt(2) * (-2sqrt(2)) = -4
+  - Result: 2 / (-4) = -1/2 ✓
+
+  Verification with a = 5:
+  - sqrt(a^2-1) = sqrt(24) = 2sqrt(6)
+  - Numerator: 10 + 2sqrt(6)
+  - sqrt(a-1) = 2, sqrt(a+1) = sqrt(6)
+  - (a-1)^(3/2) = 8, (a+1)^(3/2) = 6sqrt(6)
+  - Denominator: (2 + sqrt(6))(8 - 6sqrt(6))
+  - = 16 - 12sqrt(6) + 8sqrt(6) - 36
+  - = -20 - 4sqrt(6) = -4(5 + sqrt(6)) = -2 * 2(5 + sqrt(6)) = -2(10 + 2sqrt(6))
+  - Result: (10 + 2sqrt(6)) / (-2(10 + 2sqrt(6))) = -1/2 ✓
+
+  Answer: D) -1/2
+</script>
+
+<h1 data-card="problem-title">Pojednostavljivanje algebarskog izraza sa korenima</h1>
+<p data-card="problem-subtitle" class="subtitle">Razlika kubova, racionalizacija i zamena promenljivih u izrazu sa kvadratnim korenima</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Izraz \( \dfrac{2a + \sqrt{a^2 - 1}}{\left(\sqrt{a-1} + \sqrt{a+1}\right) \cdot \left((a-1)^{3/2} - (a+1)^{3/2}\right)} \), gde je \( a \) realan broj i \( a \geq 1 \), identički je jednak izrazu:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \dfrac{1}{2a} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \dfrac{2a}{2a - \sqrt{a^2-1}} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \dfrac{2a}{a + \sqrt{a^2-1}} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( -\dfrac{1}{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Uvešćemo smenu \( u = \sqrt{a-1} \) i \( v = \sqrt{a+1} \) da bismo transformisali izraz u kompaktniji oblik, a zatim ćemo primeniti formulu za razliku kubova i algebarsko skraćivanje.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Razlika kubova:</strong> \( u^3 - v^3 = (u - v)(u^2 + uv + v^2) \)</li>
+        <li><strong>Razlika kvadrata:</strong> \( (u + v)(u - v) = u^2 - v^2 \)</li>
+        <li><strong>Stepen korena:</strong> \( (a-1)^{3/2} = \left(\sqrt{a-1}\right)^3 \)</li>
+        <li><strong>Proizvod korena:</strong> \( \sqrt{a-1} \cdot \sqrt{a+1} = \sqrt{(a-1)(a+1)} = \sqrt{a^2 - 1} \)</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-p1" width="700" height="440"></canvas>
+  </div>
+  <p class="canvas-caption">Šema transformacije izraza: smena, faktorizacija i skraćivanje</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Uvedimo smenu</h3>
+      <p>Neka je \( u = \sqrt{a-1} \) i \( v = \sqrt{a+1} \). Tada važi:</p>
+      <div class="math-block">
+        \[ u^2 = a - 1, \quad v^2 = a + 1 \]
+      </div>
+      <p>Iz ovoga direktno sledi:</p>
+      <div class="math-block">
+        \[ u^2 + v^2 = (a-1) + (a+1) = 2a \]
+      </div>
+      <div class="math-block">
+        \[ u^2 v^2 = (a-1)(a+1) = a^2 - 1, \quad \text{pa je} \quad uv = \sqrt{a^2 - 1} \]
+      </div>
+      <p>Takođe, za stepen 3/2:</p>
+      <div class="math-block">
+        \[ (a-1)^{3/2} = u^3, \quad (a+1)^{3/2} = v^3 \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Zapišimo izraz pomoću u i v</h3>
+      <p>Originalni izraz postaje:</p>
+      <div class="math-block">
+        \[ \frac{2a + uv}{(u + v)(u^3 - v^3)} \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Kako glasi formula za razliku kubova?</summary>
+          <div class="detail-content">
+            <p>\( u^3 - v^3 = (u - v)(u^2 + uv + v^2) \). Razlika kubova se razlaže na proizvod razlike i nepotpunog kvadrata zbira.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Primenimo formulu za razliku kubova</h3>
+      <p>Razložimo \( u^3 - v^3 \) na faktore:</p>
+      <div class="math-block">
+        \[ u^3 - v^3 = (u - v)(u^2 + uv + v^2) \]
+      </div>
+      <p>Pošto je \( u^2 + v^2 = 2a \), dobijamo:</p>
+      <div class="math-block">
+        \[ u^2 + uv + v^2 = 2a + uv \]
+      </div>
+      <p>Imenilac sada glasi:</p>
+      <div class="math-block">
+        \[ (u + v)(u - v)(2a + uv) \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Šta je \( (u+v)(u-v) \) u terminima \( a \)?</summary>
+          <div class="detail-content">
+            <p>\( (u+v)(u-v) = u^2 - v^2 = (a-1) - (a+1) = -2 \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunajmo proizvod \( (u+v)(u-v) \)</h3>
+      <p>Po formuli za razliku kvadrata:</p>
+      <div class="math-block">
+        \[ (u + v)(u - v) = u^2 - v^2 = (a - 1) - (a + 1) = -2 \]
+      </div>
+      <p>Dakle, imenilac je:</p>
+      <div class="math-block">
+        \[ -2 \cdot (2a + uv) \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Skratimo izraz</h3>
+      <p>Ceo izraz je sada:</p>
+      <div class="math-block">
+        \[ \frac{2a + uv}{-2 \cdot (2a + uv)} \]
+      </div>
+      <p>Pošto je \( a \geq 1 \), važi \( 2a + uv > 0 \) (jer su i \( a \) i \( uv \) nenegativni), pa možemo skratiti:</p>
+      <div class="math-block">
+        \[ \frac{\cancel{2a + uv}}{-2 \cdot \cancel{(2a + uv)}} = -\frac{1}{2} \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto je rezultat konstantan, a ne zavisi od \( a \)?</summary>
+          <div class="detail-content">
+            <p>Zato što se zajednički faktor \( (2a + uv) \) pojavljuje i u brojiocu i u imeniocu, pa se skraćuje. Preostaje samo konstantni deo \( -\frac{1}{2} \) iz razlike kvadrata.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Ključ ovog zadatka je prepoznati da se izraz \( u^2 + uv + v^2 = 2a + uv \) pojavljuje kao zajednički faktor brojioca i imenioca. Uvođenje smene \( u = \sqrt{a-1} \), \( v = \sqrt{a+1} \) otkriva strukturu problema: razlika kubova u imeniocu prirodno generiše faktor koji se poklapa sa brojiocem, dok razlika kvadrata daje konstantu \( -2 \). Tako kompleksno izgledajući izraz postaje trivijalno skraćivanje!</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ -\frac{1}{2} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( \dfrac{1}{2a} \)</span>
+    <span class="answer-option" data-option="B">(B) \( \dfrac{2a}{2a - \sqrt{a^2-1}} \)</span>
+    <span class="answer-option" data-option="C">(C) \( \dfrac{2a}{a + \sqrt{a^2-1}} \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( -\dfrac{1}{2} \)</span>
+    <span class="answer-option" data-option="E">(E) \( 2 \)</span>
+  </div>
+  <p class="verification">Provera za \( a = 1 \): brojilac = \( 2 \cdot 1 + 0 = 2 \), imenilac = \( (0 + \sqrt{2})(0 - 2\sqrt{2}) = -4 \), rezultat = \( 2 / (-4) = -0{,}5 \). Tačno!</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zaboraviti negativan predznak:</strong> Razlika \( u^2 - v^2 = -2 \), ne \( +2 \). Mnogi učenici dobiju \( +\frac{1}{2} \) umesto \( -\frac{1}{2} \).</li>
+    <li><strong>Pogrešno raspisivanje razlike kubova:</strong> Formula glasi \( u^3 - v^3 = (u-v)(u^2 + uv + v^2) \), ne \( (u-v)(u^2 - uv + v^2) \). Greškom u znaku ne bi se skratilo sa brojiocem.</li>
+    <li><strong>Pokušaj racionalizacije bez smene:</strong> Direktno množenje konjugatom je mnogo komplikovanije i podložnije greškama. Smena čini problem preglednim.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta bi se desilo sa vrednošću izraza ako bismo u imeniocu imali \( (a-1)^{3/2} + (a+1)^{3/2} \) (zbir umesto razlike)? Kako bi se tada izraz pojednostavio?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Zbir kubova se razlaže kao \( u^3 + v^3 = (u+v)(u^2 - uv + v^2) = (u+v)(2a - uv) \). Tada bi imenilac bio \( (u+v)^2(2a - uv) \), pa izraz ne bi mogao da se skrati sa brojiocem \( 2a + uv \). Rezultat bi zavisio od \( a \).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+
+  var canvas = document.getElementById('diagram-p1');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var grid = cv('--sol-canvas-grid');
+    var danger = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Transformacija izraza korak po korak', W / 2, 28);
+
+    // Draw flow: Original -> Substitution -> Factoring -> Result
+    var boxW = 300, boxH = 55, gap = 20;
+    var startX = (W - boxW) / 2;
+    var y = 55;
+
+    function drawBox(x, yPos, w, h, color, label, sublabel) {
+      ctx.fillStyle = color;
+      ctx.globalAlpha = 0.1;
+      ctx.beginPath();
+      ctx.roundRect(x, yPos, w, h, 10);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(x, yPos, w, h, 10);
+      ctx.stroke();
+
+      ctx.fillStyle = color;
+      ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      if (sublabel) {
+        ctx.fillText(label, x + w / 2, yPos + h / 2 - 4);
+        ctx.font = '12px Segoe UI, system-ui, sans-serif';
+        ctx.fillStyle = muted;
+        ctx.fillText(sublabel, x + w / 2, yPos + h / 2 + 14);
+      } else {
+        ctx.fillText(label, x + w / 2, yPos + h / 2 + 5);
+      }
+    }
+
+    function drawArrow(fromY, toY, label) {
+      var midX = W / 2;
+      ctx.strokeStyle = muted;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(midX, fromY);
+      ctx.lineTo(midX, toY - 8);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(midX, toY - 8);
+      ctx.lineTo(midX - 5, toY - 16);
+      ctx.lineTo(midX + 5, toY - 16);
+      ctx.closePath();
+      ctx.fillStyle = muted;
+      ctx.fill();
+
+      if (label) {
+        ctx.fillStyle = muted;
+        ctx.font = '11px Segoe UI, system-ui, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText(label, midX + 12, (fromY + toY) / 2 + 3);
+      }
+    }
+
+    // Box 1: Original expression
+    drawBox(startX, y, boxW, boxH, primary, '(2a + \u221A(a\u00B2-1)) / ((\u221A(a-1)+\u221A(a+1))\u22C5(...))');
+
+    // Arrow 1
+    drawArrow(y + boxH, y + boxH + gap + 5, 'Smena: u=\u221A(a-1), v=\u221A(a+1)');
+
+    // Box 2: After substitution
+    y += boxH + gap + 5;
+    drawBox(startX, y, boxW, boxH, secondary, '(2a + uv) / ((u+v)(u\u00B3 - v\u00B3))', 'uv = \u221A(a\u00B2-1), u\u00B2+v\u00B2 = 2a');
+
+    // Arrow 2
+    drawArrow(y + boxH, y + boxH + gap + 5, 'u\u00B3-v\u00B3 = (u-v)(u\u00B2+uv+v\u00B2)');
+
+    // Box 3: After factoring
+    y += boxH + gap + 5;
+    drawBox(startX, y, boxW, boxH, highlight, '(2a + uv) / ((u+v)(u-v)(2a + uv))', '(u+v)(u-v) = u\u00B2-v\u00B2 = -2');
+
+    // Arrow 3
+    drawArrow(y + boxH, y + boxH + gap + 5, 'Skratimo (2a + uv)');
+
+    // Box 4: After cancellation
+    y += boxH + gap + 5;
+    drawBox(startX - 30, y, boxW + 60, boxH, danger, '1 / ((u+v)(u-v)) = 1 / (-2)', 'Imenilac ostaje samo -2');
+
+    // Arrow 4
+    drawArrow(y + boxH, y + boxH + gap + 5, '');
+
+    // Box 5: Final result (highlighted)
+    y += boxH + gap + 5;
+    var resW = 180, resH = 50;
+    var resX = (W - resW) / 2;
+    ctx.fillStyle = accent;
+    ctx.globalAlpha = 0.15;
+    ctx.beginPath();
+    ctx.roundRect(resX, y, resW, resH, 12);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.roundRect(resX, y, resW, resH, 12);
+    ctx.stroke();
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 22px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('-1/2', W / 2, y + resH / 2);
+    ctx.textBaseline = 'alphabetic';
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Pojednostavljivanje izraza sa korenima i razlikom kubova",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["koreni", "razlika kubova", "razlika kvadrata", "smena promenljivih", "algebarski izrazi"]
+}
+BRAINSPARK_META-->

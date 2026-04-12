@@ -1,0 +1,792 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Cube with edge length 1 cm. Find the area of the cross-section
+  formed by the plane through the midpoints of the three edges emanating
+  from a single vertex.
+
+  Setup:
+  - Cube with edge 1. Pick vertex O at origin.
+  - Three edges from O go to vertices A, B, C (along x, y, z axes).
+  - Midpoints: M1 = midpoint of OA, M2 = midpoint of OB, M3 = midpoint of OC
+  - In coordinates: M1 = (1/2, 0, 0), M2 = (0, 1/2, 0), M3 = (0, 0, 1/2)
+
+  Strategy: Synthetic approach
+  - By symmetry of the cube (all three edges from O are equivalent),
+    the three midpoints are equidistant from each other.
+  - So triangle M1M2M3 is equilateral.
+
+  Side length computation:
+  - |M1M2|: M1 and M2 are midpoints of two edges meeting at O, both at distance 1/2 from O.
+    The angle between edges OA and OB is 90 degrees.
+    By the Pythagorean theorem in triangle OM1M2:
+    |M1M2|^2 = |OM1|^2 + |OM2|^2 = (1/2)^2 + (1/2)^2 = 1/4 + 1/4 = 1/2
+    |M1M2| = sqrt(1/2) = sqrt(2)/2
+
+  Area of equilateral triangle with side s:
+    A = (sqrt(3)/4) * s^2
+    A = (sqrt(3)/4) * (sqrt(2)/2)^2
+    A = (sqrt(3)/4) * (2/4)
+    A = (sqrt(3)/4) * (1/2)
+    A = sqrt(3)/8
+
+  Answer: D) sqrt(3)/8
+
+  Verification:
+  - s = sqrt(2)/2, s^2 = 1/2
+  - A = sqrt(3)/4 * 1/2 = sqrt(3)/8 ≈ 0.2165 cm^2
+  - This is reasonable for a small triangle inside a unit cube.
+
+  Geometric reasoning (synthetic):
+  - Three edges from one vertex are mutually perpendicular
+  - The midpoints form a triangle; each pair of midpoints lies on a face diagonal
+  - In each face, the segment connecting two midpoints is half the face diagonal
+    Wait, no. Let me reconsider.
+  - Actually, M1 and M2 lie on adjacent edges from O. They're both at distance 1/2 from O.
+    The segment M1M2 lies on the face containing edges OA and OB.
+  - Triangle OM1M2 is a right isosceles triangle with legs 1/2.
+    So |M1M2| = sqrt((1/2)^2 + (1/2)^2) = sqrt(1/2) = sqrt(2)/2.
+  - By symmetry, all three sides equal sqrt(2)/2 => equilateral triangle.
+  - Area = sqrt(3)/4 * (sqrt(2)/2)^2 = sqrt(3)/4 * 1/2 = sqrt(3)/8. Confirmed.
+</script>
+
+<h1 data-card="problem-title">Presek kocke ravni kroz sredine ivica</h1>
+<p data-card="problem-subtitle" class="subtitle">Stereometrija -- preseci kocke, jednakostranični trougao</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Dužina ivice kocke je \( 1\,\text{cm} \). Površina preseka kocke sa ravni koja sadrži središta ivica kocke koje polaze iz istog temena (\( y\,\text{cm}^2 \)) iznosi:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \dfrac{1}{16} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \dfrac{\sqrt{3}}{16} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \dfrac{1}{8} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \dfrac{\sqrt{3}}{8} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \dfrac{\sqrt{2}}{4} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">
+    Iz jednog temena kocke polaze tri ivice. Odredićemo središta tih ivica, pokazati da ta tri središta formiraju jednakostranični trougao (koristeći simetriju kocke), izračunati stranicu tog trougla pomoću Pitagorine teoreme, a zatim primeniti formulu za površinu jednakostraničnog trougla.
+  </p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Pitagorina teorema</span> U pravouglom trouglu sa katetama \( a \) i \( b \): \( c = \sqrt{a^2 + b^2} \)</li>
+        <li><span class="formula-label">Površina jednakostraničnog trougla</span> \( P = \dfrac{\sqrt{3}}{4}\,s^2 \), gde je \( s \) dužina stranice</li>
+        <li><span class="formula-label">Simetrija kocke</span> Iz svakog temena kocke polaze tri međusobno normalne ivice jednake dužine</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Kocka sa označenim tačkama">
+  <h2>📐 Kocka sa označenim tačkama</h2>
+  <div class="canvas-wrapper">
+    <canvas id="cube3d" width="700" height="550"></canvas>
+  </div>
+  <p class="canvas-caption">Kocka sa ivicama iz temena \( O \) i središtima \( M_1, M_2, M_3 \)</p>
+</div>
+
+<div data-card="visual-aid" data-title="Trougao preseka">
+  <h2>📐 Trougao preseka u ravni</h2>
+  <div class="canvas-wrapper">
+    <canvas id="triangleFlat" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Jednakostranični trougao \( M_1M_2M_3 \) sa stranicom \( \dfrac{\sqrt{2}}{2} \)</p>
+</div>
+
+<div data-card="visual-aid" data-title="Određivanje stranice trougla">
+  <h2>📐 Pitagorina teorema na stranici kocke</h2>
+  <div class="canvas-wrapper">
+    <canvas id="faceTriangle" width="700" height="450"></canvas>
+  </div>
+  <p class="canvas-caption">Na svakoj stranici kocke, segment \( M_iM_j \) je hipotenuza pravouglog trougla sa katetama \( \frac{1}{2} \)</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Identifikujmo tačke</h3>
+      <p>Neka je \( O \) teme kocke iz koga polaze tri ivice: \( OA \), \( OB \) i \( OC \). Sve tri ivice imaju dužinu \( 1\,\text{cm} \) i međusobno su normalne (grade uglove od \( 90° \)).</p>
+      <p>Središta tih ivica su:</p>
+      <div class="math-block">
+        \[ M_1 = \text{središte}(OA), \quad M_2 = \text{središte}(OB), \quad M_3 = \text{središte}(OC) \]
+      </div>
+      <p>Svako središte je na rastojanju \( \frac{1}{2} \) od temena \( O \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Pokažimo da je trougao jednakostranični</h3>
+      <p>Posmatrajmo dve bilo koje tačke, npr. \( M_1 \) i \( M_2 \). One leže na stranici kocke koja sadrži ivice \( OA \) i \( OB \).</p>
+      <p>Na toj stranici, trougao \( OM_1M_2 \) je <strong>pravougli</strong> (ugao kod \( O \) je \( 90° \)) sa obe katete dužine \( \frac{1}{2} \).</p>
+      <div class="callout">
+        <p>Kocka ima savršenu simetriju: sve tri ivice iz temena \( O \) su jednake i međusobno normalne. Zato je rastojanje između bilo koja dva središta isto -- trougao je jednakostranični!</p>
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto su svi uglovi kod temena \( O \) pravi?</summary>
+          <div class="detail-content"><p>Ivice kocke koje polaze iz istog temena su paralelne osama koordinatnog sistema -- jedna ide „napred", druga „desno", treća „nagore". Svake dve su međusobno normalne, tj. zaklapaju ugao od \( 90° \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunajmo stranicu trougla</h3>
+      <p>Primenom Pitagorine teoreme u pravouglom trouglu \( OM_1M_2 \):</p>
+      <div class="math-block">
+        \[ |M_1M_2|^2 = |OM_1|^2 + |OM_2|^2 = \left(\frac{1}{2}\right)^2 + \left(\frac{1}{2}\right)^2 = \frac{1}{4} + \frac{1}{4} = \frac{1}{2} \]
+      </div>
+      <div class="math-block">
+        \[ |M_1M_2| = \sqrt{\frac{1}{2}} = \frac{\sqrt{2}}{2} \]
+      </div>
+      <p>Stranica jednakostraničnog trougla iznosi \( s = \dfrac{\sqrt{2}}{2}\,\text{cm} \).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Koliko je \( s^2 \)?</summary>
+          <div class="detail-content"><p>\( s^2 = \left(\frac{\sqrt{2}}{2}\right)^2 = \frac{2}{4} = \frac{1}{2} \). Ovo ćemo koristiti u sledećem koraku.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunajmo površinu</h3>
+      <p>Površina jednakostraničnog trougla sa stranicom \( s \) je:</p>
+      <div class="math-block">
+        \[ P = \frac{\sqrt{3}}{4}\,s^2 \]
+      </div>
+      <p>Uvrstimo \( s^2 = \frac{1}{2} \):</p>
+      <div class="math-block">
+        \[ P = \frac{\sqrt{3}}{4} \cdot \frac{1}{2} = \frac{\sqrt{3}}{8}\,\text{cm}^2 \]
+      </div>
+      <p>Površina preseka je <span class="result">\( \dfrac{\sqrt{3}}{8}\,\text{cm}^2 \)</span>.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Da li je rezultat realan -- koliko je otprilike \( \frac{\sqrt{3}}{8} \)?</summary>
+          <div class="detail-content"><p>\( \sqrt{3} \approx 1{,}732 \), pa je \( \frac{\sqrt{3}}{8} \approx 0{,}217\,\text{cm}^2 \). To je mala površina, što ima smisla jer je trougao „odsečen" blizu temena kocke i zauzima mali deo njene površine.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Ključ ovog zadatka je prepoznati da <strong>simetrija kocke</strong> garantuje da je presek jednakostranični trougao. Iz jednog temena polaze tri jednake, međusobno normalne ivice -- samim tim su i sva tri središta na jednakim međusobnim rastojanjima. Preostaje samo da primenimo Pitagorinu teoremu za jednu stranicu, a zatim standardnu formulu za površinu jednakostraničnog trougla.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ y = \frac{\sqrt{3}}{8}\,\text{cm}^2 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( \frac{1}{16} \)</span>
+    <span class="answer-option" data-option="B">(B) \( \frac{\sqrt{3}}{16} \)</span>
+    <span class="answer-option" data-option="C">(C) \( \frac{1}{8} \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( \frac{\sqrt{3}}{8} \)</span>
+    <span class="answer-option" data-option="E">(E) \( \frac{\sqrt{2}}{4} \)</span>
+  </div>
+  <p class="verification">Provera: \( s = \frac{\sqrt{2}}{2} \), \( s^2 = \frac{1}{2} \), \( P = \frac{\sqrt{3}}{4} \cdot \frac{1}{2} = \frac{\sqrt{3}}{8} \approx 0{,}217\,\text{cm}^2 \). Rezultat se poklapa sa opcijom (D).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešna stranica trougla:</strong> Neki učenici uzmu da je stranica trougla \( \frac{1}{2} \) (rastojanje od temena do središta), umesto da izračunaju rastojanje između dva središta Pitagorinom teoremom.</li>
+    <li><strong>Zaboravljena formula:</strong> Korišćenje formule \( P = \frac{1}{2} a \cdot h \) zahteva dodatno računanje visine. Formula \( P = \frac{\sqrt{3}}{4}s^2 \) je direktnija za jednakostraničan trougao.</li>
+    <li><strong>Mešanje \( \sqrt{2} \) i \( \sqrt{3} \):</strong> U formuli za površinu jednakostraničnog trougla figuriše \( \sqrt{3} \), ne \( \sqrt{2} \). Lako je pobrkati korene kada se pojavljuju oba.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta ako ravan ne prolazi kroz središta ivica, već kroz tačke koje dele ivice u odnosu \( 1:3 \) (na rastojanju \( \frac{1}{4} \) od temena)? Kolika je tada površina preseka? A kolika je površina ako tačke dele ivice na polovine, ali kocka ima ivicu dužine \( a \) umesto \( 1 \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Postupak je isti! Ako su tačke na rastojanju \( d \) od temena, stranica jednakostraničnog trougla je \( s = d\sqrt{2} \), a površina \( P = \frac{\sqrt{3}}{4} \cdot 2d^2 = \frac{\sqrt{3}}{2}d^2 \).</p>
+      <p>Za \( d = \frac{1}{4} \): \( P = \frac{\sqrt{3}}{2} \cdot \frac{1}{16} = \frac{\sqrt{3}}{32} \).</p>
+      <p>Za ivicu \( a \) i \( d = \frac{a}{2} \): \( P = \frac{\sqrt{3}}{2} \cdot \frac{a^2}{4} = \frac{\sqrt{3}\,a^2}{8} \).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('cube3d');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+    var tertiary = cv('--sol-canvas-tertiary');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // 3D isometric projection of a unit cube
+    var cx = W / 2 - 30;
+    var cy = H / 2 + 20;
+    var s = 200; // scale
+
+    // Isometric axes
+    var ax = { x: s * 0.85, y: s * 0.35 };   // x-axis (right-forward)
+    var ay = { x: 0, y: -s };                  // y-axis (up)
+    var az = { x: -s * 0.75, y: s * 0.30 };   // z-axis (left-forward)
+
+    function proj(px, py, pz) {
+      return {
+        x: cx + px * ax.x + py * ay.x + pz * az.x,
+        y: cy + px * ax.y + py * ay.y + pz * az.y
+      };
+    }
+
+    // Cube vertices
+    var O = proj(0, 0, 0);
+    var A = proj(1, 0, 0);
+    var B = proj(0, 1, 0);
+    var C = proj(0, 0, 1);
+    var AB = proj(1, 1, 0);
+    var AC = proj(1, 0, 1);
+    var BC = proj(0, 1, 1);
+    var ABC = proj(1, 1, 1);
+
+    // Midpoints
+    var M1 = proj(0.5, 0, 0);
+    var M2 = proj(0, 0.5, 0);
+    var M3 = proj(0, 0, 0.5);
+
+    // Draw back edges (dashed)
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([5, 5]);
+    function line(p1, p2) {
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    }
+    line(C, AC);
+    line(C, BC);
+    line(BC, ABC);
+    line(AC, ABC);
+
+    // Draw front edges (solid)
+    ctx.setLineDash([]);
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    line(O, A);
+    line(O, B);
+    line(O, C);
+    line(A, AB);
+    line(A, AC);
+    line(B, AB);
+    line(B, BC);
+    line(AB, ABC);
+
+    // Highlight the three edges from O
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    line(O, A);
+    line(O, B);
+    line(O, C);
+
+    // Draw the triangle M1M2M3 (the cross-section)
+    ctx.beginPath();
+    ctx.moveTo(M1.x, M1.y);
+    ctx.lineTo(M2.x, M2.y);
+    ctx.lineTo(M3.x, M3.y);
+    ctx.closePath();
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.25);
+    ctx.fill();
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // Label vertices
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    ctx.fillStyle = text;
+    ctx.fillText('O', O.x - 18, O.y + 2);
+    ctx.fillText('A', A.x + 18, A.y + 2);
+    ctx.fillText('B', B.x + 4, B.y - 16);
+    ctx.fillText('C', C.x - 18, C.y - 4);
+
+    // Label midpoints
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('M\u2081', M1.x + 6, M1.y + 20);
+    ctx.fillText('M\u2082', M2.x + 18, M2.y - 6);
+    ctx.fillText('M\u2083', M3.x - 20, M3.y + 10);
+
+    // Draw midpoint dots
+    function dot(p, color, radius) {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, radius || 5, 0, 2 * Math.PI);
+      ctx.fillStyle = color;
+      ctx.fill();
+    }
+    dot(M1, accent, 5);
+    dot(M2, accent, 5);
+    dot(M3, accent, 5);
+    dot(O, primary, 5);
+
+    // Label far vertices
+    ctx.fillStyle = muted;
+    ctx.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('AB', AB.x + 14, AB.y - 8);
+    ctx.fillText('AC', AC.x + 16, AC.y + 4);
+    ctx.fillText('BC', BC.x - 16, BC.y - 8);
+    ctx.fillText('ABC', ABC.x + 8, ABC.y - 14);
+
+    // Dimension marks: 1/2 on edges
+    ctx.fillStyle = highlight;
+    ctx.font = 'italic 13px Segoe UI, system-ui, sans-serif';
+    var mid_OA = { x: (O.x + M1.x) / 2, y: (O.y + M1.y) / 2 };
+    ctx.fillText('\u00BD', mid_OA.x - 2, mid_OA.y + 18);
+    var mid_OB = { x: (O.x + M2.x) / 2, y: (O.y + M2.y) / 2 };
+    ctx.fillText('\u00BD', mid_OB.x + 16, mid_OB.y + 2);
+    var mid_OC = { x: (O.x + M3.x) / 2, y: (O.y + M3.y) / 2 };
+    ctx.fillText('\u00BD', mid_OC.x - 18, mid_OC.y - 6);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Kocka sa ivicama iz temena O i presek M\u2081M\u2082M\u2083', W / 2, 30);
+
+    // Legend
+    ctx.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    var lx = W - 220;
+    var ly = H - 80;
+    ctx.fillStyle = primary;
+    ctx.fillRect(lx, ly, 14, 3);
+    ctx.fillStyle = text;
+    ctx.fillText('Ivice iz temena O', lx + 20, ly + 5);
+    ctx.fillStyle = accent;
+    ctx.fillRect(lx, ly + 22, 14, 3);
+    ctx.fillStyle = text;
+    ctx.fillText('Presek (trougao)', lx + 20, ly + 27);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('triangleFlat');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var accent = cv('--sol-canvas-accent');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var highlight = cv('--sol-canvas-highlight');
+    var secondary = cv('--sol-canvas-secondary');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Draw equilateral triangle centered in canvas
+    var side = 260; // pixel side length
+    var h = side * Math.sqrt(3) / 2;
+    var cx = W / 2;
+    var cy = H / 2 + 20;
+
+    // Triangle vertices (equilateral, point up)
+    var topY = cy - h * 2 / 3;
+    var botY = cy + h / 3;
+    var leftX = cx - side / 2;
+    var rightX = cx + side / 2;
+
+    var M1 = { x: leftX, y: botY };
+    var M2 = { x: rightX, y: botY };
+    var M3 = { x: cx, y: topY };
+
+    // Fill triangle
+    ctx.beginPath();
+    ctx.moveTo(M1.x, M1.y);
+    ctx.lineTo(M2.x, M2.y);
+    ctx.lineTo(M3.x, M3.y);
+    ctx.closePath();
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.15);
+    ctx.fill();
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // Draw height
+    var footH = { x: cx, y: botY };
+    ctx.setLineDash([6, 4]);
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(M3.x, M3.y);
+    ctx.lineTo(footH.x, footH.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Right angle mark at foot of height
+    var rSize = 10;
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(footH.x + rSize, footH.y);
+    ctx.lineTo(footH.x + rSize, footH.y - rSize);
+    ctx.lineTo(footH.x, footH.y - rSize);
+    ctx.stroke();
+
+    // Label height
+    ctx.fillStyle = secondary;
+    ctx.font = 'italic 14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('h', cx + 8, cy - 10);
+
+    // Draw dots
+    function dot(p, color) {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 5, 0, 2 * Math.PI);
+      ctx.fillStyle = color;
+      ctx.fill();
+    }
+    dot(M1, accent);
+    dot(M2, accent);
+    dot(M3, accent);
+
+    // Labels
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = accent;
+    ctx.textAlign = 'right';
+    ctx.fillText('M\u2081', M1.x - 12, M1.y + 6);
+    ctx.textAlign = 'left';
+    ctx.fillText('M\u2082', M2.x + 12, M2.y + 6);
+    ctx.textAlign = 'center';
+    ctx.fillText('M\u2083', M3.x, M3.y - 14);
+
+    // Side labels
+    ctx.fillStyle = text;
+    ctx.font = '14px Segoe UI, system-ui, sans-serif';
+    // Bottom side
+    ctx.textAlign = 'center';
+    ctx.fillText('s = \u221A2/2', cx, botY + 28);
+    // Left side
+    var midLeft = { x: (M1.x + M3.x) / 2 - 16, y: (M1.y + M3.y) / 2 };
+    ctx.textAlign = 'right';
+    ctx.fillText('s', midLeft.x, midLeft.y);
+    // Right side
+    var midRight = { x: (M2.x + M3.x) / 2 + 16, y: (M2.y + M3.y) / 2 };
+    ctx.textAlign = 'left';
+    ctx.fillText('s', midRight.x, midRight.y);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Jednakostrani\u010Dni trougao M\u2081M\u2082M\u2083', W / 2, 30);
+
+    // Formula box at bottom
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.1);
+    var boxW = 320;
+    var boxH = 36;
+    var boxX = cx - boxW / 2;
+    var boxY = H - 65;
+    ctx.fillRect(boxX, boxY, boxW, boxH);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(boxX, boxY, boxW, boxH);
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('P = (\u221A3/4) \u00B7 s\u00B2 = \u221A3/8', cx, boxY + 23);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('faceTriangle');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var secondary = cv('--sol-canvas-secondary');
+    var danger = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Draw one face of the cube (a square)
+    var sq = 260;
+    var ox = W / 2 - sq / 2;
+    var oy = 80;
+
+    // Square face
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(ox, oy, sq, sq);
+
+    // Shade face
+    ctx.fillStyle = cvAlpha('--sol-canvas-grid', 0.15);
+    ctx.fillRect(ox, oy, sq, sq);
+
+    // Vertex labels
+    var O = { x: ox, y: oy + sq };
+    var A = { x: ox + sq, y: oy + sq };
+    var topLeft = { x: ox, y: oy };
+    var topRight = { x: ox + sq, y: oy };
+
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'right';
+    ctx.fillText('O', O.x - 10, O.y + 6);
+    ctx.textAlign = 'left';
+    ctx.fillText('A', A.x + 10, A.y + 6);
+    ctx.textAlign = 'right';
+    ctx.fillText('B', topLeft.x - 10, topLeft.y + 6);
+
+    // Midpoints
+    var M1 = { x: (O.x + A.x) / 2, y: O.y };
+    var M2 = { x: O.x, y: (O.y + topLeft.y) / 2 };
+
+    // Highlight half-edges
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(O.x, O.y);
+    ctx.lineTo(M1.x, M1.y);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(O.x, O.y);
+    ctx.lineTo(M2.x, M2.y);
+    ctx.stroke();
+
+    // Remaining parts (thinner)
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(M1.x, M1.y);
+    ctx.lineTo(A.x, A.y);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(M2.x, M2.y);
+    ctx.lineTo(topLeft.x, topLeft.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // The segment M1M2
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(M1.x, M1.y);
+    ctx.lineTo(M2.x, M2.y);
+    ctx.stroke();
+
+    // Right angle mark at O
+    var rSize = 16;
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(O.x + rSize, O.y);
+    ctx.lineTo(O.x + rSize, O.y - rSize);
+    ctx.lineTo(O.x, O.y - rSize);
+    ctx.stroke();
+
+    // Dots
+    function dot(p, color) {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 5, 0, 2 * Math.PI);
+      ctx.fillStyle = color;
+      ctx.fill();
+    }
+    dot(O, primary);
+    dot(M1, accent);
+    dot(M2, accent);
+
+    // Labels for midpoints
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = accent;
+    ctx.textAlign = 'center';
+    ctx.fillText('M\u2081', M1.x, M1.y + 22);
+    ctx.textAlign = 'right';
+    ctx.fillText('M\u2082', M2.x - 12, M2.y + 5);
+
+    // Dimension labels
+    ctx.font = 'italic 14px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = highlight;
+    ctx.textAlign = 'center';
+    ctx.fillText('\u00BD', (O.x + M1.x) / 2, O.y + 22);
+    ctx.textAlign = 'right';
+    ctx.fillText('\u00BD', O.x - 14, (O.y + M2.y) / 2 + 4);
+
+    // Hypotenuse label
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    var midHyp = { x: (M1.x + M2.x) / 2 + 10, y: (M1.y + M2.y) / 2 - 10 };
+    ctx.fillText('\u221A2/2', midHyp.x, midHyp.y);
+
+    // Edge length on full side
+    ctx.fillStyle = muted;
+    ctx.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('ivica = 1 cm', (O.x + A.x) / 2, A.y + 40);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Pravougli trougao OM\u2081M\u2082 na stranici kocke', W / 2, 30);
+
+    // Formula
+    ctx.fillStyle = text;
+    ctx.font = '14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('|M\u2081M\u2082|\u00B2 = (\u00BD)\u00B2 + (\u00BD)\u00B2 = \u00BD   \u21D2   |M\u2081M\u2082| = \u221A2/2', W / 2, H - 30);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Presek kocke ravni kroz sredine ivica iz istog temena",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["stereometrija", "kocka", "presek", "jednakostranični trougao", "Pitagorina teorema", "površina trougla"]
+}
+BRAINSPARK_META-->

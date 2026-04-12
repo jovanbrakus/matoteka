@@ -1,0 +1,656 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Find the height of a right circular cone of maximum volume inscribed in a sphere of radius R = 3 cm.
+
+  Setup:
+  - Sphere of radius R = 3, center at origin O.
+  - Cone inscribed: apex on the sphere, base circle is a cross-section of the sphere.
+  - Let h = height of the cone. The apex is at the "top" of the sphere.
+  - Place coordinate system: center of sphere at origin.
+  - Apex at top: y = R = 3.
+  - Base of cone at y = R - h = 3 - h (measured down from apex).
+  - The base circle at height y = (3 - h) from center has radius r where:
+    r^2 + (3 - h)^2 = 3^2 = 9
+    r^2 = 9 - (3 - h)^2 = 9 - 9 + 6h - h^2 = 6h - h^2
+  - Constraint: r^2 >= 0, so 6h - h^2 >= 0, i.e. h(6 - h) >= 0, so 0 < h < 6 (h = 2R).
+
+  Volume of cone:
+  V = (1/3) * pi * r^2 * h = (pi/3)(6h - h^2) * h = (pi/3)(6h^2 - h^3)
+
+  Maximize V(h) = (pi/3)(6h^2 - h^3):
+  V'(h) = (pi/3)(12h - 3h^2) = (pi/3) * 3h(4 - h) = pi * h * (4 - h)
+
+  V'(h) = 0: h = 0 or h = 4
+
+  Second derivative test:
+  V''(h) = (pi/3)(12 - 6h)
+  V''(4) = (pi/3)(12 - 24) = (pi/3)(-12) = -4*pi < 0 => maximum
+
+  So h = 4 cm gives maximum volume.
+
+  Verification:
+  - At h = 4: r^2 = 6*4 - 16 = 24 - 16 = 8, r = 2*sqrt(2)
+  - V = (pi/3) * 8 * 4 = 32*pi/3
+  - Check boundary: V(0) = 0, V(6) = 0 (degenerate cases)
+  - V(3) = (pi/3)(54 - 27) = 27*pi/3 = 9*pi (less than 32*pi/3 ~ 33.5)
+  - V(4) = 32*pi/3 ~ 33.5 (confirmed maximum)
+
+  Answer: B) 4 cm
+</script>
+
+<h1 data-card="problem-title">Kupa maksimalne zapremine upisana u loptu</h1>
+<p data-card="problem-subtitle" class="subtitle">Optimizacija zapremine — primena izvoda u geometriji</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Visina prave kupe maksimalne zapremine koja je upisana u loptu poluprečnika \( 3 \) cm je:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">R</span>
+      <span class="given-value">\( 3 \text{ cm} \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 5 \text{ cm} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 4 \text{ cm} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( (3 + \sqrt{2}) \text{ cm} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( (3 + \sqrt{3}) \text{ cm} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( (3 + \sqrt{5}) \text{ cm} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Izrazićemo poluprečnik osnove kupe preko visine koristeći vezu sa poluprečnikom lopte, zatim zapreminu kupe zapišemo kao funkciju jedne promenljive \( h \), pa nalazimo maksimum pomoću prvog izvoda.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Zapremina kupe:</strong> \( V = \frac{1}{3} \pi r^2 h \), gde je \( r \) poluprečnik osnove, a \( h \) visina.</li>
+        <li><strong>Jednačina sfere:</strong> \( x^2 + y^2 = R^2 \) (u preseku kroz osu) — tačke na lopti zadovoljavaju ovu relaciju.</li>
+        <li><strong>Uslov ekstremuma:</strong> Funkcija \( f(x) \) ima ekstremum u tački gde je \( f'(x) = 0 \), a vrsta se određuje znakom drugog izvoda.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Kupa upisana u loptu">
+  <h2>📐 Kupa upisana u loptu</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-p16-cone" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Presek kupe upisane u loptu poluprečnika \( R = 3 \) — vrh kupe je na sferi, osnova je krug u ravni preseka</p>
+</div>
+
+<div data-card="visual-aid" data-title="Grafik zapremine">
+  <h2>📐 Grafik funkcije zapremine</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-p16-graph" width="700" height="450"></canvas>
+  </div>
+  <p class="canvas-caption">Zapremina kupe \( V(h) = \frac{\pi}{3}(6h^2 - h^3) \) dostiže maksimum u tački \( h = 4 \)</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavimo geometrijski model</h3>
+      <p>Zamislimo loptu poluprečnika \( R = 3 \) sa centrom u tački \( O \). Prava kupa je upisana tako da joj je vrh na sferi, a osnova (krug) leži u ravni koja seče sferu.</p>
+      <p>Postavimo koordinatni sistem sa centrom u \( O \). Vrh kupe je na vrhu sfere, u tački \( (0, 3) \). Osnova kupe je u ravni na rastojanju \( d = R - h = 3 - h \) od centra sfere (ispod centra za \( h > 3 \), iznad za \( h < 3 \)).</p>
+      <div class="math-block">
+        \[ \text{Vrh kupe: } y = R = 3, \quad \text{Osnova kupe: } y = R - h = 3 - h \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Izrazimo poluprečnik osnove preko visine</h3>
+      <p>Osnova kupe je krug koji leži na sferi. Tačke na obodu osnove pripadaju sferi, pa zadovoljavaju:</p>
+      <div class="math-block">
+        \[ r^2 + (3 - h)^2 = 3^2 \]
+      </div>
+      <p>Rešavamo po \( r^2 \):</p>
+      <div class="math-block">
+        \[ r^2 = 9 - (3 - h)^2 = 9 - 9 + 6h - h^2 = 6h - h^2 \]
+      </div>
+      <p>Uslov \( r^2 \geq 0 \) daje \( h(6 - h) \geq 0 \), tj. \( 0 < h < 6 \).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto je \( h < 6 \)?</summary>
+          <div class="detail-content">
+            <p>Jer je maksimalna moguća visina kupe jednaka prečniku lopte: \( h_{\max} = 2R = 6 \). Pri \( h = 6 \) osnova degenerisana u tačku (\( r = 0 \)).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Zapišemo zapreminu kao funkciju visine</h3>
+      <p>Uvrstimo \( r^2 = 6h - h^2 \) u formulu za zapreminu kupe:</p>
+      <div class="math-block">
+        \[ V(h) = \frac{1}{3}\pi r^2 h = \frac{\pi}{3}(6h - h^2) \cdot h = \frac{\pi}{3}(6h^2 - h^3) \]
+      </div>
+      <p>Sada imamo zapreminu izraženu samo preko jedne promenljive \( h \), za \( h \in (0, 6) \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Nađemo prvi izvod i stacionarne tačke</h3>
+      <p>Diferenciramo po \( h \):</p>
+      <div class="math-block">
+        \[ V'(h) = \frac{\pi}{3}(12h - 3h^2) = \frac{\pi}{3} \cdot 3h(4 - h) = \pi h(4 - h) \]
+      </div>
+      <p>Izjednačimo sa nulom:</p>
+      <div class="math-block">
+        \[ \pi h(4 - h) = 0 \implies h = 0 \quad \text{ili} \quad h = 4 \]
+      </div>
+      <p>Pošto \( h = 0 \) daje degenerisanu kupu (zapremina nula), jedini kandidat je \( h = 4 \).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Da li je \( h = 4 \) u dozvoljenom opsegu?</summary>
+          <div class="detail-content">
+            <p>Da! Uslov je \( 0 < h < 6 \), a \( 4 \in (0, 6) \). Primetimo da je \( h = 4 > R = 3 \), što znači da osnova kupe prelazi centar sfere — kupa je „duboka".</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Potvrdimo da je u pitanju maksimum</h3>
+      <p>Računamo drugi izvod:</p>
+      <div class="math-block">
+        \[ V''(h) = \frac{\pi}{3}(12 - 6h) \]
+      </div>
+      <p>Za \( h = 4 \):</p>
+      <div class="math-block">
+        \[ V''(4) = \frac{\pi}{3}(12 - 24) = \frac{\pi}{3} \cdot (-12) = -4\pi < 0 \]
+      </div>
+      <p>Drugi izvod je negativan, što potvrđuje da je \( h = 4 \) tačka <strong>maksimuma</strong>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Verifikacija — izračunamo maksimalnu zapreminu</h3>
+      <p>Za \( h = 4 \):</p>
+      <div class="math-block">
+        \[ r^2 = 6 \cdot 4 - 4^2 = 24 - 16 = 8 \implies r = 2\sqrt{2} \]
+      </div>
+      <div class="math-block">
+        \[ V_{\max} = \frac{\pi}{3} \cdot 8 \cdot 4 = \frac{32\pi}{3} \approx 33{,}5 \text{ cm}^3 \]
+      </div>
+      <p>Za poređenje: pri \( h = 3 \) (kupa do centra sfere) zapremina je \( V(3) = \frac{\pi}{3}(54 - 27) = 9\pi \approx 28{,}3 \text{ cm}^3 \), što je zaista manje.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Šta se dešava na krajevima intervala?</summary>
+          <div class="detail-content">
+            <p>Pri \( h \to 0^+ \) kupa postaje „ravna ploča" — zapremina teži nuli. Pri \( h \to 6^- \) osnova se skuplja u tačku — zapremina opet teži nuli. Dakle, maksimum mora biti u unutrašnjoj tački, što je upravo \( h = 4 \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kupa maksimalne zapremine upisana u loptu poluprečnika \( R \) ima visinu \( h = \frac{4R}{3} \). U našem slučaju \( h = \frac{4 \cdot 3}{3} = 4 \). Ovo je opšti rezultat — optimalna visina kupe je uvek \( \frac{4}{3} \) poluprečnika sfere, nezavisno od konkretne vrednosti \( R \). Zapazimo i da osnova kupe prolazi ispod centra sfere, što nije intuitivno na prvi pogled!</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ h = 4 \text{ cm} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 5 \text{ cm} \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( 4 \text{ cm} \)</span>
+    <span class="answer-option" data-option="C">(C) \( (3 + \sqrt{2}) \text{ cm} \)</span>
+    <span class="answer-option" data-option="D">(D) \( (3 + \sqrt{3}) \text{ cm} \)</span>
+    <span class="answer-option" data-option="E">(E) \( (3 + \sqrt{5}) \text{ cm} \)</span>
+  </div>
+  <p class="verification">Verifikacija: \( V(4) = \frac{32\pi}{3} \approx 33{,}5 \text{ cm}^3 \) je zaista veće od \( V(3) = 9\pi \approx 28{,}3 \text{ cm}^3 \) i \( V(5) = \frac{25\pi}{3} \approx 26{,}2 \text{ cm}^3 \), što potvrđuje da je \( h = 4 \) optimalno.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešna veza \( r \) i \( h \):</strong> Česta greška je koristiti \( r^2 + h^2 = R^2 \) umesto \( r^2 + (R - h)^2 = R^2 \). Visina kupe se meri od osnove do vrha, a rastojanje od centra sfere do osnove je \( |R - h| \), ne \( h \).</li>
+    <li><strong>Zaboraviti opseg za \( h \):</strong> Visina mora biti u intervalu \( (0, 6) \), a ne \( (0, 3) \). Kupa može biti „dublja" od poluprečnika sfere!</li>
+    <li><strong>Brkanje \( h = 0 \) sa rešenjem:</strong> Izvod je nula i za \( h = 0 \), ali to je trivijalno rešenje (zapremina nula), ne maksimum.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koja je maksimalna zapremina <strong>cilindra</strong> upisanog u istu loptu poluprečnika \( R = 3 \)? Uporedi je sa maksimalnom zapreminom kupe — koji od ova dva tela bolje „ispunjava" loptu?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Za cilindar upisanog u loptu: \( r^2 + \left(\frac{h}{2}\right)^2 = R^2 \), pa je \( r^2 = R^2 - \frac{h^2}{4} \). Zapremina je \( V = \pi r^2 h = \pi\left(R^2 - \frac{h^2}{4}\right)h \). Diferenciranjem dobijamo \( h = \frac{2R}{\sqrt{3}} = 2\sqrt{3} \) i \( V_{\max} = \frac{4\pi R^3}{3\sqrt{3}} = 12\pi\sqrt{3} \approx 65{,}3 \text{ cm}^3 \), što je skoro duplo više od kupe!</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-p16-cone');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    var cx = W / 2;
+    var cy = H / 2 + 10;
+    var R = 140;
+    var scale = R / 3;
+
+    // Draw sphere (circle)
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0, 2 * Math.PI);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.05);
+    ctx.fill();
+
+    // Cone parameters: h = 4, so apex at top of sphere, base at y = R - h = 3 - 4 = -1 from center
+    var hOpt = 4;
+    var rBase = Math.sqrt(6 * hOpt - hOpt * hOpt);
+    var apexY = cy - R;
+    var baseY = cy - (3 - hOpt) * scale;
+    var baseHalfW = rBase * scale;
+
+    // Fill cone
+    ctx.beginPath();
+    ctx.moveTo(cx, apexY);
+    ctx.lineTo(cx - baseHalfW, baseY);
+    ctx.lineTo(cx + baseHalfW, baseY);
+    ctx.closePath();
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.15);
+    ctx.fill();
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Draw base ellipse
+    ctx.beginPath();
+    ctx.ellipse(cx, baseY, baseHalfW, baseHalfW * 0.25, 0, 0, 2 * Math.PI);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Center O
+    ctx.beginPath();
+    ctx.arc(cx, cy, 4, 0, 2 * Math.PI);
+    ctx.fillStyle = primary;
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('O', cx + 8, cy + 5);
+
+    // Radius line from center to sphere edge (right)
+    ctx.beginPath();
+    ctx.setLineDash([5, 4]);
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + R, cy);
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = muted;
+    ctx.font = '14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('R = 3', cx + R / 2, cy - 8);
+
+    // Height line (vertical, dashed)
+    ctx.beginPath();
+    ctx.setLineDash([5, 4]);
+    ctx.moveTo(cx, apexY);
+    ctx.lineTo(cx, baseY);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // h label
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('h = 4', cx + 6, (apexY + baseY) / 2);
+
+    // r label
+    ctx.beginPath();
+    ctx.setLineDash([5, 4]);
+    ctx.moveTo(cx, baseY);
+    ctx.lineTo(cx + baseHalfW, baseY);
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('r = 2\u221A2', cx + baseHalfW / 2, baseY + 18);
+
+    // Apex label
+    ctx.beginPath();
+    ctx.arc(cx, apexY, 4, 0, 2 * Math.PI);
+    ctx.fillStyle = accent;
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Vrh', cx + 8, apexY - 6);
+
+    // Line from O to base edge (showing R)
+    ctx.beginPath();
+    ctx.setLineDash([3, 3]);
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + baseHalfW, baseY);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = primary;
+    ctx.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('R = 3', cx + baseHalfW / 2 + 10, (cy + baseY) / 2 - 5);
+
+    // Distance label: 3 - h = -1 (below center)
+    ctx.fillStyle = muted;
+    ctx.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('d = h \u2212 R = 1', cx - 10, (cy + baseY) / 2 + 4);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Kupa upisana u loptu (presek)', cx, 25);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-p16-graph');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    var padL = 80;
+    var padR = 40;
+    var padT = 50;
+    var padB = 60;
+    var gW = W - padL - padR;
+    var gH = H - padT - padB;
+
+    var hMin = 0;
+    var hMax = 6.5;
+    var vMax = 35;
+
+    function toX(h) { return padL + (h - hMin) / (hMax - hMin) * gW; }
+    function toY(v) { return padT + gH - (v / vMax) * gH; }
+
+    function V(h) { return (Math.PI / 3) * (6 * h * h - h * h * h); }
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 0.5;
+    for (var i = 0; i <= 6; i++) {
+      ctx.beginPath();
+      ctx.moveTo(toX(i), padT);
+      ctx.lineTo(toX(i), padT + gH);
+      ctx.stroke();
+    }
+    for (var j = 0; j <= 35; j += 5) {
+      ctx.beginPath();
+      ctx.moveTo(padL, toY(j));
+      ctx.lineTo(padL + gW, toY(j));
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(padL, padT + gH);
+    ctx.lineTo(padL + gW, padT + gH);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(padL, padT + gH);
+    ctx.lineTo(padL, padT);
+    ctx.stroke();
+
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = '14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var i = 0; i <= 6; i++) {
+      ctx.fillText(String(i), toX(i), padT + gH + 20);
+    }
+    ctx.textAlign = 'right';
+    for (var j = 0; j <= 35; j += 5) {
+      ctx.fillText(String(j), padL - 8, toY(j) + 5);
+    }
+
+    ctx.textAlign = 'center';
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('h', padL + gW + 20, padT + gH + 5);
+    ctx.save();
+    ctx.translate(20, padT + gH / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('V(h) / \u03C0', 0, 0);
+    ctx.restore();
+
+    // Plot V(h)/pi for cleaner numbers: V/pi = (1/3)(6h^2 - h^3)
+    function Vp(h) { return (1 / 3) * (6 * h * h - h * h * h); }
+
+    ctx.beginPath();
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    var first = true;
+    for (var px = 0; px <= gW; px++) {
+      var h = hMin + (px / gW) * (hMax - hMin);
+      var v = Vp(h);
+      if (h < 0 || h > 6 || v < 0) continue;
+      var x = padL + px;
+      var y = toY(v);
+      if (first) { ctx.moveTo(x, y); first = false; }
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+
+    // Maximum point at h=4
+    var maxV = Vp(4);
+    var maxX = toX(4);
+    var maxY = toY(maxV);
+
+    ctx.beginPath();
+    ctx.arc(maxX, maxY, 6, 0, 2 * Math.PI);
+    ctx.fillStyle = accent;
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Dashed lines to axes
+    ctx.setLineDash([5, 4]);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(maxX, maxY);
+    ctx.lineTo(maxX, padT + gH);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(maxX, maxY);
+    ctx.lineTo(padL, maxY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Label max
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Maksimum', maxX + 10, maxY - 12);
+    ctx.fillText('h = 4, V/\u03C0 = 32/3 \u2248 10,67', maxX + 10, maxY + 6);
+
+    // Mark other answer options
+    var options = [
+      { h: 5, label: 'A: h=5' },
+      { h: 3 + Math.sqrt(2), label: 'C: h\u22484,41' },
+      { h: 3 + Math.sqrt(3), label: 'D: h\u22484,73' },
+      { h: 3 + Math.sqrt(5), label: 'E: h\u22485,24' }
+    ];
+
+    for (var k = 0; k < options.length; k++) {
+      var oh = options[k].h;
+      if (oh > 0 && oh < 6) {
+        var ov = Vp(oh);
+        var ox = toX(oh);
+        var oy = toY(ov);
+        ctx.beginPath();
+        ctx.arc(ox, oy, 4, 0, 2 * Math.PI);
+        ctx.fillStyle = muted;
+        ctx.fill();
+      }
+    }
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('V(h)/\u03C0 = \u2153(6h\u00B2 \u2212 h\u00B3)', W / 2, 25);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Kupa maksimalne zapremine upisana u loptu",
+  "subject": "math",
+  "unit": "calculus",
+  "topic_tags": ["optimizacija", "zapremina kupe", "izvod funkcije", "kupa upisana u sferu", "primena izvoda"]
+}
+BRAINSPARK_META-->

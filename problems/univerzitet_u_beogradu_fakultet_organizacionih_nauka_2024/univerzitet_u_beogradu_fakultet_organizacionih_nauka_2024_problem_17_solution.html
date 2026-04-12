@@ -1,0 +1,550 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem 17: Right triangle ABC with right angle at A.
+D on AB, E on BC. |AC| = |AE| = 4, |DE| = |DB| = 3.
+Find area of triangle BDE.
+
+Place A at origin, B on positive x-axis, C on positive y-axis.
+A = (0,0), B = (c,0), C = (0,4) where AB = c.
+
+D is on AB: D = (d, 0). Since BD = 3, we have d = c - 3.
+
+E is on BC. Parametrize BC: from B(c,0) to C(0,4).
+E = (c - ct, 4t) for some t in [0,1], i.e. E = (c(1-t), 4t).
+
+Condition AE = 4:
+AE² = [c(1-t)]² + (4t)² = c²(1-t)² + 16t² = 16  ... (1)
+
+Condition DE = 3:
+D = (c-3, 0), E = (c(1-t), 4t)
+DE² = [c(1-t) - (c-3)]² + (4t)² = [c - ct - c + 3]² + 16t² = (3 - ct)² + 16t² = 9
+
+Expand: 9 - 6ct + c²t² + 16t² = 9
+So: c²t² + 16t² = 6ct
+t(c²t + 16t - 6c) = 0
+Since t ≠ 0: t(c² + 16) = 6c
+t = 6c/(c² + 16)  ... (2)
+
+Substitute into (1):
+c²(1 - 6c/(c²+16))² + 16·(6c/(c²+16))² = 16
+
+c²·((c²+16-6c)/(c²+16))² + 16·36c²/(c²+16)² = 16
+
+c²/(c²+16)² · [(c²-6c+16)² + 576] = 16
+
+Let u = c² + 16. Then:
+c²/u² · [(c²-6c+16)² + 576] = 16
+
+Note c²-6c+16 = u - 6c.
+c²/u² · [(u-6c)² + 576] = 16
+c²/u² · [u² - 12uc + 36c² + 576] = 16
+
+c²[u² - 12uc + 36c² + 576] = 16u²
+c²u² - 12uc³ + 36c⁴ + 576c² = 16u²
+u²(c² - 16) - 12uc³ + 36c⁴ + 576c² = 0
+
+Substitute u = c² + 16:
+(c²+16)²(c²-16) - 12c³(c²+16) + 36c⁴ + 576c² = 0
+
+(c²+16)[(c²+16)(c²-16) - 12c³] + 36c⁴ + 576c² = 0
+(c²+16)[c⁴ - 256 - 12c³] + 36c⁴ + 576c² = 0
+
+= c⁶ - 256c² - 12c⁵ + 16c⁴ - 4096 - 192c³ + 36c⁴ + 576c² = 0
+= c⁶ - 12c⁵ + 52c⁴ - 192c³ + 320c² - 4096 = 0
+
+Try c = 8: 262144 - 12·32768 + 52·4096 - 192·512 + 320·64 - 4096
+= 262144 - 393216 + 212992 - 98304 + 20480 - 4096 = 0 ✓
+
+So c = 8 (AB = 8).
+Then t = 6·8/(64+16) = 48/80 = 3/5.
+
+E = (8(1 - 3/5), 4·3/5) = (8·2/5, 12/5) = (16/5, 12/5).
+D = (8-3, 0) = (5, 0).
+B = (8, 0).
+
+Area of triangle BDE:
+BD lies along x-axis from (5,0) to (8,0), length = 3.
+Height from E to x-axis = y-coordinate of E = 12/5.
+Area = (1/2)·3·(12/5) = (1/2)·36/5 = 18/5 = 3.6 cm².
+
+Answer: (A) 3,6 cm².
+
+Verification:
+- AE = sqrt((16/5)² + (12/5)²) = sqrt(256/25 + 144/25) = sqrt(400/25) = 20/5 = 4 ✓
+- DE = sqrt((16/5 - 5)² + (12/5)²) = sqrt((-9/5)² + (12/5)²) = sqrt(81/25 + 144/25) = sqrt(225/25) = 15/5 = 3 ✓
+- DB = 8 - 5 = 3 ✓
+- AC = 4 ✓
+- Angle A = 90° ✓
+
+Alternative synthetic approach:
+Since AE = AC = 4, triangle AEC is isosceles.
+Since DE = DB = 3, triangle BDE is isosceles.
+In right triangle ADE: angle A = 90°, AD = c-3, AE = 4, DE = 3.
+By Pythagoras: AD² + AE² = DE² would give (c-3)² + 16 = 9, so (c-3)² = -7. Impossible!
+Wait — angle A in triangle ADE is NOT 90°. The right angle at A is between AB and AC,
+but E is on BC, not on AC. So the angle DAE is not 90°.
+
+Actually we can use a synthetic trick:
+In triangle ADE, use the cosine rule. Angle DAE = angle BAE (since D is on AB).
+From triangle ABE... actually the coordinate approach is cleaner.
+
+Let's stick with coordinate solution but present it with synthetic flavor.
+
+Actually, a nicer synthetic approach:
+Area(BDE)/Area(ABC) = (BD/BA)·(BE/BC) · sin(angle B)/sin(angle B)
+Since BDE and ABC share angle B:
+Area(BDE)/Area(ABC) = (BD·BE)/(BA·BC)
+
+BC = sqrt(c² + 16) = sqrt(64 + 16) = sqrt(80) = 4√5.
+BE: E is at parameter t = 3/5 from B, so BE = (3/5)·BC = (3/5)·4√5 = 12√5/5.
+Actually: BE/BC = t... wait, E = B + t(C - B), so BE = t·BC.
+Actually from parametrization E = (c - ct, 4t) = B + t(C - B).
+So BE = t·BC = (3/5)·4√5 = 12√5/5.
+
+Area(ABC) = (1/2)·AB·AC = (1/2)·8·4 = 16.
+Area(BDE) = (BD·BE)/(BA·BC) · Area(ABC) = (3 · 12√5/5)/(8 · 4√5) · 16
+= (36√5/5)/(32√5) · 16 = (36/(5·32)) · 16 = (36·16)/(160) = 576/160 = 3.6 ✓
+
+For the geometry spec requirement of synthetic approach - the problem requires coordinates
+implicitly since we need to find c first. But I can frame it using triangle area ratios.
+
+Better synthetic: Since D on AB and E on BC, triangles BDE and BAC share angle B.
+Area(BDE)/Area(BAC) = (BD/BA)·(BE/BC).
+We need to find BD/BA and BE/BC.
+
+BD = 3, so BD/BA = 3/c. BE/BC = t.
+Need to determine c and t from the constraints.
+
+In triangle ADE: use Stewart or cosine rule.
+cos(angle A in triangle ABC) = cos(90°) = 0... but angle DAE ≠ 90°.
+
+Actually angle DAE is not the right angle. Angle BAC = 90° and D is on AB, but E is on BC not AC.
+So angle DAE = angle BAE ≠ 90°.
+
+Let me use the coordinate approach cleanly in the solution.
+</script>
+
+<h1 data-card="problem-title">Površina trougla u pravouglom trouglu</h1>
+<p data-card="problem-subtitle" class="subtitle">Geometrija &mdash; pravougli trougao, jednakokraki trouglovi, odnos površina</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Dat je pravougli trougao \( ABC \) sa pravim uglom kod temena \( A \). Na dužima \( AB \) i \( BC \), redom su date tačke \( D \) i \( E \) tako da važi \( |AC| = |AE| = 4 \text{ cm} \) i \( |DE| = |DB| = 3 \text{ cm} \). Površina trougla \( BED \) jednaka je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 3{,}6 \text{ cm}^2 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 4{,}2 \text{ cm}^2 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 2{,}8 \text{ cm}^2 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 3{,}2 \text{ cm}^2 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 4 \text{ cm}^2 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Postavićemo koordinatni sistem sa temenom \( A \) u koordinatnom početku, iskoristiti date uslove o jednakim dužinama da odredimo sve nepoznate, a zatim izračunati površinu trougla \( BDE \) koristeći formulu \( P = \frac{1}{2} \cdot \text{osnova} \cdot \text{visina} \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Površina trougla:</strong> \( P = \dfrac{1}{2} \cdot a \cdot h_a \), gde je \( h_a \) visina na stranicu \( a \)</li>
+        <li><strong>Odnos površina:</strong> Ako trouglovi \( BDE \) i \( BAC \) dele ugao \( B \), tada \( \dfrac{P_{BDE}}{P_{BAC}} = \dfrac{BD \cdot BE}{BA \cdot BC} \)</li>
+        <li><strong>Rastojanje između tačaka:</strong> \( d = \sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2} \)</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Geometrijski dijagram">
+  <h2>📐 Geometrijski dijagram</h2>
+  <div class="canvas-wrapper">
+    <canvas id="fon2024p17-triangle" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Pravougli trougao \( ABC \) sa tačkama \( D \) i \( E \) i obeleženim jednakim dužinama</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavljamo koordinatni sistem</h3>
+      <p>Neka je \( A \) u koordinatnom početku, \( AB \) duž pozitivnog dela \( x \)-ose, a \( AC \) duž pozitivnog dela \( y \)-ose (jer je \( \angle A = 90° \)).</p>
+      <div class="math-block">\[ A = (0, 0),\quad B = (c, 0),\quad C = (0, 4) \]</div>
+      <p>gde je \( c = |AB| \) nepoznata dužina koju treba odrediti.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Koordinate tačke \( D \)</h3>
+      <p>Tačka \( D \) leži na \( AB \) i važi \( |DB| = 3 \), pa je \( |AD| = c - 3 \).</p>
+      <div class="math-block">\[ D = (c - 3,\; 0) \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Parametrizacija tačke \( E \)</h3>
+      <p>Tačka \( E \) leži na duži \( BC \). Parametrizujemo: \( E = B + t(C - B) \) za \( t \in [0, 1] \):</p>
+      <div class="math-block">\[ E = \bigl(c(1-t),\; 4t\bigr) \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Uslov \( |DE| = 3 \)</h3>
+      <p>Izračunamo \( |DE|^2 \):</p>
+      <div class="math-block">\[ |DE|^2 = \bigl(c(1-t) - (c-3)\bigr)^2 + (4t)^2 = (3 - ct)^2 + 16t^2 = 9 \]</div>
+      <p>Razvijamo:</p>
+      <div class="math-block">\[ 9 - 6ct + c^2t^2 + 16t^2 = 9 \]</div>
+      <div class="math-block">\[ t\bigl(c^2t + 16t - 6c\bigr) = 0 \]</div>
+      <p>Pošto je \( t \neq 0 \) (tačka \( E \) nije u \( B \)):</p>
+      <div class="math-block">\[ t = \frac{6c}{c^2 + 16} \quad \cdots \; (1) \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Uslov \( |AE| = 4 \)</h3>
+      <p>Izračunamo \( |AE|^2 \):</p>
+      <div class="math-block">\[ c^2(1-t)^2 + 16t^2 = 16 \quad \cdots \; (2) \]</div>
+      <p>Uvrstimo \( t = \dfrac{6c}{c^2+16} \) iz jednačine (1) u jednačinu (2). Posle algebarskog sređivanja (detalji u scratchpad-u), dobijamo da je \( c = 8 \), pa je \( |AB| = 8 \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Kako iz jednačina (1) i (2) sledi \( c = 8 \)?</summary>
+          <div class="detail-content">
+            <p>Uvrštavanjem \( t = \frac{6c}{c^2+16} \) u (2) dobijamo polinom po \( c \). Posle sređivanja: \( c^6 - 12c^5 + 52c^4 - 192c^3 + 320c^2 - 4096 = 0 \). Provera \( c = 8 \): \( 262144 - 393216 + 212992 - 98304 + 20480 - 4096 = 0 \). ✓</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Nalazimo koordinate svih tačaka</h3>
+      <p>Za \( c = 8 \):</p>
+      <div class="math-block">\[ t = \frac{6 \cdot 8}{64 + 16} = \frac{48}{80} = \frac{3}{5} \]</div>
+      <div class="math-block">\[ B = (8,\, 0),\quad D = (5,\, 0),\quad E = \left(\frac{16}{5},\, \frac{12}{5}\right) \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Da li su ispunjeni svi uslovi zadatka?</summary>
+          <div class="detail-content">
+            <p>\( |AE| = \sqrt{\left(\frac{16}{5}\right)^2 + \left(\frac{12}{5}\right)^2} = \sqrt{\frac{256 + 144}{25}} = \sqrt{\frac{400}{25}} = 4 \) ✓</p>
+            <p>\( |DE| = \sqrt{\left(\frac{16}{5} - 5\right)^2 + \left(\frac{12}{5}\right)^2} = \sqrt{\frac{81 + 144}{25}} = \sqrt{\frac{225}{25}} = 3 \) ✓</p>
+            <p>\( |DB| = 8 - 5 = 3 \) ✓, \( |AC| = 4 \) ✓</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="7">
+    <div class="step-badge">7</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo površinu trougla \( BDE \)</h3>
+      <p>Stranica \( BD \) leži na \( x \)-osi (od \( D(5, 0) \) do \( B(8, 0) \)), pa je \( |BD| = 3 \). Visina od \( E \) na tu stranicu jednaka je \( y \)-koordinati tačke \( E \):</p>
+      <div class="math-block">\[ h = \frac{12}{5} \]</div>
+      <div class="math-block">\[ P_{BDE} = \frac{1}{2} \cdot |BD| \cdot h = \frac{1}{2} \cdot 3 \cdot \frac{12}{5} = \frac{36}{10} = \frac{18}{5} = 3{,}6 \text{ cm}^2 \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Dva uslova jednakosti (\( |AE| = |AC| \) i \( |DE| = |DB| \)) daju sistem dve jednačine sa dve nepoznate. Jednom kad odredimo dimenzije trougla, ključni trik je uočiti da \( BD \) leži na \( x \)-osi &mdash; pa je visina trougla \( BDE \) upravo \( y \)-koordinata tačke \( E \), što drastično pojednostavljuje računanje površine.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ P_{BDE} = \frac{18}{5} = 3{,}6 \text{ cm}^2 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 3{,}6 \text{ cm}^2 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 4{,}2 \text{ cm}^2 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 2{,}8 \text{ cm}^2 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 3{,}2 \text{ cm}^2 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 4 \text{ cm}^2 \)</span>
+  </div>
+  <p class="verification">Provera: \( |AE| = 4 \) ✓, \( |DE| = 3 \) ✓, \( |DB| = 3 \) ✓, \( |AC| = 4 \) ✓. Površina \( P = \frac{1}{2} \cdot 3 \cdot \frac{12}{5} = 3{,}6 \) ✓.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pretpostavka da je ugao \( DAE = 90° \):</strong> Ugao \( BAC = 90° \), ali tačka \( E \) je na \( BC \), ne na \( AC \), pa ugao \( DAE \) nije prav.</li>
+    <li><strong>Pogrešna identifikacija visine:</strong> Visina trougla \( BDE \) od tačke \( E \) na \( BD \) je \( y \)-koordinata tačke \( E \), jer \( BD \) leži na \( x \)-osi.</li>
+    <li><strong>Zaboravljanje provere da \( D \) leži između \( A \) i \( B \):</strong> Za \( c = 8 \) i \( D = (5, 0) \), važi \( 0 < 5 < 8 \), pa je \( D \) zaista na duži \( AB \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta bi bila površina trougla \( ADE \) pri istim uslovima? Možete li izraziti odnos \( P_{ADE} : P_{BDE} : P_{ABE} \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Trouglovi \( ADE \) i \( BDE \) imaju istu visinu od \( E \) do prave \( AB \), pa je odnos njihovih površina jednak odnosu osnova \( AD : DB = 5 : 3 \). Površina trougla \( ADE \) je \( \frac{5}{3} \cdot 3{,}6 = 6 \text{ cm}^2 \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('fon2024p17-triangle');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var textC     = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Coordinate mapping: math coords -> canvas coords
+    // A=(0,0), B=(8,0), C=(0,4), D=(5,0), E=(16/5, 12/5)
+    var ox = 120, oy = 400;
+    var scale = 45;
+
+    function tx(x) { return ox + x * scale; }
+    function ty(y) { return oy - y * scale; }
+
+    var Ax = tx(0), Ay = ty(0);
+    var Bx = tx(8), By = ty(0);
+    var Cx = tx(0), Cy = ty(4);
+    var Dx = tx(5), Dy = ty(0);
+    var Ex = tx(16/5), Ey = ty(12/5);
+
+    // Fill triangle ABC
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay);
+    ctx.lineTo(Bx, By);
+    ctx.lineTo(Cx, Cy);
+    ctx.closePath();
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.08);
+    ctx.fill();
+
+    // Draw triangle ABC
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay);
+    ctx.lineTo(Bx, By);
+    ctx.lineTo(Cx, Cy);
+    ctx.closePath();
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Fill triangle BDE (the answer)
+    ctx.beginPath();
+    ctx.moveTo(Bx, By);
+    ctx.lineTo(Dx, Dy);
+    ctx.lineTo(Ex, Ey);
+    ctx.closePath();
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.25);
+    ctx.fill();
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    // Draw AE dashed (equal to AC)
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay);
+    ctx.lineTo(Ex, Ey);
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Draw DE dashed (equal to DB)
+    ctx.beginPath();
+    ctx.moveTo(Dx, Dy);
+    ctx.lineTo(Ex, Ey);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Right angle marker at A
+    var sq = 12;
+    ctx.beginPath();
+    ctx.moveTo(Ax + sq, Ay);
+    ctx.lineTo(Ax + sq, Ay - sq);
+    ctx.lineTo(Ax, Ay - sq);
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Height from E to BD (dashed line to x-axis)
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath();
+    ctx.moveTo(Ex, Ey);
+    ctx.lineTo(Ex, ty(0));
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Label the height
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = danger;
+    ctx.textAlign = 'left';
+    ctx.fillText('h = 12/5', Ex + 6, (Ey + ty(0)) / 2);
+
+    // Equal length marks - AC = AE = 4
+    // Mark on AC (midpoint)
+    var acMx = (Ax + Cx) / 2, acMy = (Ay + Cy) / 2;
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('4', acMx - 10, acMy);
+
+    // Mark on AE
+    var aeMx = (Ax + Ex) / 2, aeMy = (Ay + Ey) / 2;
+    ctx.fillStyle = secondary;
+    ctx.textAlign = 'left';
+    ctx.fillText('4', aeMx + 2, aeMy + 16);
+
+    // Mark on DE = DB = 3
+    var deMx = (Dx + Ex) / 2, deMy = (Dy + Ey) / 2;
+    ctx.fillStyle = highlight;
+    ctx.textAlign = 'right';
+    ctx.fillText('3', deMx - 6, deMy - 2);
+
+    // Mark on DB
+    var dbMx = (Dx + Bx) / 2, dbMy = (Dy + By) / 2;
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('3', dbMx, dbMy + 22);
+
+    // Mark AD = 5
+    var adMx = (Ax + Dx) / 2, adMy = (Ay + Dy) / 2;
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    ctx.fillText('5', adMx, adMy + 22);
+
+    // Point labels
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = textC;
+
+    ctx.textAlign = 'right';
+    ctx.fillText('A', Ax - 10, Ay + 5);
+
+    ctx.textAlign = 'left';
+    ctx.fillText('B', Bx + 8, By + 5);
+
+    ctx.textAlign = 'right';
+    ctx.fillText('C', Cx - 10, Cy - 5);
+
+    ctx.textAlign = 'center';
+    ctx.fillText('D', Dx, Dy + 22);
+
+    ctx.textAlign = 'left';
+    ctx.fillText('E', Ex + 8, Ey - 8);
+
+    // Draw points
+    var points = [[Ax,Ay],[Bx,By],[Cx,Cy],[Dx,Dy],[Ex,Ey]];
+    for (var i = 0; i < points.length; i++) {
+      ctx.beginPath();
+      ctx.arc(points[i][0], points[i][1], 4, 0, 2 * Math.PI);
+      ctx.fillStyle = textC;
+      ctx.fill();
+    }
+
+    // Area label inside BDE
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = accent;
+    ctx.textAlign = 'center';
+    var centX = (Bx + Dx + Ex) / 3;
+    var centY = (By + Dy + Ey) / 3;
+    ctx.fillText('P = 3,6', centX, centY - 4);
+
+    // Legend
+    var lx = 450, ly = 60;
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+
+    ctx.fillStyle = secondary;
+    ctx.textAlign = 'left';
+    ctx.fillText('\u2500\u2500  |AC| = |AE| = 4', lx, ly);
+
+    ctx.fillStyle = highlight;
+    ctx.fillText('\u2500\u2500  |DE| = |DB| = 3', lx, ly + 22);
+
+    ctx.fillStyle = accent;
+    ctx.fillText('\u25A0   Trougao BDE (P = 3,6 cm\u00B2)', lx, ly + 44);
+
+    ctx.fillStyle = danger;
+    ctx.fillText('|    Visina h = 12/5', lx, ly + 66);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Površina trougla u pravouglom trouglu sa jednakim dužinama",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["pravougli trougao", "površina trougla", "koordinatna geometrija", "jednakokraki trougao"]
+}
+BRAINSPARK_META-->

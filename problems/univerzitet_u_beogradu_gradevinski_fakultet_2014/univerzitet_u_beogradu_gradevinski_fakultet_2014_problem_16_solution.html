@@ -1,0 +1,424 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Zadatak: Zbir najmanje i najveće vrednosti funkcije f(x) = |x² − 2x| + |−x² + 5x − 6| na [3/2, 5/2].
+
+Analiza apsolutnih vrednosti na [3/2, 5/2]:
+
+1) x² − 2x = x(x − 2):
+   - Na [3/2, 2]: x > 0, (x−2) ≤ 0, dakle x(x−2) ≤ 0, pa |x²−2x| = 2x − x²
+   - Na [2, 5/2]: x > 0, (x−2) ≥ 0, dakle x(x−2) ≥ 0, pa |x²−2x| = x² − 2x
+
+2) −x² + 5x − 6 = −(x−2)(x−3):
+   - Na [3/2, 2]: (x−2) < 0, (x−3) < 0, dakle (x−2)(x−3) > 0, pa −(x−2)(x−3) < 0
+     Znači |−x²+5x−6| = (x−2)(x−3) = x² − 5x + 6
+   - Na [2, 5/2]: (x−2) ≥ 0, (x−3) < 0, dakle (x−2)(x−3) ≤ 0, pa −(x−2)(x−3) ≥ 0
+     Znači |−x²+5x−6| = −x² + 5x − 6
+
+Na [3/2, 2]:
+f(x) = (2x − x²) + (x² − 5x + 6) = 2x − x² + x² − 5x + 6 = −3x + 6
+
+Na [2, 5/2]:
+f(x) = (x² − 2x) + (−x² + 5x − 6) = x² − 2x − x² + 5x − 6 = 3x − 6
+
+f(3/2) = −3(3/2) + 6 = −9/2 + 6 = 3/2
+f(2) = −3(2) + 6 = 0
+f(5/2) = 3(5/2) − 6 = 15/2 − 6 = 3/2
+
+Minimum = 0 (u x = 2), Maksimum = 3/2 (u x = 3/2 i x = 5/2)
+Zbir = 0 + 3/2 = 3/2
+
+Odgovor: (E) 3/2
+</script>
+
+<h1 data-card="problem-title">Zbir ekstrema funkcije sa apsolutnim vrednostima</h1>
+<p data-card="problem-subtitle" class="subtitle">Apsolutna vrednost · Analiza po intervalima · Ekstremne vrednosti</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>Tekst zadatka</h2>
+  <p>Zbir najmanje i najveće vrednosti funkcije \( f(x) = |x^2 - 2x| + |-x^2 + 5x - 6| \) na \( \left[\frac{3}{2}, \frac{5}{2}\right] \) je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 0 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \dfrac{3}{2} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>Plan rešavanja</h2>
+  <p class="plan-text">Rastavimo interval \( \left[\frac{3}{2}, \frac{5}{2}\right] \) na podintervale prema znakovima izraza unutar apsolutnih vrednosti. Na svakom podintervalu uklanjamo apsolutne vrednosti i dobijamo prostu linearnu funkciju. Zatim nalazimo minimum i maksimum i sabiramo ih.</p>
+</div>
+
+<div data-card="theory" data-title="Teorija">
+  <h2>Teorija</h2>
+  <details>
+    <summary>Ključne formule i koncepti</summary>
+    <div class="detail-content">
+      <p><strong>Apsolutna vrednost:</strong></p>
+      <p class="math-block">\[ |a| = \begin{cases} a, & a \geq 0 \\ -a, & a < 0 \end{cases} \]</p>
+      <p><strong>Nule kvadratnog trinoma:</strong> Za analizu znaka izraza \( ax^2 + bx + c \) potrebno je pronaći nule (korene) i odrediti znak na svakom podintervalu.</p>
+      <p><strong>Ekstremne vrednosti na zatvorenom intervalu:</strong> Neprekidna funkcija na zatvorenom intervalu \( [a, b] \) dostiže i minimum i maksimum. Ekstremne vrednosti se nalaze u kritičnim tačkama ili na krajevima intervala.</p>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-p16" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Grafik funkcije \( f(x) = |x^2 - 2x| + |-x^2 + 5x - 6| \) na intervalu \( \left[\frac{3}{2},\, \frac{5}{2}\right] \) — V-oblik sa minimumom u \( x = 2 \)</p>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) { var c=cv(name); if(c.startsWith('#')){var r=parseInt(c.slice(1,3),16);var g=parseInt(c.slice(3,5),16);var b=parseInt(c.slice(5,7),16);return 'rgba('+r+','+g+','+b+','+alpha+')';}return c; }
+  var canvas = document.getElementById('diagram-p16');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Graph area
+    var ox = 120;
+    var oy = 360;
+    var scaleX = 300;
+    var scaleY = 180;
+
+    function toX(v) { return ox + (v - 1) * scaleX; }
+    function toY(v) { return oy - v * scaleY; }
+
+    // Grid lines
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 0.5;
+    for (var gx = 1; gx <= 3; gx += 0.5) {
+      ctx.beginPath();
+      ctx.moveTo(toX(gx), toY(-0.2));
+      ctx.lineTo(toX(gx), toY(2.2));
+      ctx.stroke();
+    }
+    for (var gy = 0; gy <= 2; gy += 0.5) {
+      ctx.beginPath();
+      ctx.moveTo(toX(0.8), toY(gy));
+      ctx.lineTo(toX(3.2), toY(gy));
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(toX(0.8), oy);
+    ctx.lineTo(toX(3.2), oy);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(ox, toY(-0.2));
+    ctx.lineTo(ox, toY(2.2));
+    ctx.stroke();
+
+    // Axis tick labels
+    ctx.fillStyle = muted;
+    ctx.font = '12px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('1', toX(1), oy + 18);
+    ctx.fillText('3/2', toX(1.5), oy + 18);
+    ctx.fillText('2', toX(2), oy + 18);
+    ctx.fillText('5/2', toX(2.5), oy + 18);
+    ctx.fillText('3', toX(3), oy + 18);
+
+    ctx.textAlign = 'right';
+    ctx.fillText('0', ox - 8, oy + 4);
+    ctx.fillText('0,5', ox - 8, toY(0.5) + 4);
+    ctx.fillText('1', ox - 8, toY(1) + 4);
+    ctx.fillText('1,5', ox - 8, toY(1.5) + 4);
+    ctx.fillText('2', ox - 8, toY(2) + 4);
+
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = '14px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('x', toX(3.2) + 14, oy - 5);
+    ctx.fillText('f(x)', ox + 5, toY(2.2) - 8);
+
+    // Draw f(x) on extended interval for context (faded)
+    ctx.strokeStyle = cvAlpha('--sol-canvas-muted', 0.4);
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    var first = true;
+    for (var xi = 1.0; xi <= 1.5; xi += 0.01) {
+      var fv = Math.abs(xi*xi - 2*xi) + Math.abs(-xi*xi + 5*xi - 6);
+      var px = toX(xi);
+      var py = toY(fv);
+      if (first) { ctx.moveTo(px, py); first = false; }
+      else { ctx.lineTo(px, py); }
+    }
+    ctx.stroke();
+    ctx.beginPath();
+    first = true;
+    for (var xi = 2.5; xi <= 3.0; xi += 0.01) {
+      var fv = Math.abs(xi*xi - 2*xi) + Math.abs(-xi*xi + 5*xi - 6);
+      var px = toX(xi);
+      var py = toY(fv);
+      if (first) { ctx.moveTo(px, py); first = false; }
+      else { ctx.lineTo(px, py); }
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Draw f(x) on [3/2, 2]: f(x) = -3x + 6
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(toX(1.5), toY(-3*1.5 + 6));
+    ctx.lineTo(toX(2), toY(-3*2 + 6));
+    ctx.stroke();
+
+    // Draw f(x) on [2, 5/2]: f(x) = 3x - 6
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(toX(2), toY(3*2 - 6));
+    ctx.lineTo(toX(2.5), toY(3*2.5 - 6));
+    ctx.stroke();
+
+    // Shade the interval region
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.08);
+    ctx.beginPath();
+    ctx.moveTo(toX(1.5), oy);
+    ctx.lineTo(toX(1.5), toY(1.5));
+    ctx.lineTo(toX(2), toY(0));
+    ctx.lineTo(toX(2.5), toY(1.5));
+    ctx.lineTo(toX(2.5), oy);
+    ctx.closePath();
+    ctx.fill();
+
+    // Mark key points
+    // f(3/2) = 3/2
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(toX(1.5), toY(1.5), 6, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('(3/2, 3/2)', toX(1.5) - 10, toY(1.5) - 8);
+
+    // f(2) = 0
+    ctx.fillStyle = danger;
+    ctx.beginPath();
+    ctx.arc(toX(2), toY(0), 6, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('(2, 0)', toX(2), toY(0) + 22);
+
+    // f(5/2) = 3/2
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(toX(2.5), toY(1.5), 6, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('(5/2, 3/2)', toX(2.5) + 10, toY(1.5) - 8);
+
+    // Legend for the two pieces
+    ctx.fillStyle = primary;
+    ctx.fillRect(toX(1.5), 30, 20, 3);
+    ctx.fillStyle = text;
+    ctx.font = '12px serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('f(x) = -3x + 6 na [3/2, 2]', toX(1.5) + 26, 36);
+
+    ctx.fillStyle = secondary;
+    ctx.fillRect(toX(1.5), 52, 20, 3);
+    ctx.fillStyle = text;
+    ctx.fillText('f(x) = 3x - 6 na [2, 5/2]', toX(1.5) + 26, 58);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('f(x) = |x\u00B2 \u2212 2x| + |\u2212x\u00B2 + 5x \u2212 6|', W / 2, 22);
+
+    // Summary box
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.12);
+    ctx.fillRect(W / 2 - 160, H - 80, 320, 60);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(W / 2 - 160, H - 80, 320, 60);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Min = 0, Max = 3/2', W / 2, H - 55);
+    ctx.fillText('Zbir = 0 + 3/2 = 3/2', W / 2, H - 35);
+
+    // Annotations for min/max
+    ctx.fillStyle = danger;
+    ctx.font = '12px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('minimum', toX(2), toY(0) + 36);
+
+    ctx.fillStyle = accent;
+    ctx.fillText('maksimum', toX(1.5) - 40, toY(1.5) + 18);
+    ctx.fillText('maksimum', toX(2.5) + 45, toY(1.5) + 18);
+  }
+
+  draw();
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<div data-card="step-solution" data-title="Rešenje po koracima">
+  <h2>Rešenje po koracima</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Nađimo nule izraza unutar apsolutnih vrednosti</h3>
+      <p>Razmatramo dva izraza:</p>
+      <p class="math-block">\[ x^2 - 2x = x(x - 2) \quad \Rightarrow \quad \text{nule: } x = 0 \text{ i } x = 2 \]</p>
+      <p class="math-block">\[ -x^2 + 5x - 6 = -(x-2)(x-3) \quad \Rightarrow \quad \text{nule: } x = 2 \text{ i } x = 3 \]</p>
+      <div class="checkpoint">Obe funkcije imaju nulu u \( x = 2 \), koja leži unutar intervala \( \left[\frac{3}{2}, \frac{5}{2}\right] \).</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Odredimo znakove na podintervalima</h3>
+      <p><strong>Na \( \left[\frac{3}{2}, 2\right] \):</strong></p>
+      <p>\( x(x-2) \leq 0 \) jer je \( x > 0 \) i \( x - 2 \leq 0 \), pa je \( |x^2 - 2x| = 2x - x^2 \).</p>
+      <p>\( -(x-2)(x-3) \): za \( x \in \left[\frac{3}{2}, 2\right) \) oba faktora \( (x-2) \) i \( (x-3) \) su negativni, dakle \( (x-2)(x-3) > 0 \), pa je \( -(x-2)(x-3) < 0 \). Zato:</p>
+      <p class="math-block">\[ |-x^2 + 5x - 6| = x^2 - 5x + 6 \]</p>
+
+      <p><strong>Na \( \left[2, \frac{5}{2}\right] \):</strong></p>
+      <p>\( x(x-2) \geq 0 \) jer su oba faktora nenegativni, pa je \( |x^2 - 2x| = x^2 - 2x \).</p>
+      <p>\( -(x-2)(x-3) \): za \( x \in (2, \frac{5}{2}] \) važi \( (x-2) > 0 \) i \( (x-3) < 0 \), dakle \( (x-2)(x-3) < 0 \), pa je \( -(x-2)(x-3) > 0 \). Zato:</p>
+      <p class="math-block">\[ |-x^2 + 5x - 6| = -x^2 + 5x - 6 \]</p>
+      <div class="checkpoint">Tačka \( x = 2 \) je granična tačka za oba izraza.</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Zapišimo \( f(x) \) bez apsolutnih vrednosti</h3>
+      <p><strong>Na \( \left[\frac{3}{2}, 2\right] \):</strong></p>
+      <p class="math-block">\[ f(x) = (2x - x^2) + (x^2 - 5x + 6) = -3x + 6 \]</p>
+      <p><strong>Na \( \left[2, \frac{5}{2}\right] \):</strong></p>
+      <p class="math-block">\[ f(x) = (x^2 - 2x) + (-x^2 + 5x - 6) = 3x - 6 \]</p>
+      <div class="checkpoint">Na oba podintervala \( f(x) \) je linearna funkcija!</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunajmo vrednosti u ključnim tačkama</h3>
+      <p>Pošto je \( f \) linearna na svakom podintervalu, ekstremi su u krajnjim tačkama:</p>
+      <p class="math-block">\[ f\!\left(\frac{3}{2}\right) = -3 \cdot \frac{3}{2} + 6 = -\frac{9}{2} + 6 = \frac{3}{2} \]</p>
+      <p class="math-block">\[ f(2) = -3 \cdot 2 + 6 = 0 \quad \text{(ili } 3 \cdot 2 - 6 = 0\text{)} \]</p>
+      <p class="math-block">\[ f\!\left(\frac{5}{2}\right) = 3 \cdot \frac{5}{2} - 6 = \frac{15}{2} - 6 = \frac{3}{2} \]</p>
+      <div class="checkpoint">Vrednosti: \( f\!\left(\frac{3}{2}\right) = \frac{3}{2} \), \( f(2) = 0 \), \( f\!\left(\frac{5}{2}\right) = \frac{3}{2} \).</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Odredimo minimum, maksimum i njihov zbir</h3>
+      <p>Funkcija \( f \) ima oblik slova V sa temenom u \( x = 2 \):</p>
+      <p class="math-block">\[ \min f = f(2) = 0, \qquad \max f = f\!\left(\frac{3}{2}\right) = f\!\left(\frac{5}{2}\right) = \frac{3}{2} \]</p>
+      <p>Traženi zbir:</p>
+      <p class="math-block">\[ \min f + \max f = 0 + \frac{3}{2} = \frac{3}{2} \]</p>
+      <div class="checkpoint">Zbir najmanje i najveće vrednosti je \( \frac{3}{2} \).</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>Ključni uvid</h2>
+  <p>Ključ ovog zadatka je prepoznati da se <strong>apsolutne vrednosti kvadratnih funkcija simplifikuju u linearne funkcije</strong> na odgovarajućim podintervalima. Kvadratni članovi se poništavaju, pa umesto komplikovane analize ostaju samo proste linearne funkcije \( -3x + 6 \) i \( 3x - 6 \), koje formiraju simetričan V-oblik oko tačke \( x = 2 \).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \min f + \max f = 0 + \frac{3}{2} = \frac{3}{2} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 3 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 2 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 0 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 1 \)</span>
+    <span class="answer-option correct" data-option="E">(E) \( \dfrac{3}{2} \)</span>
+  </div>
+  <p class="verification">Provera: \( f(3/2) = |9/4 - 3| + |-9/4 + 15/2 - 6| = 3/4 + 3/4 = 3/2 \). \( f(2) = |4-4| + |-4+10-6| = 0 + 0 = 0 \). \( f(5/2) = |25/4 - 5| + |-25/4 + 25/2 - 6| = 5/4 + 1/4 = 3/2 \). Zbir: \( 0 + 3/2 = 3/2 \) ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Zamke">
+  <h2>Česte zamke</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešna analiza znaka:</strong> Izraz \( -x^2 + 5x - 6 = -(x-2)(x-3) \) je negativan na \( \left[\frac{3}{2}, 2\right) \), što se lako previdi. Mnogi učenici pogrešno pretpostave da je pozitivan na celom intervalu.</li>
+    <li><strong>Zaboravljena provera u tačkama preloma:</strong> Tačka \( x = 2 \) je kritična jer se oba izraza menjaju znak. Ako se ne razmotri, dobija se pogrešan oblik funkcije.</li>
+    <li><strong>Odgovor 0 umesto 3/2:</strong> Neki učenici pomešaju minimum sa traženim zbirom i odgovore sa (C) 0, što je samo vrednost minimuma.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Izazov">
+  <h2>Dodatni izazov</h2>
+  <p>Nađi zbir najmanje i najveće vrednosti funkcije \( g(x) = |x^2 - 4x + 3| + |x^2 - 6x + 8| \) na intervalu \( [2, 4] \).</p>
+  <details>
+    <summary>Pomoć</summary>
+    <div class="detail-content">
+      <p>Nule prvog izraza: \( x = 1 \) i \( x = 3 \). Nule drugog: \( x = 2 \) i \( x = 4 \). Analiziraj znakove na podintervalima \( [2, 3] \) i \( [3, 4] \). Na \( [2, 3] \): \( g(x) = -(x^2-4x+3) + (-(x^2-6x+8)) = -2x^2 + 10x - 11 \). Na \( [3, 4] \): \( g(x) = (x^2-4x+3) + (-(x^2-6x+8)) = 2x - 5 \). Proveri vrednosti u tačkama \( x = 2 \), \( x = 5/2 \), \( x = 3 \) i \( x = 4 \).</p>
+    </div>
+  </details>
+</div>
+
+<!--BRAINSPARK_META
+{"format":"v2","title":"Zbir ekstrema funkcije sa apsolutnim vrednostima","subject":"math","unit":"analiza_funkcija","topic_tags":["apsolutna_vrednost","analiza_po_intervalima","ekstremne_vrednosti","linearna_funkcija"]}
+BRAINSPARK_META-->

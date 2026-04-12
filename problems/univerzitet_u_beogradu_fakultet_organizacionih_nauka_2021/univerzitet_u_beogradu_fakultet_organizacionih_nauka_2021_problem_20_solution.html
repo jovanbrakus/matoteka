@@ -1,0 +1,435 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Number of terms in expansion of (√2 + ³√6)^n that are natural numbers is 35,
+  and the total number of terms is divisible by 6. Find the number of irrational terms.
+
+  The binomial expansion of (√2 + ³√6)^n has n+1 terms (k = 0, 1, ..., n).
+
+  General term: T_{k+1} = C(n,k) · (√2)^{n-k} · (³√6)^k
+                         = C(n,k) · 2^{(n-k)/2} · 6^{k/3}
+
+  For T_{k+1} to be a natural number (integer), we need:
+  1) (n-k)/2 must be a non-negative integer → n-k is even and non-negative → k ≡ n (mod 2)
+  2) k/3 must be a non-negative integer → k ≡ 0 (mod 3)
+  3) C(n,k) is always a positive integer, and 2^m · 6^p where m,p are non-negative integers
+     gives a natural number. So the conditions above are sufficient.
+
+  Case 1: n is even
+    k must be even AND divisible by 3 → k ≡ 0 (mod 6)
+    Values: k = 0, 6, 12, ..., up to n
+    Count = floor(n/6) + 1 = 35 → floor(n/6) = 34
+
+    If n = 204: floor(204/6) + 1 = 34 + 1 = 35 ✓
+    Total terms = n + 1 = 205. Is 205 divisible by 6? 205/6 = 34.166... NO ✗
+
+    If n = 208 (next even with floor(n/6) = 34): floor(208/6) = floor(34.67) = 34, +1 = 35 ✓
+    Total = 209. 209/6 = 34.83... NO ✗
+
+    If n = 210 (even): floor(210/6) = 35, +1 = 36 ≠ 35. NO ✗
+
+    n even doesn't work easily. Let's check all even n with floor(n/6) = 34:
+    n ranges from 204 to 209 (but only even): 204, 206, 208
+    Totals: 205, 207, 209. None divisible by 6.
+
+  Case 2: n is odd
+    k must be odd AND divisible by 3 → k ≡ 3 (mod 6)
+    Values: k = 3, 9, 15, ..., up to n
+    Count = floor((n-3)/6) + 1 = 35 → floor((n-3)/6) = 34 → n-3 ≥ 204 → n ≥ 207
+
+    The largest k is 3 + 34·6 = 3 + 204 = 207, so we need n ≥ 207.
+    Also k ≤ n, and the next value would be 213, so we need n < 213 for the count to stay 35.
+    Actually: floor((n-3)/6) = 34 means 204 ≤ n-3 < 210, so 207 ≤ n ≤ 212.
+    But n is odd: n ∈ {207, 209, 211}.
+
+    Check divisibility by 6 of (n+1):
+    n = 207: n+1 = 208. 208/6 = 34.67... NO ✗
+    n = 209: n+1 = 210. 210/6 = 35. YES ✓
+    n = 211: n+1 = 212. 212/6 = 35.33... NO ✗
+
+  So n = 209.
+
+  Verification:
+  - Total terms: n + 1 = 210. 210/6 = 35 ✓ (divisible by 6)
+  - Natural number terms: k = 3, 9, 15, ..., 207
+    Count = (207 - 3)/6 + 1 = 204/6 + 1 = 34 + 1 = 35 ✓
+  - Irrational terms: 210 - 35 = 175
+
+  Note: terms that are natural numbers are rational (in fact integers).
+  All other terms involve irrational factors (powers of 2 or 6 that aren't integers).
+  So irrational terms = total - natural = 210 - 35 = 175.
+
+  Answer: B) 175
+</script>
+
+<h1 data-card="problem-title">Iracionalni članovi binomnog razvoja</h1>
+<p data-card="problem-subtitle" class="subtitle">Binomna teorema, uslovi racionalnosti članova i teorija deljivosti</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Broj članova razvoja \( \left(\sqrt{2} + \sqrt[3]{6}\right)^n \) koji su prirodni brojevi je 35, a broj svih članova je deljiv sa 6. Broj iracionalnih članova ovog razvoja je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 181 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 175 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 157 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 169 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 163 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Zapišemo opšti član binomnog razvoja i odredimo uslove da eksponenti budu celi brojevi (da bi član bio prirodan broj). Zatim iz uslova o broju prirodnih članova (35) i deljivosti ukupnog broja članova sa 6 odredimo \( n \), pa izračunamo broj iracionalnih članova.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Binomna formula:</strong> \( (a + b)^n = \displaystyle\sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \)</li>
+        <li><strong>Opšti član:</strong> \( T_{k+1} = \binom{n}{k} a^{n-k} b^k \), za \( k = 0, 1, \ldots, n \). Ukupno \( n + 1 \) članova.</li>
+        <li><strong>Uslov celobrojnosti eksponenta:</strong> Ako je \( a^{p/q} \) sa \( p, q \in \mathbb{Z} \), član je racionalan samo ako je \( p/q \) ceo broj.</li>
+        <li><strong>Kongruencije:</strong> Ako \( k \equiv r_1 \pmod{m_1} \) i \( k \equiv r_2 \pmod{m_2} \), onda je \( k \equiv r \pmod{\text{lcm}(m_1, m_2)} \) po Kineskoj teoremi o ostatcima.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-p20" width="700" height="420"></canvas>
+  </div>
+  <p class="canvas-caption">Raspored članova razvoja: zelene tačke označavaju prirodne (racionalne) članove za \( k \equiv 3 \pmod{6} \), sive su iracionalni članovi</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Opšti član binomnog razvoja</h3>
+      <p>Razvijamo \( \left(\sqrt{2} + \sqrt[3]{6}\right)^n \) po binomnoj formuli. Opšti član je:</p>
+      <div class="math-block">\[ T_{k+1} = \binom{n}{k} \left(\sqrt{2}\right)^{n-k} \cdot \left(\sqrt[3]{6}\right)^k = \binom{n}{k} \cdot 2^{\frac{n-k}{2}} \cdot 6^{\frac{k}{3}} \]</div>
+      <p>Ovaj razvoj ima ukupno \( n + 1 \) članova (za \( k = 0, 1, 2, \ldots, n \)).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Uslovi da član bude prirodan broj</h3>
+      <p>Binomni koeficijent \( \binom{n}{k} \) je uvek pozitivan ceo broj. Da bi ceo član \( T_{k+1} \) bio prirodan broj, potrebno je da i \( 2^{\frac{n-k}{2}} \) i \( 6^{\frac{k}{3}} \) budu celi brojevi. To znači:</p>
+      <div class="math-block">\[ \frac{n - k}{2} \in \mathbb{Z}_{\geq 0} \quad \Longrightarrow \quad n - k \text{ je paran, tj. } k \equiv n \pmod{2} \]</div>
+      <div class="math-block">\[ \frac{k}{3} \in \mathbb{Z}_{\geq 0} \quad \Longrightarrow \quad k \equiv 0 \pmod{3} \]</div>
+      <p>Dakle, \( k \) mora istovremeno da zadovoljava oba uslova.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto je dovoljno da eksponenti budu celi da bi član bio prirodan broj?</summary>
+          <div class="detail-content"><p>Zato što je \( \binom{n}{k} \) pozitivan ceo broj, a \( 2^m \) i \( 6^p \) su prirodni brojevi za svako \( m, p \in \mathbb{Z}_{\geq 0} \). Proizvod prirodnih brojeva je prirodan broj.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Analiza po parnosti broja \( n \)</h3>
+      <p><strong>Slučaj 1: \( n \) je paran.</strong> Tada \( k \equiv 0 \pmod{2} \) i \( k \equiv 0 \pmod{3} \), pa \( k \equiv 0 \pmod{6} \). Vrednosti: \( k = 0, 6, 12, \ldots \). Broj takvih \( k \) u intervalu \( [0, n] \) je \( \lfloor n/6 \rfloor + 1 = 35 \), odakle \( \lfloor n/6 \rfloor = 34 \).</p>
+      <p>To daje \( 204 \leq n \leq 209 \), a pošto je \( n \) paran: \( n \in \{204, 206, 208\} \). Ukupno članova je \( n + 1 \in \{205, 207, 209\} \). Nijedan od ovih nije deljiv sa 6, pa ovaj slučaj ne daje rešenje.</p>
+
+      <p><strong>Slučaj 2: \( n \) je neparan.</strong> Tada \( k \equiv 1 \pmod{2} \) (jer \( k \equiv n \pmod{2} \)) i \( k \equiv 0 \pmod{3} \), pa \( k \equiv 3 \pmod{6} \). Vrednosti: \( k = 3, 9, 15, \ldots \)</p>
+      <div class="math-block">\[ \text{Broj članova} = \left\lfloor \frac{n - 3}{6} \right\rfloor + 1 = 35 \quad \Longrightarrow \quad \left\lfloor \frac{n - 3}{6} \right\rfloor = 34 \]</div>
+      <p>Odatle \( 204 \leq n - 3 \leq 209 \), tj. \( 207 \leq n \leq 212 \), a pošto je \( n \) neparan: \( n \in \{207, 209, 211\} \).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Kako smo kombinovali uslove \( k \equiv 1 \pmod{2} \) i \( k \equiv 0 \pmod{3} \)?</summary>
+          <div class="detail-content"><p>Tražimo najmanji pozitivan \( k \) koji je neparan i deljiv sa 3. To je \( k = 3 \). Sledeći je \( k = 9 \), pa \( k = 15 \), itd. Razmak između uzastopnih rešenja je \( \text{NZS}(2, 3) = 6 \), pa je opšte rešenje \( k \equiv 3 \pmod{6} \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Primena uslova deljivosti sa 6</h3>
+      <p>Ukupan broj članova je \( n + 1 \) i mora biti deljiv sa 6. Proveravamo kandidate:</p>
+      <div class="math-block">\[ \begin{align} n = 207 &\Rightarrow n + 1 = 208, \quad 208 \div 6 = 34{,}67 \ldots \quad \text{NIJE deljivo} \\ n = 209 &\Rightarrow n + 1 = 210, \quad 210 \div 6 = 35 \quad \checkmark \\ n = 211 &\Rightarrow n + 1 = 212, \quad 212 \div 6 = 35{,}33 \ldots \quad \text{NIJE deljivo} \end{align} \]</div>
+      <p>Jedino \( n = 209 \) zadovoljava oba uslova.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Računanje broja iracionalnih članova</h3>
+      <p>Za \( n = 209 \):</p>
+      <div class="math-block">\[ \text{Ukupno članova} = n + 1 = 210 \]</div>
+      <div class="math-block">\[ \text{Prirodnih (racionalnih) članova} = 35 \]</div>
+      <div class="math-block">\[ \text{Iracionalnih članova} = 210 - 35 = 175 \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto su svi „neprirodni" članovi zaista iracionalni?</summary>
+          <div class="detail-content"><p>Ako \( \frac{n-k}{2} \) ili \( \frac{k}{3} \) nije ceo broj, onda \( T_{k+1} \) sadrži faktor oblika \( 2^{p/2} \) ili \( 6^{q/3} \) sa necelim eksponentom, što daje iracionalan broj. Proizvod racionalnog i iracionalnog broja (različitog od nule) je iracionalan.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Ključ ovog zadatka je prepoznavanje da se uslovi racionalnosti članova svode na problem kongruencija: \( k \equiv n \pmod{2} \) i \( k \equiv 0 \pmod{3} \). Kombinovanjem ovih uslova dobijamo jedan periodičan niz vrednosti \( k \) sa periodom 6, a iz toga lako brojimo članove. Dva uslova (broj prirodnih članova i deljivost ukupnog broja sa 6) daju sistem koji jednoznačno određuje \( n \).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \text{Broj iracionalnih članova} = 210 - 35 = 175 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 181 \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( 175 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 157 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 169 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 163 \)</span>
+  </div>
+  <p class="verification">Verifikacija: Za \( n = 209 \), prirodni članovi odgovaraju vrednostima \( k = 3, 9, 15, \ldots, 207 \). Njihov broj je \( \frac{207 - 3}{6} + 1 = 35 \). Ukupno \( n + 1 = 210 \) članova, \( 210 \div 6 = 35 \). Dakle, \( 210 - 35 = 175 \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zaboravljanje parnosti \( n \):</strong> Uslov \( k \equiv n \pmod{2} \) zavisi od toga da li je \( n \) parno ili neparno. Mnogi učenici pretpostave da je \( k \) uvek paran.</li>
+    <li><strong>Pogrešno kombinovanje kongruencija:</strong> Uslovi \( k \equiv 1 \pmod{2} \) i \( k \equiv 0 \pmod{3} \) daju \( k \equiv 3 \pmod{6} \), a ne \( k \equiv 0 \pmod{6} \). Razlika između ova dva slučaja je suštinska.</li>
+    <li><strong>Zanemarivanje uslova deljivosti:</strong> Bez drugog uslova (\( n + 1 \) deljivo sa 6), postoje tri moguće vrednosti za \( n \). Treba iskoristiti oba uslova zajedno.</li>
+    <li><strong>Pogrešno prebrojavanje:</strong> Kod aritmetičkog niza \( 3, 9, 15, \ldots, 207 \), broj članova se računa kao \( \frac{207 - 3}{6} + 1 = 35 \), a ne \( \frac{207}{6} \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta ako umesto \( \sqrt[3]{6} \) imamo \( \sqrt[4]{6} \)? Dakle, razvijamo \( \left(\sqrt{2} + \sqrt[4]{6}\right)^n \). Koliko bi tada bilo prirodnih članova, i kako bi se promenio uslov za \( k \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Opšti član bi bio \( \binom{n}{k} \cdot 2^{\frac{n-k}{2}} \cdot 6^{\frac{k}{4}} \). Uslovi za celobrojnost: \( k \equiv n \pmod{2} \) i \( k \equiv 0 \pmod{4} \). Kombujući ove uslove, razmislite šta se dešava za parno i neparno \( n \) — period je sada \( \text{NZS}(2, 4) = 4 \).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-p20');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+
+    var W = canvas.width;
+    var H = canvas.height;
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    var marginLeft = 60;
+    var marginRight = 30;
+    var marginTop = 60;
+    var marginBottom = 80;
+    var plotW = W - marginLeft - marginRight;
+    var plotH = H - marginTop - marginBottom;
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Raspored članova razvoja (√2 + ³√6)²⁰⁹', W / 2, 30);
+
+    // We'll show a "number line" of k from 0 to 209, highlighting k ≡ 3 (mod 6)
+    // Since 210 points is too many, we'll show a schematic view:
+    // Row of blocks representing groups of 6, with the 4th position (k≡3 mod 6) highlighted
+
+    var n = 209;
+    var totalTerms = 210;
+    var naturalCount = 35;
+
+    // Show a grid: 35 columns (one per group of 6) x 6 rows
+    var cols = 35;
+    var rows = 6;
+    var cellW = Math.floor(plotW / cols);
+    var cellH = Math.floor(plotH / rows);
+    if (cellH > 40) cellH = 40;
+    if (cellW > 18) cellW = 18;
+
+    var gridW = cols * cellW;
+    var gridH = rows * cellH;
+    var startX = marginLeft + (plotW - gridW) / 2;
+    var startY = marginTop + 10;
+
+    // Labels for rows
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillStyle = muted;
+    for (var r = 0; r < rows; r++) {
+      var label = 'k ≡ ' + r + ' (mod 6)';
+      ctx.fillText(label, startX - 5, startY + r * cellH + cellH / 2 + 4);
+    }
+
+    // Draw cells
+    for (var c = 0; c < cols; c++) {
+      for (var r = 0; r < rows; r++) {
+        var k = c * 6 + r;
+        var x = startX + c * cellW;
+        var y = startY + r * cellH;
+
+        if (k > n) {
+          // Out of range
+          ctx.fillStyle = cvAlpha('--sol-canvas-muted', 0.1);
+          ctx.fillRect(x, y, cellW - 1, cellH - 1);
+        } else if (r === 3) {
+          // k ≡ 3 (mod 6) — natural number term
+          ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.7);
+          ctx.fillRect(x, y, cellW - 1, cellH - 1);
+        } else {
+          // Irrational term
+          ctx.fillStyle = cvAlpha('--sol-canvas-grid', 0.4);
+          ctx.fillRect(x, y, cellW - 1, cellH - 1);
+        }
+
+        // Border
+        ctx.strokeStyle = cvAlpha('--sol-canvas-axis', 0.2);
+        ctx.strokeRect(x, y, cellW - 1, cellH - 1);
+      }
+    }
+
+    // Column labels (every 5th)
+    ctx.font = '9px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = muted;
+    for (var c = 0; c < cols; c += 5) {
+      var kStart = c * 6;
+      ctx.fillText('' + kStart, startX + c * cellW + cellW / 2, startY + gridH + 14);
+    }
+    // Last column label
+    ctx.fillText('207', startX + 34 * cellW + cellW / 2, startY + gridH + 14);
+
+    // Label below grid
+    ctx.font = '12px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = text;
+    ctx.fillText('k (indeks člana), grupisano po modulu 6', W / 2, startY + gridH + 32);
+
+    // Legend
+    var legendY = startY + gridH + 55;
+    var legendX = W / 2 - 160;
+
+    // Natural
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.7);
+    ctx.fillRect(legendX, legendY - 10, 14, 14);
+    ctx.strokeStyle = cvAlpha('--sol-canvas-axis', 0.3);
+    ctx.strokeRect(legendX, legendY - 10, 14, 14);
+    ctx.fillStyle = text;
+    ctx.font = '12px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Prirodni članovi (k ≡ 3 mod 6): 35', legendX + 20, legendY + 2);
+
+    // Irrational
+    var legendX2 = legendX;
+    var legendY2 = legendY + 22;
+    ctx.fillStyle = cvAlpha('--sol-canvas-grid', 0.4);
+    ctx.fillRect(legendX2, legendY2 - 10, 14, 14);
+    ctx.strokeStyle = cvAlpha('--sol-canvas-axis', 0.3);
+    ctx.strokeRect(legendX2, legendY2 - 10, 14, 14);
+    ctx.fillStyle = text;
+    ctx.fillText('Iracionalni članovi: 175', legendX2 + 20, legendY2 + 2);
+
+    // Summary box
+    var boxY = legendY2 + 25;
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.1);
+    ctx.fillRect(W / 2 - 140, boxY, 280, 30);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(W / 2 - 140, boxY, 280, 30);
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 13px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('n = 209,  ukupno = 210,  iracionalnih = 175', W / 2, boxY + 19);
+    ctx.lineWidth = 1;
+
+    // Highlight the row r=3 label
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 11px sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('k ≡ 3 (mod 6)', startX - 5, startY + 3 * cellH + cellH / 2 + 4);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Iracionalni članovi binomnog razvoja sa korenima",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["binomna teorema", "iracionalni članovi", "kongruencije", "deljivost", "prebrojavanje"]
+}
+BRAINSPARK_META-->

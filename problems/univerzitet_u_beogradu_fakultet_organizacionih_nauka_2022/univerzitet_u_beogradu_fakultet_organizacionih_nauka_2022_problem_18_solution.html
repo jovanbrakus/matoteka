@@ -1,0 +1,413 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Number of integer terms in the expansion of (6th_root(54) + cube_root(32))^2022.
+
+  Simplify the bases:
+    6th_root(54) = 54^(1/6) = (2 * 3^3)^(1/6) = 2^(1/6) * 3^(1/2)
+    cube_root(32) = 32^(1/3) = (2^5)^(1/3) = 2^(5/3)
+
+  Let a = 2^(1/6) * 3^(1/2) and b = 2^(5/3).
+
+  General term:
+    T_k = C(2022,k) * a^(2022-k) * b^k
+        = C(2022,k) * 2^((2022+9k)/6) * 3^((2022-k)/2)
+
+  For T_k to be integer:
+  1. (2022+9k)/6 must be non-negative integer
+  2. (2022-k)/2 must be non-negative integer
+
+  Condition 2: k must be even (since 2022 is even), k <= 2022
+  Condition 1: 6 | (2022+9k). Since 2022 = 6*337, need 6 | 9k, i.e. 3k equiv 0 mod 6, i.e. k even.
+
+  Both conditions: k even, k in {0, 2, 4, ..., 2022}
+  Count = 2022/2 + 1 = 1012
+
+  Answer: (E) 1012
+</script>
+
+<h1 data-card="problem-title">Celi članovi binomnog razvoja</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika — binomna formula i deljivost</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Broj članova razvoja \( \left(\sqrt[6]{54} + \sqrt[3]{32}\right)^{2022} \) koji su celi brojevi jednak je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 337 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 674 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 675 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 338 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 1012 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">
+    Razložićemo \( \sqrt[6]{54} \) i \( \sqrt[3]{32} \) na proste činioce u obliku stepena, primeniti binomnu formulu, zapisati opšti član i odrediti za koje vrednosti indeksa \( k \) su eksponenti i dvojke i trojke celi brojevi.
+  </p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Binomna formula:</strong> \( (a+b)^n = \displaystyle\sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \)</li>
+        <li><strong>Stepeni korena:</strong> \( \sqrt[n]{a^m} = a^{m/n} \)</li>
+        <li><strong>Uslov celosti:</strong> \( 2^\alpha \cdot 3^\beta \) je ceo broj ako i samo ako su \( \alpha \geq 0 \) i \( \beta \geq 0 \) celi brojevi.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Analiza uslova celosti">
+  <h2>📐 Analiza uslova celosti</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-binom" width="700" height="480"></canvas>
+  </div>
+  <p class="canvas-caption">Uslovi za celost: oba eksponenta moraju biti nenegativni celi brojevi — to zahteva da \( k \) bude paran</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Razložimo osnove na proste činioce</h3>
+      <p>Prvo \( \sqrt[6]{54} \):</p>
+      <div class="math-block">
+        \[ 54 = 2 \cdot 27 = 2 \cdot 3^3 \]
+      </div>
+      <div class="math-block">
+        \[ \sqrt[6]{54} = (2 \cdot 3^3)^{1/6} = 2^{1/6} \cdot 3^{3/6} = 2^{1/6} \cdot 3^{1/2} \]
+      </div>
+      <p>Zatim \( \sqrt[3]{32} \):</p>
+      <div class="math-block">
+        \[ 32 = 2^5 \quad \Rightarrow \quad \sqrt[3]{32} = 2^{5/3} \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Zapišemo opšti član binomnog razvoja</h3>
+      <p>Neka je \( a = 2^{1/6} \cdot 3^{1/2} \) i \( b = 2^{5/3} \). Opšti član razvoja \( (a+b)^{2022} \) je:</p>
+      <div class="math-block">
+        \[ T_k = \binom{2022}{k} \cdot a^{2022-k} \cdot b^k = \binom{2022}{k} \cdot \left(2^{1/6} \cdot 3^{1/2}\right)^{2022-k} \cdot \left(2^{5/3}\right)^k \]
+      </div>
+      <p>Razdvojimo stepene dvojke i trojke:</p>
+      <div class="math-block">
+        \[ T_k = \binom{2022}{k} \cdot 2^{\frac{2022-k}{6} + \frac{5k}{3}} \cdot 3^{\frac{2022-k}{2}} \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Kako se dobija eksponent dvojke?</summary>
+          <div class="detail-content">
+            <p>Iz \( a^{2022-k} \) dobijamo \( 2^{(2022-k)/6} \), a iz \( b^k \) dobijamo \( 2^{5k/3} \). Sabiranjem: \( \frac{2022-k}{6} + \frac{5k}{3} = \frac{2022-k+10k}{6} = \frac{2022+9k}{6} \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Pojednostavimo eksponente</h3>
+      <p><strong>Eksponent dvojke:</strong></p>
+      <div class="math-block">
+        \[ \alpha = \frac{2022 - k + 10k}{6} = \frac{2022 + 9k}{6} \]
+      </div>
+      <p><strong>Eksponent trojke:</strong></p>
+      <div class="math-block">
+        \[ \beta = \frac{2022 - k}{2} \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Odredimo uslove za celost</h3>
+      <p>Član \( T_k \) je ceo broj ako i samo ako su oba eksponenta (\( \alpha \) i \( \beta \)) nenegativni celi brojevi.</p>
+      <p><strong>Uslov za \( \beta \):</strong> Potrebno je da \( \frac{2022-k}{2} \in \mathbb{Z}_{\geq 0} \). Pošto je 2022 paran, \( k \) mora biti <strong>paran</strong> (i \( k \leq 2022 \)).</p>
+      <p><strong>Uslov za \( \alpha \):</strong> Potrebno je da \( 6 \mid (2022 + 9k) \). Pošto je \( 2022 = 6 \cdot 337 \), imamo \( 2022 \equiv 0 \pmod{6} \). Tada:</p>
+      <div class="math-block">
+        \[ 2022 + 9k \equiv 9k \equiv 3k \pmod{6} \]
+      </div>
+      <p>Uslov \( 3k \equiv 0 \pmod{6} \) znači \( k \equiv 0 \pmod{2} \), tj. \( k \) mora biti <strong>paran</strong>.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto je \( 9k \equiv 3k \pmod{6} \)?</summary>
+          <div class="detail-content">
+            <p>Zato što \( 9 = 6 + 3 \), pa \( 9k = 6k + 3k \). Član \( 6k \) je deljiv sa 6, tako da ostatak pri deljenju sa 6 zavisi samo od \( 3k \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Izbrojimo parne vrednosti \( k \)</h3>
+      <p>Oba uslova se svode na isti: <strong>\( k \) mora biti paran</strong>, gde \( k \in \{0, 1, 2, \ldots, 2022\} \).</p>
+      <p>Parne vrednosti su \( k = 0, 2, 4, \ldots, 2022 \). To je aritmetički niz sa:</p>
+      <div class="math-block">
+        \[ \text{broj članova} = \frac{2022 - 0}{2} + 1 = 1011 + 1 = 1012 \]
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Iako izgleda da uslovi za dvojku i trojku mogu dati različita ograničenja, u ovom zadatku se <strong>oba uslova svode na isti</strong>: \( k \) mora biti paran. Ovo se dešava zahvaljujući specifičnom obliku brojeva 54 i 32 i eksponentu 2022. Ključno je pravilno razložiti osnove na proste činioce i precizno zapisati eksponente.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \text{Broj celih članova} = 1012 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 337 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 674 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 675 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 338 \)</span>
+    <span class="answer-option correct" data-option="E">(E) \( 1012 \)</span>
+  </div>
+  <p class="verification">Provera: Parnih brojeva od 0 do 2022 uključno ima \( \frac{2022}{2} + 1 = 1012 \). Za \( k = 0 \): \( \alpha = 337 \), \( \beta = 1011 \) — oba celi. Za \( k = 2022 \): \( \alpha = \frac{2022 + 18198}{6} = 3370 \), \( \beta = 0 \) — oba celi. ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešna faktorizacija:</strong> \( 54 = 2 \cdot 3^3 \), ne \( 2 \cdot 27 = 2 \cdot 3^3 \) — ne zaboraviti da je \( 27 = 3^3 \)! Ako se \( 54 \) pogrešno razloži, ceo račun pada u vodu.</li>
+    <li><strong>Brojanje članova:</strong> Parnih brojeva od 0 do \( 2n \) ima \( n + 1 \), ne \( n \). Ne zaboraviti da brojimo i \( k = 0 \)!</li>
+    <li><strong>Zaboraviti uslov za dvojku:</strong> Mnogi provere samo da li je eksponent trojke ceo, i zaključe \( k \) paran, ali ne provere i eksponent dvojke. Ovde su slučajno isti, ali to treba uvek proveriti!</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta ako umesto stepena 2022 imamo stepen 2023 (neparan broj)? Koliko bi tada bilo celih članova u razvoju \( \left(\sqrt[6]{54} + \sqrt[3]{32}\right)^{2023} \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Eksponent trojke bi bio \( \frac{2023-k}{2} \). Pošto je 2023 neparan, potrebno je da \( k \) bude <strong>neparan</strong> (da bi razlika bila parna). Eksponent dvojke: \( \frac{2023+9k}{6} \). Za \( k \) neparan: \( 2023 + 9k \) — oba neparna, zbir paran... Proveri da li je deljiv sa 6! Odgovor: 1012 neparnih vrednosti \( k \) od 1 do 2023, ali treba proveriti i deljivost sa 6.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-binom');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axisColor = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var textColor = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    var padL = 60, padR = 60, padT = 60, padB = 120;
+    var barY = 130;
+    var barW = W - padL - padR;
+
+    // Title
+    ctx.fillStyle = textColor;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Vrednosti k od 0 do 2022', W / 2, 35);
+
+    // Number line
+    ctx.strokeStyle = axisColor;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(padL, barY);
+    ctx.lineTo(padL + barW, barY);
+    ctx.stroke();
+
+    var showK = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    var showKEnd = [2016, 2017, 2018, 2019, 2020, 2021, 2022];
+    var segW = 40;
+    var startXLeft = padL + 20;
+
+    // Left section (k = 0..10)
+    for (var i = 0; i < showK.length; i++) {
+      var k = showK[i];
+      var x = startXLeft + i * segW;
+      var isEven = k % 2 === 0;
+
+      ctx.strokeStyle = isEven ? accent : muted;
+      ctx.lineWidth = isEven ? 2.5 : 1;
+      ctx.beginPath();
+      ctx.moveTo(x, barY - 10);
+      ctx.lineTo(x, barY + 10);
+      ctx.stroke();
+
+      if (isEven) {
+        ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.3);
+        ctx.beginPath();
+        ctx.arc(x, barY, 12, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.fillStyle = accent;
+        ctx.beginPath();
+        ctx.arc(x, barY, 4, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+
+      ctx.fillStyle = isEven ? accent : muted;
+      ctx.font = (isEven ? 'bold ' : '') + '12px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(String(k), x, barY + 28);
+    }
+
+    // Dots in middle
+    ctx.fillStyle = muted;
+    ctx.font = 'bold 20px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    var dotsX = startXLeft + showK.length * segW + 20;
+    ctx.fillText('. . .', dotsX, barY + 5);
+
+    // Right section (k = 2016..2022)
+    var startXRight = dotsX + 50;
+    for (var j = 0; j < showKEnd.length; j++) {
+      var k2 = showKEnd[j];
+      var x2 = startXRight + j * segW;
+      var isEven2 = k2 % 2 === 0;
+
+      ctx.strokeStyle = isEven2 ? accent : muted;
+      ctx.lineWidth = isEven2 ? 2.5 : 1;
+      ctx.beginPath();
+      ctx.moveTo(x2, barY - 10);
+      ctx.lineTo(x2, barY + 10);
+      ctx.stroke();
+
+      if (isEven2) {
+        ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.3);
+        ctx.beginPath();
+        ctx.arc(x2, barY, 12, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.fillStyle = accent;
+        ctx.beginPath();
+        ctx.arc(x2, barY, 4, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+
+      ctx.fillStyle = isEven2 ? accent : muted;
+      ctx.font = (isEven2 ? 'bold ' : '') + '11px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(String(k2), x2, barY + 28);
+    }
+
+    // Legend
+    var legY = barY + 60;
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(padL + 30, legY, 8, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.fillStyle = textColor;
+    ctx.font = '14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('k parno \u2192 T_k je ceo broj', padL + 45, legY + 5);
+
+    ctx.fillStyle = muted;
+    ctx.beginPath();
+    ctx.arc(padL + 310, legY, 3, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.fillStyle = textColor;
+    ctx.fillText('k neparno \u2192 T_k nije ceo broj', padL + 320, legY + 5);
+
+    // Conditions summary box
+    var boxY = legY + 40;
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.08);
+    ctx.fillRect(padL, boxY, W - padL - padR, 120);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(padL, boxY, W - padL - padR, 120);
+
+    ctx.fillStyle = textColor;
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Uslovi za celost:', padL + 15, boxY + 25);
+
+    ctx.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = secondary;
+    ctx.fillText('\u2460 Eksponent 3: (2022\u2212k)/2 \u2208 \u2124  \u21D2  k parno', padL + 15, boxY + 50);
+    ctx.fillStyle = highlight;
+    ctx.fillText('\u2461 Eksponent 2: (2022+9k)/6 \u2208 \u2124  \u21D2  3k \u2261 0 (mod 6)  \u21D2  k parno', padL + 15, boxY + 75);
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('Oba uslova: k parno, k \u2208 {0, 2, 4, ..., 2022}  \u21D2  1012 vrednosti', padL + 15, boxY + 105);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Celi članovi binomnog razvoja sa korenima",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["binomna formula", "celi članovi", "stepeni", "deljivost", "kombinatorika"]
+}
+BRAINSPARK_META-->

@@ -1,0 +1,370 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Zadatak: Koliko ima dvocifrenih brojeva deljivih sa 3?
+
+Dvocifreni brojevi: od 10 do 99.
+Najmanji dvocifreni broj deljiv sa 3: 12 = 3 × 4
+Najveći dvocifreni broj deljiv sa 3: 99 = 3 × 33
+
+Dvocifreni brojevi deljivi sa 3 čine aritmetički niz: 12, 15, 18, ..., 99
+Razlika niza: d = 3
+Broj članova: n = (99 − 12) / 3 + 1 = 87 / 3 + 1 = 29 + 1 = 30
+
+Odgovor: G) 30
+</script>
+
+<h1 data-card="problem-title">Dvocifreni brojevi deljivi sa 3</h1>
+<p data-card="problem-subtitle" class="subtitle">Deljivost · Aritmetički niz · Prebrojavanje</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Dvocifrenih brojeva deljivih sa 3 ima:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 25 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 24 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(V)</span>
+      <span class="answer-value">\( 27 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(G)</span>
+      <span class="answer-value">\( 30 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 33 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Pronalazimo najmanji i najveći dvocifreni broj deljiv sa 3, zatim ih posmatramo kao aritmetički niz sa razlikom 3. Broj članova niza izračunavamo standardnom formulom za broj članova aritmetičkog niza.</p>
+</div>
+
+<div data-card="theory" data-title="Teorija">
+  <h2>📖 Teorija</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <p><strong>Deljivost sa 3:</strong> Ceo broj \( n \) je deljiv sa 3 ako i samo ako je zbir njegovih cifara deljiv sa 3.</p>
+      <p><strong>Aritmetički niz:</strong> Niz brojeva \( a_1, a_1 + d, a_1 + 2d, \ldots, a_n \) gde je \( d \) konstantna razlika.</p>
+      <p class="math-block">\[ n = \frac{a_n - a_1}{d} + 1 \]</p>
+      <p><strong>Umnošci broja \( k \) u segmentu \( [a, b] \):</strong></p>
+      <p class="math-block">\[ \text{Broj umnožaka} = \left\lfloor \frac{b}{k} \right\rfloor - \left\lfloor \frac{a-1}{k} \right\rfloor \]</p>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📊 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-p16" width="700" height="450"></canvas>
+  </div>
+  <p class="canvas-caption">Brojčana prava sa dvocifrenim brojevima deljivim sa 3 — od 12 do 99, ukupno 30 članova</p>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+
+  var canvas = document.getElementById('diagram-p16');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+    var tertiary = cv('--sol-canvas-tertiary');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Dvocifreni brojevi deljivi sa 3', W / 2, 30);
+
+    // Draw number line from 10 to 99
+    var lineY = 100;
+    var leftX = 60;
+    var rightX = W - 60;
+    var totalRange = 99 - 10;
+
+    function xPos(n) {
+      return leftX + (n - 10) / totalRange * (rightX - leftX);
+    }
+
+    // Number line
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(leftX - 10, lineY);
+    ctx.lineTo(rightX + 10, lineY);
+    ctx.stroke();
+
+    // Arrow
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(rightX + 10, lineY);
+    ctx.lineTo(rightX + 2, lineY - 4);
+    ctx.lineTo(rightX + 2, lineY + 4);
+    ctx.fill();
+
+    // Tick marks at multiples of 10
+    ctx.fillStyle = muted;
+    ctx.font = '11px serif';
+    ctx.textAlign = 'center';
+    for (var d = 10; d <= 99; d += 10) {
+      var tx = xPos(d);
+      ctx.strokeStyle = axis;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(tx, lineY - 5);
+      ctx.lineTo(tx, lineY + 5);
+      ctx.stroke();
+      ctx.fillText(String(d), tx, lineY + 20);
+    }
+    // Mark 99
+    var tx99 = xPos(99);
+    ctx.beginPath();
+    ctx.moveTo(tx99, lineY - 5);
+    ctx.lineTo(tx99, lineY + 5);
+    ctx.stroke();
+    ctx.fillText('99', tx99, lineY + 20);
+
+    // Highlight multiples of 3 on number line
+    ctx.fillStyle = primary;
+    for (var m = 12; m <= 99; m += 3) {
+      var mx = xPos(m);
+      ctx.beginPath();
+      ctx.arc(mx, lineY, 3, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+
+    // Mark first and last
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(xPos(12), lineY, 6, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.font = 'bold 12px serif';
+    ctx.fillText('12', xPos(12), lineY - 14);
+    ctx.font = '11px serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('= 3 × 4', xPos(12), lineY - 28);
+
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(xPos(99), lineY, 6, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.font = 'bold 12px serif';
+    ctx.fillText('99', xPos(99), lineY - 14);
+    ctx.font = '11px serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('= 3 × 33', xPos(99), lineY - 28);
+
+    // Groups visualization
+    var groupY = 180;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Aritmetički niz: 12, 15, 18, ..., 96, 99', 60, groupY);
+
+    // Draw grouped boxes: 3 rows of 10
+    var boxW = 52;
+    var boxH = 32;
+    var gap = 6;
+    var startX = 60;
+    var startY = groupY + 20;
+    var nums = [];
+    for (var i = 12; i <= 99; i += 3) {
+      nums.push(i);
+    }
+
+    var colors = [primary, secondary, tertiary];
+    var groupLabels = ['Prva dekada (12–27)', 'Druga dekada (30–57)', 'Treća dekada (60–99)'];
+    var groupSizes = [6, 10, 14];
+
+    var idx = 0;
+    for (var row = 0; row < 3; row++) {
+      var rowY = startY + row * (boxH + gap + 24);
+      var colCount = Math.min(10, nums.length - idx);
+      ctx.fillStyle = muted;
+      ctx.font = '11px serif';
+      ctx.textAlign = 'left';
+
+      for (var col = 0; col < 10 && idx < nums.length; col++) {
+        var bx = startX + col * (boxW + gap);
+        var by = rowY;
+
+        ctx.fillStyle = row === 0 ? primary : (row === 1 ? secondary : accent);
+        ctx.globalAlpha = 0.15;
+        ctx.fillRect(bx, by, boxW, boxH);
+        ctx.globalAlpha = 1.0;
+
+        ctx.strokeStyle = row === 0 ? primary : (row === 1 ? secondary : accent);
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(bx, by, boxW, boxH);
+
+        ctx.fillStyle = text;
+        ctx.font = '13px serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(String(nums[idx]), bx + boxW / 2, by + boxH / 2 + 5);
+        idx++;
+      }
+    }
+
+    // Count summary
+    var summaryY = startY + 3 * (boxH + gap + 24) + 10;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Ukupan broj: n = (99 − 12) / 3 + 1 = 87 / 3 + 1 = 29 + 1 = 30', W / 2, summaryY);
+
+    // Result box
+    ctx.fillStyle = accent;
+    ctx.globalAlpha = 0.12;
+    ctx.fillRect(W / 2 - 80, summaryY + 8, 160, 36);
+    ctx.globalAlpha = 1.0;
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(W / 2 - 80, summaryY + 8, 160, 36);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 18px serif';
+    ctx.fillText('Odgovor: 30', W / 2, summaryY + 32);
+  }
+
+  draw();
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<div data-card="step-solution" data-title="Rešenje po koracima">
+  <h2>🔢 Rešenje po koracima</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Odredimo opseg dvocifrenih brojeva</h3>
+      <p>Dvocifreni brojevi su svi prirodni brojevi od 10 do 99 (uključujući granice).</p>
+      <p class="math-block">\[ 10, 11, 12, \ldots, 99 \]</p>
+      <div class="checkpoint">✔ Ukupno ima 90 dvocifrenih brojeva.</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Pronađimo najmanji dvocifreni broj deljiv sa 3</h3>
+      <p>Tražimo najmanji broj \( n \geq 10 \) koji je deljiv sa 3:</p>
+      <p class="math-block">\[ 10 \div 3 = 3 \text{ ostatak } 1 \quad \Rightarrow \quad 10 \text{ nije deljiv sa 3} \]</p>
+      <p class="math-block">\[ 11 \div 3 = 3 \text{ ostatak } 2 \quad \Rightarrow \quad 11 \text{ nije deljiv sa 3} \]</p>
+      <p class="math-block">\[ 12 \div 3 = 4 \quad \Rightarrow \quad 12 = 3 \cdot 4 \text{ — prvi dvocifreni broj deljiv sa 3} \]</p>
+      <div class="checkpoint">✔ Najmanji dvocifreni broj deljiv sa 3 je 12.</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Pronađimo najveći dvocifreni broj deljiv sa 3</h3>
+      <p>Najveći dvocifreni broj je 99. Proverimo deljivost:</p>
+      <p class="math-block">\[ 99 \div 3 = 33 \quad \Rightarrow \quad 99 = 3 \cdot 33 \text{ — deljiv sa 3} \]</p>
+      <div class="checkpoint">✔ Najveći dvocifreni broj deljiv sa 3 je 99.</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Prebrojimo članove aritmetičkog niza</h3>
+      <p>Dvocifreni brojevi deljivi sa 3 čine aritmetički niz:</p>
+      <p class="math-block">\[ 12, \; 15, \; 18, \; \ldots, \; 96, \; 99 \]</p>
+      <p>sa prvim članom \( a_1 = 12 \), poslednjim članom \( a_n = 99 \) i razlikom \( d = 3 \). Broj članova je:</p>
+      <p class="math-block">\[ n = \frac{a_n - a_1}{d} + 1 = \frac{99 - 12}{3} + 1 = \frac{87}{3} + 1 = 29 + 1 = 30 \]</p>
+      <div class="checkpoint">✔ Ima tačno 30 dvocifrenih brojeva deljivih sa 3.</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Alternativni pristup — pomoću umnožaka</h3>
+      <p>Umnošci broja 3 od 1 do 99 su: \( 3 \cdot 1, 3 \cdot 2, \ldots, 3 \cdot 33 \). To je 33 umnoška ukupno.</p>
+      <p>Od toga, jednocifreni umnošci su: \( 3, 6, 9 \), što je \( 3 \cdot 1, 3 \cdot 2, 3 \cdot 3 \) — ukupno 3 broja.</p>
+      <p class="math-block">\[ \text{Dvocifreni umnošci} = 33 - 3 = 30 \]</p>
+      <div class="checkpoint">✔ Potvrda: oba pristupa daju isti rezultat — 30.</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Prebrojavanje elemenata u aritmetičkom nizu je univerzalna tehnika. Kad god trebamo prebrojati sve cele brojeve u nekom rasponu koji zadovoljavaju uslov periodičnosti (deljivost, ostatak pri deljenju), dovoljno je pronaći <strong>prvi</strong> i <strong>poslednji</strong> takav broj, pa primeniti formulu \( n = \frac{a_n - a_1}{d} + 1 \).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \text{Dvocifrenih brojeva deljivih sa 3 ima } \mathbf{30} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 25 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 24 \)</span>
+    <span class="answer-option" data-option="C">(V) \( 27 \)</span>
+    <span class="answer-option correct" data-option="D">(G) \( 30 \)</span>
+    <span class="answer-option" data-option="E">(D) \( 33 \)</span>
+  </div>
+  <p class="verification">Provera: Umnošci broja 3 od 1 do 99: \( \lfloor 99/3 \rfloor = 33 \). Umnošci od 1 do 9: \( \lfloor 9/3 \rfloor = 3 \). Razlika: \( 33 - 3 = 30 \) ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Zamke">
+  <h2>⚠️ Česte zamke</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešna granica niza:</strong> Neki učenici kreću od 10 umesto od 12, ili završavaju na 100 umesto na 99 — to daje pogrešan broj članova.</li>
+    <li><strong>Greška za ±1:</strong> Formula za broj članova zahteva „+1" na kraju. Česta greška je dobiti 29 umesto 30, jer se zaboravi dodati 1.</li>
+    <li><strong>Mešanje sa jednocifrenim brojevima:</strong> Ako brojimo sve umnoške 3 do 99 (ima ih 33) i ne oduzmemo jednocifrene (3, 6, 9), dobijamo pogrešan odgovor 33.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koliko ima trocifrenih brojeva koji su istovremeno deljivi i sa 3 i sa 5 (tj. deljivi sa 15)?</p>
+  <details>
+    <summary>Pomoć</summary>
+    <div class="detail-content">
+      <p>Trocifreni brojevi deljivi sa 15: prvi je 105 = 15 × 7, poslednji je 990 = 15 × 66. Broj članova: \( n = \frac{990 - 105}{15} + 1 = \frac{885}{15} + 1 = 59 + 1 = 60 \).</p>
+    </div>
+  </details>
+</div>
+
+<!--BRAINSPARK_META
+{"format":"v2","title":"Dvocifreni brojevi deljivi sa 3","subject":"math","unit":"aritmetika","topic_tags":["deljivost","aritmeticki_niz","prebrojavanje"]}
+BRAINSPARK_META-->

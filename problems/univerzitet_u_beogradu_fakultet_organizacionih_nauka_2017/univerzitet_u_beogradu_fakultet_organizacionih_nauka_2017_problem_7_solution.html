@@ -1,0 +1,527 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Given three functions, find their domains and determine which set operation statement is true.
+
+  f1(x) = log_3(x^2 - 10x + 21)
+  f2(x) = 1 / (10x - x^2)^(1/4)
+  f3(x) = log_4(x^2 + 3) / sqrt(4 - x)
+
+  Domain of f1: Need x^2 - 10x + 21 > 0 (argument of logarithm must be positive)
+  x^2 - 10x + 21 = (x - 3)(x - 7) > 0
+  Sign analysis: positive when x < 3 or x > 7
+  D_f1 = (-inf, 3) ∪ (7, +inf)
+
+  Domain of f2: Need 10x - x^2 > 0 (strictly positive because it's under 4th root in denominator)
+  10x - x^2 = x(10 - x) > 0
+  Sign analysis: positive when 0 < x < 10
+  D_f2 = (0, 10)
+
+  Domain of f3: Need two conditions:
+  1) x^2 + 3 > 0 — always true for all real x (since x^2 >= 0, so x^2 + 3 >= 3 > 0)
+  2) 4 - x > 0 — need x < 4 (strictly, because it's under square root in denominator)
+  D_f3 = (-inf, 4)
+
+  Now check each option:
+
+  A) D_f1 ∪ D_f2 ∪ D_f3 = (-inf, 7)?
+  D_f1 ∪ D_f2 = (-inf, 3) ∪ (0, 10) ∪ (7, +inf) = (-inf, 10) ∪ ... wait
+  Actually D_f1 ∪ D_f2 = (-inf, 3) ∪ (7, +inf) ∪ (0, 10)
+  = (-inf, 3) ∪ (0, 10) ∪ (7, +inf)
+  = (-inf, 10) ∪ (7, +inf) — wait, let me be more careful.
+  (-inf, 3) ∪ (0, 10) = (-inf, 10) since (-inf,3) and (0,10) overlap on (0,3).
+  Then (-inf, 10) ∪ (7, +inf) = (-inf, +inf) = R.
+  Then D_f1 ∪ D_f2 ∪ D_f3 = R ∪ (-inf, 4) = R.
+  So A is FALSE.
+
+  B) D_f1 ∩ D_f2 ∩ D_f3 = (0, 3)?
+  D_f1 ∩ D_f2 = [(-inf,3) ∪ (7,+inf)] ∩ (0,10) = (0,3) ∪ (7,10)
+  Then (D_f1 ∩ D_f2) ∩ D_f3 = [(0,3) ∪ (7,10)] ∩ (-inf,4) = (0,3) ∪ empty = (0,3)
+  So B is TRUE! ✓
+
+  Let me verify C, D, E anyway:
+
+  C) (D_f1 ∪ D_f2) ∩ D_f3 = (0, 4)?
+  D_f1 ∪ D_f2 = (-inf,3) ∪ (7,+inf) ∪ (0,10) = (-inf, 10) ∪ (10, +inf) — wait...
+  Let me reconsider: (-inf,3) ∪ (0,10) = (-inf, 10) because the union covers everything up to 10.
+  Actually (-inf,3) covers everything below 3, (0,10) covers 0 to 10 — together they cover (-inf, 10).
+  Then (-inf,10) ∪ (7,+inf) = (-inf, +inf) = R.
+  So (D_f1 ∪ D_f2) ∩ D_f3 = R ∩ (-inf, 4) = (-inf, 4), not (0, 4). C is FALSE.
+
+  D) D_f1 ∩ D_f2 ∩ D_f3 = (0, 4)? Already shown it's (0,3). FALSE.
+
+  E) (D_f1 ∪ D_f2) ∩ D_f3 = (-inf, 4]? It's (-inf, 4), not (-inf, 4]. FALSE (4 is not included).
+
+  Answer: B) D_f1 ∩ D_f2 ∩ D_f3 = (0, 3)
+</script>
+
+<h1 data-card="problem-title">Domeni tri funkcije i operacije sa skupovima</h1>
+<p data-card="problem-subtitle" class="subtitle">Određivanje domena logaritamskih i iracionalnih funkcija, unija i presek skupova</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Date su realne funkcije \( f_1(x) = \log_3(x^2 - 10x + 21) \), \( f_2(x) = \dfrac{1}{\sqrt[4]{10x - x^2}} \) i \( f_3(x) = \dfrac{\log_4(x^2+3)}{\sqrt{4-x}} \).</p>
+  <p>Ako su \( D_{f_1} \), \( D_{f_2} \) i \( D_{f_3} \) redom domeni funkcija \( f_1 \), \( f_2 \) i \( f_3 \), onda je tačno tvrđenje:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( D_{f_1} \cup D_{f_2} \cup D_{f_3} = (-\infty, 7) \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( D_{f_1} \cap D_{f_2} \cap D_{f_3} = (0, 3) \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( (D_{f_1} \cup D_{f_2}) \cap D_{f_3} = (0, 4) \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( D_{f_1} \cap D_{f_2} \cap D_{f_3} = (0, 4) \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( (D_{f_1} \cup D_{f_2}) \cap D_{f_3} = (-\infty, 4] \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Odredićemo domen svake funkcije posebno analizom uslova za logaritme i korene, a zatim ćemo izračunati preseke i unije i proveriti svaku ponuđenu tvrdnju.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Domen logaritma:</strong> \( \log_a(f(x)) \) je definisan kada je \( f(x) > 0 \) i \( a > 0, a \neq 1 \).</li>
+        <li><strong>Domen parnog korena u imeniocu:</strong> \( \dfrac{1}{\sqrt[n]{f(x)}} \) zahteva \( f(x) > 0 \) (strogo pozitivno jer je u imeniocu).</li>
+        <li><strong>Kvadratna nejednačina:</strong> Za \( ax^2 + bx + c > 0 \), nađemo nule i analiziramo znak na intervalima.</li>
+        <li><strong>Operacije sa skupovima:</strong> \( A \cap B \) je presek (zajednički elementi), \( A \cup B \) je unija (svi elementi).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-p7" width="700" height="480"></canvas>
+  </div>
+  <p class="canvas-caption">Brojčana prava sa domenima tri funkcije i njihovim presekom</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Odredimo domen funkcije \( f_1 \)</h3>
+      <p>Za logaritamsku funkciju \( f_1(x) = \log_3(x^2 - 10x + 21) \), argument mora biti strogo pozitivan:</p>
+      <div class="math-block">
+        \[ x^2 - 10x + 21 > 0 \]
+      </div>
+      <p>Faktorizujemo kvadratni trinom. Nule su \( x = 3 \) i \( x = 7 \):</p>
+      <div class="math-block">
+        \[ (x - 3)(x - 7) > 0 \]
+      </div>
+      <p>Pošto je vodeći koeficijent pozitivan, parabola je usmerena nagore, pa je izraz pozitivan van korena:</p>
+      <div class="math-block">
+        \[ D_{f_1} = (-\infty, 3) \cup (7, +\infty) \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto ne može \( x = 3 \) ili \( x = 7 \)?</summary>
+          <div class="detail-content">
+            <p>Zato što bi argument logaritma bio jednak nuli: \( \log_3(0) \) nije definisan. Logaritam zahteva strogo pozitivan argument.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Odredimo domen funkcije \( f_2 \)</h3>
+      <p>Za funkciju \( f_2(x) = \dfrac{1}{\sqrt[4]{10x - x^2}} \), izraz pod korenom mora biti strogo pozitivan (jer je u imeniocu):</p>
+      <div class="math-block">
+        \[ 10x - x^2 > 0 \]
+      </div>
+      <p>Faktorizujemo:</p>
+      <div class="math-block">
+        \[ x(10 - x) > 0 \]
+      </div>
+      <p>Proizvod je pozitivan kada su oba faktora istog znaka. Pošto su nule \( x = 0 \) i \( x = 10 \):</p>
+      <div class="math-block">
+        \[ D_{f_2} = (0, 10) \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Odredimo domen funkcije \( f_3 \)</h3>
+      <p>Za funkciju \( f_3(x) = \dfrac{\log_4(x^2 + 3)}{\sqrt{4 - x}} \), imamo dva uslova:</p>
+      <p><strong>Uslov 1:</strong> Argument logaritma mora biti pozitivan:</p>
+      <div class="math-block">
+        \[ x^2 + 3 > 0 \]
+      </div>
+      <p>Ovo važi za svako realno \( x \), jer je \( x^2 \geq 0 \), pa je \( x^2 + 3 \geq 3 > 0 \).</p>
+      <p><strong>Uslov 2:</strong> Izraz pod korenom u imeniocu mora biti strogo pozitivan:</p>
+      <div class="math-block">
+        \[ 4 - x > 0 \implies x < 4 \]
+      </div>
+      <p>Dakle:</p>
+      <div class="math-block">
+        \[ D_{f_3} = (-\infty, 4) \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto je uslov \( 4 - x > 0 \), a ne \( 4 - x \geq 0 \)?</summary>
+          <div class="detail-content">
+            <p>Zato što je \( \sqrt{4 - x} \) u imeniocu razlomka. Za \( x = 4 \) dobijamo \( \sqrt{0} = 0 \) u imeniocu, što daje deljenje nulom. Zato moramo zahtevati strogo pozitivnu vrednost.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunajmo presek \( D_{f_1} \cap D_{f_2} \)</h3>
+      <p>Presecimo domene prve i druge funkcije:</p>
+      <div class="math-block">
+        \[ D_{f_1} \cap D_{f_2} = \big[(-\infty, 3) \cup (7, +\infty)\big] \cap (0, 10) \]
+      </div>
+      <p>Presecimo svaki deo unije sa intervalom \( (0, 10) \):</p>
+      <div class="math-block">
+        \[ (-\infty, 3) \cap (0, 10) = (0, 3) \]
+      </div>
+      <div class="math-block">
+        \[ (7, +\infty) \cap (0, 10) = (7, 10) \]
+      </div>
+      <p>Dakle:</p>
+      <div class="math-block">
+        \[ D_{f_1} \cap D_{f_2} = (0, 3) \cup (7, 10) \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunajmo trostruki presek \( D_{f_1} \cap D_{f_2} \cap D_{f_3} \)</h3>
+      <p>Sada presecimo rezultat iz prethodnog koraka sa domenom treće funkcije:</p>
+      <div class="math-block">
+        \[ \big[(0, 3) \cup (7, 10)\big] \cap (-\infty, 4) \]
+      </div>
+      <p>Ponovo presecimo svaki deo posebno:</p>
+      <div class="math-block">
+        \[ (0, 3) \cap (-\infty, 4) = (0, 3) \]
+      </div>
+      <div class="math-block">
+        \[ (7, 10) \cap (-\infty, 4) = \emptyset \]
+      </div>
+      <p>Konačno:</p>
+      <div class="math-block">
+        \[ D_{f_1} \cap D_{f_2} \cap D_{f_3} = (0, 3) \]
+      </div>
+      <p>Ovo se poklapa sa tvrdnjom pod <strong>(B)</strong>.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto interval \( (7, 10) \) nestaje pri preseku sa \( D_{f_3} \)?</summary>
+          <div class="detail-content">
+            <p>Zato što je \( D_{f_3} = (-\infty, 4) \), a interval \( (7, 10) \) se u potpunosti nalazi desno od 4. Nijedan broj iz \( (7, 10) \) nije manji od 4, pa je presek prazan skup.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Ključ zadatka je sistematičan pristup: ne treba računati sve ponuđene izraze, već prvo odrediti sve tri domene, pa ih vizualizovati na brojevnoj pravoj. Interval \( (7, 10) \) iz preseka \( D_{f_1} \cap D_{f_2} \) kompletno „otpada" kada se presecamo sa \( D_{f_3} = (-\infty, 4) \), jer se ta dva intervala uopšte ne preklapaju. Ostaje samo \( (0, 3) \) koji pripada sva tri domena.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ D_{f_1} \cap D_{f_2} \cap D_{f_3} = (0, 3) \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( D_{f_1} \cup D_{f_2} \cup D_{f_3} = (-\infty, 7) \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( D_{f_1} \cap D_{f_2} \cap D_{f_3} = (0, 3) \)</span>
+    <span class="answer-option" data-option="C">(C) \( (D_{f_1} \cup D_{f_2}) \cap D_{f_3} = (0, 4) \)</span>
+    <span class="answer-option" data-option="D">(D) \( D_{f_1} \cap D_{f_2} \cap D_{f_3} = (0, 4) \)</span>
+    <span class="answer-option" data-option="E">(E) \( (D_{f_1} \cup D_{f_2}) \cap D_{f_3} = (-\infty, 4] \)</span>
+  </div>
+  <p class="verification">Provera: \( x = 1 \) pripada svim domenima: \( 1 - 10 + 21 = 12 > 0 \) (za \( f_1 \)), \( 10 - 1 = 9 > 0 \) (za \( f_2 \)), \( 4 - 1 = 3 > 0 \) (za \( f_3 \)). Tačka \( x = 3{,}5 \) nije u preseku: \( 12{,}25 - 35 + 21 = -1{,}75 < 0 \), pa nije u \( D_{f_1} \). Potvrđeno!</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zaboraviti da je koren u imeniocu:</strong> Za \( f_2 \) i \( f_3 \), pošto su koreni u imeniocu, uslov je strogo \( > 0 \), ne \( \geq 0 \). Mnogi učenici greškom uključe krajnje tačke.</li>
+    <li><strong>Pogrešna analiza znaka:</strong> Za \( (x-3)(x-7) > 0 \), rešenje nisu vrednosti između nula, već van njih. Uvek nacrtajte tabelu znakova ili skicu parabole.</li>
+    <li><strong>Zanemarivanje uslova za \( f_3 \):</strong> Lako je prevideti da je \( x^2 + 3 > 0 \) uvek ispunjeno i fokusirati se samo na imenilac, ali je važno to eksplicitno proveriti.</li>
+    <li><strong>Mešanje unije i preseka:</strong> Unija proširuje skup (dodaje elemente), a presek ga sužava (zadržava zajedničke). Neke opcije namerno mešaju ove operacije.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta ako umesto funkcije \( f_3 \) imamo \( g(x) = \dfrac{\log_4(x^2+3)}{\sqrt{x - 4}} \) (promenjen znak pod korenom)? Kako bi tada izgledao presek \( D_{f_1} \cap D_{f_2} \cap D_g \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Domen funkcije \( g \) bio bi \( D_g = (4, +\infty) \). Tada bi presek bio \( (0, 3) \cup (7, 10) \) presečen sa \( (4, +\infty) \), što daje \( (7, 10) \). Zanimljivo — „preživljava" upravo onaj interval koji je u originalnom zadatku nestao!</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-p7');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Domeni funkcija na brojevnoj pravoj', W / 2, 25);
+
+    // Number line parameters
+    var leftVal = -2;
+    var rightVal = 12;
+    var nlLeft = 60;
+    var nlRight = W - 40;
+    var range = rightVal - leftVal;
+
+    function xPos(val) {
+      return nlLeft + (val - leftVal) / range * (nlRight - nlLeft);
+    }
+
+    // Key points on the number line
+    var keyPoints = [0, 3, 4, 7, 10];
+
+    // Domain rows
+    var rows = [
+      { label: 'D(f\u2081)', color: primary, intervals: [[-2, 3], [7, 12]], openLeft: [true, false], openRight: [false, true], y: 80 },
+      { label: 'D(f\u2082)', color: secondary, intervals: [[0, 10]], openLeft: [false], openRight: [false], y: 150 },
+      { label: 'D(f\u2083)', color: highlight, intervals: [[-2, 4]], openLeft: [true], openRight: [false], y: 220 },
+      { label: 'D(f\u2081)\u2229D(f\u2082)', color: danger, intervals: [[0, 3], [7, 10]], openLeft: [false, false], openRight: [false, false], y: 310 },
+      { label: 'Presek sva tri', color: accent, intervals: [[0, 3]], openLeft: [false], openRight: [false], y: 380 }
+    ];
+
+    // Draw separating line before intersection results
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([5, 5]);
+    ctx.beginPath();
+    ctx.moveTo(nlLeft - 30, 275);
+    ctx.lineTo(nlRight + 20, 275);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = muted;
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Rezultati operacija sa skupovima:', W / 2, 293);
+
+    rows.forEach(function(row) {
+      var y = row.y;
+
+      // Label
+      ctx.fillStyle = row.color;
+      ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(row.label, nlLeft - 10, y + 5);
+
+      // Number line axis
+      ctx.strokeStyle = grid;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(nlLeft, y);
+      ctx.lineTo(nlRight, y);
+      ctx.stroke();
+
+      // Tick marks and labels
+      keyPoints.forEach(function(val) {
+        var x = xPos(val);
+        ctx.strokeStyle = muted;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(x, y - 6);
+        ctx.lineTo(x, y + 6);
+        ctx.stroke();
+
+        ctx.fillStyle = muted;
+        ctx.font = '11px Segoe UI, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(String(val), x, y + 20);
+      });
+
+      // Draw intervals
+      row.intervals.forEach(function(interval, idx) {
+        var x1 = xPos(interval[0]);
+        var x2 = xPos(interval[1]);
+
+        // Filled bar
+        ctx.fillStyle = cvAlpha(row.color === primary ? '--sol-canvas-primary' :
+                                row.color === secondary ? '--sol-canvas-secondary' :
+                                row.color === highlight ? '--sol-canvas-highlight' :
+                                row.color === danger ? '--sol-canvas-danger' :
+                                '--sol-canvas-accent', 0.3);
+        ctx.fillRect(x1, y - 8, x2 - x1, 16);
+
+        // Top line
+        ctx.strokeStyle = row.color;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(x1, y);
+        ctx.lineTo(x2, y);
+        ctx.stroke();
+
+        // Endpoints: open circle for open interval, extends to edge for arrows
+        var leftIsEdge = interval[0] <= leftVal;
+        var rightIsEdge = interval[1] >= rightVal;
+
+        if (!leftIsEdge) {
+          // Open circle at left endpoint
+          ctx.beginPath();
+          ctx.arc(x1, y, 5, 0, 2 * Math.PI);
+          ctx.fillStyle = bg;
+          ctx.fill();
+          ctx.strokeStyle = row.color;
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        } else {
+          // Arrow pointing left
+          ctx.strokeStyle = row.color;
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(nlLeft + 10, y - 5);
+          ctx.lineTo(nlLeft, y);
+          ctx.lineTo(nlLeft + 10, y + 5);
+          ctx.stroke();
+        }
+
+        if (!rightIsEdge) {
+          // Open circle at right endpoint
+          ctx.beginPath();
+          ctx.arc(x2, y, 5, 0, 2 * Math.PI);
+          ctx.fillStyle = bg;
+          ctx.fill();
+          ctx.strokeStyle = row.color;
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        } else {
+          // Arrow pointing right
+          ctx.strokeStyle = row.color;
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(nlRight - 10, y - 5);
+          ctx.lineTo(nlRight, y);
+          ctx.lineTo(nlRight - 10, y + 5);
+          ctx.stroke();
+        }
+      });
+
+      // Interval notation on the right
+      ctx.fillStyle = row.color;
+      ctx.font = '12px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      var notation = '';
+      if (row.label === 'D(f\u2081)') notation = '(-\u221E, 3) \u222A (7, +\u221E)';
+      else if (row.label === 'D(f\u2082)') notation = '(0, 10)';
+      else if (row.label === 'D(f\u2083)') notation = '(-\u221E, 4)';
+      else if (row.label === 'D(f\u2081)\u2229D(f\u2082)') notation = '(0, 3) \u222A (7, 10)';
+      else if (row.label === 'Presek sva tri') notation = '(0, 3)';
+    });
+
+    // Final result highlight box
+    var resY = 420;
+    var resW = 260;
+    var resH = 40;
+    var resX = (W - resW) / 2;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.15);
+    ctx.beginPath();
+    ctx.roundRect(resX, resY, resW, resH, 10);
+    ctx.fill();
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(resX, resY, resW, resH, 10);
+    ctx.stroke();
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Odgovor: (B) presek = (0, 3)', W / 2, resY + resH / 2);
+    ctx.textBaseline = 'alphabetic';
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Domeni tri funkcije i operacije sa skupovima",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["domen funkcije", "logaritamska funkcija", "iracionalna funkcija", "presek skupova", "unija skupova", "kvadratna nejednačina"]
+}
+BRAINSPARK_META-->

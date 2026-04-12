@@ -1,0 +1,416 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: f₁(x) = f(x) = 1/(1-x), fₙ₊₁(x) = fₙ(f(x)), naći f₂₀₀₅(2005).
+
+  Korak 1: Izračunati prvih nekoliko iteracija
+    f₁(x) = 1/(1-x)
+    f₂(x) = f₁(f(x)) = f₁(1/(1-x)) = 1/(1 - 1/(1-x))
+           = 1/((1-x-1)/(1-x)) = 1/((-x)/(1-x)) = (1-x)/(-x) = (x-1)/x = 1 - 1/x
+    f₃(x) = f₂(f(x)) = 1 - 1/f(x) = 1 - 1/(1/(1-x)) = 1 - (1-x) = x
+    f₃(x) = x — identitet!
+
+  Korak 2: Ciklus perioda 3
+    f₃(x) = x znači da se funkcija ponavlja sa periodom 3:
+    f₁ → f₂ → f₃ = id → f₄ = f₁ → f₅ = f₂ → f₆ = f₃ = id → ...
+
+  Korak 3: Odrediti f₂₀₀₅
+    2005 = 3 · 668 + 1
+    Dakle f₂₀₀₅ = f₁ (jer je ostatak pri deljenju sa 3 jednak 1)
+
+  Korak 4: Izračunati f₁(2005)
+    f₁(2005) = 1/(1-2005) = 1/(-2004) = -1/2004
+
+  Odgovor: (A) -1/2004
+</script>
+
+<h1 data-card="problem-title">Iteracija funkcije — ciklična kompozicija</h1>
+<p data-card="problem-subtitle" class="subtitle">Funkcije — kompozicija funkcija, periodičnost iteracija</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>Tekst zadatka</h2>
+  <p>Ako je \( f_1(x) = f(x) = \dfrac{1}{1-x} \) i \( f_{n+1}(x) = f_n(f(x)) \) za \( n \in \mathbb{N} \), onda je vrednost \( f_{2005}(x) \) za \( x = 2005 \) jednaka:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( -\dfrac{1}{2004} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 2004 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( -\dfrac{1}{2005} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( -\dfrac{2005}{2004} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \dfrac{2005}{2004} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>Plan rešavanja</h2>
+  <p class="plan-text">
+    Umesto da računamo 2005 uzastopnih kompozicija, tražimo obrazac: izračunaćemo \( f_1 \), \( f_2 \), \( f_3 \) i proveriti da li se javlja ciklus. Ako se \( f_3(x) = x \) (identitet), tada je period 3 i možemo koristiti ostatak pri deljenju \( 2005 \div 3 \) da odredimo \( f_{2005} \).
+  </p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>Podsetnik iz teorije</h2>
+  <details>
+    <summary>Kompozicija funkcija i iteracije</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Kompozicija funkcija:</strong> \( (g \circ h)(x) = g(h(x)) \) — prvo se primeni \( h \), pa na rezultat \( g \).</li>
+        <li><strong>Iteracija:</strong> \( f_n \) je \( n \)-ta iteracija — \( f \) primenjena \( n \) puta uzastopno:
+          <div class="math-block">\[ f_n(x) = \underbrace{f(f(\cdots f}_{n}(x) \cdots)) \]</div>
+        </li>
+        <li><strong>Periodičnost:</strong> Ako postoji najmanji \( p \) takav da \( f_p(x) = x \) za sve \( x \), kažemo da iteracija ima period \( p \). Tada:
+          <div class="math-block">\[ f_n(x) = f_{n \bmod p}(x) \quad (\text{gde je } f_0 = \mathrm{id}) \]</div>
+        </li>
+        <li><strong>Strategija:</strong> Kada je \( n \) veliko, uvek ispitaj prvih nekoliko iteracija da otkriješ eventualni ciklus.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Ciklus iteracija funkcije">
+  <h2>Ciklus iteracija funkcije</h2>
+  <div class="canvas-wrapper">
+    <canvas id="iteration-cycle" width="700" height="400"></canvas>
+  </div>
+  <p class="canvas-caption">Dijagram ciklusa: \( f_1 \to f_2 \to f_3 = \mathrm{id} \to f_1 \to \cdots \), pa \( f_{2005} = f_1 \)</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunavanje \( f_1(x) \)</h3>
+      <p>Po definiciji:</p>
+      <div class="math-block">\[ f_1(x) = f(x) = \frac{1}{1 - x} \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunavanje \( f_2(x) \)</h3>
+      <p>Po rekurentnoj formuli: \( f_2(x) = f_1(f(x)) \). Zamenjujemo \( x \) sa \( f(x) = \frac{1}{1-x} \) u izrazu za \( f_1 \):</p>
+      <div class="math-block">\[ f_2(x) = \frac{1}{1 - \dfrac{1}{1-x}} = \frac{1}{\dfrac{1-x-1}{1-x}} = \frac{1}{\dfrac{-x}{1-x}} = \frac{1-x}{-x} = \frac{x-1}{x} = 1 - \frac{1}{x} \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Detaljno svođenje razlomka</summary>
+          <div class="detail-content">
+            <p>Imenilac: \( 1 - \frac{1}{1-x} = \frac{(1-x) - 1}{1-x} = \frac{-x}{1-x} \). Zatim: \( \frac{1}{\frac{-x}{1-x}} = \frac{1-x}{-x} \). Delimo brojilac i imenilac sa \( -1 \): \( \frac{x-1}{x} \). To je \( 1 - \frac{1}{x} \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunavanje \( f_3(x) \)</h3>
+      <p>Ponovo: \( f_3(x) = f_2(f(x)) \). Zamenjujemo \( x \) sa \( f(x) = \frac{1}{1-x} \) u izrazu za \( f_2 \):</p>
+      <div class="math-block">\[ f_3(x) = 1 - \frac{1}{f(x)} = 1 - \frac{1}{\frac{1}{1-x}} = 1 - (1-x) = x \]</div>
+      <p>Dobili smo <strong>identitet</strong>: \( f_3(x) = x \)!</p>
+      <p>To znači da trostruka kompozicija funkcije \( f \) daje polaznu vrednost, tj. iteracije imaju <strong>period 3</strong>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Određivanje \( f_{2005} \) pomoću periodičnosti</h3>
+      <p>Pošto je period 3, važi:</p>
+      <div class="math-block">\[ f_n = f_{n \bmod 3} \quad \text{(sa konvencijom } f_0 = \mathrm{id}, \; f_3 = f_0\text{)} \]</div>
+      <p>Delimo 2005 sa 3:</p>
+      <div class="math-block">\[ 2005 = 3 \cdot 668 + 1 \]</div>
+      <p>Ostatak je 1, dakle:</p>
+      <div class="math-block">\[ f_{2005}(x) = f_1(x) = \frac{1}{1 - x} \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Provera deljenja</summary>
+          <div class="detail-content">
+            <p>\( 3 \times 668 = 2004 \), pa \( 2004 + 1 = 2005 \). Dakle zaista \( 2005 = 3 \times 668 + 1 \), ostatak je 1.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunavanje konačne vrednosti</h3>
+      <p>Zamenjujemo \( x = 2005 \):</p>
+      <div class="math-block">\[ f_{2005}(2005) = f_1(2005) = \frac{1}{1 - 2005} = \frac{1}{-2004} = -\frac{1}{2004} \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>Ključni uvid</h2>
+  <p>Funkcija \( f(x) = \frac{1}{1-x} \) je posebna: njena trostruka kompozicija daje identitet (\( f \circ f \circ f = \mathrm{id} \)). Ovo je primer <strong>cikličnog ponašanja</strong> — funkcija ima konačan red u grupi kompozicija. Čim otkrijemo period, problem sa ogromnim brojem iteracija (2005) svodi se na jednostavno deljenje sa ostatkom. Ova tehnika se primenjuje i u teoriji grupa, linearnoj algebri (stepeni matrica) i kombinatorici.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <div class="math-block">\[ f_{2005}(2005) = -\frac{1}{2004} \]</div>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( -\dfrac{1}{2004} \)</span>
+    <span class="answer-option" data-option="B">(B) \( 2004 \)</span>
+    <span class="answer-option" data-option="C">(C) \( -\dfrac{1}{2005} \)</span>
+    <span class="answer-option" data-option="D">(D) \( -\dfrac{2005}{2004} \)</span>
+    <span class="answer-option" data-option="E">(E) \( \dfrac{2005}{2004} \)</span>
+  </div>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešan ostatak pri deljenju:</strong> Ako se pogrešno izračuna \( 2005 \bmod 3 \) (npr. dobije se 2 umesto 1), dobiće se \( f_2(2005) = 1 - \frac{1}{2005} = \frac{2004}{2005} \), što nije nijedan ponuđeni odgovor, ili odgovor (E).</li>
+    <li><strong>Greška pri kompoziciji \( f_2 \):</strong> Svođenje razlomka \( \frac{1}{1 - \frac{1}{1-x}} \) zahteva pažljivo računanje sa razlomcima u razlomku. Česta greška je pogrešan predznak u imeniocu.</li>
+    <li><strong>Mešanje \( f_{2005}(x) \) sa \( f(2005) \):</strong> Treba prvo odrediti <em>koja</em> je funkcija \( f_{2005} \), a tek onda uvrstiti \( x = 2005 \). Nije dovoljno samo izračunati \( f(2005) = \frac{1}{1-2005} \) i tu stati, mada u ovom slučaju odgovor je isti jer se ispostavlja da \( f_{2005} = f_1 \).</li>
+    <li><strong>Zamena \( 1 - 2005 \) sa \( 2004 \) umesto \( -2004 \):</strong> Pazite na predznak! \( 1 - 2005 = -2004 \), ne \( 2004 \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>Dodatni izazov</h2>
+  <p>Neka je \( g(x) = \frac{x}{x-1} \). Pokažite da iteracija \( g \) takođe ima period 2 (tj. \( g(g(x)) = x \)), i odredite \( g_{100}(7) \).</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>\( g(g(x)) = g\!\left(\frac{x}{x-1}\right) = \frac{\frac{x}{x-1}}{\frac{x}{x-1} - 1} = \frac{\frac{x}{x-1}}{\frac{x - (x-1)}{x-1}} = \frac{\frac{x}{x-1}}{\frac{1}{x-1}} = x \). Dakle period je 2.</p>
+      <p>Pošto je \( 100 \bmod 2 = 0 \), važi \( g_{100}(x) = x \), pa je \( g_{100}(7) = 7 \).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('iteration-cycle');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Draw the cyclic diagram: three nodes in a triangle
+    var cx = 220;
+    var cy = 200;
+    var radius = 110;
+
+    // Node positions (triangle, top-left-right)
+    var nodes = [
+      { x: cx, y: cy - radius, label: 'f\u2081(x)', sub: '1/(1\u2212x)', color: primary },
+      { x: cx + radius * Math.cos(Math.PI / 6), y: cy + radius * Math.sin(Math.PI / 6), label: 'f\u2082(x)', sub: '1 \u2212 1/x', color: secondary },
+      { x: cx - radius * Math.cos(Math.PI / 6), y: cy + radius * Math.sin(Math.PI / 6), label: 'f\u2083(x)', sub: 'x', color: accent }
+    ];
+
+    var nodeR = 42;
+
+    // Draw arrows between nodes (curved)
+    function drawCurvedArrow(fromIdx, toIdx, col) {
+      var from = nodes[fromIdx];
+      var to = nodes[toIdx];
+      var midX = (from.x + to.x) / 2;
+      var midY = (from.y + to.y) / 2;
+      // Offset midpoint outward
+      var dx = to.x - from.x;
+      var dy = to.y - from.y;
+      var len = Math.sqrt(dx * dx + dy * dy);
+      var nx = -dy / len;
+      var ny = dx / len;
+      var cpx = midX + nx * 25;
+      var cpy = midY + ny * 25;
+
+      // Start/end points on circle edges
+      var angFrom = Math.atan2(cpy - from.y, cpx - from.x);
+      var angTo = Math.atan2(cpy - to.y, cpx - to.x);
+      var sx = from.x + nodeR * Math.cos(angFrom);
+      var sy = from.y + nodeR * Math.sin(angFrom);
+      var ex = to.x + nodeR * Math.cos(angTo);
+      var ey = to.y + nodeR * Math.sin(angTo);
+
+      ctx.strokeStyle = col;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(sx, sy);
+      ctx.quadraticCurveTo(cpx, cpy, ex, ey);
+      ctx.stroke();
+
+      // Arrowhead
+      var t = 0.95;
+      var onCurveX = (1-t)*(1-t)*sx + 2*(1-t)*t*cpx + t*t*ex;
+      var onCurveY = (1-t)*(1-t)*sy + 2*(1-t)*t*cpy + t*t*ey;
+      var tangX = 2*(1-t)*(cpx-sx) + 2*t*(ex-cpx);
+      var tangY = 2*(1-t)*(cpy-sy) + 2*t*(ey-cpy);
+      var tlen = Math.sqrt(tangX*tangX + tangY*tangY);
+      tangX /= tlen;
+      tangY /= tlen;
+
+      ctx.fillStyle = col;
+      ctx.beginPath();
+      ctx.moveTo(ex, ey);
+      ctx.lineTo(ex - tangX * 12 + tangY * 5, ey - tangY * 12 - tangX * 5);
+      ctx.lineTo(ex - tangX * 12 - tangY * 5, ey - tangY * 12 + tangX * 5);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    drawCurvedArrow(0, 1, highlight);
+    drawCurvedArrow(1, 2, highlight);
+    drawCurvedArrow(2, 0, highlight);
+
+    // Draw nodes
+    for (var i = 0; i < nodes.length; i++) {
+      var n = nodes[i];
+      ctx.fillStyle = cvAlpha('--sol-canvas-bg', 1);
+      ctx.strokeStyle = n.color;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, nodeR, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = n.color;
+      ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(n.label, n.x, n.y - 5);
+      ctx.font = '12px Segoe UI, system-ui, sans-serif';
+      ctx.fillText(n.sub, n.x, n.y + 13);
+    }
+
+    // Label the arrows
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    ctx.fillText('primeni f', cx + radius * 0.7, cy - radius * 0.5);
+    ctx.fillText('primeni f', cx + radius * 0.15, cy + radius * 0.85);
+    ctx.fillText('primeni f', cx - radius * 0.75, cy - radius * 0.1);
+
+    // Right side: computation chain
+    var startX = 430;
+    var startY = 40;
+    var lineH = 28;
+
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillStyle = text;
+    ctx.fillText('Izračunavanje:', startX, startY);
+
+    var steps = [
+      { text: '2005 = 3 \u00b7 668 + 1', color: text },
+      { text: 'ostatak = 1', color: highlight },
+      { text: '', color: text },
+      { text: 'f\u2082\u2080\u2080\u2085(x) = f\u2081(x) = 1/(1\u2212x)', color: primary },
+      { text: '', color: text },
+      { text: 'f\u2082\u2080\u2080\u2085(2005) = 1/(1\u22122005)', color: text },
+      { text: '= 1/(\u22122004)', color: text },
+      { text: '= \u22121/2004', color: accent }
+    ];
+
+    ctx.font = '14px Segoe UI, system-ui, sans-serif';
+    for (var j = 0; j < steps.length; j++) {
+      if (steps[j].text === '') continue;
+      ctx.fillStyle = steps[j].color;
+      ctx.fillText(steps[j].text, startX, startY + (j + 1) * lineH + 10);
+    }
+
+    // Highlight final answer
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    var boxY = startY + 8 * lineH + 2;
+    ctx.strokeRect(startX - 8, boxY - 14, 180, 22);
+
+    // Table showing periodicity
+    var tableX = 430;
+    var tableY = 290;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'left';
+    ctx.fillText('Periodičnost:', tableX, tableY);
+
+    var rows = [
+      ['n mod 3', 'f\u2099(x)'],
+      ['1', '1/(1\u2212x)'],
+      ['2', '1 \u2212 1/x'],
+      ['0', 'x (identitet)']
+    ];
+    ctx.font = '13px Segoe UI, system-ui, sans-serif';
+    for (var k = 0; k < rows.length; k++) {
+      var ry = tableY + 20 + k * 22;
+      if (k === 0) {
+        ctx.fillStyle = muted;
+        ctx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
+      } else {
+        ctx.font = '13px Segoe UI, system-ui, sans-serif';
+        ctx.fillStyle = k === 1 ? primary : k === 2 ? secondary : accent;
+      }
+      ctx.fillText(rows[k][0], tableX, ry);
+      ctx.fillText(rows[k][1], tableX + 80, ry);
+    }
+  }
+
+  draw();
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Iteracija funkcije — ciklična kompozicija",
+  "subject": "math",
+  "unit": "funkcije",
+  "topic_tags": ["kompozicija funkcija", "iteracija", "periodičnost", "racionalna funkcija", "moduo aritmetika"]
+}
+BRAINSPARK_META-->
