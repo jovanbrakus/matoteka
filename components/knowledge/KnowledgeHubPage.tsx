@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import DisciplineFilter from "@/components/knowledge/DisciplineFilter";
 import LessonCard from "@/components/knowledge/LessonCard";
 
@@ -31,10 +32,28 @@ export default function KnowledgeHubPage({
   initialCategories,
   initialLessons,
 }: KnowledgeHubPageProps) {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const categoryParam = searchParams.get("category");
+
   const [categories, setCategories] = useState<CategoryInfo[]>(initialCategories);
   const [lessons, setLessons] = useState<LessonData[]>(initialLessons);
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState<string | null>(categoryParam);
   const [loading, setLoading] = useState(false);
+
+  // Sync state when URL search params change (e.g. browser back/forward)
+  useEffect(() => {
+    setActiveCategory(categoryParam);
+  }, [categoryParam]);
+
+  const handleCategorySelect = useCallback((category: string | null) => {
+    setActiveCategory(category);
+    if (category) {
+      router.replace(`/znanje?category=${category}`, { scroll: false });
+    } else {
+      router.replace("/znanje", { scroll: false });
+    }
+  }, [router]);
 
   useEffect(() => {
     if (!activeCategory) {
@@ -80,7 +99,7 @@ export default function KnowledgeHubPage({
         <DisciplineFilter
           categories={categories}
           activeCategory={activeCategory}
-          onSelect={setActiveCategory}
+          onSelect={handleCategorySelect}
         />
       </section>
 
@@ -115,7 +134,7 @@ export default function KnowledgeHubPage({
         ) : (
           <div className="grid grid-cols-1 gap-6">
             {lessons.map((lesson) => (
-              <LessonCard key={lesson.id} lesson={lesson} />
+              <LessonCard key={lesson.id} lesson={lesson} activeCategory={activeCategory} />
             ))}
           </div>
         )}

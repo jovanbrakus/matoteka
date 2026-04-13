@@ -14,6 +14,8 @@ interface LessonNavBarProps {
   lessonTitle: string;
   prevLesson?: AdjacentLesson | null;
   nextLesson?: AdjacentLesson | null;
+  hubHref?: string;
+  categoryParam?: string | null;
 }
 
 export function LessonBreadcrumb({ lessonNumber, lessonTitle }: LessonNavBarProps) {
@@ -33,11 +35,12 @@ export function LessonBreadcrumb({ lessonNumber, lessonTitle }: LessonNavBarProp
   );
 }
 
-export function LessonFooterNav({ prevLesson, nextLesson }: LessonNavBarProps) {
+export function LessonFooterNav({ prevLesson, nextLesson, hubHref = "/znanje", categoryParam }: LessonNavBarProps) {
+  const suffix = categoryParam ? `?category=${categoryParam}` : "";
   return (
     <nav className={s.lessonFooterNav}>
       {prevLesson ? (
-        <Link href={`/znanje/${prevLesson.slug}`} className={s.footerNavCard}>
+        <Link href={`/znanje/${prevLesson.slug}${suffix}`} className={s.footerNavCard}>
           <span className={s.footerNavDirection}>
             <span className="material-symbols-outlined" style={{ fontSize: 16 }}>
               arrow_back
@@ -50,7 +53,7 @@ export function LessonFooterNav({ prevLesson, nextLesson }: LessonNavBarProps) {
         <div />
       )}
 
-      <Link href="/znanje" className={s.footerNavCenter}>
+      <Link href={hubHref} className={s.footerNavCenter}>
         <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
           auto_stories
         </span>
@@ -58,7 +61,7 @@ export function LessonFooterNav({ prevLesson, nextLesson }: LessonNavBarProps) {
       </Link>
 
       {nextLesson ? (
-        <Link href={`/znanje/${nextLesson.slug}`} className={`${s.footerNavCard} ${s.footerNavCardRight}`}>
+        <Link href={`/znanje/${nextLesson.slug}${suffix}`} className={`${s.footerNavCard} ${s.footerNavCardRight}`}>
           <span className={s.footerNavDirection}>
             Sledeća lekcija
             <span className="material-symbols-outlined" style={{ fontSize: 16 }}>
