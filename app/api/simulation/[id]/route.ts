@@ -60,6 +60,7 @@ export async function GET(
       answerOptions: problem?.answerOptions ?? [],
       numOptions: problem?.numOptions ?? 5,
       difficulty: problem?.difficulty ?? null,
+      correctAnswer: problem?.correctAnswer ?? null,
       facultyId: problem?.facultyId ?? null,
       year: problem?.year ?? null,
     };

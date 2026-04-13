@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
+import { useSession } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";
 import { Flag, ChevronLeft, ChevronRight, Award } from "lucide-react";
 import AnswerOptions from "@/components/problems/AnswerOptions";
@@ -18,6 +19,7 @@ interface ExamProblem {
   answerOptions: string[];
   numOptions: number;
   difficulty: string | null;
+  correctAnswer: string | null;
   facultyId: string;
   year: number;
 }
@@ -50,6 +52,8 @@ interface Faculty {
 export default function SimulationPage() {
   const params = useParams();
   const router = useRouter();
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.role === "admin";
   const examId = params.id as string;
 
   const [exam, setExam] = useState<Exam | null>(null);
@@ -357,6 +361,11 @@ export default function SimulationPage() {
                 <h1 className="text-2xl md:text-3xl font-black text-heading mt-1">
                   {cp.title}
                 </h1>
+                {isAdmin && (
+                  <span className="font-mono text-xs text-muted mt-1 inline-block">
+                    {cp.problemId} | {cp.correctAnswer} | <a href={`/vezbe/${cp.problemId}`} className="underline hover:text-[#ec5b13]">link</a>
+                  </span>
+                )}
               </div>
               <div className="flex gap-2">
                 <span className="px-3 py-1 rounded-full bg-[var(--tint)] border border-[var(--glass-border)] text-[10px] font-bold text-text-secondary uppercase tracking-wider">
