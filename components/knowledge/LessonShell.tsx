@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { MathJaxContext } from "better-react-mathjax";
 import { MATHJAX_CONFIG, MATHJAX_SRC } from "@/lib/mathjax-config";
 import { useLessonNav } from "./LessonNavContext";
@@ -20,6 +21,12 @@ export default function LessonShell({ children }: LessonShellProps) {
         <div className={`${s.ambientOrb} ${s.ambientOrbTwo}`} />
         <div className={`${s.ambientOrb} ${s.ambientOrbThree}`} />
         <main className={s.page}>
+          <Link href="/znanje" className={s.backToHub}>
+            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
+              arrow_back
+            </span>
+            Centar znanja
+          </Link>
           {children}
           {nav && (
             <LessonFooterNav
