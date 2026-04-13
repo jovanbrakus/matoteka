@@ -72,7 +72,8 @@ export default function ProblemStatement({
   // the API call (and the audit-log insert).
   useEffect(() => {
     const stored = localStorage.getItem("theme") as string | null;
-    setTheme(stored || "dark");
+    const fromDom = document.documentElement.classList.contains("light") ? "light" : "dark";
+    setTheme(stored || fromDom);
 
     const observer = new MutationObserver(() => {
       const isLight = document.documentElement.classList.contains("light");
