@@ -299,7 +299,7 @@ export default function ProfilePage() {
                 >
                   <div className="flex items-center gap-3">
                     <div
-                      className={`flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold ${
+                      className={`flex h-8 min-w-8 shrink-0 items-center justify-center rounded-lg px-1.5 text-xs font-bold ${
                         isSelected
                           ? "bg-[#ec5b13] text-white"
                           : "bg-[var(--tint-strong)] text-muted"
