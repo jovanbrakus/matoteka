@@ -50,7 +50,9 @@ export default function PracticeSolver() {
   const { status: sessionStatus } = useSession();
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [currentProblemId, setCurrentProblemId] = useState<string | null>(null);
+  const [history, setHistory] = useState<string[]>([]);
+  const [historyIdx, setHistoryIdx] = useState(-1);
+  const currentProblemId = historyIdx >= 0 ? history[historyIdx] ?? null : null;
   const [loadingProblem, setLoadingProblem] = useState(true);
   const [sessionScore, setSessionScore] = useState({ correct: 0, total: 0 });
   const [topics, setTopics] = useState<string[]>([]);
@@ -119,16 +121,23 @@ export default function PracticeSolver() {
     });
   };
 
-  // Fetch a random problem
+  // Fetch a random problem and append to history
   const fetchRandom = useCallback(async (t: string[]) => {
     if (t.length === 0) return;
     setLoadingProblem(true);
     try {
       const res = await fetch(`/api/practice/random?topics=${t.join(",")}&diff=${diffRef.current}`);
       const data = await res.json();
-      setCurrentProblemId(data.problemId || null);
+      const pid = data.problemId || null;
+      if (pid) {
+        setHistory((prev) => {
+          const next = [...prev, pid];
+          setHistoryIdx(next.length - 1);
+          return next;
+        });
+      }
     } catch {
-      setCurrentProblemId(null);
+      /* keep current */
     }
     setLoadingProblem(false);
   }, []);
@@ -167,9 +176,17 @@ export default function PracticeSolver() {
     setTimeout(refreshReadiness, 2000);
   }, [refreshReadiness]);
 
+  const handlePrev = useCallback(() => {
+    setHistoryIdx((i) => Math.max(0, i - 1));
+  }, []);
+
   const handleNext = useCallback(() => {
-    fetchRandom(topics);
-  }, [fetchRandom, topics]);
+    if (historyIdx < history.length - 1) {
+      setHistoryIdx((i) => i + 1);
+    } else {
+      fetchRandom(topics);
+    }
+  }, [fetchRandom, topics, historyIdx, history.length]);
 
   if (sessionStatus === "loading" || (loadingProblem && !currentProblemId && topics.length === 0)) {
     return (
@@ -232,7 +249,15 @@ export default function PracticeSolver() {
             </div>
           )}
           <button
-            onClick={() => handleNext()}
+            onClick={handlePrev}
+            disabled={historyIdx <= 0}
+            className="flex items-center gap-2 rounded-lg border border-[var(--glass-border)] bg-[var(--tint)] px-4 py-2 text-sm font-bold text-text-secondary transition-colors hover:text-heading disabled:opacity-40 disabled:pointer-events-none"
+          >
+            <span className="material-symbols-outlined text-base">arrow_back</span>
+            Prethodni
+          </button>
+          <button
+            onClick={handleNext}
             className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-primary-glow"
           >
             Sledeći
