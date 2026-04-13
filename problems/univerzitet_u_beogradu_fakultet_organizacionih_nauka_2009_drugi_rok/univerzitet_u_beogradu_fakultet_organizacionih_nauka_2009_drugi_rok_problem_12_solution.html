@@ -1,0 +1,531 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Odnos poluprečnika osnove i visine pravog valjka koji pri datoj zapremini
+ima najmanju površinu.
+
+Oznake:
+  r — poluprečnik osnove
+  h — visina
+  V = π·r²·h — zapremina (data, konstantna)
+  S = 2πr² + 2πrh — ukupna površina (dve osnove + omotač)
+
+Iz V = πr²h dobijamo h = V/(πr²).
+Zamenjujemo u S:
+  S(r) = 2πr² + 2πr · V/(πr²) = 2πr² + 2V/r
+
+Izvod:
+  S'(r) = 4πr - 2V/r²
+
+Uslov S'(r) = 0:
+  4πr = 2V/r²
+  4πr³ = 2V
+  r³ = V/(2π)
+  r = ∛(V/(2π))
+
+Tada:
+  h = V/(πr²) = V/(π · (V/(2π))^(2/3))
+
+Izračunajmo:
+  r³ = V/(2π), dakle V = 2πr³
+  h = 2πr³/(πr²) = 2r
+
+Dakle h = 2r, pa odnos r:h = r:2r = 1:2.
+
+Provera da je minimum: S''(r) = 4π + 4V/r³ > 0 za r > 0. Dakle jeste minimum.
+
+Odgovor: (B) = 1:2
+</script>
+
+<h1 data-card="problem-title">Optimizacija valjka — minimalna površina za datu zapreminu</h1>
+<p data-card="problem-subtitle" class="subtitle">Analiza — ekstremi funkcije, optimizacija</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Odnos poluprečnika osnove i visine pravog valjka koji pri datoj zapremini ima najmanju površinu iznosi:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 1 : 4 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 1 : 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 1 : \sqrt[3]{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 1 : 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \pi : 2 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Izrazićemo visinu \(h\) preko poluprečnika \(r\) koristeći uslov konstantne zapremine, a zatim ćemo površinu zapisati kao funkciju jedne promenljive \(r\) i naći njen minimum pomoću izvoda.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Zapremina valjka</span> \(V = \pi r^2 h\)</li>
+        <li><span class="formula-label">Površina valjka</span> \(S = 2\pi r^2 + 2\pi r h\) (dve kružne osnove + omotač)</li>
+        <li><span class="formula-label">Uslov ekstrema</span> Funkcija \(f(x)\) ima lokalni minimum u tački gde je \(f'(x) = 0\) i \(f''(x) > 0\).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="cylinderCanvas" width="700" height="550"></canvas>
+  </div>
+  <div class="canvas-controls">
+    <label>r/h odnos: <strong id="ratioLabel">0,50</strong></label>
+    <input type="range" id="ratioSlider" min="10" max="90" value="50" step="1">
+  </div>
+  <p class="canvas-caption">Prevlačite klizač da menjate odnos \(r : h\) uz konstantnu zapreminu. Minimum površine je pri \(r : h = 1 : 2\).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavljamo formule</h3>
+      <p>Neka je \(r\) poluprečnik osnove a \(h\) visina valjka. Zapremina i površina su:</p>
+      <div class="math-block">\[ V = \pi r^2 h \quad (\text{konstantno}), \qquad S = 2\pi r^2 + 2\pi r h \]</div>
+      <p>Iz uslova zapremine izražavamo \(h\):</p>
+      <div class="math-block">\[ h = \frac{V}{\pi r^2} \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Površina kao funkcija jedne promenljive</h3>
+      <p>Zamenjujemo \(h\) u formuli za površinu:</p>
+      <div class="math-block">\[ S(r) = 2\pi r^2 + 2\pi r \cdot \frac{V}{\pi r^2} = 2\pi r^2 + \frac{2V}{r} \]</div>
+      <p>Sada je \(S\) funkcija samo od \(r > 0\).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto se \(\pi\) skratio u drugom sabirku?</summary>
+          <div class="detail-content"><p>\(2\pi r \cdot \frac{V}{\pi r^2} = \frac{2\pi r V}{\pi r^2} = \frac{2V}{r}\). Faktori \(\pi\) i jedan \(r\) se skrate.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Nalazimo izvod i izjednačavamo sa nulom</h3>
+      <p>Diferenciramo po \(r\):</p>
+      <div class="math-block">\[ S'(r) = 4\pi r - \frac{2V}{r^2} \]</div>
+      <p>Uslov \(S'(r) = 0\):</p>
+      <div class="math-block">\[ 4\pi r = \frac{2V}{r^2} \implies 4\pi r^3 = 2V \implies r^3 = \frac{V}{2\pi} \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Nalazimo odnos \(r : h\)</h3>
+      <p>Iz \(r^3 = \frac{V}{2\pi}\) sledi \(V = 2\pi r^3\). Zamenjujemo u izraz za \(h\):</p>
+      <div class="math-block">\[ h = \frac{V}{\pi r^2} = \frac{2\pi r^3}{\pi r^2} = 2r \]</div>
+      <p>Dakle:</p>
+      <div class="math-block">\[ \frac{r}{h} = \frac{r}{2r} = \frac{1}{2} \qquad \Longrightarrow \qquad r : h = 1 : 2 \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Kako se uveriti da je ovo minimum, a ne maksimum?</summary>
+          <div class="detail-content">
+            <p>Drugi izvod: \(S''(r) = 4\pi + \frac{4V}{r^3}\). Za \(r > 0\) i \(V > 0\), oba sabirka su pozitivna, pa je \(S''(r) > 0\). To znači da je u pitanju lokalni (i globalni) minimum.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Optimalni valjak je onaj kod koga je visina jednaka prečniku (\(h = 2r\)). Geometrijski, to znači da se valjak savršeno uklapa u kocku čija strana je \(2r\) — bočna strana kocke je taman jednaka visini valjka. Ovo važi ne samo za ovaj konkretan zadatak, već je opšte pravilo u optimizaciji pakovanja: limenke pivarica bi u idealnom slučaju imale ovaj odnos (u praksi su malo vitkije zbog drugih inženjerskih zahteva).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ r : h = 1 : 2 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 1 : 4 \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( 1 : 2 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 1 : \sqrt[3]{2} \)</span>
+    <span class="answer-option" data-option="D">(D) \( 1 : 1 \)</span>
+    <span class="answer-option" data-option="E">(E) \( \pi : 2 \)</span>
+  </div>
+  <p class="verification">Provera: Za \(h = 2r\), \(V = \pi r^2 \cdot 2r = 2\pi r^3\), a \(S = 2\pi r^2 + 2\pi r \cdot 2r = 6\pi r^2\). Izvod: \(S'(r) = 4\pi r - 2V/r^2 = 4\pi r - 4\pi r = 0\). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zaboravljanje da površina ima dve osnove:</strong> Ukupna površina valjka je \(S = 2\pi r^2 + 2\pi rh\), ne samo \(\pi r^2 + 2\pi rh\) (jedna osnova) ili \(2\pi rh\) (samo omotač).</li>
+    <li><strong>Pogrešno diferenciranje \(2V/r\):</strong> Izvod od \(2V/r = 2Vr^{-1}\) po \(r\) je \(-2V/r^2\), ne \(-2V/r\). Ne treba zaboraviti pravilo za stepen \(-1\).</li>
+    <li><strong>Mešanje odnosa \(r:h\) i \(h:r\):</strong> Zadatak traži odnos poluprečnika prema visini (\(r:h = 1:2\)), ne obrnuto.</li>
+    <li><strong>Nedovršena provera:</strong> Nalaženje stacionarne tačke nije dovoljno — treba proveriti da je \(S'' > 0\) kako bi se potvrdilo da je to minimum.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta ako valjak nema gornju osnovu (kao, recimo, otvorena konzerva)? Koliki je tada optimalni odnos \(r : h\) za minimalnu površinu pri datoj zapremini?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Površina otvorenog valjka je \(S = \pi r^2 + 2\pi rh\) (samo jedna osnova + omotač). Zamenom \(h = V/(\pi r^2)\) i diferenciranjem dobija se \(S'(r) = 2\pi r - 2V/r^2 = 0\), odakle \(r^3 = V/\pi\), pa \(h = V/(\pi r^2) = r\). Odnos je \(r : h = 1 : 1\) — valjak je „kvadrat" u preseku!</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('cylinderCanvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  var slider = document.getElementById('ratioSlider');
+  var ratioLabel = document.getElementById('ratioLabel');
+
+  // Fixed volume = 1 (normalized)
+  var V = 1;
+
+  function draw(ratioPercent) {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var tertiary  = cv('--sol-canvas-tertiary');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // ratio = r / (r + h) mapped from slider percent
+    var ratio = ratioPercent / 100;
+    // r in normalized units: V = π r² h, r = ratio * scale factor
+    // We parameterize by r: r ranges from small to large
+    // Let's compute r from ratio: ratio = r/h, so h = r/ratio
+    // V = π r² (r/ratio) = π r³ / ratio => r = (V ratio / π)^(1/3)
+    var rVal = Math.pow(V * ratio / Math.PI, 1/3);
+    var hVal = rVal / ratio;
+
+    // Surface area for current r,h
+    var sVal = 2 * Math.PI * rVal * rVal + 2 * Math.PI * rVal * hVal;
+
+    // Optimal values
+    var rOpt = Math.pow(V / (2 * Math.PI), 1/3);
+    var hOpt = 2 * rOpt;
+    var sOpt = 6 * Math.PI * rOpt * rOpt;
+
+    // --- LEFT PANEL: Cylinder visualization ---
+    var cylCenterX = 190;
+    var cylBaseY = 380;
+    var maxVisualR = 120;
+    var maxVisualH = 280;
+
+    // Scale cylinder visually
+    var visualScale = Math.min(maxVisualR / Math.max(rVal, 0.01), maxVisualH / Math.max(hVal, 0.01));
+    var cylR = rVal * visualScale;
+    var cylH = hVal * visualScale;
+    // Clamp
+    cylR = Math.min(cylR, maxVisualR);
+    cylH = Math.min(cylH, maxVisualH);
+    var cylTopY = cylBaseY - cylH;
+    var ellipseH = cylR * 0.3;
+
+    // Draw cylinder body
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.15);
+    ctx.beginPath();
+    ctx.moveTo(cylCenterX - cylR, cylBaseY);
+    ctx.lineTo(cylCenterX - cylR, cylTopY);
+    ctx.ellipse(cylCenterX, cylTopY, cylR, ellipseH, 0, Math.PI, 0);
+    ctx.lineTo(cylCenterX + cylR, cylBaseY);
+    ctx.ellipse(cylCenterX, cylBaseY, cylR, ellipseH, 0, 0, Math.PI);
+    ctx.fill();
+
+    // Cylinder outline
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    // Left side
+    ctx.beginPath();
+    ctx.moveTo(cylCenterX - cylR, cylBaseY);
+    ctx.lineTo(cylCenterX - cylR, cylTopY);
+    ctx.stroke();
+    // Right side
+    ctx.beginPath();
+    ctx.moveTo(cylCenterX + cylR, cylBaseY);
+    ctx.lineTo(cylCenterX + cylR, cylTopY);
+    ctx.stroke();
+    // Top ellipse (full)
+    ctx.beginPath();
+    ctx.ellipse(cylCenterX, cylTopY, cylR, ellipseH, 0, 0, 2 * Math.PI);
+    ctx.stroke();
+    // Bottom ellipse (full, dashed back half)
+    ctx.beginPath();
+    ctx.ellipse(cylCenterX, cylBaseY, cylR, ellipseH, 0, 0, Math.PI);
+    ctx.stroke();
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.ellipse(cylCenterX, cylBaseY, cylR, ellipseH, 0, Math.PI, 2 * Math.PI);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Dimension arrows: r
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(cylCenterX, cylTopY);
+    ctx.lineTo(cylCenterX + cylR, cylTopY);
+    ctx.stroke();
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('r', cylCenterX + cylR / 2, cylTopY - ellipseH - 6);
+
+    // Dimension arrows: h
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 1.5;
+    var dimX = cylCenterX + cylR + 20;
+    ctx.beginPath();
+    ctx.moveTo(dimX, cylTopY);
+    ctx.lineTo(dimX, cylBaseY);
+    ctx.stroke();
+    // arrowheads
+    ctx.beginPath();
+    ctx.moveTo(dimX - 5, cylTopY + 8);
+    ctx.lineTo(dimX, cylTopY);
+    ctx.lineTo(dimX + 5, cylTopY + 8);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(dimX - 5, cylBaseY - 8);
+    ctx.lineTo(dimX, cylBaseY);
+    ctx.lineTo(dimX + 5, cylBaseY - 8);
+    ctx.stroke();
+
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('h', dimX + 8, (cylTopY + cylBaseY) / 2 + 5);
+
+    // Current ratio text
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('r : h = 1 : ' + (1/ratio).toFixed(2), cylCenterX, 415);
+
+    var isOptimal = Math.abs(ratio - 0.5) < 0.015;
+    if (isOptimal) {
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.fillText('OPTIMALNO! (r : h = 1 : 2)', cylCenterX, 440);
+    }
+
+    // --- RIGHT PANEL: S(r) graph ---
+    var graphLeft = 400;
+    var graphRight = W - 30;
+    var graphTop = 50;
+    var graphBottom = 420;
+    var gW = graphRight - graphLeft;
+    var gH = graphBottom - graphTop;
+
+    // Plot S as function of ratio (= r/h)
+    // For fixed V, varying ratio gives different S values
+    var minRatio = 0.08;
+    var maxRatio = 0.95;
+
+    // Compute S values for various ratios to find range
+    var sValues = [];
+    for (var p = minRatio; p <= maxRatio; p += 0.005) {
+      var rr = Math.pow(V * p / Math.PI, 1/3);
+      var hh = rr / p;
+      var ss = 2 * Math.PI * rr * rr + 2 * Math.PI * rr * hh;
+      sValues.push({ ratio: p, s: ss });
+    }
+    var sMin = Infinity, sMax = 0;
+    for (var si = 0; si < sValues.length; si++) {
+      if (sValues[si].s < sMin) sMin = sValues[si].s;
+      if (sValues[si].s > sMax) sMax = sValues[si].s;
+    }
+    sMax = sMax * 1.05;
+    sMin = sMin * 0.9;
+
+    function gToX(r) { return graphLeft + (r - minRatio) / (maxRatio - minRatio) * gW; }
+    function gToY(s) { return graphBottom - (s - sMin) / (sMax - sMin) * gH; }
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Povr\u0161ina S u zavisnosti od odnosa r/h', (graphLeft + graphRight) / 2, 30);
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 0.5;
+    for (var gxi = 0.1; gxi <= 0.9; gxi += 0.1) {
+      ctx.beginPath();
+      ctx.moveTo(gToX(gxi), graphTop);
+      ctx.lineTo(gToX(gxi), graphBottom);
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(graphLeft, graphBottom);
+    ctx.lineTo(graphRight, graphBottom);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(graphLeft, graphTop);
+    ctx.lineTo(graphLeft, graphBottom);
+    ctx.stroke();
+
+    // X-axis labels
+    ctx.fillStyle = muted;
+    ctx.font = '10px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var lxi = 0.1; lxi <= 0.9; lxi += 0.1) {
+      ctx.fillText(lxi.toFixed(1), gToX(lxi), graphBottom + 14);
+    }
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('r/h', (graphLeft + graphRight) / 2, graphBottom + 34);
+
+    // Y-axis label
+    ctx.save();
+    ctx.translate(graphLeft - 14, (graphTop + graphBottom) / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('S (povr\u0161ina)', 0, 0);
+    ctx.restore();
+
+    // Plot S(ratio)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    var first = true;
+    for (var pi = 0; pi < sValues.length; pi++) {
+      var px = gToX(sValues[pi].ratio);
+      var py = gToY(sValues[pi].s);
+      if (first) { ctx.moveTo(px, py); first = false; }
+      else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+
+    // Mark optimal point (ratio = 0.5)
+    var optRR = Math.pow(V * 0.5 / Math.PI, 1/3);
+    var optHH = optRR / 0.5;
+    var optSS = 2 * Math.PI * optRR * optRR + 2 * Math.PI * optRR * optHH;
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(gToX(0.5), gToY(optSS), 7, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('min S (r:h = 1:2)', gToX(0.5) + 10, gToY(optSS) - 10);
+
+    // Mark current point
+    ctx.fillStyle = danger;
+    ctx.beginPath();
+    ctx.arc(gToX(ratio), gToY(sVal), 6, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Dashed line from current point to axis
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(gToX(ratio), gToY(sVal));
+    ctx.lineTo(gToX(ratio), graphBottom);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = danger;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('trenutno', gToX(ratio), gToY(sVal) + 18);
+
+    // Surface comparison
+    var sRatio = sVal / optSS;
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('S/S_min = ' + sRatio.toFixed(3), (graphLeft + graphRight) / 2, graphBottom + 50);
+  }
+
+  var currentRatio = parseInt(slider.value);
+  ratioLabel.textContent = (currentRatio / 100).toFixed(2).replace('.', ',');
+  draw(currentRatio);
+
+  slider.addEventListener('input', function() {
+    currentRatio = parseInt(slider.value);
+    ratioLabel.textContent = (currentRatio / 100).toFixed(2).replace('.', ',');
+    draw(currentRatio);
+  });
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw(currentRatio);
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Optimizacija valjka — minimalna površina za datu zapreminu",
+  "subject": "math",
+  "unit": "calculus",
+  "topic_tags": ["optimizacija", "ekstrem funkcije", "valjak", "izvod", "zapremina", "površina"]
+}
+BRAINSPARK_META-->

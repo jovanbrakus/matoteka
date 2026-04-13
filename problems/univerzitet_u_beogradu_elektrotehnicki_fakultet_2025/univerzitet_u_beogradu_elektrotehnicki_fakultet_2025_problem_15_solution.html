@@ -158,6 +158,11 @@
     <canvas id="diagram15" width="700" height="460"></canvas>
   </div>
   <p class="canvas-caption">Grafici leve i desne strane jednačine na \( [0, 2\pi] \) sa označenim rešenjima</p>
+  <div class="canvas-controls">
+    <label>\( x = \) <input type="range" id="xSlider15" min="0" max="628" value="0" step="1"></label>
+    <span id="xValue15">0</span>
+  </div>
+  <p class="note">Pomeri klizač da vidiš vrednosti leve i desne strane jednačine.</p>
 </div>
 
 <div data-card="step-solution" data-title="Rešenje korak po korak">
@@ -313,7 +318,32 @@
   var W = canvas.width;
   var H = canvas.height;
 
-  function draw() {
+  var slider = document.getElementById('xSlider15');
+  var xValueSpan = document.getElementById('xValue15');
+
+  // Known solution points
+  var solutions = [0, Math.PI / 4, 5 * Math.PI / 4, 2 * Math.PI];
+  var solLabels = ['0', '\u03C0/4', '5\u03C0/4', '2\u03C0'];
+  var solY = [0, 1, 1, 0];
+
+  // Format x as a fraction of pi when possible
+  function formatX(x) {
+    var PI = Math.PI;
+    var fracs = [
+      {v: 0, l: '0'}, {v: PI/6, l: '\u03C0/6'}, {v: PI/4, l: '\u03C0/4'},
+      {v: PI/3, l: '\u03C0/3'}, {v: PI/2, l: '\u03C0/2'}, {v: 2*PI/3, l: '2\u03C0/3'},
+      {v: 3*PI/4, l: '3\u03C0/4'}, {v: 5*PI/6, l: '5\u03C0/6'}, {v: PI, l: '\u03C0'},
+      {v: 7*PI/6, l: '7\u03C0/6'}, {v: 5*PI/4, l: '5\u03C0/4'}, {v: 4*PI/3, l: '4\u03C0/3'},
+      {v: 3*PI/2, l: '3\u03C0/2'}, {v: 5*PI/3, l: '5\u03C0/3'}, {v: 7*PI/4, l: '7\u03C0/4'},
+      {v: 11*PI/6, l: '11\u03C0/6'}, {v: 2*PI, l: '2\u03C0'}
+    ];
+    for (var i = 0; i < fracs.length; i++) {
+      if (Math.abs(x - fracs[i].v) < 0.02) return fracs[i].l;
+    }
+    return x.toFixed(2);
+  }
+
+  function draw(xPos) {
     var bg = cv('--sol-canvas-bg');
     var grid = cv('--sol-canvas-grid');
     var axis = cv('--sol-canvas-axis');
@@ -374,7 +404,7 @@
     ctx.fillStyle = muted;
     ctx.font = '10px Segoe UI, system-ui, sans-serif';
     ctx.textAlign = 'center';
-    var piLabels = [
+    var piLabelsArr = [
       {v: 0, l: '0'},
       {v: Math.PI / 4, l: '\u03C0/4'},
       {v: Math.PI / 2, l: '\u03C0/2'},
@@ -383,8 +413,8 @@
       {v: 3 * Math.PI / 2, l: '3\u03C0/2'},
       {v: 2 * Math.PI, l: '2\u03C0'}
     ];
-    for (var i = 0; i < piLabels.length; i++) {
-      ctx.fillText(piLabels[i].l, toX(piLabels[i].v), toY(0) + 16);
+    for (var i = 0; i < piLabelsArr.length; i++) {
+      ctx.fillText(piLabelsArr[i].l, toX(piLabelsArr[i].v), toY(0) + 16);
     }
     ctx.textAlign = 'right';
     for (var gy = -1; gy <= 5; gy++) {
@@ -392,11 +422,29 @@
       ctx.fillText(gy.toString(), padL - 8, toY(gy) + 4);
     }
 
+    // Mark excluded points (vertical asymptotes) - draw before curves
+    var excluded = [Math.PI / 2, 3 * Math.PI / 2];
+    var exclLabels = ['\u03C0/2 (zabr.)', '3\u03C0/2 (zabr.)'];
+    for (var i = 0; i < excluded.length; i++) {
+      ctx.strokeStyle = danger;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([3, 3]);
+      ctx.beginPath();
+      ctx.moveTo(toX(excluded[i]), padT);
+      ctx.lineTo(toX(excluded[i]), padT + gH);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = danger;
+      ctx.font = '9px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(exclLabels[i], toX(excluded[i]), padT + gH + 28);
+    }
+
     // Plot LHS: tan²x (clipped)
     ctx.strokeStyle = primary;
     ctx.lineWidth = 2;
     var steps = 1200;
-    var prevY = null;
     ctx.beginPath();
     var started = false;
     for (var i = 0; i <= steps; i++) {
@@ -428,11 +476,7 @@
     ctx.stroke();
     ctx.setLineDash([]);
 
-    // Mark solutions
-    var solutions = [0, Math.PI / 4, 5 * Math.PI / 4, 2 * Math.PI];
-    var solLabels = ['0', '\u03C0/4', '5\u03C0/4', '2\u03C0'];
-    var solY = [0, 1, 1, 0];
-
+    // Mark solution points
     for (var i = 0; i < solutions.length; i++) {
       ctx.fillStyle = accent;
       ctx.beginPath();
@@ -449,23 +493,91 @@
       ctx.fillText(solLabels[i], toX(solutions[i]), toY(solY[i]) + labelOff);
     }
 
-    // Mark excluded points
-    var excluded = [Math.PI / 2, 3 * Math.PI / 2];
-    var exclLabels = ['\u03C0/2 (zabr.)', '3\u03C0/2 (zabr.)'];
-    for (var i = 0; i < excluded.length; i++) {
-      ctx.strokeStyle = danger;
+    // Interactive vertical line at xPos
+    if (xPos >= 0 && xPos <= 2 * Math.PI) {
+      var px = toX(xPos);
+
+      // Draw vertical dashed line
+      ctx.strokeStyle = cvAlpha('--sol-canvas-text', 0.5);
       ctx.lineWidth = 1.5;
-      ctx.setLineDash([3, 3]);
+      ctx.setLineDash([5, 5]);
       ctx.beginPath();
-      ctx.moveTo(toX(excluded[i]), padT);
-      ctx.lineTo(toX(excluded[i]), padT + gH);
+      ctx.moveTo(px, padT);
+      ctx.lineTo(px, padT + gH);
       ctx.stroke();
       ctx.setLineDash([]);
 
+      // Compute LHS and RHS
+      var cosVal = Math.cos(xPos);
+      var sinVal = Math.sin(xPos);
+      var lhsDefined = Math.abs(cosVal) > 0.01;
+      var rhsDenom = 1 - sinVal;
+      var rhsDefined = Math.abs(rhsDenom) > 0.01;
+
+      var lhs = lhsDefined ? Math.tan(xPos) * Math.tan(xPos) : null;
+      var rhs = rhsDefined ? (1 - cosVal) / rhsDenom : null;
+
+      // Draw dots on curves at xPos
+      if (lhsDefined && lhs !== null && lhs >= yMin && lhs <= yMax) {
+        ctx.fillStyle = primary;
+        ctx.beginPath();
+        ctx.arc(px, toY(lhs), 4, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+      if (rhsDefined && rhs !== null && rhs >= yMin && rhs <= yMax) {
+        ctx.fillStyle = danger;
+        ctx.beginPath();
+        ctx.arc(px, toY(rhs), 4, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+
+      // Determine if LHS == RHS (within tolerance)
+      var isMatch = false;
+      if (lhsDefined && rhsDefined && lhs !== null && rhs !== null) {
+        isMatch = Math.abs(lhs - rhs) < 0.05;
+      }
+
+      // Value readout box
+      var boxX = px + 12;
+      var boxY = padT + 10;
+      // Flip box to left if too close to right edge
+      if (boxX + 160 > W - padR) { boxX = px - 172; }
+
+      ctx.fillStyle = cvAlpha('--sol-canvas-bg', 0.92);
+      ctx.strokeStyle = isMatch ? accent : cvAlpha('--sol-canvas-muted', 0.5);
+      ctx.lineWidth = isMatch ? 2 : 1;
+      ctx.beginPath();
+      ctx.rect(boxX, boxY, 160, 60);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.font = '11px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+
+      // LHS value
+      ctx.fillStyle = primary;
+      var lhsStr = lhsDefined ? 'tg\u00B2x = ' + lhs.toFixed(3) : 'tg\u00B2x = nedefinisano';
+      ctx.fillText(lhsStr, boxX + 8, boxY + 18);
+
+      // RHS value
       ctx.fillStyle = danger;
-      ctx.font = '9px Segoe UI, system-ui, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(exclLabels[i], toX(excluded[i]), padT + gH + 28);
+      var rhsStr = rhsDefined ? '(1\u2212cos x)/(1\u2212sin x) = ' + rhs.toFixed(3) : 'Desna strana = nedef.';
+      ctx.fillText(rhsStr, boxX + 8, boxY + 36);
+
+      // Match indicator
+      if (isMatch) {
+        ctx.fillStyle = accent;
+        ctx.font = 'bold 11px Segoe UI, system-ui, sans-serif';
+        ctx.fillText('LHS = RHS  \u2714', boxX + 8, boxY + 52);
+      } else {
+        ctx.fillStyle = muted;
+        ctx.font = '11px Segoe UI, system-ui, sans-serif';
+        if (!lhsDefined || !rhsDefined) {
+          ctx.fillText('Nije u domenu', boxX + 8, boxY + 52);
+        } else {
+          ctx.fillText('LHS \u2260 RHS', boxX + 8, boxY + 52);
+        }
+      }
     }
 
     // Legend
@@ -513,13 +625,24 @@
     ctx.fillText('Zabranjene vrednosti', padL + 465, legY + 4);
   }
 
-  draw();
+  // Initial draw
+  var currentXPos = 0;
+  draw(currentXPos);
+
+  // Slider interaction
+  if (slider) {
+    slider.addEventListener('input', function() {
+      currentXPos = parseInt(slider.value, 10) / 100;
+      if (xValueSpan) xValueSpan.textContent = formatX(currentXPos);
+      draw(currentXPos);
+    });
+  }
 
   window.addEventListener('message', function(e) {
     if (e.data && e.data.type === 'matoteka-theme') {
       setTimeout(function() {
         styles = getComputedStyle(root);
-        draw();
+        draw(currentXPos);
       }, 50);
     }
   });

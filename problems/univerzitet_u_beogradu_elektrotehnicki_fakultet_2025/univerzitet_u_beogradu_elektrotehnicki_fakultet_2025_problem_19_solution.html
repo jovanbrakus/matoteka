@@ -99,6 +99,11 @@ Answer: (C) 27 pi r^3 / 4
     <canvas id="cone19" width="700" height="500"></canvas>
   </div>
   <p class="canvas-caption">Aksijalni presek kupe sa upisanim valjkom i grafik zapremine kupe u funkciji visine</p>
+  <div class="canvas-controls">
+    <label>\( H = \) <input type="range" id="hSlider19" min="35" max="200" value="90" step="1"></label>
+    <span id="hValue19">9,0r</span>
+  </div>
+  <p class="note">Pomeri klizač da vidiš kako se menjaju dimenzije i zapremina kupe.</p>
 </div>
 
 <div data-card="step-solution" data-title="Rešenje korak po korak">
@@ -235,9 +240,15 @@ Answer: (C) 27 pi r^3 / 4
   if (!canvas) return;
   var ctx = canvas.getContext('2d');
   var W = canvas.width;
-  var H = canvas.height;
+  var CH = canvas.height;
 
-  function draw() {
+  var slider = document.getElementById('hSlider19');
+  var hLabel = document.getElementById('hValue19');
+  var currentHVal = 9.0; // H/r ratio, default = optimal
+
+  function formatNum(x) { return x.toFixed(1).replace('.', ','); }
+
+  function draw(hVal) {
     var bg        = cv('--sol-canvas-bg');
     var grid      = cv('--sol-canvas-grid');
     var axis      = cv('--sol-canvas-axis');
@@ -249,25 +260,38 @@ Answer: (C) 27 pi r^3 / 4
     var muted     = cv('--sol-canvas-muted');
     var danger    = cv('--sol-canvas-danger');
 
-    ctx.clearRect(0, 0, W, H);
+    // Derived values (all in units of r)
+    var coneHv = hVal;                      // H/r
+    var coneRv = hVal / (hVal - 3);         // R/r
+    var volVal = hVal * hVal * hVal / (3 * (hVal - 3) * (hVal - 3)); // V/(pi*r^3)
+
+    ctx.clearRect(0, 0, W, CH);
     ctx.fillStyle = bg;
-    ctx.fillRect(0, 0, W, H);
+    ctx.fillRect(0, 0, W, CH);
 
     // === LEFT SIDE: Cross-section diagram ===
-    var midX = 170, baseY = 430, scale = 40;
-    // Optimal cone: R = 1.5r, H = 9r. Use r = 1 unit, scale = 40px per unit
-    var coneR = 1.5 * scale;
-    var coneH = 9 * scale;
+    var midX = 170, baseY = 430;
+    // Scale so the cone always fits: max height available ~385px, max half-width ~140px
+    var maxDrawH = 385;
+    var maxDrawHalfW = 140;
+    var scaleByH = maxDrawH / coneHv;
+    var scaleByW = maxDrawHalfW / coneRv;
+    var scale = Math.min(scaleByH, scaleByW);
+
+    var coneR = coneRv * scale;
+    var coneH = coneHv * scale;
     var cylR = 1 * scale;
     var cylH = 3 * scale;
 
     var apexY = baseY - coneH;
+    var cylTop = baseY - cylH;
+    var isOptimal = Math.abs(hVal - 9.0) < 0.05;
 
     // Title
     ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
     ctx.fillStyle = textC;
     ctx.textAlign = 'center';
-    ctx.fillText('Aksijalni presek (optimalno)', midX, 22);
+    ctx.fillText(isOptimal ? 'Aksijalni presek (optimalno)' : 'Aksijalni presek', midX, 22);
 
     // Cone (triangle)
     ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.08);
@@ -285,7 +309,6 @@ Answer: (C) 27 pi r^3 / 4
     ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.15);
     ctx.strokeStyle = secondary;
     ctx.lineWidth = 2;
-    var cylTop = baseY - cylH;
     ctx.fillRect(midX - cylR, cylTop, cylR * 2, cylH);
     ctx.strokeRect(midX - cylR, cylTop, cylR * 2, cylH);
 
@@ -293,77 +316,79 @@ Answer: (C) 27 pi r^3 / 4
     ctx.font = '12px Segoe UI, system-ui, sans-serif';
     ctx.fillStyle = textC;
 
-    // Height H = 9r
+    // Height H dimension line (right side)
+    var dimLineX = Math.max(midX + coneR, midX + cylR) + 15;
     ctx.setLineDash([3, 3]);
     ctx.strokeStyle = muted;
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(midX + coneR + 15, apexY);
-    ctx.lineTo(midX + coneR + 40, apexY);
+    ctx.moveTo(dimLineX, apexY);
+    ctx.lineTo(dimLineX + 25, apexY);
     ctx.stroke();
     ctx.beginPath();
-    ctx.moveTo(midX + coneR + 15, baseY);
-    ctx.lineTo(midX + coneR + 40, baseY);
+    ctx.moveTo(dimLineX, baseY);
+    ctx.lineTo(dimLineX + 25, baseY);
     ctx.stroke();
     ctx.setLineDash([]);
 
     ctx.strokeStyle = textC;
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(midX + coneR + 30, apexY + 5);
-    ctx.lineTo(midX + coneR + 30, baseY - 5);
+    ctx.moveTo(dimLineX + 15, apexY + 5);
+    ctx.lineTo(dimLineX + 15, baseY - 5);
     ctx.stroke();
     // Arrowheads
     ctx.beginPath();
-    ctx.moveTo(midX + coneR + 26, apexY + 10);
-    ctx.lineTo(midX + coneR + 30, apexY + 2);
-    ctx.lineTo(midX + coneR + 34, apexY + 10);
+    ctx.moveTo(dimLineX + 11, apexY + 10);
+    ctx.lineTo(dimLineX + 15, apexY + 2);
+    ctx.lineTo(dimLineX + 19, apexY + 10);
     ctx.stroke();
     ctx.beginPath();
-    ctx.moveTo(midX + coneR + 26, baseY - 10);
-    ctx.lineTo(midX + coneR + 30, baseY - 2);
-    ctx.lineTo(midX + coneR + 34, baseY - 10);
+    ctx.moveTo(dimLineX + 11, baseY - 10);
+    ctx.lineTo(dimLineX + 15, baseY - 2);
+    ctx.lineTo(dimLineX + 19, baseY - 10);
     ctx.stroke();
 
     ctx.textAlign = 'left';
     ctx.fillStyle = primary;
     ctx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
-    ctx.fillText('H = 9r', midX + coneR + 36, (apexY + baseY) / 2 + 4);
+    ctx.fillText('H = ' + formatNum(coneHv) + 'r', dimLineX + 22, (apexY + baseY) / 2 + 4);
 
-    // Height 3r for cylinder
+    // Height 3r for cylinder (left side)
+    var cylDimX = midX - cylR - 15;
     ctx.setLineDash([3, 3]);
     ctx.strokeStyle = muted;
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(midX - cylR - 15, cylTop);
-    ctx.lineTo(midX - cylR - 40, cylTop);
+    ctx.moveTo(cylDimX, cylTop);
+    ctx.lineTo(cylDimX - 25, cylTop);
     ctx.stroke();
     ctx.beginPath();
-    ctx.moveTo(midX - cylR - 15, baseY);
-    ctx.lineTo(midX - cylR - 40, baseY);
+    ctx.moveTo(cylDimX, baseY);
+    ctx.lineTo(cylDimX - 25, baseY);
     ctx.stroke();
     ctx.setLineDash([]);
 
     ctx.strokeStyle = textC;
     ctx.beginPath();
-    ctx.moveTo(midX - cylR - 30, cylTop + 5);
-    ctx.lineTo(midX - cylR - 30, baseY - 5);
+    ctx.moveTo(cylDimX - 15, cylTop + 5);
+    ctx.lineTo(cylDimX - 15, baseY - 5);
     ctx.stroke();
     ctx.beginPath();
-    ctx.moveTo(midX - cylR - 26, cylTop + 10);
-    ctx.lineTo(midX - cylR - 30, cylTop + 2);
-    ctx.lineTo(midX - cylR - 34, cylTop + 10);
+    ctx.moveTo(cylDimX - 19, cylTop + 10);
+    ctx.lineTo(cylDimX - 15, cylTop + 2);
+    ctx.lineTo(cylDimX - 11, cylTop + 10);
     ctx.stroke();
     ctx.beginPath();
-    ctx.moveTo(midX - cylR - 26, baseY - 10);
-    ctx.lineTo(midX - cylR - 30, baseY - 2);
-    ctx.lineTo(midX - cylR - 34, baseY - 10);
+    ctx.moveTo(cylDimX - 19, baseY - 10);
+    ctx.lineTo(cylDimX - 15, baseY - 2);
+    ctx.lineTo(cylDimX - 11, baseY - 10);
     ctx.stroke();
 
     ctx.textAlign = 'right';
     ctx.fillStyle = secondary;
     ctx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
-    ctx.fillText('3r', midX - cylR - 36, (cylTop + baseY) / 2 + 4);
+    ctx.fillText('3r', cylDimX - 22, (cylTop + baseY) / 2 + 4);
 
     // Radius labels on base
     ctx.setLineDash([]);
@@ -376,7 +401,7 @@ Answer: (C) 27 pi r^3 / 4
     ctx.fillStyle = primary;
     ctx.textAlign = 'center';
     ctx.font = 'bold 11px Segoe UI, system-ui, sans-serif';
-    ctx.fillText('R = 3r/2', midX + coneR / 2, baseY + 28);
+    ctx.fillText('R = ' + formatNum(coneRv) + 'r', midX + coneR / 2, baseY + 28);
 
     ctx.strokeStyle = secondary;
     ctx.beginPath();
@@ -398,7 +423,7 @@ Answer: (C) 27 pi r^3 / 4
     ctx.textAlign = 'left';
     ctx.fillText('Dodir', touchX + 8, touchY - 2);
 
-    // Similar triangles marking
+    // Dashed line at cylinder top
     ctx.setLineDash([4, 3]);
     ctx.strokeStyle = muted;
     ctx.lineWidth = 1;
@@ -407,6 +432,12 @@ Answer: (C) 27 pi r^3 / 4
     ctx.lineTo(midX + cylR, cylTop);
     ctx.stroke();
     ctx.setLineDash([]);
+
+    // Current values display
+    ctx.font = '11px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = textC;
+    ctx.textAlign = 'left';
+    ctx.fillText('V = ' + formatNum(volVal) + '\u03C0r\u00B3', 20, baseY + 65);
 
     // === RIGHT SIDE: Volume graph ===
     var graphL = 370, graphR = 670, graphT = 60, graphB = 430;
@@ -431,8 +462,6 @@ Answer: (C) 27 pi r^3 / 4
     ctx.lineTo(graphL, graphT);
     ctx.stroke();
 
-    // Plot V(H)/(pi*r^3) = H^3 / (3*(H-3)^2) for r=1
-    // H ranges from 3.1 to 20
     var hMin = 3.0, hMax = 25;
     var vMin = 0, vMax = 20;
     function gx(hv) { return graphL + ((hv - hMin) / (hMax - hMin)) * graphW; }
@@ -500,59 +529,106 @@ Answer: (C) 27 pi r^3 / 4
     }
     ctx.stroke();
 
-    // Mark minimum at H = 9r
-    var minHv = 9;
-    var minVv = vol(9); // 729/108 = 6.75
+    // Mark optimal minimum at H = 9r (always visible, larger dot)
+    var optHv = 9;
+    var optVv = vol(9); // 6.75
     ctx.beginPath();
-    ctx.arc(gx(minHv), gy(minVv), 6, 0, 2 * Math.PI);
+    ctx.arc(gx(optHv), gy(optVv), 7, 0, 2 * Math.PI);
     ctx.fillStyle = accent;
     ctx.fill();
     ctx.strokeStyle = bg;
     ctx.lineWidth = 2;
     ctx.stroke();
 
-    // Dashed lines to axes
+    // Dashed lines from optimal to axes
     ctx.setLineDash([4, 3]);
     ctx.strokeStyle = accent;
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(gx(minHv), gy(minVv));
-    ctx.lineTo(gx(minHv), graphB);
+    ctx.moveTo(gx(optHv), gy(optVv));
+    ctx.lineTo(gx(optHv), graphB);
     ctx.stroke();
     ctx.beginPath();
-    ctx.moveTo(gx(minHv), gy(minVv));
-    ctx.lineTo(graphL, gy(minVv));
+    ctx.moveTo(gx(optHv), gy(optVv));
+    ctx.lineTo(graphL, gy(optVv));
     ctx.stroke();
     ctx.setLineDash([]);
 
-    // Labels for minimum
+    // Labels for optimal minimum
     ctx.fillStyle = accent;
     ctx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('H = 9r', gx(minHv), graphB + 27);
+    ctx.fillText('H = 9r', gx(optHv), graphB + 27);
     ctx.textAlign = 'right';
-    ctx.fillText('27/4', graphL - 5, gy(minVv) + 4);
+    ctx.fillText('27/4', graphL - 5, gy(optVv) + 4);
 
     // Min label
     ctx.fillStyle = accent;
     ctx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('V\u2098\u1D62\u2099 = 27\u03C0r\u00B3/4', gx(minHv) + 10, gy(minVv) - 8);
+    ctx.fillText('V\u2098\u1D62\u2099 = 27\u03C0r\u00B3/4', gx(optHv) + 10, gy(optVv) - 8);
 
-    // Axis labels
+    // Moving dot at current H (if not at the optimal)
+    if (!isOptimal) {
+      var curVv = volVal;
+      if (curVv <= vMax) {
+        // Dashed lines from current point to axes
+        ctx.setLineDash([3, 3]);
+        ctx.strokeStyle = highlight;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(gx(hVal), gy(curVv));
+        ctx.lineTo(gx(hVal), graphB);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(gx(hVal), gy(curVv));
+        ctx.lineTo(graphL, gy(curVv));
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Current value labels on axes
+        ctx.fillStyle = highlight;
+        ctx.font = '10px Segoe UI, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(formatNum(hVal) + 'r', gx(hVal), graphB + 27);
+        ctx.textAlign = 'right';
+        ctx.fillText(formatNum(curVv), graphL - 5, gy(curVv) - 4);
+
+        // Moving dot
+        ctx.beginPath();
+        ctx.arc(gx(hVal), gy(curVv), 5, 0, 2 * Math.PI);
+        ctx.fillStyle = highlight;
+        ctx.fill();
+        ctx.strokeStyle = bg;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+    }
+
+    // Axis label
     ctx.fillStyle = textC;
     ctx.font = '12px Segoe UI, system-ui, sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText('H', graphR + 12, graphB + 4);
   }
 
-  draw();
+  // Initial draw
+  draw(currentHVal);
+
+  // Slider interaction
+  if (slider) {
+    slider.addEventListener('input', function() {
+      currentHVal = parseInt(this.value, 10) / 10;
+      if (hLabel) hLabel.textContent = formatNum(currentHVal) + 'r';
+      draw(currentHVal);
+    });
+  }
 
   window.addEventListener('message', function(e) {
     if (e.data && e.data.type === 'matoteka-theme') {
       setTimeout(function() {
         styles = getComputedStyle(root);
-        draw();
+        draw(currentHVal);
       }, 50);
     }
   });

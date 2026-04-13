@@ -99,6 +99,11 @@ Verification:
     <canvas id="trig18" width="700" height="480"></canvas>
   </div>
   <p class="canvas-caption">Grafik baze \( 2\sin x \) i eksponenta \( \sin x(1 - 2\cos x) \) sa označenim oblastima gde nejednačina važi</p>
+  <div class="canvas-controls">
+    <label>\( x = \) <input type="range" id="xSlider18" min="1" max="313" value="52" step="1"></label>
+    <span id="xValue18">&pi;/6</span>
+  </div>
+  <p class="note">Pomeri klizač da vidiš vrednost izraza za svako x.</p>
 </div>
 
 <div data-card="step-solution" data-title="Rešenje korak po korak">
@@ -240,7 +245,35 @@ Verification:
   var W = canvas.width;
   var H = canvas.height;
 
-  function draw() {
+  var slider = document.getElementById('xSlider18');
+  var xLabel = document.getElementById('xValue18');
+
+  function formatX(x) {
+    var tol = 0.02;
+    var specials = [
+      {v: Math.PI/6,   l: '\u03C0/6'},
+      {v: Math.PI/4,   l: '\u03C0/4'},
+      {v: Math.PI/3,   l: '\u03C0/3'},
+      {v: Math.PI/2,   l: '\u03C0/2'},
+      {v: 2*Math.PI/3, l: '2\u03C0/3'},
+      {v: 3*Math.PI/4, l: '3\u03C0/4'},
+      {v: 5*Math.PI/6, l: '5\u03C0/6'}
+    ];
+    for (var i = 0; i < specials.length; i++) {
+      if (Math.abs(x - specials[i].v) < tol) return specials[i].l;
+    }
+    return (x / Math.PI).toFixed(2) + '\u03C0';
+  }
+
+  function isSolution(x) {
+    var base = 2 * Math.sin(x);
+    var exp = Math.sin(x) * (1 - 2 * Math.cos(x));
+    if (base <= 0) return false;
+    var result = Math.pow(base, exp);
+    return result >= 1 - 1e-9;
+  }
+
+  function draw(xPos) {
     var bg        = cv('--sol-canvas-bg');
     var grid      = cv('--sol-canvas-grid');
     var axis      = cv('--sol-canvas-axis');
@@ -320,6 +353,31 @@ Verification:
     ctx.font = '10px Segoe UI, system-ui, sans-serif';
     ctx.fillText('y = 1', rightM + 2, toY(1, minV, maxV) + 4);
 
+    // Shade solution regions on graph
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.12);
+    // Region 1: (0, pi/6]
+    ctx.beginPath();
+    ctx.moveTo(toX(0), zeroY);
+    for (var r1 = 0; r1 <= 30; r1++) {
+      var r1x = (r1 / 30) * (Math.PI / 6);
+      ctx.lineTo(toX(r1x), toY(2 * Math.sin(r1x), minV, maxV));
+    }
+    ctx.lineTo(toX(Math.PI/6), zeroY);
+    ctx.closePath();
+    ctx.fill();
+
+    // Region 2: [pi/3, 5pi/6]
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.12);
+    ctx.beginPath();
+    ctx.moveTo(toX(Math.PI/3), zeroY);
+    for (var r2 = 0; r2 <= 60; r2++) {
+      var r2x = Math.PI/3 + (r2 / 60) * (5*Math.PI/6 - Math.PI/3);
+      ctx.lineTo(toX(r2x), toY(2 * Math.sin(r2x), minV, maxV));
+    }
+    ctx.lineTo(toX(5*Math.PI/6), zeroY);
+    ctx.closePath();
+    ctx.fill();
+
     // Plot 2sin(x) - base
     ctx.strokeStyle = primary;
     ctx.lineWidth = 2.5;
@@ -386,7 +444,7 @@ Verification:
       ctx.fillText(xTicks[ti].l, tx, zeroY + 16);
     }
 
-    // Vertical dashed lines at key points
+    // Vertical dashed lines at boundary points
     ctx.setLineDash([3, 3]);
     ctx.strokeStyle = muted;
     ctx.lineWidth = 1;
@@ -398,6 +456,95 @@ Verification:
       ctx.stroke();
     }
     ctx.setLineDash([]);
+
+    // Mark boundary points on curves
+    for (var bi = 0; bi < keyX.length; bi++) {
+      var bx = keyX[bi];
+      var baseVal = 2 * Math.sin(bx);
+      var expVal = Math.sin(bx) * (1 - 2 * Math.cos(bx));
+      // dot on base curve
+      ctx.beginPath();
+      ctx.arc(toX(bx), toY(baseVal, minV, maxV), 4, 0, 2 * Math.PI);
+      ctx.fillStyle = primary;
+      ctx.fill();
+      // dot on exponent curve
+      ctx.beginPath();
+      ctx.arc(toX(bx), toY(expVal, minV, maxV), 4, 0, 2 * Math.PI);
+      ctx.fillStyle = secondary;
+      ctx.fill();
+    }
+
+    // --- Interactive vertical line at xPos ---
+    var curBase = 2 * Math.sin(xPos);
+    var curExp = Math.sin(xPos) * (1 - 2 * Math.cos(xPos));
+    var curResult = (curBase > 0) ? Math.pow(curBase, curExp) : 0;
+    var holds = isSolution(xPos);
+    var statusColor = holds ? accent : danger;
+
+    // Vertical tracking line
+    ctx.setLineDash([6, 4]);
+    ctx.strokeStyle = statusColor;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(toX(xPos), topGraph);
+    ctx.lineTo(toX(xPos), bottomY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Dots at intersection with curves
+    ctx.beginPath();
+    ctx.arc(toX(xPos), toY(curBase, minV, maxV), 5, 0, 2 * Math.PI);
+    ctx.fillStyle = primary;
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(toX(xPos), toY(curExp, minV, maxV), 5, 0, 2 * Math.PI);
+    ctx.fillStyle = secondary;
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Value readout box
+    var boxX = W - 230, boxY = topGraph + 2;
+    ctx.fillStyle = cvAlpha('--sol-canvas-bg', 0.88);
+    ctx.fillRect(boxX, boxY, 218, 72);
+    ctx.strokeStyle = statusColor;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(boxX, boxY, 218, 72);
+
+    ctx.font = '11px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillStyle = text;
+    ctx.fillText('Baza: 2sin x = ' + curBase.toFixed(3), boxX + 8, boxY + 16);
+    ctx.fillText('Eksponent: ' + curExp.toFixed(3), boxX + 8, boxY + 32);
+    ctx.fillText('Rezultat: ' + curResult.toFixed(3), boxX + 8, boxY + 48);
+    ctx.font = 'bold 11px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = statusColor;
+    ctx.fillText(holds ? '\u2265 1  \u2714 važi' : '< 1  \u2718 ne važi', boxX + 8, boxY + 64);
+
+    // Case labels on graph
+    ctx.font = '11px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+
+    ctx.fillStyle = accent;
+    ctx.fillText('0<a<1, b\u22640', toX(Math.PI/12), topGraph + 52);
+    ctx.fillText('\u2714', toX(Math.PI/12), topGraph + 66);
+
+    ctx.fillStyle = danger;
+    ctx.fillText('a>1, b<0', toX(Math.PI/4), topGraph + 52);
+    ctx.fillText('\u2718', toX(Math.PI/4), topGraph + 66);
+
+    ctx.fillStyle = accent;
+    ctx.fillText('a>1, b\u22650', toX(7*Math.PI/12), topGraph + 52);
+    ctx.fillText('\u2714', toX(7*Math.PI/12), topGraph + 66);
+
+    ctx.fillStyle = danger;
+    ctx.fillText('0<a<1, b>0', toX(11*Math.PI/12), topGraph + 52);
+    ctx.fillText('\u2718', toX(11*Math.PI/12), topGraph + 66);
 
     // ---- Solution number line at bottom ----
     var nlY = bottomY + 60;
@@ -474,69 +621,38 @@ Verification:
     ctx.fillStyle = accent;
     ctx.fill();
 
+    // Tracking marker on number line
+    ctx.beginPath();
+    ctx.moveTo(toX(xPos), nlY - 10);
+    ctx.lineTo(toX(xPos) - 5, nlY - 17);
+    ctx.lineTo(toX(xPos) + 5, nlY - 17);
+    ctx.closePath();
+    ctx.fillStyle = statusColor;
+    ctx.fill();
+
     // Label
     ctx.fillStyle = accent;
     ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText('(0, \u03C0/6] \u222A [\u03C0/3, 5\u03C0/6]', W / 2, nlY + 40);
-
-    // Shade regions on graph
-    // Region 1: (0, pi/6)
-    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.12);
-    ctx.beginPath();
-    ctx.moveTo(toX(0), zeroY);
-    for (var r1 = 0; r1 <= 30; r1++) {
-      var r1x = (r1 / 30) * (Math.PI / 6);
-      ctx.lineTo(toX(r1x), toY(2 * Math.sin(r1x), minV, maxV));
-    }
-    ctx.lineTo(toX(Math.PI/6), zeroY);
-    ctx.closePath();
-    ctx.fill();
-
-    // Region 2: [pi/3, 5pi/6]
-    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.12);
-    ctx.beginPath();
-    ctx.moveTo(toX(Math.PI/3), zeroY);
-    for (var r2 = 0; r2 <= 60; r2++) {
-      var r2x = Math.PI/3 + (r2 / 60) * (5*Math.PI/6 - Math.PI/3);
-      ctx.lineTo(toX(r2x), toY(2 * Math.sin(r2x), minV, maxV));
-    }
-    ctx.lineTo(toX(5*Math.PI/6), zeroY);
-    ctx.closePath();
-    ctx.fill();
-
-    // Case labels on graph
-    ctx.font = '11px Segoe UI, system-ui, sans-serif';
-    ctx.textAlign = 'center';
-
-    // Case 3 region
-    ctx.fillStyle = accent;
-    ctx.fillText('0<a<1, b\u22640', toX(Math.PI/12), topGraph + 52);
-    ctx.fillText('\u2714', toX(Math.PI/12), topGraph + 66);
-
-    // Gap region
-    ctx.fillStyle = danger;
-    ctx.fillText('a>1, b<0', toX(Math.PI/4), topGraph + 52);
-    ctx.fillText('\u2718', toX(Math.PI/4), topGraph + 66);
-
-    // Case 2 region
-    ctx.fillStyle = accent;
-    ctx.fillText('a>1, b\u22650', toX(7*Math.PI/12), topGraph + 52);
-    ctx.fillText('\u2714', toX(7*Math.PI/12), topGraph + 66);
-
-    // After 5pi/6
-    ctx.fillStyle = danger;
-    ctx.fillText('0<a<1, b>0', toX(11*Math.PI/12), topGraph + 52);
-    ctx.fillText('\u2718', toX(11*Math.PI/12), topGraph + 66);
   }
 
-  draw();
+  var currentX = Math.PI / 6;
+  draw(currentX);
+
+  if (slider) {
+    slider.addEventListener('input', function() {
+      currentX = parseInt(slider.value, 10) / 100;
+      if (xLabel) xLabel.textContent = formatX(currentX);
+      draw(currentX);
+    });
+  }
 
   window.addEventListener('message', function(e) {
     if (e.data && e.data.type === 'matoteka-theme') {
       setTimeout(function() {
         styles = getComputedStyle(root);
-        draw();
+        draw(currentX);
       }, 50);
     }
   });

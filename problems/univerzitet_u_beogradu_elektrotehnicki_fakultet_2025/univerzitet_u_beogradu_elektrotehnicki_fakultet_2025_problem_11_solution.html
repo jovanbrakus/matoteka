@@ -206,7 +206,12 @@
   <div class="canvas-wrapper">
     <canvas id="diagram11" width="700" height="450"></canvas>
   </div>
-  <p class="canvas-caption">Brojevna prava parametra \( m \): zeleno označava skup rešenja \( (-2, 1) \cup \{2\} \)</p>
+  <p class="canvas-caption">Levo: parabola \( f(x) = (m-1)x^2 + 2mx + m+2 \) sa korenima. Desno: brojevna prava parametra \( m \) sa skupom rešenja.</p>
+  <div class="canvas-controls">
+    <label>\( m = \) <input type="range" id="mSlider11" min="-30" max="30" value="5" step="1"></label>
+    <span id="mValue11">0,5</span>
+  </div>
+  <p class="note">Pomeri klizač da vidiš kako se parabola i uslov menjaju sa parametrom m.</p>
 </div>
 
 <div data-card="step-solution" data-title="Rešenje korak po korak">
@@ -348,7 +353,22 @@
   var W = canvas.width;
   var H = canvas.height;
 
+  var slider = document.getElementById('mSlider11');
+  var mValueEl = document.getElementById('mValue11');
+
+  function getM() {
+    return slider ? parseInt(slider.value) / 10 : 0.5;
+  }
+
+  function fmtNum(v) {
+    var s = v.toFixed(1);
+    return s.replace('.', ',');
+  }
+
   function draw() {
+    var mVal = getM();
+    if (mValueEl) mValueEl.textContent = fmtNum(mVal);
+
     var bg        = cv('--sol-canvas-bg');
     var grid      = cv('--sol-canvas-grid');
     var axis      = cv('--sol-canvas-axis');
@@ -364,182 +384,385 @@
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, W, H);
 
+    // Divider line between left and right halves
+    var divX = Math.round(W * 0.52);
+    ctx.strokeStyle = cvAlpha('--sol-canvas-grid', 0.4);
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(divX, 10);
+    ctx.lineTo(divX, H - 10);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // ===== LEFT HALF: Parabola f(x) = (m-1)x^2 + 2mx + (m+2) =====
+    var leftW = divX - 20;
+    var leftCX = leftW / 2 + 10;
+    var graphTop = 40;
+    var graphBot = H - 80;
+    var graphH = graphBot - graphTop;
+    var graphMidY = graphTop + graphH / 2;
+
     // Title
     ctx.fillStyle = textCol;
-    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('Analiza uslova po parametru m', W / 2, 25);
+    ctx.fillText('f(x) = (m\u22121)x\u00b2 + 2mx + m+2', leftCX, 22);
 
-    // Number line for m, from -4 to 4
-    var nlY = 110;
-    var nlLeft = 80;
-    var nlRight = W - 60;
-    var mMin = -4, mMax = 4;
+    var a = mVal - 1;
+    var b2 = 2 * mVal;
+    var c = mVal + 2;
 
-    function toX(m) { return nlLeft + (m - mMin) / (mMax - mMin) * (nlRight - nlLeft); }
+    // Compute discriminant
+    var D = b2 * b2 - 4 * a * c; // = -4m + 8
+
+    // Graph viewport: x range
+    var xMin = -7, xMax = 5;
+    var pxLeft = 20, pxRight = leftW;
+
+    function toGX(xv) { return pxLeft + (xv - xMin) / (xMax - xMin) * (pxRight - pxLeft); }
+
+    // Determine y range dynamically
+    var yViewMin = -10, yViewMax = 10;
+
+    function toGY(yv) { return graphMidY - (yv / Math.max(Math.abs(yViewMax), Math.abs(yViewMin))) * (graphH / 2 - 10); }
+
+    // Draw grid
+    ctx.strokeStyle = cvAlpha('--sol-canvas-grid', 0.3);
+    ctx.lineWidth = 0.5;
+    for (var gx = Math.ceil(xMin); gx <= Math.floor(xMax); gx++) {
+      var px = toGX(gx);
+      ctx.beginPath();
+      ctx.moveTo(px, graphTop);
+      ctx.lineTo(px, graphBot);
+      ctx.stroke();
+    }
+    for (var gy = -8; gy <= 8; gy += 2) {
+      var py = toGY(gy);
+      if (py > graphTop && py < graphBot) {
+        ctx.beginPath();
+        ctx.moveTo(pxLeft, py);
+        ctx.lineTo(pxRight, py);
+        ctx.stroke();
+      }
+    }
+
+    // Draw axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    // x-axis
+    var yAxisPx = toGY(0);
+    if (yAxisPx >= graphTop && yAxisPx <= graphBot) {
+      ctx.beginPath();
+      ctx.moveTo(pxLeft, yAxisPx);
+      ctx.lineTo(pxRight, yAxisPx);
+      ctx.stroke();
+    }
+    // y-axis
+    var xAxisPx = toGX(0);
+    if (xAxisPx >= pxLeft && xAxisPx <= pxRight) {
+      ctx.beginPath();
+      ctx.moveTo(xAxisPx, graphTop);
+      ctx.lineTo(xAxisPx, graphBot);
+      ctx.stroke();
+    }
+
+    // Axis labels
+    ctx.fillStyle = muted;
+    ctx.font = '11px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    if (yAxisPx >= graphTop && yAxisPx <= graphBot) {
+      ctx.fillText('x', pxRight + 8, yAxisPx + 4);
+    }
+
+    // Draw the function
+    if (Math.abs(a) < 1e-9) {
+      // Linear: 2mx + m + 2 = 0  =>  f(x) = 2mx + m + 2
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      var first = true;
+      for (var px2 = pxLeft; px2 <= pxRight; px2 += 2) {
+        var xv = xMin + (px2 - pxLeft) / (pxRight - pxLeft) * (xMax - xMin);
+        var yv = b2 * xv + c;
+        var pyv = toGY(yv);
+        if (pyv < graphTop - 20 || pyv > graphBot + 20) { first = true; continue; }
+        if (first) { ctx.moveTo(px2, pyv); first = false; } else { ctx.lineTo(px2, pyv); }
+      }
+      ctx.stroke();
+
+      // Root of linear equation
+      if (Math.abs(b2) > 1e-9) {
+        var linRoot = -c / b2;
+        var rootPx = toGX(linRoot);
+        var rootPy = toGY(0);
+        if (rootPx >= pxLeft && rootPx <= pxRight && rootPy >= graphTop && rootPy <= graphBot) {
+          ctx.fillStyle = highlight;
+          ctx.beginPath();
+          ctx.arc(rootPx, rootPy, 5, 0, 2 * Math.PI);
+          ctx.fill();
+          ctx.fillStyle = textCol;
+          ctx.font = '11px Segoe UI, system-ui, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('x = ' + fmtNum(linRoot), rootPx, rootPy - 10);
+        }
+      }
+
+      // Info text
+      ctx.fillStyle = muted;
+      ctx.font = '12px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('m = 1: linearna jednacina', leftCX, graphBot + 20);
+      ctx.fillText('Nema dva korena', leftCX, graphBot + 36);
+    } else {
+      // Quadratic
+      // Draw parabola
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      var first2 = true;
+      for (var px3 = pxLeft; px3 <= pxRight; px3 += 1) {
+        var xv2 = xMin + (px3 - pxLeft) / (pxRight - pxLeft) * (xMax - xMin);
+        var yv2 = a * xv2 * xv2 + b2 * xv2 + c;
+        var pyv2 = toGY(yv2);
+        if (pyv2 < graphTop - 40 || pyv2 > graphBot + 40) { first2 = true; continue; }
+        var clampedY = Math.max(graphTop - 5, Math.min(graphBot + 5, pyv2));
+        if (first2) { ctx.moveTo(px3, clampedY); first2 = false; } else { ctx.lineTo(px3, clampedY); }
+      }
+      ctx.stroke();
+
+      if (D >= 0) {
+        // Real roots
+        var sqrtD = Math.sqrt(D);
+        var x1 = (-b2 - sqrtD) / (2 * a);
+        var x2 = (-b2 + sqrtD) / (2 * a);
+
+        // Mark roots
+        var roots = [x1, x2];
+        for (var ri = 0; ri < roots.length; ri++) {
+          var rx = toGX(roots[ri]);
+          var ry = toGY(0);
+          if (rx >= pxLeft - 5 && rx <= pxRight + 5 && ry >= graphTop && ry <= graphBot) {
+            ctx.fillStyle = highlight;
+            ctx.beginPath();
+            ctx.arc(rx, ry, 5, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.fillStyle = textCol;
+            ctx.font = '10px Segoe UI, system-ui, sans-serif';
+            ctx.textAlign = 'center';
+            var lbl = (ri === 0) ? 'x\u2081' : 'x\u2082';
+            if (Math.abs(x1 - x2) < 0.05) {
+              if (ri === 1) continue; // skip duplicate label
+              lbl = 'x\u2081=x\u2082';
+            }
+            ctx.fillText(lbl + '=' + fmtNum(roots[ri]), rx, ry - 10);
+          }
+        }
+
+        // Compute and display the condition value
+        var P = x1 * x2;
+        var condValue, condDefined;
+        if (Math.abs(P) < 1e-12 || Math.abs(x1) < 1e-12 || Math.abs(x2) < 1e-12) {
+          condDefined = false;
+        } else {
+          condDefined = true;
+          condValue = x1 / x2 + x2 / x1;
+        }
+
+        ctx.font = '12px Segoe UI, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        if (condDefined) {
+          var satisfied = condValue <= 2.001;
+          ctx.fillStyle = satisfied ? accent : danger;
+          ctx.fillText('x\u2081/x\u2082 + x\u2082/x\u2081 = ' + fmtNum(condValue), leftCX, graphBot + 20);
+          ctx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
+          ctx.fillText(satisfied ? '\u2264 2  \u2713  Uslov ispunjen' : '> 2  \u2717  Uslov NIJE ispunjen', leftCX, graphBot + 38);
+        } else {
+          ctx.fillStyle = danger;
+          ctx.fillText('x\u2081/x\u2082 + x\u2082/x\u2081 nije definisano', leftCX, graphBot + 20);
+          ctx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
+          ctx.fillText('(jedan koren je 0)', leftCX, graphBot + 38);
+        }
+      } else {
+        // No real roots
+        ctx.fillStyle = danger;
+        ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Nema realnih korena', leftCX, graphBot + 20);
+        ctx.font = '12px Segoe UI, system-ui, sans-serif';
+        ctx.fillText('D = ' + fmtNum(D) + ' < 0', leftCX, graphBot + 38);
+      }
+    }
+
+    // ===== RIGHT HALF: Number line for m =====
+    var rightLeft = divX + 20;
+    var rightRight = W - 15;
+    var rightCX = (rightLeft + rightRight) / 2;
+
+    // Title
+    ctx.fillStyle = textCol;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Brojevna prava parametra m', rightCX, 22);
+
+    // Number line
+    var nlY = 130;
+    var nlL = rightLeft + 10;
+    var nlR = rightRight - 10;
+    var nmMin = -3.5, nmMax = 3.5;
+
+    function toNX(m) { return nlL + (m - nmMin) / (nmMax - nmMin) * (nlR - nlL); }
 
     // Axis
     ctx.strokeStyle = axis;
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(nlLeft - 10, nlY);
-    ctx.lineTo(nlRight + 10, nlY);
+    ctx.moveTo(nlL - 5, nlY);
+    ctx.lineTo(nlR + 5, nlY);
     ctx.stroke();
     // Arrow
     ctx.beginPath();
-    ctx.moveTo(nlRight + 10, nlY);
-    ctx.lineTo(nlRight + 2, nlY - 5);
-    ctx.lineTo(nlRight + 2, nlY + 5);
+    ctx.moveTo(nlR + 5, nlY);
+    ctx.lineTo(nlR - 2, nlY - 4);
+    ctx.lineTo(nlR - 2, nlY + 4);
     ctx.closePath();
     ctx.fillStyle = axis;
     ctx.fill();
 
-    // Ticks and labels
+    // Ticks
     ctx.fillStyle = textCol;
-    ctx.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx.font = '11px Segoe UI, system-ui, sans-serif';
     ctx.textAlign = 'center';
-    for (var i = -3; i <= 3; i++) {
-      var x = toX(i);
+    for (var ti = -3; ti <= 3; ti++) {
+      var tx = toNX(ti);
       ctx.strokeStyle = grid;
       ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.moveTo(x, nlY - 5);
-      ctx.lineTo(x, nlY + 5);
+      ctx.moveTo(tx, nlY - 4);
+      ctx.lineTo(tx, nlY + 4);
       ctx.stroke();
       ctx.fillStyle = textCol;
-      ctx.fillText(i.toString(), x, nlY + 20);
+      ctx.fillText(ti.toString(), tx, nlY + 18);
     }
-    ctx.fillText('m', nlRight + 25, nlY + 5);
 
-    // Mark critical points
-    // m = -2: open circle (excluded)
-    ctx.strokeStyle = danger;
-    ctx.lineWidth = 2.5;
+    // Solution set: thick accent line for (-2, 1)
+    ctx.strokeStyle = cvAlpha('--sol-canvas-accent', 0.4);
+    ctx.lineWidth = 6;
     ctx.beginPath();
-    ctx.arc(toX(-2), nlY, 7, 0, 2 * Math.PI);
+    ctx.moveTo(toNX(-2) + 6, nlY);
+    ctx.lineTo(toNX(1) - 6, nlY);
+    ctx.stroke();
+
+    // Open circle at -2
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(toNX(-2), nlY, 5, 0, 2 * Math.PI);
     ctx.stroke();
     ctx.fillStyle = bg;
     ctx.beginPath();
-    ctx.arc(toX(-2), nlY, 5, 0, 2 * Math.PI);
+    ctx.arc(toNX(-2), nlY, 3.5, 0, 2 * Math.PI);
     ctx.fill();
 
-    // m = 1: open circle (excluded)
-    ctx.strokeStyle = danger;
-    ctx.lineWidth = 2.5;
+    // Open circle at 1
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.arc(toX(1), nlY, 7, 0, 2 * Math.PI);
+    ctx.arc(toNX(1), nlY, 5, 0, 2 * Math.PI);
     ctx.stroke();
     ctx.fillStyle = bg;
     ctx.beginPath();
-    ctx.arc(toX(1), nlY, 5, 0, 2 * Math.PI);
+    ctx.arc(toNX(1), nlY, 3.5, 0, 2 * Math.PI);
     ctx.fill();
 
-    // m = 2: filled circle (included, isolated point)
+    // Filled circle at 2
     ctx.fillStyle = accent;
     ctx.beginPath();
-    ctx.arc(toX(2), nlY, 7, 0, 2 * Math.PI);
+    ctx.arc(toNX(2), nlY, 5, 0, 2 * Math.PI);
     ctx.fill();
-
-    // Solution interval (-2, 1): green thick line
-    ctx.strokeStyle = accent;
-    ctx.lineWidth = 5;
-    ctx.beginPath();
-    ctx.moveTo(toX(-2) + 8, nlY);
-    ctx.lineTo(toX(1) - 8, nlY);
-    ctx.stroke();
 
     // Labels for critical points
-    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.font = '10px Segoe UI, system-ui, sans-serif';
     ctx.textAlign = 'center';
+    ctx.fillStyle = muted;
+    ctx.fillText('\u22122', toNX(-2), nlY - 12);
+    ctx.fillText('1', toNX(1), nlY - 12);
+    ctx.fillText('2', toNX(2), nlY - 12);
 
-    ctx.fillStyle = danger;
-    ctx.fillText('m = \u22122', toX(-2), nlY - 18);
-    ctx.font = '11px Segoe UI, system-ui, sans-serif';
-    ctx.fillText('(x\u2081 = 0)', toX(-2), nlY - 32);
-
-    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
-    ctx.fillStyle = danger;
-    ctx.fillText('m = 1', toX(1), nlY - 18);
-    ctx.font = '11px Segoe UI, system-ui, sans-serif';
-    ctx.fillText('(linearna jedn.)', toX(1), nlY - 32);
-
-    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    // Solution set label
     ctx.fillStyle = accent;
-    ctx.fillText('m = 2', toX(2), nlY - 18);
     ctx.font = '11px Segoe UI, system-ui, sans-serif';
-    ctx.fillText('(x\u2081 = x\u2082 = \u22122)', toX(2), nlY - 32);
+    ctx.fillText('(\u22122, 1) \u222a {2}', rightCX, nlY - 28);
 
-    // Sign table below number line
-    var tableY = 170;
-    var rowH = 35;
-    var headers = ['m + 2', 'm \u2212 1', 'P = x\u2081x\u2082', 'D \u2265 0', 'Uslov'];
-    var regions = [
-      { label: 'm < \u22122', signs: ['\u2212', '\u2212', '+', '\u2713', '\u2717'], colors: ['danger', 'danger', 'primary', 'accent', 'danger'] },
-      { label: '\u22122 < m < 1', signs: ['+', '\u2212', '\u2212', '\u2713', '\u2713'], colors: ['accent', 'danger', 'accent', 'accent', 'accent'] },
-      { label: '1 < m < 2', signs: ['+', '+', '+', '\u2713', '\u2717'], colors: ['accent', 'accent', 'primary', 'accent', 'danger'] },
-      { label: 'm = 2', signs: ['+', '+', '+', 'D=0', '\u2713'], colors: ['accent', 'accent', 'primary', 'highlight', 'accent'] },
-      { label: 'm > 2', signs: ['+', '+', '+', '\u2717', '\u2717'], colors: ['accent', 'accent', 'primary', 'danger', 'danger'] }
-    ];
+    // Current m marker (larger, prominent)
+    var mClamp = Math.max(nmMin, Math.min(nmMax, mVal));
+    var mPx = toNX(mClamp);
 
-    // Column positions
-    var colX = [nlLeft - 30, toX(-3), toX(-0.5), toX(1.5), toX(2), toX(3.2)];
+    // Determine if m is in solution set
+    var inSolution = (mVal > -2 && mVal < 1) || Math.abs(mVal - 2) < 0.05;
 
-    // Header
-    ctx.fillStyle = textCol;
-    ctx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
-    ctx.textAlign = 'left';
-    ctx.fillText('Interval', nlLeft - 30, tableY);
-    for (var h = 0; h < headers.length; h++) {
-      ctx.textAlign = 'center';
-      var hx = nlLeft + 100 + h * 110;
-      ctx.fillText(headers[h], hx, tableY);
-    }
-
-    // Separator line
-    ctx.strokeStyle = grid;
-    ctx.lineWidth = 1;
+    // Draw current m dot
+    ctx.fillStyle = inSolution ? accent : danger;
     ctx.beginPath();
-    ctx.moveTo(nlLeft - 40, tableY + 8);
-    ctx.lineTo(nlRight + 20, tableY + 8);
+    ctx.arc(mPx, nlY, 8, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(mPx, nlY, 8, 0, 2 * Math.PI);
     ctx.stroke();
+    ctx.fillStyle = inSolution ? accent : danger;
+    ctx.beginPath();
+    ctx.arc(mPx, nlY, 7, 0, 2 * Math.PI);
+    ctx.fill();
 
-    // Rows
-    for (var r = 0; r < regions.length; r++) {
-      var ry = tableY + 15 + (r + 0.5) * rowH;
+    // m value label below dot
+    ctx.fillStyle = inSolution ? accent : danger;
+    ctx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('m = ' + fmtNum(mVal), mPx, nlY + 36);
+
+    // Summary info below the number line
+    var infoY = nlY + 70;
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    var infoX = rightLeft + 5;
+
+    // Discriminant
+    var Dval = -4 * mVal + 8;
+    ctx.fillStyle = textCol;
+    ctx.fillText('D = ' + fmtNum(Dval), infoX, infoY);
+    ctx.fillStyle = Dval >= 0 ? accent : danger;
+    ctx.fillText(Dval >= 0 ? ' \u2265 0' : ' < 0', infoX + 70, infoY);
+
+    if (Math.abs(mVal - 1) > 0.05) {
+      // Product of roots
+      var Pval = (mVal + 2) / (mVal - 1);
       ctx.fillStyle = textCol;
-      ctx.font = '12px Segoe UI, system-ui, sans-serif';
-      ctx.textAlign = 'left';
-      ctx.fillText(regions[r].label, nlLeft - 30, ry);
-
-      for (var c = 0; c < regions[r].signs.length; c++) {
-        var cx = nlLeft + 100 + c * 110;
-        var col = regions[r].colors[c];
-        ctx.fillStyle = col === 'danger' ? danger : col === 'accent' ? accent : col === 'highlight' ? highlight : col === 'primary' ? primary : textCol;
-        ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(regions[r].signs[c], cx, ry);
-      }
-
-      // Row separator
-      if (r < regions.length - 1) {
-        ctx.strokeStyle = cvAlpha('--sol-canvas-grid', 0.5);
-        ctx.lineWidth = 0.5;
-        ctx.beginPath();
-        ctx.moveTo(nlLeft - 40, ry + rowH / 2 - 2);
-        ctx.lineTo(nlRight + 20, ry + rowH / 2 - 2);
-        ctx.stroke();
-      }
+      ctx.fillText('x\u2081\u00b7x\u2082 = ' + fmtNum(Pval), infoX, infoY + 22);
+      ctx.fillStyle = Pval < 0 ? accent : (Math.abs(Pval) < 0.05 ? danger : muted);
+      var pLabel = Pval < -0.05 ? ' < 0 (razl. znaka)' : (Pval > 0.05 ? ' > 0 (isti znak)' : ' = 0');
+      ctx.fillText(pLabel, infoX + 80, infoY + 22);
+    } else {
+      ctx.fillStyle = danger;
+      ctx.fillText('m = 1: linearna jednacina', infoX, infoY + 22);
     }
 
-    // Bottom result
-    var resultY = H - 30;
+    // Bottom result line
     ctx.fillStyle = accent;
-    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('Skup re\u0161enja: m \u2208 (\u22122, 1) \u222a {2}  \u2014  oblik (a, b) \u222a {c}', W / 2, resultY);
+    ctx.fillText('m \u2208 (\u22122, 1) \u222a {2}', rightCX, H - 20);
   }
 
   draw();
+
+  if (slider) {
+    slider.addEventListener('input', draw);
+    slider.addEventListener('touchstart', function() {}, {passive: true});
+    slider.addEventListener('touchmove', function() {}, {passive: true});
+  }
+
   window.addEventListener('message', function(e) {
     if (e.data && e.data.type === 'matoteka-theme') {
       setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);

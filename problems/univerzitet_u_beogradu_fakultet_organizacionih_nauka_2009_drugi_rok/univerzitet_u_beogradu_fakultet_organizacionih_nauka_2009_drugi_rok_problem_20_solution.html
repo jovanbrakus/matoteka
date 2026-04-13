@@ -1,0 +1,594 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Number of solutions of sin(3x) - sin(7x) = sqrt(3)*sin(2x) on [-pi, pi].
+
+  Step 1: Transform LHS using sum-to-product:
+    sin(3x) - sin(7x) = 2*cos((3x+7x)/2)*sin((3x-7x)/2)
+                       = 2*cos(5x)*sin(-2x)
+                       = -2*cos(5x)*sin(2x)
+
+  Step 2: Equation becomes:
+    -2*cos(5x)*sin(2x) = sqrt(3)*sin(2x)
+    -2*cos(5x)*sin(2x) - sqrt(3)*sin(2x) = 0
+    sin(2x)*(-2*cos(5x) - sqrt(3)) = 0
+
+  Step 3: Case 1: sin(2x) = 0
+    2x = k*pi => x = k*pi/2
+    On [-pi, pi]: x = -pi, -pi/2, 0, pi/2, pi
+    That's 5 solutions.
+
+  Step 4: Case 2: -2*cos(5x) - sqrt(3) = 0
+    cos(5x) = -sqrt(3)/2
+    5x = +-5*pi/6 + 2k*pi
+
+    Sub-case 2a: 5x = 5*pi/6 + 2k*pi => x = pi/6 + 2k*pi/5
+    On [-pi, pi]:
+      k = -2: x = pi/6 - 4pi/5 = 5pi/30 - 24pi/30 = -19pi/30
+      k = -1: x = pi/6 - 2pi/5 = 5pi/30 - 12pi/30 = -7pi/30
+      k = 0: x = pi/6 = 5pi/30
+      k = 1: x = pi/6 + 2pi/5 = 5pi/30 + 12pi/30 = 17pi/30
+      k = 2: x = pi/6 + 4pi/5 = 5pi/30 + 24pi/30 = 29pi/30
+      k = -3: x = pi/6 - 6pi/5 = 5pi/30 - 36pi/30 = -31pi/30 < -pi (out)
+      k = 3: x = pi/6 + 6pi/5 = 5pi/30 + 36pi/30 = 41pi/30 > pi (out)
+    So 5 solutions: -19pi/30, -7pi/30, pi/6, 17pi/30, 29pi/30
+
+    Sub-case 2b: 5x = -5*pi/6 + 2k*pi => x = -pi/6 + 2k*pi/5
+    On [-pi, pi]:
+      k = -2: x = -pi/6 - 4pi/5 = -5pi/30 - 24pi/30 = -29pi/30
+      k = -1: x = -pi/6 - 2pi/5 = -5pi/30 - 12pi/30 = -17pi/30
+      k = 0: x = -pi/6 = -5pi/30
+      k = 1: x = -pi/6 + 2pi/5 = -5pi/30 + 12pi/30 = 7pi/30
+      k = 2: x = -pi/6 + 4pi/5 = -5pi/30 + 24pi/30 = 19pi/30
+      k = -3: x = -pi/6 - 6pi/5 = -5pi/30 - 36pi/30 = -41pi/30 < -pi (out)
+      k = 3: x = -pi/6 + 6pi/5 = -5pi/30 + 36pi/30 = 31pi/30 > pi (out)
+    So 5 solutions: -29pi/30, -17pi/30, -pi/6, 7pi/30, 19pi/30
+
+  Step 5: Check for duplicates between Case 1 and Case 2.
+    Case 1 solutions: -pi, -pi/2, 0, pi/2, pi
+    Case 2a: -19pi/30, -7pi/30, pi/6 (=5pi/30), 17pi/30, 29pi/30
+    Case 2b: -29pi/30, -17pi/30, -pi/6 (=-5pi/30), 7pi/30, 19pi/30
+
+    None of the Case 2 values equal any Case 1 value (easy to check: none are multiples of pi/2).
+
+    Check duplicates within Case 2: 2a and 2b sets are clearly distinct (symmetric but no overlaps).
+
+  Total: 5 + 5 + 5 = 15 solutions, which is > 8.
+
+  Answer: (E) veci od 8 (greater than 8)
+
+  Canvas: Plot h(x) = sin(3x) - sin(7x) - sqrt(3)*sin(2x) and show zero crossings on [-pi, pi].
+</script>
+
+<h1 data-card="problem-title">Trigonometrijska jednačina sa sumom sinusa</h1>
+<p data-card="problem-subtitle" class="subtitle">Trigonometrijske jednačine &mdash; brojanje rešenja na datom intervalu</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Broj rešenja jednačine \( \sin 3x - \sin 7x = \sqrt{3}\,\sin 2x \) na odsečku \( [-\pi, \pi] \) je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 5 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 6 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 7 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 8 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">veći od 8</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">
+    Transformisaćemo levu stranu koristeći formulu za razliku sinusa (sum-to-product), što će nam omogućiti da faktorišemo jednačinu. Zatim ćemo rešiti svaki faktor posebno i prebrojati sva rešenja na intervalu \( [-\pi, \pi] \).
+  </p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Razlika sinusa (sum-to-product):</strong>
+        \[ \sin A - \sin B = 2 \cos\frac{A+B}{2}\,\sin\frac{A-B}{2} \]</li>
+        <li><strong>Nule sinusa:</strong> \( \sin \theta = 0 \iff \theta = k\pi, \; k \in \mathbb{Z} \)</li>
+        <li><strong>Jednačina kosinusa:</strong> \( \cos \theta = a \iff \theta = \pm\arccos a + 2k\pi, \; k \in \mathbb{Z} \)</li>
+        <li><strong>Poznate vrednosti:</strong> \( \cos\frac{5\pi}{6} = -\frac{\sqrt{3}}{2} \)</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Grafik funkcije i nule">
+  <h2>📐 Grafik funkcije i nule</h2>
+  <p>Grafik funkcije \( h(x) = \sin 3x - \sin 7x - \sqrt{3}\,\sin 2x \) na intervalu \( [-\pi, \pi] \). Svako presečište sa \( x \)-osom je jedno rešenje. Prevucite vertikalnu liniju da istraživte vrednosti funkcije.</p>
+  <div class="canvas-wrapper">
+    <canvas id="trig-plot" width="700" height="550"></canvas>
+  </div>
+  <p class="canvas-caption">Crvene tačke označavaju nule funkcije \( h(x) \) &mdash; prebrojte ih: ima ih 15, što je veći od 8.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Transformišemo levu stranu</h3>
+      <p>Primenjujemo formulu za razliku sinusa na \( \sin 3x - \sin 7x \):</p>
+      <div class="math-block">\[ \sin 3x - \sin 7x = 2\cos\frac{3x+7x}{2}\,\sin\frac{3x-7x}{2} = 2\cos 5x \cdot \sin(-2x) \]</div>
+      <p>Pošto je \( \sin(-\alpha) = -\sin\alpha \):</p>
+      <div class="math-block">\[ \sin 3x - \sin 7x = -2\cos 5x \cdot \sin 2x \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Faktorizujemo jednačinu</h3>
+      <p>Zamenjujemo u polaznu jednačinu:</p>
+      <div class="math-block">\[ -2\cos 5x \cdot \sin 2x = \sqrt{3}\,\sin 2x \]</div>
+      <p>Prebacujemo sve na jednu stranu:</p>
+      <div class="math-block">\[ \sin 2x \cdot (-2\cos 5x - \sqrt{3}) = 0 \]</div>
+      <p>Proizvod je nula ako je bar jedan faktor nula. Dobijamo dva slučaja.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto ne smemo deliti sa \( \sin 2x \)?</summary>
+          <div class="detail-content"><p>Ako bismo podelili celu jednačinu sa \( \sin 2x \), izgubili bismo sva rešenja gde je \( \sin 2x = 0 \). To je česta greška &mdash; uvek treba faktorisati, ne deliti!</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj 1: \( \sin 2x = 0 \)</h3>
+      <div class="math-block">\[ \sin 2x = 0 \implies 2x = k\pi \implies x = \frac{k\pi}{2}, \quad k \in \mathbb{Z} \]</div>
+      <p>Na intervalu \( [-\pi, \pi] \) tražimo cele brojeve \( k \) za koje je \( -\pi \leq \frac{k\pi}{2} \leq \pi \), tj. \( -2 \leq k \leq 2 \):</p>
+      <div class="math-block">\[ x \in \left\{ -\pi, \; -\frac{\pi}{2}, \; 0, \; \frac{\pi}{2}, \; \pi \right\} \]</div>
+      <p>To je <span class="result">5 rešenja</span> iz prvog slučaja.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj 2: \( \cos 5x = -\frac{\sqrt{3}}{2} \)</h3>
+      <p>Iz drugog faktora:</p>
+      <div class="math-block">\[ -2\cos 5x - \sqrt{3} = 0 \implies \cos 5x = -\frac{\sqrt{3}}{2} \]</div>
+      <p>Opšte rešenje jednačine \( \cos\theta = -\frac{\sqrt{3}}{2} \) je \( \theta = \pm\frac{5\pi}{6} + 2k\pi \). Zamenom \( \theta = 5x \):</p>
+      <div class="math-block">\[ 5x = \frac{5\pi}{6} + 2k\pi \quad \text{ili} \quad 5x = -\frac{5\pi}{6} + 2k\pi \]</div>
+      <div class="math-block">\[ x = \frac{\pi}{6} + \frac{2k\pi}{5} \quad \text{ili} \quad x = -\frac{\pi}{6} + \frac{2k\pi}{5} \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto je \( \arccos(-\frac{\sqrt{3}}{2}) = \frac{5\pi}{6} \)?</summary>
+          <div class="detail-content"><p>Znamo da je \( \cos\frac{\pi}{6} = \frac{\sqrt{3}}{2} \). Za negativnu vrednost koristimo \( \pi - \frac{\pi}{6} = \frac{5\pi}{6} \), jer kosinus u drugom kvadrantu menja znak.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Brojimo rešenja iz Slučaja 2a: \( x = \frac{\pi}{6} + \frac{2k\pi}{5} \)</h3>
+      <p>Tražimo \( k \) za koje važi \( -\pi \leq \frac{\pi}{6} + \frac{2k\pi}{5} \leq \pi \):</p>
+      <div class="math-block">\[ -\pi - \frac{\pi}{6} \leq \frac{2k\pi}{5} \leq \pi - \frac{\pi}{6} \implies -\frac{7}{6} \leq \frac{2k}{5} \leq \frac{5}{6} \implies -\frac{35}{12} \leq k \leq \frac{25}{12} \]</div>
+      <p>Dakle \( k \in \{-2, -1, 0, 1, 2\} \), što daje 5 rešenja:</p>
+      <div class="math-block">\[ x \in \left\{ -\frac{19\pi}{30}, \; -\frac{7\pi}{30}, \; \frac{\pi}{6}, \; \frac{17\pi}{30}, \; \frac{29\pi}{30} \right\} \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Brojimo rešenja iz Slučaja 2b: \( x = -\frac{\pi}{6} + \frac{2k\pi}{5} \)</h3>
+      <p>Analogno, tražimo \( -\pi \leq -\frac{\pi}{6} + \frac{2k\pi}{5} \leq \pi \):</p>
+      <div class="math-block">\[ -\frac{5}{6} \leq \frac{2k}{5} \leq \frac{7}{6} \implies -\frac{25}{12} \leq k \leq \frac{35}{12} \]</div>
+      <p>Dakle \( k \in \{-2, -1, 0, 1, 2\} \), ponovo 5 rešenja:</p>
+      <div class="math-block">\[ x \in \left\{ -\frac{29\pi}{30}, \; -\frac{17\pi}{30}, \; -\frac{\pi}{6}, \; \frac{7\pi}{30}, \; \frac{19\pi}{30} \right\} \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="7">
+    <div class="step-badge">7</div>
+    <div class="step-content">
+      <h3 class="step-title">Proveravamo duplikate</h3>
+      <p>Moramo proveriti da li se neko rešenje iz Slučaja 2 poklapa sa rešenjem iz Slučaja 1. Rešenja iz Slučaja 1 su oblika \( \frac{k\pi}{2} \), dok su rešenja iz Slučaja 2 oblika \( \frac{m\pi}{30} \) gde \( m \) nije deljivo sa 15.</p>
+      <p>Konkretno, rešenja iz Slučaja 1 su: \( -\pi = -\frac{30\pi}{30} \), \( -\frac{\pi}{2} = -\frac{15\pi}{30} \), \( 0 \), \( \frac{\pi}{2} = \frac{15\pi}{30} \), \( \pi = \frac{30\pi}{30} \).</p>
+      <p>Rešenja iz Slučaja 2: imenioci su \( \pm 19, \pm 7, \pm 5, \pm 17, \pm 29 \) (tridesetina od \( \pi \)) &mdash; nijedan od ovih brojeva nije deljiv sa 15 niti jednak 0 ili \( \pm 30 \).</p>
+      <p>Dakle, <strong>nema preklapanja</strong> između slučajeva.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Da li postoje duplikati unutar Slučaja 2?</summary>
+          <div class="detail-content"><p>Rešenja iz 2a su: \( \{-19, -7, 5, 17, 29\} \cdot \frac{\pi}{30} \), a iz 2b: \( \{-29, -17, -5, 7, 19\} \cdot \frac{\pi}{30} \). Ove dve liste su potpuno disjunktne (nijedan broj se ne ponavlja), pa nema duplikata ni unutar Slučaja 2.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="8">
+    <div class="step-badge">8</div>
+    <div class="step-content">
+      <h3 class="step-title">Ukupan broj rešenja</h3>
+      <div class="math-block">\[ \text{Ukupno} = \underbrace{5}_{\text{Slučaj 1}} + \underbrace{5}_{\text{Slučaj 2a}} + \underbrace{5}_{\text{Slučaj 2b}} = 15 \]</div>
+      <p>Pošto je \( 15 > 8 \), tačan odgovor je <span class="result">veći od 8</span>.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Ključ ovog zadatka je u <strong>transformaciji leve strane</strong> formulom za razliku sinusa. Posle toga, jednačina se faktorše na proizvod \( \sin 2x \cdot (\ldots) = 0 \), i svaki faktor se rešava nezavisno.</p>
+  <p>Zapamtite: kada jednačina sadrži razliku oblika \( \sin A - \sin B \), gotovo uvek treba primeniti sum-to-product formulu. Ovo je jedan od najkorisnijih trikova u trigonometrijskim jednačinama na prijemnim ispitima.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \text{Broj rešenja} = 15 \quad (\text{veći od 8}) \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 5 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 6 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 7 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 8 \)</span>
+    <span class="answer-option correct" data-option="E">(E) veći od 8</span>
+  </div>
+  <p class="verification">Verifikacija: Slučaj 1 daje 5 rešenja (\( \sin 2x = 0 \)), Slučaj 2a daje 5 rešenja, Slučaj 2b daje 5 rešenja. Nema preklapanja. Ukupno: \( 5 + 5 + 5 = 15 > 8 \). Grafička provera potvrđuje 15 nula funkcije \( h(x) \) na intervalu \( [-\pi, \pi] \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Deljenje sa \( \sin 2x \):</strong> Najčešća greška! Ako podelite obe strane sa \( \sin 2x \), gubite 5 rešenja iz Slučaja 1. Uvek faktorišite umesto da delite.</li>
+    <li><strong>Zaboravljanje jedne grane kosinusa:</strong> Jednačina \( \cos 5x = -\frac{\sqrt{3}}{2} \) ima <em>dve</em> familije rešenja (\( +\frac{5\pi}{6} \) i \( -\frac{5\pi}{6} \)). Ako zaboravite jednu, dobićete samo 10 umesto 15 rešenja.</li>
+    <li><strong>Pogrešne granice za \( k \):</strong> Pažljivo rešavajte nejednačinu za \( k \) &mdash; interval \( [-\pi, \pi] \) je zatvoreni, pa rubne vrednosti \( x = -\pi \) i \( x = \pi \) jesu rešenja.</li>
+    <li><strong>Neprovera duplikata:</strong> Iako u ovom zadatku nema preklapanja, u opštem slučaju dva različita uslova mogu dati isto \( x \). Uvek proverite!</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koliko rešenja ima jednačina \( \sin 3x - \sin 7x = \sqrt{3}\,\sin 2x \) na intervalu \( [0, 2\pi] \)? Da li je odgovor isti kao za \( [-\pi, \pi] \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Intervali \( [-\pi, \pi] \) i \( [0, 2\pi] \) imaju istu dužinu (\( 2\pi \)), ali nisu isti! Funkcija \( h(x) \) ima period koji je NZS perioda njenih komponenti. Period \( \sin 2x \) je \( \pi \), period \( \cos 5x \) je \( \frac{2\pi}{5} \), pa je NZS jednak \( 2\pi \). Pošto se oba intervala prostiru tačno jedan pun period, broj rešenja je isti: 15. Razlika je samo u tome koja konkretna rešenja dobijamo.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('trig-plot');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  var PI = Math.PI;
+  var xMin = -PI, xMax = PI;
+  var yMin = -4, yMax = 4;
+  var marginLeft = 50, marginRight = 30, marginTop = 40, marginBottom = 60;
+  var plotW = W - marginLeft - marginRight;
+  var plotH = H - marginTop - marginBottom;
+
+  function toCanvasX(x) { return marginLeft + (x - xMin) / (xMax - xMin) * plotW; }
+  function toCanvasY(y) { return marginTop + (yMax - y) / (yMax - yMin) * plotH; }
+  function toMathX(cx) { return xMin + (cx - marginLeft) / plotW * (xMax - xMin); }
+
+  function h(x) { return Math.sin(3*x) - Math.sin(7*x) - Math.sqrt(3)*Math.sin(2*x); }
+
+  // Precompute zeros
+  var zeros = [];
+  // Case 1: sin(2x)=0 => x = k*pi/2
+  for (var k = -2; k <= 2; k++) {
+    zeros.push(k * PI / 2);
+  }
+  // Case 2a: x = pi/6 + 2k*pi/5
+  for (var k = -2; k <= 2; k++) {
+    zeros.push(PI/6 + 2*k*PI/5);
+  }
+  // Case 2b: x = -pi/6 + 2k*pi/5
+  for (var k = -2; k <= 2; k++) {
+    zeros.push(-PI/6 + 2*k*PI/5);
+  }
+  zeros.sort(function(a, b) { return a - b; });
+
+  // Draggable vertical probe line
+  var probeX = 0.5;
+  var dragging = false;
+  var GRAB_DIST = 15;
+
+  function getPos(e) {
+    var r = canvas.getBoundingClientRect();
+    var scaleX = W / r.width;
+    var scaleY = H / r.height;
+    var evt = e.touches ? e.touches[0] : e;
+    return { x: (evt.clientX - r.left) * scaleX, y: (evt.clientY - r.top) * scaleY };
+  }
+
+  function isNearProbe(pos) {
+    return Math.abs(pos.x - toCanvasX(probeX)) < GRAB_DIST && pos.y > marginTop && pos.y < H - marginBottom;
+  }
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('h(x) = sin 3x \u2212 sin 7x \u2212 \u221A3 sin 2x', W / 2, 8);
+
+    // Clip to plot area
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(marginLeft, marginTop, plotW, plotH);
+    ctx.clip();
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 0.5;
+    var piTicks = [-PI, -3*PI/4, -PI/2, -PI/4, 0, PI/4, PI/2, 3*PI/4, PI];
+    for (var i = 0; i < piTicks.length; i++) {
+      ctx.beginPath();
+      ctx.moveTo(toCanvasX(piTicks[i]), marginTop);
+      ctx.lineTo(toCanvasX(piTicks[i]), marginTop + plotH);
+      ctx.stroke();
+    }
+    for (var gy = Math.ceil(yMin); gy <= Math.floor(yMax); gy++) {
+      ctx.beginPath();
+      ctx.moveTo(marginLeft, toCanvasY(gy));
+      ctx.lineTo(marginLeft + plotW, toCanvasY(gy));
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(toCanvasX(xMin), toCanvasY(0));
+    ctx.lineTo(toCanvasX(xMax), toCanvasY(0));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(toCanvasX(0), toCanvasY(yMin));
+    ctx.lineTo(toCanvasX(0), toCanvasY(yMax));
+    ctx.stroke();
+
+    // Plot h(x)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    var step = (xMax - xMin) / 600;
+    for (var px = xMin; px <= xMax; px += step) {
+      var fy = h(px);
+      var cx = toCanvasX(px);
+      var cy = toCanvasY(fy);
+      if (px === xMin) { ctx.moveTo(cx, cy); }
+      else { ctx.lineTo(cx, cy); }
+    }
+    ctx.stroke();
+
+    // Mark zeros with dots
+    for (var i = 0; i < zeros.length; i++) {
+      var zx = zeros[i];
+      var cx = toCanvasX(zx);
+      var cy = toCanvasY(0);
+      ctx.beginPath();
+      ctx.arc(cx, cy, 5, 0, 2 * PI);
+      ctx.fillStyle = danger;
+      ctx.fill();
+      ctx.strokeStyle = bg;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    // Vertical probe line
+    var pcx = toCanvasX(probeX);
+    ctx.setLineDash([4, 3]);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(pcx, marginTop);
+    ctx.lineTo(pcx, marginTop + plotH);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Value at probe
+    var hVal = h(probeX);
+    var pvy = toCanvasY(hVal);
+    ctx.beginPath();
+    ctx.arc(pcx, pvy, 6, 0, 2 * PI);
+    ctx.fillStyle = highlight;
+    ctx.fill();
+
+    ctx.restore(); // unclip
+
+    // Axis tick labels
+    ctx.fillStyle = text;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    var tickLabels = [
+      [-PI, '\u2212\u03C0'], [-3*PI/4, '\u2212\u00BE\u03C0'], [-PI/2, '\u2212\u00BD\u03C0'], [-PI/4, '\u2212\u00BC\u03C0'],
+      [0, '0'],
+      [PI/4, '\u00BC\u03C0'], [PI/2, '\u00BD\u03C0'], [3*PI/4, '\u00BE\u03C0'], [PI, '\u03C0']
+    ];
+    for (var i = 0; i < tickLabels.length; i++) {
+      ctx.fillText(tickLabels[i][1], toCanvasX(tickLabels[i][0]), marginTop + plotH + 6);
+    }
+
+    // Y-axis labels
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (var gy = Math.ceil(yMin); gy <= Math.floor(yMax); gy++) {
+      if (gy === 0) continue;
+      ctx.fillText('' + gy, marginLeft - 6, toCanvasY(gy));
+    }
+
+    // Probe value readout
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = highlight;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'bottom';
+    var readoutX = toCanvasX(probeX) + 10;
+    var readoutY = marginTop + 20;
+    if (readoutX > W - 150) { readoutX = toCanvasX(probeX) - 10; ctx.textAlign = 'right'; }
+    ctx.fillText('x = ' + probeX.toFixed(2), readoutX, readoutY);
+    ctx.fillText('h(x) = ' + hVal.toFixed(3), readoutX, readoutY + 18);
+
+    // Drag hint
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('prevuci vertikalnu liniju', W / 2, H - 22);
+
+    // Solution count label
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = accent;
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Ukupno nula: 15', W - marginRight, marginTop + 6);
+
+    // Legend
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    var legX = marginLeft + 10;
+    var legY = marginTop + 12;
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(legX, legY);
+    ctx.lineTo(legX + 20, legY);
+    ctx.stroke();
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.fillText('h(x)', legX + 26, legY);
+
+    ctx.beginPath();
+    ctx.arc(legX + 10, legY + 18, 4, 0, 2 * PI);
+    ctx.fillStyle = danger;
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.fillText('nule', legX + 26, legY + 18);
+  }
+
+  draw();
+
+  // Mouse interaction
+  canvas.addEventListener('mousedown', function(e) {
+    var pos = getPos(e);
+    if (isNearProbe(pos) || (pos.y > marginTop && pos.y < H - marginBottom && pos.x > marginLeft && pos.x < W - marginRight)) {
+      dragging = true;
+      canvas.style.cursor = 'ew-resize';
+      var mx = toMathX(pos.x);
+      if (mx < xMin) mx = xMin;
+      if (mx > xMax) mx = xMax;
+      probeX = mx;
+      draw();
+    }
+  });
+  canvas.addEventListener('mousemove', function(e) {
+    var pos = getPos(e);
+    if (dragging) {
+      var mx = toMathX(pos.x);
+      if (mx < xMin) mx = xMin;
+      if (mx > xMax) mx = xMax;
+      probeX = mx;
+      draw();
+    } else {
+      canvas.style.cursor = isNearProbe(pos) ? 'ew-resize' : 'default';
+    }
+  });
+  canvas.addEventListener('mouseup', function() { dragging = false; canvas.style.cursor = 'default'; });
+  canvas.addEventListener('mouseleave', function() { dragging = false; canvas.style.cursor = 'default'; });
+
+  // Touch support
+  canvas.addEventListener('touchstart', function(e) {
+    var pos = getPos(e);
+    if (pos.y > marginTop && pos.y < H - marginBottom && pos.x > marginLeft && pos.x < W - marginRight) {
+      dragging = true;
+      e.preventDefault();
+      var mx = toMathX(pos.x);
+      if (mx < xMin) mx = xMin;
+      if (mx > xMax) mx = xMax;
+      probeX = mx;
+      draw();
+    }
+  }, { passive: false });
+  canvas.addEventListener('touchmove', function(e) {
+    if (!dragging) return;
+    e.preventDefault();
+    var pos = getPos(e);
+    var mx = toMathX(pos.x);
+    if (mx < xMin) mx = xMin;
+    if (mx > xMax) mx = xMax;
+    probeX = mx;
+    draw();
+  }, { passive: false });
+  canvas.addEventListener('touchend', function() { dragging = false; });
+
+  // Theme change listener
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Broj rešenja trigonometrijske jednačine na [-\u03C0, \u03C0]",
+  "subject": "math",
+  "unit": "trigonometry",
+  "topic_tags": ["trigonometrijske jednačine", "sum-to-product", "brojanje rešenja", "sinusna funkcija", "kosinusna funkcija"]
+}
+BRAINSPARK_META-->

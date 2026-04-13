@@ -187,6 +187,9 @@ Cards should appear in the order listed above. Required cards must always be pre
 - Canvas uses fixed pixel `width`/`height` attributes (for drawing coordinate space)
 - CSS handles responsive scaling via `max-width: 100%`
 - **Canvas height**: Ensure sufficient height so no elements overlap. Labels, legends, axis text, and tick marks must all have clear spacing. Typical minimums: 400px for simple graphs, 500px+ for labeled diagrams with legends. When in doubt, add extra height.
+- **Interactivity target: ~40–50% of problems. Prefer on-canvas interaction** (draggable points, hover, click) over external controls (sliders). Direct manipulation feels more intuitive. Use sliders only when the parameter has no spatial location on the diagram. Make interactive when the problem involves: geometry with a movable point (→ draggable point), optimization (→ draggable point along curve), unit circle trig (→ draggable angle), function graphs (→ draggable x-probe or coefficient point), intersections (→ draggable curve), 3D solids (→ draggable rotation). Keep static only for pure arithmetic, fixed counting, or labeled figures with no free parameter.
+- For on-canvas interaction: draw a grab hint near draggable points in `cv('--sol-canvas-muted')` (e.g. "prevuci")
+- For sliders (fallback): place inside `<div class="canvas-controls">`
 - See Section 7 for canvas script requirements
 
 ### 5.5 Step-by-Step Solution
@@ -391,11 +394,13 @@ Canvas scripts live in `<script>` blocks at the end of the fragment. They must:
 
 - All scripts must be wrapped in an **IIFE**: `(function() { ... })();`
 - No inline event handlers (`onclick`, `onchange`, etc.) — use `addEventListener`
-- Maximum 2 interactive elements (sliders, draggable points, toggles)
-- Touch support required for interactive elements (`touchstart`, `touchmove`, `touchend`)
+- At most 2 interactive elements per canvas, but DO include them when the problem qualifies (see Section 5.4)
+- **Prefer on-canvas drag** over external sliders. Use `mousedown`/`mousemove`/`mouseup` + touch equivalents. Change cursor to `grab`/`grabbing` over hot zones. Draw a glow ring and "prevuci" hint near draggable points.
+- Touch support required (`touchstart`, `touchmove`, `touchend` with `{ passive: false }` and `e.preventDefault()`)
 - Canvas `touch-action: none` is applied by the CSS (no need to set it in JS)
 - Y-axis must point UP (mathematical convention): use coordinate transformation
 - For rapidly changing values (sliders), update plain HTML `<span>` elements, not MathJax
+- Interactive `draw()` must accept parameters: `function draw(param) { ... }` — not a no-arg function that reads global state
 
 ---
 

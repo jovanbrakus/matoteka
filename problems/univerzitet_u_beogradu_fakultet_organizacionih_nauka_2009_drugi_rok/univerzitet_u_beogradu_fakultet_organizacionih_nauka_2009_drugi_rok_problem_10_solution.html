@@ -1,0 +1,430 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Odnos sedmog člana od početka i sedmog člana od kraja u razvoju
+(∛2 + 1/∛3)^n je 1/6. Naći zbir svih binomnih koeficijenata.
+
+Neka je a = ∛2 = 2^(1/3) i b = 1/∛3 = 3^(-1/3).
+
+Binomni razvoj: (a + b)^n = Σ C(n,k) · a^(n-k) · b^k, k = 0, 1, ..., n.
+
+7. član od početka: T_7 = C(n,6) · a^(n-6) · b^6
+7. član od kraja: T_{n-5} = C(n,n-6) · a^6 · b^(n-6)
+
+Ali C(n,6) = C(n,n-6), pa se u količniku ovi koeficijenti skrate:
+
+T_7 / T_{n-5} = [a^(n-6) · b^6] / [a^6 · b^(n-6)]
+              = a^(n-12) · b^(12-n)
+              = (a/b)^(n-12)
+
+a/b = 2^(1/3) / 3^(-1/3) = 2^(1/3) · 3^(1/3) = (2·3)^(1/3) = 6^(1/3)
+
+Dakle: (6^(1/3))^(n-12) = 6^((n-12)/3) = 1/6 = 6^(-1)
+
+(n-12)/3 = -1
+n - 12 = -3
+n = 9
+
+Zbir svih binomnih koeficijenata = (1+1)^n = 2^n = 2^9 = 512
+
+Provera odgovora:
+(A) 2^(3^2) = 2^9 = 512 ✓
+(B) 2^(2^3) = 2^8 = 256
+(C) 4^(2^2) = 4^4 = 256
+(D) 2^(4^2) = 2^16 = 65536
+(E) 2^(3^4) = 2^81 (ogromno)
+
+Odgovor: (A) = 2^(3^2) = 2^9 = 512.
+</script>
+
+<h1 data-card="problem-title">Binomna formula — odnos članova i zbir koeficijenata</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — binomni razvoj, eksponencijalne jednačine</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Odnos sedmog člana od početka i sedmog člana od kraja u razvoju \(\left(\sqrt[3]{2} + \dfrac{1}{\sqrt[3]{3}}\right)^n\) je \(\dfrac{1}{6}\). Zbir svih binomnih koeficijenata u tom razvoju je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 2^{3^2} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 2^{2^3} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 4^{2^2} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 2^{4^2} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 2^{3^4} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Izrazićemo sedmi član od početka i sedmi član od kraja korišćenjem binomne formule. Njihov količnik uprostićemo do jednačine po \(n\), a zatim ćemo primeniti osobinu da je zbir svih binomnih koeficijenata \(2^n\).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Binomna formula</span> \(\displaystyle (a+b)^n = \sum_{k=0}^{n} \binom{n}{k}\, a^{n-k}\, b^k\). Opšti \((k+1)\)-vi član: \(T_{k+1} = \binom{n}{k}\, a^{n-k}\, b^k\).</li>
+        <li><span class="formula-label">Simetrija koeficijenata</span> \(\binom{n}{k} = \binom{n}{n-k}\). Zato se u količniku dva simetrična člana binomni koeficijenti skrate.</li>
+        <li><span class="formula-label">Zbir binomnih koeficijenata</span> Stavimo \(a = b = 1\) u binomnu formulu: \(\displaystyle \sum_{k=0}^{n} \binom{n}{k} = 2^n\).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="binomialChart" width="700" height="500"></canvas>
+  </div>
+  <div class="canvas-controls">
+    <label>n = <strong id="nLabel">9</strong></label>
+    <input type="range" id="nSlider" min="3" max="15" value="9" step="1">
+  </div>
+  <p class="canvas-caption">Binomni koeficijenti \(\binom{n}{k}\) za izabrano \(n\). Sedmi od početka (k=6) i sedmi od kraja su istaknuti.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Uvodimo oznake</h3>
+      <p>Neka je \(a = \sqrt[3]{2} = 2^{1/3}\) i \(b = \dfrac{1}{\sqrt[3]{3}} = 3^{-1/3}\). Razvoj glasi \((a + b)^n\).</p>
+      <p>Opšti \((k+1)\)-vi član binomnog razvoja je:</p>
+      <div class="math-block">\[ T_{k+1} = \binom{n}{k}\, a^{n-k}\, b^k \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Zapisujemo sedmi član od početka i od kraja</h3>
+      <p>Sedmi član od početka (za \(k = 6\)):</p>
+      <div class="math-block">\[ T_7 = \binom{n}{6}\, a^{n-6}\, b^6 \]</div>
+      <p>Sedmi član od kraja je \((n+1 - 7 + 1)\)-vi od početka, tj. \((n-5)\)-ti. To je član za \(k = n - 6\):</p>
+      <div class="math-block">\[ T_{n-5} = \binom{n}{n-6}\, a^{6}\, b^{n-6} \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Zašto je sedmi od kraja jednak članu za k = n - 6?</summary>
+          <div class="detail-content"><p>Razvoj ima \(n+1\) članova, numerisanih od 1 do \(n+1\). Sedmi od kraja je na poziciji \(n + 1 - 6 = n - 5\) od početka, a to odgovara indeksu \(k = n - 6\) u formuli \(T_{k+1}\).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Formiramo količnik</h3>
+      <p>Koristeći simetriju \(\binom{n}{6} = \binom{n}{n-6}\), binomni koeficijenti se skrate:</p>
+      <div class="math-block">\[ \frac{T_7}{T_{n-5}} = \frac{a^{n-6}\, b^6}{a^6\, b^{n-6}} = \left(\frac{a}{b}\right)^{n-12} \]</div>
+      <p>Izračunajmo \(\dfrac{a}{b}\):</p>
+      <div class="math-block">\[ \frac{a}{b} = \frac{2^{1/3}}{3^{-1/3}} = 2^{1/3} \cdot 3^{1/3} = (2 \cdot 3)^{1/3} = 6^{1/3} \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Rešavamo jednačinu po n</h3>
+      <p>Uslov zadatka je:</p>
+      <div class="math-block">\[ \left(6^{1/3}\right)^{n-12} = \frac{1}{6} \]</div>
+      <p>Leva strana se piše kao \(6^{(n-12)/3}\), a desna kao \(6^{-1}\):</p>
+      <div class="math-block">\[ 6^{(n-12)/3} = 6^{-1} \]</div>
+      <p>Izjednačavamo eksponente:</p>
+      <div class="math-block">\[ \frac{n - 12}{3} = -1 \implies n - 12 = -3 \implies n = 9 \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Da li razvoj za n = 9 zaista ima sedmi član od kraja?</summary>
+          <div class="detail-content"><p>Za \(n = 9\) razvoj ima \(9 + 1 = 10\) članova, pa sedmi član od kraja (pozicija 4 od početka) postoji. Da bi sedmi član od kraja postojao, mora biti \(n + 1 \geq 7\), tj. \(n \geq 6\). Uslov je ispunjen.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo zbir binomnih koeficijenata</h3>
+      <p>Zbir svih binomnih koeficijenata u razvoju \((a+b)^n\) dobija se stavljanjem \(a = b = 1\):</p>
+      <div class="math-block">\[ \sum_{k=0}^{n} \binom{n}{k} = 2^n = 2^9 = 512 \]</div>
+      <p>Ostaje da proverimo koji ponuđeni odgovor daje 512:</p>
+      <div class="math-block">\[ 2^{3^2} = 2^{9} = 512 \quad \checkmark \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: Šta je \(2^{2^3}\)?</summary>
+          <div class="detail-content"><p>\(2^{2^3} = 2^8 = 256\). Dakle to je pogrešan odgovor — važno je razlikovati \(2^{3^2} = 2^9\) od \(2^{2^3} = 2^8\). Stepenovanje se čita s desna na levo!</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Ključna je simetrija binomnih koeficijenata: \(\binom{n}{k} = \binom{n}{n-k}\). Zahvaljujući njoj, u količniku simetričnih članova (sedmi od početka i sedmi od kraja) ostaje čist razlomak stepena osnova \(a\) i \(b\), koji se lako svodi na eksponencijalnu jednačinu. Takođe, ne treba zaboraviti da se stepenovanje čita s desna na levo: \(2^{3^2} = 2^{(3^2)} = 2^9\), a ne \((2^3)^2 = 8^2 = 64\).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ 2^{3^2} = 2^9 = 512 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 2^{3^2} \)</span>
+    <span class="answer-option" data-option="B">(B) \( 2^{2^3} \)</span>
+    <span class="answer-option" data-option="C">(C) \( 4^{2^2} \)</span>
+    <span class="answer-option" data-option="D">(D) \( 2^{4^2} \)</span>
+    <span class="answer-option" data-option="E">(E) \( 2^{3^4} \)</span>
+  </div>
+  <p class="verification">Provera: Za \(n = 9\), količnik \(T_7 / T_{n-5} = 6^{(9-12)/3} = 6^{-1} = \frac{1}{6}\). Zbir koeficijenata: \(2^9 = 512 = 2^{3^2}\). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešno tumačenje „sedmog člana od kraja":</strong> To nije \(T_{n-7}\), već \(T_{n-5}\) (jer odbrojavamo 7 pozicija od poslednjeg člana \(T_{n+1}\) unazad).</li>
+    <li><strong>Pogrešno računanje \(a/b\):</strong> Deljenje sa \(3^{-1/3}\) je isto što i množenje sa \(3^{1/3}\), ne sa \(3^{-1/3}\).</li>
+    <li><strong>Redosled stepenovanja:</strong> Izraz \(2^{3^2}\) znači \(2^{(3^2)} = 2^9 = 512\), a ne \((2^3)^2 = 64\). Ova greška vodi do pogrešnog izbora.</li>
+    <li><strong>Zbunjivanje sa zbirom članova:</strong> Zbir binomnih <em>koeficijenata</em> (stavimo \(a=b=1\)) nije isto što i zbir svih članova razvoja. Zadatak traži koeficijente.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Ako je odnos petog člana od početka i petog člana od kraja u razvoju \(\left(\sqrt[3]{2} + \dfrac{1}{\sqrt[3]{3}}\right)^n\) jednak \(\dfrac{1}{36}\), koliko je \(n\) i koliki je zbir svih binomnih koeficijenata?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Analogno prethodnom postupku, količnik daje \(6^{(n-8)/3} = 6^{-2}\), odakle je \((n-8)/3 = -2\), pa \(n = 2\). Ali \(n = 2\) ne dozvoljava peti član (potrebno je bar 5 članova, tj. \(n \geq 4\)). Dakle, takav razvoj ne postoji — zadatak nema rešenje! Razmisli zašto je važno proveriti uslov \(n \geq 2k\) za postojanje simetričnih članova.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('binomialChart');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  var slider = document.getElementById('nSlider');
+  var nLabel = document.getElementById('nLabel');
+
+  function binomial(n, k) {
+    if (k < 0 || k > n) return 0;
+    if (k === 0 || k === n) return 1;
+    var result = 1;
+    for (var i = 0; i < k; i++) {
+      result = result * (n - i) / (i + 1);
+    }
+    return Math.round(result);
+  }
+
+  function draw(n) {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    var marginLeft = 80;
+    var marginRight = 40;
+    var marginTop = 60;
+    var marginBottom = 90;
+    var plotW = W - marginLeft - marginRight;
+    var plotH = H - marginTop - marginBottom;
+
+    // Compute binomial coefficients
+    var coeffs = [];
+    var maxCoeff = 0;
+    for (var k = 0; k <= n; k++) {
+      var c = binomial(n, k);
+      coeffs.push(c);
+      if (c > maxCoeff) maxCoeff = c;
+    }
+
+    var barCount = n + 1;
+    var barGap = 4;
+    var barW = Math.min(40, (plotW - barGap * barCount) / barCount);
+    var totalBarsW = barCount * (barW + barGap) - barGap;
+    var startX = marginLeft + (plotW - totalBarsW) / 2;
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Binomni koeficijenti C(n, k) za n = ' + n, W / 2, 28);
+
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('Zbir svih koeficijenata = 2\u207F = ' + Math.pow(2, n), W / 2, 46);
+
+    // Y-axis scale
+    var yScale = plotH / (maxCoeff * 1.15);
+
+    // Gridlines
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 0.5;
+    var gridSteps = 5;
+    for (var gi = 0; gi <= gridSteps; gi++) {
+      var yVal = (maxCoeff * 1.15 / gridSteps) * gi;
+      var gy = marginTop + plotH - yVal * yScale;
+      ctx.beginPath();
+      ctx.moveTo(marginLeft, gy);
+      ctx.lineTo(marginLeft + plotW, gy);
+      ctx.stroke();
+      ctx.fillStyle = muted;
+      ctx.font = '10px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(Math.round(yVal).toString(), marginLeft - 8, gy + 4);
+    }
+
+    // Baseline
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(marginLeft, marginTop + plotH);
+    ctx.lineTo(marginLeft + plotW, marginTop + plotH);
+    ctx.stroke();
+
+    // Bars
+    var idx7start = 6;       // k=6, 7th from start
+    var idx7end = n - 6;     // k=n-6, 7th from end
+    var has7th = n >= 6;
+
+    for (var ki = 0; ki <= n; ki++) {
+      var bx = startX + ki * (barW + barGap);
+      var bh = coeffs[ki] * yScale;
+      var by = marginTop + plotH - bh;
+
+      var isStart7 = has7th && ki === idx7start;
+      var isEnd7 = has7th && ki === idx7end;
+
+      if (isStart7) {
+        ctx.fillStyle = highlight;
+      } else if (isEnd7) {
+        ctx.fillStyle = secondary;
+      } else {
+        ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.6);
+      }
+
+      ctx.fillRect(bx, by, barW, bh);
+
+      // Border
+      ctx.strokeStyle = isStart7 ? highlight : (isEnd7 ? secondary : primary);
+      ctx.lineWidth = isStart7 || isEnd7 ? 2 : 1;
+      ctx.strokeRect(bx, by, barW, bh);
+
+      // Value on top
+      ctx.fillStyle = text;
+      ctx.font = (barCount <= 10 ? '11' : '9') + 'px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(coeffs[ki].toString(), bx + barW / 2, by - 6);
+
+      // k label
+      ctx.fillStyle = muted;
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('k=' + ki, bx + barW / 2, marginTop + plotH + 16);
+    }
+
+    // Labels for highlighted bars
+    if (has7th) {
+      var sx7 = startX + idx7start * (barW + barGap) + barW / 2;
+      ctx.fillStyle = highlight;
+      ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('T\u2087 (7. od po\u010Detka)', sx7, marginTop + plotH + 38);
+
+      var ex7 = startX + idx7end * (barW + barGap) + barW / 2;
+      ctx.fillStyle = secondary;
+      ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('T (7. od kraja)', ex7, marginTop + plotH + 56);
+
+      if (n === 9) {
+        ctx.fillStyle = accent;
+        ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Odnos T\u2087/T(od kraja) = (a/b)\u207B\u00B3 = 6\u207B\u00B9 = 1/6 \u2713', W / 2, marginTop + plotH + 76);
+      }
+    }
+
+    if (!has7th) {
+      ctx.fillStyle = danger;
+      ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('n < 6: sedmi \u010Dlan ne postoji!', W / 2, marginTop + plotH + 50);
+    }
+  }
+
+  var currentN = parseInt(slider.value);
+  draw(currentN);
+
+  slider.addEventListener('input', function() {
+    currentN = parseInt(slider.value);
+    nLabel.textContent = currentN;
+    draw(currentN);
+  });
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw(currentN);
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Binomna formula — odnos članova i zbir koeficijenata",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["binomna formula", "binomni koeficijenti", "eksponencijalna jednačina", "stepenovanje"]
+}
+BRAINSPARK_META-->

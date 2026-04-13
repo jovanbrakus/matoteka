@@ -93,7 +93,12 @@ Answer: (B) (a, b)
   <div class="canvas-wrapper">
     <canvas id="diagram20" width="700" height="500"></canvas>
   </div>
-  <p class="canvas-caption">Grafici funkcije \( f(x) = |x - p| + |x - 1| \) za različite vrednosti \( p \) i horizontalna prava \( y = 1 \)</p>
+  <p class="canvas-caption">Grafik funkcije \( f(x) = |x - p| + |x - 1| \) i horizontalna prava \( y = 1 \)</p>
+  <div class="canvas-controls">
+    <label>\( p = \) <input type="range" id="pSlider20" min="-100" max="300" value="100" step="1"></label>
+    <span id="pValue20">1,0</span>
+  </div>
+  <p class="note">Pomeri klizač da vidiš kako se grafik i broj rešenja menjaju sa parametrom p.</p>
 </div>
 
 <div data-card="step-solution" data-title="Rešenje korak po korak">
@@ -235,7 +240,11 @@ Answer: (B) (a, b)
   var W = canvas.width;
   var H = canvas.height;
 
-  function draw() {
+  var slider = document.getElementById('pSlider20');
+  var pDisplay = document.getElementById('pValue20');
+  var currentP = 1.0;
+
+  function draw(pVal) {
     var bg        = cv('--sol-canvas-bg');
     var grid      = cv('--sol-canvas-grid');
     var axis      = cv('--sol-canvas-axis');
@@ -311,8 +320,8 @@ Answer: (B) (a, b)
     ctx.fillText('y', toX(0) + 14, toY(yMax) - 8);
 
     // Function f(x) = |x - p| + |x - 1|
-    function fVal(x, p) {
-      return Math.abs(x - p) + Math.abs(x - 1);
+    function fVal(x) {
+      return Math.abs(x - pVal) + Math.abs(x - 1);
     }
 
     // Draw horizontal line y = 1
@@ -331,125 +340,179 @@ Answer: (B) (a, b)
     ctx.textAlign = 'left';
     ctx.fillText('y = 1', toX(xMax) - 50, toY(1) - 8);
 
-    // Plot three cases of p
-    var cases = [
-      { p: 0.5, color: primary, label: 'p = 0,5', dash: [] },
-      { p: 1.0, color: secondary, label: 'p = 1', dash: [] },
-      { p: 1.5, color: accent, label: 'p = 1,5', dash: [] }
-    ];
+    // Determine solution count and curve color
+    var minVal = Math.abs(pVal - 1);
+    var solCount;
+    var curveColor;
+    if (Math.abs(minVal - 1) < 1e-9) {
+      solCount = '\u221e';  // infinity: flat segment sits on y=1
+      curveColor = danger;
+    } else if (minVal > 1) {
+      solCount = '0';
+      curveColor = danger;
+    } else {
+      solCount = '2';
+      curveColor = primary;
+    }
 
+    // Draw the curve f(x) = |x - pVal| + |x - 1|
     var dx = 0.02;
-    for (var ci = 0; ci < cases.length; ci++) {
-      var cs = cases[ci];
-      ctx.strokeStyle = cs.color;
-      ctx.lineWidth = 2.5;
-      ctx.setLineDash(cs.dash);
+    ctx.strokeStyle = curveColor;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    var first = true;
+    for (var x = xMin; x <= xMax; x += dx) {
+      var y = fVal(x);
+      if (y > yMax + 0.5) { first = true; continue; }
+      var px = toX(x);
+      var py = toY(y);
+      if (first) { ctx.moveTo(px, py); first = false; }
+      else { ctx.lineTo(px, py); }
+    }
+    ctx.stroke();
+
+    // Mark the flat minimum segment (if it exists)
+    var lo = Math.min(pVal, 1);
+    var hi = Math.max(pVal, 1);
+    if (hi - lo > 0.01) {
+      ctx.strokeStyle = cvAlpha('--sol-canvas-muted', 0.5);
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 3]);
       ctx.beginPath();
-      var first = true;
-      for (var x = xMin; x <= xMax; x += dx) {
-        var y = fVal(x, cs.p);
-        if (y > yMax + 0.5) { first = true; continue; }
-        var px = toX(x);
-        var py = toY(y);
-        if (first) { ctx.moveTo(px, py); first = false; }
-        else { ctx.lineTo(px, py); }
-      }
+      ctx.moveTo(toX(lo), toY(minVal));
+      ctx.lineTo(toX(lo), toY(0));
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(toX(hi), toY(minVal));
+      ctx.lineTo(toX(hi), toY(0));
       ctx.stroke();
       ctx.setLineDash([]);
     }
 
-    // Mark intersection points for each case
-    for (var ci = 0; ci < cases.length; ci++) {
-      var cs = cases[ci];
-      var p = cs.p;
-      // Find intersections with y = 1
-      // Left side: p + 1 - 2x = 1 => x = p/2
-      var xL = p / 2;
-      // Right side: 2x - p - 1 = 1 => x = (p + 2) / 2
-      var xR = (p + 2) / 2;
+    // Mark intersection points with y = 1 (only when exactly 2 solutions)
+    if (solCount === '2') {
+      // Left intersection: p + 1 - 2x = 1 => x = p/2
+      var xL = pVal / 2;
+      // Right intersection: 2x - p - 1 = 1 => x = (p + 2) / 2
+      var xR = (pVal + 2) / 2;
 
-      ctx.fillStyle = cs.color;
-      // Left intersection
+      ctx.fillStyle = highlight;
       ctx.beginPath();
-      ctx.arc(toX(xL), toY(1), 5, 0, 2 * Math.PI);
+      ctx.arc(toX(xL), toY(1), 6, 0, 2 * Math.PI);
       ctx.fill();
-      // Right intersection
       ctx.beginPath();
-      ctx.arc(toX(xR), toY(1), 5, 0, 2 * Math.PI);
+      ctx.arc(toX(xR), toY(1), 6, 0, 2 * Math.PI);
       ctx.fill();
+
+      // Label the intersection x-values
+      ctx.fillStyle = text;
+      ctx.font = '11px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      var xLStr = (Math.round(xL * 100) / 100).toString().replace('.', ',');
+      var xRStr = (Math.round(xR * 100) / 100).toString().replace('.', ',');
+      ctx.fillText('x = ' + xLStr, toX(xL), toY(1) + 20);
+      ctx.fillText('x = ' + xRStr, toX(xR), toY(1) + 20);
     }
+
+    // Mark p and 1 on the x-axis
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(toX(pVal), toY(0), 4, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 11px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('p', toX(pVal), toY(0) + 28);
+
+    ctx.fillStyle = secondary;
+    ctx.beginPath();
+    ctx.arc(toX(1), toY(0), 4, 0, 2 * Math.PI);
+    ctx.fill();
 
     // Legend
     var legX = padL + 10;
     var legY = padT + 10;
     var legSpacing = 22;
-
     ctx.font = '12px Segoe UI, system-ui, sans-serif';
     ctx.textAlign = 'left';
 
-    for (var ci = 0; ci < cases.length; ci++) {
-      var cs = cases[ci];
-      var ly = legY + ci * legSpacing;
-      ctx.strokeStyle = cs.color;
-      ctx.lineWidth = 2.5;
-      ctx.beginPath();
-      ctx.moveTo(legX, ly);
-      ctx.lineTo(legX + 25, ly);
-      ctx.stroke();
-      ctx.fillStyle = cs.color;
-      ctx.fillText(cs.label + '  (2 rešenja)', legX + 32, ly + 4);
-    }
+    // Curve legend
+    ctx.strokeStyle = curveColor;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(legX, legY);
+    ctx.lineTo(legX + 25, legY);
+    ctx.stroke();
+    ctx.fillStyle = curveColor;
+    var pLabel = (Math.round(pVal * 100) / 100).toString().replace('.', ',');
+    ctx.fillText('f(x), p = ' + pLabel, legX + 32, legY + 4);
 
     // y = 1 legend
-    var ly = legY + cases.length * legSpacing;
+    var ly2 = legY + legSpacing;
     ctx.strokeStyle = danger;
     ctx.lineWidth = 2;
     ctx.setLineDash([8, 4]);
     ctx.beginPath();
-    ctx.moveTo(legX, ly);
-    ctx.lineTo(legX + 25, ly);
+    ctx.moveTo(legX, ly2);
+    ctx.lineTo(legX + 25, ly2);
     ctx.stroke();
     ctx.setLineDash([]);
     ctx.fillStyle = danger;
-    ctx.fillText('y = 1', legX + 32, ly + 4);
+    ctx.fillText('y = 1', legX + 32, ly2 + 4);
+
+    // Solution count info box
+    var infoY = legY + legSpacing * 2 + 8;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    var solLabel = solCount === '\u221e' ? '\u221e (beskonačno)' : solCount;
+    ctx.fillText('Broj rešenja: ' + solLabel, legX, infoY);
+
+    var statusY = infoY + 20;
+    if (pVal > 0 && pVal < 2) {
+      ctx.fillStyle = primary;
+      ctx.fillText('p \u2208 (0, 2) \u2014 tačno 2 rešenja \u2713', legX, statusY);
+    } else if (Math.abs(pVal) < 1e-9 || Math.abs(pVal - 2) < 1e-9) {
+      ctx.fillStyle = danger;
+      ctx.fillText('p = ' + pLabel + ' \u2014 beskonačno rešenja', legX, statusY);
+    } else {
+      ctx.fillStyle = danger;
+      ctx.fillText('p \u2209 (0, 2) \u2014 nema rešenja', legX, statusY);
+    }
 
     // Bottom annotation
     ctx.fillStyle = text;
     ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText('Za p \u2208 (0, 2): prava y = 1 seče grafik u tačno 2 tačke', W / 2, H - 18);
-
-    // Mark the flat minimum segments
-    for (var ci = 0; ci < cases.length; ci++) {
-      var cs = cases[ci];
-      var p = cs.p;
-      var minVal = Math.abs(p - 1);
-      var lo = Math.min(p, 1);
-      var hi = Math.max(p, 1);
-      if (hi - lo > 0.01) {
-        ctx.strokeStyle = cvAlpha('--sol-canvas-muted', 0.5);
-        ctx.lineWidth = 1;
-        ctx.setLineDash([3, 3]);
-        ctx.beginPath();
-        ctx.moveTo(toX(lo), toY(minVal));
-        ctx.lineTo(toX(lo), toY(0));
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(toX(hi), toY(minVal));
-        ctx.lineTo(toX(hi), toY(0));
-        ctx.stroke();
-        ctx.setLineDash([]);
-      }
-    }
   }
 
-  draw();
+  function formatP(val) {
+    var s = val.toFixed(2).replace('.', ',');
+    // Trim trailing zero after comma if present (e.g. 1,50 -> 1,5; but keep 1,00 -> 1,0)
+    if (s.charAt(s.length - 1) === '0' && s.charAt(s.length - 3) !== ',') {
+      s = s.slice(0, -1);
+    }
+    return s;
+  }
+
+  function onSlider() {
+    currentP = parseInt(slider.value, 10) / 100;
+    pDisplay.textContent = formatP(currentP);
+    draw(currentP);
+  }
+
+  if (slider) {
+    slider.addEventListener('input', onSlider);
+  }
+
+  draw(currentP);
 
   window.addEventListener('message', function(e) {
     if (e.data && e.data.type === 'matoteka-theme') {
       setTimeout(function() {
         styles = getComputedStyle(root);
-        draw();
+        draw(currentP);
       }, 50);
     }
   });
