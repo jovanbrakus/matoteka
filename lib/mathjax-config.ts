@@ -32,6 +32,14 @@ export const MATHJAX_CONFIG = {
       width: "100%",
     },
   },
+  // Disable MathJax's built-in speech synthesis (a11y explorer). It calls
+  // window.speechSynthesis on focus/blur which throws ReferenceError in
+  // browsers or contexts where the API is unavailable.
+  options: {
+    a11y: {
+      speech: false,
+    },
+  },
 };
 
 // v4 CDN path drops the `/es5/` segment — major change from v3.
