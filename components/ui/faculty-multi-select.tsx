@@ -13,6 +13,7 @@ export const FACULTIES = [
   { id: "tmf", name: "Tehnološko-metalurški fakultet", short: "TMF" },
   { id: "sf", name: "Saobraćajni fakultet", short: "SF" },
   { id: "ff", name: "Fizički fakultet", short: "FF" },
+  { id: "ftn", name: "Fakultet tehničkih nauka", short: "FTN" },
 ] as const;
 
 const OTHER_OPTION = { id: "other", name: "Ostalo (Other)", short: "Ostalo" };

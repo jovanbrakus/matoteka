@@ -2,7 +2,8 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
-import { User, Mail, Check, Loader2 } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { User, Mail, Check, Loader2, GraduationCap } from "lucide-react";
 import { FACULTIES } from "@/components/ui/faculty-multi-select";
 
 const MAX_FACULTIES = 3;
@@ -10,11 +11,14 @@ const MAX_FACULTIES = 3;
 export default function ProfilePage() {
   const { data: session, update: updateSession } = useSession();
   const user = session?.user;
+  const searchParams = useSearchParams();
+  const showFacultyPrompt = searchParams.get("selectFaculties") === "true";
 
   const [targetFaculties, setTargetFaculties] = useState<string[]>([]);
   const [facultyLoaded, setFacultyLoaded] = useState(false);
   const [savingFaculty, setSavingFaculty] = useState(false);
   const [facultySaved, setFacultySaved] = useState(false);
+  const [facultyDialogOpen, setFacultyDialogOpen] = useState(false);
 
   const [displayName, setDisplayName] = useState("");
   const [originalName, setOriginalName] = useState("");
@@ -36,6 +40,13 @@ export default function ProfilePage() {
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  // Show faculty selection dialog when redirected with ?selectFaculties=true
+  useEffect(() => {
+    if (showFacultyPrompt && facultyLoaded && targetFaculties.length === 0) {
+      setFacultyDialogOpen(true);
+    }
+  }, [showFacultyPrompt, facultyLoaded, targetFaculties.length]);
 
   useEffect(() => {
     if (user) {
@@ -113,6 +124,34 @@ export default function ProfilePage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-10">
+      {/* Faculty selection prompt dialog */}
+      {facultyDialogOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="mx-4 w-full max-w-md rounded-2xl border border-[var(--glass-border)] bg-card p-6 shadow-2xl">
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#ec5b13]/15">
+              <GraduationCap size={24} className="text-[#ec5b13]" />
+            </div>
+            <h2 className="mb-3 text-lg font-bold text-heading">
+              Izaberi ciljane fakultete
+            </h2>
+            <p className="mb-6 text-sm leading-relaxed text-text-secondary">
+              Da bi dobio najoptimalniji izbor zadataka za fakultete za koje se
+              spremaš, molimo te da izabereš do tri fakulteta sa ponuđene liste.
+            </p>
+            <button
+              onClick={() => {
+                setFacultyDialogOpen(false);
+                // Scroll to faculty section
+                document.getElementById("faculty-section")?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="w-full rounded-xl bg-[#ec5b13] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#ec5b13]/90 shadow-[0_0_15px_rgba(236,91,19,0.2)]"
+            >
+              U redu
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Page header */}
       <h1 className="mb-8 text-3xl font-black tracking-tight text-heading">
         Podešavanja profila
@@ -251,7 +290,7 @@ export default function ProfilePage() {
       <hr className="mb-8 border-[var(--glass-border)]" />
 
       {/* Faculty Selection */}
-      <section className="mb-10">
+      <section id="faculty-section" className="mb-10">
         <div className="mb-1.5 flex items-center justify-between">
           <h2 className="text-sm font-semibold text-heading">
             Ciljani fakulteti
