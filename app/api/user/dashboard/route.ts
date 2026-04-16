@@ -4,11 +4,8 @@ import {
   problemProgress,
   mockExams,
   faculties,
-  leaderboardScores,
-  users,
-  userAnalytics,
 } from "@/drizzle/schema";
-import { eq, sql, gt, desc, and } from "drizzle-orm";
+import { eq, sql, desc, and } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { getProblemsCount, getCategoryGroupsWithCounts } from "@/lib/problems";
 import { generateRecommendations } from "@/lib/recommendations";
@@ -21,18 +18,22 @@ export async function GET() {
   const userId = session.user.id;
 
   const [
-    userRow,
+    userWithAnalytics,
     progressResult,
     solvedIdsResult,
     examHistoryResult,
-    myScoreResult,
+    leaderboardResult,
     facultyResult,
-    totalParticipants,
     todayResult,
-    analyticsRows,
   ] = await Promise.all([
-    // User info (streak, target faculties)
-    db.select().from(users).where(eq(users.id, userId)).limit(1),
+    // User info + analytics in one query
+    db.execute(sql`
+      SELECT u.*, ua.category_breakdown, ua.readiness_score, ua.readiness_breakdown
+      FROM users u
+      LEFT JOIN user_analytics ua ON ua.user_id = u.id
+      WHERE u.id = ${userId}
+      LIMIT 1
+    `),
 
     // User progress by status
     db
@@ -77,20 +78,20 @@ export async function GET() {
       .orderBy(desc(mockExams.startedAt))
       .limit(5),
 
-    // Leaderboard score
-    db
-      .select()
-      .from(leaderboardScores)
-      .where(eq(leaderboardScores.userId, userId))
-      .limit(1),
+    // Leaderboard: score + rank + total participants in one query
+    db.execute(sql`
+      SELECT total_score, problems_solved, avg_exam_percent, rank, total_participants
+      FROM (
+        SELECT user_id, total_score, problems_solved, avg_exam_percent,
+          RANK() OVER (ORDER BY total_score DESC) as rank,
+          COUNT(*) OVER () as total_participants
+        FROM leaderboard_scores
+      ) ranked
+      WHERE user_id = ${userId}
+    `),
 
     // Faculty info (for exam dates)
     db.select().from(faculties),
-
-    // Total leaderboard participants
-    db
-      .select({ count: sql<number>`count(*)` })
-      .from(leaderboardScores),
 
     // Today's progress (problems solved today)
     db.execute(sql`
@@ -100,28 +101,20 @@ export async function GET() {
         AND status = 'solved'
         AND solved_at >= CURRENT_DATE
     `),
-
-    // Accuracy + readiness data from analytics
-    db
-      .select({
-        categoryBreakdown: userAnalytics.categoryBreakdown,
-        readinessScore: userAnalytics.readinessScore,
-        readinessBreakdown: userAnalytics.readinessBreakdown,
-      })
-      .from(userAnalytics)
-      .where(eq(userAnalytics.userId, userId))
-      .limit(1),
   ]);
 
-  // Calculate rank (depends on myScoreResult from above)
-  let rank: number | null = null;
-  if (myScoreResult.length > 0) {
-    const rankResult = await db
-      .select({ count: sql<number>`count(*) + 1` })
-      .from(leaderboardScores)
-      .where(gt(leaderboardScores.totalScore, myScoreResult[0].totalScore));
-    rank = Number(rankResult[0]?.count ?? 1);
-  }
+  // Extract user + analytics from combined row
+  const userRow = userWithAnalytics.rows[0] as any;
+  const analyticsData = {
+    categoryBreakdown: userRow?.category_breakdown,
+    readinessScore: userRow?.readiness_score,
+    readinessBreakdown: userRow?.readiness_breakdown,
+  };
+
+  // Extract leaderboard data
+  const lb = leaderboardResult.rows[0] as any;
+  const rank = lb ? Number(lb.rank) : null;
+  const totalParticipantsCount = lb ? Number(lb.total_participants) : 0;
 
   // Aggregate progress
   const total = getProblemsCount();
@@ -132,8 +125,8 @@ export async function GET() {
   const solved = byStatus.solved ?? 0;
   const solvedToday = Number((todayResult.rows[0] as any)?.count ?? 0);
 
-  const user = userRow[0];
-  const targetFaculties = (user?.targetFaculties as string[]) || [];
+  const user = userRow;
+  const targetFaculties = (user?.target_faculties as string[]) || [];
 
   // Build faculty exam dates for user's target faculties
   const facultyExamDates = facultyResult
@@ -170,13 +163,13 @@ export async function GET() {
   const solvedIds = new Set(solvedIdsResult.map((r) => r.problemId));
   const categoryGroupsRaw = getCategoryGroupsWithCounts(solvedIds);
 
-  const breakdown = (analyticsRows[0]?.categoryBreakdown as Record<string, any>) || {};
+  const breakdown = (analyticsData.categoryBreakdown as Record<string, any>) || {};
 
   // Recompute inactivity penalty at read time
-  const storedBreakdown = analyticsRows[0]?.readinessBreakdown as any;
-  let readinessScore = Number(analyticsRows[0]?.readinessScore ?? 0);
-  if (storedBreakdown?.rawScore != null && user?.lastActiveDate) {
-    const lastActive = new Date(user.lastActiveDate);
+  const storedBreakdown = analyticsData.readinessBreakdown as any;
+  let readinessScore = Number(analyticsData.readinessScore ?? 0);
+  if (storedBreakdown?.rawScore != null && user?.last_active_date) {
+    const lastActive = new Date(user.last_active_date);
     const today = new Date();
     const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
     const lastDate = new Date(lastActive.getFullYear(), lastActive.getMonth(), lastActive.getDate());
@@ -222,16 +215,16 @@ export async function GET() {
 
   return NextResponse.json({
     user: {
-      displayName: user?.displayName ?? "Korisnik",
-      avatarUrl: user?.avatarUrl,
-      streakCurrent: user?.streakCurrent ?? 0,
-      streakBest: user?.streakBest ?? 0,
+      displayName: user?.display_name ?? "Korisnik",
+      avatarUrl: user?.avatar_url,
+      streakCurrent: user?.streak_current ?? 0,
+      streakBest: user?.streak_best ?? 0,
       targetFaculties,
     },
     progress: {
       total,
       solved,
-      dailyGoal: user?.dailyGoal ?? 3,
+      dailyGoal: user?.daily_goal ?? 3,
       solvedToday,
     },
     lastExam,
@@ -239,10 +232,10 @@ export async function GET() {
     categoryGroups,
     rank: {
       position: rank,
-      totalParticipants: Number(totalParticipants[0]?.count ?? 0),
-      totalScore: myScoreResult[0]?.totalScore ?? "0",
-      problemsSolved: myScoreResult[0]?.problemsSolved ?? 0,
-      avgScore: myScoreResult[0]?.avgExamPercent ?? "0",
+      totalParticipants: totalParticipantsCount,
+      totalScore: lb?.total_score ?? "0",
+      problemsSolved: lb?.problems_solved ?? 0,
+      avgScore: lb?.avg_exam_percent ?? "0",
     },
     readinessScore,
     recentExams: examHistoryResult.slice(0, 3).map((e) => ({
