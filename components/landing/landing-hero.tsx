@@ -52,10 +52,10 @@ export default function LandingHero() {
                 Bez traženja zadataka, rešenja ili teorije. Imaš 30 minuta? Svih 30 minuta ide na efektivnu pripremu prijemnog.
               </p>
 
-              <div className="flex flex-wrap gap-4 pt-4">
+              <div className="flex flex-row flex-nowrap gap-3 pt-4 sm:gap-4">
                 <Link
                   href="/prijava"
-                  className="group flex items-center gap-3 rounded-xl bg-[#ec5b13] px-8 py-4 text-lg font-bold text-white shadow-[0_0_20px_rgba(236,91,19,0.2)] transition-all hover:bg-[#ec5b13]/90"
+                  className="group flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#ec5b13] px-4 py-4 text-base font-bold text-white shadow-[0_0_20px_rgba(236,91,19,0.2)] transition-all hover:bg-[#ec5b13]/90 sm:flex-initial sm:gap-3 sm:px-8 sm:text-lg"
                 >
                   Počni besplatno
                   <span className="material-symbols-outlined transition-transform group-hover:translate-x-1">
@@ -64,7 +64,7 @@ export default function LandingHero() {
                 </Link>
                 <Link
                   href="/primer"
-                  className="rounded-xl border border-[var(--glass-border)] bg-[var(--tint)] px-8 py-4 text-lg font-bold text-heading transition-all hover:bg-[var(--tint-strong)]"
+                  className="flex flex-1 items-center justify-center rounded-xl border border-[var(--glass-border)] bg-[var(--tint)] px-4 py-4 text-base font-bold text-heading transition-all hover:bg-[var(--tint-strong)] sm:flex-initial sm:px-8 sm:text-lg"
                 >
                   Pogledaj primer
                 </Link>
@@ -325,18 +325,18 @@ export default function LandingHero() {
                   <span className="material-symbols-outlined text-base">auto_stories</span>
                   Istraži lekcije
                 </Link>
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="flex flex-col gap-2 rounded-2xl border border-[var(--glass-border)] bg-[var(--tint)] p-4">
+                <div className="grid grid-cols-3 gap-2 sm:gap-4">
+                  <div className="flex flex-col gap-1.5 rounded-2xl border border-[var(--glass-border)] bg-[var(--tint)] p-3 sm:gap-2 sm:p-4">
                     <span className="material-symbols-outlined text-[#ec5b13]">analytics</span>
-                    <span className="text-sm font-bold text-heading">59 lekcija</span>
+                    <span className="text-xs font-bold text-heading break-words sm:text-sm">59 lekcija</span>
                   </div>
-                  <div className="flex flex-col gap-2 rounded-2xl border border-[var(--glass-border)] bg-[var(--tint)] p-4">
+                  <div className="flex flex-col gap-1.5 rounded-2xl border border-[var(--glass-border)] bg-[var(--tint)] p-3 sm:gap-2 sm:p-4">
                     <span className="material-symbols-outlined text-[#ec5b13]">science</span>
-                    <span className="text-sm font-bold text-heading">30+ labova</span>
+                    <span className="text-xs font-bold text-heading break-words sm:text-sm">30+ labova</span>
                   </div>
-                  <div className="flex flex-col gap-2 rounded-2xl border border-[var(--glass-border)] bg-[var(--tint)] p-4">
+                  <div className="flex flex-col gap-1.5 rounded-2xl border border-[var(--glass-border)] bg-[var(--tint)] p-3 sm:gap-2 sm:p-4">
                     <span className="material-symbols-outlined text-[#ec5b13]">touch_app</span>
-                    <span className="text-sm font-bold text-heading">Interaktivne vežbe</span>
+                    <span className="text-xs font-bold text-heading break-words sm:text-sm">Interaktivne vežbe</span>
                   </div>
                 </div>
               </div>

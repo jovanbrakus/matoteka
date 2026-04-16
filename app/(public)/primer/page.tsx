@@ -15,16 +15,33 @@ function M({ children }: { children: string }) {
 }
 
 function MBlock({ children }: { children: string }) {
-  // `overflow-x-auto` handles horizontal scroll for equations wider than the
-  // container. Mobile browsers hide the scrollbar, so fade the right edge via
-  // `mask-image` as a visual affordance that there's more to the right. The
-  // 20px fade is subtle enough to leave alone on desktop too.
+  // Apply right-edge fade only when the equation actually overflows horizontally
+  // (mobile browsers hide the scrollbar, so the fade hints at scrollable content).
+  const ref = useRef<HTMLDivElement>(null);
+  const [overflowing, setOverflowing] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const check = () => setOverflowing(el.scrollWidth > el.clientWidth + 1);
+    check();
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    // MathJax renders asynchronously; re-check after a delay
+    const t = setTimeout(check, 800);
+    return () => {
+      ro.disconnect();
+      clearTimeout(t);
+    };
+  }, [children]);
+
   const fadeMask =
     "linear-gradient(to right, black calc(100% - 20px), transparent 100%)";
   return (
     <div
+      ref={ref}
       className="my-3 overflow-x-auto rounded-xl border border-[var(--glass-border)] bg-[var(--tint)] px-5 py-4"
-      style={{ WebkitMaskImage: fadeMask, maskImage: fadeMask }}
+      style={overflowing ? { WebkitMaskImage: fadeMask, maskImage: fadeMask } : undefined}
     >
       <MathJax>{`\\[${children}\\]`}</MathJax>
     </div>
@@ -407,18 +424,23 @@ function Step({
   const [active, setActive] = useState(false);
   return (
     <div
-      className={`flex cursor-pointer gap-4 rounded-xl border-l-[3px] p-4 transition-all ${
+      className={`cursor-pointer rounded-xl border-l-[3px] p-2 transition-all sm:flex sm:gap-4 sm:p-4 ${
         active
           ? "border-l-primary bg-[var(--tint)]"
           : "border-l-transparent hover:border-l-primary hover:bg-[var(--tint)]"
       }`}
       onClick={() => setActive(!active)}
     >
-      <div className="mt-0.5 flex h-8 w-8 min-w-[2rem] items-center justify-center rounded-full bg-primary text-sm font-bold text-white">
-        {num}
+      <div className="mb-2 flex items-center gap-2 sm:mb-0 sm:block sm:gap-0">
+        <div className="flex h-7 w-7 min-w-[1.75rem] items-center justify-center rounded-full bg-primary text-sm font-bold text-white sm:mt-0.5 sm:h-8 sm:w-8 sm:min-w-[2rem]">
+          {num}
+        </div>
+        <h3 className="text-[1.15rem] font-semibold text-heading sm:hidden">
+          {title}
+        </h3>
       </div>
       <div className="min-w-0 flex-1">
-        <h3 className="mb-2 text-[1.15rem] font-semibold text-heading">
+        <h3 className="mb-2 hidden text-[1.15rem] font-semibold text-heading sm:block">
           {title}
         </h3>
         {children}
@@ -616,7 +638,7 @@ export default function PrimerPage() {
         {/* Step-by-step solution */}
         <div className="mb-6 space-y-4">
             {/* Step 1 */}
-            <section className="glass-card rounded-2xl p-6">
+            <section className="glass-card rounded-2xl p-3 sm:p-6">
               <h2 className="mb-4 text-xl font-bold text-accent">
                 Rešenje korak po korak
               </h2>
