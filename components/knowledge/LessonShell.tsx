@@ -1,18 +1,19 @@
 "use client";
 
+import { Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { MathJaxContext } from "better-react-mathjax";
 import { MATHJAX_CONFIG, MATHJAX_SRC } from "@/lib/mathjax-config";
 import { useLessonNav } from "./LessonNavContext";
-import { LessonBreadcrumb, LessonFooterNav } from "./LessonNavBar";
+import { LessonFooterNav } from "./LessonNavBar";
 import s from "@/styles/lesson-common.module.css";
 
 interface LessonShellProps {
   children: React.ReactNode;
 }
 
-export default function LessonShell({ children }: LessonShellProps) {
+function LessonShellInner({ children }: LessonShellProps) {
   const nav = useLessonNav();
   const searchParams = useSearchParams();
   const category = searchParams.get("category");
@@ -45,5 +46,13 @@ export default function LessonShell({ children }: LessonShellProps) {
         </main>
       </div>
     </MathJaxContext>
+  );
+}
+
+export default function LessonShell({ children }: LessonShellProps) {
+  return (
+    <Suspense>
+      <LessonShellInner>{children}</LessonShellInner>
+    </Suspense>
   );
 }

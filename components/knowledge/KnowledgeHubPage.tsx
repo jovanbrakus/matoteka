@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { Suspense, useEffect, useState, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import DisciplineFilter from "@/components/knowledge/DisciplineFilter";
 import LessonCard from "@/components/knowledge/LessonCard";
@@ -28,7 +28,15 @@ interface KnowledgeHubPageProps {
   initialLessons: LessonData[];
 }
 
-export default function KnowledgeHubPage({
+export default function KnowledgeHubPage(props: KnowledgeHubPageProps) {
+  return (
+    <Suspense>
+      <KnowledgeHubPageInner {...props} />
+    </Suspense>
+  );
+}
+
+function KnowledgeHubPageInner({
   initialCategories,
   initialLessons,
 }: KnowledgeHubPageProps) {
