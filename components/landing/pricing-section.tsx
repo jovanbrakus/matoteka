@@ -83,7 +83,7 @@ export default function PricingSection() {
           </p>
 
           {/* Billing toggle */}
-          <div className="mx-auto mb-12 inline-flex items-center gap-1 rounded-full border border-[var(--glass-border)] bg-[var(--tint)] p-1">
+          {/* <div className="mx-auto mb-12 inline-flex items-center gap-1 rounded-full border border-[var(--glass-border)] bg-[var(--tint)] p-1">
             <button
               onClick={() => setBilling("monthly")}
               className={`rounded-full px-6 py-2.5 text-sm font-bold transition-all ${
@@ -104,11 +104,11 @@ export default function PricingSection() {
             >
               Sezonski
             </button>
-          </div>
+          </div> */}
         </div>
 
         {/* Cards */}
-        <div className="grid gap-8 lg:grid-cols-3">
+        {/* <div className="grid gap-8 lg:grid-cols-3">
           {Object.values(PLANS).map((plan) => (
             <div
               key={plan.name}
@@ -118,7 +118,6 @@ export default function PricingSection() {
                   : "border-[var(--glass-border)] glass-card"
               }`}
             >
-              {/* Badge */}
               {plan.badge && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                   <span className={`whitespace-nowrap rounded-full px-4 py-1.5 text-xs font-bold ${
@@ -131,7 +130,6 @@ export default function PricingSection() {
                 </div>
               )}
 
-              {/* Header */}
               <div className="mb-6 flex items-center gap-3">
                 <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${
                   plan.highlight ? "bg-[#ec5b13]/15" : "bg-[var(--tint-strong)]"
@@ -145,7 +143,6 @@ export default function PricingSection() {
                 <h3 className="text-2xl font-black text-heading">{plan.name}</h3>
               </div>
 
-              {/* Price */}
               <div className="mb-8">
                 {(() => {
                   const price = billing === "monthly" ? plan.monthly : plan.seasonal;
@@ -163,7 +160,6 @@ export default function PricingSection() {
                 })()}
               </div>
 
-              {/* Features */}
               <ul className="mb-8 flex-grow space-y-3">
                 {plan.features.map((f, i) => (
                   <li key={i} className="flex items-start gap-3 text-sm">
@@ -185,7 +181,6 @@ export default function PricingSection() {
                 ))}
               </ul>
 
-              {/* CTA */}
               {plan.name === "AI Tutor" ? (
                 <button
                   onClick={() => setShowAiDialog(true)}
@@ -203,7 +198,7 @@ export default function PricingSection() {
               )}
             </div>
           ))}
-        </div>
+        </div> */}
 
         {/* Faculty logos */}
         <div className="mt-16 flex flex-wrap items-center justify-center gap-12 opacity-50 transition-all duration-700 grayscale hover:opacity-100 hover:grayscale-0">

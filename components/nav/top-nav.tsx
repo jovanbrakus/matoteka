@@ -26,24 +26,18 @@ export function TopNav() {
           </div>
         )}
 
-        <div className="flex items-center gap-4">
-          <ThemeToggle collapsed />
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="hidden sm:block">
+            <ThemeToggle collapsed />
+          </div>
 
           {pathname !== "/prijava" ? (
-            <>
-              <Link
-                href="/prijava"
-                className="text-sm font-bold text-heading transition-colors hover:text-[#ec5b13] px-5 py-2"
-              >
-                Prijava
-              </Link>
-              <Link
-                href="/prijava"
-                className="rounded-xl bg-[#ec5b13] px-6 py-2.5 text-sm font-bold text-white shadow-[0_0_20px_rgba(236,91,19,0.2)] transition-transform hover:scale-105"
-              >
-                Počni besplatno
-              </Link>
-            </>
+            <Link
+              href="/prijava"
+              className="rounded-xl bg-[#ec5b13] px-6 py-2.5 text-sm font-bold text-white shadow-[0_0_20px_rgba(236,91,19,0.2)] transition-transform hover:scale-105"
+            >
+              Prijava
+            </Link>
           ) : (
             <Link href="/" className="text-sm font-medium text-text-secondary transition-colors hover:text-heading">
               ← Nazad
