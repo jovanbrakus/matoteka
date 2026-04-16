@@ -27,6 +27,9 @@ export async function GET() {
     examHistoryResult,
     myScoreResult,
     facultyResult,
+    totalParticipants,
+    todayResult,
+    analyticsRows,
   ] = await Promise.all([
     // User info (streak, target faculties)
     db.select().from(users).where(eq(users.id, userId)).limit(1),
@@ -83,9 +86,34 @@ export async function GET() {
 
     // Faculty info (for exam dates)
     db.select().from(faculties),
+
+    // Total leaderboard participants
+    db
+      .select({ count: sql<number>`count(*)` })
+      .from(leaderboardScores),
+
+    // Today's progress (problems solved today)
+    db.execute(sql`
+      SELECT COUNT(*) as count
+      FROM problem_progress
+      WHERE user_id = ${userId}
+        AND status = 'solved'
+        AND solved_at >= CURRENT_DATE
+    `),
+
+    // Accuracy + readiness data from analytics
+    db
+      .select({
+        categoryBreakdown: userAnalytics.categoryBreakdown,
+        readinessScore: userAnalytics.readinessScore,
+        readinessBreakdown: userAnalytics.readinessBreakdown,
+      })
+      .from(userAnalytics)
+      .where(eq(userAnalytics.userId, userId))
+      .limit(1),
   ]);
 
-  // Calculate rank
+  // Calculate rank (depends on myScoreResult from above)
   let rank: number | null = null;
   if (myScoreResult.length > 0) {
     const rankResult = await db
@@ -95,11 +123,6 @@ export async function GET() {
     rank = Number(rankResult[0]?.count ?? 1);
   }
 
-  // Total leaderboard participants
-  const totalParticipants = await db
-    .select({ count: sql<number>`count(*)` })
-    .from(leaderboardScores);
-
   // Aggregate progress
   const total = getProblemsCount();
   const byStatus: Record<string, number> = {};
@@ -107,15 +130,6 @@ export async function GET() {
     byStatus[row.status] = Number(row.count);
   }
   const solved = byStatus.solved ?? 0;
-
-  // Today's progress (problems solved today)
-  const todayResult = await db.execute(sql`
-    SELECT COUNT(*) as count
-    FROM problem_progress
-    WHERE user_id = ${userId}
-      AND status = 'solved'
-      AND solved_at >= CURRENT_DATE
-  `);
   const solvedToday = Number((todayResult.rows[0] as any)?.count ?? 0);
 
   const user = userRow[0];
@@ -156,16 +170,6 @@ export async function GET() {
   const solvedIds = new Set(solvedIdsResult.map((r) => r.problemId));
   const categoryGroupsRaw = getCategoryGroupsWithCounts(solvedIds);
 
-  // Fetch accuracy + readiness data from analytics
-  const analyticsRows = await db
-    .select({
-      categoryBreakdown: userAnalytics.categoryBreakdown,
-      readinessScore: userAnalytics.readinessScore,
-      readinessBreakdown: userAnalytics.readinessBreakdown,
-    })
-    .from(userAnalytics)
-    .where(eq(userAnalytics.userId, userId))
-    .limit(1);
   const breakdown = (analyticsRows[0]?.categoryBreakdown as Record<string, any>) || {};
 
   // Recompute inactivity penalty at read time
