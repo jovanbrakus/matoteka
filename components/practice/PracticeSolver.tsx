@@ -199,23 +199,23 @@ export default function PracticeSolver() {
   return (
     <div className="mx-auto max-w-[1000px] px-4 py-6">
       {/* Header */}
-      <div className="mb-6 flex items-center justify-between">
-        <div className="flex items-center gap-4">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-3 sm:gap-4 min-w-0">
           <Link
             href="/vezba"
-            className="flex items-center gap-2 rounded-lg border border-[var(--glass-border)] bg-[var(--tint)] px-4 py-2 text-sm font-semibold text-text-secondary transition-colors hover:text-heading"
+            className="flex items-center gap-2 rounded-lg border border-[var(--glass-border)] bg-[var(--tint)] px-3 py-2 text-sm font-semibold text-text-secondary transition-colors hover:text-heading sm:px-4 shrink-0"
           >
             <span className="material-symbols-outlined text-base">arrow_back</span>
             Nazad
           </Link>
           {readinessScore !== null && <ScoreCircle score={readinessScore} size={36} />}
-          <div>
-            <h2 className="text-lg font-bold text-heading">{label}</h2>
+          <div className="min-w-0">
+            <h2 className="text-base sm:text-lg font-bold text-heading truncate">{label}</h2>
             <p className="text-xs text-muted">Vežbanje u toku</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:flex-nowrap sm:gap-3">
           <div className="flex items-center gap-1 rounded-lg border border-[var(--glass-border)] bg-[var(--tint)] p-1">
             {([
               { id: "easy", label: "Lako", icon: "sentiment_satisfied" },

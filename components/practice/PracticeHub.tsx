@@ -140,15 +140,15 @@ function TopicRow({ topic }: { topic: SubcategoryStat }) {
   const color = scoreColor(pct);
   const isComplete = pct === 100;
   return (
-    <div className="flex items-center gap-6 py-3 px-3 rounded-xl hover:bg-[var(--tint)] transition-colors group">
+    <div className="flex flex-wrap sm:flex-nowrap items-center gap-y-2 gap-x-3 sm:gap-x-6 py-3 px-3 rounded-xl hover:bg-[var(--tint)] transition-colors group">
       <Link
         href={`/zadaci?topic=${topic.id}`}
-        className="flex-1 min-w-0 text-sm font-medium text-text-secondary group-hover:text-primary transition-colors truncate"
+        className="w-full sm:w-auto sm:flex-1 sm:min-w-0 sm:truncate text-sm font-medium text-text-secondary group-hover:text-primary transition-colors"
       >
         {topic.name}
       </Link>
       <div
-        className="w-2/5 h-1.5 rounded-full overflow-hidden shrink-0"
+        className="flex-1 sm:flex-initial sm:w-2/5 h-1.5 rounded-full overflow-hidden shrink-0"
         style={{ backgroundColor: "var(--tint-strong)" }}
       >
         <div
@@ -206,24 +206,24 @@ function FocusCard({
   return (
     <section className="glass-card rounded-2xl overflow-hidden flex flex-col">
       {/* Header */}
-      <div className="px-8 py-6 flex items-center justify-between gap-4 border-b border-[var(--glass-border)]">
-        <div className="flex items-center gap-4 min-w-0">
+      <div className="px-4 py-4 sm:px-8 sm:py-6 flex items-center justify-between gap-3 sm:gap-4 border-b border-[var(--glass-border)]">
+        <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
           {meta.image && (
             <>
               <img
                 src={meta.image}
                 alt={group.name}
-                className="h-14 w-20 shrink-0 rounded-xl object-cover dark-only"
+                className="h-12 w-16 sm:h-14 sm:w-20 shrink-0 rounded-xl object-cover dark-only"
               />
               <img
                 src={meta.imageLight}
                 alt={group.name}
-                className="h-14 w-20 shrink-0 rounded-xl object-cover light-only"
+                className="h-12 w-16 sm:h-14 sm:w-20 shrink-0 rounded-xl object-cover light-only"
               />
             </>
           )}
-          <div className="min-w-0">
-            <h4 className="font-headline text-2xl font-black text-heading truncate">
+          <div className="min-w-0 flex-1">
+            <h4 className="font-headline text-xl sm:text-2xl font-black text-heading break-words">
               {group.name}
             </h4>
             <p className="text-sm text-text-secondary mt-1">
@@ -231,7 +231,12 @@ function FocusCard({
             </p>
           </div>
         </div>
-        <ScoreCircle score={group.readinessScore} size={88} />
+        <div className="shrink-0 sm:hidden">
+          <ScoreCircle score={group.readinessScore} size={64} />
+        </div>
+        <div className="shrink-0 hidden sm:block">
+          <ScoreCircle score={group.readinessScore} size={88} />
+        </div>
       </div>
 
       {/* Topic list */}
