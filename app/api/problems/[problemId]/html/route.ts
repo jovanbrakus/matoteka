@@ -10,7 +10,7 @@ import path from "path";
 
 const HEADERS = {
   "Content-Type": "text/html; charset=utf-8",
-  "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self';",
+  "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; worker-src 'self' blob:; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com data:; img-src 'self' data:; connect-src 'self' https://cdn.jsdelivr.net;",
   "X-Frame-Options": "SAMEORIGIN",
   "Cache-Control": "no-store, no-cache, must-revalidate, private",
   "X-Content-Type-Options": "nosniff",
