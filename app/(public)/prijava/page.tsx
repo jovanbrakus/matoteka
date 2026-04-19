@@ -11,6 +11,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [hasGoogle, setHasGoogle] = useState(false);
   const [hasCredentials, setHasCredentials] = useState(false);
   const searchParams = useSearchParams();
@@ -125,8 +126,13 @@ export default function LoginPage() {
 
         {hasGoogle && (
           <button
-            onClick={() => signIn("google", { callbackUrl })}
-            className="flex w-full items-center justify-center gap-3 rounded-xl border border-[var(--glass-border)] bg-white px-6 py-3 text-base font-medium text-gray-800 shadow-sm transition hover:bg-gray-100"
+            onClick={() => {
+              if (googleLoading) return;
+              setGoogleLoading(true);
+              signIn("google", { callbackUrl });
+            }}
+            disabled={googleLoading}
+            className="flex w-full items-center justify-center gap-3 rounded-xl border border-[var(--glass-border)] bg-white px-6 py-3 text-base font-medium text-gray-800 shadow-sm transition hover:bg-gray-100 disabled:opacity-50"
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24">
               <path
