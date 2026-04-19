@@ -32,9 +32,18 @@ export const MATHJAX_CONFIG = {
       width: "100%",
     },
   },
-  // Disable MathJax's built-in speech synthesis (a11y explorer). It calls
-  // window.speechSynthesis on focus/blur which throws ReferenceError in
-  // browsers or contexts where the API is unavailable.
+  // Disable MathJax 4 a11y explorer (top-level config key, not options.a11y).
+  // The explorer's MouseDown handler calls window.speechSynthesis which throws
+  // ReferenceError on browsers/contexts where the Web Speech API is absent.
+  // Setting options.a11y.speech:false is insufficient — the explorer module
+  // still loads and calls cancelVoice on click. Disabling at the top-level
+  // a11y block (MathJax 4's correct path) prevents the module from activating.
+  a11y: {
+    speech: false,
+    braille: false,
+    explorer: false,
+  },
+  // Keep legacy options.a11y for any code paths that still check it.
   options: {
     a11y: {
       speech: false,
