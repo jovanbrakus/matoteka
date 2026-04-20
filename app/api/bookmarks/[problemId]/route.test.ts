@@ -12,7 +12,9 @@ const mockDelete = vi.fn().mockReturnValue({
   where: vi.fn().mockResolvedValue(undefined),
 });
 const mockInsert = vi.fn().mockReturnValue({
-  values: vi.fn().mockResolvedValue(undefined),
+  values: vi.fn().mockReturnValue({
+    onConflictDoNothing: vi.fn().mockResolvedValue(undefined),
+  }),
 });
 
 vi.mock("@/lib/db", () => ({
@@ -51,7 +53,7 @@ describe("POST /api/bookmarks/[problemId]", () => {
     mockDelete.mockClear();
     mockInsert.mockClear();
     mockDelete.mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) });
-    mockInsert.mockReturnValue({ values: vi.fn().mockResolvedValue(undefined) });
+    mockInsert.mockReturnValue({ values: vi.fn().mockReturnValue({ onConflictDoNothing: vi.fn().mockResolvedValue(undefined) }) });
   });
 
   it("returns 401 when not authenticated", async () => {

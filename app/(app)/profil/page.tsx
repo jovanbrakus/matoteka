@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { User, Mail, Check, Loader2, GraduationCap } from "lucide-react";
@@ -25,6 +25,7 @@ export default function ProfilePage() {
   const [savingName, setSavingName] = useState(false);
   const [nameError, setNameError] = useState("");
   const [nameSaved, setNameSaved] = useState(false);
+  const nameInitialized = useRef(false);
 
   const loadData = useCallback(() => {
     fetch("/api/profile/faculty")
@@ -49,10 +50,11 @@ export default function ProfilePage() {
   }, [showFacultyPrompt, facultyLoaded, targetFaculties.length]);
 
   useEffect(() => {
-    if (user) {
+    if (user && !nameInitialized.current) {
       const name = user.displayName || user.name || "";
       setDisplayName(name);
       setOriginalName(name);
+      nameInitialized.current = true;
     }
   }, [user]);
 

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { createMetadata } from "@/lib/seo";
-import { MathJaxRejectionSuppressor } from "@/components/knowledge/MathJaxRejectionSuppressor";
 
 export const metadata: Metadata = {
   ...createMetadata({
@@ -18,10 +17,5 @@ export const metadata: Metadata = {
 };
 
 export default function ZnanjeLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <>
-      <MathJaxRejectionSuppressor />
-      {children}
-    </>
-  );
+  return <>{children}</>;
 }

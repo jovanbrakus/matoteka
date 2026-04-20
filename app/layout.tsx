@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
+import { MathJaxRejectionSuppressor } from "@/components/knowledge/MathJaxRejectionSuppressor";
 import { Analytics } from "@vercel/analytics/next";
 import { absoluteUrl, createMetadata, serializeJsonLd, SITE_NAME, SITE_URL } from "@/lib/seo";
 import { Inter, Fredoka, Space_Grotesk, Manrope, Public_Sans } from "next/font/google";
@@ -114,6 +115,7 @@ export default function RootLayout({
             }),
           }}
         />
+        <MathJaxRejectionSuppressor />
         <SessionProvider>
           {children}
         </SessionProvider>
