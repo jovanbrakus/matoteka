@@ -33,7 +33,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ problem
       );
     }
     const parsed = getProblemFull(problemId);
-    await db.insert(bookmarks).values({ userId, problemId, title: parsed?.title ?? null });
+    await db.insert(bookmarks).values({ userId, problemId, title: parsed?.title ?? null }).onConflictDoNothing();
     return NextResponse.json({ bookmarked: true });
   }
 }
