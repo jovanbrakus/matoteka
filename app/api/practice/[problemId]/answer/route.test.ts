@@ -28,18 +28,18 @@ vi.mock("@/lib/db", () => ({
         }),
       }),
     }),
-    transaction: vi.fn().mockImplementation((fn: any) => {
-      const tx = {
-        insert: vi.fn().mockReturnValue({
-          values: vi.fn().mockReturnValue({
-            onConflictDoUpdate: vi.fn().mockResolvedValue(undefined),
-          }),
-        }),
-      };
-      mockTransaction.mockImplementation(() => tx);
-      return fn(tx);
-    }),
   },
+  withTransaction: vi.fn().mockImplementation((fn: any) => {
+    const tx = {
+      insert: vi.fn().mockReturnValue({
+        values: vi.fn().mockReturnValue({
+          onConflictDoUpdate: vi.fn().mockResolvedValue(undefined),
+        }),
+      }),
+    };
+    mockTransaction.mockImplementation(() => tx);
+    return fn(tx);
+  }),
 }));
 
 const mockUpdateStreak = vi.fn().mockResolvedValue(undefined);
@@ -156,8 +156,8 @@ describe("POST /api/practice/[problemId]/answer", () => {
       expect(body.isCorrect).toBe(false);
       expect(body.status).toBe("attempted");
       // Should not have called transaction (no DB write)
-      const { db } = await import("@/lib/db");
-      expect(db.transaction).not.toHaveBeenCalled();
+      const { withTransaction } = await import("@/lib/db");
+      expect(withTransaction).not.toHaveBeenCalled();
     });
 
     it("already solved problem returns solved status regardless of new answer", async () => {
@@ -170,8 +170,8 @@ describe("POST /api/practice/[problemId]/answer", () => {
       expect(body.isCorrect).toBe(true);
       expect(body.status).toBe("solved");
       // Should not have called transaction (no downgrade)
-      const { db } = await import("@/lib/db");
-      expect(db.transaction).not.toHaveBeenCalled();
+      const { withTransaction } = await import("@/lib/db");
+      expect(withTransaction).not.toHaveBeenCalled();
     });
 
     it("attempted problem with different answer proceeds normally", async () => {
@@ -183,8 +183,8 @@ describe("POST /api/practice/[problemId]/answer", () => {
       const body = await res.json();
       expect(body.isCorrect).toBe(true);
       expect(body.status).toBe("solved");
-      const { db } = await import("@/lib/db");
-      expect(db.transaction).toHaveBeenCalled();
+      const { withTransaction } = await import("@/lib/db");
+      expect(withTransaction).toHaveBeenCalled();
     });
   });
 });

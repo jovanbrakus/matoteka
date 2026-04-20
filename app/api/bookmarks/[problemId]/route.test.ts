@@ -19,10 +19,11 @@ vi.mock("@/lib/db", () => ({
   db: {
     select: vi.fn().mockReturnValue({
       from: vi.fn().mockReturnValue({
-        where: vi.fn().mockReturnValue({
-          limit: vi.fn().mockImplementation(() =>
-            Promise.resolve(mockExistingBookmark)
-          ),
+        // where() must be awaitable directly (count query) AND support .limit() (existence check)
+        where: vi.fn().mockImplementation(() => {
+          const p = Promise.resolve([{ value: 0 }]) as any;
+          p.limit = vi.fn().mockImplementation(() => Promise.resolve(mockExistingBookmark));
+          return p;
         }),
       }),
     }),

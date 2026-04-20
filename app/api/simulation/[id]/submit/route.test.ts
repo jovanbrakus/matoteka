@@ -31,22 +31,22 @@ vi.mock("@/lib/db", () => ({
       };
       return chain;
     }),
-    transaction: vi.fn().mockImplementation(async (fn: any) => {
-      const tx = {
-        update: vi.fn().mockReturnValue({
-          set: vi.fn().mockReturnValue({
-            where: vi.fn().mockResolvedValue(undefined),
-          }),
-        }),
-        insert: vi.fn().mockReturnValue({
-          values: vi.fn().mockReturnValue({
-            onConflictDoNothing: vi.fn().mockResolvedValue(undefined),
-          }),
-        }),
-      };
-      return fn(tx);
-    }),
   },
+  withTransaction: vi.fn().mockImplementation(async (fn: any) => {
+    const tx = {
+      update: vi.fn().mockReturnValue({
+        set: vi.fn().mockReturnValue({
+          where: vi.fn().mockResolvedValue(undefined),
+        }),
+      }),
+      insert: vi.fn().mockReturnValue({
+        values: vi.fn().mockReturnValue({
+          onConflictDoNothing: vi.fn().mockResolvedValue(undefined),
+        }),
+      }),
+    };
+    return fn(tx);
+  }),
 }));
 
 const problemAnswers: Record<string, string> = {};
