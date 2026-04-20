@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { db, withTransaction } from "@/lib/db";
 import { cardComments, cardCommentReports } from "@/drizzle/schema";
 import {
   AUTO_HIDE_REPORT_THRESHOLD,
@@ -71,7 +71,7 @@ export async function POST(
   }
 
   // Insert the report and bump the comment's reportCount atomically.
-  await db.transaction(async (tx) => {
+  await withTransaction(async (tx) => {
     await tx.insert(cardCommentReports).values({
       commentId,
       reporterUserId,

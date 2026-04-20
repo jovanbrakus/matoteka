@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { db, withTransaction } from "@/lib/db";
 import {
   mockExams,
   mockExamProblems,
@@ -79,7 +79,7 @@ export async function POST(
   const clampedPercent = Math.max(0, scorePercent);
 
   // All DB writes in a single transaction
-  await db.transaction(async (tx) => {
+  await withTransaction(async (tx) => {
     for (const ep of scored) {
       await tx
         .update(mockExamProblems)

@@ -2,7 +2,8 @@ import { db } from "@/lib/db";
 import { users } from "@/drizzle/schema";
 import { eq, sql } from "drizzle-orm";
 
-type DbOrTx = Pick<typeof db, "select" | "update">;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type DbOrTx = { select: (...args: any[]) => any; update: (...args: any[]) => any };
 
 /**
  * Update daily streak when a problem is correctly solved.

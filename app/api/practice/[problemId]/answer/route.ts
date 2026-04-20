@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { db, withTransaction } from "@/lib/db";
 import { problemProgress } from "@/drizzle/schema";
 import { sql, and, eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
@@ -68,7 +68,7 @@ export async function POST(
 
   const status = isCorrect ? "solved" : "attempted";
 
-  await db.transaction(async (tx) => {
+  await withTransaction(async (tx) => {
     await tx
       .insert(problemProgress)
       .values({
