@@ -1,0 +1,428 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: P(x) = x^4 - x^3 + a x^2 + b x + c deljenjem sa Q(x) = x^3 + 2x^2 + 3x + 1
+  daje ostatak R(x) = 3x^2 - 2x + 1. Naći (a+b)·c.
+
+  Teorema o deljenju polinoma: P = Q · T + R, deg(R) < deg(Q).
+  deg(P) = 4, deg(Q) = 3 ⇒ deg(T) = 1 ⇒ T(x) = x + p (vodeći koef je 1 jer je vodeći koef P = vodeći koef Q = 1).
+
+  Q(x) · T(x) = (x^3 + 2x^2 + 3x + 1)(x + p)
+    = x·(x^3 + 2x^2 + 3x + 1) + p·(x^3 + 2x^2 + 3x + 1)
+    = x^4 + 2x^3 + 3x^2 + x + p x^3 + 2p x^2 + 3p x + p
+    = x^4 + (p+2)x^3 + (2p+3)x^2 + (3p+1)x + p
+
+  Dodamo R = 3x^2 - 2x + 1:
+  P(x) = x^4 + (p+2)x^3 + (2p+3+3)x^2 + (3p+1-2)x + (p+1)
+       = x^4 + (p+2)x^3 + (2p+6)x^2 + (3p-1)x + (p+1)
+
+  Izjednačimo sa zadatim P(x) = x^4 - x^3 + a x^2 + b x + c:
+    koef x^3:  p + 2 = -1     ⇒ p = -3
+    koef x^2:  2p + 6 = a      ⇒ a = 2(-3) + 6 = 0
+    koef x^1:  3p - 1 = b      ⇒ b = 3(-3) - 1 = -10
+    koef x^0:  p + 1 = c       ⇒ c = -3 + 1 = -2
+
+  (a + b) · c = (0 + (-10)) · (-2) = (-10)(-2) = 20.
+
+  Odgovor: (C) 20
+
+  Provera: P(x) = x^4 - x^3 + 0·x^2 + (-10)x + (-2) = x^4 - x^3 - 10x - 2
+  T = x - 3, Q·T = (x^3+2x^2+3x+1)(x-3) = x^4 - 3x^3 + 2x^3 - 6x^2 + 3x^2 - 9x + x - 3
+    = x^4 - x^3 - 3x^2 - 8x - 3
+  Q·T + R = x^4 - x^3 - 3x^2 - 8x - 3 + 3x^2 - 2x + 1 = x^4 - x^3 + 0·x^2 - 10x - 2. OK.
+</script>
+
+<h1 data-card="problem-title">Deljenje polinoma — rekonstrukcija koeficijenata</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — identitet \( P = Q\,T + R \) i uparivanje koeficijenata</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Ako polinom \( P(x) = x^{4} - x^{3} + a x^{2} + b x + c \) pri deljenju sa polinomom \( Q(x) = x^{3} + 2x^{2} + 3x + 1 \) daje ostatak \( R(x) = 3x^{2} - 2x + 1 \), tada je vrednost izraza \( (a+b)\cdot c \) jednaka:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">deljenik</span>
+      <span class="given-value">\( P(x) = x^{4} - x^{3} + a x^{2} + b x + c \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">delilac</span>
+      <span class="given-value">\( Q(x) = x^{3} + 2x^{2} + 3x + 1 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">ostatak</span>
+      <span class="given-value">\( R(x) = 3x^{2} - 2x + 1 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">traži se</span>
+      <span class="given-value">\( (a+b)\cdot c \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 30 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( -30 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 20 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 10 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( -10 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Napisaćemo identitet \( P(x) = Q(x)\,T(x) + R(x) \). Pošto je \( \deg P = 4 \) i \( \deg Q = 3 \), količnik \( T(x) \) je linearan, oblika \( T(x) = x + p \). Pomnožićemo \( Q\cdot T \), dodati \( R \), pa upariti koeficijente uz iste stepene sa \( P \) i izračunati \( a \), \( b \) i \( c \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Teorema o deljenju polinoma</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Deljenje sa ostatkom</span> Za svaki par polinoma \( P,Q \) sa \( Q\neq 0 \) postoje jedinstveni \( T \) i \( R \) takvi da je \( P(x) = Q(x)\,T(x) + R(x) \) i \( \deg R < \deg Q \).</li>
+        <li><span class="formula-label">Stepen količnika</span> \( \deg T = \deg P - \deg Q \).</li>
+        <li><span class="formula-label">Vodeći koeficijent</span> Ako su vodeći koef. \( P \) i \( Q \) oba \( 1 \), tada je i vodeći koef. \( T \) jednak \( 1 \).</li>
+        <li><span class="formula-label">Metoda neodređenih koeficijenata</span> Dva polinoma su jednaka akko su im jednaki svi koeficijenti uz iste stepene.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Šema identiteta P = Q·T + R">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="720" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Šematski prikaz: \( \deg P = 4 \), \( \deg Q = 3 \), pa je \( \deg T = 1 \). Tabela pokazuje kako se koeficijenti proizvoda \( Q\cdot T \) i ostatka \( R \) slažu u koeficijente od \( P \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Odredi oblik količnika \( T(x) \)</h3>
+      <p>Iz \( \deg P = 4 \) i \( \deg Q = 3 \) sledi \( \deg T = 1 \). Pošto su vodeći koeficijenti \( P \) i \( Q \) oba \( 1 \), takav je i kod \( T \). Zato:</p>
+      <div class="math-block">\[ T(x) = x + p, \quad p \in \mathbb{R}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( T \) linearan, a ne, recimo, kvadratan?</summary>
+          <div class="detail-content"><p>Zato što je \( \deg T = \deg P - \deg Q = 4 - 3 = 1 \). Dok god je \( \deg R < \deg Q \), količnik ima tačno tu razliku stepena.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Pomnoži \( Q(x)\cdot T(x) \)</h3>
+      <p>Množimo član po član:</p>
+      <div class="math-block">\[ \begin{aligned}
+        Q(x)\cdot T(x) &= (x^{3} + 2x^{2} + 3x + 1)(x + p) \\
+        &= x^{4} + 2x^{3} + 3x^{2} + x \\
+        &\quad + p\,x^{3} + 2p\,x^{2} + 3p\,x + p \\
+        &= x^{4} + (p+2)x^{3} + (2p+3)x^{2} + (3p+1)x + p.
+      \end{aligned} \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Dodaj ostatak \( R(x) \)</h3>
+      <p>Sastavljamo \( Q\cdot T + R \), pri čemu \( R \) utiče samo na koeficijente uz \( x^{2} \), \( x \) i slobodan član:</p>
+      <div class="math-block">\[ Q(x)T(x) + R(x) = x^{4} + (p+2)x^{3} + (2p+6)x^{2} + (3p-1)x + (p+1). \]</div>
+      <p>Izvori pojedinih članova: \( 2p+3 + 3 = 2p+6 \), \( 3p+1 + (-2) = 3p-1 \), \( p + 1 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Upari koeficijente sa \( P(x) \)</h3>
+      <p>Jednačimo sa \( P(x) = x^{4} - x^{3} + a x^{2} + b x + c \) po stepenima:</p>
+      <div class="math-block">\[ \begin{aligned}
+        x^{3}&:\quad p + 2 = -1 \\
+        x^{2}&:\quad 2p + 6 = a \\
+        x^{1}&:\quad 3p - 1 = b \\
+        x^{0}&:\quad p + 1 = c
+      \end{aligned} \]</div>
+      <p>Iz prve jednačine odmah dobijamo \( p = -3 \). <span class="result">\( p = -3 \)</span></p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunaj \( a \), \( b \) i \( c \)</h3>
+      <p>Zamenom \( p = -3 \):</p>
+      <div class="math-block">\[ \begin{aligned}
+        a &= 2\cdot(-3) + 6 = -6 + 6 = 0, \\
+        b &= 3\cdot(-3) - 1 = -9 - 1 = -10, \\
+        c &= -3 + 1 = -2.
+      \end{aligned} \]</div>
+      <p><span class="result">\( a = 0,\ b = -10,\ c = -2 \)</span></p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: izračunaj \( P(x) \) eksplicitno i podeli sa \( Q(x) \) — da li je ostatak zaista \( 3x^{2} - 2x + 1 \)?</summary>
+          <div class="detail-content"><p>\( P(x) = x^{4} - x^{3} - 10x - 2 \) i \( T(x) = x - 3 \). Tada je \( Q\cdot T = x^{4} - x^{3} - 3x^{2} - 8x - 3 \), pa je \( P - Q\cdot T = 3x^{2} - 2x + 1 = R(x) \). ✓</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunaj traženi izraz</h3>
+      <div class="math-block">\[ (a + b)\cdot c = (0 + (-10))\cdot(-2) = (-10)\cdot(-2) = 20. \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Umesto formalnog deljenja polinoma, dovoljno je postaviti identitet \( P = Q\,T + R \) i upariti koeficijente. Pošto su stepeni poznati, nepoznate se nalaze tačno onoliko jednačina koliko je koeficijenata — sistem je linearan i rešava se "odozgo" (od najvećeg stepena) u nekoliko koraka.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ (a + b)\cdot c = (-10)\cdot(-2) = 20. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 30 \)</span>
+    <span class="answer-option" data-option="B">(B) \( -30 \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( 20 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 10 \)</span>
+    <span class="answer-option" data-option="E">(E) \( -10 \)</span>
+  </div>
+  <p class="verification">Provera: za \( a=0,\ b=-10,\ c=-2 \) i \( T(x)=x-3 \) važi \( Q(x)(x-3) + R(x) = x^{4} - x^{3} - 10x - 2 = P(x) \). Dakle \( (a+b)c = 20 \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pretpostavka da je \( T(x) \) konstanta ili kvadratan — pravilo je \( \deg T = \deg P - \deg Q \), što je ovde \( 1 \).</li>
+    <li>Zaboravljanje da je vodeći koef. od \( T \) jednak \( 1 \), pa se piše \( T = kx + p \) i radi sa dve nepoznate umesto sa jednom.</li>
+    <li>Greška u sabiranju koeficijenata: \( 3p+1 + (-2) = 3p-1 \), a ne \( 3p+3 \) ili \( 3p-3 \).</li>
+    <li>Mešanje znakova pri množenju \( (-10)\cdot(-2) \): rezultat je \( +20 \), ne \( -20 \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Za \( a,b,c \) koje si upravo izračunao, faktoriši \( P(x) = x^{4} - x^{3} - 10x - 2 \) što dalje možeš. Da li \( P \) i \( Q \) imaju zajednički koren? Šta o tome kaže ostatak \( R \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Ako bi \( P \) i \( Q \) imali zajednički koren \( x_0 \), iz \( P(x_0) = Q(x_0)\cdot T(x_0) + R(x_0) \) sledi \( R(x_0) = 0 \). Proveri da li kvadratna \( R(x) = 3x^{2} - 2x + 1 \) uopšte ima realne korene — izračunaj diskriminantu \( \Delta = 4 - 12 = -8 < 0 \). Dakle \( R \) nema realnih korena, pa \( P \) i \( Q \) ne mogu imati zajednički realan koren.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Identitet: P(x) = Q(x) · T(x) + R(x)', canvas.width/2, 28);
+
+    // Top: degree bars
+    var rowY = 70;
+    var rowH = 30;
+    var startX = 80;
+    var cellW = 80;
+
+    function drawDegBar(label, deg, leadCoef, color, yOffset) {
+      var y = rowY + yOffset;
+      ctx.fillStyle = muted;
+      ctx.font = 'bold 13px Inter, system-ui';
+      ctx.textAlign = 'right';
+      ctx.fillText(label, startX - 12, y + rowH/2 + 4);
+
+      // cells for x^4 ... x^0
+      for (var k = 4; k >= 0; k--) {
+        var x = startX + (4 - k) * cellW;
+        var active = k <= deg;
+        ctx.fillStyle = active ? cvAlpha(color, 0.22) : cvAlpha('--sol-canvas-grid', 0.2);
+        ctx.strokeStyle = active ? cv(color) : grid;
+        ctx.lineWidth = active ? 2 : 1;
+        ctx.fillRect(x, y, cellW - 8, rowH);
+        ctx.strokeRect(x, y, cellW - 8, rowH);
+
+        ctx.fillStyle = active ? text : muted;
+        ctx.font = 'bold 12px Inter, system-ui';
+        ctx.textAlign = 'center';
+        var powLabel = (k === 0) ? 'x⁰' : 'x' + (k === 1 ? '' : '^' + k);
+        ctx.fillText(active ? powLabel : '—', x + (cellW-8)/2, y + rowH/2 + 4);
+      }
+
+      // deg label
+      ctx.fillStyle = muted;
+      ctx.font = 'italic 11px Inter, system-ui';
+      ctx.textAlign = 'left';
+      ctx.fillText('deg = ' + deg, startX + 5 * cellW, y + rowH/2 + 4);
+    }
+
+    drawDegBar('P', 4, 1, '--sol-canvas-primary', 0);
+    drawDegBar('Q', 3, 1, '--sol-canvas-secondary', 45);
+    drawDegBar('T', 1, 1, '--sol-canvas-accent', 90);
+    drawDegBar('R', 2, 3, '--sol-canvas-highlight', 135);
+
+    // Degree arithmetic note
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 12px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('deg T = deg P − deg Q = 4 − 3 = 1     •     deg R < deg Q = 3', canvas.width/2, rowY + 200);
+
+    // Middle: the key equation visually
+    var eqY = 300;
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.08);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1.5;
+    ctx.fillRect(40, eqY, canvas.width - 80, 60);
+    ctx.strokeRect(40, eqY, canvas.width - 80, 60);
+
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 18px "JetBrains Mono", Consolas, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('x⁴ − x³ + a x² + b x + c  =  (x³ + 2x² + 3x + 1)(x + p)  +  (3x² − 2x + 1)', canvas.width/2, eqY + 35);
+
+    // Bottom: coefficient matching table
+    var tY = 380;
+    var cols = [
+      { head: 'stepen',  w: 90 },
+      { head: 'iz P',    w: 110 },
+      { head: 'iz Q·T + R', w: 200 },
+      { head: 'jednačina',   w: 140 },
+      { head: 'rezultat', w: 160 }
+    ];
+    var tX = 20;
+    var colX = [tX];
+    for (var i = 0; i < cols.length; i++) colX.push(colX[i] + cols[i].w);
+
+    // Header
+    ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.15);
+    ctx.fillRect(tX, tY, canvas.width - 2*tX, 26);
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(tX, tY, canvas.width - 2*tX, 26);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 12px Inter, system-ui';
+    ctx.textAlign = 'center';
+    for (var i = 0; i < cols.length; i++) {
+      ctx.fillText(cols[i].head, colX[i] + cols[i].w/2, tY + 17);
+    }
+
+    // Rows
+    var rows = [
+      ['x³', '−1',  'p + 2',            'p + 2 = −1',   'p = −3'],
+      ['x²', 'a',   '(2p + 3) + 3',     '2p + 6 = a',   'a = 0'],
+      ['x¹', 'b',   '(3p + 1) − 2',     '3p − 1 = b',   'b = −10'],
+      ['x⁰', 'c',   'p + 1',            'p + 1 = c',    'c = −2']
+    ];
+    ctx.font = '12px "JetBrains Mono", Consolas, monospace';
+    for (var r = 0; r < rows.length; r++) {
+      var yy = tY + 26 + r * 26;
+      // alt stripe
+      if (r % 2 === 0) {
+        ctx.fillStyle = cvAlpha('--sol-canvas-grid', 0.15);
+        ctx.fillRect(tX, yy, canvas.width - 2*tX, 26);
+      }
+      ctx.strokeStyle = grid;
+      ctx.strokeRect(tX, yy, canvas.width - 2*tX, 26);
+      ctx.fillStyle = text;
+      ctx.textAlign = 'center';
+      for (var j = 0; j < rows[r].length; j++) {
+        // Highlight result column
+        if (j === 4) ctx.fillStyle = accent;
+        else ctx.fillStyle = text;
+        ctx.fillText(rows[r][j], colX[j] + cols[j].w/2, yy + 17);
+      }
+    }
+
+    // Footer: final product line
+    var fY = tY + 26 + rows.length * 26 + 14;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.12);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.5;
+    ctx.fillRect(40, fY, canvas.width - 80, 30);
+    ctx.strokeRect(40, fY, canvas.width - 80, 30);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('(a + b) · c = (0 + (−10)) · (−2) = 20', canvas.width/2, fY + 20);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Deljenje polinoma — (a+b)·c iz poznatog delioca i ostatka",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["deljenje polinoma", "teorema o deljenju", "metoda neodređenih koeficijenata", "polinomi"]
+}
+BRAINSPARK_META-->

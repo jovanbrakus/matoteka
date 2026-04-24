@@ -1,0 +1,596 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Koliko dijagonala ima sedmougao?
+  (A) 7, (B) 14, (C) 21, (D) 28. Tačan: (B) 14.
+
+  Formula za broj dijagonala n-tougla:
+    D(n) = n(n − 3) / 2.
+
+  Izvođenje:
+    1) Biramo 2 od n temena da bismo formirali duž: C(n, 2) = n(n-1)/2 duži.
+    2) Od toga je n stranica (susedna temena).
+    3) Dijagonale = ukupne duži − stranice = n(n-1)/2 − n = n(n-3)/2.
+
+  Alternativno izvođenje:
+    Iz jednog temena povučemo duži ka svim ostalim temenima — ima ih (n-1).
+    Od tih (n-1) duži, DVE su stranice (ka dva susedna temena), a (n-3) su dijagonale.
+    Ako pomnožimo sa n (svih n temena), dobijamo 2D (jer se svaka dijagonala broji dvaput, po jednom iz oba kraja).
+    Dakle 2D = n(n-3), pa D = n(n-3)/2.
+
+  Za n = 7:
+    D(7) = 7 · (7 − 3) / 2 = 7 · 4 / 2 = 28 / 2 = 14.
+
+  Provera: iz svakog temena ide 4 dijagonale, ima 7 temena, pa 7·4 = 28 brojanje
+  sa ponavljanjem. Podeli sa 2 (svaka dijagonala brojala se dvaput): 28/2 = 14. ✓
+
+  Provera male vrednosti (trougao n=3): D = 3·0/2 = 0. Tačno — trougao nema
+  dijagonala.
+  Kvadrat n=4: D = 4·1/2 = 2. Tačno.
+  Petougao n=5: D = 5·2/2 = 5. Tačno (pentagram!).
+  Šestougao n=6: D = 6·3/2 = 9. Tačno.
+
+  Veza sa opcijama:
+    (A) 7 = n — isto kao broj temena/stranica, često pogrešna intuicija.
+    (B) 14 — tačan.
+    (C) 21 = C(7,2) = broj svih duži, ne samo dijagonala (7 stranica + 14 dijagonala).
+    (D) 28 = n(n-3) = bez podele sa 2 (računato sa ponavljanjem).
+
+  Vizuelno:
+    Canvas 1: Pravilan sedmougao sa svim 14 dijagonalama (dve grupe: iz
+              jednog istaknutog temena 4, ostale). Istaknuto teme → njegovi
+              4 dijagonala su akcenti, ostale muted.
+    Canvas 2: Detaljna ilustracija izvođenja n(n-3)/2 — pokazujemo da iz
+              temena V₁ ima 7 drugih temena, od kojih 2 su susedi (stranice)
+              a 4 su dijagonale; ukazujemo na duplo brojanje.
+
+  Zadatak ne traži interakciju (formula algebra), ali mogućnost je
+  interaktivno menjati n i gledati broj dijagonala — ipak, to bi bilo
+  premalo vredno za dodatak, jer je formula jednostavna. Static canvas
+  je dovoljan, sa (eventualno) naknadnim slider-om za n u "challenge"
+  delu ako nam treba. Držim oba canvas-a statična.
+
+  Odgovor: (B) 14.
+</script>
+
+<h1 data-card="problem-title">Broj dijagonala sedmougla</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika u geometriji &mdash; dijagonale <em>n</em>-tougla, formula \( D = n(n-3)/2 \)</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Koliko dijagonala ima sedmougao?</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 7 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 14 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 21 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 28 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Dijagonala je duž koja spaja dva <em>nesusedna</em> temena poligona. Broj dijagonala <em>n</em>-tougla izvešćemo prebrojavanjem: iz svakog temena krene \( n - 3 \) dijagonala (ne računajući ono samo i dva susedna temena). Pomnožimo sa \( n \) (svih temena) i podelimo sa \( 2 \) (jer svaku dijagonalu brojimo dvaput). Za \( n = 7 \) to daje \( 7 \cdot 4 / 2 = 14 \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i činjenice</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Poligon:</strong> zatvorena geometrijska figura sa \( n \) temena (\( n \geq 3 \)) i \( n \) stranica. Za \( n = 3 \) trougao, \( n = 4 \) četvorougao (npr. kvadrat), \( n = 7 \) sedmougao, itd.</li>
+        <li><strong>Dijagonala:</strong> duž koja spaja dva <em>nesusedna</em> temena. Stranice nisu dijagonale.</li>
+        <li><strong>Formula za broj dijagonala:</strong> \[ D \;=\; \dfrac{n(n-3)}{2} \]</li>
+        <li><strong>Alternativna izvedba:</strong> ukupno duži spajajući parove temena je \( \binom{n}{2} = \dfrac{n(n-1)}{2} \). Od toga je \( n \) stranica, pa je \[ D \;=\; \binom{n}{2} - n \;=\; \dfrac{n(n-1)}{2} - n \;=\; \dfrac{n(n-3)}{2}. \]</li>
+        <li><strong>Jednostavni slučajevi:</strong>
+          \( D(3) = 0, \; D(4) = 2, \; D(5) = 5, \; D(6) = 9, \; D(7) = 14, \; D(8) = 20. \)</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Sedmougao sa svim dijagonalama">
+  <h2>📐 Sedmougao sa svim 14 dijagonala</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-heptagon" width="720" height="600"></canvas>
+  </div>
+  <p class="canvas-caption">Sa svih sedam temena \( V_1, V_2, \ldots, V_7 \) povučene su sve moguće dijagonale. Istaknute (narandžaste) su <strong>4 dijagonale</strong> iz temena \( V_1 \) &mdash; iz bilo kog temena izlaze \( n - 3 = 4 \) dijagonale. Svih zajedno: \( 7 \cdot 4 = 28 \) „krajeva", pa \( 28 / 2 = 14 \) različitih dijagonala (svaka se broji dvaput &mdash; iz oba kraja).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Šta je dijagonala?</h3>
+      <p>Dijagonala poligona je duž koja spaja dva <strong>nesusedna</strong> temena. „Nesusedna" znači da ta dva temena <em>nisu povezana stranicom</em>.</p>
+      <p>Kod sedmougla temena označimo \( V_1, V_2, \ldots, V_7 \). Dve duži iz temena \( V_1 \) su stranice &mdash; to su \( V_1 V_2 \) (ka desnom susedu) i \( V_1 V_7 \) (ka levom susedu, jer idemo po obimu). Ostale duži iz \( V_1 \) idu ka nesusedima i to su dijagonale.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliko temena ima sedmougao i koliko mu je dijagonala iz jednog temena?</summary>
+          <div class="detail-content"><p>Sedmougao ima \( n = 7 \) temena. Iz jednog temena „vidimo" preostalih \( n - 1 = 6 \) temena. Od njih 2 su suseda (stranice), pa je broj dijagonala iz jednog temena \( n - 3 = 4 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Koliko dijagonala izlazi iz jednog temena?</h3>
+      <p>Iz svakog od \( n \) temena možemo povući duž ka svakom od preostalih \( n - 1 \) temena. Od tih duži:</p>
+      <ul>
+        <li>\( 2 \) su stranice (ka dva susedna temena),</li>
+        <li>ostalih \( n - 1 - 2 = n - 3 \) su dijagonale.</li>
+      </ul>
+      <p>Za \( n = 7 \) to daje \( n - 3 = 4 \) dijagonale iz svakog temena.</p>
+      <div class="math-block">\[ \text{dijagonala iz jednog temena} \;=\; n - 3 \;=\; 4 \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Zbrajamo po svim temenima &mdash; i delimo sa 2</h3>
+      <p>Ako pomnožimo \( (n - 3) \) sa \( n \) (svih temena), dobijamo zbir dijagonala gledan <em>iz svakog temena posebno</em>. Ali svaka dijagonala ima <strong>dva kraja</strong>, pa ju tako brojimo <em>dvaput</em> &mdash; jednom iz svakog kraja.</p>
+      <p>Da bismo dobili broj različitih dijagonala, delimo sa \( 2 \):</p>
+      <div class="math-block">\[ D \;=\; \dfrac{n\,(n-3)}{2} \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš „sa 2"?</summary>
+          <div class="detail-content"><p>Dijagonala, na primer \( V_1 V_3 \), pojaviće se u brojanju i iz \( V_1 \) i iz \( V_3 \) &mdash; dakle dva puta. Kod svake duži u poligonu važi isto (to je simetrično razmišljanje), pa se tačno dobija dvostruko preveliki broj. Zato delimo sa \( 2 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Uvrstiti \( n = 7 \)</h3>
+      <div class="math-block">\[ D(7) \;=\; \dfrac{7 \cdot (7 - 3)}{2} \;=\; \dfrac{7 \cdot 4}{2} \;=\; \dfrac{28}{2} \;=\; 14 \]</div>
+      <p>Sedmougao ima <strong>14 dijagonala</strong>. Odgovor je <strong>(B)</strong>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Alternativna provera &mdash; kombinatorika</h3>
+      <p>Svaku duž u poligonu odredimo biranjem \( 2 \) temena od \( n \). Broj mogućnosti je <span class="formula-label">binomni koeficijent</span> \( \binom{n}{2} \). Za \( n = 7 \):</p>
+      <div class="math-block">\[ \binom{7}{2} \;=\; \dfrac{7 \cdot 6}{2} \;=\; 21 \]</div>
+      <p>To su <em>sve</em> duži &mdash; i stranice, i dijagonale. Od njih ima \( n = 7 \) stranica. Oduzmemo ih:</p>
+      <div class="math-block">\[ D \;=\; \binom{7}{2} - 7 \;=\; 21 - 7 \;=\; 14 \quad\checkmark \]</div>
+      <p>Isti rezultat. Usput vidimo da je opcija (C) = \( 21 \) upravo broj <em>svih</em> duži među temenima, a opcija (D) = \( 28 \) je \( n(n-3) \) <em>bez</em> podele sa \( 2 \). Obe su česte zamke.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Tri ponuđena netačna odgovora nisu slučajna &mdash; sva tri su <em>tipične greške</em> pri brojanju:</p>
+  <ul>
+    <li><strong>7</strong> = broj stranica (ili temena) &mdash; mešanje pojma „strana" sa „dijagonala".</li>
+    <li><strong>21</strong> = \( \binom{7}{2} \), broj <em>svih</em> duži među temenima &mdash; zaborav da se oduzmu stranice.</li>
+    <li><strong>28</strong> = \( n(n-3) = 7 \cdot 4 \), brojanje sa ponavljanjem &mdash; zaborav da se podeli sa 2.</li>
+  </ul>
+  <p>Zapamti: formula \( D = n(n-3)/2 \) ima <em>oba</em> bitna dela: \( (n-3) \) (ne 2 i ne 3) i <em>podelu sa 2</em>.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Izvođenje formule — vizuelno">
+  <h2>🎯 Izvođenje: 4 dijagonale iz jednog temena</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-derivation" width="720" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Iz istaknutog temena \( V_1 \) ima \( 6 \) drugih temena. Dva od njih (\( V_2 \) i \( V_7 \)) su <strong>susedi</strong> &mdash; duži ka njima su stranice (plavo isprekidano), ne dijagonale. Preostala četiri temena (\( V_3, V_4, V_5, V_6 \)) su nesusedi &mdash; duži ka njima (narandžaste) su <strong>dijagonale</strong>. Dakle \( n - 3 = 4 \) po temenu.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ D(7) \;=\; \dfrac{7 \cdot 4}{2} \;=\; 14 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 7 \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( 14 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 21 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 28 \)</span>
+  </div>
+  <p class="verification">Provera dva načina: \( n(n-3)/2 = 7 \cdot 4 / 2 = 14 \) ✓ i \( \binom{7}{2} - 7 = 21 - 7 = 14 \) ✓. Slika takođe pokazuje tačno 14 narandžastih duži u potpuno nacrtanoj mreži dijagonala. ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Korišćenje \( n - 2 \) umesto \( n - 3 \).</strong> Susedna temena su dva (levo i desno), ne jedno. Ko oduzme samo jedno teme (samog sebe), dobija pogrešan broj dijagonala iz temena.</li>
+    <li><strong>Zaborav da se podeli sa \( 2 \).</strong> Dobija se \( 7 \cdot 4 = 28 \) &mdash; upravo opcija (D). Svaka dijagonala ima dva kraja, pa se u tom proizvodu broji dvaput.</li>
+    <li><strong>Mešanje „dijagonala" sa „stranica".</strong> U nekim jezicima i kontekstima „dijagonala" se kolokvijalno koristi i za stranice, ali u matematici je to <em>samo</em> duž između <em>nesusednih</em> temena.</li>
+    <li><strong>Korišćenje \( \binom{n}{2} \) bez oduzimanja stranica.</strong> \( \binom{7}{2} = 21 \) je broj <em>svih</em> duži, uključujući i stranice. To je tačno opcija (C).</li>
+    <li><strong>Netačna formula \( D = n(n-2)/2 \).</strong> Daje \( 7 \cdot 5 / 2 = 17{,}5 \) &mdash; čim dobijete necelobrojni rezultat, znak je da je formula pogrešna.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koliko dijagonala ima <strong>dvadesetougao</strong> (\( n = 20 \))? I šta za \( n \to \infty \) raste brže: broj stranica ili broj dijagonala? Procjeni odnos \( D/n \) za veliko \( n \).</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>\( D(20) = 20 \cdot 17 / 2 = 170 \). Za opštu \( n \): \( D/n = (n-3)/2 \). Pošto \( D \) raste kao \( n^2/2 \), a broj stranica kao \( n \), dijagonale <em>daleko brže</em> rastu. Za \( n = 20 \) imamo čak \( 170 / 20 = 8{,}5 \) dijagonala po temenu u proseku. Uopšteno, za veliko \( n \) odnos \( D / n \approx n/2 \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-heptagon');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var tertiary  = cv('--sol-canvas-tertiary');
+    var warning   = cv('--sol-canvas-warning');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Pravilan sedmougao — svih 14 dijagonala', W / 2, 28);
+
+    // Heptagon geometry
+    var cxH = W / 2;
+    var cyH = 310;
+    var rPoly = 200;
+    var n = 7;
+    var vertices = [];
+    for (var i = 0; i < n; i++) {
+      var ang = -Math.PI / 2 + i * 2 * Math.PI / n;
+      vertices.push({ x: cxH + rPoly * Math.cos(ang), y: cyH + rPoly * Math.sin(ang), ang: ang });
+    }
+
+    // Draw all NON-highlighted diagonals first (behind, muted)
+    ctx.strokeStyle = cvAlpha('--sol-canvas-muted', 0.55);
+    ctx.lineWidth = 1.5;
+    for (var i = 0; i < n; i++) {
+      for (var j = i + 1; j < n; j++) {
+        // skip adjacent (sides) and skip those incident to V0 (drawn highlighted later)
+        if ((j - i === 1) || (i === 0 && j === n - 1)) continue; // sides
+        if (i === 0) continue; // skip diagonals from V0 (will draw highlighted)
+        ctx.beginPath();
+        ctx.moveTo(vertices[i].x, vertices[i].y);
+        ctx.lineTo(vertices[j].x, vertices[j].y);
+        ctx.stroke();
+      }
+    }
+
+    // Draw sides (edges of polygon)
+    ctx.strokeStyle = text;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    for (var i = 0; i < n; i++) {
+      var v = vertices[i];
+      if (i === 0) ctx.moveTo(v.x, v.y);
+      else ctx.lineTo(v.x, v.y);
+    }
+    ctx.closePath();
+    ctx.stroke();
+
+    // Highlighted diagonals from V0 (indices 2, 3, 4, 5 — the 4 non-adjacent)
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2.8;
+    for (var j = 2; j <= 5; j++) {
+      ctx.beginPath();
+      ctx.moveTo(vertices[0].x, vertices[0].y);
+      ctx.lineTo(vertices[j].x, vertices[j].y);
+      ctx.stroke();
+    }
+
+    // Vertices (dots)
+    for (var i = 0; i < n; i++) {
+      var v = vertices[i];
+      ctx.fillStyle = (i === 0) ? warning : text;
+      ctx.beginPath();
+      ctx.arc(v.x, v.y, (i === 0) ? 8 : 6, 0, Math.PI * 2);
+      ctx.fill();
+      if (i === 0) {
+        ctx.strokeStyle = bg;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+
+      // Labels — position outside
+      var lx = cxH + (rPoly + 26) * Math.cos(v.ang);
+      var ly = cyH + (rPoly + 26) * Math.sin(v.ang);
+      ctx.fillStyle = (i === 0) ? warning : text;
+      ctx.font = (i === 0) ? 'bold 15px Segoe UI, system-ui, sans-serif' : 'bold 14px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('V' + (i + 1), lx, ly);
+    }
+    ctx.textBaseline = 'alphabetic';
+
+    // Legend at bottom
+    var legY = H - 80;
+
+    // Box 1: sides
+    ctx.strokeStyle = text;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(50, legY);
+    ctx.lineTo(90, legY);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('stranice (ima 7)', 100, legY + 4);
+
+    // Box 2: all diagonals
+    ctx.strokeStyle = cvAlpha('--sol-canvas-muted', 0.65);
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(260, legY);
+    ctx.lineTo(300, legY);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.fillText('ostale dijagonale', 310, legY + 4);
+
+    // Box 3: highlighted diagonals from V1
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(470, legY);
+    ctx.lineTo(510, legY);
+    ctx.stroke();
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('4 dijagonale iz V₁', 520, legY + 4);
+
+    // Summary formula (box)
+    var bx = 150, by = H - 48, bw = 420, bh = 36;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.10);
+    ctx.strokeStyle = cvAlpha('--sol-canvas-accent', 0.5);
+    ctx.lineWidth = 1.3;
+    ctx.beginPath();
+    ctx.roundRect(bx, by, bw, bh, 8);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('D(7) = 7 · (7 − 3) / 2 = 7 · 4 / 2 = 14', bx + bw / 2, by + 23);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-derivation');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var tertiary  = cv('--sol-canvas-tertiary');
+    var warning   = cv('--sol-canvas-warning');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Iz jednog temena: 2 stranice + 4 dijagonale = n − 1 = 6 duži', W / 2, 28);
+
+    // Geometry
+    var cxH = 260;
+    var cyH = 270;
+    var rPoly = 170;
+    var n = 7;
+    var vertices = [];
+    for (var i = 0; i < n; i++) {
+      var ang = -Math.PI / 2 + i * 2 * Math.PI / n;
+      vertices.push({ x: cxH + rPoly * Math.cos(ang), y: cyH + rPoly * Math.sin(ang), ang: ang });
+    }
+
+    // Polygon edges
+    ctx.strokeStyle = cvAlpha('--sol-canvas-muted', 0.6);
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    for (var i = 0; i < n; i++) {
+      var v = vertices[i];
+      if (i === 0) ctx.moveTo(v.x, v.y);
+      else ctx.lineTo(v.x, v.y);
+    }
+    ctx.closePath();
+    ctx.stroke();
+
+    // From V1, draw segments to V2 and V7 as SIDES (blue dashed)
+    ctx.strokeStyle = tertiary;
+    ctx.lineWidth = 3;
+    ctx.setLineDash([7, 5]);
+    // V1-V2
+    ctx.beginPath();
+    ctx.moveTo(vertices[0].x, vertices[0].y);
+    ctx.lineTo(vertices[1].x, vertices[1].y);
+    ctx.stroke();
+    // V1-V7
+    ctx.beginPath();
+    ctx.moveTo(vertices[0].x, vertices[0].y);
+    ctx.lineTo(vertices[6].x, vertices[6].y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // From V1, draw DIAGONALS to V3, V4, V5, V6 (orange solid)
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 3;
+    for (var j = 2; j <= 5; j++) {
+      ctx.beginPath();
+      ctx.moveTo(vertices[0].x, vertices[0].y);
+      ctx.lineTo(vertices[j].x, vertices[j].y);
+      ctx.stroke();
+    }
+
+    // Vertices and labels
+    for (var i = 0; i < n; i++) {
+      var v = vertices[i];
+      // Highlight V0 (the "reference" vertex)
+      ctx.fillStyle = (i === 0) ? warning : text;
+      ctx.beginPath();
+      ctx.arc(v.x, v.y, (i === 0) ? 8 : 6, 0, Math.PI * 2);
+      ctx.fill();
+
+      var lx = cxH + (rPoly + 24) * Math.cos(v.ang);
+      var ly = cyH + (rPoly + 24) * Math.sin(v.ang);
+      ctx.fillStyle = (i === 0) ? warning : text;
+      ctx.font = (i === 0) ? 'bold 14px Segoe UI, system-ui, sans-serif' : '13px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('V' + (i + 1), lx, ly);
+    }
+    ctx.textBaseline = 'alphabetic';
+
+    // Right-side explanation panel
+    var px = 510, py = 70, pw = 200, ph = H - 140;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.06);
+    ctx.strokeStyle = cvAlpha('--sol-canvas-accent', 0.45);
+    ctx.lineWidth = 1.3;
+    ctx.beginPath();
+    ctx.roundRect(px, py, pw, ph, 10);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Iz V₁ ka svim', px + pw / 2, py + 26);
+    ctx.fillText('drugim temenima:', px + pw / 2, py + 46);
+
+    // V1-V2, V1-V7: sides (blue)
+    ctx.fillStyle = tertiary;
+    ctx.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('→ V₂  stranica', px + 14, py + 80);
+    ctx.fillText('→ V₇  stranica', px + 14, py + 100);
+
+    // V1-V3,V4,V5,V6: diagonals (warning/orange)
+    ctx.fillStyle = warning;
+    ctx.fillText('→ V₃  dijagonala', px + 14, py + 130);
+    ctx.fillText('→ V₄  dijagonala', px + 14, py + 150);
+    ctx.fillText('→ V₅  dijagonala', px + 14, py + 170);
+    ctx.fillText('→ V₆  dijagonala', px + 14, py + 190);
+
+    ctx.fillStyle = text;
+    ctx.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('—————————————', px + pw / 2, py + 218);
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('2 stranice + 4 dijagonale', px + pw / 2, py + 238);
+    ctx.fillStyle = warning;
+    ctx.fillText('n − 3 = 4', px + pw / 2, py + 262);
+    ctx.fillStyle = muted;
+    ctx.font = '11px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('dijagonala iz jednog temena', px + pw / 2, py + 280);
+
+    // Summary at bottom
+    var sx = 60, sy = H - 55, sw = W - 120, sh = 40;
+    ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.10);
+    ctx.strokeStyle = cvAlpha('--sol-canvas-highlight', 0.5);
+    ctx.lineWidth = 1.3;
+    ctx.beginPath();
+    ctx.roundRect(sx, sy, sw, sh, 8);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Svih 7 temena × 4 dijagonale = 28   →   / 2 (svaka se broji dvaput)   →   14 dijagonala', W / 2, sy + 25);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Broj dijagonala sedmougla — formula n(n-3)/2",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["dijagonala", "sedmougao", "poligon", "n-tougao", "kombinatorika", "binomni koeficijent", "prebrojavanje"]
+}
+BRAINSPARK_META-->

@@ -1,0 +1,485 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: aritmetički niz a_1, ..., a_100. Zbir poslednjih 50 članova = 2 · (zbir prvih 50). a_1 = 51. Naći a_100.
+
+Oznake: prvi član a_1, razlika d. Opšti član: a_n = a_1 + (n-1)d.
+
+Zbir prvih 50 članova (S_1):
+  S_1 = 50/2 · (2 a_1 + 49 d) = 25 (102 + 49 d)
+
+Zbir poslednjih 50 članova, tj. a_51 + a_52 + ... + a_100 (S_2):
+  a_51 = a_1 + 50 d
+  S_2 = 50/2 · (2 a_51 + 49 d) = 25 (2(a_1 + 50 d) + 49 d) = 25 (2 a_1 + 149 d) = 25 (102 + 149 d)
+
+Alternativno: S_2 = S_ukupno - S_1, gde je S_ukupno = 100/2 · (2 a_1 + 99 d) = 50 (102 + 99 d).
+Tada: S_2 = 50 (102 + 99 d) - 25 (102 + 49 d) = 5100 + 4950 d - 2550 - 1225 d = 2550 + 3725 d = 25 (102 + 149 d). ✓
+
+Uslov zadatka: S_2 = 2 S_1
+  25 (102 + 149 d) = 2 · 25 (102 + 49 d)
+  102 + 149 d = 204 + 98 d
+  149 d - 98 d = 204 - 102
+  51 d = 102
+  d = 2
+
+Onda je:
+  a_100 = a_1 + 99 d = 51 + 99 · 2 = 51 + 198 = 249
+
+Odgovor: (D) 249.
+
+Provera:
+  a_1 = 51, d = 2, pa je a_n = 51 + 2(n-1) = 49 + 2n.
+  S_1 = 25 (102 + 98) = 25 · 200 = 5000.
+  S_2 = 25 (102 + 298) = 25 · 400 = 10000.
+  10000 = 2 · 5000. ✓
+
+Vizualizacija: statičan stubičasti prikaz "paketa 50" — levi paket (prvih 50, zbir 5000) i desni paket (poslednjih 50, zbir 10000), koji je tačno dvostruko veći. Ispod dužina predstavljena traka duž brojne ose pokazuje linearnu promenu članova. Statično zato što logika je algebarska (ne zahteva interakciju).
+</script>
+
+<h1 data-card="problem-title">Aritmetički niz — zbir dve polovine i poslednji član</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — aritmetički niz, formula za zbir i opšti član</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Niz brojeva \( a_1, a_2, \ldots, a_{100} \) je aritmetički. Zbir poslednjih pedeset članova tog niza jednak je dvostrukom zbiru prvih pedeset članova. Ako je \( a_1 = 51 \), onda je član \( a_{100} \) jednak:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 150 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 253 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 251 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 249 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 348 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Niz ima 100 članova, pa ga delimo na dva „paketa" po 50 članova. Svaki paket je opet aritmetički niz — prvi ima prvi član \( a_1 \), drugi ima prvi član \( a_{51} \), ali ista razlika \( d \). Primenom formule za zbir aritmetičkog niza izrazimo oba zbira preko \( a_1 \) i \( d \), pa iz uslova da je drugi zbir dvostruko veći od prvog dobijamo jednačinu po \( d \). Na kraju uvrstimo \( a_1 = 51 \) i nađenu razliku u formulu \( a_{100} = a_1 + 99 d \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule za aritmetički niz</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Opšti član</span> \( a_n = a_1 + (n-1) d \) — svaki naredni član se dobija dodavanjem iste razlike \( d \).</li>
+        <li><span class="formula-label">Zbir prvih \( n \) članova</span> \( S_n = \dfrac{n}{2} \bigl(2 a_1 + (n-1) d\bigr) = \dfrac{n (a_1 + a_n)}{2} \).</li>
+        <li><span class="formula-label">Zbir „komada" niza</span> Za članove \( a_k, a_{k+1}, \ldots, a_{k+m-1} \) važi ista formula u kojoj ulogu „prvog člana" igra \( a_k \): zbir je \( \dfrac{m}{2}\bigl(2 a_k + (m-1) d\bigr) \).</li>
+        <li><span class="formula-label">Veza</span> \( a_{k} = a_1 + (k-1) d \) — koristimo za prevođenje \( a_{51} \) preko \( a_1 \) i \( d \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Dva paketa po 50 članova">
+  <h2>📐 Dva paketa po 50 članova</h2>
+  <div class="canvas-wrapper">
+    <canvas id="dve-polovine" width="760" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Gore: dve „trake" koje predstavljaju zbirove. Plava traka je zbir prvih 50 članova \( S_1 = 5000 \), narandžasta je zbir poslednjih 50 članova \( S_2 = 10000 \) — tačno dvostruko dužeg. Dole: brojna osa na kojoj su označeni \( a_1 = 51 \), \( a_{50} = 149 \), \( a_{51} = 151 \) i \( a_{100} = 249 \); primetimo da se svaki sledeći član povećava za \( d = 2 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Zapišimo zbirove oba „paketa" od 50 članova</h3>
+      <p>Neka je \( d \) razlika niza. Zbir <strong>prvih</strong> pedeset članova ima \( n = 50 \) i prvi član \( a_1 \):</p>
+      <div class="math-block">\[ S_1 = \frac{50}{2}\bigl(2 a_1 + 49 d\bigr) = 25\bigl(2 a_1 + 49 d\bigr). \]</div>
+      <p>Zbir <strong>poslednjih</strong> pedeset članova je zbir članova \( a_{51}, a_{52}, \ldots, a_{100} \) — takođe aritmetički niz sa 50 članova, istom razlikom \( d \), ali sa novim „prvim članom" \( a_{51} \):</p>
+      <div class="math-block">\[ S_2 = \frac{50}{2}\bigl(2 a_{51} + 49 d\bigr) = 25\bigl(2 a_{51} + 49 d\bigr). \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto i drugi paket ima istu formulu?</summary>
+          <div class="detail-content"><p>Zato što „izdvojeni deo" aritmetičkog niza ostaje aritmetički niz sa istom razlikom \( d \). Menja se samo polazni član: za drugi paket to je \( a_{51} \). Broj članova ostaje 50, pa u formuli \( \tfrac{n}{2}\bigl(2\,(\text{prvi}) + (n-1) d\bigr) \) stavljamo \( n = 50 \) i \( \text{prvi} = a_{51} \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Izrazimo \( a_{51} \) preko \( a_1 \) i \( d \)</h3>
+      <p>Iz opšteg člana \( a_n = a_1 + (n-1) d \) za \( n = 51 \) dobijamo</p>
+      <div class="math-block">\[ a_{51} = a_1 + 50 d. \]</div>
+      <p>Zato je</p>
+      <div class="math-block">\[ S_2 = 25\bigl(2 (a_1 + 50 d) + 49 d\bigr) = 25\bigl(2 a_1 + 100 d + 49 d\bigr) = 25\bigl(2 a_1 + 149 d\bigr). \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavimo uslov \( S_2 = 2 S_1 \)</h3>
+      <p>Uslov iz zadatka kaže: zbir poslednjih 50 je dvostruko veći od zbira prvih 50.</p>
+      <div class="math-block">\[ 25\bigl(2 a_1 + 149 d\bigr) = 2 \cdot 25\bigl(2 a_1 + 49 d\bigr). \]</div>
+      <p>Podelimo obe strane sa \( 25 \):</p>
+      <div class="math-block">\[ 2 a_1 + 149 d = 2\bigl(2 a_1 + 49 d\bigr) = 4 a_1 + 98 d. \]</div>
+      <p>Sredimo po \( d \) i \( a_1 \):</p>
+      <div class="math-block">\[ 149 d - 98 d = 4 a_1 - 2 a_1 \quad\Longleftrightarrow\quad 51 d = 2 a_1. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto zadatak nije mogao biti rešen bez podatka \( a_1 \)?</summary>
+          <div class="detail-content"><p>Zato što iz samog uslova o zbirovima dobijamo vezu \( 51 d = 2 a_1 \), što je jedna jednačina sa dve nepoznate. Tek podatak \( a_1 = 51 \) daje konkretnu vrednost \( d \), a sa njim i jedinstveno \( a_{100} \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Uvrstimo \( a_1 = 51 \) i izračunajmo \( d \)</h3>
+      <p>Iz \( 51 d = 2 a_1 \) i \( a_1 = 51 \) sledi</p>
+      <div class="math-block">\[ 51 d = 2 \cdot 51 = 102 \quad\Longrightarrow\quad d = 2. \]</div>
+      <p>Znači razlika je \( d = 2 \), tj. svaki sledeći član je za 2 veći od prethodnog.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunajmo \( a_{100} \)</h3>
+      <p>Uvrstimo \( a_1 = 51 \) i \( d = 2 \) u opšti član za \( n = 100 \):</p>
+      <div class="math-block">\[ a_{100} = a_1 + 99 d = 51 + 99 \cdot 2 = 51 + 198 = 249. \]</div>
+      <p><span class="result">\( a_{100} = 249 \)</span></p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kontrola brojeva</summary>
+          <div class="detail-content">
+            <p>Sa \( a_1 = 51 \), \( d = 2 \): \( a_{50} = 51 + 49 \cdot 2 = 149 \), \( a_{51} = 151 \), \( a_{100} = 249 \).</p>
+            <p>Zbir prvih 50: \( S_1 = \tfrac{50 (51 + 149)}{2} = 25 \cdot 200 = 5000 \).</p>
+            <p>Zbir poslednjih 50: \( S_2 = \tfrac{50 (151 + 249)}{2} = 25 \cdot 400 = 10000 \).</p>
+            <p>Zaista je \( 10000 = 2 \cdot 5000 \). ✓</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kad se aritmetički niz deli na dva jednaka komada, drugi komad je <strong>opet aritmetički niz sa istom razlikom</strong> \( d \), samo sa novim početnim članom. Zato obe sume imaju identičan oblik — razlikuje ih samo „pomak" od 50 koraka u početnom članu. Taj pomak daje dodatnih \( 50 d \) na prosečni član, odnosno \( 100 d \) u dvostrukom prosečnom članu, što je i uzrok što se jednačina svede na \( 51 d = 2 a_1 \).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ a_{100} = a_1 + 99 d = 51 + 99 \cdot 2 = 249 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 150 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 253 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 251 \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 249 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 348 \)</span>
+  </div>
+  <p class="verification">Provera: \( S_1 = \tfrac{50(51 + 149)}{2} = 5000 \), \( S_2 = \tfrac{50(151 + 249)}{2} = 10000 = 2 \cdot S_1 \). Uslov zadatka je zadovoljen.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Korišćenje formule \( a_{51} = a_1 + 51 d \) umesto \( a_{51} = a_1 + 50 d \). U formuli stoji \( (n-1) d \), pa je za \( n = 51 \) koeficijent \( 50 \), ne \( 51 \).</li>
+    <li>Pogrešan broj članova u drugoj sumi: iako ide od \( a_{51} \) do \( a_{100} \), članova je \( 100 - 51 + 1 = 50 \), ne \( 49 \).</li>
+    <li>Zamenom \( S_2 = 2 S_1 \) sa \( S_2 = S_1 / 2 \) ili \( S_1 = 2 S_2 \) — pažljivo čitanje: „zbir poslednjih 50 je dvostruki zbir prvih 50" znači <strong>poslednji</strong> je veći.</li>
+    <li>Traženje samo \( d \) i davanje tog odgovora — zadatak pita za \( a_{100} \), pa treba i završni korak \( a_1 + 99 d \).</li>
+    <li>Greška u aritmetici \( 99 \cdot 2 = 198 \); neki brzinom napišu \( 200 \), pa dobiju lažno \( a_{100} = 251 \) (zavarajuća opcija C).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>U aritmetičkom nizu \( b_1, b_2, \ldots, b_{100} \) zbir poslednjih 50 članova jednak je <strong>trostrukom</strong> zbiru prvih 50. Ako je \( b_1 = 51 \), nađi \( b_{100} \).</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Isti postupak: \( S_2 = 3 S_1 \) daje \( 25(2 b_1 + 149 d) = 3 \cdot 25 (2 b_1 + 49 d) \), tj. \( 2 b_1 + 149 d = 6 b_1 + 147 d \), pa \( 2 d = 4 b_1 \), odnosno \( d = 2 b_1 \). Za \( b_1 = 51 \) dobijamo \( d = 102 \), pa je \( b_{100} = 51 + 99 \cdot 102 = 51 + 10098 = 10149 \).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('dve-polovine');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Zbir prvih 50 i zbir poslednjih 50 članova', W / 2, 28);
+
+    // Bar chart section
+    var barLeft = 80;
+    var barMaxW = W - 2 * barLeft;
+    var bar1Top = 60;
+    var bar2Top = 130;
+    var barH = 50;
+
+    // Maximum width corresponds to the larger sum (10000)
+    var S1 = 5000, S2 = 10000;
+    var scale = barMaxW / S2;
+    var w1 = S1 * scale;
+    var w2 = S2 * scale;
+
+    // Bar 1: S1 = 5000 (plava)
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.25);
+    ctx.fillRect(barLeft, bar1Top, w1, barH);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(barLeft, bar1Top, w1, barH);
+
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('S₁ = a₁ + a₂ + … + a₅₀ = 5000', barLeft + 10, bar1Top + 31);
+
+    // Label "prvih 50" on right
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('(prvih 50 članova)', barLeft + w1 + 12, bar1Top + 31);
+
+    // Bar 2: S2 = 10000 (narandžasta / warning)
+    ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.25);
+    ctx.fillRect(barLeft, bar2Top, w2, barH);
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(barLeft, bar2Top, w2, barH);
+
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('S₂ = a₅₁ + a₅₂ + … + a₁₀₀ = 10000', barLeft + 10, bar2Top + 31);
+
+    // Arrow showing 2x
+    var arrowX = barLeft + w1;
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(arrowX, bar1Top + barH + 2);
+    ctx.lineTo(arrowX, bar2Top - 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('S₂ = 2 · S₁', arrowX + 8, (bar1Top + bar2Top + barH) / 2 + 4);
+
+    // Vertical scale hint: ticks at 0, 5000, 10000
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(barLeft, bar2Top + barH + 8);
+    ctx.lineTo(barLeft + w2, bar2Top + barH + 8);
+    ctx.stroke();
+
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    // Ticks at 0, 5000, 10000
+    var ticks = [0, 5000, 10000];
+    ticks.forEach(function(v) {
+      var x = barLeft + v * scale;
+      ctx.beginPath();
+      ctx.strokeStyle = axis;
+      ctx.moveTo(x, bar2Top + barH + 4);
+      ctx.lineTo(x, bar2Top + barH + 12);
+      ctx.stroke();
+      ctx.fillStyle = muted;
+      ctx.fillText(v.toString(), x, bar2Top + barH + 26);
+    });
+
+    // Separator
+    ctx.strokeStyle = cvAlpha('--sol-canvas-axis', 0.4);
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(barLeft, 240);
+    ctx.lineTo(W - barLeft, 240);
+    ctx.stroke();
+
+    // Title for second part
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Niz na brojnoj osi (a₁ = 51, d = 2)', W / 2, 270);
+
+    // Number line section
+    var axisY = 360;
+    var axisLeft = 70;
+    var axisRight = W - 40;
+    var vMin = 40, vMax = 270;
+    function vx(v) { return axisLeft + (v - vMin) / (vMax - vMin) * (axisRight - axisLeft); }
+
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(axisLeft, axisY);
+    ctx.lineTo(axisRight, axisY);
+    ctx.stroke();
+    // Arrow
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(axisRight, axisY);
+    ctx.lineTo(axisRight - 8, axisY - 4);
+    ctx.lineTo(axisRight - 8, axisY + 4);
+    ctx.closePath();
+    ctx.fill();
+
+    // Gray dots for all members (scaled down): every 5th member for readability
+    ctx.fillStyle = cvAlpha('--sol-canvas-muted', 0.5);
+    for (var n = 1; n <= 100; n += 1) {
+      var val = 51 + 2 * (n - 1); // a_n
+      if (val > vMax) break;
+      var xx = vx(val);
+      ctx.beginPath();
+      ctx.arc(xx, axisY, 1.8, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Highlight key points: a_1 = 51, a_50 = 149, a_51 = 151, a_100 = 249
+    var keys = [
+      { val: 51,  label: 'a₁ = 51',    color: primary },
+      { val: 149, label: 'a₅₀ = 149',  color: primary },
+      { val: 151, label: 'a₅₁ = 151',  color: warning },
+      { val: 249, label: 'a₁₀₀ = 249', color: accent }
+    ];
+
+    // Bracket for first 50
+    var bx1 = vx(51), bx2 = vx(149);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(bx1, axisY - 30);
+    ctx.lineTo(bx1, axisY - 36);
+    ctx.lineTo(bx2, axisY - 36);
+    ctx.lineTo(bx2, axisY - 30);
+    ctx.stroke();
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('prvih 50 članova', (bx1 + bx2) / 2, axisY - 44);
+
+    // Bracket for last 50
+    var bx3 = vx(151), bx4 = vx(249);
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(bx3, axisY - 30);
+    ctx.lineTo(bx3, axisY - 36);
+    ctx.lineTo(bx4, axisY - 36);
+    ctx.lineTo(bx4, axisY - 30);
+    ctx.stroke();
+    ctx.fillStyle = warning;
+    ctx.textAlign = 'center';
+    ctx.fillText('poslednjih 50 članova', (bx3 + bx4) / 2, axisY - 44);
+
+    // Key points with labels below
+    keys.forEach(function(k) {
+      var xx = vx(k.val);
+      ctx.beginPath();
+      ctx.fillStyle = k.color;
+      ctx.arc(xx, axisY, 5.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.strokeStyle = axis;
+      ctx.lineWidth = 1;
+      ctx.moveTo(xx, axisY - 5);
+      ctx.lineTo(xx, axisY + 5);
+      ctx.stroke();
+      ctx.fillStyle = k.color;
+      ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(k.label, xx, axisY + 22);
+    });
+
+    // Show spacing "d = 2"
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('razlika d = 2 između susednih članova', W / 2, axisY + 55);
+
+    // Bottom caption
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Zadnji paket (narandžasti) ima dvostruki zbir prvog paketa (plavog).', W / 2, H - 55);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('Upravo iz tog uslova dobijamo d = 2 i a₁₀₀ = 249.', W / 2, H - 30);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Aritmetički niz — poslednji član iz uslova o zbirovima",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["aritmetički niz", "zbir članova niza", "opšti član niza", "linearne jednačine", "sistem sa jednom nepoznatom"]
+}
+BRAINSPARK_META-->

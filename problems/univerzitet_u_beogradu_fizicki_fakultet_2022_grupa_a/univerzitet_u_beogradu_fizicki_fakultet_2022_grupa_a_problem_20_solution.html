@@ -1,0 +1,566 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Stranice knjige su numerisane prirodnim brojevima, počev od 1. Za numeraciju je ukupno upotrebljeno 1542 cifre. Koliko stranica ima knjiga?
+  Opcije: (A) 414; (B) 514; (C) 550; (D) 554. Tačan odgovor: (C) 550.
+
+  Strategija: Cifre se troše po "grupama" zavisno od dužine broja stranice.
+   Grupa 1 (stranice 1 do 9):   9 stranica, svaka 1 cifra → 9 cifara.
+   Grupa 2 (stranice 10 do 99): 90 stranica, svaka 2 cifre → 180 cifara.
+   Grupa 3 (stranice 100 do 999): svaka stranica 3 cifre.
+   Grupa 4 (stranice 1000 do 9999): svaka 4 cifre. (ne treba nam ovde.)
+
+  Kumulativno na kraju grupe 2: 9 + 180 = 189 cifara ukupno.
+  Preostalo za grupu 3: 1542 − 189 = 1353 cifre.
+  Broj 3-cifrenih stranica: 1353 / 3 = 451.
+  Poslednja stranica: 99 + 451 = 550.
+
+  Provera:
+   9 + 180 + 451·3 = 9 + 180 + 1353 = 1542. ✓
+   Dakle knjiga ima 550 stranica, odgovor (C).
+
+  Provera eliminacijom:
+   (A) 414: 9 + 180 + (414−99)·3 = 9 + 180 + 315·3 = 9 + 180 + 945 = 1134. Ne.
+   (B) 514: 9 + 180 + 415·3 = 9 + 180 + 1245 = 1434. Ne.
+   (C) 550: 9 + 180 + 451·3 = 1542. ✓
+   (D) 554: 9 + 180 + 455·3 = 9 + 180 + 1365 = 1554. Ne (4 viška).
+
+  Formula za ukupan broj cifara kao funkcija N:
+   Ako je 1 ≤ N ≤ 9:    D(N) = N
+   Ako je 10 ≤ N ≤ 99:  D(N) = 9 + 2(N − 9)
+   Ako je 100 ≤ N ≤ 999: D(N) = 189 + 3(N − 99)
+   Ako je 1000 ≤ N ≤ 9999: D(N) = 2889 + 4(N − 999)
+
+  Ovde je N = 550, D(550) = 189 + 3·451 = 189 + 1353 = 1542. ✓
+
+  Visual: bar chart / stacked bar: tri segmenta sa različitim bojama i visinama: 9, 180, 1353 cifre (ukupno 1542). Ili cumulative step plot D(N). Preferencijalno: stacked horizontal bar (tri segmenta) + mali textual sumarij. Static — ovo je pure arithmetic.
+
+  Zanimljivo: ako je knjiga imala stranice 1..550, prosek cifara po stranici je 1542/550 ≈ 2.80, tj. "skoro 3-cifrena u proseku" jer je 550−99=451 trocifrena stranica naspram samo 99 kraćih.
+
+  Pitfalls:
+   - Studenti direktno računaju 1542 / 2 = 771 ili 1542 / 3 = 514 (to baš daje klopku B!)
+   - Mešanje "broj stranica u grupi" i "broj cifara u grupi". 90 stranica u 10-99, a to je 180 cifara.
+   - Zaboravljanje da se "grupe" smenjuju kod 10 i 100, ne kod okruglih brojeva.
+   - Računaju (1542 − 9) / 3 = 511 stranica u grupi 3 (zaboravili da i dvocifrene troše cifre).
+
+  Odgovor: (C) 550.
+</script>
+
+<h1 data-card="problem-title">Broj cifara u numeraciji stranica knjige</h1>
+<p data-card="problem-subtitle" class="subtitle">Teorija brojeva i logika &mdash; prebrajanje cifara, grupisanje po dužini broja, linearne jednačine</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Stranice knjige su numerisane prirodnim brojevima, počev od \( 1 \). Za numeraciju je ukupno upotrebljeno \( 1542 \) cifre. Koliko stranica ima knjiga?</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">Prva stranica</span>
+      <span class="given-value">\( 1 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Ukupno cifara</span>
+      <span class="given-value">\( 1542 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Traži se</span>
+      <span class="given-value">\( N = {?} \)</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 414 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 514 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 550 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 554 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Razbijamo stranice u tri prirodne grupe prema broju cifara: jednocifrene (\( 1\)&ndash;\(9 \)), dvocifrene (\( 10\)&ndash;\(99 \)) i trocifrene (\( 100\)&ndash;\(999 \)). Zbrajamo cifre iz prva dva dela, a ostatak delimo sa \( 3 \) da nađemo broj trocifrenih stranica.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne činjenice o brojevima po dužini</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Jednocifreni</span> Prirodni brojevi od \( 1 \) do \( 9 \) &mdash; ima ih \( 9 \), svaki nosi \( 1 \) cifru.</li>
+        <li><span class="formula-label">Dvocifreni</span> Od \( 10 \) do \( 99 \) &mdash; ima ih \( 99 - 10 + 1 = 90 \), svaki nosi \( 2 \) cifre, ukupno \( 180 \) cifara.</li>
+        <li><span class="formula-label">Trocifreni</span> Od \( 100 \) do \( 999 \) &mdash; ima ih \( 900 \), svaki nosi \( 3 \) cifre, ukupno \( 2700 \) cifara.</li>
+        <li><span class="formula-label">Ukupno do \( N \)</span> Ako \( 100 \le N \le 999 \), onda \( D(N) = 9 + 180 + 3(N-99) = 189 + 3(N-99) \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="digits-bar" width="720" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Gornja traka pokazuje kako se \( 1542 \) cifre razlažu u tri segmenta prema dužini broja stranice. Ispod je stepenasti grafik kumulativnog broja cifara \( D(N) \) u zavisnosti od broja stranica \( N \); obeleženo je rešenje \( (550,\,1542) \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Razlažemo stranice u tri grupe po broju cifara</h3>
+      <p>Iako su sve stranice &bdquo;jedan broj&ldquo;, te brojeve pišemo različitim brojem cifara. Grupišemo ih prema dužini zapisa:</p>
+      <ul>
+        <li><b>Grupa 1</b> &mdash; stranice \( 1 \) do \( 9 \): \( 9 \) stranica, svaka \( 1 \) cifra.</li>
+        <li><b>Grupa 2</b> &mdash; stranice \( 10 \) do \( 99 \): \( 90 \) stranica, svaka \( 2 \) cifre.</li>
+        <li><b>Grupa 3</b> &mdash; stranice \( 100 \) pa naviše: svaka \( 3 \) cifre (za knjigu sa manje od \( 1000 \) stranica).</li>
+      </ul>
+      <p>Kako nijedna opcija ne prelazi \( 999 \), sigurno smo u grupi \( 3 \) &mdash; ne pojavljuju se četvorocifrene stranice.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo cifre iz grupa 1 i 2</h3>
+      <p>Iz prve grupe:</p>
+      <div class="math-block">\[ 9 \text{ stranica} \cdot 1 \text{ cifra} = 9 \text{ cifara}. \]</div>
+      <p>Iz druge grupe:</p>
+      <div class="math-block">\[ 90 \text{ stranica} \cdot 2 \text{ cifre} = 180 \text{ cifara}. \]</div>
+      <p>Kumulativno, do kraja stranice \( 99 \), potrošeno je:</p>
+      <div class="math-block">\[ 9 + 180 = 189 \text{ cifara}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliko ima dvocifrenih prirodnih brojeva?</summary>
+          <div class="detail-content"><p>Od \( 10 \) do \( 99 \), uključujući oba kraja, ima ih \( 99 - 10 + 1 = 90 \). Pazi: nije \( 99 - 10 = 89 \) &mdash; moraš dodati \( 1 \) za uključivanje oba kraja.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Koliko cifara ostaje za trocifrene stranice?</h3>
+      <p>Ukupno je iskorišćeno \( 1542 \) cifara. Oduzmemo ono što je već potrošeno na stranice \( 1 \)&ndash;\(99 \):</p>
+      <div class="math-block">\[ 1542 - 189 = 1353 \text{ cifara}. \]</div>
+      <p>Ovih \( 1353 \) cifara mora pokriti trocifrene stranice, počev od \( 100 \). Svaka takva stranica troši tačno \( 3 \) cifre, pa je broj trocifrenih stranica:</p>
+      <div class="math-block">\[ \dfrac{1353}{3} = 451. \]</div>
+      <div class="callout callout-info">
+        <p>Deljenje se poklopilo bez ostatka &mdash; to je prvi signal da smo na pravom tragu. Da je ostatak \( 1 \) ili \( 2 \), morali bismo preispitati postavku ili uračunati &bdquo;delimičnu&ldquo; poslednju stranicu (što u ovom problemu nije moguće).</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Nalazimo poslednju stranicu</h3>
+      <p>Od stranice \( 100 \) krećemo i brojimo \( 451 \) stranicu. Poslednja je:</p>
+      <div class="math-block">\[ N = 99 + 451 = \mathbf{550}. \]</div>
+      <p>Pažnja: počinjemo od \( 100 \), tj. &bdquo;\( 99 + 1 \)&ldquo;, zato se dodaje \( 99 \), ne \( 100 \). Ako bismo dodali \( 100 \) kao polaznu, pomerili bismo numeraciju za jedno mesto.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto \( 99 + 451 \), a ne \( 100 + 451 \)?</summary>
+          <div class="detail-content"><p>Prva trocifrena stranica je \( 100 \) (to je trocifrena stranica broj \( 1 \)). Dakle trocifrena stranica broj \( k \) ima redni broj \( 99 + k \). Za \( k = 451 \) dobijamo \( 550 \). Alternativno: \( 100, 101, \ldots, 550 \) je \( 550 - 100 + 1 = 451 \) stranica. &#10003;</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera: ukupno cifara za \( N = 550 \)</h3>
+      <p>Vraćamo se unazad &mdash; zbrajamo cifre iz sve tri grupe za knjigu od \( 550 \) stranica:</p>
+      <div class="math-block">\[ 9 + 180 + 451 \cdot 3 \;=\; 9 + 180 + 1353 \;=\; 1542. \;\;\checkmark \]</div>
+      <p>Još elegantnije, preko formule \( D(N) = 189 + 3(N-99) \) za \( 100 \le N \le 999 \):</p>
+      <div class="math-block">\[ D(550) = 189 + 3 \cdot (550 - 99) = 189 + 3 \cdot 451 = 189 + 1353 = 1542. \]</div>
+      <p>Dve nezavisne provere se slažu &mdash; rešenje je <span class="result">\( N = 550 \)</span>.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Problemi &bdquo;koliko cifara&ldquo; rešavaju se <b>grupisanjem po dužini broja</b>. Brojevi od \( 1 \) do \( 9 \) imaju \( 1 \) cifru, od \( 10 \) do \( 99 \) imaju \( 2 \) cifre, od \( 100 \) do \( 999 \) imaju \( 3 \) cifre &mdash; svaka grupa donosi poznat, fiksan broj cifara: \( 9,\; 180,\; 2700 \). Kad znamo ukupan broj cifara \( C \), oduzimamo &bdquo;potpune&ldquo; grupe dok ostatak ne postane deljiv dužinom trenutne grupe &mdash; taj količnik daje preostale stranice.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ N \;=\; 550 \text{ stranica} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 414 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 514 \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( 550 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 554 \)</span>
+  </div>
+  <p class="verification">Provera: \( 9 + 180 + 451\cdot 3 = 9 + 180 + 1353 = 1542 \) cifara. &#10003; Za \( 554 \) bismo dobili \( 1554 \) cifara (\( 12 \) viška), za \( 514 \) samo \( 1434 \) cifre, a za \( 414 \) samo \( 1134 \) cifre.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><b>Direktno deljenje \( 1542 / 3 = 514 \):</b> ovo je najčešća klopka. Ona pretpostavlja da su <i>sve</i> stranice trocifrene &mdash; a prve \( 99 \) nisu. Upravo ova greška vodi na (B).</li>
+    <li><b>Zaborav prve grupe:</b> računanje \( 1542 / 2 = 771 \) ignoriše postojanje trocifrenih stranica.</li>
+    <li><b>Pomeranje za \( 1 \) kod početne trocifrene:</b> pisanje \( 100 + 451 = 551 \) umesto \( 99 + 451 = 550 \). Prva trocifrena stranica je \( 100 \), pa je \( k \)-ta trocifrena jednaka \( 99 + k \).</li>
+    <li><b>Mešanje &bdquo;broja stranica&ldquo; i &bdquo;broja cifara&ldquo;:</b> druga grupa ima \( 90 \) stranica, ali \( 180 \) cifara. Uvek naznačiti mernu jedinicu.</li>
+    <li><b>Ostatak deljenja:</b> kad \( 1353 / 3 \) nije bilo deljivo, to bi značilo da ili postavka sadrži grešku, ili knjiga ima neobičnu numeraciju. Rešenje mora biti ceo broj &mdash; pazi da ne zaokružuješ.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koliko stranica ima knjiga ako je za numeraciju upotrebljeno tačno \( 2023 \) cifre? Da li uopšte postoji takva knjiga ili rezultat nije ceo broj?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Primenimo isti metod: iz grupa 1 i 2 je potrošeno \( 9 + 180 = 189 \) cifara. Ostaje \( 2023 - 189 = 1834 \) za trocifrene stranice. Delimo: \( 1834 : 3 = 611 \) ostatak \( 1 \).</p>
+      <p>To znači da \( 611 \) punih trocifrenih stranica (\( 100, 101, \ldots, 710 \)) troši \( 1833 \) cifre. Još je ostala \( 1 \) cifra, ali nova stranica bi tražila \( 3 \). Dakle <b>ne postoji</b> prirodan broj stranica \( N \) za koji je \( D(N) = 2023 \). Funkcija \( D(N) \) preskače određene vrednosti jer skače u koracima od \( 3 \) u trocifrenom opsegu.</p>
+      <p>Razmisli: koje su to vrednosti \( C \) za koje ne postoji \( N \) takav da \( D(N) = C \), kada je \( 100 \le N \le 999 \)? (Odgovor: \( C \equiv 1 \) ili \( 2 \pmod 3 \) u tom delu, uz \( C > 189 \).)</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('digits-bar');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  var W = canvas.width, H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+    var danger    = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // ===== TOP SECTION: stacked horizontal bar of total digits =====
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Razlaganje 1542 cifara po grupama stranica', W / 2, 28);
+
+    var barX = 50, barY = 60, barW = W - 100, barH = 50;
+    var totalDigits = 1542;
+    var seg1 = 9;     // stranice 1-9
+    var seg2 = 180;   // stranice 10-99
+    var seg3 = 1353;  // stranice 100-550
+
+    var w1 = (seg1 / totalDigits) * barW;
+    var w2 = (seg2 / totalDigits) * barW;
+    var w3 = (seg3 / totalDigits) * barW;
+
+    // Segment 1 (tiny — tertiary)
+    ctx.fillStyle = secondary;
+    ctx.fillRect(barX, barY, w1, barH);
+    // Segment 2
+    ctx.fillStyle = warning;
+    ctx.fillRect(barX + w1, barY, w2, barH);
+    // Segment 3 (largest — primary)
+    ctx.fillStyle = primary;
+    ctx.fillRect(barX + w1 + w2, barY, w3, barH);
+
+    // Outline
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(barX, barY, barW, barH);
+
+    // Segment labels (inside if wide enough, above otherwise)
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+
+    // Seg 1 label (too small) — draw above
+    ctx.fillStyle = secondary;
+    ctx.fillText('9', barX + w1 / 2, barY - 8);
+    ctx.font = '10px Inter, system-ui, sans-serif';
+    ctx.fillText('str. 1–9', barX + w1 / 2, barY + barH + 14);
+
+    // Seg 2 label
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = bg;
+    ctx.fillText('180', barX + w1 + w2 / 2, barY + barH / 2 + 4);
+    ctx.fillStyle = warning;
+    ctx.font = '10px Inter, system-ui, sans-serif';
+    ctx.fillText('str. 10–99  (90 stranica × 2)', barX + w1 + w2 / 2, barY + barH + 14);
+
+    // Seg 3 label
+    ctx.fillStyle = bg;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.fillText('1353', barX + w1 + w2 + w3 / 2, barY + barH / 2 + 5);
+    ctx.fillStyle = primary;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillText('str. 100–550  (451 stranica × 3)', barX + w1 + w2 + w3 / 2, barY + barH + 14);
+
+    // Total label above bar (right-aligned)
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('Ukupno: 1542 cifre', barX + barW, barY - 8);
+
+    // Sum equation below caption area
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('9  +  180  +  1353  =  1542  (cifara)', W / 2, barY + barH + 42);
+
+    // ===== BOTTOM SECTION: step plot of D(N) =====
+    var plotX = 70, plotY = 180, plotW = W - 130, plotH = 320;
+
+    // Frame
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(plotX, plotY, plotW, plotH);
+
+    // Title for plot
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Kumulativni broj cifara  D(N)  u zavisnosti od broja stranica  N', plotX + plotW / 2, plotY - 10);
+
+    // Axis scaling
+    var Nmax = 700, Dmax = 2000;
+    function xN(n) { return plotX + (n / Nmax) * plotW; }
+    function yD(d) { return plotY + plotH - (d / Dmax) * plotH; }
+
+    // Grid: vertical at N = 0, 100, 200, ... 700
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    for (var n = 0; n <= 700; n += 100) {
+      var X = xN(n);
+      ctx.beginPath();
+      ctx.moveTo(X, plotY);
+      ctx.lineTo(X, plotY + plotH);
+      ctx.stroke();
+      ctx.fillText(String(n), X, plotY + plotH + 16);
+    }
+    // Horizontal grid at D = 0, 500, 1000, 1500, 2000
+    ctx.textAlign = 'right';
+    for (var d = 0; d <= 2000; d += 500) {
+      var Y = yD(d);
+      ctx.strokeStyle = grid;
+      ctx.beginPath();
+      ctx.moveTo(plotX, Y);
+      ctx.lineTo(plotX + plotW, Y);
+      ctx.stroke();
+      ctx.fillStyle = muted;
+      ctx.fillText(String(d), plotX - 6, Y + 4);
+    }
+
+    // Special horizontal line at D = 1542 (our target)
+    ctx.strokeStyle = highlight;
+    ctx.setLineDash([5, 4]);
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(plotX, yD(1542));
+    ctx.lineTo(plotX + plotW, yD(1542));
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = highlight;
+    ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('D = 1542', plotX + 6, yD(1542) - 5);
+
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('N  (broj stranica)', plotX + plotW / 2, plotY + plotH + 40);
+    ctx.save();
+    ctx.translate(plotX - 40, plotY + plotH / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('D(N)  (cifre)', 0, 0);
+    ctx.restore();
+
+    // Plot D(N): three linear segments with different slopes
+    // Segment A: N 0..9, slope 1 (from (0,0) to (9,9))
+    // Segment B: N 9..99, slope 2 (from (9,9) to (99,189))
+    // Segment C: N 99..700, slope 3 (from (99,189) to (700,1992))
+
+    // Segment A (secondary)
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(xN(0), yD(0));
+    ctx.lineTo(xN(9), yD(9));
+    ctx.stroke();
+
+    // Segment B (warning)
+    ctx.strokeStyle = warning;
+    ctx.beginPath();
+    ctx.moveTo(xN(9), yD(9));
+    ctx.lineTo(xN(99), yD(189));
+    ctx.stroke();
+
+    // Segment C (primary)
+    ctx.strokeStyle = primary;
+    ctx.beginPath();
+    ctx.moveTo(xN(99), yD(189));
+    ctx.lineTo(xN(700), yD(189 + 3 * (700 - 99)));
+    ctx.stroke();
+
+    // Vertical guides at boundaries
+    ctx.strokeStyle = muted;
+    ctx.setLineDash([3, 3]);
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(xN(9), yD(9));
+    ctx.lineTo(xN(9), plotY + plotH);
+    ctx.moveTo(xN(99), yD(189));
+    ctx.lineTo(xN(99), plotY + plotH);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Boundary point dots
+    function dot(n, d, col) {
+      ctx.beginPath();
+      ctx.arc(xN(n), yD(d), 4, 0, Math.PI * 2);
+      ctx.fillStyle = col;
+      ctx.fill();
+      ctx.strokeStyle = bg;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+    dot(9, 9, secondary);
+    dot(99, 189, warning);
+
+    // Breakpoint labels
+    ctx.fillStyle = muted;
+    ctx.font = '10px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('N=9', xN(9), yD(9) - 10);
+    ctx.fillText('(9,189)', xN(99) + 34, yD(189) - 6);
+    ctx.fillText('N=99', xN(99), yD(189) - 22);
+
+    // THE ANSWER POINT: (550, 1542)
+    var Px = xN(550), Py = yD(1542);
+    // projection lines
+    ctx.strokeStyle = highlight;
+    ctx.setLineDash([4, 3]);
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(Px, plotY + plotH);
+    ctx.lineTo(Px, Py);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // glow
+    ctx.beginPath();
+    ctx.arc(Px, Py, 12, 0, Math.PI * 2);
+    ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.30);
+    ctx.fill();
+    // solid dot
+    ctx.beginPath();
+    ctx.arc(Px, Py, 6, 0, Math.PI * 2);
+    ctx.fillStyle = highlight;
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    // Label
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('(550, 1542)', Px + 12, Py - 6);
+    // Under-axis tick highlight
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('N = 550', Px, plotY + plotH + 30);
+
+    // Legend box (top-right of plot)
+    var legX = plotX + plotW - 220, legY = plotY + 10;
+    ctx.fillStyle = cvAlpha('--sol-canvas-bg', 0.88);
+    ctx.fillRect(legX, legY, 210, 90);
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(legX, legY, 210, 90);
+
+    function legItem(dy, color, label) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(legX + 10, legY + dy);
+      ctx.lineTo(legX + 38, legY + dy);
+      ctx.stroke();
+      ctx.fillStyle = color;
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(label, legX + 46, legY + dy + 4);
+    }
+    legItem(18, secondary, '1-cifrene (nagib 1)');
+    legItem(38, warning,   '2-cifrene (nagib 2)');
+    legItem(58, primary,   '3-cifrene (nagib 3)');
+    legItem(78, highlight, 'traženo rešenje');
+
+    // Footer caption
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Nagib krive raste sa dužinom broja: svaka nova stranica troši 1, 2, pa 3 cifre.', W / 2, H - 14);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Prebrajanje cifara u numeraciji stranica: od ukupno 1542 cifre do broja stranica",
+  "subject": "math",
+  "unit": "number-theory",
+  "topic_tags": ["prebrajanje cifara", "grupisanje po dužini broja", "linearne jednačine", "aritmetika", "numeracija"]
+}
+BRAINSPARK_META-->

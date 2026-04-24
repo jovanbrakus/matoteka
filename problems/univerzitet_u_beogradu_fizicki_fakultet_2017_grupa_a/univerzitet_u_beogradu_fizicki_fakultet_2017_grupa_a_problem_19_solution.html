@@ -1,0 +1,585 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: m, n, k prirodni brojevi. Pri deljenju sa 7 daju ostatke 3, 4, 2 redom.
+  Pitanje: koji ostatak daje proizvod mnk pri deljenju sa 7?
+  Opcije: (A) 6, (B) 1, (C) 0, (D) 3. Tačan odgovor: (D) 3.
+
+  Matematika:
+   - Uslovi: m ≡ 3 (mod 7), n ≡ 4 (mod 7), k ≡ 2 (mod 7).
+   - Po osobini množenja modulo n: ako je a ≡ a' (mod n) i b ≡ b' (mod n), onda ab ≡ a'b' (mod n).
+   - Zato: mnk ≡ 3 · 4 · 2 = 24 (mod 7).
+   - 24 = 3·7 + 3, pa 24 ≡ 3 (mod 7).
+   - Odgovor: 3.
+
+  Alternativa kroz dekompoziciju:
+   - m = 7a + 3, n = 7b + 4, k = 7c + 2.
+   - mn = (7a+3)(7b+4) = 49ab + 28a + 21b + 12 = 7(7ab+4a+3b) + 12. Dakle mn ≡ 12 ≡ 5 (mod 7).
+   - mnk = (mn)(k) ≡ 5 · 2 = 10 ≡ 3 (mod 7).
+
+  Numerička provera: uzmimo m=10 (10=7+3), n=11 (11=7+4), k=9 (9=7+2).
+   - Proizvod: 10·11·9 = 990.
+   - 990 / 7: 7·141 = 987, ostatak 990-987 = 3. ✓
+
+  Druga provera (najmanji predstavnici): m=3, n=4, k=2. mnk = 24, 24=3·7+3, ostatak 3. ✓
+
+  Plan:
+   1. Podsetnik: pravilo množenja kongruencija.
+   2. Pomnožiti ostatke: 3·4·2 = 24.
+   3. 24 mod 7 = 3.
+   4. Provera konkretnim brojevima.
+
+  Canvas:
+   - Canvas 1: Krug kao "sat" sa 7 tačaka (ostaci 0–6), strelica iz 3 preko ·4 do 5 (=12 mod 7), pa preko ·2 do 3 (=10 mod 7). Pokazuje kako se "obrće" oko 7.
+   - Canvas 2: Tabela množenja mod 7 sa osvetljenim ćelijama 3·4=12≡5 i 5·2=10≡3.
+
+  Pitfalls:
+   - Uzimanje "ostatka" kao 24 bez daljeg deljenja.
+   - Mešanje "ostatka" i "količnika".
+   - Pogrešno tumačenje: da se ostatak proizvoda dobija sabiranjem ostataka (3+4+2=9), što je pogrešno.
+
+  Key insight: u modulo n aritmetici, proizvod ostataka se smije naknadno "smanjiti" po modulu. To svodi zadatak na jednu jednostavnu računicu: 3·4·2 = 24 → 24 mod 7 = 3.
+
+  Challenge: Šta ako bi još četvrti broj l ≡ 6 (mod 7) bio u proizvodu? mnkl ≡ 3·4·2·6 = 144 (mod 7). 144 = 20·7 + 4, ostatak 4.
+</script>
+
+<h1 data-card="problem-title">Ostatak proizvoda pri deljenju sa 7</h1>
+<p data-card="problem-subtitle" class="subtitle">Teorija brojeva &mdash; modularna aritmetika, kongruencije i osobine ostataka</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Ako prirodni brojevi \( m, n \) i \( k \) pri deljenju sa \( 7 \) daju ostatke \( 3, 4 \) i \( 2 \) redom, onda proizvod \( mnk \) daje ostatak pri deljenju sa \( 7 \):</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">\( m \bmod 7 \)</span>
+      <span class="given-value">\( 3 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">\( n \bmod 7 \)</span>
+      <span class="given-value">\( 4 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">\( k \bmod 7 \)</span>
+      <span class="given-value">\( 2 \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 6 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 0 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Iskoristićemo osobinu kongruencija: ostatak proizvoda jednak je ostatku koji daje proizvod ostataka. Zato je dovoljno izračunati \( 3 \cdot 4 \cdot 2 = 24 \) i onda \( 24 \) podeliti sa \( 7 \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Kongruencije po modulu \( n \)</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Definicija:</strong> \( a \equiv b \pmod{n} \) znači da \( n \) deli razliku \( a - b \); ekvivalentno, \( a \) i \( b \) daju <em>isti</em> ostatak pri deljenju sa \( n \).</li>
+        <li><strong>Zapis preko ostatka:</strong> ako je \( a \bmod n = r \), tada \( a = nq + r \) gde je \( 0 \le r < n \).</li>
+        <li><strong>Sabiranje kongruencija:</strong> ako je \( a \equiv a' \pmod{n} \) i \( b \equiv b' \pmod{n} \), onda \( a + b \equiv a' + b' \pmod{n} \).</li>
+        <li><strong>Množenje kongruencija:</strong> pod istim uslovima, \( a \cdot b \equiv a' \cdot b' \pmod{n} \). <em>Ovo je ključ zadatka.</em></li>
+        <li><strong>Posledica:</strong> ostatak proizvoda se može naći kao ostatak proizvoda ostataka &mdash; velike brojeve ne moramo nikad stvarno izmnožiti.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz &mdash; &bdquo;sat&ldquo; po modulu 7</h2>
+  <div class="canvas-wrapper">
+    <canvas id="clockCanvas" width="720" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Na krugu su razmešteni ostaci \( 0, 1, 2, \ldots, 6 \). Krećemo od ostatka \( 3 \) (to je \( m \)), množimo sa \( 4 \) i dolazimo do \( 12 \equiv 5 \pmod{7} \); zatim množimo sa \( 2 \) i dolazimo do \( 10 \equiv 3 \pmod{7} \). Tačno taj ostatak traži zadatak.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Tablica množenja mod 7">
+  <h2>📐 Tablica množenja po modulu 7</h2>
+  <div class="canvas-wrapper">
+    <canvas id="tableCanvas" width="720" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">U ćeliji \( (3, 4) \) piše \( 5 \) jer je \( 3 \cdot 4 = 12 \equiv 5 \pmod{7} \). U ćeliji \( (5, 2) \) piše \( 3 \) jer je \( 5 \cdot 2 = 10 \equiv 3 \pmod{7} \). Isti tok kao i na kružnom dijagramu.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Zapišimo uslove preko kongruencija</h3>
+      <p>Uslov &bdquo;\( m \) pri deljenju sa \( 7 \) daje ostatak \( 3 \)&ldquo; u modularnom zapisu glasi \( m \equiv 3 \pmod{7} \). Na isti način:</p>
+      <div class="math-block">\[ m \equiv 3 \pmod{7}, \qquad n \equiv 4 \pmod{7}, \qquad k \equiv 2 \pmod{7}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto ovakav zapis smemo koristiti?</summary>
+          <div class="detail-content"><p>Iz \( m = 7a + 3 \) sledi \( m - 3 = 7a \), pa \( 7 \mid (m-3) \), što je tačno definicija \( m \equiv 3 \pmod{7} \). Isti argument važi i za \( n \) i \( k \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Pomnožimo kongruencije</h3>
+      <p>Pravilo množenja kongruencija po istom modulu kaže: smemo &bdquo;pomnožiti levo sa levim, desno sa desnim&ldquo;. Zato je</p>
+      <div class="math-block">\[ mnk \;\equiv\; 3 \cdot 4 \cdot 2 \;=\; 24 \pmod{7}. \]</div>
+      <p>Primetimo &mdash; <em>ovde se velika nepoznanica svodi na obično množenje malih brojeva</em>. Nije potrebno znati koliko je konkretno \( m, n, k \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Tražimo ostatak od \( 24 \) pri deljenju sa \( 7 \)</h3>
+      <p>Delimo:</p>
+      <div class="math-block">\[ 24 = 3 \cdot 7 + 3, \qquad 0 \le 3 < 7. \]</div>
+      <p>Dakle \( 24 \bmod 7 = 3 \), pa konačno</p>
+      <div class="math-block">\[ mnk \;\equiv\; 24 \;\equiv\; 3 \pmod{7}. \]</div>
+      <p>Ostatak proizvoda je <span class="result">\( 3 \)</span>.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto \( 24 \) ne može biti &bdquo;ostatak&ldquo;?</summary>
+          <div class="detail-content"><p>Ostatak pri deljenju sa \( 7 \) je po definiciji broj iz skupa \( \{0, 1, 2, 3, 4, 5, 6\} \) &mdash; dakle strogo manji od \( 7 \). Broj \( 24 \) moramo još jednom &bdquo;iscediti&ldquo; podelom sa \( 7 \): \( 24 = 3 \cdot 7 + 3 \), pa pravi ostatak je \( 3 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera konkretnim brojevima</h3>
+      <p>Izaberimo najmanje prirodne brojeve koji zadovoljavaju uslove: \( m = 10 \) (\( 10 = 7 + 3 \)), \( n = 11 \) (\( 11 = 7 + 4 \)), \( k = 9 \) (\( 9 = 7 + 2 \)).</p>
+      <div class="math-block">\[ mnk = 10 \cdot 11 \cdot 9 = 990. \]</div>
+      <p>Delimo: \( 141 \cdot 7 = 987 \), pa</p>
+      <div class="math-block">\[ 990 = 141 \cdot 7 + 3 \;\Rightarrow\; 990 \bmod 7 = 3. \; \checkmark \]</div>
+      <p>Rezultat se poklapa sa onim što smo dobili preko kongruencija.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Nije bitno koliko je tačno \( m, n, k \) &mdash; bitan je samo njihov <em>ostatak</em> pri deljenju sa \( 7 \). U modularnoj aritmetici, ceo &bdquo;sedmostruk&ldquo; deo broja se &bdquo;pojede&ldquo; i nestane. Zato zadatak u stvari nije o velikim brojevima već o jednoj jednostavnoj računici: \( 3 \cdot 4 \cdot 2 = 24 \), a onda \( 24 \bmod 7 = 3 \).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ mnk \bmod 7 = 3 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 6 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 1 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 0 \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 3 \)</span>
+  </div>
+  <p class="verification">Provera sa konkretnim vrednostima: \( 10 \cdot 11 \cdot 9 = 990 = 141 \cdot 7 + 3 \), pa je ostatak zaista \( 3 \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>&bdquo;Ostatak&ldquo; \( 24 \):</strong> neki učenici stanu na \( 3 \cdot 4 \cdot 2 = 24 \) i proglase \( 24 \) za ostatak. Ali ostatak pri deljenju sa \( 7 \) <em>mora</em> biti iz \( \{0,1,\ldots,6\} \), pa \( 24 \) nije dopušten &mdash; delimo još jednom.</li>
+    <li><strong>Sabiranje umesto množenja:</strong> pogrešno je pomisliti da se ostatak proizvoda dobija <em>sabiranjem</em> ostataka (\( 3+4+2 = 9 \)). Pravilo važi za <em>množenje</em>: ostatak proizvoda je kongruentan proizvodu ostataka.</li>
+    <li><strong>Mešanje količnika i ostatka:</strong> u \( 24 = 3 \cdot 7 + 3 \) prva trojka je <em>količnik</em>, a druga <em>ostatak</em>. Ovde su slučajno iste &mdash; ne valja ih brkati.</li>
+    <li><strong>Negativni ostaci:</strong> ako krenete preko \( -1 \) (npr. \( 6 \equiv -1 \pmod{7} \)), pazite da na kraju dovedete rezultat u \( \{0,\ldots,6\} \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Pretpostavimo da u proizvodu učestvuje i četvrti broj \( \ell \) koji pri deljenju sa \( 7 \) daje ostatak \( 6 \). Koji je ostatak proizvoda \( mnk\ell \) pri deljenju sa \( 7 \)? Pokušajte i da iskoristite trik \( 6 \equiv -1 \pmod{7} \).</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Već znamo \( mnk \equiv 3 \pmod{7} \). Dalje: \( mnk\ell \equiv 3 \cdot 6 = 18 \pmod{7} \). A \( 18 = 2 \cdot 7 + 4 \), pa je ostatak \( 4 \). Preko trika: \( 6 \equiv -1 \pmod{7} \), pa \( mnk\ell \equiv 3 \cdot (-1) = -3 \equiv 7 - 3 = 4 \pmod{7} \). Isti rezultat, manje računanja!</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('clockCanvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function drawArrow(x1, y1, x2, y2, color, dashed) {
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 2.5;
+    if (dashed) ctx.setLineDash([6, 5]);
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    var ang = Math.atan2(y2 - y1, x2 - x1);
+    ctx.translate(x2, y2);
+    ctx.rotate(ang);
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(-10, -5);
+    ctx.lineTo(-10, 5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var axis = cv('--sol-canvas-axis');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 17px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Ostaci po modulu 7 na kružnici', canvas.width/2, 16);
+
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Svaka tačka je ostatak 0..6. Množenje rotira po krugu.', canvas.width/2, 40);
+
+    var cx = canvas.width / 2;
+    var cy = 280;
+    var R = 150;
+
+    // Outer circle
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Points 0..6 at angles starting top and going clockwise
+    var points = [];
+    for (var i = 0; i < 7; i++) {
+      var a = -Math.PI / 2 + (i * 2 * Math.PI / 7);
+      points.push({ x: cx + R * Math.cos(a), y: cy + R * Math.sin(a), label: i });
+    }
+
+    // Draw labels and nodes
+    for (var i = 0; i < 7; i++) {
+      var p = points[i];
+      var isSpecial = (i === 3 || i === 5);
+      var isStart = (i === 3);
+      var color = muted;
+      if (i === 3) color = primary;
+      else if (i === 5) color = secondary;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 18, 0, Math.PI * 2);
+      ctx.fillStyle = bg;
+      ctx.fill();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = (i === 3 || i === 5) ? color : axis;
+      ctx.stroke();
+
+      ctx.fillStyle = (i === 3 || i === 5) ? color : text;
+      ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(String(i), p.x, p.y);
+    }
+
+    // Arrow 1: from 3 to 5 (x4)
+    var p3 = points[3];
+    var p5 = points[5];
+    // shorten endpoints to avoid overlapping circles
+    function shorten(from, to, r) {
+      var dx = to.x - from.x, dy = to.y - from.y;
+      var d = Math.hypot(dx, dy);
+      return {
+        x1: from.x + dx / d * r, y1: from.y + dy / d * r,
+        x2: to.x   - dx / d * r, y2: to.y   - dy / d * r
+      };
+    }
+    var s1 = shorten(p3, p5, 20);
+    drawArrow(s1.x1, s1.y1, s1.x2, s1.y2, primary, false);
+
+    // Label for first multiplication (midpoint, offset outward)
+    var m1x = (p3.x + p5.x) / 2;
+    var m1y = (p3.y + p5.y) / 2;
+    var nrm1x = m1x - cx, nrm1y = m1y - cy;
+    var nrm1L = Math.hypot(nrm1x, nrm1y);
+    var lab1x = m1x + 36 * nrm1x / nrm1L;
+    var lab1y = m1y + 36 * nrm1y / nrm1L;
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('× 4', lab1x, lab1y);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('3·4 = 12 ≡ 5', lab1x, lab1y + 16);
+
+    // Arrow 2: from 5 to 3 (x2)
+    var s2 = shorten(p5, p3, 20);
+    drawArrow(s2.x1, s2.y1, s2.x2, s2.y2, secondary, false);
+    var m2x = (p5.x + p3.x) / 2 + 20;
+    var m2y = (p5.y + p3.y) / 2 + 30;
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.fillText('× 2', m2x + 40, m2y + 20);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('5·2 = 10 ≡ 3', m2x + 40, m2y + 36);
+
+    // Legend boxes
+    var legendY = 460;
+    // Start pill
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.15);
+    ctx.beginPath();
+    if (ctx.roundRect) { ctx.roundRect(60, legendY, 200, 36, 10); } else { ctx.rect(60, legendY, 200, 36); }
+    ctx.fill();
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Start: ostatak m ≡ 3', 74, legendY + 18);
+
+    // Mid
+    ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.15);
+    ctx.beginPath();
+    if (ctx.roundRect) { ctx.roundRect(280, legendY, 200, 36, 10); } else { ctx.rect(280, legendY, 200, 36); }
+    ctx.fill();
+    ctx.strokeStyle = secondary;
+    ctx.stroke();
+    ctx.fillStyle = secondary;
+    ctx.fillText('Posle ·4: ostatak 5', 294, legendY + 18);
+
+    // Final
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.22);
+    ctx.beginPath();
+    if (ctx.roundRect) { ctx.roundRect(500, legendY, 200, 36, 10); } else { ctx.rect(500, legendY, 200, 36); }
+    ctx.fill();
+    ctx.strokeStyle = accent;
+    ctx.stroke();
+    ctx.fillStyle = accent;
+    ctx.fillText('Kraj: ostatak 3 ✓', 514, legendY + 18);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('tableCanvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var axis = cv('--sol-canvas-axis');
+    var grid = cv('--sol-canvas-grid');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 17px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Tablica množenja po modulu 7', canvas.width/2, 16);
+
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Ćelija (a, b) = ostatak od a·b pri deljenju sa 7.', canvas.width/2, 40);
+
+    var N = 7;
+    var cellW = 52;
+    var cellH = 48;
+    var startX = (canvas.width - cellW * (N + 1)) / 2;
+    var startY = 80;
+
+    // Header cells
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    // Top-left corner
+    ctx.fillStyle = cvAlpha('--sol-canvas-grid', 0.5);
+    ctx.fillRect(startX, startY, cellW, cellH);
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(startX, startY, cellW, cellH);
+    ctx.fillStyle = text;
+    ctx.fillText('·', startX + cellW/2, startY + cellH/2);
+
+    // Column headers
+    for (var j = 0; j < N; j++) {
+      var x = startX + (j + 1) * cellW;
+      ctx.fillStyle = cvAlpha('--sol-canvas-grid', 0.5);
+      ctx.fillRect(x, startY, cellW, cellH);
+      ctx.strokeStyle = axis;
+      ctx.strokeRect(x, startY, cellW, cellH);
+      ctx.fillStyle = text;
+      ctx.fillText(String(j), x + cellW/2, startY + cellH/2);
+    }
+
+    // Row headers + body
+    for (var i = 0; i < N; i++) {
+      var y = startY + (i + 1) * cellH;
+      // Row header
+      ctx.fillStyle = cvAlpha('--sol-canvas-grid', 0.5);
+      ctx.fillRect(startX, y, cellW, cellH);
+      ctx.strokeStyle = axis;
+      ctx.strokeRect(startX, y, cellW, cellH);
+      ctx.fillStyle = text;
+      ctx.fillText(String(i), startX + cellW/2, y + cellH/2);
+
+      for (var j = 0; j < N; j++) {
+        var cx = startX + (j + 1) * cellW;
+        var val = (i * j) % 7;
+
+        var fillColor = bg;
+        var textColor = text;
+        var isHighlight1 = (i === 3 && j === 4) || (i === 4 && j === 3);
+        var isHighlight2 = (i === 5 && j === 2) || (i === 2 && j === 5);
+
+        if (isHighlight1) {
+          fillColor = cvAlpha('--sol-canvas-primary', 0.25);
+          textColor = primary;
+        } else if (isHighlight2) {
+          fillColor = cvAlpha('--sol-canvas-secondary', 0.25);
+          textColor = secondary;
+        }
+
+        ctx.fillStyle = fillColor;
+        ctx.fillRect(cx, y, cellW, cellH);
+        ctx.strokeStyle = axis;
+        ctx.lineWidth = 1;
+        ctx.strokeRect(cx, y, cellW, cellH);
+        ctx.fillStyle = textColor;
+        ctx.font = (isHighlight1 || isHighlight2) ? 'bold 16px Inter, system-ui, sans-serif' : '14px Inter, system-ui, sans-serif';
+        ctx.fillText(String(val), cx + cellW/2, y + cellH/2);
+      }
+    }
+
+    // Legend below
+    var legY = startY + (N + 1) * cellH + 30;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+
+    // Pill 1
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.25);
+    ctx.fillRect(80, legY - 12, 24, 24);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(80, legY - 12, 24, 24);
+    ctx.fillStyle = text;
+    ctx.fillText('3 · 4 ≡ 5 (mod 7)   — prvi korak', 114, legY);
+
+    // Pill 2
+    ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.25);
+    ctx.fillRect(420, legY - 12, 24, 24);
+    ctx.strokeStyle = secondary;
+    ctx.strokeRect(420, legY - 12, 24, 24);
+    ctx.fillStyle = text;
+    ctx.fillText('5 · 2 ≡ 3 (mod 7)   — drugi korak', 454, legY);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Ostatak proizvoda mnk pri deljenju sa 7",
+  "subject": "math",
+  "unit": "number-theory",
+  "topic_tags": ["modularna aritmetika", "kongruencije", "deljenje sa ostatkom", "ostaci"]
+}
+BRAINSPARK_META-->

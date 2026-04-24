@@ -1,0 +1,537 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: S = skup trocifrenih brojeva koji u dekadnom zapisu IMAJU cifru 0 i NEMAJU cifru 9.
+  Traži se broj svih podskupova skupa S.
+
+  Trocifreni brojevi su 100 do 999. Pišemo abc gde je a ∈ {1,...,9}, b ∈ {0,...,9}, c ∈ {0,...,9}.
+
+  Uslov "nemaju cifru 9": sve tri cifre ≠ 9, tj. a ∈ {1,...,8}, b ∈ {0,...,8}, c ∈ {0,...,8}.
+  Uslov "imaju cifru 0": bar jedna od b, c je 0 (a ne može biti 0 jer je trocifren).
+
+  Koristimo princip komplementa po skupu "bez 9":
+  A = {trocifreni brojevi bez cifre 9} — imamo 8 · 9 · 9 = 648.
+  B = {trocifreni brojevi bez cifre 9 i bez cifre 0} — cifre iz {1,...,8}: 8·8·8 = 512.
+  Brojevi bez cifre 9 koji imaju bar jednu cifru 0 = A − B = 648 − 512 = 136.
+  Dakle |S| = 136.
+
+  Broj podskupova skupa od n elemenata = 2^n.
+  2^136 = (2^4)^34 = 16^34.
+
+  Odgovor: (E) 16^34.
+
+  Provera: 136 = 4·34 ✓.
+
+  Alternativno (direktno brojanje brojeva sa bar jednom nulom):
+  Slučaj 1: b = 0, c ≠ 0 (c ∈ {1,...,8}): a ∈ {1,...,8} (8), b=0 (1), c (8) = 64.
+  Slučaj 2: c = 0, b ≠ 0 (b ∈ {1,...,8}): 8·8·1 = 64.
+  Slučaj 3: b = 0, c = 0: 8·1·1 = 8.
+  Zbir (bez preklapanja): 64 + 64 + 8 = 136 ✓.
+
+  Ili inkluzija-ekskluzija direktno:
+  N(b=0, bez 9) = 8 · 1 · 9 = 72
+  N(c=0, bez 9) = 8 · 9 · 1 = 72
+  N(b=0 i c=0, bez 9) = 8 · 1 · 1 = 8
+  Unija = 72 + 72 − 8 = 136 ✓.
+
+  Za dijagrame: problem je čisto brojanje, statika je prirodna.
+  - Canvas 1: dijagram "stabla" cifara sa uslovima {1..8}, {0..8}, {0..8} i vizuelni
+    prikaz razlike 8·9·9 − 8·8·8.
+  - Canvas 2: princip: skup S = 136 elemenata; prikaz 2^|S| = 2^136 = 16^34.
+</script>
+
+<h1 data-card="problem-title">Broj podskupova skupa trocifrenih brojeva</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika — prebrojavanje po ciframa, komplement, stepen dvojke kao broj podskupova</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Neka je \( S \) skup svih trocifrenih brojeva koji u dekadnom zapisu imaju cifru \( 0 \), a nemaju cifru \( 9 \). Broj svih podskupova skupa \( S \) jednak je:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">Opseg</span>
+      <span class="given-value">trocifreni: \( 100 \)–\( 999 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Uslov 1</span>
+      <span class="given-value">ima bar jednu cifru \( 0 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Uslov 2</span>
+      <span class="given-value">nema cifru \( 9 \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 16^{35} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 16^{32} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 16^{33} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 16^{36} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 16^{34} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Odredićemo \( |S| \) metodom komplementa: najpre izbrojimo sve trocifrene <em>bez cifre 9</em>, pa oduzmemo one koji <em>takođe nemaju cifru 0</em>. Rezultat daje broj elemenata u \( S \). Konačno broj podskupova je \( 2^{|S|} \), što izrazimo kao stepen broja \( 16 \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Pravila brojanja i podskupovi</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Princip množenja</span> Ako neki niz cifara ima \( k_1 \) mogućnosti za prvu, \( k_2 \) za drugu, ..., ukupno je \( k_1 \cdot k_2 \cdot \ldots \) nizova.</li>
+        <li><span class="formula-label">Trocifreni brojevi</span> Prva cifra \( \in \{1,2,\ldots,9\} \) (ne može biti \( 0 \)); druga i treća \( \in \{0,1,\ldots,9\} \).</li>
+        <li><span class="formula-label">Komplement</span> \( |A \cap (\text{bar jedna } 0)| = |A| - |A \cap (\text{bez ijedne } 0)| \).</li>
+        <li><span class="formula-label">Broj podskupova</span> Skup od \( n \) elemenata ima tačno \( 2^n \) podskupova (uključujući prazan i sam skup).</li>
+        <li><span class="formula-label">Prepis stepena</span> \( 2^{4k} = (2^4)^k = 16^k \), pa se \( 2^{136} \) direktno piše kao \( 16^{34} \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Prebrojavanje cifara — pozicijski prikaz">
+  <h2>📐 Tri cifre, tri kutije</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-boxes" width="720" height="480"></canvas>
+  </div>
+  <p class="canvas-caption">Prva cifra (stotice) ne sme biti \( 0 \) niti \( 9 \) — ima \( 8 \) izbora. Desetice i jedinice ne smeju biti \( 9 \) — po \( 9 \) izbora. Bez nule: sve tri cifre iz \( \{1,\ldots,8\} \) — po \( 8 \) izbora. Razlika \( 8\cdot 9\cdot 9 - 8\cdot 8\cdot 8 = 648 - 512 = 136 \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Od |S| = 136 do 2^|S| = 16^34">
+  <h2>📐 Podskupovi: \( 2^{136} = 16^{34} \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-subsets" width="720" height="420"></canvas>
+  </div>
+  <p class="canvas-caption">Svaki od \( 136 \) elemenata skupa \( S \) nezavisno "ulazi" ili "ne ulazi" u podskup — to je \( 2^{136} \) kombinacija. Grupisanjem po četiri bita u grupe dobijamo \( 2^{136} = (2^4)^{34} = 16^{34} \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Koji opseg cifara zadovoljava uslov "nema 9"</h3>
+      <p>Neka je trocifreni broj \( \overline{abc} \). Tada važi \( a \in \{1,2,\ldots,9\} \) (prva cifra ne može biti \( 0 \)) i \( b, c \in \{0,1,\ldots,9\} \).</p>
+      <p>Uslov "nema cifru \( 9 \)" uklanja \( 9 \) iz svake pozicije:</p>
+      <div class="math-block">
+        \[ a \in \{1,2,\ldots,8\}, \quad b \in \{0,1,\ldots,8\}, \quad c \in \{0,1,\ldots,8\} \]
+      </div>
+      <p>Broj takvih trocifrenih brojeva (po principu množenja):</p>
+      <div class="math-block">
+        \[ N_{\text{bez 9}} = 8 \cdot 9 \cdot 9 = 648 \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Koliko ih je i bez cifre \( 0 \)?</h3>
+      <p>"Bez \( 9 \) i bez \( 0 \)" znači sve tri cifre iz \( \{1,2,\ldots,8\} \):</p>
+      <div class="math-block">
+        \[ N_{\text{bez 9 i bez 0}} = 8 \cdot 8 \cdot 8 = 512 \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto za prvu cifru imamo i dalje \( 8 \) a ne \( 7 \) izbora?</summary>
+          <div class="detail-content">
+            <p>Prva cifra već ne može biti \( 0 \) (uslov trocifrenosti), pa je isključivanje nule "besplatno" — nije menjalo broj. Isključivanje devetke joj ipak oduzima jedan izbor, pa ostaje \( \{1,2,\ldots,8\} \), što je \( 8 \) izbora. Za \( b \) i \( c \) izgubili smo <em>i</em> nulu, pa se skup suzio sa \( 9 \) na \( 8 \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Broj elemenata skupa \( S \) po komplementu</h3>
+      <p>Brojevi koji <em>imaju bar jednu cifru \( 0 \)</em> i nemaju cifru \( 9 \) su komplement u skupu "bez \( 9 \)" onih bez nijedne nule:</p>
+      <div class="math-block">
+        \[ |S| = N_{\text{bez 9}} - N_{\text{bez 9 i bez 0}} = 648 - 512 = 136 \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: direktno brojanje (bez komplementa)</summary>
+          <div class="detail-content">
+            <p>Imati bar jednu \( 0 \) znači \( b = 0 \) ili \( c = 0 \) (\( a \) ne može biti \( 0 \)). Inkluzija-ekskluzija: \( N(b=0) + N(c=0) - N(b=0 \wedge c=0) = 8\cdot 1\cdot 9 + 8\cdot 9\cdot 1 - 8\cdot 1\cdot 1 = 72 + 72 - 8 = 136 \). ✓</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Broj podskupova</h3>
+      <p>Skup sa \( n \) elemenata ima \( 2^n \) podskupova. Kod nas:</p>
+      <div class="math-block">
+        \[ \#\mathcal{P}(S) = 2^{|S|} = 2^{136} \]
+      </div>
+      <p>Pošto je \( 136 = 4 \cdot 34 \), imamo:</p>
+      <div class="math-block">
+        \[ 2^{136} = 2^{4 \cdot 34} = (2^4)^{34} = 16^{34} \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Eliminacija ponuđenih opcija</h3>
+      <p>Razlika između opcija je samo u eksponentu: \( 32, 33, 34, 35, 36 \). Naš broj \( |S| = 136 \) odgovara eksponentu \( 34 \). Ostale vrednosti bi odgovarale \( |S| = 128, 132, 140, 144 \), što odgovara različitim (pogrešnim) prebrojavanjima, npr.:</p>
+      <ul>
+        <li>\( 9\cdot 10\cdot 10 - 9\cdot 9\cdot 9 = 900 - 729 = 171 \) (bez uklanjanja cifre \( 9 \)) — ne daje nijednu opciju.</li>
+        <li>\( 8\cdot 9\cdot 9 - 7\cdot 8\cdot 8 = 648 - 448 = 200 \) (pogrešno oduzimanje prve cifre) — ne daje nijednu opciju.</li>
+      </ul>
+      <p>Jedino \( 136 \) vodi na opciju (E).</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Dva <em>različita</em> uslova — "ima \( 0 \)" (pozitivni: bar jedna) i "nema \( 9 \)" (negativni: nijedna) — najzgodnije se kombinuju tako što prvo suzimo univerzum (odbacimo brojeve sa devetkom), a zatim od suženog univerzuma oduzmemo one bez nule. Komplement pretvori "bar jedna" u "nijedna", što je uvek lakše brojati. I na kraju, \( 2^{136} = 16^{34} \) je samo prepakivanje — eksponent \( 136 \) mora biti deljiv sa \( 4 \) da bismo ga "spakovali" u \( 16 \).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \#\mathcal{P}(S) = 2^{|S|} = 2^{136} = 16^{34} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 16^{35} \)</span>
+    <span class="answer-option" data-option="B">(B) \( 16^{32} \)</span>
+    <span class="answer-option" data-option="C">(C) \( 16^{33} \)</span>
+    <span class="answer-option" data-option="D">(D) \( 16^{36} \)</span>
+    <span class="answer-option correct" data-option="E">(E) \( 16^{34} \)</span>
+  </div>
+  <p class="verification">Provera: \( |S| = 648 - 512 = 136 \), a \( 136 = 4\cdot 34 \), pa \( 2^{136} = (2^4)^{34} = 16^{34} \) ✓. Nezavisno inkluzija-ekskluzija: \( 72 + 72 - 8 = 136 \) ✓.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zaboravljanje da prva cifra ne može biti \( 0 \):</strong> ako se ukupan broj brojeva "bez \( 9 \)" računa kao \( 9 \cdot 9 \cdot 9 = 729 \), to uključuje i nemoguće početke sa \( 0 \) (poput \( 012 \)).</li>
+    <li><strong>Sabiranje direktnih slučajeva bez inkluzije-ekskluzije:</strong> mnogi dobiju \( 72 + 72 = 144 \) i upadnu u trag 144 (ne postoji u ponuđenim, ali postoji u "komšiluku" eksponenata). Neophodno je oduzeti preklapanje \( b=0 \wedge c=0 \) koje ima \( 8 \) brojeva.</li>
+    <li><strong>Brkanje "ima \( 0 \)" sa "sadrži tačno jednu \( 0 \)":</strong> zadatak kaže "ima cifru \( 0 \)" što znači <em>bar jednu</em>. Brojevi poput \( 100, 200, \ldots, 800 \) (dve nule) moraju biti uključeni.</li>
+    <li><strong>Broj podskupova vs. broj elemenata:</strong> lako je zastati kod \( |S| = 136 \) i pomisliti da je to odgovor. Ovde se traži \( 2^{|S|} \), a ne samo \( |S| \).</li>
+    <li><strong>Loše pakovanje stepena:</strong> \( 2^{136} \) u \( 16^k \) zahteva \( k = 136/4 = 34 \). Greška tipa "\( 136/2 = 68 \Rightarrow 4^{68} \)" je tačna matematički, ali ne pomaže jer odgovori koriste osnovu \( 16 \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Neka je \( T \) skup svih trocifrenih brojeva koji imaju bar jednu cifru \( 5 \) i nemaju cifru \( 0 \). Izračunaj \( |T| \) i broj podskupova skupa \( T \). Da li se može izraziti kao stepen broja \( 16 \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Univerzum "bez \( 0 \)": \( a, b, c \in \{1,\ldots,9\} \), dakle \( 9^3 = 729 \). "Bez \( 0 \) i bez \( 5 \)": cifre iz \( \{1,2,3,4,6,7,8,9\} \), što je \( 8^3 = 512 \). Dakle \( |T| = 729 - 512 = 217 \). Broj podskupova je \( 2^{217} \). Pošto \( 217 \) nije deljivo sa \( 4 \) (\( 217 = 4\cdot 54 + 1 \)), ne može se zapisati kao \( 16^k \), ali može kao \( 2 \cdot 16^{54} \).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  // === Canvas 1: three-box digit diagram ===
+  var cvs1 = document.getElementById('diagram-boxes');
+  if (cvs1) {
+    var ctx = cvs1.getContext('2d');
+    var W = cvs1.width, H = cvs1.height;
+
+    function drawBoxes() {
+      var bg        = cv('--sol-canvas-bg');
+      var grid      = cv('--sol-canvas-grid');
+      var primary   = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent    = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text      = cv('--sol-canvas-text');
+      var muted     = cv('--sol-canvas-muted');
+      var danger    = cv('--sol-canvas-danger');
+      var warning   = cv('--sol-canvas-warning');
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      ctx.fillStyle = text;
+      ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Trocifreni bez cifre 9 (brojimo posebno prvu kutiju): 8 · 9 · 9 = 648', W/2, 26);
+
+      // Top row: "bez 9" scenario
+      var boxW = 150, boxH = 110;
+      var yTop = 56;
+      var gap = 30;
+      var rowW = 3 * boxW + 2 * gap;
+      var xStart = (W - rowW) / 2;
+
+      var positions = ['stotice (a)', 'desetice (b)', 'jedinice (c)'];
+
+      // Row 1: bez 9
+      for (var i = 0; i < 3; i++) {
+        var x = xStart + i * (boxW + gap);
+        // Box
+        ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.08);
+        ctx.fillRect(x, yTop, boxW, boxH);
+        ctx.strokeStyle = primary;
+        ctx.lineWidth = 2.2;
+        ctx.strokeRect(x, yTop, boxW, boxH);
+
+        // Position label above
+        ctx.fillStyle = muted;
+        ctx.font = '12px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(positions[i], x + boxW/2, yTop - 10);
+
+        // Digits inside
+        var digits;
+        if (i === 0) digits = [1,2,3,4,5,6,7,8];
+        else         digits = [0,1,2,3,4,5,6,7,8];
+        var cols = (i === 0) ? 4 : 5;
+        var rows = Math.ceil(digits.length / cols);
+        var cellW = boxW / cols;
+        var cellH = (boxH - 26) / rows;
+        ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+        for (var k = 0; k < digits.length; k++) {
+          var cc = k % cols, rr = Math.floor(k / cols);
+          var dx = x + cc * cellW + cellW/2;
+          var dy = yTop + 24 + rr * cellH + cellH/2 + 4;
+          ctx.fillStyle = (digits[k] === 0) ? danger : text;
+          ctx.fillText(String(digits[k]), dx, dy);
+        }
+
+        // Count label inside box header
+        var count = (i === 0) ? 8 : 9;
+        ctx.fillStyle = primary;
+        ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('(' + count + ' izbora)', x + boxW/2, yTop + 16);
+      }
+
+      // Multiplication signs between boxes
+      ctx.fillStyle = text;
+      ctx.font = 'bold 22px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('×', xStart + boxW + gap/2, yTop + boxH/2 + 8);
+      ctx.fillText('×', xStart + 2*boxW + gap + gap/2, yTop + boxH/2 + 8);
+
+      // "= 648" after
+      ctx.fillStyle = primary;
+      ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('8 · 9 · 9 = 648', W/2, yTop + boxH + 30);
+
+      // Row 2: bez 9 i bez 0
+      var yMid = yTop + boxH + 72;
+      ctx.fillStyle = text;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Trocifreni bez cifre 9 i bez cifre 0: 8 · 8 · 8 = 512', W/2, yMid - 18);
+
+      for (var i = 0; i < 3; i++) {
+        var x = xStart + i * (boxW + gap);
+        var yy = yMid;
+        var hh = 88;
+        ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.10);
+        ctx.fillRect(x, yy, boxW, hh);
+        ctx.strokeStyle = warning;
+        ctx.lineWidth = 2.2;
+        ctx.strokeRect(x, yy, boxW, hh);
+
+        // Digits {1..8}
+        var digits = [1,2,3,4,5,6,7,8];
+        var cols = 4;
+        var rows = 2;
+        var cellW = boxW / cols;
+        var cellH = (hh - 26) / rows;
+        ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+        for (var k = 0; k < digits.length; k++) {
+          var cc = k % cols, rr = Math.floor(k / cols);
+          var dx = x + cc * cellW + cellW/2;
+          var dy = yy + 24 + rr * cellH + cellH/2 + 4;
+          ctx.fillStyle = text;
+          ctx.fillText(String(digits[k]), dx, dy);
+        }
+
+        ctx.fillStyle = warning;
+        ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('(8 izbora)', x + boxW/2, yy + 16);
+      }
+
+      // "−" and "= 512 → 136"
+      ctx.fillStyle = text;
+      ctx.font = 'bold 22px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('×', xStart + boxW + gap/2, yMid + 44 + 8);
+      ctx.fillText('×', xStart + 2*boxW + gap + gap/2, yMid + 44 + 8);
+
+      // Big equation
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('|S| = 648 − 512 = 136', W/2, H - 20);
+
+      // Legend: red 0 digit
+      ctx.fillStyle = muted;
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('Crvena 0 — dozvoljena je samo u b i c (stotice ne mogu biti 0).', 20, H - 42);
+    }
+
+    drawBoxes();
+
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() { styles = getComputedStyle(root); drawBoxes(); }, 50);
+      }
+    });
+  }
+
+  // === Canvas 2: 136 bits -> 16^34 ===
+  var cvs2 = document.getElementById('diagram-subsets');
+  if (cvs2) {
+    var ctx2 = cvs2.getContext('2d');
+    var W2 = cvs2.width, H2 = cvs2.height;
+
+    function drawSubsets() {
+      var bg        = cv('--sol-canvas-bg');
+      var primary   = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent    = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text      = cv('--sol-canvas-text');
+      var muted     = cv('--sol-canvas-muted');
+      var warning   = cv('--sol-canvas-warning');
+
+      ctx2.clearRect(0, 0, W2, H2);
+      ctx2.fillStyle = bg;
+      ctx2.fillRect(0, 0, W2, H2);
+
+      ctx2.fillStyle = text;
+      ctx2.font = 'bold 15px Inter, system-ui, sans-serif';
+      ctx2.textAlign = 'center';
+      ctx2.fillText('Svaki element može biti "unutra" ili "van" — 2^136 karakteristika', W2/2, 26);
+
+      // Grid of 34 groups x 4 cells each
+      var groups = 34;
+      var perGroup = 4;
+      // Layout: 17 columns x 2 rows of groups
+      var cols = 17, rowsG = 2;
+      var groupGap = 10;
+      var cellGap = 2;
+      var cellSize = 14;
+      var groupW = perGroup * cellSize + (perGroup - 1) * cellGap;
+      var groupH = cellSize;
+      var totalW = cols * groupW + (cols - 1) * groupGap;
+      var xOff = (W2 - totalW) / 2;
+      var yOff = 64;
+      var rowGap = 40;
+
+      for (var g = 0; g < groups; g++) {
+        var row = Math.floor(g / cols);
+        var col = g % cols;
+        var gx = xOff + col * (groupW + groupGap);
+        var gy = yOff + row * (groupH + rowGap);
+
+        // Group container
+        ctx2.strokeStyle = warning;
+        ctx2.lineWidth = 1.2;
+        ctx2.strokeRect(gx - 2, gy - 2, groupW + 4, groupH + 4);
+
+        for (var c = 0; c < perGroup; c++) {
+          var cx = gx + c * (cellSize + cellGap);
+          // Fill alternating colors for visual rhythm
+          ctx2.fillStyle = ((g + c) % 2 === 0) ? cvAlpha('--sol-canvas-primary', 0.35) : cvAlpha('--sol-canvas-accent', 0.35);
+          ctx2.fillRect(cx, gy, cellSize, cellSize);
+          ctx2.strokeStyle = muted;
+          ctx2.lineWidth = 0.8;
+          ctx2.strokeRect(cx, gy, cellSize, cellSize);
+        }
+
+        // Group label below (only a few to keep clean)
+        if (g % 4 === 0 || g === groups - 1) {
+          ctx2.fillStyle = muted;
+          ctx2.font = '9px Inter, system-ui, sans-serif';
+          ctx2.textAlign = 'center';
+          ctx2.fillText('#' + (g + 1), gx + groupW/2, gy + groupH + 12);
+        }
+      }
+
+      // Caption in middle
+      var midY = yOff + groupH + rowGap/2 + 4;
+      // drawn already inside loop
+
+      // Summary equations below
+      ctx2.fillStyle = text;
+      ctx2.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx2.textAlign = 'center';
+      ctx2.fillText('136 bitova  =  34 grupe po 4 bita', W2/2, H2 - 90);
+
+      ctx2.fillStyle = accent;
+      ctx2.font = 'bold 18px Inter, system-ui, sans-serif';
+      ctx2.fillText('2^136 = (2^4)^34 = 16^34', W2/2, H2 - 60);
+
+      ctx2.fillStyle = muted;
+      ctx2.font = 'italic 12px Inter, system-ui, sans-serif';
+      ctx2.fillText('Svaka kvadratna kutija je jedan element skupa S; svaka grupa od 4 = jedna "šesnaestica"', W2/2, H2 - 30);
+    }
+
+    drawSubsets();
+
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() { styles = getComputedStyle(root); drawSubsets(); }, 50);
+      }
+    });
+  }
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Broj podskupova skupa trocifrenih brojeva sa nulom bez devetke",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["prebrojavanje", "princip komplementa", "inkluzija-ekskluzija", "podskupovi", "stepen dvojke"]
+}
+BRAINSPARK_META-->

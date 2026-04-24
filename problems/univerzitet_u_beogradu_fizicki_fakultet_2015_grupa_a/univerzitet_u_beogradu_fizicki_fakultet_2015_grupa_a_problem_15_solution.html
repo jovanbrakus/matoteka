@@ -1,0 +1,572 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Problem: Neka je f: N -> N bijekcija takva da za sve m, n u N iz m < n sledi m + f(m) < n + f(n). Odrediti f(2015).
+
+Analiza: Uslov kaže da je niz a_n = n + f(n) strogo rastući. Pokazaćemo da mora biti f(n) = n za svako n.
+
+Neka su m < n prirodni brojevi. Zbog strogog rasta niza n + f(n):
+m + f(m) < n + f(n)
+f(n) - f(m) > m - n
+Kada je n > m, razlika m - n je negativna, što nam kaže f(n) - f(m) > -(n - m), tj. f(n) > f(m) - (n - m). Ovo samo po sebi NE znači da je f rastuće.
+
+Korak 1. Dokazujemo f(1) = 1.
+
+Pretpostavimo suprotno, f(1) = k gde je k >= 2.
+Za svako n >= 2 važi 1 + f(1) < n + f(n), tj. 1 + k < n + f(n), odnosno f(n) > k + 1 - n.
+Specijalno za n = 2: f(2) > k - 1, tj. f(2) >= k (jer je f(2) ceo broj >= 1).
+Pošto je f bijekcija i f(1) = k, mora biti f(2) != k, pa f(2) >= k + 1.
+
+Nastavljamo indukcijom: pretpostavimo da za j = 1, 2, ..., n važi f(j) >= k + j - 1 i da su vrednosti f(1), f(2), ..., f(n) među {k, k+1, ...}.
+Konkretno: f(1) = k, f(2) >= k+1, ..., f(n) >= k + n - 1, i sve su različite (bijekcija).
+Za n+1: 1 + k < (n+1) + f(n+1), pa f(n+1) > k - n, tj. f(n+1) >= k - n + 1. Ali koristimo i ograničenje iz n + f(n) < (n+1) + f(n+1): f(n+1) > f(n) - 1, tj. f(n+1) >= f(n) >= k + n - 1.
+Pošto je f bijekcija, f(n+1) mora biti različito od svih f(1), ..., f(n) koje su >= k i različite; najmanja slobodna vrednost >= k + n - 1 + 1 = k + n. Dakle f(n+1) >= k + n.
+
+Zaključak: za svako n, f(n) >= k + n - 1 >= k.
+Ali skup N sadrži i 1, 2, ..., k-1 (pošto je k >= 2 ovi brojevi postoje). Nijedan od njih nije u slici funkcije f! Kontradikcija sa bijektivnošću.
+
+Dakle k = 1, tj. f(1) = 1.
+
+Korak 2. Indukcija: ako je f(j) = j za j = 1, 2, ..., n, onda je f(n+1) = n+1.
+
+Restrikcija f na N \ {1, 2, ..., n} je bijekcija na N \ {1, 2, ..., n} = {n+1, n+2, ...}. Uslov m < n' ⇒ m + f(m) < n' + f(n') i dalje važi. Primenimo isti argument na ovu restrikciju (pomereno za n): najmanji element n+1 mora da se slika u najmanji element, tj. f(n+1) = n+1.
+
+Formalno: pretpostavimo f(n+1) = n+1+s za s >= 1. Za svaku m >= n+2:
+(n+1) + f(n+1) < m + f(m)
+(n+1) + (n+1+s) < m + f(m)
+f(m) > 2n + 2 + s - m.
+Za m = n+2: f(n+2) > n + s, i pošto f(n+2) ne sme biti u {1, ..., n} (već korišćeni) niti u {n+1+s} (= f(n+1)), mora biti f(n+2) >= n + 1 (ali n+1 je korišćeno kao f(n+1)? NE — f(n+1) = n+1+s ako s>=1, pa n+1 nije korišćeno!). Ovo znači da niko ne slika u n+1. Kontradikcija s bijekcijom. Dakle s = 0.
+
+Zaključak: f(n) = n za svako n, pa f(2015) = 2015. Odgovor (C).
+
+Vizuelizacija: grafikon identiteta f(n) = n za n = 1..10 na celobrojnoj rešetki, sa strogim rastom niza n + f(n) = 2n.
+</script>
+
+<h1 data-card="problem-title">Bijekcija na prirodnim brojevima uz uslov rasta</h1>
+<p data-card="problem-subtitle" class="subtitle">Teorija brojeva — bijekcije, indukcija i svojstvo identiteta</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Neka je \( f: \mathbb{N} \to \mathbb{N} \) bijekcija takva da za sve \( m, n \in \mathbb{N} \) iz \( m < n \) sledi</p>
+  <div class="math-block">\[ m + f(m) < n + f(n). \]</div>
+  <p>Odrediti \( f(2015) \).</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 2013 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 2014 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 2015 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Uslov znači da je niz \( a_n = n + f(n) \) strogo rastući. Pokazaćemo da pretpostavka \( f(1) \neq 1 \) vodi u kontradikciju sa bijektivnošću, pa mora biti \( f(1) = 1 \). Indukcijom dobijamo \( f(n) = n \) za svako \( n \), pa je \( f(2015) = 2015 \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Bijekcija</span> \( f: A \to B \) — funkcija koja je i <em>1-1</em> (injektivna) i <em>na</em> (surjektivna). Svaki element skupa \( B \) ima tačno jedan original.</li>
+        <li>Bijekcija \( f: \mathbb{N} \to \mathbb{N} \) je permutacija prirodnih brojeva: svaki prirodan broj se pojavljuje u slici tačno jednom.</li>
+        <li><span class="formula-label">Princip najmanjeg elementa</span>: svaki neprazan podskup od \( \mathbb{N} \) ima najmanji element.</li>
+        <li><span class="formula-label">Matematička indukcija</span>: ako je tvrdnja tačna za \( n = 1 \) i iz tačnosti za \( n \) sledi tačnost za \( n + 1 \), onda važi za sve prirodne brojeve.</li>
+        <li>Strogi rast niza \( a_n \): \( m < n \Rightarrow a_m < a_n \). Svi članovi su različiti.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="720" height="580"></canvas>
+  </div>
+  <p class="canvas-caption">Gore: tačke \( (n, f(n)) \) za \( n = 1, \ldots, 10 \) leže na pravoj \( f(n) = n \) (zeleno) — jedini položaj u kome je \( f \) bijekcija a niz \( n + f(n) \) strogo rastući. Dole: niz \( a_n = n + f(n) = 2n \) je očigledno strogo rastući. Ljubičasta isprekidana linija pokazuje zabranjenu alternativu \( f(1) = 2 \): tada niko nije slika broja \( 1 \), što kvari bijektivnost.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Prevodimo uslov na svojstvo niza</h3>
+      <p>Definišimo \( a_n = n + f(n) \). Uslov \( m < n \Rightarrow m + f(m) < n + f(n) \) znači tačno to da je niz \( (a_n) \) <strong>strogo rastući</strong>.</p>
+      <div class="math-block">\[ a_1 < a_2 < a_3 < \ldots \]</div>
+      <p>Iz strogog rasta odmah sledi da su vrednosti \( a_n \) sve različite.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Prvi ključni potez: dokaz da je \( f(1) = 1 \)</h3>
+      <p>Pretpostavimo suprotno — neka je \( f(1) = k \) za neko \( k \geq 2 \). Pokazaćemo da ovo vodi u kontradikciju.</p>
+      <p>Iz strogog rasta \( a_1 < a_n \) za svako \( n \geq 2 \):</p>
+      <div class="math-block">\[ 1 + k < n + f(n) \ \Rightarrow\ f(n) > k + 1 - n. \]</div>
+      <p>Za \( n = 2 \): \( f(2) > k - 1 \), tj. \( f(2) \geq k \). Ali \( f(1) = k \) i \( f \) je bijekcija (različite vrednosti), pa:</p>
+      <div class="math-block">\[ f(2) \geq k + 1. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto \( f(2) \geq k + 1 \), a ne samo \( \geq k \)?</summary>
+          <div class="detail-content"><p>Nejednakost \( f(2) > k - 1 \) daje \( f(2) \geq k \) (jer je \( f(2) \) prirodan broj). Ali \( k \) je već zauzeto sa \( f(1) = k \). Bijekcija zabranjuje dve različite \( n \) da daju istu vrednost, pa najmanja dozvoljena je \( k + 1 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Indukcija: \( f(n) \geq k + n - 1 \)</h3>
+      <p>Pretpostavimo da za neko \( n \geq 1 \) važi \( f(n) \geq k + n - 1 \). Iz \( a_n < a_{n+1} \):</p>
+      <div class="math-block">\[ n + f(n) < (n+1) + f(n+1) \ \Rightarrow\ f(n+1) > f(n) - 1 \ \Rightarrow\ f(n+1) \geq f(n). \]</div>
+      <p>Kombinujući sa indukcijskom pretpostavkom, \( f(n+1) \geq k + n - 1 \). A kako su sve vrednosti \( f(1), f(2), \ldots, f(n) \) različite i leže u \( \{k, k+1, \ldots\} \), najmanja dostupna za \( f(n+1) \) je \( k + n \):</p>
+      <div class="math-block">\[ f(n+1) \geq k + n. \]</div>
+      <p>Time je induktivni korak završen: za svako \( n \in \mathbb{N} \) važi \( f(n) \geq k + n - 1 \geq k \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Kontradikcija: ko pokriva \( 1, 2, \ldots, k - 1 \)?</h3>
+      <p>Pošto je \( k \geq 2 \), brojevi \( 1, 2, \ldots, k - 1 \) postoje u \( \mathbb{N} \). Ali dokazali smo da je \( f(n) \geq k \) za svako \( n \), pa ni jedan od ovih brojeva <em>nije</em> slika nijednog \( n \).</p>
+      <div class="math-block">\[ \{1, 2, \ldots, k - 1\} \cap f(\mathbb{N}) = \emptyset. \]</div>
+      <p>To znači da \( f \) nije surjektivna — <strong>kontradikcija</strong> sa bijektivnošću. Dakle pretpostavka \( k \geq 2 \) je pogrešna:</p>
+      <div class="math-block">\[ f(1) = 1. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Indukcija na \( n \): \( f(n) = n \)</h3>
+      <p>Pretpostavimo da je \( f(j) = j \) za \( j = 1, 2, \ldots, n \). Pokažimo \( f(n+1) = n + 1 \).</p>
+      <p>Pošto je \( f \) bijekcija, vrednosti \( 1, 2, \ldots, n \) su već iskorišćene (tačno kao slike \( 1, 2, \ldots, n \)). Restrikcija \( f \) na \( \{n+1, n+2, \ldots\} \) je bijekcija na \( \{n+1, n+2, \ldots\} \).</p>
+      <p>Primenimo <em>isti argument</em> kao u koracima 2–4 na ovu restrikciju (sa \( n + 1 \) u ulozi broja \( 1 \)): ako bi \( f(n+1) = n + 1 + s \) za \( s \geq 1 \), onda za svako \( m \geq n + 2 \) važilo bi \( f(m) \geq n + 1 + s \), pa bi broj \( n + 1 \) ostao bez originala. Kontradikcija. Dakle:</p>
+      <div class="math-block">\[ f(n+1) = n + 1. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto restrikcija \( f \mid \{n+1, n+2, \ldots\} \) zadržava uslov rasta?</summary>
+          <div class="detail-content"><p>Uslov \( m < n' \Rightarrow m + f(m) < n' + f(n') \) važi za sve prirodne brojeve, pa posebno i za one \( \geq n + 1 \). Restrikcija nasleđuje svojstvo jer su i \( m \) i \( n' \) veći od \( n \), a uslov je lokalan na parove indeksa.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunavamo \( f(2015) \)</h3>
+      <p>Iz koraka 5 (indukcijom) sledi \( f(n) = n \) za svako \( n \in \mathbb{N} \). Specijalno:</p>
+      <div class="math-block">\[ f(2015) = 2015. \]</div>
+      <p>Provera uslova za identitet \( f = \mathrm{id} \): niz \( a_n = n + f(n) = 2n \) je strogo rastući, a \( \mathrm{id} \) je bijekcija. Sve je u redu. ✓</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Sama strogost rasta niza \( n + f(n) \) ne bi bila dovoljna — postoje i druge bijekcije (npr. \( f \) koja menja parove susednih brojeva) koje ne čuvaju tu osobinu. Ključno je da kombinacija <em>rastući zbir</em> + <em>bijektivnost</em> sile da <strong>najmanji \( n \) mora slikati u najmanji dostupan broj</strong>. Zato rekurzivno, „sloj po sloj“, jedini opstanak je identitet \( f(n) = n \).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ f(2015) = 2015 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 2013 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 2014 \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( 2015 \)</span>
+  </div>
+  <p class="verification">Provera: za \( f(n) = n \) je \( n + f(n) = 2n \), što je strogo rastuće, a identiteta je očigledno bijekcija. Nijedna druga bijekcija ne zadovoljava uslov — dokazano kontradikcijom. ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pretpostavka da uslov odmah implicira da je \( f \) strogo rastuća. To <em>ne važi</em> direktno iz \( m + f(m) < n + f(n) \) — razlika \( f(n) - f(m) \) može biti negativna kao \( -(n - m) \). Potrebno je kombinovati sa bijektivnošću.</li>
+    <li>Zaboravljanje da je \( f \) <strong>bijekcija</strong>: tada kontra-primeri tipa \( f(n) = n + 1 \) izgledaju dozvoljeni, ali \( f(n) = n + 1 \) nije surjekcija na \( \mathbb{N} \) jer \( 1 \) ne dobija original.</li>
+    <li>Pokušaj da se broj \( 2015 \) „pomeri za konstantu“ i izabere (A) \( 2013 \) ili (B) \( 2014 \). Nijedan pomeraj ne može održati \( f \) bijekcijom na \( \mathbb{N} \).</li>
+    <li>Ignorisanje najmanjeg elementa: princip najmanjeg elementa je baza svakog dokaza ove vrste.</li>
+    <li>Mešanje uslova \( m < n \Rightarrow m + f(m) < n + f(n) \) sa uslovom \( m < n \Rightarrow f(m) < f(n) \) (ovo drugo takođe važi za identitet, ali nije direktna posledica prvog za opšte \( f \)).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Neka je \( g: \mathbb{N} \to \mathbb{N} \) bijekcija takva da \( m < n \Rightarrow m \cdot g(m) < n \cdot g(n) \). Da li to i dalje povlači \( g = \mathrm{id} \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Ne. Na primer, \( g(1) = 2,\ g(2) = 1,\ g(k) = k \) za \( k \geq 3 \): tada je \( 1 \cdot 2 = 2 < 2 \cdot 1 = 2 \)? Ne, nije strogo rastuće. Treba malo pažljivije — razmotrimo \( g(1) = 2, g(2) = 3, g(3) = 1 \), \( g(k) = k \) za \( k \geq 4 \). Niz \( k \cdot g(k) \) za prvih nekoliko \( k \) je \( 2, 6, 3, 16, \ldots \) — nije strogo rastuće. Zapravo pri uslovu \( k \cdot g(k) \) strogo rastuće i bijekciji, dokaz analogan našem takođe daje \( g(k) = k \); razlika je što sada rasta odmah implicira da se mali brojevi ne mogu dugo zadržavati. Pokušaj da sam izvedeš argument.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 18px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Zašto f mora biti identiteta', canvas.width / 2, 30);
+    ctx.fillStyle = muted;
+    ctx.font = '13px Inter, system-ui';
+    ctx.fillText('tačke (n, f(n)) leže na pravoj f(n) = n; niz aₙ = n + f(n) je strogo rastući', canvas.width / 2, 50);
+
+    // TOP PANEL: grid with f(n) = n
+    var topPadL = 60, topPadR = 220, topPadT = 70, topPadB = 320;
+    var topW = canvas.width - topPadL - topPadR;
+    var topH = canvas.height - topPadT - topPadB - 70;
+
+    var nMax = 10;
+    var stepX = topW / nMax;
+    var stepY = topH / nMax;
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var i = 0; i <= nMax; i++) {
+      // vertical
+      ctx.beginPath();
+      ctx.moveTo(topPadL + i * stepX, topPadT);
+      ctx.lineTo(topPadL + i * stepX, topPadT + topH);
+      ctx.stroke();
+      // horizontal
+      ctx.beginPath();
+      ctx.moveTo(topPadL, topPadT + topH - i * stepY);
+      ctx.lineTo(topPadL + topW, topPadT + topH - i * stepY);
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(topPadL, topPadT + topH);
+    ctx.lineTo(topPadL + topW + 14, topPadT + topH);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(topPadL, topPadT + topH);
+    ctx.lineTo(topPadL, topPadT - 14);
+    ctx.stroke();
+    // arrows
+    ctx.beginPath();
+    ctx.moveTo(topPadL + topW + 14, topPadT + topH);
+    ctx.lineTo(topPadL + topW + 6, topPadT + topH - 5);
+    ctx.moveTo(topPadL + topW + 14, topPadT + topH);
+    ctx.lineTo(topPadL + topW + 6, topPadT + topH + 5);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(topPadL, topPadT - 14);
+    ctx.lineTo(topPadL - 5, topPadT - 6);
+    ctx.moveTo(topPadL, topPadT - 14);
+    ctx.lineTo(topPadL + 5, topPadT - 6);
+    ctx.stroke();
+
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText('n', topPadL + topW + 20, topPadT + topH + 5);
+    ctx.fillText('f(n)', topPadL - 30, topPadT - 20);
+
+    // Tick labels
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    for (var tx = 1; tx <= nMax; tx++) {
+      ctx.fillText(String(tx), topPadL + tx * stepX, topPadT + topH + 16);
+    }
+    ctx.textAlign = 'right';
+    for (var ty = 1; ty <= nMax; ty++) {
+      ctx.fillText(String(ty), topPadL - 6, topPadT + topH - ty * stepY + 4);
+    }
+
+    // Line y = x
+    ctx.strokeStyle = cvAlpha('--sol-canvas-accent', 0.45);
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(topPadL, topPadT + topH);
+    ctx.lineTo(topPadL + nMax * stepX, topPadT + topH - nMax * stepY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Points (n, f(n)) = (n, n)
+    for (var n = 1; n <= nMax; n++) {
+      var px = topPadL + n * stepX;
+      var py = topPadT + topH - n * stepY;
+      ctx.fillStyle = accent;
+      ctx.beginPath();
+      ctx.arc(px, py, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = bg;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
+    // Label the line
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText('f(n) = n', topPadL + (nMax - 1.5) * stepX + 2, topPadT + topH - nMax * stepY + 20);
+
+    // Forbidden alternative: f(1) = 2, then by chain f(2) >= 3 etc.
+    // Shown as crossed-out dashed purple
+    ctx.strokeStyle = cvAlpha('--sol-canvas-secondary', 0.8);
+    ctx.setLineDash([3, 3]);
+    ctx.lineWidth = 2;
+    // example: (1, 2), (2, 3), (3, 4)
+    var alt = [[1,2],[2,3],[3,4]];
+    ctx.beginPath();
+    for (var a = 0; a < alt.length; a++) {
+      var ax = topPadL + alt[a][0] * stepX;
+      var ay = topPadT + topH - alt[a][1] * stepY;
+      if (a === 0) ctx.moveTo(ax, ay);
+      else ctx.lineTo(ax, ay);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+    for (var a2 = 0; a2 < alt.length; a2++) {
+      var bx = topPadL + alt[a2][0] * stepX;
+      var by = topPadT + topH - alt[a2][1] * stepY;
+      ctx.fillStyle = bg;
+      ctx.strokeStyle = secondary;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(bx, by, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+    }
+
+    // Red X on value y=1 (the forgotten number)
+    var missY = topPadT + topH - 1 * stepY;
+    var missX = topPadL - 18;
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(missX - 6, missY - 6);
+    ctx.lineTo(missX + 6, missY + 6);
+    ctx.moveTo(missX + 6, missY - 6);
+    ctx.lineTo(missX - 6, missY + 6);
+    ctx.stroke();
+
+    // Side legend (right side of top panel)
+    var legX = topPadL + topW + 24;
+    var legY = topPadT + 10;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText('Legenda', legX, legY);
+
+    ctx.fillStyle = accent;
+    ctx.beginPath(); ctx.arc(legX + 8, legY + 24, 6, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillText('f(n) = n', legX + 22, legY + 28);
+
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(legX, legY + 52);
+    ctx.lineTo(legX + 20, legY + 52);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = muted;
+    ctx.fillText('zabranjeno:', legX + 26, legY + 50);
+    ctx.fillText('f(1) = 2 pomera', legX + 26, legY + 64);
+    ctx.fillText('sve unapred →', legX + 26, legY + 78);
+
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(legX, legY + 100);
+    ctx.lineTo(legX + 16, legY + 116);
+    ctx.moveTo(legX + 16, legY + 100);
+    ctx.lineTo(legX, legY + 116);
+    ctx.stroke();
+    ctx.fillStyle = muted;
+    ctx.fillText('1 nema original', legX + 26, legY + 112);
+    ctx.fillText('→ nije bijekcija', legX + 26, legY + 126);
+
+    // BOTTOM PANEL: sequence a_n = n + f(n) = 2n
+    var botPadL = 60, botPadR = 50, botPadT = canvas.height - 250, botPadB = 60;
+    var botW = canvas.width - botPadL - botPadR;
+    var botH = canvas.height - botPadT - botPadB;
+
+    // Separator text
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText('Niz aₙ = n + f(n) = 2n (strogo rastući)', botPadL, botPadT - 16);
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(botPadL, botPadT + botH - 20);
+    ctx.lineTo(botPadL + botW + 14, botPadT + botH - 20);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(botPadL, botPadT + botH - 20);
+    ctx.lineTo(botPadL, botPadT + 10);
+    ctx.stroke();
+    // arrow
+    ctx.beginPath();
+    ctx.moveTo(botPadL + botW + 14, botPadT + botH - 20);
+    ctx.lineTo(botPadL + botW + 6, botPadT + botH - 20 - 5);
+    ctx.moveTo(botPadL + botW + 14, botPadT + botH - 20);
+    ctx.lineTo(botPadL + botW + 6, botPadT + botH - 20 + 5);
+    ctx.stroke();
+
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 12px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText('n', botPadL + botW + 18, botPadT + botH - 16);
+    ctx.fillText('aₙ', botPadL - 26, botPadT + 16);
+
+    var nMax2 = 10;
+    var aMax = 2 * nMax2;
+    var sx2 = botW / nMax2;
+    function by2(a) {
+      return botPadT + botH - 20 - (a / aMax) * (botH - 40);
+    }
+
+    // Grid lines horizontal
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var gg = 0; gg <= aMax; gg += 4) {
+      var gyp = by2(gg);
+      ctx.beginPath();
+      ctx.moveTo(botPadL, gyp);
+      ctx.lineTo(botPadL + botW, gyp);
+      ctx.stroke();
+    }
+
+    // y-tick labels (0, 4, 8, ...)
+    ctx.font = '11px Inter, system-ui';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'right';
+    for (var yy = 0; yy <= aMax; yy += 4) {
+      ctx.fillText(String(yy), botPadL - 6, by2(yy) + 4);
+    }
+    // x-tick labels
+    ctx.textAlign = 'center';
+    for (var nn = 1; nn <= nMax2; nn++) {
+      ctx.fillText(String(nn), botPadL + nn * sx2, botPadT + botH - 2);
+    }
+
+    // Plot a_n
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    for (var kk = 1; kk <= nMax2; kk++) {
+      var aval = 2 * kk;
+      var ppx = botPadL + kk * sx2;
+      var ppy = by2(aval);
+      if (kk === 1) ctx.moveTo(ppx, ppy);
+      else ctx.lineTo(ppx, ppy);
+    }
+    ctx.stroke();
+
+    // Points and value labels
+    for (var kk2 = 1; kk2 <= nMax2; kk2++) {
+      var aval2 = 2 * kk2;
+      var ppx2 = botPadL + kk2 * sx2;
+      var ppy2 = by2(aval2);
+      ctx.fillStyle = primary;
+      ctx.beginPath();
+      ctx.arc(ppx2, ppy2, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = bg;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      // label (only for n=1,5,10)
+      if (kk2 === 1 || kk2 === 5 || kk2 === 10) {
+        ctx.fillStyle = primary;
+        ctx.font = 'bold 11px Inter, system-ui';
+        ctx.textAlign = 'center';
+        ctx.fillText(String(aval2), ppx2, ppy2 - 10);
+      }
+    }
+
+    // Annotation
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui';
+    ctx.textAlign = 'right';
+    ctx.fillText('a₁ = 2, a₂ = 4, ..., a₁₀ = 20  →  strogi rast ✓', botPadL + botW, canvas.height - 14);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Bijekcija na N sa strogo rastućim zbirom n + f(n)",
+  "subject": "math",
+  "unit": "number-theory",
+  "topic_tags": ["bijekcija", "indukcija", "funkcionalne jednačine", "prirodni brojevi"]
+}
+BRAINSPARK_META-->

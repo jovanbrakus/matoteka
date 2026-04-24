@@ -1,0 +1,432 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Zadatak: Na koliko načina je moguće razmestiti 10 gostiju hotela po sobama, ako su dobili
+  po jednu jednokrevetnu, dvokrevetnu, trokrevetnu i četvorokrevetnu sobu?
+  Ponuđeni odgovori: (A) 12800, (B) 24000, (C) 360, (D) 3600, (E) 12600.
+
+  Strategija: svaka soba se puni nezavisnim izborom. Pošto je svaka soba RAZLIČITA (jedno-,
+  dvo-, tro-, četvorokrevetna), raspored gostiju unutar jedne sobe NIJE bitan (gosti dele
+  sobu, nema "ko je prvi kreve"), ali koje konkretne osobe idu u koju sobu jeste bitno.
+
+  Korak po korak (sekvencijalni izbor):
+    1) Od 10 gostiju biramo 1 za jednokrevetnu sobu:   C(10, 1) = 10.
+    2) Od preostalih 9 biramo 2 za dvokrevetnu:        C(9, 2) = 36.
+    3) Od preostalih 7 biramo 3 za trokrevetnu:        C(7, 3) = 35.
+    4) Od preostalih 4 u četvorokrevetnu (svih 4):     C(4, 4) = 1.
+
+  Ukupno: 10 · 36 · 35 · 1 = ?
+    10 · 36 = 360.
+    360 · 35 = 12600.
+    12600 · 1 = 12600.
+
+  Alternativno — multinomijalni koeficijent (jer su sobe različite, ali raspored u svakoj sobi
+  nije bitan — to je podela 10 objekata na 4 razlicite grupe veličina 1, 2, 3, 4):
+    10! / (1! · 2! · 3! · 4!) = 3628800 / (1 · 2 · 6 · 24) = 3628800 / 288 = 12600.
+
+  Tačan odgovor: (E) 12600.
+
+  Provera redosleda množenja:
+    C(10,1) = 10
+    C(9,2)  = 9·8/2 = 36
+    C(7,3)  = 7·6·5/6 = 35
+    C(4,4)  = 1
+    10 · 36 · 35 · 1 = 12600.
+
+  Zašto neki drugi odgovori izgledaju "blizu":
+  - 12800 = 10·4·320 — nije povezano.
+  - 24000 = dva puta 12000.
+  - 360 = 10·36 (zaboravljen treći faktor).
+  - 3600 = 10·36·10 (pogrešno).
+
+  Pitfalls:
+  - Misliti da je raspored u okviru sobe bitan: tada bismo dobili 10!/(1·1·1·1) = 3628800
+    (permutacije) što bi bio broj različitih uređenih uređenja, ali sobe nisu uređene.
+  - Smatrati sobe IDENTIČNIM: delili bismo sa 4! ili slično — ali sobe su različite
+    (jednokrevetna je očigledno druga soba od trokrevetne), pa NE delimo.
+  - Zbrojiti umesto pomnožiti: 10 + 36 + 35 + 1 = 82 — nebitno.
+  - Pomnožiti permutacije: 10·9·8·...·1 = 10! — gresi u predpostavci.
+
+  Kategorija: kombinatorika, multinomijalni koeficijent, uzastopni izbor.
+</script>
+
+<h1 data-card="problem-title">Raspoređivanje 10 gostiju u četiri različite sobe</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika &mdash; binomni i multinomijalni koeficijenti</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Broj načina na koji je moguće razmestiti \( 10 \) gostiju hotela po sobama ako su dobili po jednu jednokrevetnu, dvokrevetnu, trokrevetnu i četvorokrevetnu sobu jednak je:</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">ukupno gostiju</span>
+      <span class="given-value">\( 10 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">kapaciteti soba</span>
+      <span class="given-value">\( 1,\ 2,\ 3,\ 4 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">sobe su</span>
+      <span class="given-value">različite</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 12\,800 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 24\,000 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 360 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 3\,600 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 12\,600 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Sobe su različite (jednokrevetna \( \neq \) dvokrevetna \( \neq \) &hellip;), ali raspored gostiju unutar iste sobe nije bitan &mdash; oni samo dele tu sobu. Zato ovo nije permutacija, nego niz binomnih izbora: biramo \( 1 \) od \( 10 \), zatim \( 2 \) od \( 9 \), zatim \( 3 \) od \( 7 \), pa ostaju sva \( 4 \) u poslednjoj. Rezultat je proizvod tih izbora i podudara se sa multinomijalnim koeficijentom \( \binom{10}{1,2,3,4} \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Binomni i multinomijalni koeficijenti</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Binomni koeficijent:</strong> \( \displaystyle \binom{n}{k} = \dfrac{n!}{k!\,(n - k)!} \) &mdash; broj načina da se iz skupa od \( n \) elemenata izabere podskup veličine \( k \), bez obzira na redosled.</li>
+        <li><strong>Multinomijalni koeficijent:</strong> \( \displaystyle \binom{n}{k_1, k_2, \ldots, k_m} = \dfrac{n!}{k_1!\,k_2!\,\cdots\,k_m!} \), gde je \( k_1 + k_2 + \cdots + k_m = n \). Predstavlja broj načina da se \( n \) različitih objekata podeli u \( m \) <em>različitih</em> grupa unapred zadatih veličina.</li>
+        <li><strong>Veza:</strong> \( \displaystyle \binom{n}{k_1, k_2, \ldots, k_m} = \binom{n}{k_1}\binom{n - k_1}{k_2}\binom{n - k_1 - k_2}{k_3}\cdots \) &mdash; &bdquo;uzastopni izbori&rdquo;.</li>
+        <li><strong>Sobe različite vs. identične:</strong> kada grupe (sobe) imaju različite oznake, ne delimo sa faktorijelima permutacija grupa. Tek ako bi sve grupe bile iste veličine i nerazlučive, množili bismo sa dodatnim \( 1/m! \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — uzastopni izbori za sobe">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="rooms" width="700" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Svaka soba se puni nezavisno, od preostalih gostiju: \( \binom{10}{1} \) → \( \binom{9}{2} \) → \( \binom{7}{3} \) → \( \binom{4}{4} \). Proizvod ovih koeficijenata je \( 10 \cdot 36 \cdot 35 \cdot 1 = 12\,600 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Razumemo strukturu problema</h3>
+      <p>Imamo \( 10 \) različitih gostiju i \( 4 \) različite sobe kapaciteta \( 1, 2, 3 \) i \( 4 \) (ukupno \( 1 + 2 + 3 + 4 = 10 \) &mdash; baš svih \( 10 \) gostiju). Sobe imamo razlučive (svaka ima drugi broj kreveta), ali unutar jedne sobe <em>ne razlikujemo</em> redosled njenih stanara &mdash; oni samo dele tu sobu.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: da li je ovo permutacija?</summary>
+          <div class="detail-content"><p>Nije. Permutacija bi značila da je bitan i redosled gostiju unutar sobe (tipa &bdquo;prvi krevet, drugi krevet&rdquo;), što se u zadatku ne traži. Zadatak je <em>podela</em> na grupe, gde su grupe različite (same sobe), ali unutar svake grupe ne broji se redosled.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Biramo gosta za jednokrevetnu sobu</h3>
+      <p>Od \( 10 \) gostiju biramo \( 1 \) koji ide u jednokrevetnu sobu. Broj načina je:</p>
+      <div class="math-block">\[ \binom{10}{1} = 10. \]</div>
+      <p>Nakon izbora, ostaje \( 9 \) gostiju za preostale sobe.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Biramo dvoje gostiju za dvokrevetnu sobu</h3>
+      <p>Od preostalih \( 9 \) gostiju biramo \( 2 \) koji će deliti dvokrevetnu sobu:</p>
+      <div class="math-block">\[ \binom{9}{2} = \dfrac{9 \cdot 8}{2!} = \dfrac{72}{2} = 36. \]</div>
+      <p>Ostaju \( 7 \) gostiju.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto delimo sa \( 2! \)?</summary>
+          <div class="detail-content"><p>Zato što unutar dvokrevetne sobe ne razlikujemo &bdquo;ko je u prvom, ko u drugom krevetu&rdquo;. Par \( \{A, B\} \) je isti kao \( \{B, A\} \). Kada biramo uređeno (\( 9 \cdot 8 \)), duplirali smo svaki par, pa delimo sa \( 2! = 2 \) da bismo dobili broj <em>neuređenih</em> parova.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Biramo troje za trokrevetnu sobu</h3>
+      <p>Od preostalih \( 7 \) gostiju biramo \( 3 \) za trokrevetnu:</p>
+      <div class="math-block">\[ \binom{7}{3} = \dfrac{7 \cdot 6 \cdot 5}{3!} = \dfrac{210}{6} = 35. \]</div>
+      <p>Ostaju \( 4 \) gosta.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Četvoro u četvorokrevetnoj sobi</h3>
+      <p>Preostalih \( 4 \) gostiju ide u četvorokrevetnu sobu. Izbor je trivijalan &mdash; svi idu tu:</p>
+      <div class="math-block">\[ \binom{4}{4} = 1. \]</div>
+      <p>Jedan jedini način.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Množimo koeficijente</h3>
+      <p>Pošto su izbori nezavisni (fundamentalno pravilo množenja), ukupan broj razmeštaja je proizvod:</p>
+      <div class="math-block">\[ N = \binom{10}{1}\binom{9}{2}\binom{7}{3}\binom{4}{4} = 10 \cdot 36 \cdot 35 \cdot 1. \]</div>
+      <p>Računamo:</p>
+      <div class="math-block">\[ 10 \cdot 36 = 360, \quad 360 \cdot 35 = 12\,600, \quad 12\,600 \cdot 1 = 12\,600. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: pravilo množenja u kombinatorici</summary>
+          <div class="detail-content"><p>Ako se postupak sastoji iz \( k \) uzastopnih nezavisnih koraka, a svaki korak ima \( n_i \) mogućnosti, onda je ukupan broj ishoda \( n_1 \cdot n_2 \cdot \ldots \cdot n_k \). Ovde su koraci: izbor 1 od 10, izbor 2 od 9, itd. &mdash; i svaki kasniji zavisi od koga je preostalo, pa množimo njihove binomne koeficijente.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="7">
+    <div class="step-badge">7</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera preko multinomijalnog koeficijenta</h3>
+      <p>Isti rezultat se može dobiti preko multinomijalnog koeficijenta. Broj načina da se \( 10 \) različitih gostiju podeli u \( 4 \) različite grupe veličina \( 1, 2, 3, 4 \) je:</p>
+      <div class="math-block">\[ \binom{10}{1,\,2,\,3,\,4} = \dfrac{10!}{1! \cdot 2! \cdot 3! \cdot 4!}. \]</div>
+      <p>Brojimo:</p>
+      <div class="math-block">\[ 10! = 3\,628\,800, \qquad 1!\cdot 2!\cdot 3!\cdot 4! = 1 \cdot 2 \cdot 6 \cdot 24 = 288. \]</div>
+      <div class="math-block">\[ \dfrac{3\,628\,800}{288} = 12\,600. \]</div>
+      <p>Isti broj! ✓</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kada se \( n \) različitih objekata raspoređuje u \( m \) <em>različitih</em> grupa unapred zadatih veličina \( k_1, k_2, \ldots, k_m \) (pri čemu je \( k_1 + \cdots + k_m = n \)), odgovor je uvek multinomijalni koeficijent \( \dfrac{n!}{k_1!\,k_2!\,\cdots\,k_m!} \). Isti rezultat se dobija i &bdquo;uzastopnim biranjem&rdquo; \( \binom{n}{k_1}\binom{n - k_1}{k_2}\cdots \) &mdash; to su dva lica iste formule. Ako bi sobe bile <em>identične</em> (što <strong>nije</strong> slučaj ovde), dodatno bismo delili sa permutacijama grupa.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ N = \binom{10}{1}\binom{9}{2}\binom{7}{3}\binom{4}{4} = 10 \cdot 36 \cdot 35 \cdot 1 = 12\,600 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 12\,800 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 24\,000 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 360 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 3\,600 \)</span>
+    <span class="answer-option correct" data-option="E">(E) \( 12\,600 \)</span>
+  </div>
+  <p class="verification">Provera: \( \dfrac{10!}{1!\,2!\,3!\,4!} = \dfrac{3\,628\,800}{288} = 12\,600 \). Multinomijalni pristup daje identičan rezultat. ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pretpostaviti da je bitan redosled u okviru sobe i koristiti permutacije: \( 10! = 3\,628\,800 \). To bi značilo da razlikujemo &bdquo;krevet \( 1 \)&rdquo; i &bdquo;krevet \( 2 \)&rdquo; unutar iste sobe &mdash; ali tekst ne traži to.</li>
+    <li>Smatrati sobe identičnim i dodatno deliti sa \( 4! \): \( 12\,600 / 24 = 525 \). Sobe su <em>različite</em> (jednokrevetna je drugačija od trokrevetne), pa to ne radimo.</li>
+    <li>Zaboraviti neki od binomnih koeficijenata, npr. napisati samo \( \binom{10}{1}\binom{9}{2} = 360 \) &mdash; odgovor (C), ali pogrešan.</li>
+    <li>Pomešati binomni \( \binom{9}{2} \) sa \( 9 \cdot 2 = 18 \) ili \( 9^2 = 81 \). Tačno je \( \dfrac{9!}{2!\,7!} = 36 \).</li>
+    <li>Pomnožiti pogrešan niz brojeva: \( \binom{10}{4}\binom{6}{3}\binom{3}{2}\binom{1}{1} \) &mdash; po ovom redosledu biramo &bdquo;veću&rdquo; sobu prvo, a rezultat je <em>isti</em> (\( 210 \cdot 20 \cdot 3 \cdot 1 = 12\,600 \)); red izbora ne menja odgovor jer su faktori samo preuređeni.</li>
+    <li>Sabirati umesto množiti: \( 10 + 36 + 35 + 1 = 82 \) &mdash; iako nije ponuđen, tipična greška je korišćenje pravila zbira umesto proizvoda.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta ako hotel ima <em>dve</em> identične trokrevetne sobe umesto jedne trokrevetne i jedne četvorokrevetne (a ostale sobe ostaju iste: jedna jednokrevetna, jedna dvokrevetna)? Tada treba razmestiti \( 1 + 2 + 3 + 3 = 9 \) gostiju. Kako se broj razmeštaja menja?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Sa \( 9 \) gostiju, izbori bi bili \( \binom{9}{1}\binom{8}{2}\binom{6}{3}\binom{3}{3} = 9 \cdot 28 \cdot 20 \cdot 1 = 5040 \). Ali kako su dve trokrevetne sobe <em>identične</em>, svaka podela na dve grupe veličine \( 3 \) je dvaput izbrojana (ista grupa gostiju ali razmenjena između &bdquo;prve&rdquo; i &bdquo;druge&rdquo; trokrevetne sobe), pa delimo sa \( 2! = 2 \): rezultat je \( 5040 / 2 = 2520 \). Opšte pravilo: svaka grupa identičnih grupa iste veličine uvodi faktor \( 1/k! \) u finalni broj.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('rooms');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var tertiary  = cv('--sol-canvas-tertiary');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Uzastopni izbori: 10 gostiju → 4 različite sobe', W / 2, 28);
+
+    // Subtitle
+    ctx.fillStyle = muted;
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('kapaciteti 1, 2, 3, 4  (ukupno 10)', W / 2, 48);
+
+    // Four rooms horizontally: card layout
+    var rooms = [
+      { title: 'Jednokrevetna', cap: 1, choose: '①  C(10, 1)', value: 10, rem: '9 preostalih', color: primary },
+      { title: 'Dvokrevetna',   cap: 2, choose: '②  C(9, 2)',  value: 36, rem: '7 preostalih', color: secondary },
+      { title: 'Trokrevetna',   cap: 3, choose: '③  C(7, 3)',  value: 35, rem: '4 preostalih', color: tertiary },
+      { title: 'Četvorokrevetna', cap: 4, choose: '④  C(4, 4)',  value: 1, rem: '0 preostalih', color: accent }
+    ];
+
+    var cardTop = 80;
+    var cardHeight = 220;
+    var nCards = rooms.length;
+    var totalSpan = W - 80;
+    var gap = 14;
+    var cardWidth = (totalSpan - (nCards - 1) * gap) / nCards;
+
+    for (var i = 0; i < nCards; i++) {
+      var r = rooms[i];
+      var x = 40 + i * (cardWidth + gap);
+      var y = cardTop;
+      // card bg
+      ctx.fillStyle = cvAlpha('--sol-canvas-grid', 0.4);
+      ctx.fillRect(x, y, cardWidth, cardHeight);
+      // card border top accent
+      ctx.fillStyle = r.color;
+      ctx.fillRect(x, y, cardWidth, 6);
+      // outline
+      ctx.strokeStyle = cv('--sol-canvas-axis');
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x, y, cardWidth, cardHeight);
+
+      // Title (room name)
+      ctx.fillStyle = text;
+      ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(r.title, x + cardWidth / 2, y + 28);
+
+      // Capacity icon: rows of small "beds"
+      var bedSize = 14;
+      var bedGap = 4;
+      var totalBedWidth = r.cap * bedSize + (r.cap - 1) * bedGap;
+      var bedX0 = x + (cardWidth - totalBedWidth) / 2;
+      var bedY = y + 44;
+      for (var b = 0; b < r.cap; b++) {
+        ctx.fillStyle = r.color;
+        ctx.fillRect(bedX0 + b * (bedSize + bedGap), bedY, bedSize, bedSize);
+        ctx.strokeStyle = cv('--sol-canvas-axis');
+        ctx.lineWidth = 1;
+        ctx.strokeRect(bedX0 + b * (bedSize + bedGap), bedY, bedSize, bedSize);
+      }
+
+      // Number beds caption
+      ctx.fillStyle = muted;
+      ctx.font = '11px Segoe UI, system-ui, sans-serif';
+      ctx.fillText(r.cap + ' ' + (r.cap === 1 ? 'krevet' : (r.cap < 5 ? 'kreveta' : 'kreveta')), x + cardWidth / 2, bedY + 30);
+
+      // Choice label
+      ctx.fillStyle = text;
+      ctx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
+      ctx.fillText(r.choose, x + cardWidth / 2, y + 112);
+
+      // Value (large)
+      ctx.fillStyle = r.color;
+      ctx.font = 'bold 26px Segoe UI, system-ui, sans-serif';
+      ctx.fillText('= ' + r.value, x + cardWidth / 2, y + 150);
+
+      // Remaining
+      ctx.fillStyle = muted;
+      ctx.font = 'italic 11px Segoe UI, system-ui, sans-serif';
+      ctx.fillText('posle: ' + r.rem, x + cardWidth / 2, y + 180);
+
+      // Multiply sign between cards
+      if (i < nCards - 1) {
+        ctx.fillStyle = cv('--sol-canvas-highlight');
+        ctx.font = 'bold 20px Segoe UI, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('×', x + cardWidth + gap / 2, y + cardHeight / 2 + 6);
+      }
+    }
+
+    // Formula below cards
+    var fy = cardTop + cardHeight + 50;
+    ctx.textAlign = 'center';
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('N = C(10,1) · C(9,2) · C(7,3) · C(4,4)', W / 2, fy);
+
+    ctx.font = '14px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('= 10 · 36 · 35 · 1', W / 2, fy + 28);
+
+    // Final total (highlighted)
+    ctx.font = 'bold 22px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = cv('--sol-canvas-accent');
+    ctx.fillText('= 12 600', W / 2, fy + 64);
+
+    // Alternative note
+    ctx.font = 'italic 11px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Ekvivalentno:  10! / (1! · 2! · 3! · 4!) = 3 628 800 / 288 = 12 600', W / 2, fy + 94);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Razmeštaj 10 gostiju u različite sobe — multinomijalni koeficijent",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["kombinatorika", "binomni koeficijent", "multinomijalni koeficijent", "pravilo množenja", "podela na grupe"]
+}
+BRAINSPARK_META-->

@@ -1,0 +1,678 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Izračunati vrednost izraza
+     ∛x + x²/256 − 512/x
+  u skupu realnih brojeva za x = 64.
+
+  Opcije:
+   (A) 12
+   (B) 20
+   (C) −12
+   (D) −20
+  Tačan: (A) 12.
+
+  Računanje po članovima:
+
+  Član 1: ∛64.
+   64 = 4³ (jer 4·4·4 = 16·4 = 64), pa ∛64 = 4.
+
+  Član 2: x²/256 za x=64.
+   64² = 4096.
+   4096 / 256 = 16. (Provera: 256·16 = 256·10 + 256·6 = 2560 + 1536 = 4096.) ✓
+   Pa je ovaj član = 16.
+   Alternativno: 64/256 = 1/4, pa 64²/256 = 64·(64/256) = 64·(1/4) = 16. ✓
+
+  Član 3: 512/x za x=64.
+   512/64 = 8. (64·8 = 512.) ✓
+
+  Zbir:
+   ∛64 + 64²/256 − 512/64 = 4 + 16 − 8 = 12.
+
+  Dakle odgovor je (A) 12.
+
+  Provera distraktora — gde bi đak mogao da pogreši:
+   (B) 20: ako sabere sve bez oduzimanja: 4 + 16 + (oko) — ne, ili pomeša: 4 + 16 − 0 = 20 ako zaboravi treći član.
+            Ili 4 + 16 = 20. Upravo zaboravljanje trećeg člana!
+   (C) −12: ako promeni znake (4 − 16 − 8 = −20, ne; ili 4 − 16 + 0 = −12 ako izračuna pogrešno).
+            Ili −∛64 + 16 − 8 = −4 + 16 − 8 = 4. Ne stiže se do −12 lako, ali grubo
+            neko ko se zabuni sa znacima.
+   (D) −20: ako je −4 − 16 + 0 = −20 (dve znak-greške).
+            Ili 4 − 16 − 8 = −20. Znak prve dve stavke se zamene — vrlo tipična greška!
+
+  Dakle distraktor (D) = 4 − 16 − 8 je najčešća realna greška — pomešati znak drugog člana.
+
+  Alternativni uvid (za elegantno pedagoško rešenje):
+   Sva tri člana izračunata postaju {4, 16, 8}.
+   Možemo primetiti da je 4 = ∛64, 16 = 64/4 = 64²/256, 8 = 512/64 = 2³·2³·... = 8.
+   Zbir: 4 + 16 = 20, 20 − 8 = 12.
+
+  Još elegantniji pristup: 64 = 2⁶.
+    Član 1: ∛(2⁶) = 2² = 4.
+    Član 2: (2⁶)² / 2⁸ = 2¹²/2⁸ = 2⁴ = 16.
+    Član 3: 2⁹/2⁶ = 2³ = 8.
+    Zbir: 4 + 16 − 8 = 12.
+   Ovo je KRAJNJE elegantna verzija i dobar didaktički trik — pokazuje snagu stepena istog broja.
+
+  Plan:
+   Korak 1: Primetiti da je 64 = 2⁶ (ili ∛64 = 4 ako đak ne radi sa stepenima).
+   Korak 2: Izračunati svaki član posebno.
+   Korak 3: Sabrati/oduzeti: 4 + 16 − 8 = 12.
+
+  Visual:
+   - "Broj na brojevnoj pravoj": pokazati start na 0, pa +4 (skok desno), +16 (veliki skok desno), −8 (skok levo).
+     Završetak na 12. Statično — ovo je aritmetički zadatak.
+   - Alternativno: "stubac graf" tri člana + zbir, ili bar chart.
+   - Ili tabela: x, ∛x, x²/256, 512/x, zbir — sa x=64 istaknutim.
+
+  Pedagoški, ovo je standardni "substitution" zadatak. Težina je u pažljivom računanju i
+  prepoznavanju stepena broja 2.
+</script>
+
+<h1 data-card="problem-title">Izračunavanje izraza sa kubnim korenom, kvadratom i razlomkom</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra &mdash; zamena vrednosti, kubni koren, stepeni broja 2, računske operacije</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Vrednost izraza \( \sqrt[3]{x} + \dfrac{x^2}{256} - \dfrac{512}{x} \) u skupu realnih brojeva, za \( x = 64 \), je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 12 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 20 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( -12 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( -20 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Zamenićemo \( x=64 \) u svaki od tri člana i izračunati ih posebno. Ključno zapažanje: \( 64 = 2^6 \) i svi „tajanstveni" brojevi u izrazu (\( 256 = 2^8 \), \( 512 = 2^9 \)) su takođe stepeni dvojke &mdash; to čini račun vrlo urednim. Na kraju saberemo prva dva člana i oduzmemo treći.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i činjenice</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Kubni koren:</strong> \( \sqrt[3]{a} = b \iff b^3 = a \). Na primer \( \sqrt[3]{64} = 4 \) jer je \( 4^3 = 64 \).</li>
+        <li><strong>Stepeni broja 2 (korisno znati napamet):</strong> \( 2^3=8 \), \( 2^4=16 \), \( 2^6=64 \), \( 2^8=256 \), \( 2^9=512 \), \( 2^{10}=1024 \), \( 2^{12}=4096 \).</li>
+        <li><strong>Stepen stepena:</strong> \( (a^m)^n = a^{m\cdot n} \). Npr. \( 64^2 = (2^6)^2 = 2^{12} = 4096 \).</li>
+        <li><strong>Deljenje stepena istog broja:</strong> \( \dfrac{a^m}{a^n} = a^{m-n} \). Npr. \( \dfrac{2^{12}}{2^8} = 2^4 = 16 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vrednosti članova na brojevnoj pravoj">
+  <h2>📏 Brojevna prava — koraci računa</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-numberline" width="720" height="420"></canvas>
+  </div>
+  <p class="canvas-caption">Kreće se od \( 0 \): prvi član dodaje \( +4 \), drugi \( +16 \), a treći oduzima \( -8 \). Konačna pozicija je \( 12 \). Celi brojevi su prijateljski &mdash; to je i bila „poruka" postavljača da izaberu \( x=64 \) (stepen dvojke).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Razlaganje članova po stepenima broja 2">
+  <h2>🔢 Trik: sve je stepen broja 2</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-powers" width="720" height="440"></canvas>
+  </div>
+  <p class="canvas-caption">Kada primetiš da su \( 64=2^6 \), \( 256=2^8 \), \( 512=2^9 \), cela priča se svodi na jednostavne operacije sa eksponentima. Ovo je najbrži put do odgovora.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Prvi član: \( \sqrt[3]{x} \)</h3>
+      <p>Tražimo broj čiji je kub jednak \( 64 \). Pošto \( 4^3 = 4\cdot 4\cdot 4 = 64 \):</p>
+      <div class="math-block">\[ \sqrt[3]{64} \;=\; 4 \]</div>
+      <p>Alternativno, preko stepena: \( 64 = 2^6 \), pa \( \sqrt[3]{2^6} = 2^{6/3} = 2^2 = 4 \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliko je \( \sqrt[3]{-64} \)?</summary>
+          <div class="detail-content"><p>\( -4 \), jer \( (-4)^3 = -64 \). Kubni koren u skupu realnih brojeva je definisan i za negativne brojeve, za razliku od kvadratnog.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Drugi član: \( \dfrac{x^2}{256} \)</h3>
+      <p>Izračunavamo \( 64^2 = 4096 \), pa delimo sa \( 256 \):</p>
+      <div class="math-block">\[ \dfrac{64^2}{256} \;=\; \dfrac{4096}{256} \;=\; 16 \]</div>
+      <p>Elegantnije, bez velikih brojeva: \( \dfrac{64^2}{256} = \dfrac{(2^6)^2}{2^8} = \dfrac{2^{12}}{2^8} = 2^4 = 16 \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( 4096/256 = 16 \)?</summary>
+          <div class="detail-content"><p>Pogledamo \( 256 \cdot 16 \): \( 256\cdot 10 = 2560 \), \( 256\cdot 6 = 1536 \), ukupno \( 4096 \). Takođe: \( 16 = 2^4 \) i \( 4096 = 2^{12} \), pa \( 4096/256 = 2^{12}/2^8 = 2^4 = 16 \). ✓</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Treći član: \( \dfrac{512}{x} \)</h3>
+      <p>Delimo \( 512 \) sa \( 64 \):</p>
+      <div class="math-block">\[ \dfrac{512}{64} \;=\; 8 \]</div>
+      <p>Preko stepena: \( \dfrac{2^9}{2^6} = 2^{9-6} = 2^3 = 8 \).</p>
+      <p>Budi <strong>pažljiv sa znakom</strong>: u originalnom izrazu ispred ovog člana stoji <em>minus</em>, pa ćemo ga oduzeti.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Spoji sve tri vrednosti</h3>
+      <p>Vraćamo se na ceo izraz:</p>
+      <div class="math-block">\[ \sqrt[3]{x} + \dfrac{x^2}{256} - \dfrac{512}{x} \;\stackrel{x=64}{=\!=\!=}\; 4 \;+\; 16 \;-\; 8 \]</div>
+      <p>Sabirajmo korak po korak:</p>
+      <div class="math-block">\[ 4 + 16 = 20, \qquad 20 - 8 = 12 \]</div>
+      <p>Konačna vrednost izraza je <span class="result">\( 12 \)</span>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Sažeti zapis preko stepena dvojke</h3>
+      <p>Za one koji vole eleganciju: ceo postupak u jednom redu:</p>
+      <div class="math-block">\[ \sqrt[3]{2^6} + \dfrac{(2^6)^2}{2^8} - \dfrac{2^9}{2^6} \;=\; 2^2 + 2^{12-8} - 2^{9-6} \;=\; 2^2 + 2^4 - 2^3 \;=\; 4 + 16 - 8 \;=\; 12 \]</div>
+      <p>Ovaj pristup je <em>isti</em> račun, samo bez „velikih" brojeva &mdash; koristi zakone stepena umesto aritmetike.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Koeficijenti u izrazu (\( 256 \) i \( 512 \)) nisu slučajno izabrani &mdash; to su \( 2^8 \) i \( 2^9 \). Pošto je \( 64 = 2^6 \), <strong>ceo zadatak je skrivena vežba iz stepena broja 2</strong>. Kada to prepoznaš, „ogromni" brojevi poput \( 4096 \) postaju \( 2^{12} \), a računanje se svodi na oduzimanje sitnih eksponenata. Lekcija: uvek potraži da li su konstante u zadatku stepeni istog osnovnog broja &mdash; to može dramatično pojednostaviti račun.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \sqrt[3]{64} + \dfrac{64^2}{256} - \dfrac{512}{64} \;=\; 4 + 16 - 8 \;=\; 12 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 12 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 20 \)</span>
+    <span class="answer-option" data-option="C">(C) \( -12 \)</span>
+    <span class="answer-option" data-option="D">(D) \( -20 \)</span>
+  </div>
+  <p class="verification">Provera: \( 4+16-8 = 12 \). Preko stepena: \( 2^2 + 2^4 - 2^3 = 4+16-8 = 12 \). Oba postupka daju isti rezultat. ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zamena znaka drugog člana.</strong> Ako napišeš „ \( -16 \) umesto \( +16 \)", dobićeš \( 4 - 16 - 8 = -20 \) &mdash; upravo distraktor (D). Pazi: između \( \sqrt[3]{x} \) i \( x^2/256 \) stoji <em>plus</em>.</li>
+    <li><strong>Zanemarivanje trećeg člana.</strong> Ako zaboraviš \( -8 \), dobijaš \( 4+16 = 20 \) &mdash; distraktor (B). Uvek broji sve članove pre nego što saberješ.</li>
+    <li><strong>Pogrešan kubni koren.</strong> Neki đaci pomešaju sa kvadratnim korenom i napišu \( \sqrt{64}=8 \). Ali ovde je <em>kubni</em> koren, pa je \( \sqrt[3]{64}=4 \). \( 8^3 = 512 \neq 64 \).</li>
+    <li><strong>Greška pri \( 64^2 \).</strong> Nije \( 64\cdot 2 = 128 \), već \( 64\cdot 64 = 4096 \). Ko zaokrugli na \( 64^2 \approx 4000 \) dobija \( 4000/256 \approx 15{,}6 \) &mdash; ne izlazi ceo broj.</li>
+    <li><strong>Pogrešno deljenje \( 512/64 \).</strong> Tačno je \( 8 \), a ne \( 6 \) ili \( 64/8=8 \) sa pogrešnim tumačenjem. Najsigurnije: \( 64\cdot 8 = 512 \). ✓</li>
+    <li><strong>Aritmetička greška kod \( 4+16 \).</strong> Može se desiti \( 4+16=24 \), što bi dalo \( 24-8=16 \) &mdash; nije ni jedna od ponuđenih opcija, što bi te upozorilo da ponoviš račun.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Za isti izraz \( f(x) = \sqrt[3]{x} + \dfrac{x^2}{256} - \dfrac{512}{x} \), izračunaj \( f(8) \). Koristi trik sa stepenima dvojke. Da li će rezultat biti ceo broj?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Za \( x=8=2^3 \): \( \sqrt[3]{8}=2 \), \( 8^2/256 = 64/256 = 1/4 \), \( 512/8 = 64 \). Zbir: \( 2 + \tfrac{1}{4} - 64 = -\tfrac{247}{4} = -61{,}75 \). Nije ceo broj! To pokazuje da izbor \( x=64 \) nije bio slučajan &mdash; postavljač je namerno izabrao baš \( x=2^6 \) da svi članovi ispadnu celi. Za \( x=256=2^8 \) bi opet bilo sve celo: \( \sqrt[3]{256}=\sqrt[3]{2^8}=2^{8/3} \) &mdash; ah, ne, ovaj nije ceo. Dakle \( x=64 \) je posebno lep izbor.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-numberline');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var danger    = cv('--sol-canvas-danger');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Vrednosti članova i njihov zbir: 0 → 4 → 20 → 12', W / 2, 30);
+
+    // Number line
+    var x0 = 60, x1 = W - 60;
+    var y = 230;
+    var vMin = -2, vMax = 24;
+    function xOf(v) { return x0 + (v - vMin) / (vMax - vMin) * (x1 - x0); }
+
+    // Axis
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x0, y);
+    ctx.lineTo(x1, y);
+    ctx.stroke();
+    // Arrowheads
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(x1, y);
+    ctx.lineTo(x1 - 10, y - 5);
+    ctx.lineTo(x1 - 10, y + 5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(x0, y);
+    ctx.lineTo(x0 + 10, y - 5);
+    ctx.lineTo(x0 + 10, y + 5);
+    ctx.closePath();
+    ctx.fill();
+
+    // Ticks at every integer from 0 to 22
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1;
+    for (var vv = 0; vv <= 22; vv += 2) {
+      var xt = xOf(vv);
+      ctx.beginPath();
+      ctx.moveTo(xt, y - 4);
+      ctx.lineTo(xt, y + 4);
+      ctx.stroke();
+      ctx.fillStyle = muted;
+      ctx.font = '11px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(vv.toString(), xt, y + 20);
+    }
+
+    // Highlight key values: 0, 4, 20, 12
+    var marks = [
+      { v: 0,  label: 'start', color: muted,     above: true,  big: false },
+      { v: 4,  label: '4 = ∛64',            color: primary,   above: false, big: true  },
+      { v: 20, label: '20 = 4 + 16',        color: secondary, above: true,  big: true  },
+      { v: 12, label: '12 = 20 − 8',       color: accent,    above: false, big: true  }
+    ];
+
+    // Draw arcs for the three operations:
+    // +4 from 0 to 4 (below line)
+    // +16 from 4 to 20 (above line)
+    // -8 from 20 to 12 (above line, going left)
+    function drawArc(startV, endV, side, color, label) {
+      var xs = xOf(startV), xe = xOf(endV);
+      var mid = (xs + xe) / 2;
+      var r = Math.abs(xe - xs) / 2;
+      var dir = side === 'above' ? -1 : 1;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.arc(mid, y, r, side === 'above' ? Math.PI : 0, side === 'above' ? 0 : Math.PI, side === 'above' ? false : false);
+      // Use arc(x, y, r, startAngle, endAngle) where angles go counterclockwise on canvas standard
+      // For "above" arc: go from angle=PI (start left) to 0 (end right) — anticlockwise would pass through the top
+      // Actually canvas default is clockwise. Let's use direct custom drawing:
+      ctx.stroke();
+      // Arrow at endpoint
+      var arrowY = y;
+      var arrowX = endV > startV ? xe : xe;
+      var tipY = y;
+      var tipX = xe;
+      // Tangent direction at end: if above, at right (end), tangent points right+down (clockwise from top to right)
+      var ang = endV > startV ? (side === 'above' ? -Math.PI/6 : Math.PI/6) : (side === 'above' ? Math.PI + Math.PI/6 : Math.PI - Math.PI/6);
+      // Simpler: draw a small triangle at tipX, tipY pointing direction of motion
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      if (endV > startV) {
+        ctx.moveTo(tipX, tipY);
+        ctx.lineTo(tipX - 8, tipY - 6);
+        ctx.lineTo(tipX - 8, tipY + 6);
+      } else {
+        ctx.moveTo(tipX, tipY);
+        ctx.lineTo(tipX + 8, tipY - 6);
+        ctx.lineTo(tipX + 8, tipY + 6);
+      }
+      ctx.closePath();
+      ctx.fill();
+
+      // Label at apex of arc
+      var apexY = y + dir * r - dir * 10;
+      ctx.fillStyle = color;
+      ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, mid, apexY - (dir > 0 ? -4 : 0));
+    }
+
+    // Clear approach: redo drawArc simpler — semicircle using ellipse or arc with proper angle
+    // We'll just re-do with a cleaner version
+    function drawOperation(startV, endV, color, label, side) {
+      var xs = xOf(startV), xe = xOf(endV);
+      var mid = (xs + xe) / 2;
+      var r = Math.abs(xe - xs) / 2;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      // side 'above' means arc goes UP (negative y side); 'below' goes DOWN
+      if (side === 'above') {
+        ctx.arc(mid, y, r, Math.PI, 0, true); // counterclockwise from PI to 0 goes through top (negative y)
+      } else {
+        ctx.arc(mid, y, r, 0, Math.PI, false); // clockwise from 0 to PI goes through bottom (positive y) — but default is CCW...
+      }
+      ctx.stroke();
+
+      // arrow at end
+      var tipX = xe, tipY = y;
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      if (endV > startV) {
+        // arrow pointing right-ish: since we're at the endpoint on axis, approach direction is from above
+        ctx.moveTo(tipX, tipY);
+        ctx.lineTo(tipX - 10, tipY - 7);
+        ctx.lineTo(tipX - 10, tipY + 7);
+      } else {
+        ctx.moveTo(tipX, tipY);
+        ctx.lineTo(tipX + 10, tipY - 7);
+        ctx.lineTo(tipX + 10, tipY + 7);
+      }
+      ctx.closePath();
+      ctx.fill();
+
+      // Label
+      var apexY = side === 'above' ? y - r - 10 : y + r + 20;
+      ctx.fillStyle = color;
+      ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, mid, apexY);
+    }
+
+    // Arc 1: 0 to 4, below
+    drawOperation(0, 4, primary, '+ ∛64 = +4', 'below');
+    // Arc 2: 4 to 20, above
+    drawOperation(4, 20, secondary, '+ 64²/256 = +16', 'above');
+    // Arc 3: 20 to 12, below (going left)
+    drawOperation(12, 20, accent, '− 512/64 = −8', 'below');
+    // Note the last arc goes from 20 backward to 12 (going left), but drawn as same arc shape
+
+    // Big markers at 0, 4, 20, 12 with vertical line + circle
+    var keyMarks = [
+      { v: 0,  color: muted,     label: 'start: 0',    side: 'up'   },
+      { v: 4,  color: primary,   label: '4',          side: 'up'   },
+      { v: 20, color: secondary, label: '20',         side: 'up'   },
+      { v: 12, color: accent,    label: 'kraj: 12',   side: 'up'   }
+    ];
+    for (var i = 0; i < keyMarks.length; i++) {
+      var m = keyMarks[i];
+      var xm = xOf(m.v);
+      // dot
+      ctx.fillStyle = m.color;
+      ctx.beginPath();
+      ctx.arc(xm, y, m.v === 12 ? 10 : 7, 0, Math.PI * 2);
+      ctx.fill();
+      // bright ring for final answer
+      if (m.v === 12) {
+        ctx.strokeStyle = bg;
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+        ctx.strokeStyle = m.color;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(xm, y, 16, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      // label
+      ctx.fillStyle = m.color;
+      ctx.font = m.v === 12 ? 'bold 14px Segoe UI, system-ui, sans-serif' : 'bold 13px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(m.label, xm, y + 55);
+    }
+
+    // Bottom summary box
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.12);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.5;
+    if (ctx.roundRect) {
+      ctx.beginPath();
+      ctx.roundRect(60, H - 60, W - 120, 46, 10);
+      ctx.fill();
+      ctx.stroke();
+    } else {
+      ctx.fillRect(60, H - 60, W - 120, 46);
+      ctx.strokeRect(60, H - 60, W - 120, 46);
+    }
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('4  +  16  −  8  =  12     ⇒     odgovor (A)', W / 2, H - 35);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('tri člana se lepo slažu u ceo broj jer je x = 64 = 2⁶', W / 2, H - 18);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-powers');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Razlaganje po stepenima broja 2', W / 2, 30);
+
+    // Three panels for three terms
+    var panelW = 210;
+    var panelH = 260;
+    var panelY = 60;
+    var gap = 20;
+    var startX = (W - 3 * panelW - 2 * gap) / 2;
+
+    var panels = [
+      {
+        x: startX,
+        label: '∛64',
+        steps: [
+          '64 = 2⁶',
+          '∛(2⁶) = 2^(6/3)',
+          '= 2² = 4'
+        ],
+        color: primary,
+        result: '4',
+        sign: '+'
+      },
+      {
+        x: startX + panelW + gap,
+        label: '64² / 256',
+        steps: [
+          '64² = (2⁶)² = 2¹²',
+          '256 = 2⁸',
+          '2¹² / 2⁸ = 2⁴ = 16'
+        ],
+        color: secondary,
+        result: '16',
+        sign: '+'
+      },
+      {
+        x: startX + 2 * (panelW + gap),
+        label: '512 / 64',
+        steps: [
+          '512 = 2⁹',
+          '64 = 2⁶',
+          '2⁹ / 2⁶ = 2³ = 8'
+        ],
+        color: accent,
+        result: '8',
+        sign: '−'
+      }
+    ];
+
+    for (var i = 0; i < panels.length; i++) {
+      var p = panels[i];
+      // Panel background
+      ctx.fillStyle = cvAlpha('--sol-canvas-bg', 1);
+      ctx.strokeStyle = cvAlpha(p.color === primary ? '--sol-canvas-primary' : (p.color === secondary ? '--sol-canvas-secondary' : '--sol-canvas-accent'), 0.5);
+      ctx.lineWidth = 2;
+      if (ctx.roundRect) {
+        ctx.beginPath();
+        ctx.roundRect(p.x, panelY, panelW, panelH, 12);
+        ctx.fill();
+        ctx.stroke();
+      } else {
+        ctx.fillRect(p.x, panelY, panelW, panelH);
+        ctx.strokeRect(p.x, panelY, panelW, panelH);
+      }
+
+      // Top strip with sign + expression
+      ctx.fillStyle = cvAlpha(p.color === primary ? '--sol-canvas-primary' : (p.color === secondary ? '--sol-canvas-secondary' : '--sol-canvas-accent'), 0.15);
+      if (ctx.roundRect) {
+        ctx.beginPath();
+        ctx.roundRect(p.x, panelY, panelW, 44, 12);
+        ctx.fill();
+      } else {
+        ctx.fillRect(p.x, panelY, panelW, 44);
+      }
+
+      ctx.fillStyle = p.color;
+      ctx.font = 'bold 20px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(p.sign + '  ' + p.label, p.x + panelW / 2, panelY + 28);
+
+      // Steps
+      ctx.fillStyle = text;
+      ctx.font = '14px "Cambria Math", "Courier New", monospace';
+      ctx.textAlign = 'center';
+      for (var j = 0; j < p.steps.length; j++) {
+        ctx.fillText(p.steps[j], p.x + panelW / 2, panelY + 82 + j * 30);
+      }
+
+      // Result box
+      ctx.fillStyle = cvAlpha(p.color === primary ? '--sol-canvas-primary' : (p.color === secondary ? '--sol-canvas-secondary' : '--sol-canvas-accent'), 0.20);
+      if (ctx.roundRect) {
+        ctx.beginPath();
+        ctx.roundRect(p.x + 60, panelY + panelH - 60, panelW - 120, 40, 10);
+        ctx.fill();
+      } else {
+        ctx.fillRect(p.x + 60, panelY + panelH - 60, panelW - 120, 40);
+      }
+      ctx.fillStyle = p.color;
+      ctx.font = 'bold 22px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(p.sign + p.result, p.x + panelW / 2, panelY + panelH - 32);
+    }
+
+    // Bottom equation: 4 + 16 - 8 = 12
+    ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.14);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    if (ctx.roundRect) {
+      ctx.beginPath();
+      ctx.roundRect(W / 2 - 200, H - 60, 400, 46, 10);
+      ctx.fill();
+      ctx.stroke();
+    } else {
+      ctx.fillRect(W / 2 - 200, H - 60, 400, 46);
+      ctx.strokeRect(W / 2 - 200, H - 60, 400, 46);
+    }
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 20px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('4  +  16  −  8  =  12', W / 2, H - 30);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Vrednost izraza sa kubnim korenom i razlomcima za x = 64",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["zamena vrednosti", "kubni koren", "stepeni broja 2", "zakoni stepena", "aritmetika", "realni brojevi"]
+}
+BRAINSPARK_META-->

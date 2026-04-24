@@ -1,0 +1,801 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+PROBLEM:
+A cube has edge length a. Find the radius of the sphere (concentric with the cube)
+that touches all 12 edges of the cube.
+
+SETUP:
+Place the cube with center at the origin O = (0,0,0), edges parallel to coordinate axes,
+vertices at (±a/2, ±a/2, ±a/2).
+
+Three types of distances from the center of a cube:
+  1. To a FACE (center of face): a/2 = r_in (inscribed sphere touches faces).
+  2. To an EDGE (midpoint of edge): sqrt(2)*(a/2) = a*sqrt(2)/2 = r_edge (sphere touching all edges).
+  3. To a VERTEX: sqrt(3)*(a/2) = a*sqrt(3)/2 = r_out (circumscribed sphere touches vertices).
+
+WHY r_edge = a*sqrt(2)/2 :
+Consider an edge parallel to the z-axis, for example from (a/2, a/2, -a/2) to (a/2, a/2, a/2).
+Distance from O=(0,0,0) to a point on this edge (a/2, a/2, z) is sqrt((a/2)^2 + (a/2)^2 + z^2).
+This distance is minimized when z=0, giving sqrt(a^2/4 + a^2/4) = sqrt(a^2/2) = a/sqrt(2) = a*sqrt(2)/2.
+The foot of perpendicular from O to the edge is the midpoint of the edge.
+So the sphere of radius a*sqrt(2)/2 centered at O touches each edge exactly at its midpoint.
+
+By symmetry, this applies to all 12 edges — all have midpoints at the same distance from O.
+
+Equivalently: the distance from the cube center to the midpoint of an edge equals
+HALF the face diagonal of any face.
+A face is an a×a square; its diagonal = a*sqrt(2); half of it = a*sqrt(2)/2. ✓
+
+ANSWER: (C) a*sqrt(2)/2.
+
+NUMERIC CHECK with a = 2: r = sqrt(2) ≈ 1.414.
+  (A) a*sqrt(3)/2 = sqrt(3) ≈ 1.732 — too big (that's the distance to vertex).
+  (B) a*sqrt(2) = 2*sqrt(2) ≈ 2.828 — too big.
+  (C) a*sqrt(2)/2 = sqrt(2) ≈ 1.414 — matches.
+  (D) a*sqrt(3) = 2*sqrt(3) ≈ 3.464 — way too big.
+
+Also, r_in < r_edge < r_out:  a/2 < a*sqrt(2)/2 < a*sqrt(3)/2, i.e. 1 < sqrt(2) < sqrt(3). ✓
+
+GEOMETRIC PICTURE (without coordinates):
+Take a face square ABCD, with center O' (face center). The cube center O is directly above/below O'
+at distance a/2. The midpoint M of edge AB (say) is at distance (a/2) from O' (half the face side).
+Wait — actually M is midpoint of edge AB, so O'M = a/2 (half the side of the square, since O' is the face center).
+Then OM² = OO'² + O'M² = (a/2)² + (a/2)² = a²/2, so OM = a*sqrt(2)/2. ✓
+
+(Alternative: M is midpoint of edge of the cube. Consider the two adjacent face centers meeting at that edge —
+M is equidistant from both. Draw OM: it's the hypotenuse of a right triangle with legs a/2 and a/2.)
+</script>
+
+<h1 data-card="problem-title">Sfera koja dodiruje svih dvanaest ivica kocke</h1>
+<p data-card="problem-subtitle" class="subtitle">Stereometrija &mdash; kocka, sfera, rastojanje od centra do ivice</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>
+    Ako je ivica kocke jednaka \(a\), poluprečnik sfere koja dodiruje svih dvanaest ivica je jednak:
+  </p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \dfrac{a\sqrt{3}}{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( a\sqrt{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \dfrac{a\sqrt{2}}{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( a\sqrt{3} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">
+    Zbog simetrije, centar sfere koja dodiruje sve ivice mora biti u centru kocke.
+    Izračunaćemo rastojanje od centra kocke do sredine jedne ivice primenom Pitagorine teoreme u prostoru &mdash;
+    to rastojanje je upravo traženi poluprečnik.
+  </p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Tri karakteristične sfere kocke</summary>
+    <div class="detail-content">
+      <ul>
+        <li>
+          <strong>Upisana sfera</strong> (dodiruje sve strane kocke):
+          poluprečnik \( r_{\text{u}} = \dfrac{a}{2} \) &mdash; rastojanje od centra do sredine strane.
+        </li>
+        <li>
+          <strong>Sfera koja dodiruje ivice</strong> (u sredinama ivica):
+          poluprečnik \( r_{\text{iv}} = \dfrac{a\sqrt{2}}{2} \) &mdash; polovina dijagonale strane.
+        </li>
+        <li>
+          <strong>Opisana sfera</strong> (prolazi kroz sva temena):
+          poluprečnik \( R = \dfrac{a\sqrt{3}}{2} \) &mdash; polovina prostorne dijagonale kocke.
+        </li>
+        <li>
+          <strong>Hijerarhija:</strong> \( \dfrac{a}{2} < \dfrac{a\sqrt{2}}{2} < \dfrac{a\sqrt{3}}{2} \), jer \(1 < \sqrt{2} < \sqrt{3}\).
+        </li>
+        <li>
+          <strong>Pitagorina teorema u prostoru:</strong>
+          ako tačka ima koordinate \((x,y,z)\) u odnosu na centar, rastojanje do centra je \( \sqrt{x^2 + y^2 + z^2} \).
+        </li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz &mdash; kocka, sfera i sredine ivica</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram1" width="720" height="540"></canvas>
+  </div>
+  <p class="canvas-caption">
+    Kocka sa ivicom \(a\) i sfera sa centrom \(O\) u centru kocke. Sfera dodiruje svaku od 12 ivica
+    tačno u njenoj sredini (označeno crvenim tačkama). Plava isprekidana linija prikazuje poluprečnik od \(O\) do jedne sredine ivice.
+  </p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Centar sfere je centar kocke</h3>
+      <p>
+        Kocka ima mnoge ravni simetrije. Bilo koja sfera koja istovremeno dodiruje svih dvanaest ivica
+        mora imati centar koji je <em>istovremeno</em> jednako udaljen od svih ivica. Zbog simetrije kocke,
+        ta tačka je centar kocke &mdash; presek svih prostornih dijagonala. Označavamo ga sa \(O\).
+      </p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Gde sfera dodiruje ivicu</h3>
+      <p>
+        Najkraće rastojanje od tačke \(O\) do jedne ivice je dužina okomice iz \(O\) na tu ivicu.
+        Stopa te okomice je baš <strong>sredina ivice</strong> &mdash; to je posledica simetrije:
+        ivica je duž, centar \(O\) leži na simetrali te duži (zbog ravni simetrije koja polovi ivicu),
+        pa je okomica iz \(O\) upravo u sredini.
+      </p>
+      <p>
+        Dakle, sfera dodiruje svaku ivicu u njenom središtu \(M\). Poluprečnik sfere je \( |OM| \).
+      </p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Pitagorina teorema &mdash; ključni trougao</h3>
+      <p>
+        Posmatraj jednu ivicu kocke. Ova ivica leži na preseku dve susedne strane. Neka je \(O'\) centar jedne od tih
+        strana (kvadrat \(a\times a\)), a \(M\) sredina naše ivice. Tada:
+      </p>
+      <ul class="pitfall-list">
+        <li>\(O'M\) je rastojanje od centra strane do sredine njene ivice, što je upravo \( \dfrac{a}{2} \) (polovina stranice kvadrata).</li>
+        <li>\(OO'\) je rastojanje od centra kocke do centra strane, što je takođe \( \dfrac{a}{2} \) (polovina ivice).</li>
+        <li>\(OO' \perp O'M\), jer \(OO'\) je okomica na stranu, a \(O'M\) leži u toj strani.</li>
+      </ul>
+      <div class="canvas-wrapper">
+        <canvas id="diagram2" width="700" height="500"></canvas>
+      </div>
+      <p class="canvas-caption">
+        Ključni pravougli trougao \(O\text{–}O'\text{–}M\): oba kraka dužine \(a/2\), hipotenuza \(OM\) &mdash; traženi poluprečnik.
+      </p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunavanje poluprečnika</h3>
+      <p>
+        Primenom Pitagorine teoreme u pravouglom trouglu \(O O' M\):
+      </p>
+      <div class="math-block">
+        \[ |OM|^2 = |OO'|^2 + |O'M|^2 = \left(\frac{a}{2}\right)^2 + \left(\frac{a}{2}\right)^2 = \frac{a^2}{2}. \]
+      </div>
+      <p>
+        Odatle je poluprečnik sfere:
+      </p>
+      <div class="math-block">
+        \[ r = |OM| = \sqrt{\frac{a^2}{2}} = \frac{a}{\sqrt{2}} = \frac{a\sqrt{2}}{2}. \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koji odnos dužina \(OM\) ima sa dijagonalom strane?</summary>
+          <div class="detail-content">
+            <p>
+              Dijagonala strane kocke (kvadrata \(a\times a\)) je \(d = a\sqrt{2}\).
+              Naš \(OM = \dfrac{a\sqrt{2}}{2} = \dfrac{d}{2}\) &mdash; dakle, \(OM\) je tačno polovina dijagonale strane.
+              Intuitivno: sredina ivice je jednako udaljena od dva naspramna kraja dijagonale strane,
+              pa je udaljena za pola dijagonale.
+            </p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera &mdash; hijerarhija tri poluprečnika</h3>
+      <p>
+        U kocki razlikujemo tri karakteristična rastojanja od centra:
+      </p>
+      <div class="math-block">
+        \[ \underbrace{\frac{a}{2}}_{\text{do strane}} \;<\; \underbrace{\frac{a\sqrt{2}}{2}}_{\text{do ivice (sredine)}} \;<\; \underbrace{\frac{a\sqrt{3}}{2}}_{\text{do temena}}. \]
+      </div>
+      <p>
+        Ovo direktno sledi iz \(1 < \sqrt{2} < \sqrt{3}\). Naš odgovor \( \dfrac{a\sqrt{2}}{2} \) leži između
+        poluprečnika upisane i opisane sfere &mdash; baš kao što treba za sferu koja dodiruje ivice.
+      </p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>
+    Rastojanje od centra kocke do sredine bilo koje ivice jednako je <strong>pola dijagonale strane</strong>.
+    Razlog: pravougli trougao koji čine centar kocke, centar strane i sredina ivice ima oba kraka \(a/2\),
+    pa je hipotenuza \( \dfrac{a}{\sqrt{2}} = \dfrac{a\sqrt{2}}{2} \). Ovo je srednja od tri „prirodne” dužine
+    u kocki: \(a/2\) (do strane), \(a\sqrt{2}/2\) (do ivice), \(a\sqrt{3}/2\) (do temena).
+  </p>
+</div>
+
+<div data-card="visual-aid" data-title="Tri sfere u kocki">
+  <h2>📊 Tri karakteristične sfere kocke</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram3" width="720" height="420"></canvas>
+  </div>
+  <p class="canvas-caption">
+    Upisana sfera dodiruje strane (poluprečnik \(a/2\)), srednja sfera dodiruje ivice (\(a\sqrt{2}/2\)),
+    opisana sfera prolazi kroz temena (\(a\sqrt{3}/2\)). Naš zadatak traži srednju.
+  </p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ r = \dfrac{a\sqrt{2}}{2} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( \dfrac{a\sqrt{3}}{2} \)</span>
+    <span class="answer-option" data-option="B">(B) \( a\sqrt{2} \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( \dfrac{a\sqrt{2}}{2} \)</span>
+    <span class="answer-option" data-option="D">(D) \( a\sqrt{3} \)</span>
+  </div>
+  <p class="verification">
+    Provera za \(a = 2\): poluprečnik je \( \sqrt{2} \approx 1{,}414 \); a \(a/2 = 1\) (upisana),
+    \(a\sqrt{3}/2 \approx 1{,}732\) (opisana). Naša vrednost \(\sqrt{2}\) leži tačno između &mdash; potvrđuje (C).
+  </p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>
+      <strong>Zamena sa opisanom sferom:</strong>
+      Opcija (A) \( \dfrac{a\sqrt{3}}{2} \) je poluprečnik sfere koja prolazi kroz <em>temena</em>, ne kroz sredine ivica.
+      Ivica je bliža centru od temena.
+    </li>
+    <li>
+      <strong>Korišćenje cele dijagonale umesto polovine:</strong>
+      \(a\sqrt{2}\) je puna dijagonala strane, a ne rastojanje od centra do ivice. Sfera sa tim poluprečnikom bi
+      bila veća od sfere kroz temena &mdash; što nema smisla.
+    </li>
+    <li>
+      <strong>Pokušaj koordinatnog računa bez simetrije:</strong>
+      Ako se pokuša „svaka ivica posebno”, ispravno je &mdash; ali je sporije. Bolje: prepoznaj simetriju
+      i reši samo jedan slučaj (jedan pravougli trougao \(OO'M\)).
+    </li>
+    <li>
+      <strong>Greška u Pitagorinoj teoremi:</strong>
+      \( \left(\dfrac{a}{2}\right)^2 + \left(\dfrac{a}{2}\right)^2 = \dfrac{a^2}{2} \), a ne \(a^2\).
+      Sabiramo dve kvadrata, ne dva broja \(a/2\).
+    </li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>
+    Koliko je rastojanje od centra kocke do jedne prostorne dijagonale (kao prave)?
+    Drugim rečima: kada projektuješ centar kocke na prostornu dijagonalu, da li dobijaš baš centar?
+    Šta ako umesto prostorne dijagonale uzmeš <em>dijagonalu strane</em>?
+  </p>
+  <details>
+    <summary>Nagoveštaj</summary>
+    <div class="detail-content">
+      <p>
+        Centar kocke <em>leži</em> na svakoj prostornoj dijagonali (sve četiri se seku u centru), pa je rastojanje \(0\).
+        Rastojanje od centra kocke do prave koja sadrži dijagonalu strane: centar kocke je na rastojanju \(a/2\)
+        od ravni te strane, pa je i od prave rastojanje \(a/2\) &mdash; isti kao do centra strane, jer je centar strane
+        sredina dijagonale.
+      </p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function(){
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(n){ return styles.getPropertyValue(n).trim(); }
+  function cvAlpha(name, alpha){
+    var c = cv(name);
+    if(c.startsWith('#') && c.length === 7){
+      var r = parseInt(c.slice(1,3),16), g = parseInt(c.slice(3,5),16), b = parseInt(c.slice(5,7),16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram1');
+  if(!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  function draw(){
+    styles = getComputedStyle(root);
+    var bg = cv('--sol-canvas-bg');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0,0,W,H);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 17px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Kocka ivice a sa sferom kroz sredine ivica', W/2, 30);
+
+    // Isometric-like projection of a cube
+    // 3D-to-2D projection
+    var cx = W/2 + 20, cy = H/2 + 40;
+    var s = 120; // half-edge in px
+    var ax = Math.cos(Math.PI*0.18), ay = -Math.sin(Math.PI*0.18); // x-axis direction on screen
+    var bx = Math.cos(Math.PI - Math.PI*0.18), by = -Math.sin(Math.PI - Math.PI*0.18); // y-axis (goes up-left)
+    var cz = 0, cyv = -1; // z-axis points straight up
+
+    function proj(x,y,z){
+      return [
+        cx + s*(x*ax + y*bx),
+        cy + s*(x*ay + y*by + z*cyv)
+      ];
+    }
+
+    // Cube vertices (coordinates ±1, scaled by s)
+    var V = [];
+    for(var i=0;i<8;i++){
+      var x = (i & 1) ? 1 : -1;
+      var y = (i & 2) ? 1 : -1;
+      var z = (i & 4) ? 1 : -1;
+      V.push(proj(x,y,z));
+    }
+    // Index map: vertex i has bits (z,y,x)
+    function V_(x,y,z){
+      var idx = (x>0?1:0) | (y>0?2:0) | (z>0?4:0);
+      return V[idx];
+    }
+
+    // 12 edges — list as pairs of vertex coords
+    var edges = [
+      // bottom square (z = -1)
+      [[-1,-1,-1],[ 1,-1,-1]], [[ 1,-1,-1],[ 1, 1,-1]], [[ 1, 1,-1],[-1, 1,-1]], [[-1, 1,-1],[-1,-1,-1]],
+      // top square (z = 1)
+      [[-1,-1, 1],[ 1,-1, 1]], [[ 1,-1, 1],[ 1, 1, 1]], [[ 1, 1, 1],[-1, 1, 1]], [[-1, 1, 1],[-1,-1, 1]],
+      // vertical
+      [[-1,-1,-1],[-1,-1, 1]], [[ 1,-1,-1],[ 1,-1, 1]], [[ 1, 1,-1],[ 1, 1, 1]], [[-1, 1,-1],[-1, 1, 1]]
+    ];
+
+    // Draw sphere (projected as ellipse) — sphere radius in 3D = s*sqrt(2)/sqrt(1) — no, r = a*sqrt(2)/2, a=2s so r = s*sqrt(2)
+    var rSphere = s * Math.sqrt(2);
+    ctx.strokeStyle = cvAlpha('--sol-canvas-secondary', 0.9);
+    ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.10);
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, rSphere, rSphere*0.55, 0, 0, 2*Math.PI);
+    ctx.fill();
+    ctx.stroke();
+    // Secondary circle (equator seen straight on) for 3D look
+    ctx.beginPath();
+    ctx.setLineDash([4,4]);
+    ctx.ellipse(cx, cy, rSphere, rSphere*0.18, 0, 0, 2*Math.PI);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Draw hidden edges first (lighter, dashed)
+    ctx.strokeStyle = cvAlpha('--sol-canvas-primary', 0.35);
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5,5]);
+    // Hidden vertex is (-1,-1,-1) — edges from that vertex are hidden
+    var hidden = [
+      [[-1,-1,-1],[ 1,-1,-1]],
+      [[-1,-1,-1],[-1, 1,-1]],
+      [[-1,-1,-1],[-1,-1, 1]]
+    ];
+    hidden.forEach(function(e){
+      var p1 = proj.apply(null, e[0]);
+      var p2 = proj.apply(null, e[1]);
+      ctx.beginPath();
+      ctx.moveTo(p1[0], p1[1]);
+      ctx.lineTo(p2[0], p2[1]);
+      ctx.stroke();
+    });
+    ctx.setLineDash([]);
+
+    // Draw visible edges
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    edges.forEach(function(e){
+      // Skip hidden
+      var isHidden = hidden.some(function(h){
+        return (h[0][0]===e[0][0] && h[0][1]===e[0][1] && h[0][2]===e[0][2] &&
+                h[1][0]===e[1][0] && h[1][1]===e[1][1] && h[1][2]===e[1][2]) ||
+               (h[0][0]===e[1][0] && h[0][1]===e[1][1] && h[0][2]===e[1][2] &&
+                h[1][0]===e[0][0] && h[1][1]===e[0][1] && h[1][2]===e[0][2]);
+      });
+      if(isHidden) return;
+      var p1 = proj.apply(null, e[0]);
+      var p2 = proj.apply(null, e[1]);
+      ctx.beginPath();
+      ctx.moveTo(p1[0], p1[1]);
+      ctx.lineTo(p2[0], p2[1]);
+      ctx.stroke();
+    });
+
+    // Midpoints of edges
+    ctx.fillStyle = danger;
+    edges.forEach(function(e){
+      var mx = (e[0][0]+e[1][0])/2;
+      var my = (e[0][1]+e[1][1])/2;
+      var mz = (e[0][2]+e[1][2])/2;
+      var p = proj(mx,my,mz);
+      ctx.beginPath();
+      ctx.arc(p[0], p[1], 4.5, 0, 2*Math.PI);
+      ctx.fill();
+    });
+
+    // Center O
+    var O = proj(0,0,0);
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(O[0], O[1], 6, 0, 2*Math.PI);
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Highlight one particular edge midpoint (front-top edge) with a line from O
+    var M = proj(1, 0, 1); // midpoint of top-right edge (from (1,-1,1) to (1,1,1))
+    ctx.strokeStyle = highlight;
+    ctx.setLineDash([6,5]);
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(O[0], O[1]);
+    ctx.lineTo(M[0], M[1]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Dot at M again, bigger
+    ctx.fillStyle = highlight;
+    ctx.beginPath();
+    ctx.arc(M[0], M[1], 6, 0, 2*Math.PI);
+    ctx.fill();
+
+    // Labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('O', O[0] + 10, O[1] + 4);
+    ctx.fillText('M', M[0] + 10, M[1] - 4);
+
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('r = OM', (O[0]+M[0])/2 + 6, (O[1]+M[1])/2 - 8);
+
+    // Legend
+    var lx = 20, ly = H - 75;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Legenda:', lx, ly);
+    ctx.font = '13px Segoe UI, system-ui, sans-serif';
+    // Primary: cube edges
+    ctx.strokeStyle = primary; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(lx, ly+16); ctx.lineTo(lx+28, ly+16); ctx.stroke();
+    ctx.fillText('ivice kocke (a)', lx + 38, ly + 20);
+    // Secondary: sphere
+    ctx.strokeStyle = secondary; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(lx + 14, ly + 38, 10, 0, 2*Math.PI); ctx.stroke();
+    ctx.fillText('sfera kroz sredine ivica', lx + 38, ly + 42);
+    // Danger: midpoints
+    ctx.fillStyle = danger;
+    ctx.beginPath(); ctx.arc(lx + 14, ly + 60, 4.5, 0, 2*Math.PI); ctx.fill();
+    ctx.fillStyle = text;
+    ctx.fillText('sredine 12 ivica (tačke dodira)', lx + 38, ly + 64);
+  }
+
+  draw();
+  window.addEventListener('message', function(e){
+    if(e.data && e.data.type === 'matoteka-theme'){
+      setTimeout(function(){ styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function(){
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(n){ return styles.getPropertyValue(n).trim(); }
+  function cvAlpha(name, alpha){
+    var c = cv(name);
+    if(c.startsWith('#') && c.length === 7){
+      var r = parseInt(c.slice(1,3),16), g = parseInt(c.slice(3,5),16), b = parseInt(c.slice(5,7),16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram2');
+  if(!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  function draw(){
+    styles = getComputedStyle(root);
+    var bg = cv('--sol-canvas-bg');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0,0,W,H);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Pravougli trougao OO\'M u kocki', W/2, 30);
+
+    // 3D-style sketch:
+    // Show center O at center, O' on one face, M on an edge.
+    // Simplified: right triangle OO'M with two legs a/2 and a/2.
+
+    // Draw triangle on left side
+    var legPx = 180;
+    var Ox = 150, Oy = H/2 + 40;
+    var OPx = Ox, OPy = Oy - legPx;          // O' directly above O (legs perpendicular)
+    var Mx = Ox + legPx, My = OPy;            // M to the right of O'
+
+    // fill
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.12);
+    ctx.beginPath();
+    ctx.moveTo(Ox, Oy);
+    ctx.lineTo(OPx, OPy);
+    ctx.lineTo(Mx, My);
+    ctx.closePath();
+    ctx.fill();
+
+    // Legs
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(Ox, Oy);
+    ctx.lineTo(OPx, OPy);
+    ctx.lineTo(Mx, My);
+    ctx.stroke();
+
+    // Hypotenuse OM (the radius)
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 3;
+    ctx.setLineDash([7,5]);
+    ctx.beginPath();
+    ctx.moveTo(Ox, Oy);
+    ctx.lineTo(Mx, My);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Right-angle marker at O'
+    var sq = 14;
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(OPx, OPy + sq);
+    ctx.lineTo(OPx + sq, OPy + sq);
+    ctx.lineTo(OPx + sq, OPy);
+    ctx.stroke();
+
+    // Vertex dots
+    ctx.fillStyle = accent;
+    ctx.beginPath(); ctx.arc(Ox, Oy, 6, 0, 2*Math.PI); ctx.fill();
+    ctx.fillStyle = secondary;
+    ctx.beginPath(); ctx.arc(OPx, OPy, 6, 0, 2*Math.PI); ctx.fill();
+    ctx.fillStyle = danger;
+    ctx.beginPath(); ctx.arc(Mx, My, 6, 0, 2*Math.PI); ctx.fill();
+
+    // Labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 18px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('O', Ox - 12, Oy + 6);
+    ctx.textAlign = 'right';
+    ctx.fillText("O'", OPx - 12, OPy);
+    ctx.textAlign = 'left';
+    ctx.fillText('M', Mx + 12, My + 6);
+
+    // Leg labels
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('a/2', Ox - 12, (Oy + OPy)/2);
+    ctx.textAlign = 'center';
+    ctx.fillText('a/2', (OPx + Mx)/2, OPy - 14);
+    // Hypotenuse r
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('r = OM', (Ox + Mx)/2 - 30, (Oy + My)/2 + 30);
+
+    // Explanation panel on the right
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    var infoX = 420, infoY = 90;
+    ctx.fillText('Tri ključne tačke:', infoX, infoY);
+    ctx.font = '14px Segoe UI, system-ui, sans-serif';
+    ctx.fillText("• O — centar kocke", infoX, infoY + 28);
+    ctx.fillText("• O' — centar jedne strane", infoX, infoY + 50);
+    ctx.fillText("• M — sredina ivice na toj strani", infoX, infoY + 72);
+
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('Katete:', infoX, infoY + 108);
+    ctx.font = '14px Segoe UI, system-ui, sans-serif';
+    ctx.fillText("OO' = a/2  (od centra do strane)", infoX, infoY + 134);
+    ctx.fillText("O'M = a/2  (od centra strane do ivice)", infoX, infoY + 156);
+
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('Pitagora:', infoX, infoY + 198);
+    ctx.fillText('r² = (a/2)² + (a/2)² = a²/2', infoX, infoY + 222);
+    ctx.fillText('r = a√2 / 2', infoX, infoY + 246);
+  }
+
+  draw();
+  window.addEventListener('message', function(e){
+    if(e.data && e.data.type === 'matoteka-theme'){
+      setTimeout(function(){ styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function(){
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(n){ return styles.getPropertyValue(n).trim(); }
+  function cvAlpha(name, alpha){
+    var c = cv(name);
+    if(c.startsWith('#') && c.length === 7){
+      var r = parseInt(c.slice(1,3),16), g = parseInt(c.slice(3,5),16), b = parseInt(c.slice(5,7),16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram3');
+  if(!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  function draw(){
+    styles = getComputedStyle(root);
+    var bg = cv('--sol-canvas-bg');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0,0,W,H);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 17px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Tri sfere u kocki ivice a', W/2, 28);
+
+    // Draw 3 mini-diagrams side by side: upisana, po ivicama, opisana
+    var cols = 3;
+    var cw = W / cols;
+    var drawOne = function(colIdx, title, rFrac, color, desc, formula){
+      var cx = cw * colIdx + cw/2;
+      var cy = H/2 + 30;
+      var half = 86; // half-edge
+
+      // Square (cube face on) - simplified 2D projection
+      // Draw cube as front-view square
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 2.5;
+      ctx.strokeRect(cx - half, cy - half, 2*half, 2*half);
+      // depth offset cube
+      var dx = 32, dy = -22;
+      ctx.strokeRect(cx - half + dx, cy - half + dy, 2*half, 2*half);
+      ctx.beginPath();
+      ctx.moveTo(cx - half, cy - half); ctx.lineTo(cx - half + dx, cy - half + dy);
+      ctx.moveTo(cx + half, cy - half); ctx.lineTo(cx + half + dx, cy - half + dy);
+      ctx.moveTo(cx + half, cy + half); ctx.lineTo(cx + half + dx, cy + half + dy);
+      ctx.moveTo(cx - half, cy + half); ctx.lineTo(cx - half + dx, cy + half + dy);
+      ctx.stroke();
+
+      // Sphere (ellipse) inside
+      var rPx = half * rFrac;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2.5;
+      ctx.fillStyle = cvAlpha(color.startsWith('var') ? color : '--sol-canvas-accent', 0.15);
+      ctx.beginPath();
+      ctx.ellipse(cx + dx/2, cy + dy/2, rPx, rPx*0.6, 0, 0, 2*Math.PI);
+      ctx.stroke();
+
+      // Title
+      ctx.fillStyle = text;
+      ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(title, cx, 58);
+
+      // Formula
+      ctx.fillStyle = color;
+      ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+      ctx.fillText(formula, cx, H - 52);
+      ctx.fillStyle = muted;
+      ctx.font = '13px Segoe UI, system-ui, sans-serif';
+      ctx.fillText(desc, cx, H - 30);
+    };
+
+    drawOne(0, 'Upisana sfera',          1.0,        cv('--sol-canvas-accent'),    'dodiruje strane', 'r = a/2');
+    drawOne(1, 'Sfera kroz sredine ivica', Math.sqrt(2), cv('--sol-canvas-highlight'), 'dodiruje ivice',   'r = a√2 / 2');
+    drawOne(2, 'Opisana sfera',           Math.sqrt(3), cv('--sol-canvas-secondary'), 'prolazi kroz temena','r = a√3 / 2');
+
+    // Star the middle one (our answer)
+    ctx.strokeStyle = cv('--sol-canvas-highlight');
+    ctx.lineWidth = 3;
+    ctx.setLineDash([8,5]);
+    ctx.strokeRect(cw*1 + 10, 70, cw - 20, H - 95);
+    ctx.setLineDash([]);
+    ctx.fillStyle = cv('--sol-canvas-highlight');
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('← tražena sfera', cw*1 + cw/2, 82);
+  }
+
+  draw();
+  window.addEventListener('message', function(e){
+    if(e.data && e.data.type === 'matoteka-theme'){
+      setTimeout(function(){ styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Poluprečnik sfere koja dodiruje svih dvanaest ivica kocke",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["kocka", "sfera", "stereometrija", "Pitagorina teorema", "dijagonala strane", "simetrija"]
+}
+BRAINSPARK_META-->

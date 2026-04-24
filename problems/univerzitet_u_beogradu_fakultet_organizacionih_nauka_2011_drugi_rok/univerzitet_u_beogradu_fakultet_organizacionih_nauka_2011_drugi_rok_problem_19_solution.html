@@ -1,0 +1,482 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Koliko ima petocifrenih brojeva koji imaju tačno dve različite cifre?
+
+Okvir:
+- Petocifreni broj je iz skupa {10000, 10001, ..., 99999}.
+- Prva cifra ne sme biti 0.
+- Moramo upotrebiti TAČNO DVE različite cifre (ne jednu, ne tri i više).
+
+Glavna podela (slučaj razlikovanja da li je 0 među odabranim ciframa):
+
+SLUČAJ A: jedna od dve cifre je 0.
+- Druga cifra mora biti nenulta (inače ne bismo imali dve različite cifre): 9 izbora (1, 2, ..., 9).
+- Petocifreni broj koristi samo {d, 0}, gde je d ≠ 0, i MORA sadržati i d i 0 (inače je to samo jedna cifra).
+- Vodeća cifra mora biti d (ne sme biti 0). Dakle prva pozicija je fiksirana na d.
+- Preostale 4 pozicije: svaka može biti d ili 0 — ukupno 2^4 = 16 stringova. Ali stringovi u kojima je svih 4 preostalih jednako d daju broj ddddd — samo jedna različita cifra, ne ispunjava uslov. Zato izbacimo tu jednu: 16 - 1 = 15 valjanih.
+- (Slučaj „sve 4 pozicije su 0" nije problem — imamo d0000 što ima i d i 0, pa je valjan.)
+- Ukupno za slučaj A: 9 · 15 = 135.
+
+SLUČAJ B: obe cifre su nenulte.
+- Izaberemo par različitih cifara iz {1, 2, ..., 9}: C(9, 2) = 36 parova.
+- Petocifreni broj koristi samo te dve cifre i MORA sadržati obe.
+- Broj svih stringova dužine 5 nad dvoslovnim alfabetom je 2^5 = 32. Od toga treba izbaciti dva konstantna stringa (svih pet jedne od cifara) — ostaje 32 - 2 = 30.
+- Vodeća cifra je automatski dopuštena jer su obe cifre nenulte — nema dodatnog ograničenja.
+- Ukupno za slučaj B: 36 · 30 = 1080.
+
+UKUPNO: 135 + 1080 = 1215.
+
+Odgovor: (A) 1215.
+
+Alternativna provera (inkluzija–ekskluzija na broju „različitih cifara najviše k"):
+- Broj petocifrenih brojeva koji koriste cifre samo iz odabranog podskupa S od dve cifre (vodeći se pravilom da prva cifra nije 0) ima različit izraz za S koji sadrži 0 i za S koji ga ne sadrži.
+  - Ako je S = {0, d}, broj stringova je 1 · 2^4 = 16 (prva pozicija fiksirana na d).
+  - Ako je S ⊆ {1..9}, broj je 2^5 = 32.
+- Broj petocifrenih sa TAČNO dve različite cifre = (zbir po parovima S) svih 5-stringova nad S koji sadrže OBE cifre.
+- Po istoj podeli: 9 · (16 - 1) + C(9,2) · (32 - 2) = 9 · 15 + 36 · 30 = 135 + 1080 = 1215. ✓
+
+Zabluda oko distraktora:
+- (B) C(10,2) · 2^5 = 45 · 32 = 1440: bira dve cifre iz {0..9} (uključujući slučaj 0) i uzima SVIH 32 stringova, ne vodi računa da prva cifra ne sme biti 0 i ne isključuje konstantne stringove.
+- (D) 1296 = 6^4: ne potiče iz razumne varijante problema.
+- (C) 9 · 2^4 = 144 i (E) C(5,2) · 2^3 = 80 su čista distraktori (premali).
+
+Vizualno: statičan dijagram sa dva paketa — „0 je jedna od cifara" (9 × 15) i „obe su nenulte" (C(9,2) × 30), sa ukupno 1215. Dodatni statični prikaz: primeri po svakom slučaju.
+</script>
+
+<h1 data-card="problem-title">Petocifreni brojevi sa tačno dve različite cifre</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika — prebrojavanje po slučajevima, izbor cifara i raspoređivanje</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Različitih petocifrenih brojeva koji imaju tačno dve različite cifre ima:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 1215 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \binom{10}{2} \cdot 2^5 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 9 \cdot 2^4 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 1296 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \binom{5}{2} \cdot 2^3 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Broj ima pet cifara, a od cifara 0–9 treba odabrati tačno dve koje se u njemu pojavljuju. Ključno ograničenje je da prva (vodeća) cifra ne sme biti 0. Zato ćemo razdvojiti dva slučaja: <strong>(A)</strong> jedna od odabranih cifara je 0 i <strong>(B)</strong> obe su nenulte. U svakom slučaju prebrojimo koliko ima petocifrenih brojeva koji koriste tačno te dve cifre (a obe se zaista pojavljuju barem jedanput), pa rezultate saberemo.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Brojanje po slučajevima i ukloni-konstantno pravilo</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Pravilo zbira</span> Ako se skup brojeva razbije na disjunktne slučajeve, ukupno se dobija zbir brojeva iz svakog slučaja.</li>
+        <li><span class="formula-label">Broj stringova dužine \(n\) nad alfabetom \(a\) slova</span> iznosi \( a^n \) — svaka pozicija nezavisno.</li>
+        <li><span class="formula-label">Broj stringova dužine \(n\) nad alfabetom od 2 slova \( \{x, y\} \) koji sadrže OBA slova</span> iznosi \( 2^n - 2 \) (oduzimamo stringove „samo \(x\)" i „samo \(y\)").</li>
+        <li><span class="formula-label">Izbor para</span> Broj neuređenih parova iz skupa sa \(m\) elemenata je \( \binom{m}{2} = \dfrac{m(m-1)}{2} \).</li>
+        <li><span class="formula-label">Vodeća cifra</span> U zapisu petocifrenog broja prva cifra mora biti iz \(\{1, 2, \ldots, 9\}\), dok na ostalim pozicijama može biti bilo koja iz \(\{0, 1, \ldots, 9\}\).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Dva slučaja — stablo prebrojavanja</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram19" width="780" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Ukupan broj petocifrenih brojeva sa tačno dve različite cifre deli se na dva paketa: levo je slučaj kad je jedna od cifara 0 (9 izbora nenulte cifre, 15 valjanih rasporeda svakog puta, ukupno 135), a desno je slučaj kad su obe cifre nenulte (\( \binom{9}{2} = 36 \) parova, po 30 rasporeda, ukupno 1080). Zbir paketa je 135 + 1080 = <strong>1215</strong>, što se poklapa sa odgovorom (A).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Razumemo uslov zadatka</h3>
+      <p>Tražimo cele brojeve \( N \) za koje važi:</p>
+      <ul>
+        <li>\( 10000 \le N \le 99999 \) — \( N \) je petocifren (prva cifra nije 0),</li>
+        <li>kada ispišemo pet cifara od \( N \), pojavljuju se <strong>tačno dve</strong> različite (ne jedna, ne tri i više).</li>
+      </ul>
+      <p>Na primer, \( 13133 \) je valjan (cifre \( 1 \) i \( 3 \)), \( 22222 \) nije valjan (samo jedna cifra), \( 12345 \) nije (pet različitih), \( 01001 \) nije petocifren jer počinje nulom.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto razdvajamo slučajeve po tome da li je 0 među ciframa?</summary>
+          <div class="detail-content"><p>Zato što jedina „zabrana" na vodećem mestu glasi „nije 0". Ako par odabranih cifara ne sadrži 0, nijedna od pet pozicija nema dodatno ograničenje, pa je prebrojavanje jednostavno. Ako par sadrži 0, tada prva pozicija mora biti druga (nenulta) cifra — to menja račun i zato je prirodno razdvojiti.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj A: jedna od cifara je 0</h3>
+      <p>Neka su odabrane cifre \( \{0, d\} \), gde \( d \in \{1, 2, \ldots, 9\} \). Broj izbora za \( d \): \( 9 \).</p>
+      <p>Petocifreni broj koristi samo cifre \( 0 \) i \( d \), pri čemu:</p>
+      <ul>
+        <li>prva (leva) cifra <strong>mora</strong> biti \( d \) (ne može biti \( 0 \));</li>
+        <li>preostalih 4 pozicija: svaka je nezavisno \( d \) ili \( 0 \), što daje \( 2^4 = 16 \) različitih rasporeda.</li>
+      </ul>
+      <p>Među tih 16 rasporeda postoji tačno jedan kod kojeg su sve 4 preostale pozicije takođe \( d \): to je broj \( \underbrace{ddddd}_{\text{samo jedna cifra}} \), koji ima SAMO jednu različitu cifru i ne ispunjava uslov. Izbacujemo ga:</p>
+      <div class="math-block">\[ 2^4 - 1 = 16 - 1 = 15 \text{ valjanih rasporeda po izboru } d. \]</div>
+      <p>Ukupno za slučaj A:</p>
+      <div class="math-block">\[ N_A = 9 \cdot 15 = 135. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: da li razmak „sve 4 preostale su 0" treba izbaciti?</summary>
+          <div class="detail-content"><p><strong>Ne.</strong> U tom slučaju broj je \( d0000 \): prva cifra je \( d \) (dozvoljeno, \( d \neq 0 \)), i sadrži obe cifre — i \( d \) i \( 0 \). Na primer \( 10000 \) ima tačno dve različite cifre (\( 1 \) i \( 0 \)), pa je valjan. Izbacili smo samo \( ddddd \), jer tamo nema \( 0 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj B: obe cifre su nenulte</h3>
+      <p>Biramo neuređen par \( \{a, b\} \subseteq \{1, 2, \ldots, 9\} \), \( a \neq b \). Broj parova:</p>
+      <div class="math-block">\[ \binom{9}{2} = \frac{9 \cdot 8}{2} = 36. \]</div>
+      <p>Petocifreni broj koristi samo \( a \) i \( b \) — svaka od 5 pozicija je nezavisno \( a \) ili \( b \), što daje \( 2^5 = 32 \) rasporeda. Od toga isključujemo dva konstantna: \( aaaaa \) i \( bbbbb \) (sadrže samo jednu različitu cifru):</p>
+      <div class="math-block">\[ 2^5 - 2 = 32 - 2 = 30 \text{ valjanih rasporeda po paru.} \]</div>
+      <p>Vodeća cifra je \( a \) ili \( b \) — oba su nenulta, pa nema dodatnog ograničenja.</p>
+      <p>Ukupno za slučaj B:</p>
+      <div class="math-block">\[ N_B = 36 \cdot 30 = 1080. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš \( 2^5 - 2 \), a ne \( 2^5 \)?</summary>
+          <div class="detail-content"><p>Jer tražimo brojeve koji imaju <strong>tačno</strong> dve različite cifre. Ako uzmemo svih 32 rasporeda nad \( \{a, b\} \), upašće i \( aaaaa \) i \( bbbbb \) koji imaju samo jednu cifru. Njih dva izbacujemo, pa ostaje 30.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Saberemo slučajeve</h3>
+      <p>Slučajevi A i B su disjunktni (u jednom je 0 među ciframa, u drugom nije), pa ukupan broj dobijamo zbirom:</p>
+      <div class="math-block">\[ N = N_A + N_B = 135 + 1080 = 1215. \]</div>
+      <p><span class="result">Ukupno: \( 1215 \) petocifrenih brojeva sa tačno dve različite cifre.</span></p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: konkretni primeri u svakom slučaju</summary>
+          <div class="detail-content">
+            <p>Slučaj A, \( d = 1 \): \( 10001, 11011, 10101, \ldots, 11110 \) — svi sadrže \( 1 \) i \( 0 \), i prva cifra je \( 1 \).</p>
+            <p>Slučaj B, \( \{2, 7\} \): \( 22227, 22277, 27272, 77772, \ldots \) — svih 30 kombinacija počinje sa \( 2 \) ili \( 7 \), obe cifre su u broju.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Kontrolni prikaz formule</h3>
+      <p>Rešenje se može kompaktno zapisati kao</p>
+      <div class="math-block">\[ N = 9 \cdot (2^4 - 1) + \binom{9}{2}\bigl(2^5 - 2\bigr) = 9 \cdot 15 + 36 \cdot 30 = 135 + 1080 = 1215. \]</div>
+      <p>Svaki od brojeva ima „kombinatornu priču": \( 9 \) (izbor nenulte partnerske cifre sa nulom), \( 2^4 - 1 \) (rasporedi preostale 4 pozicije bez konstantnog rasporeda), \( \binom{9}{2} \) (izbor para nenultih cifara), \( 2^5 - 2 \) (rasporedi 5 pozicija bez dva konstantna).</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Trik u ovakvim „tačno dve različite cifre" problemima je da izbor para cifara i raspored na pozicijama razdvojimo, a zatim OD svih rasporeda oduzmemo one koji se sastoje od samo jedne cifre (konstantne stringove). Takođe, nulu treba tretirati posebno jer ne sme biti vodeća — zato čitav račun delimo na „sa nulom" (9 · 15) i „bez nule" (\( \binom{9}{2} \cdot 30 \)).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ N = 9 \cdot (2^4 - 1) + \binom{9}{2}(2^5 - 2) = 135 + 1080 = 1215 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 1215 \)</span>
+    <span class="answer-option" data-option="B">(B) \( \binom{10}{2} \cdot 2^5 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 9 \cdot 2^4 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 1296 \)</span>
+    <span class="answer-option" data-option="E">(E) \( \binom{5}{2} \cdot 2^3 \)</span>
+  </div>
+  <p class="verification">Provera: \( N_A = 9 \cdot 15 = 135 \) (brojevi oblika sa ciframa \( \{d, 0\} \)), \( N_B = 36 \cdot 30 = 1080 \) (sa obe nenulte). Zbir: \( 1215 \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Uzimanje \( \binom{10}{2} \cdot 2^5 \) — ne samo što brojaju i konstantne stringove (jedna cifra), već puštaju nulu kao vodeću i duplo broje parove sa nulom. To daje distraktor (B) \( 45 \cdot 32 = 1440 \), veće od ispravnih \( 1215 \).</li>
+    <li>Prebrojavanje \( 9 \cdot 2^4 = 144 \) — pretpostavka da je prva cifra uvek nenulta (9 izbora), pa preostale 4 „bilo koja od dve". Ovde fali: izbor druge (partnerske) cifre, isključivanje konstantnih, i razlikovanje da li partnerska cifra jeste 0.</li>
+    <li>Zaborav da se iz slučaja „obe nenulte" isključe DVA konstantna stringa (\( aaaaa \) i \( bbbbb \)), a ne jedan.</li>
+    <li>U slučaju sa 0 oduzeti oba konstantna stringa \( \bigl(ddddd \text{ i } 00000\bigr) \) — ali \( 00000 \) i tako nije među 16 stringova kod kojih je prva pozicija fiksirana na \( d \), pa je izbacivanje samo \( ddddd \).</li>
+    <li>Tumačiti „dve cifre" kao „tačno dve <em>pojave</em>" (npr. tražiti brojeve u kojima se tačno dve pozicije razlikuju) umesto „dve različite <em>vrednosti</em>". Zadatak traži drugo.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koliko ima petocifrenih brojeva koji imaju tačno <strong>tri</strong> različite cifre?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Razdvoji ponovo dva slučaja: (A) 0 je jedna od tri cifre, (B) sve tri su nenulte.</p>
+      <p>Broj stringova dužine 5 nad alfabetom od 3 slova koji koriste <strong>sve tri</strong> cifre je (uključenje–isključenje): \( 3^5 - 3 \cdot 2^5 + 3 \cdot 1^5 = 243 - 96 + 3 = 150 \).</p>
+      <p><strong>Slučaj A</strong> ({0, a, b}): izaberi par nenultih \( \binom{9}{2} = 36 \). Potrebno je prebrojati 5-stringove nad tri cifre u kojima se koriste SVE tri i prva cifra nije 0. Direktnom inkluzijom i isključenjem dobija se \( 150 - 2 \cdot 30 = 90 \) (\( 150 \) svih sa sve tri cifre, pa izbacimo one sa 0 na prvom mestu — njih \( 2 \cdot 30 = 60 \)). Ukupno: \( 36 \cdot 90 = 3240 \).</p>
+      <p><strong>Slučaj B</strong> ({a, b, c}, sve nenulte): \( \binom{9}{3} = 84 \) trojki, i u svakoj \( 150 \) rasporeda. Ukupno: \( 84 \cdot 150 = 12600 \).</p>
+      <p>Zbir: \( 3240 + 12600 = 15840 \).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram19');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function drawBox(x, y, w, h, fillColor, strokeColor, text1, text2, text3, text4) {
+    ctx.fillStyle = fillColor;
+    ctx.fillRect(x, y, w, h);
+    ctx.strokeStyle = strokeColor;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x, y, w, h);
+    if (text1) {
+      ctx.fillStyle = strokeColor;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(text1, x + w / 2, y + 22);
+    }
+    if (text2) {
+      ctx.fillStyle = cv('--sol-canvas-text');
+      ctx.font = '13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(text2, x + w / 2, y + 44);
+    }
+    if (text3) {
+      ctx.fillStyle = cv('--sol-canvas-muted');
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(text3, x + w / 2, y + 64);
+    }
+    if (text4) {
+      ctx.fillStyle = strokeColor;
+      ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(text4, x + w / 2, y + h - 14);
+    }
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Petocifreni brojevi sa tačno dve različite cifre', W / 2, 28);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('Podela po tome da li je 0 među odabranim ciframa', W / 2, 48);
+
+    // Root box
+    var rootX = W / 2 - 130;
+    var rootY = 70;
+    var rootW = 260;
+    var rootH = 60;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.18);
+    ctx.fillRect(rootX, rootY, rootW, rootH);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(rootX, rootY, rootW, rootH);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('UKUPNO N', W / 2, rootY + 22);
+    ctx.fillStyle = text;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillText('= (slučaj A) + (slučaj B)', W / 2, rootY + 44);
+
+    // Branches
+    var branchY = rootY + rootH;
+    var leftX = 120, rightX = W - 120 - 260;
+    var boxY = 180;
+
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath();
+    ctx.moveTo(W / 2, branchY);
+    ctx.lineTo(leftX + 130, boxY);
+    ctx.moveTo(W / 2, branchY);
+    ctx.lineTo(rightX + 130, boxY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Left branch — case A (0 is one of the digits)
+    drawBox(leftX, boxY, 260, 110,
+      cvAlpha('--sol-canvas-primary', 0.18), primary,
+      'SLUČAJ A',
+      'jedna cifra je 0, druga je d ∈ {1,…,9}',
+      '9 izbora za d · 15 rasporeda',
+      '9 · 15 = 135'
+    );
+
+    // Right branch — case B (both nonzero)
+    drawBox(rightX, boxY, 260, 110,
+      cvAlpha('--sol-canvas-warning', 0.18), warning,
+      'SLUČAJ B',
+      'obe cifre nenulte, {a,b} ⊆ {1,…,9}',
+      'C(9,2) parova · 30 rasporeda',
+      '36 · 30 = 1080'
+    );
+
+    // Detail under left: "15 rasporeda"
+    var detailY = boxY + 130;
+    var detLX = leftX + 10, detLW = 240;
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.08);
+    ctx.fillRect(detLX, detailY, detLW, 90);
+    ctx.strokeStyle = cvAlpha('--sol-canvas-primary', 0.6);
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(detLX, detailY, detLW, 90);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Prva cifra: d (fiksirana)', detLX + detLW / 2, detailY + 20);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('4 ostale pozicije: d ili 0', detLX + detLW / 2, detailY + 40);
+    ctx.fillText('2⁴ = 16 rasporeda', detLX + detLW / 2, detailY + 58);
+    ctx.fillStyle = cv('--sol-canvas-danger') || warning;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.fillText('− 1 (izbacujemo „ddddd")', detLX + detLW / 2, detailY + 78);
+
+    // Detail under right: "30 rasporeda"
+    var detRX = rightX + 10, detRW = 240;
+    ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.08);
+    ctx.fillRect(detRX, detailY, detRW, 90);
+    ctx.strokeStyle = cvAlpha('--sol-canvas-warning', 0.6);
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(detRX, detailY, detRW, 90);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Sve 5 pozicija: a ili b', detRX + detRW / 2, detailY + 20);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('(nema dodatnog ograničenja', detRX + detRW / 2, detailY + 40);
+    ctx.fillText('jer su a,b ≠ 0)', detRX + detRW / 2, detailY + 56);
+    ctx.fillText('2⁵ = 32 rasporeda', detRX + detRW / 2, detailY + 72);
+    ctx.fillStyle = cv('--sol-canvas-danger') || warning;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.fillText('− 2 (izbacujemo „aaaaa", „bbbbb")', detRX + detRW / 2, detailY + 88);
+
+    // Examples row under left
+    var exY = detailY + 110;
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Primer (d=1): 10001, 11011, 10101, 11110…', detLX + detLW / 2, exY);
+
+    // Examples row under right
+    ctx.fillText('Primer ({2,7}): 22272, 27272, 77227, 27777…', detRX + detRW / 2, exY);
+
+    // Summation box at bottom
+    var sumY = exY + 30;
+    var sumX = W / 2 - 180;
+    var sumW = 360;
+    var sumH = 80;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.22);
+    ctx.fillRect(sumX, sumY, sumW, sumH);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(sumX, sumY, sumW, sumH);
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('135 + 1080 = 1215', W / 2, sumY + 28);
+    ctx.fillStyle = text;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillText('ukupan broj petocifrenih sa tačno dve različite cifre', W / 2, sumY + 52);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('Odgovor: (A) 1215', W / 2, sumY + 70);
+
+    // Arrows from case boxes to sum
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath();
+    ctx.moveTo(leftX + 130, detailY + 100);
+    ctx.lineTo(W / 2 - 60, sumY);
+    ctx.moveTo(rightX + 130, detailY + 100);
+    ctx.lineTo(W / 2 + 60, sumY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Petocifreni brojevi sa tačno dve različite cifre",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["prebrojavanje po slučajevima", "izbor cifara", "pravilo zbira", "kombinacije", "stringovi nad alfabetom"]
+}
+BRAINSPARK_META-->

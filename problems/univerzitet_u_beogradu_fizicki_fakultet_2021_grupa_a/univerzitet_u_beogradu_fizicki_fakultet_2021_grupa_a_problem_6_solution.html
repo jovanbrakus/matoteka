@@ -1,0 +1,549 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Vrednost izraza  (√2 + √4 + √8 + √16) · (1 − 2^(−1/2)).
+  Opcije:
+   (A) 3
+   (B) √3
+   (C) 8
+   (D) √8
+  Tačan: (A) 3.
+
+  Rešenje — elegantan put preko grupisanja i razlike kvadrata.
+
+  Prepoznaj stepene broja 2:
+   √2  = 2^(1/2)
+   √4  = 2
+   √8  = √(4·2) = 2√2 = 2^(3/2)
+   √16 = 4
+
+  Sabirak: S = √2 + 2 + 2√2 + 4.
+  Grupisanje (1. i 3.) i (2. i 4.):
+   S = (√2 + 2√2) + (2 + 4) = 3√2 + 6 = 3(√2 + 2) = 3(2 + √2).
+
+  Alternativno faktorisanje (kao u zadatku 2020 sa stepenima 3):
+   S = √2(1 + 2) + 2(1 + 2) = (√2 + 2)(1 + 2) = 3(√2 + 2).
+  Ista stvar, lepše.
+
+  Drugi faktor: 1 − 2^(−1/2) = 1 − 1/√2 = (√2 − 1)/√2.
+
+  Proizvod:
+   P = 3(2 + √2) · (√2 − 1)/√2
+     = 3 · √2 · (√2 + 1) · (√2 − 1) / √2          ← jer 2 + √2 = √2(√2 + 1)
+     = 3 · (√2 + 1)(√2 − 1)
+     = 3 · (2 − 1)        ← razlika kvadrata (√2)² − 1² = 2 − 1 = 1
+     = 3 · 1 = 3.
+
+  Provera (brute force, alternativno):
+   S = 6 + 3√2.
+   B = 1 − 1/√2 = (√2 − 1)/√2.
+   P = (6 + 3√2) · (√2 − 1)/√2
+     = [6√2 − 6 + 3·2 − 3√2] / √2
+     = [6√2 − 3√2 + 6 − 6] / √2
+     = 3√2 / √2 = 3.   ✓
+
+  Odgovor: (A) 3.
+
+  Plan:
+   1. Pojednostaviti svaki kvadratni koren preko stepena broja 2.
+   2. Grupisati i faktorisati zbir: S = 3(√2 + 2).
+   3. Drugi faktor zapisati kao razlomak: 1 − 1/√2 = (√2 − 1)/√2.
+   4. Iskoristiti razliku kvadrata: (√2 + 1)(√2 − 1) = 1.
+   5. Skratiti i dobiti 3.
+
+  Visual:
+   - Geometrijski „area model": pravougaonik (√2 + 2) × (1 + 2), podeljen na 4 dela koji
+     odgovaraju četirima sabircima √2, 2, 2√2, 4 — vizuelno objašnjava faktorizaciju.
+   - Jednostavan računarski tok („derivation flow") sa svakim korakom kao kutijom — od ulaza
+     (√2 + √4 + √8 + √16)·(1 − 2^(−1/2)) do izlaza 3.
+
+  Česte greške:
+   - √16 = 8 (pogrešno — to je √64). √16 = 4 jer je 4² = 16.
+   - √8 = 4 (pogrešno — to je √16). √8 = 2√2 ≈ 2.83.
+   - 2^(−1/2) = √2 (pogrešno — minus u eksponentu znači inverz). 2^(−1/2) = 1/√2.
+   - 1 − 1/√2 negativno: učenici ponekad zaborave da je 1 > 1/√2 ≈ 0.707.
+   - Pokušaj brutalnog množenja bez grupisanja: dugotrajno i podložno greškama.
+   - Brkanje √2 sa 2 (gubljenje radikala) — daje pogrešne odgovore.
+   - Opcija (D) √8 ≈ 2.83 — možda nastaje kad se zbir ostavi neredukovan ili se napravi greška
+     u jednom od korenovanja.
+   - Opcija (C) 8: verovatno greška tipa √16 = 8.
+   - Opcija (B) √3 — verovatno slučajna zamena ili preklapanje sa zadatkom iz prethodne godine
+     (ETF ili Fizički, gde je tema bila slična ali sa brojem 3).
+</script>
+
+<h1 data-card="problem-title">Proizvod sa korenima stepena broja dva</h1>
+<p data-card="problem-subtitle" class="subtitle">Realni brojevi &mdash; stepeni broja dva, faktorizacija, razlika kvadrata</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>Tekst zadatka</h2>
+  <p>Vrednost izraza \( \displaystyle \left(\sqrt{2}+\sqrt{4}+\sqrt{8}+\sqrt{16}\right)\cdot\left(1 - 2^{-\tfrac{1}{2}}\right) \) je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \sqrt{3} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 8 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \sqrt{8} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>Plan rešavanja</h2>
+  <p class="plan-text">Svi korenovani brojevi (\( 2, 4, 8, 16 \)) su stepeni broja \( 2 \), pa ih svodimo na izraze sa \( \sqrt{2} \) i celim brojevima. Zbir grupisanjem faktorišemo u \( (\sqrt{2}+2)(1+2) = 3(2+\sqrt{2}) \). Drugi činilac \( 1 - 2^{-1/2} \) racionalizujemo u \( (\sqrt{2}-1)/\sqrt{2} \). Konačno, primenom razlike kvadrata \( (\sqrt{2}+1)(\sqrt{2}-1) = 1 \) sve se elegantno skrati na \( 3 \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>Podsetnik iz teorije</h2>
+  <details>
+    <summary>Korisni identiteti</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Koren kao stepen:</strong> \( \sqrt{x} = x^{1/2} \). Posebno \( \sqrt{2^k} = 2^{k/2} \).</li>
+        <li><strong>Brzi pregled:</strong> \( \sqrt{2}=2^{1/2} \), \( \sqrt{4}=2 \), \( \sqrt{8}=2\sqrt{2}=2^{3/2} \), \( \sqrt{16}=4=2^2 \).</li>
+        <li><strong>Negativan eksponent:</strong> \( 2^{-1/2} = \dfrac{1}{2^{1/2}} = \dfrac{1}{\sqrt{2}} \). Pažnja: \( 2^{-1/2} \neq 2^{1/2} \)!</li>
+        <li><strong>Racionalizacija razlomka:</strong> \( 1 - \dfrac{1}{\sqrt{2}} = \dfrac{\sqrt{2}-1}{\sqrt{2}} \). (Zajednički imenilac \( \sqrt{2} \).)</li>
+        <li><strong>Razlika kvadrata:</strong> \( (a-b)(a+b) = a^2 - b^2 \). Posebno: \( (\sqrt{2}-1)(\sqrt{2}+1) = (\sqrt{2})^2 - 1^2 = 2 - 1 = 1 \).</li>
+        <li><strong>Grupisanje parova:</strong> \( ax + ay + bx + by = a(x+y) + b(x+y) = (a+b)(x+y) \).</li>
+        <li><strong>Izvlačenje faktora iz korena:</strong> \( \sqrt{8} = \sqrt{4\cdot 2} = \sqrt{4}\cdot\sqrt{2} = 2\sqrt{2} \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Geometrijski model faktorizacije sume">
+  <h2>Geometrijski model faktorizacije sume</h2>
+  <div class="canvas-wrapper">
+    <canvas id="area-model" width="720" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Pravougaonik dimenzija \( (\sqrt{2}+2)\times(1+2) \) podeljen je na četiri manja pravougaonika čije su površine upravo četiri sabirka iz zadatka: \( \sqrt{2}\cdot 1, \;2\cdot 1, \;\sqrt{2}\cdot 2, \;2\cdot 2 \). Suma njihovih površina je upravo \( S = \sqrt{2}+2+2\sqrt{2}+4 \), a istovremeno proizvod ivica je \( (\sqrt{2}+2)(1+2)=3(\sqrt{2}+2) \). Dva načina &mdash; jedna ista stvar.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Pojednostavi sve korene</h3>
+      <p>Sva četiri broja pod korenima (\( 2, 4, 8, 16 \)) su stepeni dvojke. Svodimo ih na izraze sa \( \sqrt{2} \) i celim brojevima:</p>
+      <div class="math-block">\[ \sqrt{2} = \sqrt{2}, \qquad \sqrt{4} = 2, \qquad \sqrt{8} = \sqrt{4\cdot 2} = 2\sqrt{2}, \qquad \sqrt{16} = 4. \]</div>
+      <p>Zbir u prvoj zagradi postaje:</p>
+      <div class="math-block">\[ S \;=\; \sqrt{2} + 2 + 2\sqrt{2} + 4. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Provera: \( \sqrt{8} = 2\sqrt{2} \)?</summary>
+          <div class="detail-content"><p>Da: \( (2\sqrt{2})^2 = 4\cdot 2 = 8 \). Pošto je \( 2\sqrt{2}>0 \), zaista \( \sqrt{8}=2\sqrt{2} \). Numerički: \( 2\sqrt{2} \approx 2{,}83 \), i \( 2{,}83^2 \approx 8 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Faktoriši zbir grupisanjem</h3>
+      <p>U sumi \( S = \sqrt{2} + 2 + 2\sqrt{2} + 4 \) izdvajamo \( \sqrt{2} \) iz prvog i trećeg sabirka, a \( 2 \) iz drugog i četvrtog:</p>
+      <div class="math-block">\[ S \;=\; \sqrt{2}\cdot 1 + 2\cdot 1 + \sqrt{2}\cdot 2 + 2\cdot 2 \;=\; \sqrt{2}\,(1 + 2) + 2\,(1 + 2). \]</div>
+      <p>Sada se vidi zajednički činilac \( (1 + 2) = 3 \):</p>
+      <div class="math-block">\[ S \;=\; (\sqrt{2} + 2)\cdot 3 \;=\; 3\,(\sqrt{2} + 2). \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Brza provera: \( 3(\sqrt{2}+2) = ? \)</summary>
+          <div class="detail-content"><p>\( 3\sqrt{2} + 6 \). Naša suma: \( \sqrt{2} + 2\sqrt{2} = 3\sqrt{2} \) i \( 2 + 4 = 6 \), pa zaista \( S = 3\sqrt{2} + 6 = 3(\sqrt{2}+2) \). Slaže se.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Sredi drugi činilac</h3>
+      <p>Negativan eksponent znači inverz:</p>
+      <div class="math-block">\[ 2^{-1/2} \;=\; \dfrac{1}{2^{1/2}} \;=\; \dfrac{1}{\sqrt{2}}. \]</div>
+      <p>Drugi činilac postaje:</p>
+      <div class="math-block">\[ 1 - 2^{-1/2} \;=\; 1 - \dfrac{1}{\sqrt{2}} \;=\; \dfrac{\sqrt{2}}{\sqrt{2}} - \dfrac{1}{\sqrt{2}} \;=\; \dfrac{\sqrt{2} - 1}{\sqrt{2}}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Da li je ovaj broj pozitivan?</summary>
+          <div class="detail-content"><p>Jeste &mdash; \( \sqrt{2} \approx 1{,}414 > 1 \), pa je \( \sqrt{2} - 1 \approx 0{,}414 > 0 \) i ceo razlomak je pozitivan: \( \approx 0{,}293 \). Drugim rečima, \( 1 - 1/\sqrt{2} \approx 1 - 0{,}707 = 0{,}293 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Pomnoži dve faktorisane forme</h3>
+      <p>Spajamo:</p>
+      <div class="math-block">\[ P \;=\; 3\,(\sqrt{2} + 2)\cdot\dfrac{\sqrt{2} - 1}{\sqrt{2}}. \]</div>
+      <p>Ključni trik: izvuci \( \sqrt{2} \) iz \( \sqrt{2} + 2 \). Pošto je \( 2 = \sqrt{2}\cdot\sqrt{2} \):</p>
+      <div class="math-block">\[ \sqrt{2} + 2 \;=\; \sqrt{2} + \sqrt{2}\cdot\sqrt{2} \;=\; \sqrt{2}\,(1 + \sqrt{2}) \;=\; \sqrt{2}\,(\sqrt{2} + 1). \]</div>
+      <p>Zamenimo:</p>
+      <div class="math-block">\[ P \;=\; 3\cdot\sqrt{2}\,(\sqrt{2} + 1)\cdot\dfrac{\sqrt{2} - 1}{\sqrt{2}} \;=\; 3\,(\sqrt{2} + 1)(\sqrt{2} - 1). \]</div>
+      <p>Faktor \( \sqrt{2} \) u brojiocu i imeniocu se skraćuje. Ostaje proizvod oblika razlike kvadrata:</p>
+      <div class="math-block">\[ (\sqrt{2} + 1)(\sqrt{2} - 1) \;=\; (\sqrt{2})^2 - 1^2 \;=\; 2 - 1 \;=\; 1. \]</div>
+      <p>Konačno:</p>
+      <div class="math-block">\[ P \;=\; 3\cdot 1 \;=\; 3. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Provera direktnim množenjem (bez „lukavog" faktorisanja)</summary>
+          <div class="detail-content"><p>\( S = 6 + 3\sqrt{2} \), \( B = (\sqrt{2}-1)/\sqrt{2} \). Tada \( P = (6+3\sqrt{2})(\sqrt{2}-1)/\sqrt{2} = (6\sqrt{2} - 6 + 3\cdot 2 - 3\sqrt{2})/\sqrt{2} = (3\sqrt{2})/\sqrt{2} = 3 \). Iste 3.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="visual-aid" data-title="Tok računa korak po korak">
+  <h2>Tok računa korak po korak</h2>
+  <div class="canvas-wrapper">
+    <canvas id="flow-canvas" width="720" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Vizuelni dijagram koji prati transformaciju izraza od početne forme \( (\sqrt{2}+\sqrt{4}+\sqrt{8}+\sqrt{16})(1-2^{-1/2}) \) do konačne vrednosti \( 3 \). Svaki korak primenjuje jedno pravilo: pojednostavljivanje, faktorisanje, racionalizacija, razlika kvadrata. Iracionalni brojevi se elegantno poništavaju &mdash; rezultat je čist ceo broj.</p>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>Ključni uvid</h2>
+  <p>Brutalno množenje vodi kroz mnogo koraka i lako stvori grešku. <strong>Elegantno rešenje koristi dva trika</strong>: (1) <em>grupisanje</em> sume \( S \) u oblik \( (\sqrt{2}+2)(1+2) \) &mdash; što je već 3 puta neki izraz; (2) <em>razlika kvadrata</em> \( (\sqrt{2}+1)(\sqrt{2}-1) = 1 \), koja čisti sve iracionalne članove. Kada vidiš \( \sqrt{x} \) u kombinaciji sa stepenima, traži struktura razlike kvadrata &mdash; to je signal da je rezultat čist ceo broj. Iracionalni \( \sqrt{2} \) se pojavljuje u svakom međukoraku, ali u finalu nestaje.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \left(\sqrt{2}+\sqrt{4}+\sqrt{8}+\sqrt{16}\right)\cdot\left(1 - 2^{-1/2}\right) \;=\; 3 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 3 \)</span>
+    <span class="answer-option" data-option="B">(B) \( \sqrt{3} \)</span>
+    <span class="answer-option" data-option="C">(C) \( 8 \)</span>
+    <span class="answer-option" data-option="D">(D) \( \sqrt{8} \)</span>
+  </div>
+  <p class="verification">Numerička provera: \( S \approx 1{,}414 + 2 + 2{,}828 + 4 = 10{,}243 \). Drugi činilac: \( 1 - 1/\sqrt{2} \approx 1 - 0{,}707 = 0{,}293 \). Proizvod: \( 10{,}243 \times 0{,}293 \approx 3{,}001 \). Saglasno sa egzaktnom vrednošću \( 3 \) (mala razlika je zbog zaokruživanja).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pisati \( \sqrt{16} = 8 \). Greška: \( 8 = \sqrt{64} \), a \( \sqrt{16} = 4 \), jer \( 4^2 = 16 \). Ova greška verovatno vodi na opciju (C) \( 8 \).</li>
+    <li>Pisati \( \sqrt{8} = 4 \). Greška: \( 4 = \sqrt{16} \), a \( \sqrt{8} = 2\sqrt{2} \approx 2{,}83 \).</li>
+    <li>Tumačiti \( 2^{-1/2} \) kao \( 2^{1/2} = \sqrt{2} \) (zaboraviti znak u eksponentu). Pravilo: \( 2^{-1/2} = 1/\sqrt{2} \), inverz, ne sam koren.</li>
+    <li>Pokušati direktno množenje bez grupisanja: \( (\sqrt{2}+2+2\sqrt{2}+4)(1-1/\sqrt{2}) \) razvijeno daje 8 članova sa puno aritmetike. Mnogo je lakše prvo faktorisati zbir.</li>
+    <li>Zaboraviti da je \( \sqrt{2}+2 = \sqrt{2}(1+\sqrt{2}) \) (izvlačenje \( \sqrt{2} \)). Bez ovog koraka razlika kvadrata se ne vidi neposredno.</li>
+    <li>Greška u racionalizaciji: pisati \( 1 - 1/\sqrt{2} = (1-\sqrt{2})/\sqrt{2} \) (suprotan znak u brojiocu). Tada je rezultat negativan, što odmah upućuje na grešku jer su oba početna činioca pozitivna.</li>
+    <li>Birati opciju (D) \( \sqrt{8} \): možda nastaje kad se zbir ostavi neuredan i pomeša pri kraju. Ne odgovara nijednoj smislenoj algebarskoj transformaciji.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>Dodatni izazov</h2>
+  <p>Generalizuj zadatak: za prirodan broj \( n \), izračunaj proizvod \( \displaystyle\Bigl(\sum_{k=1}^{n} \sqrt{2^k}\Bigr)\cdot\bigl(1 - 2^{-1/2}\bigr) \). Da li uvek dobijaš lep izraz? Pokušaj za \( n = 4 \) (naš zadatak), \( n = 6 \), i \( n = 8 \).</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Suma \( \sum_{k=1}^n \sqrt{2^k} = \sum_{k=1}^n 2^{k/2} \) je geometrijska sa razlogom \( \sqrt{2} \): \( T_n = \sqrt{2}\,\dfrac{(\sqrt{2})^n - 1}{\sqrt{2} - 1} \). Pomnoženo sa \( 1 - 1/\sqrt{2} = (\sqrt{2}-1)/\sqrt{2} \), činilac \( (\sqrt{2}-1) \) se skraćuje sa imeniocem geometrijskog zbira: \( P_n = \dfrac{\sqrt{2}\,((\sqrt{2})^n - 1)}{\sqrt{2}} = (\sqrt{2})^n - 1 = 2^{n/2} - 1 \). Za \( n=4 \): \( 2^2 - 1 = 3 \) (naš odgovor!). Za \( n=6 \): \( 2^3 - 1 = 7 \). Za \( n=8 \): \( 2^4 - 1 = 15 \). Lepa formula \( P_n = 2^{n/2} - 1 \) za parno \( n \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('area-model');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Pravougaonik (√2 + 2) × (1 + 2): četiri površine = četiri sabirka', W / 2, 28);
+
+    // Layout: a big rectangle in the middle of the canvas.
+    // Width pieces (horizontal): √2 ≈ 1.414, 2.  Total = √2 + 2 ≈ 3.414.
+    // Height pieces (vertical): 1, 2.  Total = 3.
+    // Use scale ~ 100 px per unit, then offset to center.
+    var sqrt2 = Math.SQRT2;
+    var unit = 100;
+    var totalW = (sqrt2 + 2) * unit;
+    var totalH = (1 + 2) * unit;
+    var ox = (W - totalW) / 2;
+    var oy = 80;
+
+    // Width segments
+    var w1 = sqrt2 * unit;   // first segment width = √2
+    var w2 = 2 * unit;       // second segment width = 2
+    // Height segments
+    var h1 = 1 * unit;       // first segment height = 1
+    var h2 = 2 * unit;       // second segment height = 2
+
+    // Cell positions (top-left corners) and dimensions
+    // Top row (height h1 = 1):  area cells of heights 1
+    //   Top-left: width √2 × height 1 → area √2
+    //   Top-right: width 2 × height 1 → area 2
+    // Bottom row (height h2 = 2):  area cells of heights 2
+    //   Bottom-left: width √2 × height 2 → area 2√2
+    //   Bottom-right: width 2 × height 2 → area 4
+
+    var cells = [
+      { x: ox,       y: oy,       w: w1, h: h1, area: '√2',  color: primary,   label: '√2 · 1 = √2' },
+      { x: ox + w1,  y: oy,       w: w2, h: h1, area: '2',   color: secondary, label: '2 · 1 = 2' },
+      { x: ox,       y: oy + h1,  w: w1, h: h2, area: '2√2', color: accent,    label: '√2 · 2 = 2√2' },
+      { x: ox + w1,  y: oy + h1,  w: w2, h: h2, area: '4',   color: highlight, label: '2 · 2 = 4' }
+    ];
+
+    var fillVars = ['--sol-canvas-primary', '--sol-canvas-secondary', '--sol-canvas-accent', '--sol-canvas-highlight'];
+    for (var i = 0; i < cells.length; i++) {
+      var c = cells[i];
+      ctx.fillStyle = cvAlpha(fillVars[i], 0.20);
+      ctx.fillRect(c.x, c.y, c.w, c.h);
+      ctx.strokeStyle = c.color;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(c.x, c.y, c.w, c.h);
+
+      // Label inside the cell
+      ctx.fillStyle = text;
+      ctx.font = 'bold 14px Segoe UI, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(c.label, c.x + c.w / 2, c.y + c.h / 2);
+    }
+
+    // Outer rectangle (bold)
+    ctx.strokeStyle = text;
+    ctx.lineWidth = 3;
+    ctx.strokeRect(ox, oy, totalW, totalH);
+
+    // Width labels (top)
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 14px Segoe UI, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('√2', ox + w1 / 2, oy - 8);
+    ctx.fillStyle = secondary;
+    ctx.fillText('2', ox + w1 + w2 / 2, oy - 8);
+
+    // Brace at top: total = √2 + 2
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(ox, oy - 26);
+    ctx.lineTo(ox + totalW, oy - 26);
+    ctx.stroke();
+    // Tick marks
+    ctx.beginPath(); ctx.moveTo(ox, oy - 26); ctx.lineTo(ox, oy - 32); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(ox + totalW, oy - 26); ctx.lineTo(ox + totalW, oy - 32); ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.font = 'italic 13px Segoe UI, sans-serif';
+    ctx.fillText('širina = √2 + 2', ox + totalW / 2, oy - 36);
+
+    // Height labels (left)
+    ctx.font = 'bold 14px Segoe UI, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = primary;
+    ctx.fillText('1', ox - 12, oy + h1 / 2);
+    ctx.fillStyle = accent;
+    ctx.fillText('2', ox - 12, oy + h1 + h2 / 2);
+
+    // Brace at left: total = 1 + 2
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(ox - 32, oy);
+    ctx.lineTo(ox - 32, oy + totalH);
+    ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(ox - 32, oy); ctx.lineTo(ox - 38, oy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(ox - 32, oy + totalH); ctx.lineTo(ox - 38, oy + totalH); ctx.stroke();
+    ctx.save();
+    ctx.translate(ox - 48, oy + totalH / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillStyle = text;
+    ctx.font = 'italic 13px Segoe UI, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('visina = 1 + 2 = 3', 0, 0);
+    ctx.restore();
+
+    // Bottom note: sum of areas = product of sides
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Segoe UI, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText('S = √2 + 2 + 2√2 + 4   =   (√2 + 2)·(1 + 2)   =   3·(√2 + 2)', W / 2, oy + totalH + 36);
+    ctx.font = '13px Segoe UI, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Suma četiri površine je ista kao proizvod ukupne širine i visine.', W / 2, oy + totalH + 60);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('flow-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Tok računa: od izraza do broja 3', W / 2, 28);
+
+    // Boxes representing each step
+    var steps = [
+      { y: 60,  text: '(√2 + √4 + √8 + √16) · (1 − 2⁻¹⸍²)',  note: 'početni izraz',                 color: muted },
+      { y: 130, text: '(√2 + 2 + 2√2 + 4) · (1 − 1/√2)',     note: 'pojednostavi korene',           color: primary },
+      { y: 200, text: '3·(√2 + 2) · (√2 − 1)/√2',            note: 'faktoriši S i racionalizuj',    color: secondary },
+      { y: 270, text: '3·√2·(√2 + 1) · (√2 − 1)/√2',         note: 'izvuci √2 iz (√2 + 2)',         color: accent },
+      { y: 340, text: '3·(√2 + 1)·(√2 − 1)',                 note: 'skrati √2',                     color: highlight },
+      { y: 410, text: '3 · (2 − 1) = 3 · 1 = 3',             note: 'razlika kvadrata: (√2)² − 1 = 1', color: text }
+    ];
+
+    var boxX = 60;
+    var boxW = W - 120;
+    var boxH = 50;
+
+    for (var i = 0; i < steps.length; i++) {
+      var s = steps[i];
+      // Box
+      ctx.fillStyle = cvAlpha('--sol-canvas-text', 0.04);
+      ctx.fillRect(boxX, s.y, boxW, boxH);
+      ctx.strokeStyle = s.color;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(boxX, s.y, boxW, boxH);
+
+      // Step number badge
+      ctx.fillStyle = s.color;
+      ctx.beginPath();
+      ctx.arc(boxX + 22, s.y + boxH / 2, 14, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = bg;
+      ctx.font = 'bold 14px Segoe UI, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(String(i + 1), boxX + 22, s.y + boxH / 2);
+
+      // Expression text
+      ctx.fillStyle = text;
+      ctx.font = 'bold 14px Segoe UI, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(s.text, boxX + 50, s.y + 18);
+
+      // Note text
+      ctx.fillStyle = muted;
+      ctx.font = '12px Segoe UI, sans-serif';
+      ctx.fillText(s.note, boxX + 50, s.y + 38);
+
+      // Down arrow between consecutive boxes (except after the last)
+      if (i < steps.length - 1) {
+        var ax = boxX + boxW / 2;
+        var ay1 = s.y + boxH + 2;
+        var ay2 = steps[i + 1].y - 2;
+        ctx.strokeStyle = muted;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(ax, ay1);
+        ctx.lineTo(ax, ay2);
+        ctx.stroke();
+        // Arrow head
+        ctx.fillStyle = muted;
+        ctx.beginPath();
+        ctx.moveTo(ax, ay2);
+        ctx.lineTo(ax - 5, ay2 - 6);
+        ctx.lineTo(ax + 5, ay2 - 6);
+        ctx.closePath();
+        ctx.fill();
+      }
+    }
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{"format":"v2","title":"Proizvod izraza sa korenima stepena dva","subject":"math","unit":"algebra","topic_tags":["realni_brojevi","koren","stepeni","razlika_kvadrata","faktorizacija"]}
+BRAINSPARK_META-->

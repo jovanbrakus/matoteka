@@ -1,0 +1,554 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+PROBLEM:
+Two circles k1(O1, r1) and k2(O2, r2) with |O1O2| = r1 + r2. Count common tangents.
+
+KEY FACT: The number of common tangents depends on mutual position of circles.
+  - d > r1 + r2  (circles are disjoint, external) : 4 (2 external + 2 internal)
+  - d = r1 + r2  (externally tangent)             : 3 (2 external + 1 common at tangent point)
+  - |r1 - r2| < d < r1 + r2 (intersecting)        : 2 external
+  - d = |r1 - r2|  (internally tangent)           : 1 (common at tangent point)
+  - d < |r1 - r2|  (one inside the other)         : 0
+
+Here d = r1 + r2, so circles touch externally — there are 3 common tangents.
+Two external tangents (do not separate circles, tangent "from outside") and one internal tangent
+which passes through the point of tangency T on segment O1O2 and is perpendicular to O1O2 there.
+
+ANSWER: (C) 3.
+</script>
+
+<h1 data-card="problem-title">Broj zajedničkih tangenti dveju kružnica</h1>
+<p data-card="problem-subtitle" class="subtitle">Geometrija &mdash; kružnice, tangente, spoljašnji dodir</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>Tekst zadatka</h2>
+  <p>
+    Ako za dve kružnice \( k_1(O_1, r_1) \) i \( k_2(O_2, r_2) \) važi
+    \( \overline{O_1O_2} = r_1 + r_2 \), onda je broj njihovih zajedničkih tangenti:
+  </p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 4 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>Plan rešavanja</h2>
+  <p class="plan-text">
+    Iz uslova \( \overline{O_1O_2} = r_1 + r_2 \) zaključimo da se kružnice <em>spolja dodiruju</em>.
+    Zatim pobrojimo koliko zajedničkih tangenti tada postoji &mdash; dve spoljašnje i jedna u zajedničkoj tački.
+  </p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>Podsetnik iz teorije</h2>
+  <details>
+    <summary>Uzajamni položaj dve kružnice</summary>
+    <div class="detail-content">
+      <p>Neka je \( d = \overline{O_1O_2} \). Tada:</p>
+      <ul>
+        <li>\( d > r_1 + r_2 \): kružnice su <em>razdvojene</em> &mdash; 4 zajedničke tangente (dve spoljašnje, dve unutrašnje).</li>
+        <li>\( d = r_1 + r_2 \): kružnice se <em>spolja dodiruju</em> &mdash; 3 tangente (dve spoljašnje i zajednička tangenta u tački dodira).</li>
+        <li>\( |r_1 - r_2| < d < r_1 + r_2 \): kružnice se <em>seku</em> u dve tačke &mdash; 2 spoljašnje tangente.</li>
+        <li>\( d = |r_1 - r_2| \): kružnice se <em>iznutra dodiruju</em> &mdash; 1 zajednička tangenta (u tački dodira).</li>
+        <li>\( d < |r_1 - r_2| \): jedna kružnica je <em>unutar</em> druge &mdash; 0 zajedničkih tangenti.</li>
+      </ul>
+      <p>
+        <strong>Zašto baš 3 u slučaju spoljašnjeg dodira?</strong>
+        Kad god su dve kružnice razdvojene, postoje 4 tangente.
+        Dve <em>unutrašnje</em> tangente se u trenutku dodira poklope u jednoj zajedničkoj tangenti
+        koja prolazi tačkom dodira i okomita je na liniju centara. Spoljašnje ostaju dve.
+      </p>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>Vizuelni prikaz</h2>
+  <p class="canvas-caption">
+    Dve kružnice koje se spolja dodiruju u tački \( T \). Plava i zelena prava su spoljašnje tangente,
+    crvena (kroz \( T \), okomita na \( O_1O_2 \)) je treća zajednička tangenta.
+  </p>
+  <div class="canvas-wrapper">
+    <canvas id="tangentsCanvas" width="900" height="650"></canvas>
+  </div>
+  <p class="canvas-caption">Ukupno 3 zajedničke tangente: \( t_1, t_2 \) spoljašnje i \( t_3 \) u tački dodira.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Prepoznavanje položaja kružnica</h3>
+      <p>
+        Uslov \( \overline{O_1O_2} = r_1 + r_2 \) znači da je rastojanje centara tačno jednako zbiru poluprečnika.
+        Ako bismo pošli iz centra \( O_1 \) i išli \( r_1 \) ka \( O_2 \), stigli bismo do tačke \( T \) koja je na oba kruga:
+      </p>
+      <div class="math-block">
+        \[ \overline{O_1 T} = r_1, \qquad \overline{O_2 T} = d - r_1 = r_2. \]
+      </div>
+      <p>Dakle, \( T \) je jedinstvena zajednička tačka &mdash; kružnice se <em>spolja dodiruju</em>.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: može li postojati još jedna zajednička tačka?</summary>
+          <div class="detail-content">
+            <p>
+              Ne. Tačka zajednička za obe kružnice mora biti na odsečku \( O_1O_2 \) jer
+              \( \overline{O_1 X} + \overline{X O_2} \geq \overline{O_1 O_2} = r_1 + r_2 \),
+              a jednakost važi samo ako \( X \) leži na duži \( O_1O_2 \). Takva tačka je jedna &mdash; to je \( T \).
+            </p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Zajednička tangenta u tački dodira</h3>
+      <p>
+        Prava \( t_3 \) koja prolazi kroz \( T \) i okomita je na \( O_1O_2 \) je tangenta obe kružnice:
+        na \( k_1 \) jer je okomita na \( O_1 T \) u tački \( T \),
+        a na \( k_2 \) jer je okomita na \( O_2 T \) (ta prava je ista kao \( O_1 T \) jer \( T \) leži na \( O_1 O_2 \)).
+        Dakle, \( t_3 \) je <strong>jedna</strong> zajednička tangenta.
+      </p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Spoljašnje tangente</h3>
+      <p>
+        Kada dve kružnice leže jedna izvan druge (a to jeste slučaj kod spoljašnjeg dodira, sem same tačke \( T \)),
+        uvek postoje <strong>dve</strong> spoljašnje tangente &mdash; prave koje dodiruju obe kružnice,
+        a obe kružnice se nalaze s iste strane svake od tih pravih.
+      </p>
+      <p>
+        Ako su \( r_1 \neq r_2 \), te se tangente sreću u spoljašnjem homotetijskom centru (preseku).
+        Ako je \( r_1 = r_2 \), one su paralelne sa \( O_1O_2 \). U oba slučaja ih je dve.
+      </p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto nema dodatnih unutrašnjih tangenti?</summary>
+          <div class="detail-content">
+            <p>
+              Unutrašnje tangente (kod potpuno razdvojenih kružnica) razdvajaju kružnice &mdash;
+              to su one koje prolaze između njih i dodiruju obe kružnice sa suprotnih strana.
+              Kad se kružnice dodirnu, ove dve tangente se „sabiju“ u jednu &mdash; tangentu u tački dodira.
+            </p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Sabiranje</h3>
+      <p>Ukupno imamo \( 2 + 1 = 3 \) zajedničke tangente:</p>
+      <ul>
+        <li>\( t_1, t_2 \) &mdash; dve spoljašnje tangente,</li>
+        <li>\( t_3 \) &mdash; zajednička tangenta u tački dodira \( T \), okomita na \( O_1O_2 \).</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>Ključni uvid</h2>
+  <p>
+    Broj zajedničkih tangenti dve kružnice je u potpunosti određen odnosom rastojanja centara \( d \)
+    prema \( r_1 + r_2 \) i \( |r_1 - r_2| \). Slučaj spoljašnjeg dodira (\( d = r_1 + r_2 \))
+    je granični &mdash; iz 4 tangente gubimo jednu kad se dve unutrašnje tangente sliju u jednu
+    u trenutku kad se kružnice dotaknu.
+  </p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \text{Broj zajedničkih tangenti} = 3 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) 1</span>
+    <span class="answer-option" data-option="B">(B) 2</span>
+    <span class="answer-option correct" data-option="C">(C) 3</span>
+    <span class="answer-option" data-option="D">(D) 4</span>
+  </div>
+  <p class="verification">
+    Za \( \overline{O_1O_2} = r_1 + r_2 \) kružnice se spolja dodiruju; imamo 2 spoljašnje tangente plus 1 tangentu u tački dodira &mdash; ukupno 3.
+  </p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>
+      <strong>Brkanje sa slučajem razdvojenih kružnica:</strong>
+      Ako je \( d > r_1 + r_2 \), tangenti ima 4 (ne 3). Znak jednakosti je presudan &mdash; on „spaja“ dve unutrašnje tangente u jednu.
+    </li>
+    <li>
+      <strong>Brkanje sa unutrašnjim dodirom:</strong>
+      \( d = |r_1 - r_2| \) je unutrašnji dodir (jedna kružnica „iznutra dodiruje“ drugu) &mdash; tada postoji samo 1 zajednička tangenta.
+      Uslov iz zadatka je \( d = r_1 + r_2 \), što je spoljašnji dodir.
+    </li>
+    <li>
+      <strong>Zaboravljanje tangente u tački dodira:</strong>
+      Broj spoljašnjih tangenti je 2. Ako ne dodate tangentu kroz \( T \), dobijate (B) 2 &mdash; pogrešno za slučaj dodira.
+    </li>
+    <li>
+      <strong>Mali \( r_1 = r_2 \) slučaj:</strong>
+      Kada su poluprečnici jednaki, spoljašnje tangente su paralelne, ali ih je i dalje dve &mdash; ukupan broj je isti.
+    </li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>Dodatni izazov</h2>
+  <p>
+    Neka je \( r_1 = 3 \), \( r_2 = 5 \). Za koje vrednosti rastojanja \( d = \overline{O_1O_2} \) imamo tačno
+    2 zajedničke tangente? A za koje 4? Nacrtajte tabelicu svih pet slučajeva.
+  </p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <ul>
+        <li>2 tangente &hArr; kružnice se seku u dve tačke &hArr; \( |r_1 - r_2| < d < r_1 + r_2 \) tj. \( 2 < d < 8 \).</li>
+        <li>4 tangente &hArr; kružnice su razdvojene &hArr; \( d > 8 \).</li>
+        <li>3 tangente &hArr; \( d = 8 \). 1 tangenta &hArr; \( d = 2 \). 0 tangenti &hArr; \( d < 2 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<script>
+(function(){
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(n){ return styles.getPropertyValue(n).trim(); }
+
+  var canvas = document.getElementById('tangentsCanvas');
+  if(!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  function draw(){
+    styles = getComputedStyle(root);
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+    var tertiary = cv('--sol-canvas-tertiary');
+
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0,0,W,H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Dve kružnice u spoljašnjem dodiru — 3 zajedničke tangente', W/2, 30);
+
+    // Circle configuration: choose r1, r2, positions
+    var r1 = 110;
+    var r2 = 65;
+    // Place O1 and O2 so segment is horizontal
+    var cy = H/2 + 10;
+    // total width spacing: need r1 + r2 between centers plus margin for tangents
+    var totalSpan = r1 + r2;
+    var cx1 = W/2 - (r2); // O1 position
+    var cy1 = cy;
+    var cx2 = cx1 + totalSpan; // so that |O1O2| = r1 + r2
+    var cy2 = cy;
+
+    // Tangent point T = O1 + r1 in direction of O2
+    var Tx = cx1 + r1;
+    var Ty = cy;
+
+    // Draw the external tangent lines.
+    // For two circles (r1, r2), external tangent lines make angle alpha with line of centers where
+    //   sin(alpha) = (r1 - r2) / d  (d = r1 + r2 here)
+    // The tangent touches circle 1 at point P1 = O1 + r1 * (sin alpha, -cos alpha) etc.
+    // Simplify: let's compute directly.
+    var d = r1 + r2; // = |O1O2|
+    var sinA = (r1 - r2) / d;
+    var cosA = Math.sqrt(1 - sinA * sinA);
+
+    // Two external tangents: one above, one below.
+    // For upper tangent:
+    //   tangent point on circle 1: P1 = O1 + r1 * (-sinA, -cosA)   -> (note canvas y is flipped)
+    //   tangent point on circle 2: P2 = O2 + r2 * (-sinA, -cosA)
+    // In canvas coords (y down), "up" means subtract. We construct tangent points carefully.
+
+    function tangentPoints(sign){
+      // sign = +1 for upper, -1 for lower
+      var nx = -sinA;
+      var ny = sign * cosA; // normal direction (pointing away from centers)
+      // Actually we want the point on circle where radius is perpendicular to tangent.
+      // In "math" coords (y up), a line above both circles touches them at
+      //   P1 = O1 + r1 * (-sin α, cos α)
+      //   P2 = O2 + r2 * (-sin α, cos α)
+      // In canvas (y down), "up" is -y, so we flip:
+      var off1x = r1 * nx;
+      var off1y = -r1 * ny; // flip
+      var off2x = r2 * nx;
+      var off2y = -r2 * ny;
+      return {
+        p1: {x: cx1 + off1x, y: cy1 + off1y},
+        p2: {x: cx2 + off2x, y: cy2 + off2y}
+      };
+    }
+
+    var up = tangentPoints(+1);
+    var dn = tangentPoints(-1);
+
+    // We will extend tangent lines a bit past P2 and before P1 for visual.
+    function extendLine(a, b, ext){
+      var dx = b.x - a.x, dy = b.y - a.y;
+      var L = Math.sqrt(dx*dx + dy*dy);
+      if(L < 0.001) return {a: a, b: b};
+      var ux = dx / L, uy = dy / L;
+      return {
+        a: {x: a.x - ux * ext, y: a.y - uy * ext},
+        b: {x: b.x + ux * ext, y: b.y + uy * ext}
+      };
+    }
+
+    // Draw circles first (behind tangents)
+    // Circle 1
+    ctx.fillStyle = primary + '18';
+    ctx.beginPath();
+    ctx.arc(cx1, cy1, r1, 0, 2*Math.PI);
+    ctx.fill();
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(cx1, cy1, r1, 0, 2*Math.PI);
+    ctx.stroke();
+
+    // Circle 2
+    ctx.fillStyle = highlight + '18';
+    ctx.beginPath();
+    ctx.arc(cx2, cy2, r2, 0, 2*Math.PI);
+    ctx.fill();
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(cx2, cy2, r2, 0, 2*Math.PI);
+    ctx.stroke();
+
+    // Tangent 1 (upper external)
+    var e1 = extendLine(up.p1, up.p2, 140);
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(e1.a.x, e1.a.y);
+    ctx.lineTo(e1.b.x, e1.b.y);
+    ctx.stroke();
+
+    // Tangent 2 (lower external)
+    var e2 = extendLine(dn.p1, dn.p2, 140);
+    ctx.strokeStyle = tertiary || accent;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(e2.a.x, e2.a.y);
+    ctx.lineTo(e2.b.x, e2.b.y);
+    ctx.stroke();
+
+    // Tangent 3: vertical line through T, length ~ 180 up and 180 down
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 2.5;
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(Tx, Ty - (r1 + 80));
+    ctx.lineTo(Tx, Ty + (r1 + 80));
+    ctx.stroke();
+
+    // Line of centers (dashed, muted)
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([6, 5]);
+    ctx.beginPath();
+    ctx.moveTo(cx1 - 20, cy1);
+    ctx.lineTo(cx2 + 20, cy2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Radii O1T and O2T (solid, highlight)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cx1, cy1);
+    ctx.lineTo(Tx, Ty);
+    ctx.stroke();
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cx2, cy2);
+    ctx.lineTo(Tx, Ty);
+    ctx.stroke();
+
+    // Centers
+    ctx.fillStyle = primary;
+    ctx.beginPath();
+    ctx.arc(cx1, cy1, 5, 0, 2*Math.PI);
+    ctx.fill();
+    ctx.fillStyle = highlight;
+    ctx.beginPath();
+    ctx.arc(cx2, cy2, 5, 0, 2*Math.PI);
+    ctx.fill();
+
+    // Tangent point T
+    ctx.fillStyle = danger;
+    ctx.beginPath();
+    ctx.arc(Tx, Ty, 6, 0, 2*Math.PI);
+    ctx.fill();
+
+    // Labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('O₁', cx1 - 8, cy1 + 5);
+    ctx.textAlign = 'left';
+    ctx.fillText('O₂', cx2 + 8, cy2 + 5);
+    ctx.textAlign = 'center';
+    ctx.fillText('T', Tx, Ty + 22);
+
+    // Radius labels
+    ctx.fillStyle = primary;
+    ctx.font = 'italic 13px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('r₁', (cx1 + Tx) / 2, cy1 - 8);
+    ctx.fillStyle = highlight;
+    ctx.fillText('r₂', (cx2 + Tx) / 2, cy2 - 8);
+
+    // Tangent labels t1, t2, t3
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('t₁ (spoljašnja)', e1.b.x + 6, e1.b.y + 4);
+    ctx.fillStyle = tertiary || accent;
+    ctx.fillText('t₂ (spoljašnja)', e2.b.x + 6, e2.b.y + 4);
+    ctx.fillStyle = danger;
+    ctx.textAlign = 'left';
+    ctx.fillText('t₃ (kroz T)', Tx + 10, Ty - (r1 + 60));
+
+    // Small right-angle marker at T on tangent t3 vs line of centers
+    var marker = 10;
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(Tx - marker, Ty);
+    ctx.lineTo(Tx - marker, Ty - marker);
+    ctx.lineTo(Tx, Ty - marker);
+    ctx.stroke();
+
+    // Info box (top-left)
+    ctx.fillStyle = accent + '22';
+    ctx.fillRect(20, 50, 270, 90);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(20, 50, 270, 90);
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Uslov:  |O₁O₂| = r₁ + r₂', 34, 72);
+    ctx.font = '12.5px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('→ kružnice se spolja dodiruju u T', 34, 94);
+    ctx.fillText('→ 2 spoljašnje tangente + 1 u T', 34, 114);
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = danger;
+    ctx.fillText('Ukupno: 3 tangente', 34, 134);
+
+    // Table of cases (bottom area)
+    var tx = 20;
+    var ty = H - 150;
+    var tw = W - 40;
+    var th = 120;
+    ctx.fillStyle = muted + '22';
+    ctx.fillRect(tx, ty, tw, th);
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.2;
+    ctx.strokeRect(tx, ty, tw, th);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Svi slučajevi (d = |O₁O₂|):', tx + 14, ty + 22);
+    ctx.font = '12.5px Segoe UI, system-ui, sans-serif';
+    var rows = [
+      'd > r₁ + r₂   — razdvojene kružnice — 4 tangente',
+      'd = r₁ + r₂   — SPOLJAŠNJI DODIR   — 3 tangente  ← naš slučaj',
+      '|r₁−r₂| < d < r₁+r₂ — presečene — 2 tangente',
+      'd = |r₁ − r₂| — unutrašnji dodir — 1 tangenta',
+      'd < |r₁ − r₂| — jedna unutar druge — 0 tangenti'
+    ];
+    for(var i = 0; i < rows.length; i++){
+      if(i === 1){ ctx.fillStyle = danger; ctx.font = 'bold 12.5px Segoe UI, system-ui, sans-serif'; }
+      else { ctx.fillStyle = text; ctx.font = '12.5px Segoe UI, system-ui, sans-serif'; }
+      ctx.fillText(rows[i], tx + 24, ty + 42 + i * 16);
+    }
+
+    // Legend
+    var legendY = H - 22;
+    var items = [
+      {color: primary, text: 'k₁(O₁, r₁)'},
+      {color: highlight, text: 'k₂(O₂, r₂)'},
+      {color: secondary, text: 't₁'},
+      {color: tertiary || accent, text: 't₂'},
+      {color: danger, text: 't₃ (kroz T)'}
+    ];
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    var lx = 40;
+    for(var j = 0; j < items.length; j++){
+      ctx.fillStyle = items[j].color;
+      ctx.beginPath();
+      ctx.arc(lx, legendY, 5, 0, 2*Math.PI);
+      ctx.fill();
+      ctx.fillStyle = text;
+      ctx.fillText(items[j].text, lx + 10, legendY + 4);
+      lx += ctx.measureText(items[j].text).width + 30;
+    }
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e){
+    if(e.data && e.data.type === 'matoteka-theme'){
+      setTimeout(function(){ styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{"format":"v2","title":"Broj zajedničkih tangenti dve kružnice u spoljašnjem dodiru","subject":"math","unit":"geometry","topic_tags":["kružnice","tangente","spoljašnji dodir","uzajamni položaj","planimetrija"]}
+BRAINSPARK_META-->

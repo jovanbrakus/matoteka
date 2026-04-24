@@ -1,0 +1,909 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: 4 jabuke {600, 400, 300, 250} g. Pera bira prvi, Nikola drugi. Jedu istom
+  brzinom (1 g/s). Sledeću jabuku može uzeti tek kad pojede prethodnu. Obojica
+  optimizuju sopstveno količinu. Koliko će pojesti Pera?
+
+  Rešavamo kao igru sa potpunom informacijom (Minimax / backward induction).
+
+  CASE A: Pera prvi uzima 600 (zauzet do t=600).
+    Nikola bira sa preostalih {400, 300, 250}:
+      A.1 — Nikola uzima 400 (zauzet do 400):
+        - Na t=400 Nikola bira sa {300, 250}, uzima veću = 300 (zauzet do 400+300=700).
+          Pera na t=600 bira sa {250} (preostala), uzima je (zauzet do 600+250=850).
+          Finalno: Pera = 600+250 = 850, Nikola = 400+300 = 700.
+      A.2 — Nikola uzima 300 (zauzet do 300):
+        - Na t=300 Nikola bira sa {400, 250}, uzima veću = 400 (zauzet do 300+400=700).
+          Pera na t=600 bira sa {250}, zauzet do 850.
+          Pera = 850, Nikola = 300+400 = 700.
+      A.3 — Nikola uzima 250 (zauzet do 250):
+        - Na t=250 Nikola bira sa {400, 300}, uzima veću = 400 (zauzet do 250+400=650).
+          Na t=600 Pera bira sa {300} (jer je Nikola uzeo 250 pa 400), zauzet do 900.
+          Pera = 600+300 = 900, Nikola = 250+400 = 650.
+        ALTERNATIVNO: Nikola na t=250 uzima 300 (pogrešno za njega, jer 400 veće) — ne razmatramo,
+        optimalan je veći.
+      Nikola porodi ovu podigru najveći prinos. U A.1 dobija 700, u A.2 dobija 700,
+      u A.3 dobija 650. Nikola neće birati A.3 (najgore). Bira A.1 ili A.2 → dobija 700.
+      Pera u oba slučaja (A.1/A.2) dobija 850.
+
+  CASE B: Pera prvi uzima 400 (zauzet do 400).
+    Nikola bira sa {600, 300, 250}:
+      B.1 — Nikola uzima 600 (zauzet do 600):
+        - Na t=400 Pera bira sa {300, 250}, uzima veću = 300 (zauzet do 400+300=700).
+          Na t=600 Nikola bira sa {250}, zauzet do 850.
+          Pera = 400+300 = 700, Nikola = 600+250 = 850.
+      B.2 — Nikola uzima 300 (zauzet do 300):
+        - Na t=300 Nikola bira sa {600, 250}, uzima veću = 600 (zauzet do 300+600=900).
+          Na t=400 Pera bira sa {250}, zauzet do 650.
+          Pera = 400+250 = 650, Nikola = 300+600 = 900.
+      B.3 — Nikola uzima 250 (zauzet do 250):
+        - Na t=250 Nikola bira sa {600, 300}, uzima veću = 600 (zauzet do 250+600=850).
+          Na t=400 Pera bira sa {300}, zauzet do 700.
+          Pera = 400+300 = 700, Nikola = 250+600 = 850.
+      Nikola dobija: B.1 = 850, B.2 = 900, B.3 = 850. Najviše je B.2 = 900. Nikola bira B.2.
+      Pera dobija 650 u tom slučaju.
+
+  CASE C: Pera prvi uzima 300 (zauzet do 300).
+    Nikola bira sa {600, 400, 250}:
+      C.1 — Nikola uzima 600 (zauzet do 600):
+        - Na t=300 Pera bira sa {400, 250}, uzima veću = 400 (zauzet do 300+400=700).
+          Na t=600 Nikola bira sa {250}, zauzet do 850.
+          Pera = 300+400 = 700, Nikola = 600+250 = 850.
+      C.2 — Nikola uzima 400 (zauzet do 400):
+        - Na t=300 Pera bira sa {600, 250}, uzima veću = 600 (zauzet do 300+600=900).
+          Na t=400 Nikola bira sa {250}, zauzet do 650.
+          Pera = 300+600 = 900, Nikola = 400+250 = 650.
+      C.3 — Nikola uzima 250 (zauzet do 250):
+        - Na t=250 Nikola bira sa {600, 400}, uzima veću = 600 (zauzet do 250+600=850).
+          Na t=300 Pera bira sa {400}, zauzet do 700.
+          Pera = 300+400 = 700, Nikola = 250+600 = 850.
+      Nikola dobija: C.1 = 850, C.2 = 650, C.3 = 850. Najviše je 850 (C.1 ili C.3).
+      U oba (C.1, C.3) Pera dobija 700.
+
+  CASE D: Pera prvi uzima 250 (zauzet do 250).
+    Nikola bira sa {600, 400, 300}:
+      D.1 — Nikola uzima 600 (zauzet do 600):
+        - Na t=250 Pera bira sa {400, 300}, uzima veću = 400 (zauzet do 250+400=650).
+          Na t=600 Nikola bira sa {300}, zauzet do 900.
+          Pera = 250+400 = 650, Nikola = 600+300 = 900.
+      D.2 — Nikola uzima 400 (zauzet do 400):
+        - Na t=250 Pera bira sa {600, 300}, uzima veću = 600 (zauzet do 250+600=850).
+          Na t=400 Nikola bira sa {300}, zauzet do 700.
+          Pera = 250+600 = 850, Nikola = 400+300 = 700.
+      D.3 — Nikola uzima 300 (zauzet do 300):
+        - Na t=250 Pera bira sa {600, 400}, uzima veću = 600 (zauzet do 250+600=850).
+          Na t=300 Nikola bira sa {400}, zauzet do 700.
+          Pera = 250+600 = 850, Nikola = 300+400 = 700.
+      Nikola dobija: D.1 = 900, D.2 = 700, D.3 = 700. Najviše je D.1 = 900. Nikola bira D.1.
+      Pera dobija 650.
+
+  Sumirano za Peru, kada Nikola optimalno odgovara:
+    Pera uzima 600  →  Pera = 850
+    Pera uzima 400  →  Pera = 650
+    Pera uzima 300  →  Pera = 700
+    Pera uzima 250  →  Pera = 650
+  Maksimum je 850 (kad Pera uzme najveću 600).
+
+  TAČAN ODGOVOR: (A) 850g.
+
+  KLJUČNA INTUICIJA: Pera treba da "zauzme se" što duže tako da Nikola ne može da "ukrade"
+  dve srednje jabuke dok Pera jede jednu malu. Uzimajući 600, Pera je zauzet 600s, dovoljno
+  da Nikola (kreće od 0) uzme dve od {400, 300, 250}: npr. 400+300=700 (ili 400+250=650
+  ali onda Pera uzima dve: 300+? — treba proveriti), ali ne tri. Nikola u svakom slučaju
+  uzima maksimalno 700, a Pera 850.
+
+  VAŽNA FINESA: u grani A.3 (Pera 600, Nikola 250), Nikola gubi (650), što je Nikoli LOŠE,
+  pa on to NEĆE odabrati. Optimalni Nikola odabere ili 400 ili 300 (daje mu 700). U oba slučaja
+  Pera dobija 250 + 600 = 850.
+
+  CANVAS PLAN:
+    Canvas 1 — Stablo odlučivanja (decision tree): Pera je root sa 4 grane (600/400/300/250),
+               ispod svake Nikola sa 3 grane. Listove označiti sa (Pera, Nikola) rezultatima.
+               Istaknuti "optimalnu" putanju crvenom linijom.
+    Canvas 2 — Vremenska osa: horizontalno 0 do 900s. Pera u gornjem redu ima dva bara 600+250.
+               Nikola u donjem redu ima dva bara 400+300 (ili 300+400). Vertikalne linije
+               označavaju trenutke izbora.
+    Canvas 3 — Stubac/bar chart uporedbe: za svaki Perin prvi izbor (600/400/300/250),
+               prikazati Perin ukupan prinos. Istaknuti 600 kao optimalan.
+</script>
+
+<h1 data-card="problem-title">Teorija igara &mdash; biranje jabuka optimalno</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika / teorija igara &mdash; sekvencijalna igra sa potpunom informacijom, minimax analiza</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>Tekst zadatka</h2>
+  <p>Na tanjiru se nalaze \( 4 \) jabuke: od \( 600 \), \( 400 \), \( 300 \) i \( 250 \) grama. Pera prvi uzima jabuku, a Nikola drugi. Oni počinju da jedu istovremeno. Sledeću jabuku svaki od njih može uzeti samo kad pojede prethodnu. Oni jedu istom brzinom (koja se izražava gramima u sekundi). Ako obojica prave najbolji mogući izbor da bi pojeli što veću količinu jabuka, odredi koliko grama će pojesti Pera.</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">jabuke (g)</span>
+      <span class="given-value">\( 600,\; 400,\; 300,\; 250 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">brzina jedenja</span>
+      <span class="given-value">\( 1 \) g/s (jednaka za obojicu)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">redosled biranja</span>
+      <span class="given-value">Pera → Nikola</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">cilj</span>
+      <span class="given-value">svaki maksimizuje svoj prinos</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 850 \) g</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 700 \) g</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 900 \) g</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>Plan rešavanja</h2>
+  <p class="plan-text">Posmatramo igru kao <em>sekvencijalno odlučivanje sa potpunom informacijom</em> i rešavamo je <strong>unazadnom indukcijom</strong>. Za svaki od Perinih \( 4 \) prvih izbora, simuliramo Nikolinu optimalnu reakciju &mdash; jer svako ko je na potezu bira ono što njemu donosi najviše. Na kraju, Pera odabere onaj prvi potez u kojem mu, <em>nakon Nikoline optimalne reakcije</em>, ostaje najveći prinos. Rezultat će pokazati da je optimalno za Peru da uzme najveću jabuku.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>Podsetnik iz teorije</h2>
+  <details>
+    <summary>Igre sa potpunom informacijom i unazadna indukcija</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Sekvencijalna igra sa potpunom informacijom:</strong> igrači se naizmenično smenjuju, svako vidi sve prethodne poteze i sva pravila. Nema slučajnosti.</li>
+        <li><strong>Unazadna indukcija (backward induction):</strong> rešavamo igru od krajnjih pozicija unatrag. Za svaki čvor stabla odluka, igrač koji je na potezu bira grana koja mu daje <em>najveću</em> vrednost (kod maksimizacije svoje). Tako &bdquo;svedemo&rdquo; svako podstablo na jednu vrednost, sve do korena.</li>
+        <li><strong>Princip racionalnog protivnika:</strong> kad Pera razmatra svoje poteze, mora pretpostaviti da će Nikola <em>uvek</em> birati ono što je najbolje za Nikolu &mdash; ne ono što bi bilo povoljno za Peru. &bdquo;Misli kao protivnik.&rdquo;</li>
+        <li><strong>Vremenska os (timing):</strong> pošto oba igraju brzinom \( 1 \) g/s, igrač koji uzme jabuku mase \( m \) je <em>zauzet</em> narednih \( m \) sekundi. Za to vreme drugi igrač može da pojede više jabuka ako su dovoljno male. Ovo stvara strategijsku tenziju: velika jabuka donosi više grama, ali te zauzima dugo &mdash; omogućava protivniku da &bdquo;uzme dve&rdquo; male.</li>
+        <li><strong>Ukupno u zadatku:</strong> zbir svih jabuka je \( 600 + 400 + 300 + 250 = 1550 \) g. Pera + Nikola \( = 1550 \). Dakle ako Pera dobije \( 850 \), Nikola dobija \( 700 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Stablo odluka">
+  <h2>Vizuelni prikaz: stablo svih mogućih igara</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-tree" width="760" height="700"></canvas>
+  </div>
+  <p class="canvas-caption">Koren je Perin prvi izbor (\( 4 \) grane). Ispod svakog Perinog izbora vidi se Nikolina odluka (\( 3 \) grane). Iz svakog lista pišemo konačne prinose \( (P, N) \) = (Pera, Nikola). Nikola uvek bira granu koja mu daje najviše &mdash; obojeno zeleno. Pera, svestan toga, bira granu u kojoj je <em>njegov</em> prinos nakon Nikoline optimalne reakcije najveći &mdash; to je grana \( 600 \) (kružena). Optimalna putanja je označena deblom crvenom linijom.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Pravila igre u matematičkom obliku</h3>
+      <p>Neka Pera u trenutku \( t = 0 \) izabere jabuku mase \( m_P^{(1)} \); tada je zauzet do trenutka \( t = m_P^{(1)} \). Isto tako Nikola bira u \( t = 0 \) jabuku \( m_N^{(1)} \) i zauzet je do \( t = m_N^{(1)} \). U trenutku kad igrač završi jabuku, on bira sledeću (od preostalih), dok god postoji bar jedna jabuka.</p>
+      <p>Svaki igrač maksimizuje zbir svih masa koje je pojeo. Rešavamo <em>unazadnom indukcijom</em>: razmatramo sva \( 4 \) Perina prva izbora, i za svaki simuliramo Nikolinu najbolju reakciju.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj A: Pera uzima \( 600 \) (najveću)</h3>
+      <p>Pera zauzet do \( t = 600 \). Nikola bira sa preostalih \( \{400, 300, 250\} \):</p>
+
+      <div class="substep" data-substep="A.1)">
+        <p><strong>Nikola uzima \( 400 \)</strong> &rarr; zauzet do \( t = 400 \). Na \( t = 400 \), sa preostalih \( \{300, 250\} \), Nikola uzima veću \( 300 \) (zauzet do \( 700 \)). Na \( t = 600 \) Pera bira sa \( \{250\} \) (jedina ostala), zauzet do \( 850 \).</p>
+        <p class="note">Rezultat: Pera \( = 600 + 250 = 850 \); Nikola \( = 400 + 300 = 700 \).</p>
+      </div>
+
+      <div class="substep" data-substep="A.2)">
+        <p><strong>Nikola uzima \( 300 \)</strong> &rarr; na \( t = 300 \) bira sa \( \{400, 250\} \), uzima veću \( 400 \) (zauzet do \( 700 \)). Pera na \( t = 600 \) uzima \( 250 \), zauzet do \( 850 \).</p>
+        <p class="note">Rezultat: Pera \( = 850 \); Nikola \( = 300 + 400 = 700 \).</p>
+      </div>
+
+      <div class="substep" data-substep="A.3)">
+        <p><strong>Nikola uzima \( 250 \)</strong> &rarr; na \( t = 250 \) bira sa \( \{400, 300\} \), uzima \( 400 \) (zauzet do \( 650 \)). Na \( t = 600 \) Pera bira sa \( \{300\} \), zauzet do \( 900 \).</p>
+        <p class="note">Rezultat: Pera \( = 600 + 300 = 900 \); Nikola \( = 250 + 400 = 650 \).</p>
+      </div>
+
+      <div class="callout callout-info">
+        <strong>Nikolin izbor u slučaju A:</strong> uporedi njegove prinose: A.1 \( \to 700 \), A.2 \( \to 700 \), A.3 \( \to 650 \). Maksimum je \( 700 \). Nikola neće birati A.3 (to mu daje najmanje). Bira <strong>A.1 ili A.2</strong>, u oba slučaja <strong>Pera dobija \( 850 \)</strong>.
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj B: Pera uzima \( 400 \)</h3>
+      <p>Pera zauzet do \( t = 400 \). Nikola bira sa \( \{600, 300, 250\} \):</p>
+
+      <div class="substep" data-substep="B.1)">
+        <p><strong>Nikola uzima \( 600 \)</strong> &rarr; zauzet do \( 600 \). Na \( t = 400 \), Pera bira sa \( \{300, 250\} \), uzima \( 300 \) (zauzet do \( 700 \)). Na \( t = 600 \) Nikola uzima \( 250 \), zauzet do \( 850 \).</p>
+        <p class="note">Pera \( = 400 + 300 = 700 \); Nikola \( = 600 + 250 = 850 \).</p>
+      </div>
+
+      <div class="substep" data-substep="B.2)">
+        <p><strong>Nikola uzima \( 300 \)</strong> &rarr; na \( t = 300 \) (Pera još jede) bira sa \( \{600, 250\} \), uzima \( 600 \) (zauzet do \( 900 \)). Na \( t = 400 \) Pera bira sa \( \{250\} \) i zauzet je do \( 650 \).</p>
+        <p class="note">Pera \( = 400 + 250 = 650 \); Nikola \( = 300 + 600 = 900 \).</p>
+      </div>
+
+      <div class="substep" data-substep="B.3)">
+        <p><strong>Nikola uzima \( 250 \)</strong> &rarr; na \( t = 250 \) bira sa \( \{600, 300\} \), uzima \( 600 \) (zauzet do \( 850 \)). Na \( t = 400 \) Pera uzima \( 300 \), zauzet do \( 700 \).</p>
+        <p class="note">Pera \( = 700 \); Nikola \( = 250 + 600 = 850 \).</p>
+      </div>
+
+      <div class="callout callout-info">
+        <strong>Nikolin izbor u slučaju B:</strong> prinosi su B.1 \( \to 850 \), B.2 \( \to 900 \), B.3 \( \to 850 \). Maksimum je <strong>B.2 \( \to 900 \)</strong>, pa Nikola bira tu granu. Kao rezultat, <strong>Pera dobija samo \( 650 \)</strong>.
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj C: Pera uzima \( 300 \)</h3>
+      <p>Pera zauzet do \( t = 300 \). Nikola bira sa \( \{600, 400, 250\} \):</p>
+
+      <div class="substep" data-substep="C.1)">
+        <p><strong>Nikola \( 600 \)</strong>: Pera na \( t = 300 \) bira sa \( \{400, 250\} \), uzima \( 400 \) (do \( 700 \)). Nikola na \( t = 600 \) uzima \( 250 \) (do \( 850 \)). Pera \( = 300 + 400 = 700 \); Nikola \( = 600 + 250 = 850 \).</p>
+      </div>
+
+      <div class="substep" data-substep="C.2)">
+        <p><strong>Nikola \( 400 \)</strong>: Pera na \( t = 300 \) bira sa \( \{600, 250\} \), uzima \( 600 \) (do \( 900 \)). Nikola na \( t = 400 \) uzima \( 250 \) (do \( 650 \)). Pera \( = 300 + 600 = 900 \); Nikola \( = 400 + 250 = 650 \).</p>
+      </div>
+
+      <div class="substep" data-substep="C.3)">
+        <p><strong>Nikola \( 250 \)</strong>: Nikola na \( t = 250 \) bira sa \( \{600, 400\} \), uzima \( 600 \) (do \( 850 \)). Pera na \( t = 300 \) bira \( 400 \) (do \( 700 \)). Pera \( = 700 \); Nikola \( = 250 + 600 = 850 \).</p>
+      </div>
+
+      <div class="callout callout-info">
+        <strong>Nikolin izbor u slučaju C:</strong> prinosi C.1 \( \to 850 \), C.2 \( \to 650 \), C.3 \( \to 850 \). Maksimum je \( 850 \) (u granama C.1 ili C.3). U obe Pera dobija \( 700 \).
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj D: Pera uzima \( 250 \) (najmanju)</h3>
+      <p>Pera zauzet do \( t = 250 \). Nikola bira sa \( \{600, 400, 300\} \):</p>
+
+      <div class="substep" data-substep="D.1)">
+        <p><strong>Nikola \( 600 \)</strong>: Pera na \( t = 250 \) bira sa \( \{400, 300\} \), uzima \( 400 \) (do \( 650 \)). Nikola na \( t = 600 \) uzima \( 300 \) (do \( 900 \)). Pera \( = 250 + 400 = 650 \); Nikola \( = 600 + 300 = 900 \).</p>
+      </div>
+
+      <div class="substep" data-substep="D.2)">
+        <p><strong>Nikola \( 400 \)</strong>: Pera na \( t = 250 \) bira sa \( \{600, 300\} \), uzima \( 600 \) (do \( 850 \)). Nikola na \( t = 400 \) uzima \( 300 \) (do \( 700 \)). Pera \( = 250 + 600 = 850 \); Nikola \( = 400 + 300 = 700 \).</p>
+      </div>
+
+      <div class="substep" data-substep="D.3)">
+        <p><strong>Nikola \( 300 \)</strong>: Pera na \( t = 250 \) bira sa \( \{600, 400\} \), uzima \( 600 \) (do \( 850 \)). Nikola na \( t = 300 \) uzima \( 400 \) (do \( 700 \)). Pera \( = 850 \); Nikola \( = 300 + 400 = 700 \).</p>
+      </div>
+
+      <div class="callout callout-info">
+        <strong>Nikolin izbor u slučaju D:</strong> D.1 \( \to 900 \), D.2 \( \to 700 \), D.3 \( \to 700 \). Maksimum je D.1 \( \to 900 \). Nikola bira tu granu &mdash; <strong>Pera dobija samo \( 650 \)</strong>.
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Sumiranje &mdash; Perin optimalni prvi izbor</h3>
+      <p>Sada Pera &bdquo;pregleda&rdquo; sve svoje prve izbore i bira onaj koji mu donosi najviše, pod pretpostavkom da Nikola optimalno reaguje:</p>
+      <div class="math-block">\[ \begin{array}{c|c|c} \text{Pera bira} & \text{Nikola optimalno bira} & \text{Pera dobija} \\ \hline 600 & 400 \text{ (ili } 300) & \boxed{850} \\ 400 & 300 & 650 \\ 300 & 600 \text{ (ili } 250) & 700 \\ 250 & 600 & 650 \end{array} \]</div>
+      <p>Najveća vrednost je \( 850 \) &mdash; i to se dešava ako Pera prvi uzme <em>najveću</em> jabuku od \( 600 \) grama.</p>
+      <div class="math-block">\[ \boxed{\; \text{Pera pojede } 850 \text{ g} \;} \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto nije rešenje Pera = 900 (opcija C)?</summary>
+          <div class="detail-content"><p>Opcija \( 900 \) se pojavljuje u pojedinim granama (npr. A.3 ili C.2), ali <em>samo ako Nikola igra loše za sebe</em>. U A.3 Nikola bi dobio samo \( 650 \) &mdash; ali Nikola ne bi birao tu granu jer mu daje najmanje u slučaju A. Slično u C.2: Nikola dobija samo \( 650 \), pa radije bira C.1 ili C.3 (gde dobija \( 850 \)). Racionalan Nikola nikad ne igra loše za sebe, pa Pera ne može računati na \( 900 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="7">
+    <div class="step-badge">7</div>
+    <div class="step-content">
+      <h3 class="step-title">Potvrda ukupne bilanse</h3>
+      <p>Ukupan zbir svih jabuka je:</p>
+      <div class="math-block">\[ 600 + 400 + 300 + 250 = 1550 \text{ g}. \]</div>
+      <p>Na optimalnoj putanji Pera pojede \( 850 \), Nikola \( 700 \):</p>
+      <div class="math-block">\[ 850 + 700 = 1550 \text{ g}. \ \checkmark \]</div>
+      <p>Svih \( 4 \) jabuke su pojedene &mdash; nema ostatka.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="visual-aid" data-title="Vremenska osa optimalne igre">
+  <h2>Vizuelni prikaz: vremenska osa optimalne igre</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-timeline" width="760" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Pera u \( t = 0 \) uzima jabuku od \( 600 \) g i jede je do \( t = 600 \). Nikola istovremeno uzima \( 400 \) g (do \( t = 400 \)), pa na \( t = 400 \) uzima \( 300 \) g (do \( t = 700 \)). Pera zatim u \( t = 600 \) uzima \( 250 \) g (do \( t = 850 \)). Ukupno: Pera \( 600 + 250 = 850 \), Nikola \( 400 + 300 = 700 \). Primetite kako je Pera &bdquo;monopolisao&rdquo; najveću jabuku i onda izbegao konfliktu sa Nikolom dok Nikola jede srednje.</p>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>Ključni uvid</h2>
+  <p>Intuicija je u početku pogrešna: misli se &bdquo;ako uzmem najveću, zauzet sam dugo, Nikola će pojesti sve ostale&rdquo;. Ali to je greška! Ukupna masa manjih jabuka je \( 400 + 300 + 250 = 950 \), što je <em>više</em> od vremena koje Pera zauzima jedući \( 600 \)-gram jabuku. Pošto Nikola može da pojede najviše <em>dve</em> od tih tri manjih jabuka za \( 600 \) sekundi (jer je minimalna suma bilo koje dve je \( 250 + 300 = 550 < 600 \), a \( 400 + 300 = 700 > 600 \)), Pera uvek stiže da zgrabi barem jednu od preostalih. Konkretno, dok Pera jede \( 600 \), Nikola pojede \( 700 \) ili \( 650 \) (dve srednje), što Peri ostavlja \( 250 \) ili \( 300 \) &mdash; i Pera može slobodno da je pojede. U ovoj klasi problema (&bdquo;greedy eater&rdquo;) pravilo je: ako ima dovoljno raspoloženih malih jabuka da protivnik ne može da uzme <em>sve</em>, uzmite najveću odmah &mdash; direktan ovo je poznat kao princip &bdquo;dominantne strategije u uzimanju maksimalnog resursa&rdquo;.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \text{Pera pojede } 850 \text{ g} = 600 + 250 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 850 \) g</span>
+    <span class="answer-option" data-option="B">(B) \( 700 \) g</span>
+    <span class="answer-option" data-option="C">(C) \( 900 \) g</span>
+  </div>
+  <p class="verification">Provera: Perin optimalni prvi izbor je \( 600 \) g (najveća jabuka). Nikola optimalno bira \( 400 \) (ili \( 300 \)), pa kasnije \( 300 \) (ili \( 400 \)), za ukupnih \( 700 \) g. Peri ostaje \( 250 \), pa mu ukupno \( 600 + 250 = 850 \) g. Ukupni zbir: \( 850 + 700 = 1550 = \) ukupna masa svih jabuka &check;. Opcija (C) \( 900 \) je zavodljiva jer se pojavljuje u nekim granama, ali zahteva Nikolin <em>iracionalan</em> izbor (gde Nikola sam sebi smanji prinos) &mdash; realno, Nikola ne bi igrao tako. Opcija (B) \( 700 \) je ono što bi Pera dobio ako bi pogrešno prvo uzeo \( 300 \), što je ispod optimuma.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešna pretpostavka o protivniku:</strong> najčešća greška je pretpostaviti da Nikola radi ono što <em>Peri</em> odgovara (npr. bira \( 250 \) da bi Pera mogao da uzme \( 300 \) i završi sa \( 900 \)). Racionalni Nikola bira ono što <em>njemu</em> daje najviše &mdash; ne ono što je &bdquo;pravično&rdquo; ili lako za Peru.</li>
+    <li><strong>Stati na &bdquo;grešnom&rdquo; broju od \( 900 \):</strong> u nekim granama stabla Pera zaista dobija \( 900 \), ali samo kad Nikola <em>pogrešno</em> odigra. Opcija (C) je tipičan mamac koji &bdquo;ulovi&rdquo; studente koji ne sprovedu punu unazadnu indukciju.</li>
+    <li><strong>Ignorisanje vremenskog aspekta:</strong> neko može pokušati &bdquo;obojica uzimaju maksimum koji je dostupan&rdquo; bez brige o vremenu. Ali Nikola ne može uzeti sledeću jabuku dok ne pojede trenutnu, a to zavisi od mase. Uvek precizno pratiti trenutke završavanja.</li>
+    <li><strong>Predrasuda &bdquo;ako uzmem veliku, druga strana uzme sve ostalo&rdquo;:</strong> to bi važilo kad bi Nikola mogao da pojede <em>sve tri</em> ostale jabuke za \( 600 \) s. Ali \( 400 + 300 + 250 = 950 > 600 \) &mdash; Nikola stigne samo <em>dve</em>. Jedna jabuka ostaje za Peru.</li>
+    <li><strong>Zaboravljanje opcije &bdquo;Pera uzima i treću jabuku&rdquo;:</strong> ako Nikola pogrešno uzme najmanju, Pera može završiti sa <em>dve</em> jabuke (\( 600 + 300 \)). Ali to se dešava samo u iracionalnoj Nikolinoj igri &mdash; ne u optimalnoj.</li>
+    <li><strong>Mešanje minimaksa sa maksiminom:</strong> u ovoj igri nema &bdquo;suparničkog&rdquo; optimizovanja (nije nulti zbir &mdash; svako maksimizuje svoje, ne svoje minus protivnikovo). Ipak, pošto je ukupan zbir konstantan (\( 1550 \)), maksimiziranje svog efektivno minimizuje protivnikovo &mdash; pa minimax i direktno maksimiziranje daju isti odgovor.</li>
+    <li><strong>Zanemarivanje pravila &bdquo;uzima se tek po završetku&rdquo;:</strong> ako bi se moglo &bdquo;zgrabiti dve odjednom&rdquo;, rešenje bi bilo trivijalno: Pera uzme \( 600 + 400 = 1000 \). Pravilo čekanja je suština problema.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>Dodatni izazov</h2>
+  <p>Pretpostavimo da na tanjiru postoji <em>pet</em> jabuka masa \( 500, 400, 300, 200, 100 \) grama, sa istim pravilima (Pera bira prvi, jedu istom brzinom). Koliko grama pojede Pera pri optimalnoj igri? I još: da li je Peri i dalje optimalno da prvi uzme najveću?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Opet radimo unazadnom indukcijom. Ukupna masa: \( 500 + 400 + 300 + 200 + 100 = 1500 \). Ako Pera uzme \( 500 \) (zauzet do \( 500 \)): Nikola uzima \( 400 \) (do \( 400 \)), zatim \( 100 \) (do \( 500 \)); Pera u \( 500 \) uzima \( 300 \) (do \( 800 \)), a onda \( 200 \) (do \( 1000 \)). Pera \( = 500 + 300 + 200 = 1000 \), Nikola \( = 400 + 100 = 500 \). Ali proverite: da li Nikola ima bolju strategiju? Ako Nikola uzme \( 400 \) i zatim \( 300 \) (umesto \( 100 \)): Nikola do \( 700 \). Pera u \( 500 \) uzima \( 200 \) (do \( 700 \)), pa u \( 700 \) uzima \( 100 \) (do \( 800 \)). Pera \( = 500 + 200 + 100 = 800 \), Nikola \( = 400 + 300 = 700 \). Za Nikolu bolje! \( 700 > 500 \), pa Nikola bira tu granu, i Pera dobija \( 800 \). Za neparan broj jabuka Pera ima &bdquo;prednost broja poteza&rdquo;. Detaljno: zbog kompleksnije analize, rešenje uvek vredi proveriti kodom &mdash; pa zbog toga se ovakve igre često rešavaju programerski sa memoizacijom stanja.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-tree');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+    var danger    = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Stablo odluka: Pera (plavo) → Nikola (ljubičasto) → (Pera, Nikola)', W / 2, 30);
+
+    // Root: Pera
+    var rootX = W / 2;
+    var rootY = 72;
+
+    // Root node
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.25);
+    ctx.fillRect(rootX - 60, rootY - 18, 120, 36);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1.8;
+    ctx.strokeRect(rootX - 60, rootY - 18, 120, 36);
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('PERA bira', rootX, rootY);
+
+    // Level 1: Pera's 4 choices
+    var peraChoices = [600, 400, 300, 250];
+    var peraYields  = [850, 650, 700, 650];   // Pera's final yield after Nikola optimal
+    var optimalIdx = 0;  // 600 is optimal for Pera
+
+    var L1y = 170;
+    var L1xStart = 80;
+    var L1xStep = (W - 160) / 3;
+
+    // Level 2: Nikola's choice summary + final yield
+    // For each Pera choice, we store what Nikola optimally picks and what the yields are
+    var L2data = [
+      // Pera 600
+      { nikolaOptimal: '400', paths: [
+        { n: '400', p: 850, nYield: 700, optimal: true },
+        { n: '300', p: 850, nYield: 700, optimal: true },
+        { n: '250', p: 900, nYield: 650, optimal: false }
+      ]},
+      // Pera 400
+      { nikolaOptimal: '300', paths: [
+        { n: '600', p: 700, nYield: 850, optimal: false },
+        { n: '300', p: 650, nYield: 900, optimal: true },
+        { n: '250', p: 700, nYield: 850, optimal: false }
+      ]},
+      // Pera 300
+      { nikolaOptimal: '600', paths: [
+        { n: '600', p: 700, nYield: 850, optimal: true },
+        { n: '400', p: 900, nYield: 650, optimal: false },
+        { n: '250', p: 700, nYield: 850, optimal: true }
+      ]},
+      // Pera 250
+      { nikolaOptimal: '600', paths: [
+        { n: '600', p: 650, nYield: 900, optimal: true },
+        { n: '400', p: 850, nYield: 700, optimal: false },
+        { n: '300', p: 850, nYield: 700, optimal: false }
+      ]}
+    ];
+
+    // Draw level-1 nodes (Pera's choices)
+    var L1xs = [];
+    for (var i = 0; i < 4; i++) {
+      var x = L1xStart + i * L1xStep;
+      L1xs.push(x);
+
+      // Edge from root to this node
+      ctx.strokeStyle = (i === optimalIdx) ? highlight : muted;
+      ctx.lineWidth = (i === optimalIdx) ? 3.0 : 1.3;
+      ctx.beginPath();
+      ctx.moveTo(rootX, rootY + 20);
+      ctx.lineTo(x, L1y - 18);
+      ctx.stroke();
+
+      // Edge label
+      ctx.fillStyle = (i === optimalIdx) ? highlight : muted;
+      ctx.font = (i === optimalIdx) ? 'bold 12px "Cambria Math", Georgia, serif' : '12px "Cambria Math", Georgia, serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      var midX = (rootX + x) / 2;
+      var midY = (rootY + 20 + L1y - 18) / 2;
+      ctx.save();
+      ctx.fillStyle = cvAlpha('--sol-canvas-bg', 0.9);
+      ctx.fillRect(midX - 16, midY - 8, 32, 16);
+      ctx.restore();
+      ctx.fillStyle = (i === optimalIdx) ? highlight : text;
+      ctx.fillText(peraChoices[i].toString(), midX, midY);
+
+      // Node (Pera choice)
+      var nodeW = 74;
+      var nodeH = 32;
+      var isOptimal = (i === optimalIdx);
+      ctx.fillStyle = isOptimal ? cvAlpha('--sol-canvas-highlight', 0.3) : cvAlpha('--sol-canvas-primary', 0.15);
+      ctx.fillRect(x - nodeW / 2, L1y - nodeH / 2, nodeW, nodeH);
+      ctx.strokeStyle = isOptimal ? highlight : primary;
+      ctx.lineWidth = isOptimal ? 2.2 : 1.4;
+      ctx.strokeRect(x - nodeW / 2, L1y - nodeH / 2, nodeW, nodeH);
+      ctx.fillStyle = text;
+      ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('P: ' + peraChoices[i], x, L1y - 4);
+      ctx.font = '10px Inter, system-ui, sans-serif';
+      ctx.fillStyle = isOptimal ? highlight : muted;
+      ctx.fillText('N odg.', x, L1y + 9);
+    }
+
+    // Level 2: Nikola's choices, with 3 sub-branches per Pera node
+    var L2y = 290;
+    var subStep = L1xStep / 4;
+    for (var i = 0; i < 4; i++) {
+      var parentX = L1xs[i];
+      var paths = L2data[i].paths;
+      for (var j = 0; j < 3; j++) {
+        var cx = parentX - L1xStep / 3.2 + j * L1xStep / 3.2;
+        var isOpt = paths[j].optimal;
+        var isOnOptimalPath = (i === optimalIdx) && isOpt;
+
+        // Edge
+        ctx.strokeStyle = isOnOptimalPath ? highlight : (isOpt ? accent : muted);
+        ctx.lineWidth = isOnOptimalPath ? 2.8 : (isOpt ? 1.8 : 1.0);
+        ctx.beginPath();
+        ctx.moveTo(parentX, L1y + 16);
+        ctx.lineTo(cx, L2y - 28);
+        ctx.stroke();
+
+        // Label on edge
+        var midLabelX = (parentX + cx) / 2;
+        var midLabelY = (L1y + 16 + L2y - 28) / 2;
+        ctx.save();
+        ctx.fillStyle = cvAlpha('--sol-canvas-bg', 0.9);
+        ctx.fillRect(midLabelX - 14, midLabelY - 7, 28, 14);
+        ctx.restore();
+        ctx.fillStyle = isOnOptimalPath ? highlight : (isOpt ? accent : muted);
+        ctx.font = (isOpt ? 'bold ' : '') + '10px "Cambria Math", Georgia, serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(paths[j].n, midLabelX, midLabelY);
+
+        // Leaf node — show (Pera, Nikola) yield
+        var leafW = 64;
+        var leafH = 48;
+        ctx.fillStyle = isOnOptimalPath
+          ? cvAlpha('--sol-canvas-highlight', 0.3)
+          : (isOpt ? cvAlpha('--sol-canvas-accent', 0.18) : cvAlpha('--sol-canvas-muted', 0.1));
+        ctx.fillRect(cx - leafW / 2, L2y - leafH / 2, leafW, leafH);
+        ctx.strokeStyle = isOnOptimalPath ? highlight : (isOpt ? accent : muted);
+        ctx.lineWidth = isOnOptimalPath ? 2.0 : (isOpt ? 1.5 : 1.0);
+        ctx.strokeRect(cx - leafW / 2, L2y - leafH / 2, leafW, leafH);
+
+        ctx.fillStyle = text;
+        ctx.font = 'bold 10px "Cambria Math", Georgia, serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('P=' + paths[j].p, cx, L2y - 9);
+        ctx.fillStyle = isOpt ? accent : muted;
+        ctx.fillText('N=' + paths[j].nYield, cx, L2y + 6);
+
+        // Mark Nikola's optimal with a small check
+        if (isOpt) {
+          ctx.fillStyle = accent;
+          ctx.font = 'bold 10px Inter, system-ui, sans-serif';
+          ctx.textBaseline = 'bottom';
+          ctx.fillText('✓ N opt.', cx, L2y - leafH / 2 - 3);
+        }
+      }
+    }
+
+    // Summary row at the bottom
+    var sumY = 420;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Pera dobija (nakon Nikoline optimalne reakcije):', W / 2, sumY);
+
+    // Boxes for each Pera choice
+    var boxW = 140;
+    var boxH = 58;
+    for (var i = 0; i < 4; i++) {
+      var bx = L1xs[i] - boxW / 2;
+      var by = sumY + 30;
+      var isOpt = (i === optimalIdx);
+      ctx.fillStyle = isOpt ? cvAlpha('--sol-canvas-highlight', 0.35) : cvAlpha('--sol-canvas-muted', 0.15);
+      ctx.fillRect(bx, by, boxW, boxH);
+      ctx.strokeStyle = isOpt ? highlight : muted;
+      ctx.lineWidth = isOpt ? 2.6 : 1.3;
+      ctx.strokeRect(bx, by, boxW, boxH);
+
+      ctx.fillStyle = text;
+      ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('Pera uzima ' + peraChoices[i], bx + boxW / 2, by + 16);
+
+      ctx.fillStyle = isOpt ? highlight : text;
+      ctx.font = 'bold 18px "Cambria Math", Georgia, serif';
+      ctx.fillText(peraYields[i] + ' g', bx + boxW / 2, by + 40);
+    }
+
+    // Big arrow to the optimal
+    var arrowY = sumY + 30 + boxH + 20;
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('↑ Perin optimalni izbor: uzeti najveću jabuku od 600 g', L1xs[0], arrowY);
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.fillText('daje mu 850 g (600 + 250)', L1xs[0], arrowY + 22);
+
+    // Legend at the bottom
+    var ly = H - 30;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2.8;
+    ctx.beginPath();
+    ctx.moveTo(40, ly);
+    ctx.lineTo(80, ly);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.fillText('optimalna putanja (Pera → 850)', 88, ly);
+
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(310, ly);
+    ctx.lineTo(350, ly);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.fillText('Nikolin optimalni potez (✓)', 358, ly);
+
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.0;
+    ctx.beginPath();
+    ctx.moveTo(530, ly);
+    ctx.lineTo(570, ly);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.fillText('neoptimalni (suboptimalni) potezi', 578, ly);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-timeline');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Optimalna igra: vremenska osa (sekunde)', W / 2, 30);
+
+    // Plot area
+    var marginL = 80, marginR = 60, marginT = 80, marginB = 160;
+    var plotW = W - marginL - marginR;
+    var plotH = H - marginT - marginB;
+
+    // Time axis: 0 to 900 s
+    var tMin = 0, tMax = 900;
+    function T(t) { return marginL + (t - tMin) / (tMax - tMin) * plotW; }
+
+    // Two horizontal lanes: Pera (top), Nikola (bottom)
+    var laneH = 60;
+    var peraY = marginT + 20;
+    var nikolaY = peraY + laneH + 40;
+
+    // Lane labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('PERA', marginL - 10, peraY + laneH / 2);
+    ctx.fillText('NIKOLA', marginL - 10, nikolaY + laneH / 2);
+
+    // Lane backgrounds (subtle)
+    ctx.fillStyle = cvAlpha('--sol-canvas-muted', 0.08);
+    ctx.fillRect(marginL, peraY, plotW, laneH);
+    ctx.fillRect(marginL, nikolaY, plotW, laneH);
+
+    // Bar for Pera: 600 g from t=0 to t=600
+    ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.6);
+    ctx.fillRect(T(0), peraY, T(600) - T(0), laneH);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 1.8;
+    ctx.strokeRect(T(0), peraY, T(600) - T(0), laneH);
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('600 g (najveća)', (T(0) + T(600)) / 2, peraY + laneH / 2 - 8);
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillText('0 s → 600 s', (T(0) + T(600)) / 2, peraY + laneH / 2 + 8);
+
+    // Bar for Pera: 250 g from t=600 to t=850
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.5);
+    ctx.fillRect(T(600), peraY, T(850) - T(600), laneH);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1.8;
+    ctx.strokeRect(T(600), peraY, T(850) - T(600), laneH);
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('250 g', (T(600) + T(850)) / 2, peraY + laneH / 2 - 7);
+    ctx.font = '10px Inter, system-ui, sans-serif';
+    ctx.fillText('600 → 850', (T(600) + T(850)) / 2, peraY + laneH / 2 + 7);
+
+    // Bar for Nikola: 400 g from t=0 to t=400
+    ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.55);
+    ctx.fillRect(T(0), nikolaY, T(400) - T(0), laneH);
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 1.8;
+    ctx.strokeRect(T(0), nikolaY, T(400) - T(0), laneH);
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('400 g', (T(0) + T(400)) / 2, nikolaY + laneH / 2 - 7);
+    ctx.font = '10px Inter, system-ui, sans-serif';
+    ctx.fillText('0 → 400', (T(0) + T(400)) / 2, nikolaY + laneH / 2 + 7);
+
+    // Bar for Nikola: 300 g from t=400 to t=700
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.5);
+    ctx.fillRect(T(400), nikolaY, T(700) - T(400), laneH);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.8;
+    ctx.strokeRect(T(400), nikolaY, T(700) - T(400), laneH);
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('300 g', (T(400) + T(700)) / 2, nikolaY + laneH / 2 - 7);
+    ctx.font = '10px Inter, system-ui, sans-serif';
+    ctx.fillText('400 → 700', (T(400) + T(700)) / 2, nikolaY + laneH / 2 + 7);
+
+    // Time axis ticks
+    var xAxisY = nikolaY + laneH + 14;
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(T(0), xAxisY);
+    ctx.lineTo(T(tMax), xAxisY);
+    ctx.stroke();
+
+    var keyMoments = [0, 250, 400, 600, 700, 850];
+    var keyLabels = {
+      0: 'start',
+      400: 'Nikola završi 400',
+      600: 'Pera završi 600',
+      700: 'Nikola završi 300',
+      850: 'Pera završi 250'
+    };
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textBaseline = 'top';
+    ctx.textAlign = 'center';
+    keyMoments.forEach(function(m) {
+      if (m === 250) return;
+      ctx.beginPath();
+      ctx.moveTo(T(m), xAxisY);
+      ctx.lineTo(T(m), xAxisY + 8);
+      ctx.stroke();
+      ctx.fillText(m.toString(), T(m), xAxisY + 10);
+    });
+
+    // Key moment vertical lines (dashed) across both lanes
+    ctx.strokeStyle = cvAlpha('--sol-canvas-warning', 0.6);
+    ctx.setLineDash([4, 3]);
+    ctx.lineWidth = 1.2;
+    [400, 600, 700, 850].forEach(function(m) {
+      ctx.beginPath();
+      ctx.moveTo(T(m), peraY - 6);
+      ctx.lineTo(T(m), nikolaY + laneH + 6);
+      ctx.stroke();
+    });
+    ctx.setLineDash([]);
+
+    // Secondary labels above key moments
+    ctx.fillStyle = warning;
+    ctx.font = 'italic 10px Inter, system-ui, sans-serif';
+    ctx.textBaseline = 'bottom';
+    ctx.textAlign = 'center';
+    ctx.fillText('Nikola\nbira opet', T(400), peraY - 8);
+    ctx.fillText('Pera\nbira opet', T(600), peraY - 8);
+
+    // Sum boxes below axis
+    var sumY = xAxisY + 40;
+    // Pera total
+    ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.2);
+    ctx.fillRect(marginL, sumY, 240, 60);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 1.8;
+    ctx.strokeRect(marginL, sumY, 240, 60);
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('PERA ukupno', marginL + 120, sumY + 18);
+    ctx.font = 'bold 24px "Cambria Math", Georgia, serif';
+    ctx.fillStyle = highlight;
+    ctx.fillText('600 + 250 = 850 g', marginL + 120, sumY + 42);
+
+    // Nikola total
+    var sumX2 = marginL + 280;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.18);
+    ctx.fillRect(sumX2, sumY, 240, 60);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.8;
+    ctx.strokeRect(sumX2, sumY, 240, 60);
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('NIKOLA ukupno', sumX2 + 120, sumY + 18);
+    ctx.font = 'bold 24px "Cambria Math", Georgia, serif';
+    ctx.fillStyle = accent;
+    ctx.fillText('400 + 300 = 700 g', sumX2 + 120, sumY + 42);
+
+    // Verify total
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Provera: 850 + 700 = 1550 = zbir svih jabuka ✓', sumX2 + 250, sumY + 30);
+
+    // "t (sekunde)" axis title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('t (sekunde)', W / 2, xAxisY + 28);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Teorija igara — biranje jabuka optimalno (Pera vs Nikola)",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["teorija igara", "unazadna indukcija", "minimax", "sekvencijalne igre", "verbalni problem", "optimizacija"]
+}
+BRAINSPARK_META-->

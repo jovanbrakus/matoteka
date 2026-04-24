@@ -1,0 +1,581 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Čovek je na pijaci kupio lubenicu (L), džačić krompira (K) i krastavce (C).
+  Date su mase parova:
+    L + K = 14
+    K + C = 9
+    L + C = 11
+  Pitanje: Kolika je ukupna masa L + K + C?
+  Opcije: (A) 34; (B) 17; (C) 32; (D) 16. Tačan odgovor: (B) 17.
+
+  Strategija 1 (najbrža — sabiranje sve tri jednačine):
+   Svaka namirnica pojavljuje se TAČNO DVA puta u zbiru triju datih jednačina.
+   (L + K) + (K + C) + (L + C) = 14 + 9 + 11
+   2L + 2K + 2C = 34
+   2(L + K + C) = 34
+   L + K + C = 17.
+   Odgovor: (B) 17.
+
+  Strategija 2 (rešavanje sistema, pojedinačno):
+   Iz prvog: L + K = 14
+   Iz trećeg: L + C = 11
+   Razlika: (L + K) − (L + C) = 14 − 11 = 3 → K − C = 3.
+   Iz drugog: K + C = 9.
+   Saberi K − C = 3 i K + C = 9: 2K = 12 → K = 6 → C = 3.
+   Iz prvog: L = 14 − K = 14 − 6 = 8.
+   Provera: L + C = 8 + 3 = 11 ✓; K + C = 6 + 3 = 9 ✓.
+   Suma: L + K + C = 8 + 6 + 3 = 17. ✓
+
+   Pojedinačno (saznanja kao bonus):
+    L = 8 kg, K = 6 kg, C = 3 kg.
+
+  Geometrijska interpretacija (linearni sistem 3×3):
+   Tri ravni u prostoru (L, K, C). Svaka jednačina je ravan.
+   Sistem je determinisan (matrica koeficijenata
+     | 1 1 0 |
+     | 0 1 1 |
+     | 1 0 1 |  ima determinantu = 2 ≠ 0).
+   Presek tri ravni je tačka (8, 6, 3).
+   Sabiranje sve tri jednačine je ekvivalentno projekciji na pravac (1,1,1) — daje samo SUMU bez razlikovanja
+   pojedinačnih vrednosti, što je sve što nam treba.
+
+  Visual plan: Tri klasične vage sa po dva tasa, jedna pored druge:
+   Vaga 1: (L) | (K) — težina 14 kg
+   Vaga 2: (K) | (C) — težina 9 kg
+   Vaga 3: (L) | (C) — težina 11 kg
+   Pored toga: prikaz "kombinujemo sve tri vage" → ukupno svaka namirnica brojana 2 puta = 2(L+K+C) = 34.
+   Statički vizual jer sam zadatak je o jednoj brojnoj jednakosti — ne treba interaktivnost.
+
+  Pitfalls:
+   - Pokušaj direktnog sabiranja: 14 + 9 + 11 = 34 → ali to je 2·(L+K+C), a ne L+K+C. Klopka (A) 34!
+   - Računanje samo jedne dvojke namirnica (npr. L + K = 14) i to ostavljanje kao odgovor — ali pitanje traži sve tri.
+   - Pokušaj da se nezavisno reši svaka namirnica može uzeti više vremena nego sabiranje, mada vodi do istog rezultata.
+   - Klopka (D) 16: 14 + 9 + 11 = 34, pa neko podeli sa nečim ili napravi grešku 14 − (9 + 11)/3 = 14 − 6.66... ≈ 7, ili sume po drugačijem grupisanju. Niko od distraktora ne dolazi prirodno iz korektnog rezonovanja, što je dobro.
+
+  Odgovor: (B) 17 kg.
+</script>
+
+<h1 data-card="problem-title">Ukupna masa namirnica iz parova vaga</h1>
+<p data-card="problem-subtitle" class="subtitle">Linearne jednačine &mdash; sistem 3×3, simetrija sabiranja, geometrija sistema</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Čovek je bio na pijaci i kupio lubenicu, džačić krompira i krastavce. Kada su ga deca kod kuće pitala koliko je tereta nosio, rekao im je da su lubenica i krompir teški \( 14 \) kilograma, krompir i krastavci \( 9 \), dok su lubenica i krastavci \( 11 \) kilograma. Kolika je ukupna masa, u kilogramima, svih namirnica koje je čovek nosio sa pijace?</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">Lubenica + krompir</span>
+      <span class="given-value">\( L + K = 14 \) kg</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Krompir + krastavci</span>
+      <span class="given-value">\( K + C = 9 \) kg</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Lubenica + krastavci</span>
+      <span class="given-value">\( L + C = 11 \) kg</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Traži se</span>
+      <span class="given-value">\( L + K + C = {?} \)</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 34 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 17 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 32 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 16 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Označimo mase \( L, K, C \) (lubenica, krompir, krastavci) u kilogramima. Imamo tri jednačine, po jednu za svaki par. Ključan trik: kad <strong>saberemo</strong> sve tri jednačine, svaka namirnica se pojavi tačno dva puta &mdash; dobijamo \( 2(L + K + C) \), iz čega odmah sledi tražena suma. Nije neophodno znati pojedinačne mase.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Sistem linearnih jednačina i trik sabiranja</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Sistem 3×3</span> Tri linearne jednačine sa tri nepoznate, ako je matrica koeficijenata regularna (determinanta \( \neq 0 \)), imaju jedinstveno rešenje.</li>
+        <li><span class="formula-label">Sabiranje jednačina</span> Sumom svih jednačina sistema dobijamo novu validnu jednačinu &mdash; korisno kada se nepoznate pojavljuju simetrično.</li>
+        <li><span class="formula-label">Simetrični sistem</span> U ovom zadatku, svaka nepoznata se pojavljuje u tačno dve od tri jednačine, pa zbir daje \( 2(L+K+C) = \text{(zbir desnih strana)} \).</li>
+        <li><span class="formula-label">Razlika dve jednačine</span> Oduzimanjem dveju jednačina koje dele istu nepoznatu, ona se &bdquo;poništi&ldquo; &mdash; dobijamo direktnu vezu između druge dve.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Tri vage na pijaci">
+  <h2>📐 Tri vage na pijaci</h2>
+  <div class="canvas-wrapper">
+    <canvas id="balance-scales" width="720" height="640"></canvas>
+  </div>
+  <p class="canvas-caption">Svaka od tri vage prikazuje jedan dat par namirnica i ukupnu masu u kilogramima. Donji panel pokazuje &bdquo;magični trik&ldquo;: kad sve tri vage spojimo, svaka namirnica je izvagana <strong>dva puta</strong>, pa je ukupna izmerena masa jednaka \( 2(L + K + C) = 34 \) kg, odakle je \( L + K + C = 17 \) kg.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Uvodimo oznake i pišemo sistem</h3>
+      <p>Neka su:</p>
+      <ul>
+        <li>\( L \) &mdash; masa lubenice (kg),</li>
+        <li>\( K \) &mdash; masa džačića krompira (kg),</li>
+        <li>\( C \) &mdash; masa krastavaca (kg).</li>
+      </ul>
+      <p>Iz teksta zadatka dobijamo tri jednačine:</p>
+      <div class="math-block">\[ \begin{cases} L + K \;=\; 14, \\ K + C \;=\; 9, \\ L + C \;=\; 11. \end{cases} \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Sabiramo sve tri jednačine</h3>
+      <p>Saberimo levu i desnu stranu sve tri jednačine. Na levoj strani, svaka nepoznata se pojavljuje tačno <strong>dva puta</strong> (npr. \( L \) je u prvoj i trećoj):</p>
+      <div class="math-block">\[ (L + K) + (K + C) + (L + C) \;=\; 14 + 9 + 11. \]</div>
+      <div class="math-block">\[ 2L + 2K + 2C \;=\; 34. \]</div>
+      <p>Faktorisanjem &bdquo;2&ldquo; dobijamo:</p>
+      <div class="math-block">\[ 2 \,(L + K + C) \;=\; 34. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Delimo sa \( 2 \) i čitamo odgovor</h3>
+      <p>Deljenjem obe strane sa \( 2 \):</p>
+      <div class="math-block">\[ L + K + C \;=\; \dfrac{34}{2} \;=\; \mathbf{17} \text{ kg}. \]</div>
+      <p>Ukupna masa svih namirnica je <span class="result">\( 17 \) kg</span>.</p>
+      <div class="callout callout-info">
+        <p><b>Eleganca:</b> nismo morali da nađemo \( L \), \( K \), \( C \) zasebno &mdash; sabiranje je iskoristilo simetriju sistema i odmah dalo zbir.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Bonus: pojedinačne mase (za zanimljivost)</h3>
+      <p>Iako za odgovor to nije bilo potrebno, lako možemo izračunati i pojedinačne mase. Oduzmimo treću jednačinu od prve:</p>
+      <div class="math-block">\[ (L + K) - (L + C) \;=\; 14 - 11 \;\Longrightarrow\; K - C \;=\; 3. \]</div>
+      <p>Sa drugom jednačinom \( K + C = 9 \) imamo sistem:</p>
+      <div class="math-block">\[ \begin{cases} K - C \;=\; 3, \\ K + C \;=\; 9. \end{cases} \]</div>
+      <p>Sabiranjem: \( 2K = 12 \Rightarrow K = 6 \). Otud \( C = 9 - 6 = 3 \) i \( L = 14 - K = 8 \).</p>
+      <div class="math-block">\[ L \;=\; 8 \text{ kg}, \quad K \;=\; 6 \text{ kg}, \quad C \;=\; 3 \text{ kg}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zadovoljavaju li ove vrednosti sve tri jednačine?</summary>
+          <div class="detail-content">
+            <p>\( L + K = 8 + 6 = 14 \) &#10003;</p>
+            <p>\( K + C = 6 + 3 = 9 \) &#10003;</p>
+            <p>\( L + C = 8 + 3 = 11 \) &#10003;</p>
+            <p>Suma: \( L + K + C = 8 + 6 + 3 = 17 \) &#10003;</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kad sistem ima <em>simetričnu strukturu</em> (svaka nepoznata se pojavi isti broj puta), <strong>sabiranje svih jednačina</strong> je često najbrži put do zbira nepoznatih &mdash; bez potrebe da ih nalazimo zasebno. U ovom problemu, svaka namirnica je merena dva puta (jednom u svakoj od dve vage gde se pojavi), pa zbir desnih strana = \( 2 \cdot \) (ukupna masa). Ovaj trik se često sreće na takmičenjima i pijemnim ispitima &mdash; uvek prepoznaj kada simetrija pojednostavljuje računanje.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ L + K + C \;=\; 17 \text{ kg} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 34 \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( 17 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 32 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 16 \)</span>
+  </div>
+  <p class="verification">Provera: \( L = 8 \), \( K = 6 \), \( C = 3 \). Sve tri date relacije: \( L+K = 14 \) &#10003;, \( K+C = 9 \) &#10003;, \( L+C = 11 \) &#10003;. Zbir: \( 8 + 6 + 3 = 17 \) kg. &#10003;</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><b>Zaboravljeni faktor 2 (klopka A: 34):</b> kad se saberu desne strane, dobija se \( 14 + 9 + 11 = 34 \), ali to je \( 2(L + K + C) \), ne sama suma. Lako je upisati \( 34 \) bez deljenja sa \( 2 \).</li>
+    <li><b>Brojanje samo jednog para:</b> uzeti samo jednu jednačinu (npr. \( L + K = 14 \)) i ponuditi je kao odgovor &mdash; ali zadatak traži <em>sve tri</em> namirnice.</li>
+    <li><b>Pogrešno parsiranje teksta:</b> pomešati šta je s čime izvagano (npr. zameniti &bdquo;krompir + krastavci&ldquo; sa &bdquo;lubenica + krastavci&ldquo;) &mdash; uvek pažljivo zapiši sve tri jednačine.</li>
+    <li><b>Komplikovan put kad postoji jednostavan:</b> prvo rešavati pojedinačno \( L \), \( K \), \( C \), pa sabrati, je validno, ali sporije od trika sa sumom &mdash; izgubljeno vreme na ispitu.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Pretpostavi da su u opštem slučaju mase parova date sa \( L + K = a \), \( K + C = b \), \( L + C = c \). Izrazi pojedinačne mase \( L, K, C \) preko \( a, b, c \). Pod kojim uslovom rešenje ima smisla (sve tri mase pozitivne)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Zbir je \( L + K + C = \dfrac{a + b + c}{2} \). Pojedinačno (oduzimanjem od ovog zbira odgovarajuće jednačine):</p>
+      <div class="math-block">\[ L = \dfrac{a + c - b}{2}, \qquad K = \dfrac{a + b - c}{2}, \qquad C = \dfrac{b + c - a}{2}. \]</div>
+      <p>Da bi sve tri mase bile pozitivne, moraju važiti tri &bdquo;trougaone&ldquo; nejednakosti: \( a + c > b \), \( a + b > c \), \( b + c > a \). Inače jedna od masa ispada \( \leq 0 \), što fizički nije moguće.</p>
+      <p>Provera za naš slučaj \( a=14, b=9, c=11 \): \( 14 + 11 > 9 \) &#10003;, \( 14 + 9 > 11 \) &#10003;, \( 9 + 11 > 14 \) &#10003;. Sve tri nejednakosti zadovoljene, dobijamo \( L=8, K=6, C=3 \).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('balance-scales');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  // Three balance scales side-by-side, then a "summed" panel below.
+  // Each scale is a horizontal beam on a triangular base; two pans hang from the ends.
+  // Each pan shows an icon + label.
+
+  // Colors per food are stable across the canvas.
+  function foodColor(kind, accent, primary, tertiary) {
+    if (kind === 'L') return accent;     // lubenica (watermelon) — green
+    if (kind === 'K') return primary;    // krompir (potatoes) — primary
+    return tertiary;                      // krastavci (cucumbers)
+  }
+
+  function drawWatermelon(cx, cy, r, fill, stroke, text) {
+    // Half-watermelon-like: green outer with red inside hint
+    ctx.save();
+    ctx.fillStyle = fill;
+    ctx.strokeStyle = stroke;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    // stripes
+    ctx.strokeStyle = stroke;
+    ctx.lineWidth = 1.5;
+    for (var i = -2; i <= 2; i++) {
+      ctx.beginPath();
+      var x0 = cx + i * (r * 0.35);
+      ctx.moveTo(x0, cy - r * 0.95);
+      ctx.lineTo(x0, cy + r * 0.95);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function drawPotatoSack(cx, cy, w, h, fill, stroke) {
+    ctx.save();
+    ctx.fillStyle = fill;
+    ctx.strokeStyle = stroke;
+    ctx.lineWidth = 2;
+    // Sack body (rounded rectangle)
+    var x = cx - w / 2, y = cy - h / 2;
+    var r = 8;
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    // Tie at top
+    ctx.beginPath();
+    ctx.moveTo(x + w * 0.3, y);
+    ctx.lineTo(x + w * 0.5, y - 8);
+    ctx.lineTo(x + w * 0.7, y);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawCucumbers(cx, cy, w, fill, stroke) {
+    ctx.save();
+    ctx.fillStyle = fill;
+    ctx.strokeStyle = stroke;
+    ctx.lineWidth = 1.5;
+    // Three elongated cucumbers stacked
+    for (var k = -1; k <= 1; k++) {
+      var ox = cx + k * 6;
+      var oy = cy + k * 4;
+      ctx.beginPath();
+      ctx.ellipse(ox, oy, w * 0.55, w * 0.18, Math.PI / 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function drawFood(kind, cx, cy, primary, accent, tertiary, stroke) {
+    if (kind === 'L') drawWatermelon(cx, cy, 22, accent, stroke);
+    else if (kind === 'K') drawPotatoSack(cx, cy, 44, 36, primary, stroke);
+    else drawCucumbers(cx, cy, 44, tertiary, stroke);
+  }
+
+  function foodLabel(kind) {
+    if (kind === 'L') return 'L  (lubenica)';
+    if (kind === 'K') return 'K  (krompir)';
+    return 'C  (krastavci)';
+  }
+
+  function drawScale(centerX, baseY, leftKind, rightKind, totalLabel, primary, accent, tertiary, axis, text, muted, bg, stroke) {
+    // Beam length and pan offsets
+    var beamHalf = 75;
+    var beamY = baseY - 65;
+
+    // Triangular base (stand)
+    ctx.fillStyle = cvAlpha('--sol-canvas-axis', 0.4);
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(centerX - 28, baseY);
+    ctx.lineTo(centerX + 28, baseY);
+    ctx.lineTo(centerX, beamY + 5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Pivot post
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(centerX, baseY);
+    ctx.lineTo(centerX, beamY + 5);
+    ctx.stroke();
+
+    // Beam
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(centerX - beamHalf, beamY);
+    ctx.lineTo(centerX + beamHalf, beamY);
+    ctx.stroke();
+    // Pivot dot
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.arc(centerX, beamY, 5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Suspension lines
+    var suspH = 22;
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(centerX - beamHalf, beamY);
+    ctx.lineTo(centerX - beamHalf - 18, beamY + suspH);
+    ctx.moveTo(centerX - beamHalf, beamY);
+    ctx.lineTo(centerX - beamHalf + 18, beamY + suspH);
+    ctx.moveTo(centerX + beamHalf, beamY);
+    ctx.lineTo(centerX + beamHalf - 18, beamY + suspH);
+    ctx.moveTo(centerX + beamHalf, beamY);
+    ctx.lineTo(centerX + beamHalf + 18, beamY + suspH);
+    ctx.stroke();
+
+    // Pans (curves)
+    function pan(px, py) {
+      ctx.fillStyle = cvAlpha('--sol-canvas-axis', 0.18);
+      ctx.strokeStyle = axis;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.ellipse(px, py, 26, 7, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+    }
+    var leftPanX = centerX - beamHalf, leftPanY = beamY + suspH + 4;
+    var rightPanX = centerX + beamHalf, rightPanY = beamY + suspH + 4;
+    pan(leftPanX, leftPanY);
+    pan(rightPanX, rightPanY);
+
+    // Food on pans
+    drawFood(leftKind, leftPanX, leftPanY - 22, primary, accent, tertiary, stroke);
+    drawFood(rightKind, rightPanX, rightPanY - 22, primary, accent, tertiary, stroke);
+
+    // Labels under each pan
+    ctx.fillStyle = text;
+    ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(foodLabel(leftKind), leftPanX, leftPanY + 22);
+    ctx.fillText(foodLabel(rightKind), rightPanX, rightPanY + 22);
+
+    // Total label below the base (the equality)
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(totalLabel, centerX, baseY + 22);
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+    var danger    = cv('--sol-canvas-danger');
+    var tertiary  = cv('--sol-canvas-tertiary');
+
+    var stroke = axis;
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Tri vage sa pijace — i njihov zbir', W / 2, 26);
+
+    // Subtitle
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('Svaki par namirnica izvagan posebno; donji panel objedinjuje sve tri vage.', W / 2, 44);
+
+    // Three scales
+    var sc1X = W * 0.18, sc2X = W * 0.50, sc3X = W * 0.82;
+    var baseY = 230;
+    drawScale(sc1X, baseY, 'L', 'K', 'L + K  =  14 kg', primary, accent, tertiary, axis, text, muted, bg, stroke);
+    drawScale(sc2X, baseY, 'K', 'C', 'K + C  =  9 kg',  primary, accent, tertiary, axis, text, muted, bg, stroke);
+    drawScale(sc3X, baseY, 'L', 'C', 'L + C  =  11 kg', primary, accent, tertiary, axis, text, muted, bg, stroke);
+
+    // Divider line
+    var divY = baseY + 50;
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(40, divY);
+    ctx.lineTo(W - 40, divY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // ===== "Combined" panel =====
+    var cy0 = divY + 30;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Sabiramo sve tri jednačine — svaka namirnica se pojavljuje DVA puta', W / 2, cy0);
+
+    // Visual: row of icons showing each food appearing twice
+    var iconY = cy0 + 50;
+    var spacing = 50;
+    var startX = W / 2 - (5 * spacing) / 2 - 10;
+
+    // Layout: [L][L]  +  [K][K]  +  [C][C]  =  34 kg
+    // Group 1: L, L
+    drawFood('L', startX, iconY, primary, accent, tertiary, stroke);
+    drawFood('L', startX + spacing, iconY, primary, accent, tertiary, stroke);
+    ctx.fillStyle = text;
+    ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('+', startX + spacing * 1.5, iconY + 6);
+
+    drawFood('K', startX + spacing * 2, iconY, primary, accent, tertiary, stroke);
+    drawFood('K', startX + spacing * 3, iconY, primary, accent, tertiary, stroke);
+    ctx.fillText('+', startX + spacing * 3.5, iconY + 6);
+
+    drawFood('C', startX + spacing * 4, iconY, primary, accent, tertiary, stroke);
+    drawFood('C', startX + spacing * 5, iconY, primary, accent, tertiary, stroke);
+    ctx.fillText('=', startX + spacing * 5.7, iconY + 6);
+
+    // Sum value
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 22px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('34 kg', startX + spacing * 6.0, iconY + 8);
+
+    // Labels under icon pairs
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('2L', startX + spacing * 0.5, iconY + 36);
+    ctx.fillText('2K', startX + spacing * 2.5, iconY + 36);
+    ctx.fillText('2C', startX + spacing * 4.5, iconY + 36);
+
+    // Equation lines
+    var eqY = iconY + 70;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px ui-monospace, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('2L + 2K + 2C  =  14 + 9 + 11  =  34', W / 2, eqY);
+
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 14px ui-monospace, monospace';
+    ctx.fillText('2 · (L + K + C)  =  34', W / 2, eqY + 24);
+
+    // Final highlighted answer
+    var ansX = W / 2;
+    var ansY = eqY + 60;
+    ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.18);
+    ctx.fillRect(ansX - 130, ansY - 22, 260, 38);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(ansX - 130, ansY - 22, 260, 38);
+
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 18px ui-monospace, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('L + K + C  =  17 kg', ansX, ansY + 4);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Lubenica, krompir i krastavci: ukupna masa iz tri parcijalna merenja",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["sistem linearnih jednačina", "simetrija", "trik sabiranja", "praktične primene", "logika"]
+}
+BRAINSPARK_META-->

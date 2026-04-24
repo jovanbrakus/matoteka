@@ -1,0 +1,439 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Zadatak: Data je rekurzija nad funkcijama:
+    f_1(x) = x
+    f_2(x) = 1 - x
+    f_{n+2}(x) = f_{n+1}(f_n(x))  za n >= 1
+  Izračunati f_{2024}(2023).
+
+  Opcije:
+    (A) 2024
+    (B) -2024
+    (C) 2023
+    (D) -2022
+    (E) 2022
+
+  Strategija: ispisati prvih nekoliko funkcija i tražiti period.
+
+  f_1(x) = x                                       (identitet)
+  f_2(x) = 1 - x                                   (dato)
+  f_3(x) = f_2(f_1(x)) = f_2(x) = 1 - x
+  f_4(x) = f_3(f_2(x)) = f_3(1-x) = 1 - (1-x) = x
+  f_5(x) = f_4(f_3(x)) = f_4(1-x) = 1 - x          (jer je f_4 identitet)
+  f_6(x) = f_5(f_4(x)) = f_5(x) = 1 - x
+  f_7(x) = f_6(f_5(x)) = f_6(1-x) = 1 - (1-x) = x
+  f_8(x) = f_7(f_6(x)) = f_7(1-x) = 1 - x
+  f_9(x) = f_8(f_7(x)) = f_8(x) = 1 - x
+  f_10(x) = f_9(f_8(x)) = f_9(1-x) = 1 - (1-x) = x
+
+  Uočimo obrazac za n >= 2:
+    n = 2: 1 - x
+    n = 3: 1 - x
+    n = 4: x
+    n = 5: 1 - x
+    n = 6: 1 - x
+    n = 7: x
+    n = 8: 1 - x
+    n = 9: 1 - x
+    n = 10: x
+  Period je 3, ali raspored je:
+    n ≡ 1 (mod 3)  →  f_n(x) = x   (npr. n = 4, 7, 10)
+    n ≡ 2 (mod 3)  →  f_n(x) = 1-x (npr. n = 2, 5, 8)
+    n ≡ 0 (mod 3)  →  f_n(x) = 1-x (npr. n = 3, 6, 9)
+
+  Potvrda indukcijom: pretpostavimo da je obrazac tačan za n, n+1. Tada za n + 2:
+    f_{n+2}(x) = f_{n+1}(f_n(x)).
+  Posmatrajmo tri slučaja po ostatku n pri deljenju sa 3.
+    * Ako je n ≡ 1 (mod 3): f_n(x) = x, a n+1 ≡ 2, pa f_{n+1}(y) = 1 - y.
+      Onda f_{n+2}(x) = f_{n+1}(x) = 1 - x. I zaista n+2 ≡ 0 (mod 3), pa formula daje 1-x. ✓
+    * Ako je n ≡ 2 (mod 3): f_n(x) = 1-x, a n+1 ≡ 0, pa f_{n+1}(y) = 1-y.
+      Onda f_{n+2}(x) = 1 - (1 - x) = x. n+2 ≡ 1 (mod 3), formula daje x. ✓
+    * Ako je n ≡ 0 (mod 3): f_n(x) = 1-x, a n+1 ≡ 1, pa f_{n+1}(y) = y (identitet).
+      Onda f_{n+2}(x) = 1 - x. n+2 ≡ 2 (mod 3), formula daje 1-x. ✓
+
+  Dakle obrazac važi za sve n >= 2.
+
+  Za n = 2024: 2024 = 3 · 674 + 2, pa 2024 ≡ 2 (mod 3).
+  Dakle f_{2024}(x) = 1 - x i f_{2024}(2023) = 1 - 2023 = -2022.
+
+  Odgovor: (D) -2022.
+
+  Uobičajene greške:
+    - Pogrešna ekspanzija: f_3(x) = f_2(f_1(x)) (NE f_1(f_2(x)) — rekurzija kaže f_{n+1}(f_n(x)),
+      a ne f_n(f_{n+1}(x))).
+    - Premalo primera pa pogrešan period (npr. zaključak "period 2").
+    - Greška pri računanju 2024 mod 3 (recimo "2024 = 3·674 + 2" — 3·674 = 2022, pa 2024 - 2022 = 2 ✓).
+    - Zamena x = 2023 na pogrešnom mestu (npr. na f_1 posle računanja f_{2024}(2023)).
+
+  Kategorija: funkcije, rekurzija, periodičnost.
+</script>
+
+<h1 data-card="problem-title">Rekurzivno definisane funkcije i periodičnost</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra funkcija &mdash; kompozicija, rekurzija, obrazac i period 3</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Ako je</p>
+  <div class="math-block">\[ f_{1}(x) = x, \qquad f_{2}(x) = 1 - x, \qquad f_{n+2}(x) = f_{n+1}\!\big(f_{n}(x)\big), \]</div>
+  <p>onda je \( f_{2024}(2023) \) jednako:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 2024 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( -2024 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 2023 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( -2022 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 2022 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Ručno izračunamo \( f_{3}, f_{4}, f_{5}, \ldots \) koristeći rekurziju \( f_{n+2}(x) = f_{n+1}(f_{n}(x)) \) dok ne uočimo obrazac. Otkrivamo da se, počev od \( n = 2 \), funkcije ponavljaju sa periodom 3. Potom 2024 svedemo po modulu 3 i utvrdimo koji tip je \( f_{2024} \), pa uvrstimo \( x = 2023 \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne ideje</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Kompozicija funkcija:</strong> \( (f \circ g)(x) = f\!\big(g(x)\big) \). Napomena: unutra je \( g \), spolja je \( f \).</li>
+        <li><strong>Rekurzija po indeksu:</strong> svaki sledeći član definisan je pomoću prethodnih. Ovde je \( f_{n+2} \) data kao kompozicija dva prethodna člana: \( f_{n+2}(x) = f_{n+1}(f_{n}(x)) \) — unutra se uvek nalazi „stariji” \( f_{n} \), a spolja „noviji” \( f_{n+1} \).</li>
+        <li><strong>Periodičnost niza funkcija:</strong> ako se od nekog indeksa pojavljuju samo dva (ili tri) različita izraza, zaključujemo o periodu posmatranjem nekoliko susednih članova.</li>
+        <li><strong>Modularna aritmetika:</strong> \( n \pmod{3} \) govori u koju „klasu” po periodu 3 spada indeks. Za \( 2024 \): \( 2024 = 3 \cdot 674 + 2 \), pa \( 2024 \equiv 2 \pmod{3} \).</li>
+        <li><strong>Involucija \( 1 - x \):</strong> funkcija \( g(x) = 1 - x \) zadovoljava \( g(g(x)) = x \) — dvaput primenjena vraća ulaz.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="patternTable" width="700" height="620"></canvas>
+  </div>
+  <p class="canvas-caption">Tabela prvih deset funkcija \( f_{n}(x) \) sa vrednostima u tački \( x = 2023 \). Isti boja u koloni „izraz” ukazuje na periodičnost: period je 3, pri čemu se \( x \) pojavljuje kada je \( n \equiv 1 \pmod{3} \) (za \( n \geq 4 \)), a \( 1 - x \) u ostala dva slučaja.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Pročitamo rekurziju</h3>
+      <p>Rekurzija \( f_{n+2}(x) = f_{n+1}(f_{n}(x)) \) kaže: novi član se dobija tako što se <em>stariji</em> član \( f_{n} \) ubaci <em>unutar</em> <em>novijeg</em> člana \( f_{n+1} \).</p>
+      <div class="math-block">\[ f_{1}(x) = x, \qquad f_{2}(x) = 1 - x. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: da li je \( f_{n+2}(x) = f_{n}(f_{n+1}(x)) \) ili \( f_{n+2}(x) = f_{n+1}(f_{n}(x)) \)?</summary>
+          <div class="detail-content"><p>Zadatak zadaje drugo: \( f_{n+2}(x) = f_{n+1}\!\big(f_{n}(x)\big) \). Redosled je bitan jer kompozicija funkcija nije komutativna!</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunamo \( f_{3} \) i \( f_{4} \)</h3>
+      <p>Za \( n = 1 \) u rekurziji:</p>
+      <div class="math-block">\[ f_{3}(x) = f_{2}\!\big(f_{1}(x)\big) = f_{2}(x) = 1 - x. \]</div>
+      <p>Za \( n = 2 \):</p>
+      <div class="math-block">\[ f_{4}(x) = f_{3}\!\big(f_{2}(x)\big) = f_{3}(1 - x) = 1 - (1 - x) = x. \]</div>
+      <p>Dakle \( f_{4} \) je ponovo identitet.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Nastavimo: \( f_{5}, f_{6}, f_{7} \)</h3>
+      <p>Za \( n = 3 \):</p>
+      <div class="math-block">\[ f_{5}(x) = f_{4}\!\big(f_{3}(x)\big) = f_{4}(1 - x) = 1 - x, \]</div>
+      <p>jer je \( f_{4} \) identitet. Za \( n = 4 \):</p>
+      <div class="math-block">\[ f_{6}(x) = f_{5}\!\big(f_{4}(x)\big) = f_{5}(x) = 1 - x. \]</div>
+      <p>Za \( n = 5 \):</p>
+      <div class="math-block">\[ f_{7}(x) = f_{6}\!\big(f_{5}(x)\big) = f_{6}(1 - x) = 1 - (1 - x) = x. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: šta uočavaš u nizu \( f_{2}, f_{3}, f_{4}, f_{5}, f_{6}, f_{7}, \ldots \)?</summary>
+          <div class="detail-content"><p>Imamo: \( 1-x,\ 1-x,\ x,\ 1-x,\ 1-x,\ x,\ \ldots \) Obrazac dužine 3 se ponavlja: dva puta \( 1 - x \) pa jednom \( x \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Formulišimo obrazac i proverimo ga</h3>
+      <p>Za \( n \geq 2 \) tvrdimo:</p>
+      <div class="math-block">\[ f_{n}(x) = \begin{cases} x, & n \equiv 1 \pmod{3}, \\ 1 - x, & n \equiv 2 \pmod{3}, \\ 1 - x, & n \equiv 0 \pmod{3}. \end{cases} \]</div>
+      <p>Dokaz indukcijom po \( n \). Baza: \( n = 2 \) i \( n = 3 \) su već pokazani. Korak: pretpostavimo da obrazac važi za \( n \) i \( n + 1 \). Tada:</p>
+      <div class="math-block">\[ f_{n+2}(x) = f_{n+1}\!\big(f_{n}(x)\big). \]</div>
+      <p>Razmatramo tri slučaja po ostatku \( n \bmod 3 \):</p>
+      <ul>
+        <li>Ako je \( n \equiv 1 \): \( f_{n}(x) = x \) i \( n + 1 \equiv 2 \), pa \( f_{n+1}(y) = 1 - y \); tada \( f_{n+2}(x) = 1 - x \). Pošto \( n + 2 \equiv 0 \), obrazac se slaže.</li>
+        <li>Ako je \( n \equiv 2 \): \( f_{n}(x) = 1 - x \) i \( n + 1 \equiv 0 \), pa \( f_{n+1}(y) = 1 - y \); tada \( f_{n+2}(x) = 1 - (1 - x) = x \). Pošto \( n + 2 \equiv 1 \), obrazac se slaže.</li>
+        <li>Ako je \( n \equiv 0 \): \( f_{n}(x) = 1 - x \) i \( n + 1 \equiv 1 \), pa \( f_{n+1}(y) = y \); tada \( f_{n+2}(x) = 1 - x \). Pošto \( n + 2 \equiv 2 \), obrazac se slaže.</li>
+      </ul>
+      <p>Obrazac važi za sve \( n \geq 2 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Svedemo \( 2024 \) po modulu \( 3 \)</h3>
+      <p>Delimo \( 2024 \) sa \( 3 \):</p>
+      <div class="math-block">\[ 2024 = 3 \cdot 674 + 2 \quad\Longrightarrow\quad 2024 \equiv 2 \pmod{3}. \]</div>
+      <p>Prema obrascu iz koraka 4, kada je \( n \equiv 2 \pmod{3} \), imamo \( f_{n}(x) = 1 - x \). Dakle:</p>
+      <div class="math-block">\[ f_{2024}(x) = 1 - x. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto \( 2024 \equiv 2 \pmod{3} \)?</summary>
+          <div class="detail-content"><p>Zbir cifara \( 2024 \) je \( 2 + 0 + 2 + 4 = 8 \). Zbir \( 8 \bmod 3 = 2 \) (jer \( 8 = 3 \cdot 2 + 2 \)). Pošto \( n \bmod 3 \) ima isti ostatak kao zbir cifara po modulu 3, \( 2024 \equiv 2 \pmod{3} \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Uvrstimo \( x = 2023 \)</h3>
+      <p>Sada je sve jednostavno:</p>
+      <div class="math-block">\[ f_{2024}(2023) = 1 - 2023 = -2022. \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Iako je indeks \( 2024 \) ogroman, niz funkcija \( f_{n} \) ima period 3 (počev od \( n = 2 \)). Umesto da računamo \( 2024 \) kompozicija, svedemo \( 2024 \) na ostatak po modulu 3 i pogledamo u kojoj smo „fazi”. Zadatak tako postaje potpuno jednostavan: \( f_{2024}(x) = 1 - x \).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ f_{2024}(2023) = 1 - 2023 = -2022 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 2024 \)</span>
+    <span class="answer-option" data-option="B">(B) \( -2024 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 2023 \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( -2022 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 2022 \)</span>
+  </div>
+  <p class="verification">Provera: \( 2024 = 3 \cdot 674 + 2 \), dakle \( 2024 \equiv 2 \pmod{3} \). U klasi \( n \equiv 2 \) imamo \( f_{n}(x) = 1 - x \), pa \( f_{2024}(2023) = 1 - 2023 = -2022 \). Dodatna numerička provera: \( f_{5}(2023) = 1 - 2023 = -2022 \) i \( 5 \equiv 2 \pmod{3} \), slažu se vrednosti.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pogrešno tumačenje rekurzije — uzimanje \( f_{n+2}(x) = f_{n}(f_{n+1}(x)) \) (zamena unutra-spolja). Redosled je važan jer kompozicija nije komutativna.</li>
+    <li>Pokušaj da se obrazac pogodi posle samo 2–3 funkcije i zaključak da je period \( 2 \). Pravi period je \( 3 \), što se vidi tek posle \( f_{4}, f_{5}, f_{6}, f_{7} \).</li>
+    <li>Greška pri svođenju \( 2024 \bmod 3 \). Tačno: \( 3 \cdot 674 = 2022 \), pa \( 2024 - 2022 = 2 \). Često se pogrešno dobije ostatak \( 1 \) ili \( 0 \).</li>
+    <li>Zabuna sa nultim indeksom: \( f_{1} \) je prvi član; prvi član obrasca je \( n = 1 \) (identitet), ali periodičnost tek počinje od \( n = 2 \).</li>
+    <li>Računanje \( f_{2024}(x) \) pa zamena \( x = 2023 \) nije problem, ali pogrešan redosled — zamena \( x = 2023 \) pre nego što se utvrdi koja je funkcija — vodi u zbrku.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koliko iznosi \( f_{2025}(2023) \)? A šta se dešava ako se promene početne funkcije i umesto \( f_{2}(x) = 1 - x \) uzme \( f_{2}(x) = 2 - x \) — kakav obrazac se tada pojavljuje i koliko iznosi \( f_{2024}(2023) \) u tom slučaju?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p><strong>Za \( f_{2025}(2023) \):</strong> \( 2025 = 3 \cdot 675 + 0 \), pa \( 2025 \equiv 0 \pmod{3} \). Prema obrascu, \( f_{2025}(x) = 1 - x \), pa \( f_{2025}(2023) = 1 - 2023 = -2022 \) — ista vrednost kao i za \( n = 2024 \)!</p>
+      <p><strong>Za \( f_{2}(x) = 2 - x \):</strong> Uočavamo da je i ovo involucija, \( g(g(x)) = x \) za \( g(x) = 2 - x \). Ponavljajući isti postupak: \( f_{3}(x) = f_{2}(f_{1}(x)) = 2 - x \), \( f_{4}(x) = f_{3}(f_{2}(x)) = 2 - (2 - x) = x \). Isti period 3, ali sada je \( f_{2024}(x) = 2 - x \), pa \( f_{2024}(2023) = 2 - 2023 = -2021 \).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('patternTable');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'left';
+    ctx.fillText('Tabela f_n(x) i vrednosti za x = 2023', 24, 30);
+
+    // Subtitle
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Rekurzija: f_{n+2}(x) = f_{n+1}(f_n(x)). Period je 3 za n ≥ 2.', 24, 50);
+
+    // Column setup
+    var col1 = 40;     // n
+    var col2 = 130;    // f_n(x) expression
+    var col3 = 360;    // n mod 3
+    var col4 = 480;    // f_n(2023)
+    var tableTop = 80;
+    var rowH = 40;
+
+    // Header row
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.15);
+    ctx.fillRect(30, tableTop, W - 60, rowH);
+    ctx.strokeStyle = cv('--sol-canvas-primary');
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(30, tableTop, W - 60, rowH);
+
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = cv('--sol-canvas-primary');
+    ctx.textAlign = 'left';
+    ctx.fillText('n', col1, tableTop + 24);
+    ctx.fillText('f_n(x)', col2, tableTop + 24);
+    ctx.fillText('n mod 3', col3, tableTop + 24);
+    ctx.fillText('f_n(2023)', col4, tableTop + 24);
+
+    // Rows: n = 1..10
+    var rows = [
+      { n: 1, expr: 'x',     mod: 1, val: '2023' },
+      { n: 2, expr: '1 − x', mod: 2, val: '−2022' },
+      { n: 3, expr: '1 − x', mod: 0, val: '−2022' },
+      { n: 4, expr: 'x',     mod: 1, val: '2023' },
+      { n: 5, expr: '1 − x', mod: 2, val: '−2022' },
+      { n: 6, expr: '1 − x', mod: 0, val: '−2022' },
+      { n: 7, expr: 'x',     mod: 1, val: '2023' },
+      { n: 8, expr: '1 − x', mod: 2, val: '−2022' },
+      { n: 9, expr: '1 − x', mod: 0, val: '−2022' },
+      { n: 10, expr: 'x',    mod: 1, val: '2023' }
+    ];
+
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i];
+      var y = tableTop + rowH * (i + 1);
+
+      // Choose color by expression (since n=1 is identity but not in periodic pattern, highlight 2-onward)
+      var isX = (row.expr === 'x');
+      var rowColor = isX ? cvAlpha('--sol-canvas-primary', 0.10) : cvAlpha('--sol-canvas-accent', 0.10);
+      if (i === 0) rowColor = cvAlpha('--sol-canvas-muted', 0.08); // n=1 is special (before period starts)
+
+      ctx.fillStyle = rowColor;
+      ctx.fillRect(30, y, W - 60, rowH);
+      ctx.strokeStyle = grid;
+      ctx.lineWidth = 1;
+      ctx.strokeRect(30, y, W - 60, rowH);
+
+      ctx.font = '13px Inter, system-ui, sans-serif';
+      ctx.fillStyle = text;
+      ctx.textAlign = 'left';
+      ctx.fillText(String(row.n), col1, y + 24);
+
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.fillStyle = isX ? cv('--sol-canvas-primary') : cv('--sol-canvas-accent');
+      ctx.fillText(row.expr, col2, y + 24);
+
+      ctx.font = '13px Inter, system-ui, sans-serif';
+      ctx.fillStyle = text;
+      ctx.fillText(String(row.mod), col3 + 20, y + 24);
+
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.fillStyle = isX ? cv('--sol-canvas-primary') : cv('--sol-canvas-accent');
+      ctx.fillText(row.val, col4, y + 24);
+    }
+
+    // Footer — 2024 mod 3 computation
+    var footY = tableTop + rowH * (rows.length + 1) + 24;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.fillStyle = cv('--sol-canvas-secondary');
+    ctx.textAlign = 'left';
+    ctx.fillText('2024 = 3 · 674 + 2   ⇒   2024 ≡ 2 (mod 3)', 40, footY);
+
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.fillStyle = cv('--sol-canvas-accent');
+    ctx.fillText('f_{2024}(x) = 1 − x   ⇒   f_{2024}(2023) = −2022', 40, footY + 26);
+
+    // Legend
+    var legY = footY + 58;
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.30);
+    ctx.fillRect(40, legY, 16, 16);
+    ctx.strokeStyle = cv('--sol-canvas-primary');
+    ctx.strokeRect(40, legY, 16, 16);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.fillText('f_n(x) = x  (n ≡ 1 mod 3, za n ≥ 4)', 65, legY + 13);
+
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.30);
+    ctx.fillRect(340, legY, 16, 16);
+    ctx.strokeStyle = cv('--sol-canvas-accent');
+    ctx.strokeRect(340, legY, 16, 16);
+    ctx.fillStyle = text;
+    ctx.fillText('f_n(x) = 1 − x  (n ≡ 2 ili 0 mod 3)', 365, legY + 13);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Rekurzivno definisane funkcije i periodičnost",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["rekurzija", "kompozicija funkcija", "periodičnost", "modularna aritmetika", "involucija"]
+}
+BRAINSPARK_META-->

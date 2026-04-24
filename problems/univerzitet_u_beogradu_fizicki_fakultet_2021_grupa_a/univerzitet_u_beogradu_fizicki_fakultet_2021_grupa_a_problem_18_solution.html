@@ -1,0 +1,759 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Prirodni brojevi m, n, k pri deljenju sa 7 daju ostatke 3, 5, 1.
+  Naći ostatak izraza mk + n pri deljenju sa 7.
+
+  Korak 1 — Zapis preko teoreme o deljenju:
+    m = 7a + 3,  n = 7b + 5,  k = 7c + 1,  za neke a, b, c ∈ N₀.
+
+  Korak 2 — Sračunati mk + n:
+    mk = (7a + 3)(7c + 1) = 49ac + 7a + 21c + 3 = 7(7ac + a + 3c) + 3.
+    Dakle mk ≡ 3 · 1 = 3 (mod 7).
+
+    Drugačije:
+    mk ≡ m · k ≡ 3 · 1 = 3 (mod 7).
+
+    mk + n ≡ 3 + 5 = 8 ≡ 1 (mod 7).
+    Jer 8 = 7 · 1 + 1, ostatak je 1.
+
+  Korak 3 — Provera konkretnim brojevima:
+    Najmanji primer: m = 3, n = 5, k = 1.
+    mk + n = 3 · 1 + 5 = 8.
+    8 = 7 · 1 + 1, ostatak 1. ✓
+    Drugi primer: m = 10 (= 7+3), n = 12 (= 7+5), k = 8 (= 7+1).
+    mk + n = 10 · 8 + 12 = 80 + 12 = 92.
+    92 = 7 · 13 + 1 (jer 7·13 = 91), ostatak 1. ✓
+    Treći: m = 17, n = 19, k = 15.
+    mk + n = 17·15 + 19 = 255 + 19 = 274. 274 = 7·39 + 1 (7·39 = 273). ✓
+
+  Tačan odgovor: (A) 1.
+
+  Pogrešni odgovori — analiza:
+    (B) 3 — to bi bio ostatak samo mk (= 3·1 = 3). Zaboravljen je sabirak n.
+    (C) 5 — to je ostatak n (samo). Zaboravljen mk.
+    (D) 6 — kako bi neko dobio 6? Možda 3 + 3 = 6 ako pogrešno pomnoži m·k = 9 ≡ 2 (mod 7), pa tu pogrešno doda
+            5 (bilo bi 7 ≡ 0, ne 6). Ili 5 + 1 = 6 (zbir ostatka n i k, bez množenja). Tipična greška.
+
+  Vizuelna sredstva:
+    1) Krug 7 boja — modularna predstava ostataka (kao sat sa 7 položaja). Tri tačke za m, n, k
+       sa ostacima 3, 5, 1. Prikaz operacije mk + n na krugu.
+    2) Vizuelizacija sa konkretnim brojevima: 3, 5, 1 → 8 → 1 (8 = 7+1, vraća se na 1).
+    3) Tabela ostataka pri deljenju sa 7 za niz primera.
+</script>
+
+<h1 data-card="problem-title">Modularna aritmetika &mdash; ostatak izraza \( mk + n \) po modulu 7</h1>
+<p data-card="problem-subtitle" class="subtitle">Teorija brojeva &mdash; Euklidova teorema o deljenju, kongruencije, sabiranje i množenje po modulu</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>Tekst zadatka</h2>
+  <p>Ako prirodni brojevi \( m \), \( n \) i \( k \) pri deljenju sa \( 7 \) daju ostatke \( 3 \), \( 5 \) i \( 1 \) redom, onda broj \( mk + n \) daje pri deljenju sa \( 7 \) ostatak:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 5 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 6 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>Plan rešavanja</h2>
+  <p class="plan-text">Cela ideja je da pri računanju ostatka po modulu \( 7 \) ne moramo znati same brojeve \( m, n, k \) &mdash; dovoljni su njihovi ostaci. Pravila kongruencije kažu: <em>ostatak proizvoda</em> je ostatak proizvoda ostataka, i <em>ostatak zbira</em> je ostatak zbira ostataka, sve po istom modulu. Zato \( mk \equiv 3 \cdot 1 = 3 \pmod 7 \), a \( mk + n \equiv 3 + 5 = 8 \pmod 7 \). Pošto \( 8 = 7 + 1 \), ostatak je \( 1 \). Da bismo bili sigurni, proverićemo na najjednostavnijem primeru \( m = 3, n = 5, k = 1 \): \( mk + n = 8 \), čiji je ostatak po \( 7 \) baš \( 1 \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>Podsetnik iz teorije</h2>
+  <details>
+    <summary>Euklidova teorema o deljenju, kongruencije, pravila</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Euklidova teorema o deljenju (sa ostatkom):</strong> za bilo koji ceo broj \( a \) i prirodan delitelj \( d > 0 \) postoji jedinstven par \( (q, r) \) takav da \( a = qd + r \), \( 0 \le r < d \). Broj \( q \) je <em>količnik</em>, \( r \) je <em>ostatak</em>.</li>
+        <li><strong>Kongruencija po modulu:</strong> \( a \equiv b \pmod d \) znači da \( d \mid (a - b) \), tj. \( a \) i \( b \) imaju <em>isti ostatak</em> pri deljenju sa \( d \). Ekvivalentno: \( a = b + kd \) za neki ceo \( k \).</li>
+        <li><strong>Pravila kongruencija:</strong> ako \( a \equiv a' \pmod d \) i \( b \equiv b' \pmod d \), onda važi
+          <ul>
+            <li><span class="formula-label">\( a + b \equiv a' + b' \pmod d \)</span> (zbir),</li>
+            <li><span class="formula-label">\( a - b \equiv a' - b' \pmod d \)</span> (razlika),</li>
+            <li><span class="formula-label">\( a \cdot b \equiv a' \cdot b' \pmod d \)</span> (proizvod),</li>
+            <li><span class="formula-label">\( a^n \equiv (a')^n \pmod d \)</span> (stepen, za \( n \in \mathbb{N} \)).</li>
+          </ul>
+          Drugim rečima: računanje sa kongruencijama je &bdquo;arithmetika sa ostacima&rdquo;.
+        </li>
+        <li><strong>Pojednostavljivanje na rezidualni skup:</strong> svaki ceo broj je kongruentan svom ostatku, pa po modulu \( d \) postoje samo \( d \) različitih kongruencijskih klasa: \( \{0, 1, 2, \ldots, d - 1\} \).</li>
+        <li><strong>Vraćanje u opseg:</strong> ako rezultat operacije bude \( \ge d \) ili \( < 0 \), oduzimamo (ili dodamo) \( d \) onoliko puta koliko treba da padne u \( [0, d - 1] \). Npr. \( 8 \pmod 7 = 8 - 7 = 1 \).</li>
+        <li><strong>Notacija:</strong> &bdquo;\( a \equiv b \pmod d \)&rdquo; čita se &bdquo;\( a \) je kongruentno \( b \) po modulu \( d \)&rdquo; i znači da \( a \) i \( b \) imaju isti ostatak pri deljenju sa \( d \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Modularni krug ostataka po modulu 7">
+  <h2>Modularni &bdquo;sat&rdquo; po modulu 7</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-mod-clock" width="760" height="640"></canvas>
+  </div>
+  <p class="canvas-caption">Krug ima sedam &bdquo;časova&rdquo; \( 0, 1, 2, 3, 4, 5, 6 \) &mdash; mogući ostaci pri deljenju sa \( 7 \). Brojevi \( m, n, k \) su predstavljeni svojim ostacima: \( m \to 3 \), \( n \to 5 \), \( k \to 1 \). Operacija \( mk \) na ovom krugu je &bdquo;skok&rdquo; sa \( 0 \) za \( 3 \cdot 1 = 3 \) položaja, čime stižemo na \( 3 \). Zatim \( + n \) je dodatni skok od \( 5 \) položaja, što ukupno \( 3 + 5 = 8 \) prevazilazi puni krug, pa &bdquo;omotamo&rdquo; (\( 8 - 7 = 1 \)) i stižemo na \( 1 \). Konačni ostatak: <strong>\( 1 \)</strong>.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Zapis preko Euklidove teoreme</h3>
+      <p>Iz uslova zadatka, koristeći teoremu o deljenju sa ostatkom, postoje nenegativni celi brojevi \( a, b, c \) tako da:</p>
+      <div class="math-block">\[ m \;=\; 7a + 3, \qquad n \;=\; 7b + 5, \qquad k \;=\; 7c + 1. \]</div>
+      <p>Ekvivalentni zapis u jeziku kongruencija (kompaktnije):</p>
+      <div class="math-block">\[ m \equiv 3 \pmod 7, \qquad n \equiv 5 \pmod 7, \qquad k \equiv 1 \pmod 7. \]</div>
+      <p>Ovo znači da kada bilo koji od ovih brojeva podelimo sa \( 7 \), ostane upravo \( 3 \), \( 5 \) ili \( 1 \), redom.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Računanje \( mk \pmod 7 \)</h3>
+      <p>Primenjujemo pravilo: ostatak proizvoda je ostatak proizvoda ostataka. Po modulu \( 7 \):</p>
+      <div class="math-block">\[ mk \;\equiv\; 3 \cdot 1 \;=\; 3 \pmod 7. \]</div>
+      <p>Provera kroz razvijanje:</p>
+      <div class="math-block">\[ mk \;=\; (7a + 3)(7c + 1) \;=\; 49ac + 7a + 21c + 3 \;=\; 7\underbrace{(7ac + a + 3c)}_{\text{ceo broj}} + 3. \]</div>
+      <p>Vidimo da je celokupna &bdquo;sedmica&rdquo; sklupljena u prvi sabirak, pa ostatak ostaje \( 3 \). Identitet potvrđen.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto sve &bdquo;mešavine&rdquo; \( 49ac, 7a, 21c \) ne menjaju ostatak?</summary>
+          <div class="detail-content"><p>Zato što je svaka od njih deljiva sa \( 7 \): \( 49 = 7 \cdot 7 \), \( 7 \) je trivijalan, \( 21 = 7 \cdot 3 \). Bilo šta deljivo sa \( 7 \) je \( \equiv 0 \pmod 7 \) i ne menja ostatak izraza. Otud preživljava samo proizvod &bdquo;ostatak \( m \) puta ostatak \( k \)&rdquo; \( = 3 \cdot 1 = 3 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Dodavanje \( n \) i &bdquo;omotavanje&rdquo;</h3>
+      <p>Sada koristimo pravilo za zbir kongruencija:</p>
+      <div class="math-block">\[ mk + n \;\equiv\; 3 + 5 \;=\; 8 \pmod 7. \]</div>
+      <p>Rezultat \( 8 \) je <em>veći ili jednak</em> \( 7 \), pa nije validan ostatak (ostatak mora biti u \( \{0, 1, 2, 3, 4, 5, 6\} \)). Vraćamo ga u opseg oduzimanjem \( 7 \):</p>
+      <div class="math-block">\[ 8 \;=\; 7 \cdot 1 + 1 \quad\Longrightarrow\quad 8 \equiv 1 \pmod 7. \]</div>
+      <p>Dakle:</p>
+      <div class="math-block">\[ \boxed{\; mk + n \;\equiv\; 1 \pmod 7 \;} \]</div>
+      <p>Ostatak je \( 1 \).</p>
+      <div class="callout callout-info">
+        <strong>Slika &bdquo;sata sa 7 položaja&rdquo;:</strong> krenemo od \( 0 \), pređemo \( 3 \) položaja (postanemo \( 3 \)), pa još \( 5 \) (\( 3 + 5 = 8 \), ali sat ima samo \( 0..6 \), pa &bdquo;omotamo&rdquo; nazad: \( 8 \to 1 \)). Završavamo na položaju \( 1 \) &mdash; isti kao \( 8 - 7 = 1 \).
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera konkretnim brojevima</h3>
+      <p>Da bismo bili sigurni, isprobaćemo na nekoliko trojki \( (m, n, k) \) koje zadovoljavaju uslove:</p>
+
+      <div class="substep" data-substep="a)">
+        <p><strong>Najjednostavniji primer:</strong> \( m = 3, n = 5, k = 1 \) (ostaci \( 3, 5, 1 \) trivijalno). Ovde je \( a = b = c = 0 \).</p>
+        <div class="math-block">\[ mk + n \;=\; 3 \cdot 1 + 5 \;=\; 8 \;=\; 7 \cdot 1 + 1. \]</div>
+        <p>Ostatak \( = 1 \). &check;</p>
+      </div>
+
+      <div class="substep" data-substep="b)">
+        <p><strong>Drugi primer:</strong> \( m = 10 = 7 + 3, \ n = 12 = 7 + 5, \ k = 8 = 7 + 1 \) (\( a = b = c = 1 \)).</p>
+        <div class="math-block">\[ mk + n \;=\; 10 \cdot 8 + 12 \;=\; 80 + 12 \;=\; 92 \;=\; 7 \cdot 13 + 1. \]</div>
+        <p>(Provera: \( 7 \cdot 13 = 91 \), \( 92 - 91 = 1 \).) Ostatak \( = 1 \). &check;</p>
+      </div>
+
+      <div class="substep" data-substep="c)">
+        <p><strong>Treći primer:</strong> \( m = 17, \ n = 19, \ k = 15 \) (\( a = 2, b = 2, c = 2 \)).</p>
+        <div class="math-block">\[ mk + n \;=\; 17 \cdot 15 + 19 \;=\; 255 + 19 \;=\; 274 \;=\; 7 \cdot 39 + 1. \]</div>
+        <p>(Provera: \( 7 \cdot 39 = 273 \), \( 274 - 273 = 1 \).) Ostatak \( = 1 \). &check;</p>
+      </div>
+
+      <p>Sva tri primera daju ostatak \( 1 \) &mdash; <em>nezavisno</em> od izbora konkretnih brojeva, kao što teorija predviđa. Tačan odgovor je <strong>(A) \( 1 \)</strong>.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>Ključni uvid</h2>
+  <p>Modularna aritmetika je moćan alat baš zato što <em>brišemo&nbsp;detalje&nbsp;koje&nbsp;nas&nbsp;ne&nbsp;zanimaju</em>. Da bismo izračunali ostatak složenog izraza po modulu \( d \), nije potrebno znati prave brojeve &mdash; dovoljni su ostaci. Sve operacije (sabiranje, oduzimanje, množenje, stepenovanje &mdash; ali <em>ne</em> deljenje u opštem slučaju) prenose se na ostatke. Ovde: \( m, n, k \) mogu biti milioni različitih brojeva, ali \( mk + n \) <em>uvek</em> daje isti ostatak \( 1 \) po modulu \( 7 \). To je rezultat koji bi trebalo dokazati u jednom koraku: \( mk + n \equiv 3 \cdot 1 + 5 = 8 \equiv 1 \pmod 7 \). Ostatak nije izbor &mdash; jednoznačno je određen ostatcima ulaza.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Tabela ostataka i provera primerima">
+  <h2>Tabela ostataka &mdash; uvek 1, ma kako birali \( m, n, k \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-table" width="760" height="540"></canvas>
+  </div>
+  <p class="canvas-caption">Pet različitih primera trojki \( (m, n, k) \) koje zadovoljavaju uslov (ostaci \( 3, 5, 1 \)). U svakom slučaju izračunato je \( mk + n \), izvršeno deljenje sa \( 7 \), i naveden je dobijeni ostatak. Svih pet primera daju isti ostatak: <strong>\( 1 \)</strong>. Vidite da, koliko god &bdquo;veliki&rdquo; brojevi bili, ostatak po modulu \( 7 \) zavisi samo od ostataka ulaza.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ mk + n \;\equiv\; 1 \pmod 7 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 1 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 3 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 5 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 6 \)</span>
+  </div>
+  <p class="verification">Računica po modulu: \( mk \equiv 3 \cdot 1 = 3 \pmod 7 \), pa \( mk + n \equiv 3 + 5 = 8 \equiv 1 \pmod 7 \). Provera trima konkretnim primerima &mdash; \( (3, 5, 1) \to 8 \), \( (10, 12, 8) \to 92 \), \( (17, 19, 15) \to 274 \) &mdash; svi daju ostatak \( 1 \) po modulu \( 7 \). Pogrešna alternativa (B) \( 3 \) bi bio ostatak samo proizvoda \( mk \) (zaboravljen sabirak \( n \)); (C) \( 5 \) je samo ostatak \( n \) (zaboravljen \( mk \)); (D) \( 6 \) bi sledilo iz pogrešnog \( 3 + 3 = 6 \) (gde se umesto sabiranja \( 3 + 5 \) napravi \( 5 + 1 \) ili neka druga greška). Tačan odgovor: <strong>(A)</strong>. &check;</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zaboravljeno omotavanje (8 \( \to \) 1):</strong> dobiti \( mk + n \equiv 8 \) i tu stati. Ali \( 8 \) <em>nije</em> validan ostatak po modulu \( 7 \) (mora biti \( < 7 \)). Treba još oduzeti \( 7 \), čime dobijamo \( 1 \).</li>
+    <li><strong>Sabiranje umesto množenja (ili obrnuto):</strong> izraz je \( mk + n \), ne \( m + k + n \). Ostaci \( 3, 5, 1 \): ako bismo radili \( m + k + n \), dobili bismo \( 3 + 1 + 5 = 9 \equiv 2 \pmod 7 \) &mdash; pogrešan odgovor.</li>
+    <li><strong>Pogrešno proširenje pravila na deljenje:</strong> kongruencije se ne prenose direktno preko deljenja. \( a \equiv b \pmod d \) i \( c \neq 0 \) <em>ne implicira</em> \( a/c \equiv b/c \pmod d \). Sva pravila važe za \( + \), \( - \), \( \cdot \), \( {}^n \), ali deljenje zahteva poseban tretman (modularni inverz, \( \gcd = 1 \)).</li>
+    <li><strong>Zamenjivanje brojeva i ostataka:</strong> \( m = 3 \) je samo <em>jedan</em> mogući primer; \( m \) može biti i \( 10, 17, 24, \ldots \) Sve one daju isti ostatak. Računanje sa konkretnom vrednošću \( m = 3 \) daje tačan odgovor, ali <em>opšti</em> dokaz radi sa kongruencijama.</li>
+    <li><strong>Greška u tabeli ostataka:</strong> ostatak \( 8 \pmod 7 \) je \( 1 \), <em>ne</em> \( 0 \). Zapamti: \( 8 = 7 + 1 \), pa je preostalo \( 1 \). Slično \( 7 \pmod 7 = 0 \), \( 14 \pmod 7 = 0 \), \( 15 \pmod 7 = 1 \), itd.</li>
+    <li><strong>Negativan ostatak:</strong> u školskoj definiciji ostatak je nenegativan (\( 0 \le r < d \)). Ako se javi negativan rezultat, dodaj \( d \) (npr. \( -3 \pmod 7 = 4 \), jer \( -3 + 7 = 4 \)).</li>
+    <li><strong>Pomeranje fokusa pri verifikaciji:</strong> ako proverite jedan primer i &bdquo;dobijete \( 1 \)&rdquo;, to <em>ne</em> dokazuje rezultat za sve trojke &mdash; ali konzistentnost između teorije i nekoliko primera je dobra signalizacija da niste pogrešili u apstraktnom računu.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>Dodatni izazov</h2>
+  <p>Pri istim uslovima (\( m \equiv 3, n \equiv 5, k \equiv 1 \pmod 7 \)), nađi ostatak izraza \( m^2 + nk^3 - 2mk \) pri deljenju sa \( 7 \). Kako bi se promenio rezultat ako bi modul bio \( 11 \) (tj. ostaci \( 3, 5, 1 \) sada po modulu \( 11 \))?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Po modulu \( 7 \): \( m^2 \equiv 9 \equiv 2 \), \( k^3 \equiv 1^3 = 1 \), pa \( nk^3 \equiv 5 \cdot 1 = 5 \), a \( 2mk \equiv 2 \cdot 3 \cdot 1 = 6 \). Zbir: \( 2 + 5 - 6 = 1 \pmod 7 \). Ostatak je \( 1 \). Po modulu \( 11 \): isti račun, ali sa &bdquo;omotavanjem po 11&rdquo;: \( m^2 = 9 \), \( nk^3 = 5 \), \( 2mk = 6 \), pa \( 9 + 5 - 6 = 8 \pmod{11} \) &mdash; ostatak je \( 8 \). Vidi se da rezultat zavisi od izbora modula, jer se &bdquo;omotavanje&rdquo; menja.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-mod-clock');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  // Geometry
+  var cx = 220;
+  var cy = 290;
+  var R = 170;
+
+  // 7 positions on the clock
+  function pos(i) {
+    // i = 0..6, place at angle starting from top going clockwise
+    var theta = -Math.PI / 2 + 2 * Math.PI * i / 7;
+    return { x: cx + R * Math.cos(theta), y: cy + R * Math.sin(theta), theta: theta };
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+    var danger    = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Modularni sat — ostaci po modulu 7', W / 2, 26);
+
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('mk + n ≡ 3·1 + 5 = 8 ≡ 1 (mod 7)', W / 2, 46);
+
+    // Outer circle (background)
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.05);
+    ctx.beginPath();
+    ctx.arc(cx, cy, R + 30, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 7 spokes
+    ctx.strokeStyle = cvAlpha('--sol-canvas-grid', 0.6);
+    ctx.lineWidth = 1;
+    for (var i = 0; i < 7; i++) {
+      var p = pos(i);
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(p.x, p.y);
+      ctx.stroke();
+    }
+
+    // Main clock circle
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Position labels (0..6) on outside
+    ctx.font = 'bold 16px "Cambria Math", Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    for (var j = 0; j < 7; j++) {
+      var pp = pos(j);
+      var labelR = R + 24;
+      var lx = cx + labelR * Math.cos(pp.theta);
+      var ly = cy + labelR * Math.sin(pp.theta);
+      // Highlight 0, 3 (mk position), 1 (final answer), 5 (n)
+      var col = muted;
+      if (j === 0) col = muted;
+      else if (j === 3) col = accent;
+      else if (j === 5) col = secondary;
+      else if (j === 1) col = highlight;
+      ctx.fillStyle = col;
+      ctx.fillText(String(j), lx, ly);
+    }
+
+    // Position dots
+    for (var k = 0; k < 7; k++) {
+      var pk = pos(k);
+      var col2 = primary;
+      if (k === 3) col2 = accent;
+      else if (k === 5) col2 = secondary;
+      else if (k === 1) col2 = highlight;
+      ctx.fillStyle = col2;
+      ctx.beginPath();
+      ctx.arc(pk.x, pk.y, 6, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Step 1 arrow: from 0 to 3 (mk = 3·1 = 3)
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 3;
+    var startA = -Math.PI / 2;       // position 0 (top)
+    var endA1 = -Math.PI / 2 + 2 * Math.PI * 3 / 7;  // position 3
+    ctx.beginPath();
+    ctx.arc(cx, cy, R - 22, startA, endA1, false);
+    ctx.stroke();
+    // Arrowhead at end of arc 1
+    var p3 = pos(3);
+    var arrowAngle1 = endA1 + Math.PI / 2;
+    ctx.fillStyle = accent;
+    ctx.save();
+    ctx.translate(cx + (R - 22) * Math.cos(endA1), cy + (R - 22) * Math.sin(endA1));
+    ctx.rotate(arrowAngle1);
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(-7, -10);
+    ctx.lineTo(7, -10);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+
+    // Step 2 arrow: from 3 to 1 (going through 4, 5, 6, 0, 1 = +5 positions, wraps around)
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 3;
+    var startA2 = endA1;
+    var endA2 = startA2 + 2 * Math.PI * 5 / 7;  // +5 positions
+    ctx.beginPath();
+    ctx.arc(cx, cy, R - 42, startA2, endA2, false);
+    ctx.stroke();
+    // Arrowhead at end of arc 2 (which is at position 1, after going past 6 → 0 → 1)
+    var arrowAngle2 = endA2 + Math.PI / 2;
+    ctx.fillStyle = secondary;
+    ctx.save();
+    ctx.translate(cx + (R - 42) * Math.cos(endA2), cy + (R - 42) * Math.sin(endA2));
+    ctx.rotate(arrowAngle2);
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(-7, -10);
+    ctx.lineTo(7, -10);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+
+    // Highlight final position (1)
+    var p1 = pos(1);
+    ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.32);
+    ctx.beginPath();
+    ctx.arc(p1.x, p1.y, 16, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = highlight;
+    ctx.beginPath();
+    ctx.arc(p1.x, p1.y, 9, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(p1.x, p1.y, 9, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // "Start" label
+    var p0 = pos(0);
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('start: 0', p0.x, p0.y - 22);
+
+    // Right info panel
+    var panelX = 460;
+    var panelY = 70;
+    var panelW = 280;
+    var panelH = 380;
+
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.06);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1.5;
+    if (ctx.roundRect) {
+      ctx.beginPath();
+      ctx.roundRect(panelX, panelY, panelW, panelH, 10);
+      ctx.fill();
+      ctx.stroke();
+    } else {
+      ctx.fillRect(panelX, panelY, panelW, panelH);
+      ctx.strokeRect(panelX, panelY, panelW, panelH);
+    }
+
+    // Header
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Korak po korak (po mod 7)', panelX + 16, panelY + 26);
+
+    // Inputs
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Ulazni ostaci:', panelX + 16, panelY + 56);
+
+    ctx.font = 'bold 13px "Cambria Math", Georgia, serif';
+    ctx.fillStyle = accent;
+    ctx.fillText('m ≡ 3', panelX + 16, panelY + 80);
+    ctx.fillStyle = secondary;
+    ctx.fillText('n ≡ 5', panelX + 100, panelY + 80);
+    ctx.fillStyle = highlight;
+    ctx.fillText('k ≡ 1', panelX + 184, panelY + 80);
+
+    // Divider
+    ctx.strokeStyle = cvAlpha('--sol-canvas-muted', 0.4);
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(panelX + 16, panelY + 102);
+    ctx.lineTo(panelX + panelW - 16, panelY + 102);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Step 1: mk
+    ctx.fillStyle = text;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.fillText('Korak A — proizvod mk', panelX + 16, panelY + 124);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px "Cambria Math", Georgia, serif';
+    ctx.fillText('mk ≡ 3 · 1 = 3', panelX + 16, panelY + 148);
+
+    // Visual: arrow from 0 to 3
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+    ctx.fillText('(skok od 3 položaja na satu)', panelX + 16, panelY + 168);
+
+    // Step 2: + n
+    ctx.fillStyle = text;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.fillText('Korak B — sabiranje + n', panelX + 16, panelY + 196);
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 14px "Cambria Math", Georgia, serif';
+    ctx.fillText('mk + n ≡ 3 + 5 = 8', panelX + 16, panelY + 220);
+
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+    ctx.fillText('(skok od 5 položaja, prelazi 7)', panelX + 16, panelY + 240);
+
+    // Step 3: omotanje
+    ctx.fillStyle = text;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.fillText('Korak C — omotavanje (mod 7)', panelX + 16, panelY + 268);
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 14px "Cambria Math", Georgia, serif';
+    ctx.fillText('8 = 7 · 1 + 1', panelX + 16, panelY + 292);
+    ctx.fillStyle = warning;
+    ctx.fillText('8 ≡ 1 (mod 7)', panelX + 16, panelY + 312);
+
+    // Final result
+    ctx.fillStyle = highlight;
+    if (ctx.roundRect) {
+      ctx.beginPath();
+      ctx.roundRect(panelX + 16, panelY + 332, panelW - 32, 36, 6);
+      ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.18);
+      ctx.fill();
+      ctx.strokeStyle = highlight;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 16px "Cambria Math", Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('mk + n ≡ 1 (mod 7)', panelX + panelW / 2, panelY + 356);
+
+    // Bottom legend
+    var legY = H - 40;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'left';
+
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(60, legY);
+    ctx.lineTo(100, legY);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.fillText('skok mk = +3 (na položaj 3)', 110, legY);
+
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(330, legY);
+    ctx.lineTo(370, legY);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.fillText('skok + n = +5 (omotaj na 1)', 380, legY);
+
+    ctx.fillStyle = highlight;
+    ctx.beginPath();
+    ctx.arc(620, legY, 7, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.fillText('konačan ostatak: 1', 632, legY);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-table');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  // Five examples
+  var examples = [
+    { m: 3,  n: 5,  k: 1,  desc: 'najmanji slučaj (a=b=c=0)' },
+    { m: 10, n: 12, k: 8,  desc: '+7 svuda (a=b=c=1)' },
+    { m: 17, n: 19, k: 15, desc: '+14 svuda (a=b=c=2)' },
+    { m: 24, n: 5,  k: 22, desc: 'mešani (a=3, b=0, c=3)' },
+    { m: 31, n: 26, k: 36, desc: 'veliki (a=4, b=3, c=5)' }
+  ];
+
+  // Compute mk + n and remainder mod 7
+  examples.forEach(function(ex) {
+    ex.mk = ex.m * ex.k;
+    ex.sum = ex.mk + ex.n;
+    ex.q = Math.floor(ex.sum / 7);
+    ex.r = ex.sum - 7 * ex.q;
+  });
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Pet konkretnih primera — svi daju isti ostatak (1)', W / 2, 30);
+
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('Iako su brojevi različiti, ostatak izraza mk + n po mod 7 zavisi samo od ostataka m, n, k.', W / 2, 50);
+
+    // Table layout
+    var tableX = 50;
+    var tableY = 90;
+    var rowH = 56;
+    var colWidths = [40, 60, 60, 60, 90, 90, 60, 240];
+    var headers = ['#', 'm', 'n', 'k', 'm·k', 'mk + n', 'ostatak', 'opis'];
+
+    // Header row
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.18);
+    ctx.fillRect(tableX, tableY, W - 100, 40);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(tableX, tableY, W - 100, 40);
+
+    var cx = tableX;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    for (var i = 0; i < headers.length; i++) {
+      ctx.fillText(headers[i], cx + colWidths[i] / 2, tableY + 20);
+      cx += colWidths[i];
+    }
+
+    // Rows
+    for (var ri = 0; ri < examples.length; ri++) {
+      var ex = examples[ri];
+      var ry = tableY + 40 + ri * rowH;
+
+      // Alternate row background
+      if (ri % 2 === 0) {
+        ctx.fillStyle = cvAlpha('--sol-canvas-grid', 0.4);
+        ctx.fillRect(tableX, ry, W - 100, rowH);
+      }
+
+      // Row border
+      ctx.strokeStyle = cvAlpha('--sol-canvas-muted', 0.3);
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(tableX, ry + rowH);
+      ctx.lineTo(tableX + W - 100, ry + rowH);
+      ctx.stroke();
+
+      // Data
+      var cellX = tableX;
+      var values = [
+        String(ri + 1),
+        String(ex.m),
+        String(ex.n),
+        String(ex.k),
+        String(ex.mk),
+        String(ex.sum),
+        String(ex.r),
+        ex.desc
+      ];
+      var colors = [text, accent, secondary, highlight, primary, primary, warning, muted];
+      var fonts = [
+        'bold 13px Inter',
+        'bold 14px "Cambria Math", Georgia, serif',
+        'bold 14px "Cambria Math", Georgia, serif',
+        'bold 14px "Cambria Math", Georgia, serif',
+        'bold 13px "Cambria Math", Georgia, serif',
+        'bold 14px "Cambria Math", Georgia, serif',
+        'bold 16px "Cambria Math", Georgia, serif',
+        'italic 12px Inter, system-ui'
+      ];
+      var aligns = ['center', 'center', 'center', 'center', 'center', 'center', 'center', 'left'];
+
+      for (var ci = 0; ci < values.length; ci++) {
+        ctx.fillStyle = colors[ci];
+        ctx.font = fonts[ci];
+        ctx.textAlign = aligns[ci];
+        var tx;
+        if (aligns[ci] === 'center') tx = cellX + colWidths[ci] / 2;
+        else tx = cellX + 8;
+        ctx.fillText(values[ci], tx, ry + rowH / 2);
+        cellX += colWidths[ci];
+      }
+
+      // Highlight remainder cell
+      var remX = tableX + colWidths[0] + colWidths[1] + colWidths[2] + colWidths[3] + colWidths[4] + colWidths[5];
+      ctx.strokeStyle = warning;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(remX, ry + 4, colWidths[6], rowH - 8);
+    }
+
+    // Frame around table
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(tableX, tableY, W - 100, 40 + examples.length * rowH);
+
+    // Bottom annotation
+    var annoY = tableY + 40 + examples.length * rowH + 30;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.12);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    if (ctx.roundRect) {
+      ctx.beginPath();
+      ctx.roundRect(tableX, annoY, W - 100, 40, 8);
+      ctx.fill();
+      ctx.stroke();
+    } else {
+      ctx.fillRect(tableX, annoY, W - 100, 40);
+      ctx.strokeRect(tableX, annoY, W - 100, 40);
+    }
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px "Cambria Math", Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Sve kolone „ostatak" su 1  ⇒  mk + n ≡ 1 (mod 7)  za sve dozvoljene m, n, k.', W / 2, annoY + 20);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Modularna aritmetika: ostatak izraza mk + n po modulu 7",
+  "subject": "math",
+  "unit": "number-theory",
+  "topic_tags": ["modularna aritmetika", "kongruencije", "Euklidova teorema o deljenju", "ostatak deljenja", "pravila kongruencija"]
+}
+BRAINSPARK_META-->

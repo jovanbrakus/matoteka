@@ -1,0 +1,1136 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Ako se dve kružnice u istoj ravni seku (u dve tačke), broj njihovih zajedničkih tangenti je:
+  (A) 1
+  (B) 2  ← TAČAN
+  (C) 3
+  (D) 4
+
+  Strategija: ovo je teorijsko-geometrijski zadatak — broj zajedničkih tangenti zavisi od međusobnog
+  položaja kružnica. Treba poznavati klasifikaciju.
+
+  Klasifikacija (k1 sa centrom O1, poluprečnikom r1; k2 sa centrom O2, poluprečnikom r2; d = |O1 O2|):
+
+  1. d > r1 + r2  (krugovi su spolja, ne dodiruju se):
+     - 2 spoljašnje tangente
+     - 2 unutrašnje tangente
+     ⇒ ukupno 4
+
+  2. d = r1 + r2  (spoljašnji dodir):
+     - 2 spoljašnje tangente
+     - 1 zajednička tangenta u tački dodira (vertikalna na O1O2)
+     ⇒ ukupno 3
+
+  3. |r1 − r2| < d < r1 + r2  (presek u dve tačke) — NAŠ SLUČAJ:
+     - 2 spoljašnje tangente postoje
+     - unutrašnje ne postoje (jer bi unutrašnja tangenta razdvajala kružnice, ali kružnice se seku)
+     ⇒ ukupno 2
+
+  4. d = |r1 − r2|  (unutrašnji dodir):
+     - 1 zajednička tangenta (u tački dodira)
+     - spoljašnje ne postoje (jedna kružnica je unutar druge sem u jednoj tački)
+     ⇒ ukupno 1
+
+  5. d < |r1 − r2|  (jedna unutar druge bez dodira):
+     - 0 zajedničkih tangenti
+
+  6. d = 0 i r1 = r2  (poklapaju se): ovo je rubni slučaj.
+  6'. d = 0 i r1 ≠ r2  (koncentrični): 0 tangenti.
+
+  Zašto baš 2 kod preseka — geometrijski razlog:
+  Spoljašnja tangenta = prava koja dodiruje obe kružnice s iste strane (tj. obe su na istoj strani prave).
+    Postoji uvek dok god je manja kružnica delom van veće — što je tačno kad imaju presek.
+  Unutrašnja tangenta = prava koja dodiruje obe kružnice sa suprotnih strana (kružnice su na suprotnim
+    stranama prave).
+    Postoji samo ako se unutrašnja tangenta može provući IZMEĐU kružnica. Ako se kružnice seku, to nije moguće
+    — svaka prava povučena "između" preseca obe.
+
+  Algebarski: za unutrašnju tangentu se zahteva da postoji prava koja je tangenta na obe i deli njihove
+  diskove. Iz teorije inverzije/sličnosti:
+  Spoljašnja tangenta postoji iff d > |r1 − r2|.
+  Unutrašnja tangenta postoji iff d > r1 + r2 (strogo).
+  Naš slučaj: r1 + r2 > d > |r1 − r2| → spoljašnje DA, unutrašnje NE.
+
+  Tačan odgovor: (B) 2.
+
+  Vizuelni prikaz: 4 dijagrama:
+  1) Naš slučaj: dve seku se, prikazane 2 spoljašnje tangente.
+  2) Klasifikacija: spolja dodiruju (3 tangente).
+  3) Klasifikacija: spolja bez dodira (4 tangente).
+  4) Klasifikacija: unutra dodiruju (1) i unutra bez dodira (0).
+
+  Interaktivnost? Ovo je zadatak gde dragable krugovi mogu biti vrlo edukativni — pokazati uživo kako broj
+  tangenti zavisi od međusobne udaljenosti centara. Pokušaću da napravim jedan interaktivan canvas: korisnik
+  pomera centar druge kružnice i u realnom vremenu vidi broj tangenti.
+</script>
+
+<h1 data-card="problem-title">Broj zajedničkih tangenti dve kružnice koje se seku</h1>
+<p data-card="problem-subtitle" class="subtitle">Geometrija &mdash; kružnica, tangenta, klasifikacija položaja dve kružnice u ravni</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>Tekst zadatka</h2>
+  <p>Ako se dve kružnice u istoj ravni seku (u dve tačke), onda je broj njihovih zajedničkih tangenti:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 4 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>Plan rešavanja</h2>
+  <p class="plan-text">Razdvajamo zajedničke tangente dve kružnice na dve grupe: <strong>spoljašnje</strong> (kružnice su sa iste strane prave) i <strong>unutrašnje</strong> (kružnice su sa suprotnih strana). Za svaku ćemo videti koji uslov mora zadovoljiti rastojanje centara \( d \) u odnosu na poluprečnike \( r_{1}, r_{2} \). Kada se kružnice seku važi \( |r_{1} - r_{2}| < d < r_{1} + r_{2} \) &mdash; spoljašnje tangente postoje, ali unutrašnje ne, jer bi morale da prođu "između" kružnica koje se preklapaju. Posle dolazimo do tačno \( 2 \) tangente.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>Podsetnik iz teorije</h2>
+  <details>
+    <summary>Klasifikacija dve kružnice po međusobnom položaju</summary>
+    <div class="detail-content">
+      <p>Neka su \( k_{1}(O_{1}, r_{1}) \) i \( k_{2}(O_{2}, r_{2}) \) dve kružnice sa rastojanjem centara \( d = |O_{1}O_{2}| \). Bez gubitka opštosti pretpostavimo \( r_{1} \geq r_{2} \). Postoji šest slučajeva:</p>
+      <ol>
+        <li><strong>Spoljašnja bez dodira</strong> (\( d > r_{1} + r_{2} \)): kružnice su potpuno razdvojene. <em>4 zajedničke tangente</em> (2 spoljašnje + 2 unutrašnje).</li>
+        <li><strong>Spoljašnji dodir</strong> (\( d = r_{1} + r_{2} \)): kružnice se dotiču u jednoj tački sa spoljnih strana. <em>3 zajedničke tangente</em> (2 spoljašnje + 1 zajednička u tački dodira).</li>
+        <li><strong>Presek</strong> (\( |r_{1} - r_{2}| < d < r_{1} + r_{2} \)): kružnice se seku u dve tačke. <em>2 zajedničke tangente</em> (samo spoljašnje &mdash; ovo je naš slučaj).</li>
+        <li><strong>Unutrašnji dodir</strong> (\( d = r_{1} - r_{2} \), sa \( r_{1} > r_{2} \)): manja kružnica iznutra dodiruje veću. <em>1 zajednička tangenta</em> (samo u tački dodira).</li>
+        <li><strong>Unutrašnja bez dodira</strong> (\( d < r_{1} - r_{2} \)): manja je u potpunosti unutar veće, bez dodira. <em>0 tangenti</em>.</li>
+        <li><strong>Koncentrične</strong> (\( d = 0,\, r_{1} \neq r_{2} \)): isti centar, različiti poluprečnici. <em>0 tangenti</em>.</li>
+      </ol>
+      <p><strong>Spoljašnja tangenta:</strong> prava koja dodiruje obe kružnice tako da su one sa <em>iste strane</em> prave (kružnice se "naslanjaju" na pravu sa istog smera).</p>
+      <p><strong>Unutrašnja tangenta:</strong> prava koja dodiruje obe kružnice tako da su one sa <em>suprotnih strana</em> prave (kružnice su podeljene pravom).</p>
+      <p><strong>Uslov postojanja:</strong></p>
+      <ul>
+        <li>Spoljašnja tangenta postoji \( \iff d \geq |r_{1} - r_{2}| \) (jednakost: jedna tangenta u tački unutrašnjeg dodira; strogo: dve).</li>
+        <li>Unutrašnja tangenta postoji \( \iff d \geq r_{1} + r_{2} \) (jednakost: jedna; strogo: dve).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Naš slučaj &mdash; presek u dve tačke">
+  <h2>Slika 1 &mdash; dve kružnice koje se seku imaju tačno 2 spoljašnje tangente</h2>
+  <div class="canvas-wrapper">
+    <canvas id="caseIntersect" width="720" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Crveni krugovi se seku u dve tačke. Zelene prave su <em>spoljašnje</em> tangente &mdash; obe kružnice su sa iste strane prave. Pokušaj povlačenja unutrašnje tangente (između kružnica) odmah seče bar jednu &mdash; zato unutrašnjih nema.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Klasifikacija &mdash; svi slučajevi">
+  <h2>Slika 2 &mdash; svih 6 slučajeva i pripadajući brojevi tangenti</h2>
+  <div class="canvas-wrapper">
+    <canvas id="caseAll" width="720" height="700"></canvas>
+  </div>
+  <p class="canvas-caption">Pregled klasifikacije. Broj tangenti raste sa rastojanjem centara: \( 0 \to 1 \to 2 \to 3 \to 4 \). Naš slučaj (presek) je sredinski sa \( 2 \) tangente. Spoljašnje tangente su zelene, unutrašnje su narandžaste, tangente u tački dodira su ljubičaste.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Interaktivna demonstracija">
+  <h2>Slika 3 &mdash; pomerite drugi centar mišem da vidite kako se broj tangenti menja</h2>
+  <div class="canvas-wrapper">
+    <canvas id="caseInteractive" width="720" height="600"></canvas>
+  </div>
+  <p class="canvas-caption">Povucite plavu kružnicu (dragujte njen centar) levo-desno i posmatrajte kako broj zajedničkih tangenti skače: \( 4 \to 3 \to \mathbf{2} \to 1 \to 0 \). Brojač u uglu prikazuje aktuelan slučaj. Kada su kružnice u <strong>preseku</strong> (uslov zadatka), broj je tačno \( 2 \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Zašto unutrašnja tangenta ne postoji">
+  <h2>Slika 4 &mdash; geometrijski dokaz nemogućnosti unutrašnje tangente</h2>
+  <div class="canvas-wrapper">
+    <canvas id="caseProof" width="720" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Pretpostavimo da postoji unutrašnja tangenta \( t \). Ona razdvaja kružnice tako da su \( O_{1} \) i \( O_{2} \) sa suprotnih strana, a obe kružnice se "naslanjaju" na \( t \) sa svojih strana. Tada \( O_{1} \) i \( O_{2} \) bi morali biti na rastojanju \( \geq r_{1} + r_{2} \) od prave \( t \). Ali \( |O_{1}O_{2}| < r_{1} + r_{2} \) (jer se kružnice seku), što je kontradikcija.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Definišemo dva tipa zajedničkih tangenti</h3>
+      <p>Prava \( t \) je <strong>zajednička tangenta</strong> kružnica \( k_{1} \) i \( k_{2} \) ako dodiruje obe (svaku u tačno jednoj tački). Postoje dve varijante:</p>
+      <ul>
+        <li><strong>Spoljašnja:</strong> obe kružnice su sa <em>iste</em> strane prave \( t \). Centri \( O_{1} \) i \( O_{2} \) su sa iste strane.</li>
+        <li><strong>Unutrašnja:</strong> kružnice su sa <em>suprotnih</em> strana prave \( t \). Centri su podeljeni pravom.</li>
+      </ul>
+      <p>Da bi se odredio ukupan broj tangenti, brojaćemo postojeće u svakoj kategoriji.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Zapisujemo uslov &mdash; kružnice se seku u dve tačke</h3>
+      <p>Neka je \( O_{1}O_{2} = d \). Dve kružnice imaju dve zajedničke tačke ako i samo ako:</p>
+      <div class="math-block">\[ |r_{1} - r_{2}| \;<\; d \;<\; r_{1} + r_{2}. \]</div>
+      <p><strong>Donja granica</strong> (\( d > |r_{1} - r_{2}| \)): garantuje da nijedna kružnica nije potpuno unutar druge.</p>
+      <p><strong>Gornja granica</strong> (\( d < r_{1} + r_{2} \)): garantuje da kružnice nisu razdvojene.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš te granice?</summary>
+          <div class="detail-content"><p>Spojnica centara \( O_{1}O_{2} \) ima dužinu \( d \). Ako je \( d \geq r_{1} + r_{2} \), tačke kružnica leže na razdvojenim segmentima na pravoj kroz \( O_{1}O_{2} \) (ili se dotiču u jednoj tački). Ako je \( d \leq |r_{1} - r_{2}| \), manja kružnica je sva unutar veće (ili ih dodiruje iznutra). Samo u srednjem slučaju oblasti se delimično preklapaju i granice se seku u dve tačke (po teoremi o tetivnoj presečnoj liniji).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Spoljašnje tangente &mdash; postoje, broj 2</h3>
+      <p>Za <em>spoljašnje</em> tangente važi opšti uslov:</p>
+      <div class="math-block">\[ \text{spoljašnja tangenta postoji} \iff d \geq |r_{1} - r_{2}|. \]</div>
+      <p>Pošto je u našem slučaju \( d > |r_{1} - r_{2}| \) (strogo, jer kružnice nisu u unutrašnjem dodiru), postoje <strong>tačno dve</strong> spoljašnje tangente. One su <em>simetrične</em> u odnosu na pravu \( O_{1}O_{2} \).</p>
+      <p><em>Geometrijska konstrukcija:</em> spoljašnje tangente prolaze kroz <strong>spoljašnji centar sličnosti</strong> &mdash; tačku na pravoj \( O_{1}O_{2} \) koja deli spojnicu spolja u odnosu \( r_{1} : r_{2} \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Unutrašnje tangente &mdash; ne postoje</h3>
+      <p>Za <em>unutrašnje</em> tangente važi uslov:</p>
+      <div class="math-block">\[ \text{unutrašnja tangenta postoji} \iff d \geq r_{1} + r_{2}. \]</div>
+      <p>Ali za kružnice koje se seku važi \( d < r_{1} + r_{2} \). Dakle uslov je <em>narušen</em>, i unutrašnjih tangenti <strong>nema</strong>.</p>
+      <p><strong>Geometrijski razlog:</strong> unutrašnja tangenta bi morala razdvajati centre \( O_{1} \) i \( O_{2} \), tako da svaka kružnica leži potpuno sa svoje strane prave. To zahteva da rastojanje od \( O_{1} \) do prave bude \( \geq r_{1} \), a od \( O_{2} \) do prave \( \geq r_{2} \). Ukupno rastojanje između centara, u pravcu okomitom na tangentu, mora biti \( \geq r_{1} + r_{2} \). Nemoguće kada se kružnice seku.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto kružnice koje se seku ne mogu biti razdvojene jednom pravom?</summary>
+          <div class="detail-content"><p>Ako bi prava \( t \) razdvajala dve kružnice, bilo bi nemoguće da imaju zajedničku tačku &mdash; jer bi svaka zajednička tačka morala biti i na \( k_{1} \) (sa jedne strane prave) i na \( k_{2} \) (sa druge), što je nemoguće. Pa svaka prava koja razdvaja centre seče bar jednu od kružnica i ne može biti tangenta na obe odgovarajuće.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Sabiranje &mdash; ukupno 2 zajedničke tangente</h3>
+      <div class="math-block">\[ \text{ukupno} = \underbrace{2}_{\text{spoljašnje}} + \underbrace{0}_{\text{unutrašnje}} = 2. \]</div>
+      <p>Tangente u tački dodira ne dolaze u obzir, jer se kružnice <em>seku</em>, a ne <em>dodiruju</em>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Sanity provera &mdash; cela klasifikacija u jednoj tabeli</h3>
+      <p>Da potvrdimo da naš odgovor odgovara mestu preseka u opštoj klasifikaciji:</p>
+      <div class="math-block">\[
+      \begin{array}{|c|l|c|}
+      \hline
+      \textbf{položaj} & \textbf{uslov na } d & \textbf{br. tangenti} \\
+      \hline
+      \text{razdvojene} & d > r_{1}+r_{2} & 4 \\
+      \hline
+      \text{spolja dodiruju} & d = r_{1}+r_{2} & 3 \\
+      \hline
+      \mathbf{seku\ se} & |r_{1}-r_{2}| < d < r_{1}+r_{2} & \mathbf{2} \\
+      \hline
+      \text{iznutra dodiruju} & d = |r_{1}-r_{2}| & 1 \\
+      \hline
+      \text{jedna unutar druge} & d < |r_{1}-r_{2}| & 0 \\
+      \hline
+      \end{array}
+      \]</div>
+      <p>Pošto se broj tangenti monotono povećava od \( 0 \) do \( 4 \) u zavisnosti od \( d \), naš slučaj pada tačno na sredinu sa <strong>\( 2 \)</strong> tangente.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>Ključni uvid</h2>
+  <p>Broj zajedničkih tangenti dve kružnice je <strong>monotona funkcija rastojanja centara</strong> &mdash; krećemo od \( 0 \) (jedna unutar druge), preko \( 1 \) (unutrašnji dodir), \( 2 \) (presek), \( 3 \) (spoljašnji dodir), do \( 4 \) (potpuno razdvojene). Za svaki novi tip kontakta dobijemo jednu dodatnu tangentu. Ono što odlikuje srednji slučaj &mdash; presek u dve tačke &mdash; je da <em>jedan</em> tip tangente (spoljašnji) postoji u dva primerka, a drugi (unutrašnji) je nedostižan jer kružnice nemaju "prostor između" sebe za pravu da se umetne. Geometrijski to je posledica činjenice da se diskovi delimično preklapaju.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \text{Broj zajedničkih tangenti} = 2 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 1 \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( 2 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 3 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 4 \)</span>
+  </div>
+  <p class="verification">Provera: opcija (A) bi važila kod unutrašnjeg dodira, (C) kod spoljašnjeg dodira, (D) kod potpuno razdvojenih kružnica. Naš slučaj &mdash; presek u dve tačke &mdash; pada strogo između (C) i (A) i ima tačno \( 2 \) tangente. Interaktivna demonstracija (Slika 3) potvrđuje: pomeranjem druge kružnice se vidi smena \( 4 \to 3 \to 2 \to 1 \to 0 \). \( \checkmark \)</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Mešanje sa "spolja dodiruju" (3):</strong> često se zameni "seku" i "dodiruju". Dodirivanje znači jedna zajednička tačka i daje \( 3 \) tangente; presek znači <em>dve</em> zajedničke tačke i daje \( 2 \).</li>
+    <li><strong>Brojanje tangenti u presečnim tačkama:</strong> u tački preseka kružnice imaju <em>različite</em> tangente (svaka svoju), pa to nisu <em>zajedničke</em> tangente. Greška vodi do pogrešnog odgovora \( 4 \).</li>
+    <li><strong>Pretpostavka uvek 4 tangente:</strong> mnogi učenici pamte samo "dve kružnice imaju 4 tangente" iz tipičnog crteža razdvojenih krugova. Klasifikacija je suptilnija i zavisi od položaja.</li>
+    <li><strong>Pogrešno tumačenje "unutrašnje" tangente:</strong> unutrašnja ne znači "u unutrašnjosti" jedne kružnice, već prava koja <em>razdvaja</em> kružnice (centri sa suprotnih strana). Kada se kružnice seku, takva ne postoji.</li>
+    <li><strong>Zaboravljen uslov \( d < r_{1} + r_{2} \) za presek:</strong> ako se primeni samo \( d > |r_{1} - r_{2}| \), to ne razlikuje presek od razdvojenih (oba su iznad granice). Tek strogo \( d < r_{1} + r_{2} \) odvaja \( 2 \) od \( 4 \) tangente.</li>
+    <li><strong>Brkanje opštih i specijalnih slučajeva:</strong> ne treba zaboraviti da se "broj tangenti" može menjati skokovito kada se prelaze granice (pravi se "presek polovine") &mdash; klasifikacija ima 5 osnovnih nivoa, ne 2.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>Dodatni izazov</h2>
+  <p>Dve kružnice imaju poluprečnike \( r_{1} = 5 \) i \( r_{2} = 3 \), a rastojanje centara je \( d \). Za koje vrednosti \( d \) postoji tačno \( 3 \) zajedničke tangente, a za koje tačno \( 1 \)? Skiciraj odgovore.</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Tri tangente: spoljašnji dodir, \( d = r_{1} + r_{2} = 5 + 3 = 8 \). Jedna tangenta: unutrašnji dodir, \( d = |r_{1} - r_{2}| = 5 - 3 = 2 \). Za \( d > 8 \) imamo \( 4 \) tangente; za \( 2 < d < 8 \) imamo \( 2 \) (presek); za \( 0 \leq d < 2 \) imamo \( 0 \) (manja iznutra). Granica \( d = 0 \) (koncentrične) takođe daje \( 0 \). Geometrijski: tačno \( 3 \) tangente i tačno \( 1 \) su <em>retki</em> slučajevi &mdash; nastaju samo na granicama, kada kružnice prelaze iz jednog režima u drugi.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  // Helper: draw a circle outline + centre dot
+  function drawCircle(c, cx, cy, r, strokeColor, fillColor, lineWidth) {
+    if (fillColor) {
+      c.fillStyle = fillColor;
+      c.beginPath();
+      c.arc(cx, cy, r, 0, Math.PI * 2);
+      c.fill();
+    }
+    c.strokeStyle = strokeColor;
+    c.lineWidth = lineWidth || 2;
+    c.beginPath();
+    c.arc(cx, cy, r, 0, Math.PI * 2);
+    c.stroke();
+    // center dot
+    c.fillStyle = strokeColor;
+    c.beginPath();
+    c.arc(cx, cy, 3, 0, Math.PI * 2);
+    c.fill();
+  }
+
+  // Helper: compute external tangent endpoints for two circles
+  // Returns [{x1,y1,x2,y2}, ...] for both external tangents.
+  // We use a generic algorithm: tangents touch the inversion through the radical axis,
+  // but simpler: parametrize using the angle.
+  function externalTangents(c1x, c1y, r1, c2x, c2y, r2) {
+    var dx = c2x - c1x, dy = c2y - c1y;
+    var d = Math.sqrt(dx * dx + dy * dy);
+    if (d === 0) return [];
+    if (d < Math.abs(r1 - r2)) return [];  // one inside the other, no external
+
+    // For external tangents, the tangent line touches both circles on the same side.
+    // Angle alpha satisfies sin(alpha) = (r1 - r2)/d for the rotation between the radius vectors and the line.
+    // (Standard derivation; this works for r1 != r2 and limits to perpendicular line for r1 == r2.)
+    var alpha = Math.asin((r1 - r2) / d);
+    var beta = Math.atan2(dy, dx);
+    // Two tangent angles: beta + (π/2 - alpha) and beta - (π/2 - alpha), measuring from c1 outward
+    var a1 = beta + Math.PI / 2 - alpha;  // upper tangent
+    var a2 = beta - Math.PI / 2 + alpha;  // lower tangent
+
+    function buildTangent(angle) {
+      var t1x = c1x + r1 * Math.cos(angle);
+      var t1y = c1y + r1 * Math.sin(angle);
+      var t2x = c2x + r2 * Math.cos(angle);
+      var t2y = c2y + r2 * Math.sin(angle);
+      return { x1: t1x, y1: t1y, x2: t2x, y2: t2y };
+    }
+    return [buildTangent(a1), buildTangent(a2)];
+  }
+
+  // Helper: compute internal tangent endpoints (only valid when d >= r1 + r2)
+  function internalTangents(c1x, c1y, r1, c2x, c2y, r2) {
+    var dx = c2x - c1x, dy = c2y - c1y;
+    var d = Math.sqrt(dx * dx + dy * dy);
+    if (d < r1 + r2) return [];
+
+    // For internal tangents, on opposite sides
+    var alpha = Math.asin((r1 + r2) / d);
+    var beta = Math.atan2(dy, dx);
+    var a1 = beta + Math.PI / 2 - alpha;
+    var a2 = beta - Math.PI / 2 + alpha;
+
+    function buildTangent(angle) {
+      var t1x = c1x + r1 * Math.cos(angle);
+      var t1y = c1y + r1 * Math.sin(angle);
+      // For internal tangent, the touch on second circle is on the opposite side
+      var t2x = c2x - r2 * Math.cos(angle);
+      var t2y = c2y - r2 * Math.sin(angle);
+      return { x1: t1x, y1: t1y, x2: t2x, y2: t2y };
+    }
+    return [buildTangent(a1), buildTangent(a2)];
+  }
+
+  // Tangent at the contact point (when circles touch externally or internally)
+  function tangentAtContact(c1x, c1y, r1, c2x, c2y, r2, isExternal) {
+    var dx = c2x - c1x, dy = c2y - c1y;
+    var d = Math.sqrt(dx * dx + dy * dy);
+    if (d === 0) return null;
+    var ux = dx / d, uy = dy / d;
+    // Contact point
+    var cx, cy;
+    if (isExternal) {
+      cx = c1x + r1 * ux;
+      cy = c1y + r1 * uy;
+    } else {
+      // internal contact: from larger circle
+      cx = c1x + r1 * ux;
+      cy = c1y + r1 * uy;
+    }
+    // Tangent direction perpendicular to radius
+    var px = -uy, py = ux;
+    return { cx: cx, cy: cy, px: px, py: py };
+  }
+
+  // Helper: extend a line segment past both endpoints to fit a canvas
+  function extendLine(x1, y1, x2, y2, padding) {
+    padding = padding || 80;
+    var dx = x2 - x1, dy = y2 - y1;
+    var len = Math.sqrt(dx * dx + dy * dy);
+    if (len === 0) return { x1: x1, y1: y1, x2: x2, y2: y2 };
+    var ux = dx / len, uy = dy / len;
+    return {
+      x1: x1 - padding * ux,
+      y1: y1 - padding * uy,
+      x2: x2 + padding * ux,
+      y2: y2 + padding * uy
+    };
+  }
+
+  function drawTangentLine(c, x1, y1, x2, y2, color, width, dashed) {
+    var ext = extendLine(x1, y1, x2, y2, 80);
+    c.strokeStyle = color;
+    c.lineWidth = width || 2;
+    if (dashed) c.setLineDash([6, 5]);
+    c.beginPath();
+    c.moveTo(ext.x1, ext.y1);
+    c.lineTo(ext.x2, ext.y2);
+    c.stroke();
+    if (dashed) c.setLineDash([]);
+    // tangent points (small dots)
+    c.fillStyle = color;
+    c.beginPath();
+    c.arc(x1, y1, 3, 0, Math.PI * 2);
+    c.fill();
+    c.beginPath();
+    c.arc(x2, y2, 3, 0, Math.PI * 2);
+    c.fill();
+  }
+
+  // ============ Canvas 1: Our case (intersection) ============
+  var ic = document.getElementById('caseIntersect');
+  var iCtx = ic ? ic.getContext('2d') : null;
+
+  function drawIntersect() {
+    if (!ic || !iCtx) return;
+    var W = ic.width, H = ic.height;
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var warning   = cv('--sol-canvas-warning');
+    var tertiary  = cv('--sol-canvas-tertiary');
+
+    iCtx.clearRect(0, 0, W, H);
+    iCtx.fillStyle = bg;
+    iCtx.fillRect(0, 0, W, H);
+
+    // Title
+    iCtx.fillStyle = text;
+    iCtx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    iCtx.textAlign = 'center';
+    iCtx.fillText('Naš slučaj  —  dve kružnice se seku  →  2 zajedničke tangente', W / 2, 28);
+
+    // Two intersecting circles
+    var c1x = 280, c1y = 280, r1 = 130;
+    var c2x = 460, c2y = 280, r2 = 110;
+
+    // Light fills to mark the discs
+    iCtx.fillStyle = cvAlpha('--sol-canvas-danger', 0.12);
+    iCtx.beginPath();
+    iCtx.arc(c1x, c1y, r1, 0, Math.PI * 2);
+    iCtx.fill();
+    iCtx.fillStyle = cvAlpha('--sol-canvas-primary', 0.12);
+    iCtx.beginPath();
+    iCtx.arc(c2x, c2y, r2, 0, Math.PI * 2);
+    iCtx.fill();
+
+    // Compute external tangents and draw them
+    var ext = externalTangents(c1x, c1y, r1, c2x, c2y, r2);
+    for (var i = 0; i < ext.length; i++) {
+      drawTangentLine(iCtx, ext[i].x1, ext[i].y1, ext[i].x2, ext[i].y2, highlight, 3, false);
+    }
+
+    // Draw circles outline on top
+    drawCircle(iCtx, c1x, c1y, r1, danger, null, 2.5);
+    drawCircle(iCtx, c2x, c2y, r2, primary, null, 2.5);
+
+    // Mark intersection points
+    var dx = c2x - c1x, dy = c2y - c1y;
+    var d = Math.sqrt(dx * dx + dy * dy);
+    var a = (r1 * r1 - r2 * r2 + d * d) / (2 * d);
+    var h = Math.sqrt(r1 * r1 - a * a);
+    var ux = dx / d, uy = dy / d;
+    var midX = c1x + a * ux, midY = c1y + a * uy;
+    var ix1 = midX - h * uy, iy1 = midY + h * ux;
+    var ix2 = midX + h * uy, iy2 = midY - h * ux;
+
+    iCtx.fillStyle = warning;
+    iCtx.beginPath();
+    iCtx.arc(ix1, iy1, 6, 0, Math.PI * 2);
+    iCtx.fill();
+    iCtx.beginPath();
+    iCtx.arc(ix2, iy2, 6, 0, Math.PI * 2);
+    iCtx.fill();
+    iCtx.fillStyle = warning;
+    iCtx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
+    iCtx.textAlign = 'left';
+    iCtx.fillText('A', ix2 - 16, iy2 - 8);
+    iCtx.fillText('B', ix1 + 8, iy1 + 14);
+
+    // Center labels
+    iCtx.fillStyle = danger;
+    iCtx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    iCtx.textAlign = 'center';
+    iCtx.fillText('O₁', c1x - 12, c1y - 8);
+    iCtx.fillText('k₁', c1x - r1 + 16, c1y);
+    iCtx.fillStyle = primary;
+    iCtx.fillText('O₂', c2x + 12, c2y - 8);
+    iCtx.fillText('k₂', c2x + r2 - 16, c2y);
+
+    // Centerline (light)
+    iCtx.strokeStyle = cvAlpha('--sol-canvas-muted', 0.5);
+    iCtx.lineWidth = 1;
+    iCtx.setLineDash([4, 4]);
+    iCtx.beginPath();
+    iCtx.moveTo(c1x, c1y);
+    iCtx.lineTo(c2x, c2y);
+    iCtx.stroke();
+    iCtx.setLineDash([]);
+
+    // Annotations for tangents
+    iCtx.fillStyle = highlight;
+    iCtx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    iCtx.textAlign = 'center';
+    iCtx.fillText('t₁  (spoljašnja)', W / 2, 100);
+    iCtx.fillText('t₂  (spoljašnja)', W / 2, H - 80);
+
+    // Bottom info box
+    var boxX = 40, boxY = 470, boxW = W - 80, boxH = 80;
+    iCtx.fillStyle = cvAlpha('--sol-canvas-grid', 0.35);
+    iCtx.fillRect(boxX, boxY, boxW, boxH);
+    iCtx.strokeStyle = axis;
+    iCtx.lineWidth = 1;
+    iCtx.strokeRect(boxX, boxY, boxW, boxH);
+
+    iCtx.fillStyle = text;
+    iCtx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    iCtx.textAlign = 'left';
+    iCtx.fillText('Uslov: |r₁ − r₂| < d < r₁ + r₂  ⇒  presek u 2 tačke (A, B)', boxX + 15, boxY + 25);
+
+    iCtx.fillStyle = highlight;
+    iCtx.font = '13px Segoe UI, system-ui, sans-serif';
+    iCtx.fillText('• Spoljašnje tangente:  2  (zelene linije iznad i ispod)', boxX + 25, boxY + 47);
+    iCtx.fillStyle = muted;
+    iCtx.fillText('• Unutrašnje tangente:  0  (kružnice nemaju "prostor između" za pravu)', boxX + 25, boxY + 67);
+  }
+
+  // ============ Canvas 2: All 6 cases mini-grid ============
+  var ac = document.getElementById('caseAll');
+  var aCtx = ac ? ac.getContext('2d') : null;
+
+  function drawAll() {
+    if (!ac || !aCtx) return;
+    var W = ac.width, H = ac.height;
+    var bg        = cv('--sol-canvas-bg');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var warning   = cv('--sol-canvas-warning');
+    var tertiary  = cv('--sol-canvas-tertiary');
+    var secondary = cv('--sol-canvas-secondary');
+
+    aCtx.clearRect(0, 0, W, H);
+    aCtx.fillStyle = bg;
+    aCtx.fillRect(0, 0, W, H);
+
+    // Title
+    aCtx.fillStyle = text;
+    aCtx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    aCtx.textAlign = 'center';
+    aCtx.fillText('Klasifikacija — svih 5 osnovnih slučajeva (bez koncentričnih)', W / 2, 28);
+
+    // 5 mini-panels in a grid layout
+    // Layout: 2 rows × 3 cols, last cell empty (or summary)
+    var cols = 3, rows = 2;
+    var cellW = (W - 60) / cols;
+    var cellH = 280;
+    var startY = 60;
+
+    var cases = [
+      // case 1: external (4 tangents)
+      { title: '4 tangente:  d > r₁+r₂', subtitle: 'razdvojene', r1: 50, r2: 38, d: 130, count: 4, type: 'separate' },
+      // case 2: external touch (3)
+      { title: '3 tangente:  d = r₁+r₂', subtitle: 'spolja se dodiruju', r1: 50, r2: 38, d: 88, count: 3, type: 'extTouch' },
+      // case 3: intersect (2) — OUR CASE
+      { title: '2 tangente:  |r₁−r₂| < d < r₁+r₂', subtitle: 'SEKU SE  (naš slučaj)', r1: 55, r2: 45, d: 70, count: 2, type: 'intersect', highlighted: true },
+      // case 4: internal touch (1)
+      { title: '1 tangenta:  d = |r₁−r₂|', subtitle: 'iznutra dodir', r1: 60, r2: 25, d: 35, count: 1, type: 'intTouch' },
+      // case 5: inside (0)
+      { title: '0 tangenti:  d < |r₁−r₂|', subtitle: 'jedna unutar druge', r1: 60, r2: 22, d: 20, count: 0, type: 'inside' },
+    ];
+
+    for (var k = 0; k < cases.length; k++) {
+      var col = k % cols;
+      var row = Math.floor(k / cols);
+      var cx = 30 + col * cellW + cellW / 2;
+      var cy = startY + row * cellH + cellH / 2;
+      var cs = cases[k];
+
+      // Cell background — highlight our case
+      aCtx.fillStyle = cs.highlighted ? cvAlpha('--sol-canvas-warning', 0.18) : cvAlpha('--sol-canvas-grid', 0.2);
+      aCtx.fillRect(30 + col * cellW + 8, startY + row * cellH + 8, cellW - 16, cellH - 16);
+      aCtx.strokeStyle = cs.highlighted ? warning : axis;
+      aCtx.lineWidth = cs.highlighted ? 2.5 : 1;
+      aCtx.strokeRect(30 + col * cellW + 8, startY + row * cellH + 8, cellW - 16, cellH - 16);
+
+      // Title
+      aCtx.fillStyle = cs.highlighted ? warning : text;
+      aCtx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
+      aCtx.textAlign = 'center';
+      aCtx.fillText(cs.title, cx, startY + row * cellH + 30);
+      aCtx.fillStyle = cs.highlighted ? warning : muted;
+      aCtx.font = '11px Segoe UI, system-ui, sans-serif';
+      aCtx.fillText(cs.subtitle, cx, startY + row * cellH + 46);
+
+      // Big count number in upper right
+      aCtx.fillStyle = cs.highlighted ? warning : highlight;
+      aCtx.font = 'bold 36px Segoe UI, system-ui, sans-serif';
+      aCtx.textAlign = 'right';
+      aCtx.fillText(String(cs.count), 30 + col * cellW + cellW - 24, startY + row * cellH + cellH - 18);
+
+      // Position circles
+      var c1x = cx - cs.d / 2;
+      var c2x = cx + cs.d / 2;
+      var c1y = cy + 20;
+      var c2y = cy + 20;
+
+      // Light disk fills
+      aCtx.fillStyle = cvAlpha('--sol-canvas-danger', 0.10);
+      aCtx.beginPath();
+      aCtx.arc(c1x, c1y, cs.r1, 0, Math.PI * 2);
+      aCtx.fill();
+      aCtx.fillStyle = cvAlpha('--sol-canvas-primary', 0.10);
+      aCtx.beginPath();
+      aCtx.arc(c2x, c2y, cs.r2, 0, Math.PI * 2);
+      aCtx.fill();
+
+      // Tangents based on case
+      if (cs.type === 'separate') {
+        var ext = externalTangents(c1x, c1y, cs.r1, c2x, c2y, cs.r2);
+        for (var t = 0; t < ext.length; t++) {
+          drawTangentLine(aCtx, ext[t].x1, ext[t].y1, ext[t].x2, ext[t].y2, highlight, 1.5);
+        }
+        var intT = internalTangents(c1x, c1y, cs.r1, c2x, c2y, cs.r2);
+        for (var t = 0; t < intT.length; t++) {
+          drawTangentLine(aCtx, intT[t].x1, intT[t].y1, intT[t].x2, intT[t].y2, accent, 1.5);
+        }
+      } else if (cs.type === 'extTouch') {
+        var ext = externalTangents(c1x, c1y, cs.r1, c2x, c2y, cs.r2);
+        for (var t = 0; t < ext.length; t++) {
+          drawTangentLine(aCtx, ext[t].x1, ext[t].y1, ext[t].x2, ext[t].y2, highlight, 1.5);
+        }
+        // Tangent at touch point — vertical to centerline
+        var tan = tangentAtContact(c1x, c1y, cs.r1, c2x, c2y, cs.r2, true);
+        if (tan) {
+          var p1x = tan.cx - 60 * tan.px, p1y = tan.cy - 60 * tan.py;
+          var p2x = tan.cx + 60 * tan.px, p2y = tan.cy + 60 * tan.py;
+          aCtx.strokeStyle = secondary;
+          aCtx.lineWidth = 1.5;
+          aCtx.beginPath();
+          aCtx.moveTo(p1x, p1y);
+          aCtx.lineTo(p2x, p2y);
+          aCtx.stroke();
+        }
+      } else if (cs.type === 'intersect') {
+        var ext = externalTangents(c1x, c1y, cs.r1, c2x, c2y, cs.r2);
+        for (var t = 0; t < ext.length; t++) {
+          drawTangentLine(aCtx, ext[t].x1, ext[t].y1, ext[t].x2, ext[t].y2, highlight, 2);
+        }
+      } else if (cs.type === 'intTouch') {
+        // One tangent at the touch point (perpendicular to centerline)
+        var tan = tangentAtContact(c1x, c1y, cs.r1, c2x, c2y, cs.r2, false);
+        if (tan) {
+          var p1x = tan.cx - 50 * tan.px, p1y = tan.cy - 50 * tan.py;
+          var p2x = tan.cx + 50 * tan.px, p2y = tan.cy + 50 * tan.py;
+          aCtx.strokeStyle = secondary;
+          aCtx.lineWidth = 1.5;
+          aCtx.beginPath();
+          aCtx.moveTo(p1x, p1y);
+          aCtx.lineTo(p2x, p2y);
+          aCtx.stroke();
+        }
+      }
+      // case 'inside' has no tangents
+
+      // Circle outlines
+      drawCircle(aCtx, c1x, c1y, cs.r1, danger, null, 2);
+      drawCircle(aCtx, c2x, c2y, cs.r2, primary, null, 2);
+    }
+
+    // Legend in the 6th cell
+    var col = 5 % cols;
+    var row = Math.floor(5 / cols);
+    var legX = 30 + col * cellW + 20;
+    var legY = startY + row * cellH + 30;
+
+    aCtx.fillStyle = text;
+    aCtx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    aCtx.textAlign = 'left';
+    aCtx.fillText('Legenda boja tangenti:', legX, legY);
+
+    function legendRow(label, color, ly) {
+      aCtx.strokeStyle = color;
+      aCtx.lineWidth = 3;
+      aCtx.beginPath();
+      aCtx.moveTo(legX, ly);
+      aCtx.lineTo(legX + 32, ly);
+      aCtx.stroke();
+      aCtx.fillStyle = text;
+      aCtx.font = '12px Segoe UI, system-ui, sans-serif';
+      aCtx.textAlign = 'left';
+      aCtx.fillText(label, legX + 40, ly + 4);
+    }
+
+    legendRow('spoljašnje', highlight, legY + 30);
+    legendRow('unutrašnje', accent, legY + 56);
+    legendRow('u tački dodira', secondary, legY + 82);
+
+    aCtx.fillStyle = warning;
+    aCtx.font = 'italic bold 12px Segoe UI, system-ui, sans-serif';
+    aCtx.textAlign = 'left';
+    aCtx.fillText('Naš slučaj je istaknut', legX, legY + 120);
+    aCtx.fillStyle = muted;
+    aCtx.font = '11px Segoe UI, system-ui, sans-serif';
+    aCtx.fillText('žutim okvirom (sredina,', legX, legY + 138);
+    aCtx.fillText('sa 2 tangente).', legX, legY + 154);
+
+    // Footer summary
+    aCtx.fillStyle = text;
+    aCtx.font = 'italic 13px Segoe UI, system-ui, sans-serif';
+    aCtx.textAlign = 'center';
+    aCtx.fillText('Broj tangenti se monotono smanjuje kako se kružnice više preklapaju.', W / 2, H - 14);
+  }
+
+  // ============ Canvas 3: Interactive ============
+  var inc = document.getElementById('caseInteractive');
+  var iiCtx = inc ? inc.getContext('2d') : null;
+  // Fixed first circle, draggable second circle
+  var fixedC1 = { x: 220, y: 320, r: 100 };
+  var dragC2 = { x: 480, y: 320, r: 75 };
+  var dragging = false;
+  var dragOffset = { x: 0, y: 0 };
+
+  function drawInteractive() {
+    if (!inc || !iiCtx) return;
+    var W = inc.width, H = inc.height;
+    var bg        = cv('--sol-canvas-bg');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var warning   = cv('--sol-canvas-warning');
+    var tertiary  = cv('--sol-canvas-tertiary');
+    var secondary = cv('--sol-canvas-secondary');
+
+    iiCtx.clearRect(0, 0, W, H);
+    iiCtx.fillStyle = bg;
+    iiCtx.fillRect(0, 0, W, H);
+
+    // Title
+    iiCtx.fillStyle = text;
+    iiCtx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    iiCtx.textAlign = 'center';
+    iiCtx.fillText('Povucite plavu kružnicu — broj tangenti se ažurira u realnom vremenu', W / 2, 28);
+
+    // Compute distance and case
+    var dx = dragC2.x - fixedC1.x;
+    var dy = dragC2.y - fixedC1.y;
+    var d = Math.sqrt(dx * dx + dy * dy);
+    var rSum = fixedC1.r + dragC2.r;
+    var rDiff = Math.abs(fixedC1.r - dragC2.r);
+    var caseLabel = '';
+    var tangCount = 0;
+    var EPS = 1.5;
+    if (d > rSum + EPS) { caseLabel = 'razdvojene';                  tangCount = 4; }
+    else if (Math.abs(d - rSum) <= EPS) { caseLabel = 'spoljašnji dodir';  tangCount = 3; }
+    else if (d > rDiff + EPS) { caseLabel = 'SEKU SE (naš slučaj)';  tangCount = 2; }
+    else if (Math.abs(d - rDiff) <= EPS) { caseLabel = 'unutrašnji dodir'; tangCount = 1; }
+    else { caseLabel = 'jedna u drugoj'; tangCount = 0; }
+
+    // Light disk fills
+    iiCtx.fillStyle = cvAlpha('--sol-canvas-danger', 0.12);
+    iiCtx.beginPath();
+    iiCtx.arc(fixedC1.x, fixedC1.y, fixedC1.r, 0, Math.PI * 2);
+    iiCtx.fill();
+    iiCtx.fillStyle = cvAlpha('--sol-canvas-primary', 0.12);
+    iiCtx.beginPath();
+    iiCtx.arc(dragC2.x, dragC2.y, dragC2.r, 0, Math.PI * 2);
+    iiCtx.fill();
+
+    // Draw external tangents if applicable
+    if (d > rDiff && tangCount >= 2) {
+      var ext = externalTangents(fixedC1.x, fixedC1.y, fixedC1.r, dragC2.x, dragC2.y, dragC2.r);
+      for (var t = 0; t < ext.length; t++) {
+        drawTangentLine(iiCtx, ext[t].x1, ext[t].y1, ext[t].x2, ext[t].y2, highlight, 2.5);
+      }
+    }
+    // Draw internal tangents if applicable
+    if (d > rSum) {
+      var intT = internalTangents(fixedC1.x, fixedC1.y, fixedC1.r, dragC2.x, dragC2.y, dragC2.r);
+      for (var t = 0; t < intT.length; t++) {
+        drawTangentLine(iiCtx, intT[t].x1, intT[t].y1, intT[t].x2, intT[t].y2, accent, 2.5);
+      }
+    }
+    // Tangent at touch point
+    if (Math.abs(d - rSum) <= EPS) {
+      var tan = tangentAtContact(fixedC1.x, fixedC1.y, fixedC1.r, dragC2.x, dragC2.y, dragC2.r, true);
+      if (tan) {
+        var p1x = tan.cx - 70 * tan.px, p1y = tan.cy - 70 * tan.py;
+        var p2x = tan.cx + 70 * tan.px, p2y = tan.cy + 70 * tan.py;
+        iiCtx.strokeStyle = secondary;
+        iiCtx.lineWidth = 2.5;
+        iiCtx.beginPath();
+        iiCtx.moveTo(p1x, p1y);
+        iiCtx.lineTo(p2x, p2y);
+        iiCtx.stroke();
+      }
+    }
+    if (Math.abs(d - rDiff) <= EPS && d > 0) {
+      var tan = tangentAtContact(fixedC1.x, fixedC1.y, fixedC1.r, dragC2.x, dragC2.y, dragC2.r, false);
+      if (tan) {
+        var p1x = tan.cx - 70 * tan.px, p1y = tan.cy - 70 * tan.py;
+        var p2x = tan.cx + 70 * tan.px, p2y = tan.cy + 70 * tan.py;
+        iiCtx.strokeStyle = secondary;
+        iiCtx.lineWidth = 2.5;
+        iiCtx.beginPath();
+        iiCtx.moveTo(p1x, p1y);
+        iiCtx.lineTo(p2x, p2y);
+        iiCtx.stroke();
+      }
+    }
+
+    // Circles
+    drawCircle(iiCtx, fixedC1.x, fixedC1.y, fixedC1.r, danger, null, 2.5);
+    drawCircle(iiCtx, dragC2.x, dragC2.y, dragC2.r, primary, null, 3);
+
+    // Drag handle indicator on second circle's center
+    iiCtx.strokeStyle = primary;
+    iiCtx.lineWidth = 2;
+    iiCtx.beginPath();
+    iiCtx.arc(dragC2.x, dragC2.y, 8, 0, Math.PI * 2);
+    iiCtx.stroke();
+    iiCtx.fillStyle = cvAlpha('--sol-canvas-primary', 0.4);
+    iiCtx.beginPath();
+    iiCtx.arc(dragC2.x, dragC2.y, 6, 0, Math.PI * 2);
+    iiCtx.fill();
+
+    // Labels
+    iiCtx.fillStyle = danger;
+    iiCtx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    iiCtx.textAlign = 'center';
+    iiCtx.fillText('k₁ (fiksna)', fixedC1.x, fixedC1.y - fixedC1.r - 8);
+    iiCtx.fillStyle = primary;
+    iiCtx.fillText('k₂ (povuci)', dragC2.x, dragC2.y - dragC2.r - 8);
+
+    // Counter box at top right
+    var bx = W - 230, by = 50, bw = 210, bh = 110;
+    iiCtx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.12);
+    iiCtx.fillRect(bx, by, bw, bh);
+    iiCtx.strokeStyle = highlight;
+    iiCtx.lineWidth = 2;
+    iiCtx.strokeRect(bx, by, bw, bh);
+
+    iiCtx.fillStyle = text;
+    iiCtx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    iiCtx.textAlign = 'left';
+    iiCtx.fillText('Broj tangenti:', bx + 12, by + 22);
+    iiCtx.fillStyle = highlight;
+    iiCtx.font = 'bold 48px Segoe UI, system-ui, sans-serif';
+    iiCtx.textAlign = 'right';
+    iiCtx.fillText(String(tangCount), bx + bw - 14, by + 70);
+
+    iiCtx.fillStyle = (caseLabel.indexOf('SEKU') !== -1) ? warning : muted;
+    iiCtx.font = (caseLabel.indexOf('SEKU') !== -1) ? 'italic bold 12px Segoe UI, system-ui, sans-serif' : 'italic 12px Segoe UI, system-ui, sans-serif';
+    iiCtx.textAlign = 'left';
+    iiCtx.fillText('slučaj: ' + caseLabel, bx + 12, by + 95);
+
+    // Distance/sum readout at bottom
+    var rx = 30, ry = H - 90, rw = W - 60, rh = 70;
+    iiCtx.fillStyle = cvAlpha('--sol-canvas-grid', 0.35);
+    iiCtx.fillRect(rx, ry, rw, rh);
+    iiCtx.strokeStyle = axis;
+    iiCtx.lineWidth = 1;
+    iiCtx.strokeRect(rx, ry, rw, rh);
+
+    iiCtx.fillStyle = text;
+    iiCtx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    iiCtx.textAlign = 'left';
+    iiCtx.fillText('Trenutne mere (u pikselima):', rx + 12, ry + 20);
+
+    iiCtx.font = '12px Segoe UI, system-ui, sans-serif';
+    iiCtx.fillStyle = muted;
+    iiCtx.fillText('d = |O₁O₂| = ' + d.toFixed(0) +
+      '   |   r₁ = ' + fixedC1.r + ', r₂ = ' + dragC2.r +
+      '   |   r₁+r₂ = ' + rSum + '   |   |r₁−r₂| = ' + rDiff,
+      rx + 25, ry + 40);
+
+    iiCtx.fillStyle = highlight;
+    iiCtx.font = 'italic bold 12px Segoe UI, system-ui, sans-serif';
+    var hint = '';
+    if (tangCount === 4) hint = 'Razdvojeni krugovi: 2 spoljašnje + 2 unutrašnje = 4 tangente.';
+    else if (tangCount === 3) hint = 'Spoljašnji dodir: 2 spoljašnje + 1 u tački dodira = 3 tangente.';
+    else if (tangCount === 2) hint = 'Krugovi se SEKU: 2 spoljašnje + 0 unutrašnjih = 2 tangente. (uslov zadatka)';
+    else if (tangCount === 1) hint = 'Unutrašnji dodir: 0 spoljašnjih + 1 u tački dodira = 1 tangenta.';
+    else hint = 'Jedna kružnica je u potpunosti unutar druge — nema tangenti.';
+    iiCtx.fillText(hint, rx + 25, ry + 60);
+  }
+
+  // Mouse events for interactive canvas
+  function getCanvasPos(e, canvas) {
+    var rect = canvas.getBoundingClientRect();
+    var scaleX = canvas.width / rect.width;
+    var scaleY = canvas.height / rect.height;
+    var px, py;
+    if (e.touches && e.touches.length > 0) {
+      px = e.touches[0].clientX;
+      py = e.touches[0].clientY;
+    } else {
+      px = e.clientX;
+      py = e.clientY;
+    }
+    return { x: (px - rect.left) * scaleX, y: (py - rect.top) * scaleY };
+  }
+
+  if (inc) {
+    function onDown(e) {
+      var pos = getCanvasPos(e, inc);
+      var dx = pos.x - dragC2.x;
+      var dy = pos.y - dragC2.y;
+      // Allow drag if clicking near center or anywhere within draggable circle
+      if (Math.sqrt(dx * dx + dy * dy) < 30) {
+        dragging = true;
+        dragOffset.x = dx;
+        dragOffset.y = dy;
+        e.preventDefault();
+      }
+    }
+    function onMove(e) {
+      if (!dragging) return;
+      var pos = getCanvasPos(e, inc);
+      var nx = pos.x - dragOffset.x;
+      var ny = pos.y - dragOffset.y;
+      // Clamp to canvas with some margin
+      nx = Math.max(80, Math.min(inc.width - 80, nx));
+      ny = Math.max(120, Math.min(inc.height - 140, ny));
+      dragC2.x = nx;
+      dragC2.y = ny;
+      drawInteractive();
+      e.preventDefault();
+    }
+    function onUp() { dragging = false; }
+    inc.addEventListener('mousedown', onDown);
+    inc.addEventListener('mousemove', onMove);
+    inc.addEventListener('mouseup', onUp);
+    inc.addEventListener('mouseleave', onUp);
+    inc.addEventListener('touchstart', onDown, { passive: false });
+    inc.addEventListener('touchmove', onMove, { passive: false });
+    inc.addEventListener('touchend', onUp);
+  }
+
+  // ============ Canvas 4: Geometric proof of impossibility ============
+  var pc = document.getElementById('caseProof');
+  var pCtx = pc ? pc.getContext('2d') : null;
+
+  function drawProof() {
+    if (!pc || !pCtx) return;
+    var W = pc.width, H = pc.height;
+    var bg        = cv('--sol-canvas-bg');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var warning   = cv('--sol-canvas-warning');
+
+    pCtx.clearRect(0, 0, W, H);
+    pCtx.fillStyle = bg;
+    pCtx.fillRect(0, 0, W, H);
+
+    // Title
+    pCtx.fillStyle = text;
+    pCtx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    pCtx.textAlign = 'center';
+    pCtx.fillText('Zašto unutrašnja tangenta NE postoji kada se kružnice seku', W / 2, 28);
+
+    // Two intersecting circles
+    var c1x = 290, c1y = 240, r1 = 110;
+    var c2x = 460, c2y = 240, r2 = 95;
+
+    pCtx.fillStyle = cvAlpha('--sol-canvas-danger', 0.10);
+    pCtx.beginPath();
+    pCtx.arc(c1x, c1y, r1, 0, Math.PI * 2);
+    pCtx.fill();
+    pCtx.fillStyle = cvAlpha('--sol-canvas-primary', 0.10);
+    pCtx.beginPath();
+    pCtx.arc(c2x, c2y, r2, 0, Math.PI * 2);
+    pCtx.fill();
+
+    drawCircle(pCtx, c1x, c1y, r1, danger, null, 2);
+    drawCircle(pCtx, c2x, c2y, r2, primary, null, 2);
+
+    // Try to draw an "internal" tangent — perpendicular bisector of centerline as a candidate
+    var midX = (c1x + c2x) / 2;
+    var midY = (c1y + c2y) / 2;
+    pCtx.strokeStyle = warning;
+    pCtx.lineWidth = 2.5;
+    pCtx.setLineDash([8, 5]);
+    pCtx.beginPath();
+    pCtx.moveTo(midX, 60);
+    pCtx.lineTo(midX, H - 80);
+    pCtx.stroke();
+    pCtx.setLineDash([]);
+
+    // Mark with X where it intersects the circles (proving it's not a tangent)
+    // Line x = midX intersects each circle at 2 points (if abs(midX - cix) < ri)
+    function intersectVertical(cx, cy, r, lx) {
+      if (Math.abs(lx - cx) >= r) return null;
+      var dy = Math.sqrt(r * r - (lx - cx) * (lx - cx));
+      return [{ x: lx, y: cy - dy }, { x: lx, y: cy + dy }];
+    }
+    var int1 = intersectVertical(c1x, c1y, r1, midX);
+    var int2 = intersectVertical(c2x, c2y, r2, midX);
+
+    function drawX(c, x, y, color) {
+      c.strokeStyle = color;
+      c.lineWidth = 3;
+      c.beginPath();
+      c.moveTo(x - 6, y - 6); c.lineTo(x + 6, y + 6);
+      c.moveTo(x - 6, y + 6); c.lineTo(x + 6, y - 6);
+      c.stroke();
+    }
+
+    if (int1) {
+      drawX(pCtx, int1[0].x, int1[0].y, accent);
+      drawX(pCtx, int1[1].x, int1[1].y, accent);
+    }
+    if (int2) {
+      drawX(pCtx, int2[0].x, int2[0].y, accent);
+      drawX(pCtx, int2[1].x, int2[1].y, accent);
+    }
+
+    // Centers
+    pCtx.fillStyle = danger;
+    pCtx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    pCtx.textAlign = 'center';
+    pCtx.fillText('O₁', c1x, c1y - 8);
+    pCtx.fillStyle = primary;
+    pCtx.fillText('O₂', c2x, c2y - 8);
+
+    // Centerline
+    pCtx.strokeStyle = cvAlpha('--sol-canvas-muted', 0.5);
+    pCtx.lineWidth = 1;
+    pCtx.setLineDash([4, 4]);
+    pCtx.beginPath();
+    pCtx.moveTo(c1x, c1y);
+    pCtx.lineTo(c2x, c2y);
+    pCtx.stroke();
+    pCtx.setLineDash([]);
+
+    // Label "candidate t" on the dashed line
+    pCtx.fillStyle = warning;
+    pCtx.font = 'italic bold 13px Segoe UI, system-ui, sans-serif';
+    pCtx.textAlign = 'left';
+    pCtx.fillText('kandidat za "unutrašnju" tangentu  t', midX + 8, 80);
+
+    pCtx.fillStyle = accent;
+    pCtx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
+    pCtx.textAlign = 'left';
+    pCtx.fillText('× × × ×  preseca obe kružnice', midX + 8, H - 90);
+    pCtx.fillStyle = muted;
+    pCtx.font = '12px Segoe UI, system-ui, sans-serif';
+    pCtx.fillText('— znači nije tangenta', midX + 8, H - 72);
+
+    // Bottom info
+    var bx = 30, by = H - 60, bw = W - 60, bh = 50;
+    pCtx.fillStyle = cvAlpha('--sol-canvas-grid', 0.35);
+    pCtx.fillRect(bx, by, bw, bh);
+    pCtx.strokeStyle = axis;
+    pCtx.lineWidth = 1;
+    pCtx.strokeRect(bx, by, bw, bh);
+
+    pCtx.fillStyle = text;
+    pCtx.font = 'italic bold 13px Segoe UI, system-ui, sans-serif';
+    pCtx.textAlign = 'center';
+    pCtx.fillText('Ako bi prava razdvajala dve kružnice, tačke preseka kružnica ne bi mogle postojati  —  kontradikcija.', W / 2, by + 30);
+  }
+
+  drawIntersect();
+  drawAll();
+  drawInteractive();
+  drawProof();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        drawIntersect();
+        drawAll();
+        drawInteractive();
+        drawProof();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Broj zajedničkih tangenti dve kružnice koje se seku",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["kružnica", "tangenta", "zajednička tangenta", "klasifikacija", "položaj dve kružnice", "presek kružnica"]
+}
+BRAINSPARK_META-->

@@ -1,0 +1,536 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Aritmetički niz a1, a2, a3, ... zadovoljava:
+  (1)  a2 + a4 - a6 = 7
+  (2)  a8 - a7 = 2·a4
+Naći zbir prvih 10 članova niza.
+
+Opšti član: a_n = a1 + (n-1)·d, gde je d razlika (kor. diferenca).
+
+Uslov (1): a2 + a4 - a6 = 7
+  (a1 + d) + (a1 + 3d) - (a1 + 5d) = 7
+  a1 + d + a1 + 3d - a1 - 5d = 7
+  a1 - d = 7           ...(I)
+
+Uslov (2): a8 - a7 = 2·a4
+  Leva strana: a8 - a7 = d   (razlika dva uzastopna člana aritmetičkog niza JESTE d)
+  Desna strana: 2·a4 = 2(a1 + 3d) = 2a1 + 6d
+  Dakle d = 2a1 + 6d
+  -5d = 2a1
+  a1 = -5d/2           ...(II)
+
+Zamenimo (II) u (I):
+  -5d/2 - d = 7
+  (-5d - 2d)/2 = 7
+  -7d/2 = 7
+  d = -2
+
+Onda a1 = -5·(-2)/2 = 10/2 = 5.
+
+Provera (1): a2 = 3, a4 = -1, a6 = -5. Zbir: 3 + (-1) - (-5) = 3 - 1 + 5 = 7 ✓
+Provera (2): a7 = 5 + 6·(-2) = -7; a8 = 5 + 7·(-2) = -9; a8 - a7 = -9 - (-7) = -2 = d ✓
+              a4 = -1, 2·a4 = -2 = d ✓
+Konzistentno.
+
+Zbir S10 = (10/2)·(2a1 + 9d) = 5·(2·5 + 9·(-2)) = 5·(10 - 18) = 5·(-8) = -40.
+
+Alternativno preko srednje vrednosti prvog i desetog:
+  a10 = 5 + 9·(-2) = 5 - 18 = -13.
+  S10 = 10·(a1 + a10)/2 = 10·(5 + (-13))/2 = 10·(-8)/2 = 10·(-4) = -40 ✓
+
+Odgovor: E) -40.
+
+Canvas plan: prikazati niz od a1 do a10 kao tačke na brojevnoj pravoj (ili kao stubićni grafik n vs a_n). Označiti a1 = 5 i d = -2, videti kako članovi opadaju: 5, 3, 1, -1, -3, -5, -7, -9, -11, -13. Istaknuti "stepenik" d = -2 i markirati sumu -40 (npr. kumulativno). Član koji koristimo u uslovima: a2, a4, a6, a7, a8.
+
+Odlučujem se za grafikon: x-osa = n (1..10), y-osa = a_n. Tačke na pravoj y = 5 + (n-1)·(-2) = 7 - 2n. Istaknuti a2, a4, a6, a7, a8 drugom bojom. Pokazati zbir S10 kao spoj svih članova (npr. kumulativnu sumu kao stub ili iznose ispod svake tačke).
+</script>
+
+<h1 data-card="problem-title">Aritmetički niz i zbir prvih deset članova</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra &mdash; aritmetički niz, sistem jednačina, suma \(S_n\)</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Za članove aritmetičkog niza \( a_1,\, a_2,\, a_3,\, \ldots \) važe jednakosti</p>
+  <div class="math-block">\[ a_2 + a_4 - a_6 = 7 \quad \text{i} \quad a_8 - a_7 = 2\, a_4. \]</div>
+  <p>Zbir prvih \(10\) članova tog niza jednak je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( -50 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 40 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 30 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 12 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( -40 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Zapisaćemo svaki spomenuti član u obliku \( a_n = a_1 + (n - 1) d \) i iz dve date jednakosti izvući sistem po \( a_1 \) i \( d \). Nakon rešavanja sistema, upotrebićemo formulu \( S_{10} = \dfrac{10}{2}\bigl(2 a_1 + 9 d\bigr) \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule za aritmetički niz</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Opšti član</span> \( a_n = a_1 + (n - 1)\, d \), gde je \( d \) razlika (&bdquo;korak&ldquo;) između dva uzastopna člana.</li>
+        <li><span class="formula-label">Razlika uzastopnih</span> \( a_{n+1} - a_n = d \) za svako \( n \geq 1 \). Ovo koristimo direktno u drugom uslovu.</li>
+        <li><span class="formula-label">Zbir prvih \(n\) članova</span> \( S_n = \dfrac{n}{2}\bigl(2 a_1 + (n - 1) d\bigr) = \dfrac{n}{2}(a_1 + a_n) \).</li>
+        <li><span class="formula-label">Linearnost po \(n\)</span> \( a_n \) je linearna funkcija od \( n \) (prava linija u grafiku \(n \mapsto a_n\)). Nagib je \( d \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="fon2024-pp-p9-sequence" width="760" height="540"></canvas>
+  </div>
+  <p class="canvas-caption">Grafik aritmetičkog niza za \( a_1 = 5,\, d = -2 \). Članovi opadaju po pravoj liniji sa nagibom \(-2\). Članovi korišćeni u uslovima (\(a_2, a_4, a_6, a_7, a_8\)) obojeni su drugačije. Zbir svih deset tačaka jednak je površini &bdquo;oko simetrale&ldquo; \( (a_1 + a_{10})/2 = -4 \) pomnoženoj sa brojem članova \(10\), što daje \(-40\).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Izrazimo sve članove preko \( a_1 \) i \( d \)</h3>
+      <p>Za aritmetički niz važi \( a_n = a_1 + (n - 1) d \). Zato je</p>
+      <div class="math-block">\[ a_2 = a_1 + d,\quad a_4 = a_1 + 3d,\quad a_6 = a_1 + 5d, \]</div>
+      <div class="math-block">\[ a_7 = a_1 + 6d,\quad a_8 = a_1 + 7d. \]</div>
+      <p>Sve što nam sada treba je da ubacimo ove izraze u date jednakosti.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Prva jednakost</h3>
+      <p>Ubacimo u \( a_2 + a_4 - a_6 = 7 \):</p>
+      <div class="math-block">\[ (a_1 + d) + (a_1 + 3d) - (a_1 + 5d) = 7. \]</div>
+      <p>Grupisanjem:</p>
+      <div class="math-block">\[ \underbrace{(a_1 + a_1 - a_1)}_{\,=\,a_1} + \underbrace{(d + 3d - 5d)}_{\,=\,-d} = 7, \]</div>
+      <p>odnosno</p>
+      <div class="math-block">\[ \boxed{\,a_1 - d = 7\,}. \quad (\mathrm{I}) \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Druga jednakost &mdash; pametna opservacija</h3>
+      <p>Razlika dva uzastopna člana aritmetičkog niza uvek iznosi \( d \):</p>
+      <div class="math-block">\[ a_8 - a_7 = d. \]</div>
+      <p>Nije potrebno razvijati, ovo je definicija aritmetičkog niza! Dakle uslov \( a_8 - a_7 = 2 a_4 \) postaje</p>
+      <div class="math-block">\[ d = 2\,(a_1 + 3d) = 2 a_1 + 6 d. \]</div>
+      <p>Prebacimo sve na jednu stranu:</p>
+      <div class="math-block">\[ d - 6d = 2 a_1 \;\;\Longrightarrow\;\; -5d = 2 a_1, \]</div>
+      <p>odnosno</p>
+      <div class="math-block">\[ \boxed{\,a_1 = -\dfrac{5d}{2}\,}. \quad (\mathrm{II}) \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( a_8 - a_7 = d \) bez obzira na indeks?</summary>
+          <div class="detail-content"><p>Jer je \( a_8 - a_7 = (a_1 + 7d) - (a_1 + 6d) = d \). Uopšte, \( a_{n+1} - a_n = d \) za svako \(n\) &mdash; upravo ovo je osobina koja čini niz aritmetičkim.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Rešavanje sistema</h3>
+      <p>Zamenimo (II) u (I):</p>
+      <div class="math-block">\[ -\dfrac{5d}{2} - d = 7. \]</div>
+      <p>Svodimo na isti imenilac:</p>
+      <div class="math-block">\[ \dfrac{-5d - 2d}{2} = 7 \;\Longrightarrow\; -\dfrac{7d}{2} = 7 \;\Longrightarrow\; d = -2. \]</div>
+      <p>Iz (II): \( a_1 = -\dfrac{5 \cdot (-2)}{2} = \dfrac{10}{2} = 5 \).</p>
+      <div class="math-block">\[ \boxed{\,a_1 = 5,\ \ d = -2\,}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera uslova</h3>
+      <p>Ispišimo prvih par članova za \( a_1 = 5,\, d = -2 \):</p>
+      <div class="math-block">\[ a_2 = 3,\ \ a_4 = -1,\ \ a_6 = -5,\ \ a_7 = -7,\ \ a_8 = -9. \]</div>
+      <p>Prvi uslov: \( a_2 + a_4 - a_6 = 3 + (-1) - (-5) = 3 - 1 + 5 = 7 \) ✓<br>
+      Drugi uslov: \( a_8 - a_7 = -9 - (-7) = -2 \), \( 2 a_4 = 2 \cdot (-1) = -2 \) ✓</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Zbir prvih deset članova</h3>
+      <p>Primenimo formulu \( S_n = \dfrac{n}{2}\bigl(2 a_1 + (n - 1) d\bigr) \) za \( n = 10 \):</p>
+      <div class="math-block">\[ S_{10} = \dfrac{10}{2}\bigl(2 \cdot 5 + 9 \cdot (-2)\bigr) = 5 \cdot (10 - 18) = 5 \cdot (-8) = -40. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: i preko formule \( S_n = \dfrac{n}{2}(a_1 + a_n) \)?</summary>
+          <div class="detail-content"><p>\( a_{10} = a_1 + 9d = 5 + 9 \cdot (-2) = 5 - 18 = -13 \). Tada \( S_{10} = \dfrac{10}{2}(5 + (-13)) = 5 \cdot (-8) = -40 \) ✓.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Uslov \( a_8 - a_7 = 2 a_4 \) je u suštini: &bdquo;korak niza \(d\) je jednak dvostrukom četvrtom članu&ldquo;. Kada pametno primetimo da je \( a_8 - a_7 \) <em>samo</em> \(d\), druga jednakost se trenutno svodi na linearnu vezu između \(a_1\) i \(d\), što drastično pojednostavljuje posao. Inače, svaki problem sa aritmetičkim nizom se svodi na sistem dve linearne jednačine po \(a_1\) i \(d\).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ S_{10} = \dfrac{10}{2}\bigl(2 \cdot 5 + 9 \cdot (-2)\bigr) = 5 \cdot (-8) = -40 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( -50 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 40 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 30 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 12 \)</span>
+    <span class="answer-option correct" data-option="E">(E) \( -40 \)</span>
+  </div>
+  <p class="verification">Provera: članovi \(5, 3, 1, -1, -3, -5, -7, -9, -11, -13\). Zbir parovima &bdquo;prvi + poslednji&ldquo;: \(5 + (-13) = -8\); ima \(5\) takvih parova, pa \(5 \cdot (-8) = -40\) ✓.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Tumačenje \( a_8 - a_7 = 2 a_4 \) kao &bdquo;\(a_4\) pomnoženo sa nečim&ldquo; umesto uvida da leva strana <em>mora</em> biti baš \(d\). Zaobilazni put (razvijanje \(a_8\) i \(a_7\) pa oduzimanje) radi, ali uvek daje istu vrednost \(d\) &mdash; bez obzira na \(a_1\).</li>
+    <li>Greška u pisanju opšteg člana: \( a_n = a_1 + n\, d \) umesto \( a_1 + (n-1) d \). Tada su svi članovi &bdquo;za jedan korak pomereni&ldquo; i dobijamo pogrešne jednakosti.</li>
+    <li>Zamena indeksa u formuli sume: pisati \( S_{10} = \dfrac{10}{2}(2 a_1 + 10 d) \) umesto \( (2 a_1 + 9 d) \). Obrati pažnju: \( (n - 1) \), ne \(n\).</li>
+    <li>Greška u znaku kad se deli sa parnim \(-7/2\) &mdash; \( -7d/2 = 7 \Rightarrow d = -2 \), a ne \(d = +2\).</li>
+    <li>Računski: \( 2 a_1 + 9 d = 2 \cdot 5 + 9 \cdot (-2) = 10 - 18 = -8 \). Lako je pogrešiti znak i dobiti \(+8\).</li>
+    <li>Zaboraviti da proverimo \(a_1\) i \(d\) u obe originalne jednačine &mdash; lakše se otkriju greške u znaku.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Za isti niz (\(a_1 = 5,\, d = -2\)), koji je <em>prvi član koji postaje negativan</em>? I koliki je u tom niz zbir prvih \(n\) članova kao funkcija od \(n\)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Član \( a_n = 5 + (n-1)(-2) = 7 - 2n \). Prvi negativan: \(7 - 2n &lt; 0 \Rightarrow n &gt; 3{,}5\), dakle \(n = 4\): \(a_4 = -1 &lt; 0\) ✓. Opšta formula sume: \( S_n = \dfrac{n}{2}\bigl(2 \cdot 5 + (n-1)(-2)\bigr) = \dfrac{n}{2}(12 - 2n) = n(6 - n) = 6n - n^2 \). Maksimum: \(S'_n = 0 \Rightarrow n = 3\) (jer je \(S_n\) diskretna verzija parabole); tu je \(S_3 = 3 \cdot 3 = 9\). Potom \(S_n\) opada i postaje negativan za \(n \geq 7\): \(S_7 = 7 \cdot (-1) = -7\). Zbog simetrije parabole \(y = n(6-n)\), \(S_{10} = 10 \cdot (6 - 10) = -40\) ✓ (naš rezultat).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('fon2024-pp-p9-sequence');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Aritmetički niz: a_n = 5 + (n − 1) · (−2)', W / 2, 28);
+
+    // Subtitle with a1, d
+    ctx.fillStyle = muted;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillText('a₁ = 5,   d = −2', W / 2, 50);
+
+    // Coordinate system
+    var leftPad = 70;
+    var rightPad = 40;
+    var topPad = 85;
+    var bottomPad = 180;
+    var plotW = W - leftPad - rightPad;
+    var plotH = H - topPad - bottomPad;
+
+    var nMin = 0.5;
+    var nMax = 10.5;
+    var yMin = -16;
+    var yMax = 8;
+
+    function toX(n) { return leftPad + ((n - nMin) / (nMax - nMin)) * plotW; }
+    function toY(y) { return topPad + ((yMax - y) / (yMax - yMin)) * plotH; }
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 0.6;
+    for (var gn = 1; gn <= 10; gn++) {
+      ctx.beginPath();
+      ctx.moveTo(toX(gn), toY(yMax));
+      ctx.lineTo(toX(gn), toY(yMin));
+      ctx.stroke();
+    }
+    for (var gy = -14; gy <= 6; gy += 2) {
+      ctx.beginPath();
+      ctx.moveTo(toX(nMin), toY(gy));
+      ctx.lineTo(toX(nMax), toY(gy));
+      ctx.stroke();
+    }
+
+    // x-axis (at y=0)
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(toX(nMin), toY(0));
+    ctx.lineTo(toX(nMax), toY(0));
+    ctx.stroke();
+
+    // y-axis (at n=0.5 left edge) — actually draw at n=0 if in range
+    // We'll show it at left edge with small tick
+    ctx.beginPath();
+    ctx.moveTo(toX(nMin), toY(yMax));
+    ctx.lineTo(toX(nMin), toY(yMin));
+    ctx.stroke();
+
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('n', toX(nMax) + 20, toY(0) + 4);
+    ctx.textAlign = 'right';
+    ctx.fillText('a_n', toX(nMin) - 10, toY(yMax) + 10);
+
+    // Tick labels on x-axis
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var xt = 1; xt <= 10; xt++) {
+      ctx.beginPath();
+      ctx.moveTo(toX(xt), toY(0) - 3);
+      ctx.lineTo(toX(xt), toY(0) + 3);
+      ctx.strokeStyle = axis;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.fillStyle = muted;
+      ctx.fillText(xt.toString(), toX(xt), toY(0) + 18);
+    }
+
+    // Tick labels on y-axis (every 2)
+    ctx.textAlign = 'right';
+    for (var yt = -14; yt <= 6; yt += 2) {
+      if (yt === 0) continue;
+      ctx.beginPath();
+      ctx.moveTo(toX(nMin) - 3, toY(yt));
+      ctx.lineTo(toX(nMin) + 3, toY(yt));
+      ctx.strokeStyle = axis;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.fillStyle = muted;
+      ctx.fillText(yt.toString(), toX(nMin) - 8, toY(yt) + 4);
+    }
+
+    // Line through points: y = 7 - 2n
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1.6;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(toX(0.5), toY(7 - 2 * 0.5));
+    ctx.lineTo(toX(10.5), toY(7 - 2 * 10.5));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Plot 10 members
+    var members = [];
+    for (var n = 1; n <= 10; n++) {
+      members.push({ n: n, a: 5 + (n - 1) * (-2) }); // 5, 3, 1, -1, -3, -5, -7, -9, -11, -13
+    }
+
+    // Highlighted members used in conditions: 2, 4, 6, 7, 8
+    var highlighted = new Set([2, 4, 6, 7, 8]);
+
+    members.forEach(function(m) {
+      var cx = toX(m.n);
+      var cy = toY(m.a);
+      var isHighlight = highlighted.has(m.n);
+      var color = isHighlight ? cv('--sol-canvas-highlight') : cv('--sol-canvas-primary');
+      // Vertical stem from axis to point (thin)
+      ctx.strokeStyle = cvAlpha(isHighlight ? '--sol-canvas-highlight' : '--sol-canvas-primary', 0.35);
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(cx, toY(0));
+      ctx.lineTo(cx, cy);
+      ctx.stroke();
+
+      // Point dot
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(cx, cy, isHighlight ? 7 : 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // White ring for highlighted
+      if (isHighlight) {
+        ctx.strokeStyle = bg;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 7, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // Value label above/below the point depending on sign
+      ctx.fillStyle = color;
+      ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      var lyPos = m.a >= 0 ? cy - 12 : cy + 18;
+      ctx.fillText(m.a.toString(), cx, lyPos);
+    });
+
+    // "Step" annotation: d = -2 between a1 and a2
+    var x1 = toX(1);
+    var x2 = toX(2);
+    var y1p = toY(5);  // a1
+    var y2p = toY(3);  // a2
+
+    ctx.strokeStyle = cv('--sol-canvas-accent');
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([3, 3]);
+    // Horizontal leg at y1
+    ctx.beginPath();
+    ctx.moveTo(x1, y1p);
+    ctx.lineTo(x2, y1p);
+    ctx.stroke();
+    // Vertical leg from y1 to y2
+    ctx.beginPath();
+    ctx.moveTo(x2, y1p);
+    ctx.lineTo(x2, y2p);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // Label d = -2
+    ctx.fillStyle = cv('--sol-canvas-accent');
+    ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('d = −2', x2 + 3, (y1p + y2p) / 2 + 4);
+
+    // Legend on top-right
+    var lx = W - 220;
+    var ly = 82;
+    ctx.fillStyle = cv('--sol-canvas-primary');
+    ctx.beginPath();
+    ctx.arc(lx, ly, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('član niza a_n', lx + 10, ly + 4);
+
+    ctx.fillStyle = cv('--sol-canvas-highlight');
+    ctx.beginPath();
+    ctx.arc(lx, ly + 18, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.fillStyle = muted;
+    ctx.fillText('član u uslovima (a₂, a₄, a₆, a₇, a₈)', lx + 10, ly + 22);
+
+    // Sum visualization area (bottom)
+    var sumY = H - bottomPad + 30;
+    var sumH = 130;
+    var boxX = 60;
+    var boxW = W - 120;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.08);
+    ctx.strokeStyle = cv('--sol-canvas-accent');
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.roundRect
+      ? ctx.roundRect(boxX, sumY, boxW, sumH, 10)
+      : ctx.rect(boxX, sumY, boxW, sumH);
+    ctx.fill();
+    ctx.stroke();
+
+    // Sum title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Zbir prvih deset članova', W / 2, sumY + 24);
+
+    // Members as chips
+    var vals = members.map(function(m) { return m.a; });
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('5 + 3 + 1 + (−1) + (−3) + (−5) + (−7) + (−9) + (−11) + (−13)', W / 2, sumY + 52);
+
+    // Pair trick
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Paran broj članova: (a₁ + a₁₀) = 5 + (−13) = −8,  pet parova,  5 · (−8) = −40', W / 2, sumY + 78);
+
+    // Final result
+    ctx.fillStyle = cv('--sol-canvas-accent');
+    ctx.font = 'bold 22px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('S₁₀ = −40', W / 2, sumY + 112);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Aritmetički niz sa uslovima po indeksima i zbir prvih deset članova",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["aritmetički niz", "sistem linearnih jednačina", "zbir niza", "opšti član", "formula sume S_n"]
+}
+BRAINSPARK_META-->

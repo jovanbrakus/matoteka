@@ -187,9 +187,9 @@ Cards should appear in the order listed above. Required cards must always be pre
 - Canvas uses fixed pixel `width`/`height` attributes (for drawing coordinate space)
 - CSS handles responsive scaling via `max-width: 100%`
 - **Canvas height**: Ensure sufficient height so no elements overlap. Labels, legends, axis text, and tick marks must all have clear spacing. Typical minimums: 400px for simple graphs, 500px+ for labeled diagrams with legends. When in doubt, add extra height.
-- **Interactivity target: ~40–50% of problems. Prefer on-canvas interaction** (draggable points, hover, click) over external controls (sliders). Direct manipulation feels more intuitive. Use sliders only when the parameter has no spatial location on the diagram. Make interactive when the problem involves: geometry with a movable point (→ draggable point), optimization (→ draggable point along curve), unit circle trig (→ draggable angle), function graphs (→ draggable x-probe or coefficient point), intersections (→ draggable curve), 3D solids (→ draggable rotation). Keep static only for pure arithmetic, fixed counting, or labeled figures with no free parameter.
-- For on-canvas interaction: draw a grab hint near draggable points in `cv('--sol-canvas-muted')` (e.g. "prevuci")
-- For sliders (fallback): place inside `<div class="canvas-controls">`
+- **Interactivity target: 40–60% of problems.** Reserve interactivity for problems where the "aha" is in the motion — geometry with movable points, optimization, unit circle trig, parameter-dependent shapes, 3D solids. Keep static for algebra, equations, counting, sequences, fixed geometry, and problems where the diagram just illustrates a computed answer. Do NOT make every canvas interactive — a well-labeled static diagram is often better.
+- When interactive, prefer on-canvas drag. Draw a grab hint near draggable points in `cv('--sol-canvas-muted')` (e.g. "prevuci")
+- For sliders (fallback for abstract parameters): place inside `<div class="canvas-controls">`
 - See Section 7 for canvas script requirements
 
 ### 5.5 Step-by-Step Solution

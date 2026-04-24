@@ -1,5 +1,9 @@
 # Matoteka Project Guidelines
 
+## Tools
+
+`sentry-cli` is available at `/Users/jovan/.nvm/versions/node/v24.15.0/bin/sentry-cli` (requires Node 24; authenticated with Sentry org `kadino-software-agency`).
+
 ## Git Rules
 
 **NEVER commit unless the user explicitly asks you to.** Wait for an explicit instruction like "commit this" before running `git commit`. This applies to all repos (matoteka, prijemni, etc.).

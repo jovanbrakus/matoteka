@@ -1,0 +1,429 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Count the distinct 6-digit numbers using digits 1, 2, 3 where 1 appears once,
+  2 appears twice, 3 appears three times.
+  (A) 88  (B) 84  (C) 96  (D) 68  (E) 60
+
+  This is a permutation of a multiset:
+  Formula: n! / (n1! * n2! * n3!), where n = 6, n1 = 1, n2 = 2, n3 = 3.
+  Count = 6! / (1! * 2! * 3!) = 720 / (1 * 2 * 6) = 720 / 12 = 60.
+
+  Alternative counting - slot placement:
+    Step A: choose 3 slots out of 6 for digit "3": C(6,3) = 20.
+    Step B: choose 2 slots out of remaining 3 for digit "2": C(3,2) = 3.
+    Step C: place digit "1" in the last slot: 1 way.
+    Total = 20 * 3 * 1 = 60. ✓
+
+  Or:
+    Step A': place the "1" in one of 6 slots: 6 ways.
+    Step B': choose 2 of remaining 5 for "2": C(5,2) = 10.
+    Step C': remaining 3 slots for "3": 1 way.
+    Total = 6 * 10 * 1 = 60. ✓
+
+  Note on leading zeros: digits are 1, 2, 3 — none is zero — so all 60 arrangements are valid
+  6-digit numbers (no leading-zero issue).
+
+  Answer: (E) 60.
+
+  Examples for sanity:
+    1 2 2 3 3 3, 2 1 2 3 3 3, ..., 3 3 3 2 2 1.
+
+  Common pitfalls:
+  - Forgetting to divide by the factorials of repeats (treating positions as all distinct → 6! = 720).
+  - Using 6! / 3! / 2! and forgetting 1! (still fine since 1! = 1, but order of operations).
+  - Dividing by 3! + 2! + 1! instead of 3! * 2! * 1! (wrong!).
+  - Worrying about leading zeros (but no zero digit here).
+  - Treating identical digits as distinct.
+
+  Visual aid idea: grid showing the 3-step placement process.
+  - 6 slots at top: show example placements.
+  - Step 1: C(6,3) = 20 ways to place three 3's.
+  - Step 2: C(3,2) = 3 ways for two 2's.
+  - Step 3: 1 way for the 1.
+  - Total = 20 × 3 × 1 = 60.
+
+  Category: combinatorics, permutations of multiset, counting.
+</script>
+
+<h1 data-card="problem-title">Broj različitih šestocifrenih brojeva od cifara 1, 2, 3</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika &mdash; permutacije multiskupa</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Broj različitih šestocifrenih brojeva koji se mogu zapisati pomoću cifara \( 1,\; 2 \) i \( 3 \), takvih da se cifra \( 1 \) pojavljuje jedanput, cifra \( 2 \) dva puta i cifra \( 3 \) tri puta, jednak je:</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">Dužina broja</span>
+      <span class="given-value">\( 6 \) cifara</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Cifra 1</span>
+      <span class="given-value">\( 1 \) put</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Cifra 2</span>
+      <span class="given-value">\( 2 \) puta</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Cifra 3</span>
+      <span class="given-value">\( 3 \) puta</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 88 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 84 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 96 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 68 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 60 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Reč je o permutacijama multiskupa: raspoređujemo \( 6 \) cifara u niz, ali su neke cifre iste. Koristimo formulu \( \dfrac{n!}{n_1!\,n_2!\,n_3!} \), gde su \( n_i \) brojevi ponavljanja svake cifre. Potom proveravamo da li svi aranžmani daju važeće šestocifrene brojeve (nema cifre nula, pa nema problema sa vodećom nulom).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Permutacije multiskupa:</strong> broj različitih rasporeda \( n \) elemenata u kojima se javlja \( k \) različitih tipova sa brojevima ponavljanja \( n_1,\,n_2,\,\dots,\,n_k \) (gde je \( n_1 + n_2 + \cdots + n_k = n \)) jeste \[ \frac{n!}{n_1!\,n_2!\,\cdots\,n_k!}. \]</li>
+        <li><strong>Multinomni koeficijent:</strong> ista formula piše se i kao \( \dbinom{n}{n_1,\,n_2,\,\dots,\,n_k} \).</li>
+        <li><strong>Kombinacije &mdash; izbor mesta:</strong> \( \dbinom{n}{k} = \dfrac{n!}{k!\,(n-k)!} \); broj načina da se izabere \( k \) od \( n \) mesta bez obzira na redosled.</li>
+        <li><strong>Princip množenja:</strong> ako se izbor sastoji iz nezavisnih koraka sa \( a_1,\,a_2,\,\dots \) ishoda, ukupno je \( a_1 \cdot a_2 \cdots \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="countDiagram" width="760" height="620"></canvas>
+  </div>
+  <p class="canvas-caption">Dvostruki prikaz: levo formula \( \dfrac{6!}{1!\,2!\,3!} = 60 \), desno trokoračno postavljanje cifara u \( 6 \) polja koje daje \( \binom{6}{3}\cdot\binom{3}{2}\cdot\binom{1}{1} = 20 \cdot 3 \cdot 1 = 60 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Prepoznajemo permutaciju multiskupa</h3>
+      <p>Imamo \( 6 \) polja u nizu (svako polje je jedna cifra šestocifrenog broja). U njih razmeštamo:</p>
+      <div class="math-block">\[ \underbrace{1}_{1\times},\quad \underbrace{2,\,2}_{2\times},\quad \underbrace{3,\,3,\,3}_{3\times}. \]</div>
+      <p>Pošto su više cifara iste, &bdquo;običan&rdquo; broj permutacija \( 6! \) broji jedan te isti raspored više puta &mdash; naime, onoliko puta koliko se mogu preurediti same cifre \( 2 \) između sebe (\( 2! \) načina) i same cifre \( 3 \) između sebe (\( 3! \) načina).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto \( 6! \) preračunava rasporede?</summary>
+          <div class="detail-content"><p>Ako zamislimo da su cifre označene različitim indeksima (npr. \( 2_a,\,2_b \) i \( 3_a,\,3_b,\,3_c \)), onda je ukupan broj rasporeda \( 6! = 720 \). Ali u našem zadatku indeksi ne postoje &mdash; \( 2_a\,2_b \) i \( 2_b\,2_a \) daju isti broj. Zato delimo sa brojem načina na koje se iste cifre mogu izmešati međusobno.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Primenjujemo formulu za permutacije multiskupa</h3>
+      <p>Sa \( n = 6,\; n_1 = 1,\; n_2 = 2,\; n_3 = 3 \) dobijamo:</p>
+      <div class="math-block">\[ N = \frac{6!}{1!\cdot 2!\cdot 3!} = \frac{720}{1\cdot 2\cdot 6} = \frac{720}{12} = 60. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto delimo sa proizvodom \( 1!\cdot 2!\cdot 3! \), a ne sa zbirom?</summary>
+          <div class="detail-content"><p>Svaka vrsta preuređivanja istih cifara unosi nezavisno ponavljanje istog brojanja. Nezavisne operacije se množe (a ne sabiraju), pa u imeniocu stoji proizvod \( 1!\cdot 2!\cdot 3! = 12 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Alternativna provera &mdash; postavljanje cifara u polja</h3>
+      <p>Broj istih rešenja dobijamo i trokoračnim razmeštajem sa kombinacijama:</p>
+      <div class="math-block">\[ \begin{aligned} \text{(a) izbor 3 polja za cifru } 3:\;&\binom{6}{3} = 20 \\ \text{(b) izbor 2 polja od preostala 3 za cifru } 2:\;&\binom{3}{2} = 3 \\ \text{(c) poslednje polje za cifru } 1:\;&\binom{1}{1} = 1 \end{aligned} \]</div>
+      <p>Prema principu množenja:</p>
+      <div class="math-block">\[ N = \binom{6}{3}\cdot\binom{3}{2}\cdot\binom{1}{1} = 20\cdot 3\cdot 1 = 60. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: da li redosled koraka (3 pa 2 pa 1, ili 1 pa 2 pa 3) menja rezultat?</summary>
+          <div class="detail-content"><p>Ne. Ako prvo postavimo cifru \( 1 \) (\( \binom{6}{1} = 6 \)), pa cifru \( 2 \) (\( \binom{5}{2} = 10 \)), pa cifru \( 3 \) (\( \binom{3}{3} = 1 \)): \( 6\cdot 10\cdot 1 = 60 \). Isti broj, jer je svaki multiskup jednoznačno određen izborom mesta, nezavisno od redosleda postavljanja.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Da li su svi aranžmani &bdquo;šestocifreni&rdquo; brojevi?</h3>
+      <p>Kod brojeva, uobičajeno pravilo je da prva cifra ne sme biti nula. Ovde su sve cifre iz skupa \( \{1,\,2,\,3\} \), pa nijedan raspored nema vodeću nulu. Dakle, svih \( 60 \) rasporeda daje validne šestocifrene brojeve &mdash; ne moramo ništa odbacivati.</p>
+      <div class="math-block">\[ \boxed{N = 60} \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kad god raspoređujemo elemente među kojima ima ponavljanja, &bdquo;naivno&rdquo; \( n! \) preračunava jer se različiti redosledi identičnih elemenata broje kao različiti aranžmani. Deljenjem sa proizvodom faktorijelnih ponavljanja (\( n_1!\,n_2!\,n_3! \)) eliminišemo to dvojno brojanje. Konkretno, \( \dfrac{6!}{1!\cdot 2!\cdot 3!} \) može se razumeti i kao trokoračna dodela mesta: prvo tri polja za &bdquo;\( 3 \)&rdquo;, pa dva polja za &bdquo;\( 2 \)&rdquo;, pa jedno za &bdquo;\( 1 \)&rdquo; &mdash; oba pristupa daju isto \( 60 \).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ N = \frac{6!}{1!\cdot 2!\cdot 3!} = 60 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 88 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 84 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 96 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 68 \)</span>
+    <span class="answer-option correct" data-option="E">(E) \( 60 \)</span>
+  </div>
+  <p class="verification">Provera kombinatornom dekompozicijom: \( \binom{6}{3}\cdot\binom{3}{2}\cdot\binom{1}{1} = 20\cdot 3\cdot 1 = 60 \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Računati \( 6! = 720 \) i zaboraviti podeliti sa faktorijelnim ponavljanjima &mdash; iste cifre se tretiraju kao različite i dobije se \( 720 \) umesto \( 60 \).</li>
+    <li>Deliti sa \( 1! + 2! + 3! = 9 \) umesto sa proizvodom \( 1! \cdot 2! \cdot 3! = 12 \): \( 720/9 = 80 \) nije tačno.</li>
+    <li>Pomešati kombinacije i permutacije i koristiti \( \binom{6}{3,\,2,\,1} \) uz pogrešnu formulu &mdash; ovde je multinomni koeficijent \( \dfrac{6!}{1!\,2!\,3!} = 60 \), ne \( \binom{6}{3}+\binom{3}{2}+\binom{1}{1} \).</li>
+    <li>Brinuti se za vodeću nulu &mdash; ovde nema cifre \( 0 \), pa se svih \( 60 \) aranžmana računa.</li>
+    <li>Pokušati nabrajanje &bdquo;rukom&rdquo; bez sistematskog algoritma &mdash; lako se ponešto propusti ili dupla.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koliko bi različitih šestocifrenih brojeva bilo ako je u problem umesto cifre \( 1 \) upisana cifra \( 0 \) (tj. koristi se cifra \( 0 \) jednom, cifra \( 2 \) dva puta, cifra \( 3 \) tri puta)? I koliko će biti ako pak svaka od cifara \( 1,\,2,\,3 \) mora da se pojavi barem jednom, a ukupno ih je \( 6 \), ali su tačne brojeve ponavljanja slobodni (ne fiksirani)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Za prvi deo: ukupan broj rasporeda multiskupa \( \{0,\,2,\,2,\,3,\,3,\,3\} \) je \( \dfrac{6!}{1!\,2!\,3!} = 60 \). Ali treba oduzeti one kod kojih je \( 0 \) na prvom mestu (tada vodeća nula): fiksiraj \( 0 \) napred i prebroj rasporede ostalih pet cifara \( \{2,\,2,\,3,\,3,\,3\} \), što je \( \dfrac{5!}{2!\,3!} = 10 \). Konačan broj šestocifrenih brojeva je \( 60 - 10 = 50 \). Drugi deo je opštiji: traži se broj uređenih nizova od \( 6 \) elemenata iz skupa \( \{1,\,2,\,3\} \) u kojima se svaki element pojavljuje barem jednom; koristi princip uključenja-isključenja: \( 3^6 - 3\cdot 2^6 + 3\cdot 1^6 = 729 - 192 + 3 = 540 \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('countDiagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function roundRect(x, y, w, h, r, fill, stroke) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+    if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+    if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 2; ctx.stroke(); }
+  }
+
+  function drawSlots(cx, cy, digits, colors, slotW) {
+    // digits: array of 6 strings (or null for empty)
+    // colors: parallel array of color variables or null
+    slotW = slotW || 44;
+    var gap = 6;
+    var total = 6 * slotW + 5 * gap;
+    var startX = cx - total / 2;
+    for (var i = 0; i < 6; i++) {
+      var sx = startX + i * (slotW + gap);
+      var sy = cy - slotW / 2;
+      var fillCol = colors && colors[i] ? cvAlpha(colors[i], 0.18) : cvAlpha('--sol-canvas-grid', 0.3);
+      var strokeCol = colors && colors[i] ? cv(colors[i]) : cv('--sol-canvas-axis');
+      roundRect(sx, sy, slotW, slotW, 6, fillCol, strokeCol);
+      if (digits && digits[i] !== null && digits[i] !== undefined) {
+        ctx.fillStyle = colors && colors[i] ? cv(colors[i]) : cv('--sol-canvas-text');
+        ctx.font = 'bold 22px Segoe UI, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(digits[i], sx + slotW / 2, sy + slotW / 2);
+      }
+    }
+    ctx.textBaseline = 'alphabetic';
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Razmeštanje cifara 1, 2, 3 u 6 polja', W / 2, 28);
+
+    // Subtitle: formula row
+    ctx.font = '14px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('N = 6! / (1! · 2! · 3!) = 720 / 12 = 60', W / 2, 50);
+
+    // === Step 1: empty slots ===
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Korak 1:  izbor 3 polja za cifru "3"  ⇒  C(6,3) = 20', 40, 90);
+
+    drawSlots(W / 2, 130, ['3', null, '3', null, '3', null], ['--sol-canvas-primary', null, '--sol-canvas-primary', null, '--sol-canvas-primary', null]);
+
+    // small note
+    ctx.font = 'italic 12px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    ctx.fillText('(prikazan primer: polja 1, 3 i 5)', W / 2, 170);
+
+    // === Step 2: add 2's ===
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Korak 2:  izbor 2 polja od preostalih 3 za cifru "2"  ⇒  C(3,2) = 3', 40, 210);
+
+    drawSlots(W / 2, 250, ['3', '2', '3', '2', '3', null], ['--sol-canvas-primary', '--sol-canvas-secondary', '--sol-canvas-primary', '--sol-canvas-secondary', '--sol-canvas-primary', null]);
+
+    ctx.font = 'italic 12px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    ctx.fillText('(prikazan primer: 2-ice u poljima 2 i 4)', W / 2, 290);
+
+    // === Step 3: add the 1 ===
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Korak 3:  poslednje polje za cifru "1"  ⇒  C(1,1) = 1', 40, 330);
+
+    drawSlots(W / 2, 370, ['3', '2', '3', '2', '3', '1'], ['--sol-canvas-primary', '--sol-canvas-secondary', '--sol-canvas-primary', '--sol-canvas-secondary', '--sol-canvas-primary', '--sol-canvas-accent']);
+
+    ctx.font = 'italic 12px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    ctx.fillText('(primer aranžmana: 3 2 3 2 3 1)', W / 2, 410);
+
+    // === Multiplication bar ===
+    var barY = 450;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.1);
+    roundRect(80, barY, W - 160, 60, 10, cvAlpha('--sol-canvas-accent', 0.1), cv('--sol-canvas-accent'));
+
+    ctx.fillStyle = cv('--sol-canvas-primary');
+    ctx.font = 'bold 20px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('20', 180, barY + 38);
+    ctx.fillStyle = text;
+    ctx.fillText('×', 260, barY + 38);
+    ctx.fillStyle = cv('--sol-canvas-secondary');
+    ctx.fillText('3', 340, barY + 38);
+    ctx.fillStyle = text;
+    ctx.fillText('×', 420, barY + 38);
+    ctx.fillStyle = cv('--sol-canvas-accent');
+    ctx.fillText('1', 500, barY + 38);
+    ctx.fillStyle = text;
+    ctx.fillText('=', 580, barY + 38);
+    ctx.fillStyle = cv('--sol-canvas-accent');
+    ctx.font = 'bold 24px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('60', 660, barY + 40);
+
+    // Small labels under each factor
+    ctx.font = '11px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('tri 3-ice', 180, barY + 55);
+    ctx.fillText('dve 2-ice', 340, barY + 55);
+    ctx.fillText('jedna 1-ica', 500, barY + 55);
+
+    // === Examples row ===
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Primeri različitih aranžmana (ukupno 60):', 40, 545);
+
+    var exY = 575;
+    var examples = ['122333', '132323', '233331', '312323', '323331', '333221'];
+    var exW = 90;
+    var exGap = 14;
+    var exTotal = examples.length * exW + (examples.length - 1) * exGap;
+    var exStartX = (W - exTotal) / 2;
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    for (var j = 0; j < examples.length; j++) {
+      var ex = examples[j];
+      var xx = exStartX + j * (exW + exGap);
+      roundRect(xx, exY, exW, 28, 6, cvAlpha('--sol-canvas-grid', 0.4), cv('--sol-canvas-axis'));
+      ctx.fillStyle = text;
+      ctx.textAlign = 'center';
+      ctx.fillText(ex, xx + exW / 2, exY + 19);
+    }
+  }
+
+  draw();
+
+  // Re-draw on theme change
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Broj različitih šestocifrenih brojeva od cifara 1, 2, 3",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["permutacije multiskupa", "multinomni koeficijent", "kombinatorika", "brojanje rasporeda", "princip množenja"]
+}
+BRAINSPARK_META-->

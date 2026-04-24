@@ -1,0 +1,516 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Za f(x) = x (ln^2 x - 3) odrediti količnik najveće i najmanje vrednosti
+  na segmentu [1, e^2]. Naći skup kojem pripada.
+
+  Strategija: klasična ekstrema na zatvorenom segmentu.
+    - Naći f'(x), kritične tačke u (1, e^2).
+    - Uporediti f u kritičnim tačkama i u krajevima.
+    - Najmanje = min{f(1), f(e), f(e^2)}, najveće = max istog skupa.
+
+  Izvod:
+    f(x) = x · ln^2 x - 3x
+    f'(x) = ln^2 x + x · 2 ln x · (1/x) - 3
+           = ln^2 x + 2 ln x - 3.
+    Faktorisanje: ln^2 x + 2 ln x - 3 = (ln x + 3)(ln x - 1).
+
+    Napomena: smena t = ln x prevodi na t^2 + 2t - 3 = (t+3)(t-1); nule t=-3 i t=1.
+
+  Na [1, e^2]: ln x ∈ [0, 2], pa ln x + 3 > 0 uvek.
+  Znak f' zavisi od ln x - 1:
+    f'(x) = 0 ⇔ ln x = 1 ⇔ x = e.
+    f'(x) < 0 za ln x < 1, tj. x ∈ [1, e)  → f opada
+    f'(x) > 0 za ln x > 1, tj. x ∈ (e, e^2] → f raste
+
+  Dakle x = e je tačka lokalnog (i globalnog) minimuma na segmentu.
+  Maksimum je u jednom od krajeva.
+
+  Vrednosti:
+    f(1) = 1 · (0 - 3) = -3.
+    f(e) = e · (1 - 3) = -2e ≈ -2 · 2,71828 ≈ -5,43656.
+    f(e^2) = e^2 · (4 - 3) = e^2 ≈ 7,389.
+
+  Min = f(e) = -2e.  Max = f(e^2) = e^2 (jer je e^2 ≈ 7,389 > f(1) = -3).
+
+  Količnik:
+    max / min = e^2 / (-2e) = -e/2 ≈ -1,35914.
+
+  Pripadnost:
+    -2 ≤ -e/2 < -1?  e ≈ 2,71828, e/2 ≈ 1,35914, -e/2 ≈ -1,35914.
+    -2 = -2,000 ≤ -1,35914 < -1,000 = -1. Da. Pripada [-2, -1).
+
+  Odgovor: (E) [-2, -1).
+
+  Vizuelni prikaz: grafik f(x) na [1, e^2] sa tri označene tačke:
+    (1, -3), (e, -2e), (e^2, e^2). Istaknut min i max.
+    Drugi canvas (opciono): f'(x) sa znakom; pokazuje zašto je e tačka minimuma.
+    Držimo JEDAN canvas sa jasnim prikazom funkcije i obeleženim vrednostima.
+
+  Sanity check druge derivacije:
+    f''(x) = (2 ln x)/x + 2/x = (2 ln x + 2)/x = 2(ln x + 1)/x.
+    f''(e) = 2 · 2 / e = 4/e > 0.  Minimum — potvrđeno.
+</script>
+
+<h1 data-card="problem-title">Ekstremne vrednosti funkcije \( x(\ln^2 x - 3) \)</h1>
+<p data-card="problem-subtitle" class="subtitle">Diferencijalni račun &mdash; ekstremi na zatvorenom segmentu, logaritamska funkcija</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Količnik najveće i najmanje vrednosti funkcije</p>
+  <div class="math-block">\[ f(x) = x\bigl(\ln^2 x - 3\bigr) \]</div>
+  <p>na segmentu \( [1, e^2] \) pripada skupu:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( (-\infty, -3) \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( [-1, 1) \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( [1, \infty) \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( [-3, -2) \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( [-2, -1) \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Nađemo izvod \( f'(x) \), rastavimo ga kao proizvod (smena \( t = \ln x \) daje kvadratni trinom) i odredimo kritične tačke na \( [1, e^2] \). Zatim uporedimo vrednosti funkcije u krajevima segmenta i u kritičnoj tački kako bismo našli globalni maksimum i minimum. Na kraju izračunamo njihov količnik i utvrdimo kojem intervalu pripada.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Vajerštrasova teorema:</strong> neprekidna funkcija na zatvorenom i ograničenom segmentu \( [a,b] \) dostiže najveću i najmanju vrednost.</li>
+        <li><strong>Gde tražiti ekstreme:</strong> kandidati su krajevi \( a \), \( b \) i sve unutrašnje tačke gde je \( f'(x) = 0 \) ili \( f' \) ne postoji.</li>
+        <li><strong>Proizvodno pravilo:</strong> \( (u v)' = u'v + u v' \).</li>
+        <li><strong>Izvod logaritma i složene funkcije:</strong> \( (\ln x)' = \frac{1}{x} \), pa \( (\ln^2 x)' = 2\ln x \cdot \frac{1}{x} \).</li>
+        <li><strong>Kriterijum drugog izvoda:</strong> ako je \( f'(x_0) = 0 \) i \( f''(x_0) > 0 \), \( x_0 \) je tačka (lokalnog) minimuma.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="760" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Grafik funkcije \( f(x) = x(\ln^2 x - 3) \) na segmentu \( [1, e^2] \). Tri ključne vrednosti: \( f(1) = -3 \), \( f(e) = -2e \) (minimum) i \( f(e^2) = e^2 \) (maksimum).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunavamo izvod \( f'(x) \)</h3>
+      <p>Koristimo proizvodno pravilo za \( f(x) = x \cdot (\ln^2 x - 3) \):</p>
+      <div class="math-block">\[ f'(x) = 1 \cdot \bigl(\ln^2 x - 3\bigr) + x \cdot \bigl(\ln^2 x - 3\bigr)'. \]</div>
+      <p>Izvod drugog činioca je \( \bigl(\ln^2 x\bigr)' = 2\ln x \cdot \frac{1}{x} = \frac{2\ln x}{x} \), pa:</p>
+      <div class="math-block">\[ f'(x) = \ln^2 x - 3 + x \cdot \frac{2\ln x}{x} = \ln^2 x + 2\ln x - 3. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( \bigl(\ln^2 x\bigr)' = \frac{2\ln x}{x} \)?</summary>
+          <div class="detail-content"><p>\( \ln^2 x \) je složena funkcija \( u^2 \) gde je \( u = \ln x \). Po pravilu složene funkcije, \( (u^2)' = 2u \cdot u' \). Pošto je \( u' = \frac{1}{x} \), dobijamo \( 2\ln x \cdot \frac{1}{x} \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Rastavljamo izvod na činioce (smena \( t = \ln x \))</h3>
+      <p>Uvedimo smenu \( t = \ln x \). Tada je \( f'(x) = t^2 + 2t - 3 \) &mdash; običan kvadratni trinom po \( t \). Njegove nule nalazimo iz \( t^2 + 2t - 3 = 0 \):</p>
+      <div class="math-block">\[ t = \frac{-2 \pm \sqrt{4 + 12}}{2} = \frac{-2 \pm 4}{2} = \{-3,\ 1\}. \]</div>
+      <p>Dakle:</p>
+      <div class="math-block">\[ f'(x) = (\ln x + 3)(\ln x - 1). \]</div>
+      <p>Na segmentu \( [1, e^2] \) je \( \ln x \in [0, 2] \), pa je prvi činilac \( \ln x + 3 \geq 3 > 0 \) <em>svuda</em>. Znak izvoda određuje isključivo \( \ln x - 1 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Kritična tačka i znak izvoda</h3>
+      <p>Jedina kritična tačka u \( (1, e^2) \) je rešenje \( \ln x - 1 = 0 \), dakle \( x = e \). Znak izvoda:</p>
+      <div class="math-block">\[ \begin{array}{c|c|c} x & [1,\ e) & (e,\ e^2] \\ \hline \ln x - 1 & < 0 & > 0 \\ f'(x) & < 0 & > 0 \\ f & \searrow\ \text{opada} & \nearrow\ \text{raste} \end{array} \]</div>
+      <p>Znači \( x = e \) je tačka <em>minimuma</em>, a maksimum se dostiže u jednom od krajeva segmenta.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: da li je \( x=e \) zaista tačka minimuma?</summary>
+          <div class="detail-content"><p>Da. Kriterijum drugog izvoda: \( f''(x) = \frac{2(\ln x + 1)}{x} \), pa \( f''(e) = \frac{2 \cdot 2}{e} = \frac{4}{e} > 0 \). Potvrđeno, lokalni (i globalni na segmentu) minimum.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Vrednosti funkcije u kandidatima</h3>
+      <p>Izračunavamo \( f \) u tri kritične tačke &mdash; oba kraja i unutrašnju kritičnu tačku \( x = e \):</p>
+      <div class="math-block">\[ \begin{aligned} f(1) &= 1 \cdot (\ln^2 1 - 3) = 1 \cdot (0 - 3) = -3, \\[4pt] f(e) &= e \cdot (\ln^2 e - 3) = e \cdot (1 - 3) = -2e, \\[4pt] f(e^2) &= e^2 \cdot (\ln^2 e^2 - 3) = e^2 \cdot (4 - 3) = e^2. \end{aligned} \]</div>
+      <p>Pošto je \( e \approx 2{,}718 \), imamo \( -2e \approx -5{,}437 \) i \( e^2 \approx 7{,}389 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Određujemo najveću i najmanju vrednost</h3>
+      <p>Uporedimo tri vrednosti:</p>
+      <div class="math-block">\[ f(e) = -2e \approx -5{,}437 \quad<\quad f(1) = -3 \quad<\quad f(e^2) = e^2 \approx 7{,}389. \]</div>
+      <p>Dakle:</p>
+      <div class="math-block">\[ \min_{[1, e^2]} f = f(e) = -2e, \qquad \max_{[1, e^2]} f = f(e^2) = e^2. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo količnik i smeštamo u interval</h3>
+      <p>Količnik najveće i najmanje vrednosti:</p>
+      <div class="math-block">\[ \frac{\max f}{\min f} = \frac{e^2}{-2e} = -\frac{e}{2}. \]</div>
+      <p>Numerički: \( -\frac{e}{2} \approx -\frac{2{,}71828}{2} \approx -1{,}35914 \).</p>
+      <p>Proverimo pripadnost svakom ponuđenom intervalu:</p>
+      <div class="math-block">\[ -2 \;\leq\; -\frac{e}{2} \;<\; -1 \quad\Longleftrightarrow\quad 1 \;<\; \frac{e}{2} \;\leq\; 2 \quad\Longleftrightarrow\quad 2 \;<\; e \;\leq\; 4. \]</div>
+      <p>Pošto je \( 2 < e \approx 2{,}718 < 4 \), uslov je ispunjen. Količnik pripada intervalu \( [-2, -1) \). <span class="result">(E)</span></p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Smena \( t = \ln x \) trenutno prevodi komplikovanu logaritamsku jednačinu \( f'(x) = 0 \) u <em>običan</em> kvadratni trinom \( t^2 + 2t - 3 \). Rastavljanjem na \( (t+3)(t-1) \) vidi se da na domenu \( t = \ln x \in [0, 2] \) samo jedna nula <em>stvarno</em> utiče na znak izvoda &mdash; ona u \( t = 1 \), tj. \( x = e \). Drugi faktor \( \ln x + 3 \) je pozitivan na celom segmentu i „nestaje" iz analize. Zbog toga je rešenje elegantno: minimum je u \( x = e \), a maksimum je veći od dva kraja, što se lako proverava izračunavanjem.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \frac{\max\limits_{[1,e^2]} f}{\min\limits_{[1,e^2]} f} \;=\; \frac{e^2}{-2e} \;=\; -\frac{e}{2} \;\approx\; -1{,}359 \;\in\; [-2,\ -1). \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( (-\infty, -3) \)</span>
+    <span class="answer-option" data-option="B">(B) \( [-1, 1) \)</span>
+    <span class="answer-option" data-option="C">(C) \( [1, \infty) \)</span>
+    <span class="answer-option" data-option="D">(D) \( [-3, -2) \)</span>
+    <span class="answer-option correct" data-option="E">(E) \( [-2, -1) \)</span>
+  </div>
+  <p class="verification">Provera: \( -\frac{e}{2} \approx -1{,}359 \). Jeste \( -2 \leq -1{,}359 < -1 \)? Da &mdash; pripada \( [-2, -1) \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zaboravljanje proizvodnog pravila:</strong> pogrešno se piše \( f'(x) = \ln^2 x - 3 \) &mdash; izostavlja se član \( x \cdot (\ln^2 x)' \). Uvek koristi \( (uv)' = u'v + uv' \) kada je \( f \) proizvod.</li>
+    <li><strong>Greška pri smeni \( t = \ln x \):</strong> neki dobijaju \( t^2 + 2t - 3 \), ali rešavaju samo \( t = 1 \) i zaboravljaju da provere da li nula \( t = -3 \) (tj. \( x = e^{-3} \)) pripada segmentu.</li>
+    <li><strong>Nepotpuno poređenje:</strong> minimum je u \( x = e \), ali maksimum NIJE automatski drugi kraj &mdash; treba proveriti <em>oba</em> kraja. Ovde je \( f(e^2) = e^2 \approx 7{,}39 \), znatno veće od \( f(1) = -3 \).</li>
+    <li><strong>Zamena min i max:</strong> pošto je \( \min f = -2e < 0 \), količnik \( \frac{\max}{\min} \) je <em>negativan</em>. Pazi na znak u deljenju.</li>
+    <li><strong>Grubo zaokruživanje \( e \):</strong> uzeti \( e \approx 2{,}7 \) može dati \( -e/2 \approx -1{,}35 \), što je i dalje u \( [-2,-1) \), ali ako se koristi \( e \approx 3 \), bilo bi \( -1{,}5 \) &mdash; još uvek u istom intervalu, ali u drugim zadacima takva greška ume da „prebaci" u pogrešan interval. Koristi tačniju vrednost \( e \approx 2{,}718 \).</li>
+    <li><strong>Zabuna \( \ln^2 x \) i \( \ln x^2 \):</strong> to <em>nije</em> isto. \( \ln^2 x = (\ln x)^2 \), dok je \( \ln x^2 = 2\ln x \). U našem zadatku stoji prvi oblik.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Odredi najveću i najmanju vrednost iste funkcije \( f(x) = x(\ln^2 x - 3) \), ali na <strong>proširenom</strong> segmentu \( [e^{-3}, e^2] \). Da li se ekstrema menjaju? Koji je sada količnik \( \frac{\max f}{\min f} \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Na širem segmentu \( [e^{-3}, e^2] \) kritična tačka \( x = e^{-3} \) (gde je \( \ln x + 3 = 0 \)) sada je <em>u</em> segmentu, i to na njegovom kraju. Izračunaj \( f(e^{-3}) = e^{-3}(9-3) = 6e^{-3} \). Pošto je \( f \) rastuća na \( (e^{-3}, e) \) (proveri!), opet opada do \( e \), pa raste do \( e^2 \). Minimum je i dalje \( f(e) = -2e \), a maksimum je \( f(e^2) = e^2 \) (pošto \( 6e^{-3} \approx 0{,}3 < e^2 \)). Količnik ostaje \( -e/2 \). Pouka: dodavanje „ravnog" dela domena ne menja ekstreme.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  // Domen: x ∈ [1, e^2] ≈ [1, 7.389]
+  // f(x) = x (ln^2 x - 3)
+  // f(1) = -3, f(e) = -2e ≈ -5.437, f(e^2) = e^2 ≈ 7.389
+  // Vrednosti: y ∈ [-5.5, 7.5]
+
+  function f(x) { return x * (Math.log(x) * Math.log(x) - 3); }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var secondary = cv('--sol-canvas-secondary');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Naslov
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('f(x) = x (ln² x − 3)   na segmentu [1, e²]', canvas.width / 2, 24);
+
+    // Plot oblast
+    var padLeft = 70, padRight = 40, padTop = 50, padBottom = 90;
+    var plotW = canvas.width - padLeft - padRight;
+    var plotH = canvas.height - padTop - padBottom;
+
+    // Domen i kodomen
+    var xMin = 0.5, xMax = 8;
+    var yMin = -7, yMax = 9;
+
+    function X(x) { return padLeft + (x - xMin) / (xMax - xMin) * plotW; }
+    function Y(y) { return padTop + (yMax - y) / (yMax - yMin) * plotH; }
+
+    // Plot background
+    ctx.fillStyle = cvAlpha('--sol-canvas-bg', 1);
+    ctx.fillRect(padLeft, padTop, plotW, plotH);
+
+    // Mreža (horizontalne linije svake 2)
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    for (var yy = -6; yy <= 8; yy += 2) {
+      ctx.beginPath();
+      ctx.moveTo(padLeft, Y(yy));
+      ctx.lineTo(padLeft + plotW, Y(yy));
+      ctx.stroke();
+    }
+    for (var xx = 1; xx <= 8; xx += 1) {
+      ctx.beginPath();
+      ctx.moveTo(X(xx), padTop);
+      ctx.lineTo(X(xx), padTop + plotH);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Senka segmenta [1, e^2]
+    var e = Math.E;
+    var e2 = e * e;
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.06);
+    ctx.fillRect(X(1), padTop, X(e2) - X(1), plotH);
+
+    // Osa x (y=0)
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(padLeft, Y(0));
+    ctx.lineTo(padLeft + plotW, Y(0));
+    ctx.stroke();
+
+    // Osa y (x=0 prikazan na padLeft)
+    ctx.beginPath();
+    ctx.moveTo(padLeft, padTop);
+    ctx.lineTo(padLeft, padTop + plotH);
+    ctx.stroke();
+
+    // Oznake na y-osi
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (var yy2 = -6; yy2 <= 8; yy2 += 2) {
+      ctx.fillText(yy2.toString(), padLeft - 6, Y(yy2));
+      // mali tick
+      ctx.strokeStyle = axis;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(padLeft - 3, Y(yy2));
+      ctx.lineTo(padLeft + 3, Y(yy2));
+      ctx.stroke();
+    }
+
+    // Oznake x-ose: 1, e, e^2
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    var xticks = [
+      { x: 1,  label: '1',   color: muted },
+      { x: e,  label: 'e',   color: secondary },
+      { x: e2, label: 'e²',  color: secondary }
+    ];
+    for (var ti = 0; ti < xticks.length; ti++) {
+      var tk = xticks[ti];
+      ctx.strokeStyle = tk.color;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(X(tk.x), Y(0) - 4);
+      ctx.lineTo(X(tk.x), Y(0) + 4);
+      ctx.stroke();
+      ctx.fillStyle = tk.color;
+      ctx.font = 'bold 13px "Cambria Math", Georgia, serif';
+      ctx.fillText(tk.label, X(tk.x), Y(0) + 8);
+    }
+
+    // Labele osa
+    ctx.fillStyle = text;
+    ctx.font = 'italic bold 14px "Cambria Math", Georgia, serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('x', padLeft + plotW + 12, Y(0));
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('y', padLeft, padTop - 6);
+
+    // Grafik f(x) — crtamo od x = 0.6 do 8
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    var first = true;
+    for (var i = 0; i <= 200; i++) {
+      var xp = 0.6 + (8 - 0.6) * i / 200;
+      if (xp <= 0) continue;
+      var yp = f(xp);
+      if (yp < yMin - 2 || yp > yMax + 2) { first = true; continue; }
+      var px = X(xp), py = Y(yp);
+      if (first) { ctx.moveTo(px, py); first = false; }
+      else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+
+    // Istaknuti deo na [1, e^2]
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    var first2 = true;
+    for (var j = 0; j <= 150; j++) {
+      var xp2 = 1 + (e2 - 1) * j / 150;
+      var yp2 = f(xp2);
+      var px2 = X(xp2), py2 = Y(yp2);
+      if (first2) { ctx.moveTo(px2, py2); first2 = false; }
+      else ctx.lineTo(px2, py2);
+    }
+    ctx.stroke();
+
+    // Tri ključne tačke: (1, -3), (e, -2e), (e^2, e^2)
+    var pts = [
+      { x: 1,  y: -3,      label: 'f(1) = −3',      color: warning,  title: 'kraj',      tx: 18,  ty: -20 },
+      { x: e,  y: -2 * e,  label: 'f(e) = −2e',     color: danger,   title: 'MIN',       tx: -10,  ty: 24 },
+      { x: e2, y: e2,      label: 'f(e²) = e²',     color: accent,   title: 'MAX',       tx: -60, ty: -16 }
+    ];
+
+    // Vertikalne linije od x-ose do tačaka (isprekidane)
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    for (var k = 0; k < pts.length; k++) {
+      var p = pts[k];
+      ctx.beginPath();
+      ctx.moveTo(X(p.x), Y(0));
+      ctx.lineTo(X(p.x), Y(p.y));
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Tačke i labele
+    for (var m = 0; m < pts.length; m++) {
+      var pt = pts[m];
+      // glow
+      ctx.beginPath();
+      ctx.arc(X(pt.x), Y(pt.y), 9, 0, Math.PI * 2);
+      if (pt.color === danger) ctx.fillStyle = cvAlpha('--sol-canvas-danger', 0.25);
+      else if (pt.color === accent) ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.25);
+      else ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.25);
+      ctx.fill();
+      // ball
+      ctx.beginPath();
+      ctx.arc(X(pt.x), Y(pt.y), 5, 0, Math.PI * 2);
+      ctx.fillStyle = pt.color;
+      ctx.fill();
+      ctx.strokeStyle = bg;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Title (MIN/MAX/kraj)
+      ctx.font = 'bold 12px Inter, system-ui';
+      ctx.fillStyle = pt.color;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'alphabetic';
+      ctx.fillText(pt.title, X(pt.x) + pt.tx, Y(pt.y) + pt.ty);
+      // Vrednost
+      ctx.font = '12px "Cambria Math", Georgia, serif';
+      ctx.fillStyle = text;
+      ctx.fillText(pt.label, X(pt.x) + pt.tx, Y(pt.y) + pt.ty + 14);
+    }
+
+    // Informativna tabela znaka izvoda ispod
+    var tableY = padTop + plotH + 28;
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText("Znak f '(x) na [1, e²]:", padLeft, tableY);
+    // Dve regije
+    ctx.font = '12px "Cambria Math", Georgia, serif';
+    ctx.fillStyle = danger;
+    ctx.fillText('[1, e) :  f ′ < 0  →  opada', padLeft + 170, tableY);
+    ctx.fillStyle = accent;
+    ctx.fillText('(e, e²] :  f ′ > 0  →  raste', padLeft + 410, tableY);
+
+    // Zaključak
+    ctx.font = 'italic 12px Inter, system-ui';
+    ctx.fillStyle = secondary;
+    ctx.textAlign = 'center';
+    ctx.fillText('Količnik: max / min = e² / (−2e) = −e/2 ≈ −1,359  ∈  [−2, −1)',
+                 canvas.width / 2, tableY + 28);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Ekstremi funkcije x(ln²x − 3) na segmentu [1, e²] — količnik max i min",
+  "subject": "math",
+  "unit": "calculus",
+  "topic_tags": ["ekstremi funkcije", "izvod", "logaritamska funkcija", "smena promenljive", "zatvoreni segment"]
+}
+BRAINSPARK_META-->

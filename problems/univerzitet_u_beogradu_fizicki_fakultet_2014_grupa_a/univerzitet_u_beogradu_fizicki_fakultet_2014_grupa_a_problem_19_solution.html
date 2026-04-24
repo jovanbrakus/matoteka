@@ -1,0 +1,786 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Kocka je isečena na 99 manjih kocki, od kojih samo jedna ima ivicu različitu od 1 cm.
+  Naći zapreminu V polazne kocke.
+  Opcije: (A) V = 100 cm^3, (B) V = 125 cm^3, (C) V = 162 cm^3.
+  Tačan odgovor: (B) V = 125 cm^3.
+
+  Strategija:
+    Neka je n (u cm) ivica polazne (velike) kocke; n je prirodan broj.
+    Od 99 manjih kocki, 98 ima ivicu 1 cm (zapremina 1), a jedna ima ivicu k cm, gde je
+    k prirodan broj sa k >= 2, k < n (jer k != 1 i mora stati unutar velike kocke).
+    Zbir zapremina: n^3 = 98 * 1 + k^3, tj. n^3 - k^3 = 98.
+
+  Traženje celobrojnih rešenja za n^3 - k^3 = 98, uz k >= 2, k < n:
+    n = 3: 27 - k^3 = 98 -> k^3 = -71 (nemoguće).
+    n = 4: 64 - k^3 = 98 -> k^3 = -34 (nemoguće).
+    n = 5: 125 - k^3 = 98 -> k^3 = 27 -> k = 3. VALIDNO (3 < 5, 3 != 1).
+    n = 6: 216 - k^3 = 98 -> k^3 = 118 (118 nije kub prirodnog broja: 4^3 = 64, 5^3 = 125).
+    n = 7: 343 - k^3 = 98 -> k^3 = 245 (245 nije kub: 6^3 = 216, 7^3 = 343).
+    n = 8: 512 - k^3 = 98 -> k^3 = 414 (nije kub: 7^3 = 343, 8^3 = 512).
+    Za n >= 6 vrlo brzo k^3 postaje ogroman i nikad nije tačno kub.
+    Alternativna granica: n^3 - (n-1)^3 = 3n^2 - 3n + 1; rešiti 3n^2 - 3n + 1 <= 98 daje n <= 6.
+    Faktorizacijom: n^3 - k^3 = (n - k)(n^2 + nk + k^2) = 98 = 2 * 7^2.
+    Delioci 98: 1, 2, 7, 14, 49, 98.
+    Stavimo d = n - k, e = n^2 + nk + k^2. Tada d * e = 98, d < e (jer je e veliko pozitivno),
+    i obe su pozitivne cele.
+      d = 1: e = 98, n - k = 1, n^2 + nk + k^2 = 98. Iz n = k+1: (k+1)^2 + (k+1)k + k^2 = 3k^2 + 3k + 1 = 98.
+             3k^2 + 3k - 97 = 0. D = 9 + 12*97 = 1173 (nije savršen kvadrat). Nema celih rešenja.
+      d = 2: e = 49, n - k = 2, n = k+2: (k+2)^2 + (k+2)k + k^2 = 3k^2 + 6k + 4 = 49.
+             3k^2 + 6k - 45 = 0, k^2 + 2k - 15 = 0, k = (-2 ± √(4+60))/2 = (-2 ± 8)/2 = 3 ili -5.
+             Uzimamo k = 3 -> n = 5. PRONAĐENO! ✓
+      d = 7: e = 14, n = k+7: 3k^2 + 21k + 49 = 14, 3k^2 + 21k + 35 = 0, D = 441 - 420 = 21 (nije kvadrat).
+      d = 14, e = 7: d > e, a e >= n^2 >= 4, kontradikcija jer d = 14 > e = 7.
+      d = 49 ili 98: jos veće d, pa e mora biti <= 2, nemoguce.
+
+    Dakle jedino algebarsko resenje je (n, k) = (5, 3).
+
+  Provera geometrijske realizacije:
+    n = 5 cm, k = 3 cm. Velika kocka 5x5x5 = 125 jediničnih ćelija.
+    Jedna "unutrašnja" kocka ivice 3 zauzima 3^3 = 27 jediničnih ćelija u jednom uglu.
+    Preostaje 125 - 27 = 98 jediničnih ćelija koje mogu biti iseckane na 98 kocki ivice 1.
+    Ukupno delova: 98 + 1 = 99. ✓
+    Geometrijska realizacija postoji: kocka ivice 3 u uglu 5x5x5; preostali "L-oblik" (125 - 27)
+    sastoji se od 98 jediničnih ćelija kvadratne mreže, što je trivijalno dekomponovati
+    u 98 jedininih kocki. Sve stane.
+
+  Zapremina V = n^3 = 125 cm^3. Odgovor: (B).
+
+  Zašto (A) i (C) ne rade?
+    (A) V = 100: n^3 = 100 -> n nije ceo (4^3 = 64, 5^3 = 125), pa ivica polazne kocke
+       ne bi bila cela. Ali ako je ivica cela (što mora biti, pošto male kocke imaju
+       ivicu 1 i poklapaju dimenzije) 100 nije kub celog broja.
+    (C) V = 162: 162 nije kub (5^3 = 125, 6^3 = 216).
+    Oba su eliminisana već na koraku "V = n^3, n ceo" — samo 125 je kub (od {100, 125, 162}).
+
+  Plan:
+    1. Postavi n, k kao prirodne brojeve.
+    2. Jednačina zbira zapremina: n^3 = 98 + k^3.
+    3. Test kandidata za n (celi kubovi blizu 98+).
+    4. Pokaži zašto je n = 5, k = 3 jedino rešenje (tabela ili faktorizacija).
+    5. Potvrdi geometrijsku realizaciju.
+
+  Canvas strategija:
+    Canvas 1: 3D prikaz kocke 5x5x5 sa istaknutom kockom 3x3x3 u uglu + 98 jediničnih kockica.
+      Static. Izometrijska projekcija. Koristiti skalu i faktor senčenja.
+    Canvas 2: Tabela kandidata (n, k^3, k) koja pokazuje zašto samo n=5 daje k ceo >= 2.
+    Canvas 3: Difference of volumes: n^3 - k^3 = 98 grafički (dve kocke jedna u drugoj).
+
+  Key insight: Ključna veza je n^3 - k^3 = 98, koja se faktorise kao
+  (n - k)(n^2 + nk + k^2) = 98 = 2 * 49. Pretrazivanjem delitelja dobijamo jedino (5, 3).
+  Ovo je klasican zadatak o "podkocki u kocki" i vezi algebarske identitete sa
+  geometrijskom dekompozicijom.
+
+  Pitfalls:
+    - Zaboraviti uslov k >= 2 (k != 1). Ako se dozvoli k = 1, onda je n^3 = 99 i n nije ceo.
+    - Zaboraviti da je n mora biti ceo (mreža 1x1 mora da stane u n).
+    - Aritmetika sa kubovima: 5^3 = 125, ne 75 ili slično.
+    - Pokusaj provere geometrije umesto algebre moze zbuniti; bolje prvo pronaci brojeve, pa
+      zatim potvrditi da geometrija radi (što ovde radi).
+
+  Challenge: Sta ako bi bilo 98 umesto 99 kockica, i jedna razlicita od 1? Ili:
+    m^3 - k^3 = R za neki drugi R. Npr. R = 19 -> (n, k) = (?). Testirajmo: n = 3, k^3 = 8 -> k = 2. ✓
+    Znaci, isti trik ali sa drugim ciljem.
+
+  Odgovor: (B) V = 125 cm^3.
+</script>
+
+<h1 data-card="problem-title">Dekompozicija kocke na manje kocke: \( n^3 - k^3 = 98 \)</h1>
+<p data-card="problem-subtitle" class="subtitle">Diofantska jednačina, razlika kubova i geometrijska realizacija &mdash; podkocka u kocki</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Kocka je isečena na \( 99 \) manjih kocki tako da samo jedna od novih kocki ima ivicu dužine različite od \( 1\,\mathrm{cm} \). Odrediti zapreminu \( V \) polazne kocke.</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">Broj delova</span>
+      <span class="given-value">\( 99 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Ivica \( 98 \) kocki</span>
+      <span class="given-value">\( 1\,\mathrm{cm} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Jedna kocka</span>
+      <span class="given-value">ivica \( \neq 1\,\mathrm{cm} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Tražena</span>
+      <span class="given-value">\( V \) (zapremina polazne)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( V = 100\,\mathrm{cm}^3 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( V = 125\,\mathrm{cm}^3 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( V = 162\,\mathrm{cm}^3 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Označimo sa \( n \) ivicu polazne kocke (ceo broj u cm) i sa \( k \ne 1 \) ivicu jedinstvene "različite" kocke. Zbir zapremina daje <em>diofantsku</em> jednačinu \( n^3 = 98 + k^3 \), tj. \( n^3 - k^3 = 98 \). Faktorizacijom razlike kubova i pregledom delilaca broja \( 98 \) izdvajamo jedino rešenje \( (n,k) = (5,3) \), pa je \( V = n^3 = 125\,\mathrm{cm}^3 \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Razlika kubova, celobrojna rešenja, zapremina kocke</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Zapremina kocke:</strong> ako je ivica \( a \), zapremina je \( V = a^3 \).</li>
+        <li><strong>Razlika kubova (identitet):</strong> \( n^3 - k^3 = (n-k)\,(n^2 + nk + k^2) \). Oba činioca su pozitivna kada je \( n > k > 0 \), i drugi je uvek strogo veći od prvog.</li>
+        <li><strong>Delioci broja \( 98 \):</strong> \( 98 = 2 \cdot 7^2 \), delioci \( 1, 2, 7, 14, 49, 98 \).</li>
+        <li><strong>Mali kubovi (memorija):</strong> \( 1^3 = 1,\ 2^3 = 8,\ 3^3 = 27,\ 4^3 = 64,\ 5^3 = 125,\ 6^3 = 216,\ 7^3 = 343. \)</li>
+        <li><strong>Celobrojne rešetke u kocki:</strong> ako je ivica polazne kocke \( n \) (ceo broj), a ona se deli na kocke ivica \( 1 \) (sem jedne), tada male kocke čine <em>jediničnu rešetku</em> i \( n \) mora biti prirodan broj.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz: kocka 5×5×5 sa podkockom 3×3×3">
+  <h2>📐 Vizuelni prikaz: kocka 5×5×5 sa podkockom 3×3×3</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-cube-3d" width="720" height="620"></canvas>
+  </div>
+  <p class="canvas-caption">Izometrijski prikaz polazne kocke ivice \( n=5\,\mathrm{cm} \). U njenom uglu se nalazi <strong>jedna velika podkocka</strong> ivice \( k=3\,\mathrm{cm} \) (istaknuta ružičasto). Ostatak se popunjava sa \( 5^3 - 3^3 = 125 - 27 = 98 \) jediničnih kockica ivice \( 1\,\mathrm{cm} \) (sivo). Ukupno delova: \( 98 + 1 = 99 \). Zapremina polazne: \( V = 5^3 = 125\,\mathrm{cm}^3 \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz: pretraga diofantske jednačine">
+  <h2>📐 Vizuelni prikaz: pretraga diofantske jednačine</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-search" width="720" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Traženje parova \( (n,k) \) prirodnih brojeva sa \( n^3 - k^3 = 98 \) i \( k \geq 2 \). Tabela prikazuje \( n^3 - 98 \) i proverava da li je to kub prirodnog broja. Jedini uspeh: \( n=5 \) daje \( 125 - 98 = 27 = 3^3 \), odnosno \( k = 3 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Uvodimo oznake</h3>
+      <p>Neka je \( n \) (u cm) ivica <em>polazne</em> (velike) kocke, a \( k \ne 1 \) (u cm) ivica jedinstvene "drugačije" kocke. Pošto se velika kocka deli na jedinične kocke (ivice \( 1\,\mathrm{cm} \)) sem jedne, velika kocka mora imati celobrojnu ivicu:</p>
+      <div class="math-block">\[ n \in \mathbb{N},\qquad k \in \mathbb{N},\qquad k \ne 1,\qquad k < n. \]</div>
+      <p>Uslov \( k < n \) sledi iz toga da kocka ivice \( k \) staje <em>unutar</em> kocke ivice \( n \), a uslov \( k \ne 1 \) je dat u zadatku. Najmanja dopustiva vrednost: \( k = 2 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Jednačina zbira zapremina</h3>
+      <p>Velika kocka je podeljena na \( 99 \) delova čije se zapremine sabiraju u \( n^3 \):</p>
+      <div class="math-block">\[ \underbrace{1^3 + 1^3 + \dots + 1^3}_{98\ \text{kocki ivice}\ 1} + k^3 \;=\; n^3. \]</div>
+      <p>Dakle:</p>
+      <div class="math-block">\[ n^3 = 98 + k^3, \qquad\text{tj.}\qquad \boxed{\ n^3 - k^3 = 98\ }. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je uslov \( n, k \in \mathbb{N} \) obavezan?</summary>
+          <div class="detail-content"><p>Jedinične kocke čine kvadratnu rešetku ivice \( 1 \) u tri pravca. Da bi cela velika kocka bila sastavljena od takvih kvadratnih ćelija (plus jedna dodatna kocka čiji je ivica ceo broj jediničnih rastojanja, jer inače ne bi savršeno nalegla), ivica polazne kocke mora biti prirodan broj. Isto važi za \( k \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Faktorizacija razlike kubova i traženje delitelja</h3>
+      <p>Koristimo identitet:</p>
+      <div class="math-block">\[ n^3 - k^3 = (n - k)\,\bigl(n^2 + nk + k^2\bigr) \;=\; 98. \]</div>
+      <p>Oba činioca su pozitivna cela (jer \( n > k \geq 2 \)). Označimo \( d = n - k \) i \( e = n^2 + nk + k^2 \); tada \( d \cdot e = 98 \) i \( d < e \) (drugi činilac je bar \( n^2 \geq 9 \)). Delioci broja \( 98 = 2 \cdot 7^2 \) su:</p>
+      <div class="math-block">\[ 1,\; 2,\; 7,\; 14,\; 49,\; 98. \]</div>
+      <p>Samo parovi sa \( d < e \) dolaze u obzir: \( (d,e) \in \{(1,98), (2,49), (7,14)\} \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Proveravamo svaku mogućnost</h3>
+
+      <div class="substep" data-substep="a)">
+        <p><strong>(a)</strong> \( d = 1 \), \( e = 98 \): iz \( n = k + 1 \):</p>
+        <div class="math-block">\[ (k+1)^2 + (k+1)k + k^2 = 3k^2 + 3k + 1 = 98 \Longrightarrow 3k^2 + 3k - 97 = 0. \]</div>
+        <p>Diskriminanta \( D = 9 + 12 \cdot 97 = 1173 \) nije savršen kvadrat (\( 34^2 = 1156,\ 35^2 = 1225 \)), pa nema celih rešenja. <span class="crossed">Odbačeno.</span></p>
+      </div>
+
+      <div class="substep" data-substep="b)">
+        <p><strong>(b)</strong> \( d = 2 \), \( e = 49 \): iz \( n = k + 2 \):</p>
+        <div class="math-block">\[ (k+2)^2 + (k+2)k + k^2 = 3k^2 + 6k + 4 = 49 \Longrightarrow 3k^2 + 6k - 45 = 0 \Longrightarrow k^2 + 2k - 15 = 0. \]</div>
+        <div class="math-block">\[ k = \frac{-2 \pm \sqrt{4 + 60}}{2} = \frac{-2 \pm 8}{2} \in \{3,\ -5\}. \]</div>
+        <p>Uzimamo pozitivno celo: \( k = 3 \), pa \( n = k + 2 = 5 \). <span class="result">Pronađeno \( (n,k) = (5,3) \).</span></p>
+      </div>
+
+      <div class="substep" data-substep="c)">
+        <p><strong>(c)</strong> \( d = 7 \), \( e = 14 \): iz \( n = k + 7 \):</p>
+        <div class="math-block">\[ 3k^2 + 21k + 49 = 14 \Longrightarrow 3k^2 + 21k + 35 = 0. \]</div>
+        <p>Diskriminanta \( D = 441 - 420 = 21 \) nije kvadrat; k bi ionako bilo negativno. <span class="crossed">Odbačeno.</span></p>
+      </div>
+
+      <div class="callout callout-success">
+        <p><strong>Jedinstveno rešenje:</strong> \( (n,\ k) = (5,\ 3) \). Dakle polazna kocka ima ivicu \( n = 5\,\mathrm{cm} \), a "drugačija" podkocka ivicu \( k = 3\,\mathrm{cm} \).</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera algebarski i geometrijski</h3>
+      <p><strong>Aritmetička provera:</strong></p>
+      <div class="math-block">\[ 98 \cdot 1^3 + 3^3 = 98 + 27 = 125 = 5^3 = n^3. \ \checkmark \]</div>
+      <p><strong>Geometrijska realizacija:</strong> smestimo kocku ivice \( 3 \) u jedan ugao kocke ivice \( 5 \). Ostatak ima zapreminu \( 125 - 27 = 98 \) jediničnih ćelija, i to su <em>tačno</em> \( 98 \) jediničnih kockica koje se slažu kao "L-oblik" sastavljen od tri kvadra:</p>
+      <div class="math-block">\[ \underbrace{5 \cdot 5 \cdot 2}_{50} \;+\; \underbrace{3 \cdot 5 \cdot 2}_{30}\ (\text{druga ploča}) \;+\; \underbrace{3 \cdot 3 \cdot 2}_{18} \;=\; 98. \]</div>
+      <p>Svaki od ovih kvadara ima celobrojne ivice, pa se trivijalno razloži u jedinične kocke. Dakle dekompozicija <em>postoji</em>.</p>
+      <div class="math-block">\[ \boxed{\,V = n^3 = 5^3 = 125\,\mathrm{cm}^3\,} \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Zašto opcije (A) i (C) ne mogu biti tačne</h3>
+      <p>Pošto je \( V = n^3 \) gde je \( n \) prirodan broj, \( V \) mora biti <em>savršeni kub</em>. Među ponuđenim vrednostima:</p>
+      <div class="math-block">\[ 100 = ?,\quad 125 = 5^3,\quad 162 = ?. \]</div>
+      <p>\( 100 \) nije kub (\( 4^3 = 64,\ 5^3 = 125 \)) &mdash; <span class="crossed">eliminisano (A)</span>. Isto, \( 162 \) nije kub (\( 5^3 = 125,\ 6^3 = 216 \)) &mdash; <span class="crossed">eliminisano (C)</span>. Ostaje <strong>(B)</strong>, što se slaže sa našim direktnim rešenjem.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Cela zagonetka se svede na jednu <em>diofantsku</em> jednačinu: \( n^3 - k^3 = 98 \). Faktorizacija razlike kubova \( (n-k)(n^2 + nk + k^2) = 98 \) pretvara problem u <em>konačnu</em> pretragu po deliteljima broja \( 98 \). Pošto je \( 98 = 2 \cdot 7^2 \), ima samo \( 6 \) delitelja i <strong>tri</strong> para kandidata za \( (d,e) \). Jedino \( d=2,\ e=49 \) daje prirodno \( k \). Ovo je prelepi primer kako algebarska struktura (faktorizacija) <em>drastično</em> skraćuje naivnu pretragu &mdash; umesto beskonačnog nabrajanja, imamo tri slučaja.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ V = 5^3 = 125\,\mathrm{cm}^3 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( V = 100\,\mathrm{cm}^3 \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( V = 125\,\mathrm{cm}^3 \)</span>
+    <span class="answer-option" data-option="C">(C) \( V = 162\,\mathrm{cm}^3 \)</span>
+  </div>
+  <p class="verification">Provera: \( n = 5,\ k = 3 \), pa \( 98 \cdot 1^3 + 3^3 = 98 + 27 = 125 = 5^3 \) ✓. Geometrijski, kocka \( 3\times 3\times 3 \) u uglu kocke \( 5\times 5\times 5 \) ostavlja \( 98 \) jediničnih ćelija (L-oblik \( 50 + 30 + 18 = 98 \)) koje se razlažu na \( 98 \) jediničnih kocki. Opcije (A) i (C) <em>nisu kubovi</em> prirodnih brojeva (\( 100 \) i \( 162 \)), pa ne mogu biti zapremine kocke sa celom ivicom.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zaborav da je \( k \neq 1 \):</strong> ako se dopusti \( k = 1 \), dobija se \( n^3 = 99 \) &mdash; a \( 99 \) nije kub celog broja, pa bi zadatak bio nemoguć. Uslov "ivica različita od \( 1\,\mathrm{cm} \)" je bitan.</li>
+    <li><strong>Zaborav da ivica mora biti celobrojna:</strong> da bi se kocka mogla podeliti na jedinične kocke (plus jednu kocku sa celobrojnim ivicama), sve ivice moraju biti prirodni brojevi. Ovo automatski eliminiše odgovore \( 100 \) i \( 162 \) (nisu kubovi).</li>
+    <li><strong>Aritmetika kubova:</strong> \( 5^3 = 125 \) (ne \( 75 \) niti \( 100 \)), \( 3^3 = 27 \) (ne \( 9 \)). Mnogo grešaka dolazi od mešanja "kvadrata" i "kuba".</li>
+    <li><strong>Nepotpuna pretraga:</strong> neki zaustave traženje čim nađu "logičan" par bez dokaza da je jedinstven. Faktorizacija razlike kubova <em>dokazuje</em> da je \( (5,3) \) jedino rešenje.</li>
+    <li><strong>Sumnja u geometrijsku izvodljivost:</strong> algebarsko rešenje postoji, ali da li zaista može fizički da se realizuje? Da: kocka \( 3\times 3\times 3 \) u uglu + tri kvadra (\( 50 + 30 + 18 = 98 \)) koje se dele na jedinice.</li>
+    <li><strong>Pokušaj opcije (A) \( 100\,\mathrm{cm}^3 \):</strong> \( n = \sqrt[3]{100} \approx 4{,}64 \), nije ceo &mdash; nemoguće.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Generalizacija: kocka ivice \( n \) je isečena na \( N \) manjih kocki, od kojih \( N-1 \) ima ivicu \( 1\,\mathrm{cm} \) a jedna ivicu \( k \ne 1 \). Za koje parove \( (N, n) \) sa \( N \leq 200 \) postoji rešenje? Npr. ako \( N = 20 \), reši \( n^3 - k^3 = 19 \). Koliki je tada \( V \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p><strong>Za \( N = 20 \):</strong> tražimo \( n^3 - k^3 = 19 \), \( k \geq 2 \), \( n > k \). Faktorizacija: \( 19 = 1 \cdot 19 \) (prost broj). Dakle \( d = n - k = 1,\ e = n^2 + nk + k^2 = 19 \). Iz \( n = k + 1 \): \( 3k^2 + 3k + 1 = 19 \), pa \( k^2 + k - 6 = 0 \), odakle \( k = 2,\ n = 3 \). Provera: \( 27 - 8 = 19 \) ✓; zapremina \( V = 27\,\mathrm{cm}^3 \). Geometrijski: kocka \( 2\times 2\times 2 \) u uglu kocke \( 3\times 3\times 3 \), ostatak \( 27 - 8 = 19 \) jediničnih ćelija &mdash; tačno \( N - 1 = 19 \) jediničnih kocki + \( 1 \) kocka ivice \( 2 \), ukupno \( 20 \). ✓</p>
+      <p><strong>Dalji pattern:</strong> za svaki prost broj \( p \) oblika \( 3k^2 + 3k + 1 \) (tzv. "centered hexagonal" brojevi &mdash; 7, 19, 37, 61, ...), postoji rešenje \( n = k+1 \). To je elegantna veza sa teorijom brojeva.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-cube-3d');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  // Isometric projection: x -> cos(30°), y -> -sin(30°) for i, cos(150°), -sin(150°) for j, vertical k.
+  // Simple axonometric: use basis
+  //   i = (cos(-30°), sin(-30°))
+  //   j = (cos(210°), sin(210°))
+  //   k = (0, -1)
+  var SCALE = 38; // pixels per unit
+  var originX = 370;
+  var originY = 440;
+
+  // Projection matrix (axonometric "cabinet-like")
+  var COS30 = Math.cos(Math.PI / 6);
+  var SIN30 = Math.sin(Math.PI / 6);
+
+  function proj(x, y, z) {
+    // x axis (right/down) goes right and down
+    // y axis (depth) goes left and down
+    // z axis (up) goes straight up
+    var px = originX + (x - y) * SCALE * COS30;
+    var py = originY - z * SCALE + (x + y) * SCALE * SIN30;
+    return { x: px, y: py };
+  }
+
+  // Draw one cube (axis-aligned) from (x0,y0,z0) to (x0+s,y0+s,z0+s) with given fill + stroke.
+  function drawCube(x0, y0, z0, s, fillTop, fillRight, fillFront, stroke, lineWidth) {
+    lineWidth = lineWidth || 1;
+    // 8 vertices
+    var V = [
+      proj(x0,     y0,     z0),      // 0: near-left-bottom
+      proj(x0 + s, y0,     z0),      // 1: near-right-bottom
+      proj(x0 + s, y0 + s, z0),      // 2: far-right-bottom
+      proj(x0,     y0 + s, z0),      // 3: far-left-bottom
+      proj(x0,     y0,     z0 + s),  // 4: near-left-top
+      proj(x0 + s, y0,     z0 + s),  // 5: near-right-top
+      proj(x0 + s, y0 + s, z0 + s),  // 6: far-right-top
+      proj(x0,     y0 + s, z0 + s)   // 7: far-left-top
+    ];
+
+    // TOP face (4, 5, 6, 7)
+    ctx.beginPath();
+    ctx.moveTo(V[4].x, V[4].y);
+    ctx.lineTo(V[5].x, V[5].y);
+    ctx.lineTo(V[6].x, V[6].y);
+    ctx.lineTo(V[7].x, V[7].y);
+    ctx.closePath();
+    ctx.fillStyle = fillTop;
+    ctx.fill();
+    ctx.strokeStyle = stroke;
+    ctx.lineWidth = lineWidth;
+    ctx.stroke();
+
+    // FRONT face (right side visible): vertices 1, 2, 6, 5 -> that's "right face"
+    // With our projection: x -> right-down, y -> left-down. So "near" face is y=y0 side: (0,1,5,4)
+    // "Right" face is x=x0+s side: (1, 2, 6, 5)
+    // Let's draw the "near" (visible front) face: x=x0 to x0+s, y=y0, z=z0 to z0+s -> (0,1,5,4)
+    ctx.beginPath();
+    ctx.moveTo(V[0].x, V[0].y);
+    ctx.lineTo(V[1].x, V[1].y);
+    ctx.lineTo(V[5].x, V[5].y);
+    ctx.lineTo(V[4].x, V[4].y);
+    ctx.closePath();
+    ctx.fillStyle = fillFront;
+    ctx.fill();
+    ctx.stroke();
+
+    // RIGHT face: x=x0+s side, y=y0 to y0+s, z=z0 to z0+s -> (1,2,6,5)
+    ctx.beginPath();
+    ctx.moveTo(V[1].x, V[1].y);
+    ctx.lineTo(V[2].x, V[2].y);
+    ctx.lineTo(V[6].x, V[6].y);
+    ctx.lineTo(V[5].x, V[5].y);
+    ctx.closePath();
+    ctx.fillStyle = fillRight;
+    ctx.fill();
+    ctx.stroke();
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Kocka 5×5×5 = 98 jediničnih kocki + 1 kocka 3×3×3', W / 2, 30);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.fillText('Izometrijski prikaz: podkocka 3×3×3 (ružičasta) u gornjem uglu; ostalih 98 jediničnih kockica u svetlosivoj boji.', W / 2, 50);
+
+    // Shades for small unit cubes (muted)
+    var unitTop   = cvAlpha('--sol-canvas-tertiary', 0.45);
+    var unitRight = cvAlpha('--sol-canvas-tertiary', 0.30);
+    var unitFront = cvAlpha('--sol-canvas-tertiary', 0.55);
+    var unitEdge  = cv('--sol-canvas-muted');
+
+    // Shades for the highlighted sub-cube (pink/highlight)
+    var bigTop   = cvAlpha('--sol-canvas-highlight', 0.75);
+    var bigRight = cvAlpha('--sol-canvas-highlight', 0.55);
+    var bigFront = cvAlpha('--sol-canvas-highlight', 0.90);
+    var bigEdge  = cv('--sol-canvas-highlight');
+
+    // ──────────────────────────────────────────────────────────────────
+    // Strategy: Put the 3x3x3 sub-cube in the "back" corner (x=2..5, y=2..5, z=2..5)
+    // so it is visible from the chosen projection viewpoint.
+    // Actually with our projection the "most visible" corner is small x, small y, high z.
+    // We'll put sub-cube at (x ∈ [0,3), y ∈ [0,3), z ∈ [2,5)) – top-near corner.
+    // Then other 98 cells fill the rest.
+    //
+    // Drawing order (back-to-front for proper occlusion):
+    //   Draw cells with HIGHER y first (deeper), then LOWER y (closer)
+    //   Within same y, HIGHER x first (right back), then LOWER x (left front)
+    //   Within same (x,y), LOWER z first (bottom), then HIGHER z (top)
+    // Actually for our projection:
+    //   "Back" = higher y (further away from viewer along y axis)
+    //   "Front" = lower y
+    //   "Right" = higher x
+    //   "Left" = lower x
+    //   "Top" = higher z, "Bottom" = lower z
+    //
+    // Painter's algorithm: sort by (y descending, x descending, z ascending).
+    // Wait – we want BACK FIRST. With proj: y axis -> left-down. So higher y is further-left-and-down.
+    // Viewer is at (high x, low y, mid z)... Hmm.
+    //
+    // Simpler: sort by centroid depth. Depth = y - x + constant·(-z). Let's use:
+    //   depth = x + y (higher means more "back-diagonal"). Sort ascending means front first, so we want descending.
+    // Actually "back-to-front" means draw back (far) first, then closer ones on top.
+    // For our projection where x points right-down and y points left-down,
+    // viewer sees x=big, y=small as "closer" (front-right). So the "far back" is x small, y big.
+    // Actually x-y coordinate suggests: x-y big => far right; x-y small (negative) => far left.
+    // The vertical displacement sin30*(x+y): bigger x+y => lower on screen (closer to viewer's eyes maybe)
+    // Let me just sort by: -x + y (ascending draws back-first). Try it: cell at x=0,y=4 has -x+y=4
+    // cell at x=4,y=0 has -x+y=-4. So cells with HIGHER (-x+y) are FURTHER BACK-LEFT.
+    // We want to draw those first. Sort by (-x+y) descending.
+    //
+    // Also z: higher z = higher on screen; usually draw lower z first.
+    // So sort key: primary (-x + y) descending, secondary z ascending.
+    // Ah no — need to draw LOWER cells (bottom) first too.
+    //
+    // Let me do a painter's sort: sort by (y - x - z*0.1) — bigger comes first (drawn first, in back).
+
+    var cubes = [];
+    var n = 5, k = 3;
+
+    // Place sub-cube at corner (0,0,n-k) i.e. (0,0,2) to (3,3,5). (Left-front-top corner.)
+    // Mark which cells are part of the big cube.
+    var big = { xMin: 0, yMin: 0, zMin: n - k, xMax: k, yMax: k, zMax: n };
+
+    for (var z = 0; z < n; z++) {
+      for (var y = 0; y < n; y++) {
+        for (var x = 0; x < n; x++) {
+          var inBig = (x >= big.xMin && x < big.xMax
+                    && y >= big.yMin && y < big.yMax
+                    && z >= big.zMin && z < big.zMax);
+          if (inBig) continue; // render big cube separately
+          cubes.push({ x: x, y: y, z: z, big: false });
+        }
+      }
+    }
+
+    // Sort cubes back-to-front for painter's algorithm.
+    // For our axonometric with cos(30)·(x - y), sin(30)·(x + y) - z:
+    //   Screen-x increases with (x - y).
+    //   Screen-y increases with (x + y) and decreases with z.
+    // "Further back" = further from viewer. With standard isometric, back corner is high-y, high-x, high-z.
+    // No — back corner is high-y (further depth), and viewer is at low y.
+    // Painter's: draw high-y first.
+    cubes.sort(function(a, b) {
+      // Primary: higher y drawn first (further back)
+      if (a.y !== b.y) return b.y - a.y;
+      // Secondary: higher x drawn first (further right-back)
+      if (a.x !== b.x) return b.x - a.x;
+      // Tertiary: lower z drawn first (bottom layer first)
+      return a.z - b.z;
+    });
+
+    // Draw all unit cubes first (back-to-front)
+    for (var i = 0; i < cubes.length; i++) {
+      var c = cubes[i];
+      drawCube(c.x, c.y, c.z, 1, unitTop, unitRight, unitFront, unitEdge, 0.6);
+    }
+
+    // Now draw the big sub-cube on top
+    drawCube(big.xMin, big.yMin, big.zMin, k, bigTop, bigRight, bigFront, bigEdge, 2);
+
+    // Outline the bounding box (5x5x5) in axis color, dashed
+    ctx.strokeStyle = cv('--sol-canvas-primary');
+    ctx.lineWidth = 2;
+    ctx.setLineDash([]);
+    var B = [
+      proj(0, 0, 0), proj(n, 0, 0), proj(n, n, 0), proj(0, n, 0),
+      proj(0, 0, n), proj(n, 0, n), proj(n, n, n), proj(0, n, n)
+    ];
+    // Bottom face edges
+    ctx.beginPath();
+    ctx.moveTo(B[0].x, B[0].y);
+    ctx.lineTo(B[1].x, B[1].y);
+    ctx.lineTo(B[2].x, B[2].y);
+    ctx.lineTo(B[3].x, B[3].y);
+    ctx.closePath();
+    ctx.stroke();
+    // Top face edges
+    ctx.beginPath();
+    ctx.moveTo(B[4].x, B[4].y);
+    ctx.lineTo(B[5].x, B[5].y);
+    ctx.lineTo(B[6].x, B[6].y);
+    ctx.lineTo(B[7].x, B[7].y);
+    ctx.closePath();
+    ctx.stroke();
+    // Vertical edges
+    for (var e = 0; e < 4; e++) {
+      ctx.beginPath();
+      ctx.moveTo(B[e].x, B[e].y);
+      ctx.lineTo(B[e + 4].x, B[e + 4].y);
+      ctx.stroke();
+    }
+
+    // Labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    // "n = 5 cm" along the near-bottom edge (z=0, y=0, x=0..5)
+    var lab1Start = proj(0, 0, 0);
+    var lab1End   = proj(n, 0, 0);
+    ctx.fillText('n = 5 cm', (lab1Start.x + lab1End.x) / 2, (lab1Start.y + lab1End.y) / 2 + 32);
+
+    // "n = 5 cm" along the near-left edge (x=0, z=0, y=0..5)
+    var lab2Start = proj(0, 0, 0);
+    var lab2End   = proj(0, n, 0);
+    ctx.save();
+    ctx.translate((lab2Start.x + lab2End.x) / 2 - 48, (lab2Start.y + lab2End.y) / 2 + 12);
+    ctx.fillText('n = 5 cm', 0, 0);
+    ctx.restore();
+
+    // "n = 5 cm" along vertical edge
+    var lab3Start = proj(0, 0, 0);
+    var lab3End   = proj(0, 0, n);
+    ctx.fillText('n = 5 cm', (lab3Start.x + lab3End.x) / 2 - 54, (lab3Start.y + lab3End.y) / 2 + 4);
+
+    // "k = 3 cm" label on big sub-cube
+    ctx.fillStyle = cv('--sol-canvas-highlight');
+    ctx.font = 'bold 14px Inter, Segoe UI, system-ui, sans-serif';
+    var labK = proj(big.xMin + k/2, big.yMin - 0.2, big.zMax + 0.3);
+    ctx.fillText('k = 3 cm', labK.x, labK.y);
+
+    // Legend (bottom)
+    var lgY = H - 50;
+    ctx.textAlign = 'left';
+
+    // Swatch 1: small unit cube
+    ctx.fillStyle = unitFront;
+    ctx.fillRect(60, lgY - 10, 22, 18);
+    ctx.strokeStyle = unitEdge;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(60, lgY - 10, 22, 18);
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.fillText('98 jediničnih kocki  (ivica 1 cm, ukupno 98·1 = 98 cm³)', 90, lgY + 4);
+
+    // Swatch 2: big sub-cube
+    ctx.fillStyle = bigFront;
+    ctx.fillRect(60, lgY + 18, 22, 18);
+    ctx.strokeStyle = bigEdge;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(60, lgY + 18, 22, 18);
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.fillText('1 podkocka  (ivica 3 cm, zapremina 3³ = 27 cm³)', 90, lgY + 32);
+
+    // Formula box at bottom-right
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('V = 98 + 27 = 125 cm³', W - 40, lgY + 4);
+    ctx.font = '11px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('(= 5³)', W - 40, lgY + 22);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-search');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  // Data table: for each n in [2..8], show n^3, n^3 - 98, and whether it's a perfect cube k^3.
+  var rows = [
+    { n: 2, cube: 8,   diff: -90,  ok: false, note: 'k³ < 0' },
+    { n: 3, cube: 27,  diff: -71,  ok: false, note: 'k³ < 0' },
+    { n: 4, cube: 64,  diff: -34,  ok: false, note: 'k³ < 0' },
+    { n: 5, cube: 125, diff: 27,   ok: true,  k: 3, note: '27 = 3³ ✓' },
+    { n: 6, cube: 216, diff: 118,  ok: false, note: 'nije kub (4³=64, 5³=125)' },
+    { n: 7, cube: 343, diff: 245,  ok: false, note: 'nije kub (6³=216, 7³=343)' },
+    { n: 8, cube: 512, diff: 414,  ok: false, note: 'nije kub (7³=343, 8³=512)' }
+  ];
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Pretraga: n³ − k³ = 98, gde su n, k prirodni brojevi i k ≥ 2', W / 2, 30);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.fillText('Za svaki kandidat n izračunavamo n³ − 98 i proveravamo je li kub nekog k ≥ 2.', W / 2, 50);
+
+    // Table layout
+    var tableTop = 90;
+    var rowH = 42;
+    var colN = 120;
+    var colCube = 240;
+    var colDiff = 370;
+    var colK = 500;
+    var colNote = 600;
+
+    // Header row
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.15);
+    ctx.fillRect(50, tableTop - 28, W - 100, 30);
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('n', colN, tableTop - 8);
+    ctx.fillText('n³', colCube, tableTop - 8);
+    ctx.fillText('n³ − 98', colDiff, tableTop - 8);
+    ctx.fillText('k', colK, tableTop - 8);
+    ctx.textAlign = 'left';
+    ctx.fillText('Napomena', colNote, tableTop - 8);
+
+    // Rows
+    for (var i = 0; i < rows.length; i++) {
+      var r = rows[i];
+      var y = tableTop + i * rowH;
+      var isWin = r.ok;
+
+      // Row background
+      if (isWin) {
+        ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.18);
+        ctx.fillRect(50, y - 22, W - 100, rowH - 4);
+      } else if (r.diff < 0) {
+        ctx.fillStyle = cvAlpha('--sol-canvas-danger', 0.08);
+        ctx.fillRect(50, y - 22, W - 100, rowH - 4);
+      } else {
+        ctx.fillStyle = cvAlpha('--sol-canvas-muted', 0.06);
+        ctx.fillRect(50, y - 22, W - 100, rowH - 4);
+      }
+
+      // Row border
+      ctx.strokeStyle = cvAlpha('--sol-canvas-grid', 0.8);
+      ctx.lineWidth = 1;
+      ctx.strokeRect(50, y - 22, W - 100, rowH - 4);
+
+      ctx.fillStyle = isWin ? cv('--sol-canvas-accent') : text;
+      ctx.font = isWin ? 'bold 14px Inter, Segoe UI, system-ui, sans-serif' : '13px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(String(r.n), colN, y);
+      ctx.fillText(String(r.cube), colCube, y);
+
+      ctx.fillStyle = r.diff < 0 ? cv('--sol-canvas-danger') : (isWin ? cv('--sol-canvas-accent') : text);
+      ctx.fillText((r.diff >= 0 ? '' : '') + String(r.diff), colDiff, y);
+
+      ctx.fillStyle = isWin ? cv('--sol-canvas-accent') : muted;
+      ctx.fillText(isWin ? String(r.k) : '—', colK, y);
+
+      ctx.textAlign = 'left';
+      ctx.fillStyle = isWin ? cv('--sol-canvas-accent') : (r.diff < 0 ? cv('--sol-canvas-danger') : muted);
+      ctx.font = isWin ? 'bold 12px Inter, Segoe UI, system-ui, sans-serif' : '12px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.fillText(r.note, colNote, y);
+    }
+
+    // Summary below
+    var sumY = tableTop + rows.length * rowH + 30;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Jedinstveno rešenje: (n, k) = (5, 3)  →  V = n³ = 125 cm³', W / 2, sumY);
+
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.fillText('Dalje n ≥ 9: razlika n³ − (n−1)³ = 3n² − 3n + 1 prelazi 98, pa nema kandidata.', W / 2, sumY + 22);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Dekompozicija kocke na 99 manjih kocki (zapremina V)",
+  "subject": "math",
+  "unit": "number-theory",
+  "topic_tags": ["diofantske jednačine", "razlika kubova", "zapremina kocke", "geometrija prostora", "kombinatorika"]
+}
+BRAINSPARK_META-->

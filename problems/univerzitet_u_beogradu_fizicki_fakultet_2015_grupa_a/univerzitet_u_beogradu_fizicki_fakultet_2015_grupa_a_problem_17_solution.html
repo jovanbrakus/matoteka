@@ -1,0 +1,681 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Sistem:
+    x^(⁴√x + √y) = y² · ³√(y²)
+    y^(⁴√x + √y) = ³√(x²)
+
+  ODZ: da bi ⁴√x i √y bili realni, treba x ≥ 0 i y ≥ 0. Ali ako je x = 0, leva strana prve
+  jednačine je 0^nešto. Problematično — posmatraćemo samo x > 0, y > 0 (da izbegnemo 0^0 itd.).
+  Kasnije ćemo proveriti trivijalne slučajeve.
+
+  Logaritmovanje. Neka je t = ⁴√x + √y ≥ 0, u = ln x, v = ln y.
+  Desna strana prve: y² · y^(2/3) = y^(2 + 2/3) = y^(8/3), pa ln = (8/3) v.
+  Desna strana druge: x^(2/3), pa ln = (2/3) u.
+
+  Jednačina (I):  t · u = (8/3) v
+  Jednačina (II): t · v = (2/3) u
+
+  Slučaj A: u · v ≠ 0 (x ≠ 1 i y ≠ 1).
+    Pomnožimo (I) i (II):
+      t² · u · v = (16/9) · u · v
+    Podelimo sa u·v (≠ 0):
+      t² = 16/9
+      t = 4/3 (pozitivno, jer t = ⁴√x + √y ≥ 0)
+
+    Iz (I): (4/3) u = (8/3) v ⇒ u = 2v ⇒ ln x = 2 ln y ⇒ x = y².
+    Sada: ⁴√x = ⁴√(y²) = y^(1/2) = √y (za y ≥ 0).
+      t = √y + √y = 2√y = 4/3 ⇒ √y = 2/3 ⇒ y = 4/9.
+      x = (4/9)² = 16/81.
+
+    Provera u originalni sistem:
+      ⁴√x = ⁴√(16/81) = 2/3
+      √y = √(4/9) = 2/3
+      t = 2/3 + 2/3 = 4/3
+      Leva (I): x^t = (16/81)^(4/3). Desna (I): y² · y^(2/3) = y^(8/3) = (4/9)^(8/3).
+      Da li je (16/81)^(4/3) = (4/9)^(8/3)?
+      (16/81) = (4/9)², pa (16/81)^(4/3) = (4/9)^(2·4/3) = (4/9)^(8/3). ✓
+      Leva (II): y^t = (4/9)^(4/3). Desna (II): x^(2/3) = (16/81)^(2/3) = ((4/9)²)^(2/3) = (4/9)^(4/3). ✓
+    Rešenje: (x, y) = (16/81, 4/9). ✓
+
+  Slučaj B: u = 0 (x = 1). Onda (II): t · v = 0, tj. (⁴√1 + √y)·v = 0.
+    ⁴√1 + √y = 1 + √y > 0, pa v = 0, tj. y = 1. Proveri (I): 1^t = 1, desna: y^(8/3) = 1. ✓
+    Rešenje: (1, 1).
+
+  Slučaj C: v = 0 (y = 1, x ≠ 1 bi bio novi slučaj). (I): t · u = 0, t = ⁴√x + 1 > 0, pa u = 0, x = 1.
+    Dakle iz v = 0 sledi i u = 0 — povratak na Slučaj B.
+
+  Ukupno: (1, 1) i (16/81, 4/9).
+  Tačan odgovor: (A).
+
+  Vizuelni prikaz: kako rešenje ne zahteva puno geometrije, fokusiraćemo se na:
+    1) Tabelu provere oba rešenja (substitucija u originalne jednačine).
+    2) Grafik krivih u (x, y) ravni — možda nije ključan, ali služi kao pregled.
+
+  Za 1) možemo koristiti canvas da nacrtamo tabele i strelice.
+  Za 2) crtamo krivu y = x^(1/2) (= √x, iz x = y² ⇒ y = √x), plus dve eksplicitno označene tačke.
+
+  Alternativni vizuelni prikaz: skalasta dijagram smena ln x = u, ln y = v — tačke (u, v) u logaritamskoj ravni.
+  Zapravo je ovo ispravan prikaz: rešenja su (0, 0) i (ln(16/81), ln(4/9)). Ali nije intuitivno.
+
+  Držim se:
+    Canvas 1 — tabela provere u (x, y) koordinatama, sa vrednostima t, x^t, y^t za oba rešenja.
+    Canvas 2 — dva rešenja prikazana kao tačke u xy-ravni sa krivom x = y² (ili y = √x).
+</script>
+
+<h1 data-card="problem-title">Sistem eksponencijalnih jednačina sa korenima</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra &mdash; logaritmovanje, smena u sistemu, eksponenti sa racionalnim stepenima</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>Tekst zadatka</h2>
+  <p>U skupu realnih brojeva rešiti sistem jednačina:</p>
+  <div class="math-block">\[ x^{\sqrt[4]{x} + \sqrt{y}} \;=\; y^2 \cdot \sqrt[3]{y^2}, \qquad y^{\sqrt[4]{x} + \sqrt{y}} \;=\; \sqrt[3]{x^2}. \]</div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( (x, y) = (1, 1) \) i \( (x, y) = \left(\dfrac{16}{81}, \dfrac{4}{9}\right) \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( (x, y) = (1, 1) \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( (x, y) = (1, 1) \) i \( (x, y) = \left(\dfrac{16}{81}, 1\right) \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>Plan rešavanja</h2>
+  <p class="plan-text">Prvo razjasnimo domen (\( x > 0 \), \( y > 0 \) &mdash; zbog realnih korena i baza stepena). Zatim uvodimo smene: neka je \( t = \sqrt[4]{x} + \sqrt{y} \), \( u = \ln x \), \( v = \ln y \). Logaritmovanjem sistem postaje linearan po \( u \) i \( v \): \( tu = (8/3) v \) i \( tv = (2/3) u \). Množenjem tih jednačina dobijamo \( t^2 \cdot uv = (16/9) uv \), što za \( uv \neq 0 \) daje \( t = 4/3 \). Odatle sledi \( u = 2v \), tj. \( x = y^2 \), pa \( t = 2\sqrt{y} = 4/3 \Rightarrow y = 4/9,\ x = 16/81 \). Posebno razmatramo granični slučaj \( uv = 0 \) (tj. \( x = 1 \) ili \( y = 1 \)), iz koga sledi jedino \( (1, 1) \). Na kraju verifikujemo oba rešenja zamenom.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>Podsetnik iz teorije</h2>
+  <details>
+    <summary>Logaritmovanje stepena, koreni kao stepeni, domen</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Koren kao stepen:</strong> <span class="formula-label">\( \sqrt[n]{x^k} = x^{k/n} \)</span> za \( x > 0 \). Dakle \( \sqrt[4]{x} = x^{1/4} \), \( \sqrt{y} = y^{1/2} \), \( \sqrt[3]{y^2} = y^{2/3} \), \( \sqrt[3]{x^2} = x^{2/3} \).</li>
+        <li><strong>Proizvod stepena iste osnove:</strong> \( y^2 \cdot y^{2/3} = y^{2 + 2/3} = y^{8/3} \).</li>
+        <li><strong>Logaritmovanje stepena:</strong> <span class="formula-label">\( \ln(a^b) = b \ln a \)</span>. Vrlo korisno kad je \( b \) samo po sebi izraz sa nepoznatim.</li>
+        <li><strong>Domen:</strong> da bi \( \sqrt[4]{x} \) i \( \sqrt{y} \) bili realni, treba \( x \geq 0,\ y \geq 0 \). Ali da bi \( x^{\cdot} \) bilo dobro definisano za proizvoljan realan eksponent, treba \( x > 0 \) (stepen nepozitivne osnove sa iracionalnim eksponentom nije realno definisan). Zato radimo sa \( x > 0,\ y > 0 \).</li>
+        <li><strong>Jednakost stepena iste osnove:</strong> za \( a > 0,\ a \neq 1 \): \( a^p = a^q \Leftrightarrow p = q \). Za \( a = 1 \) jednakost važi uvek, za \( a \in (0, 1) \cup (1, \infty) \) eksponenti moraju biti jednaki.</li>
+        <li><strong>Rad sa sistemom u dve nepoznate:</strong> množenje jedne jednačine drugom često eliminiše jednu promenljivu; treba paziti na slučaj kada je deljenje nedozvoljeno (faktor = 0).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Domen i prevođenje korena u stepene</h3>
+      <p>Da bi izrazi \( \sqrt[4]{x} \) i \( \sqrt{y} \) bili realni, potrebno je \( x \geq 0,\ y \geq 0 \). Pošto su i \( x \) i \( y \) baze stepena sa realnim eksponentom, uzimamo strogo pozitivne: \( x > 0,\ y > 0 \).</p>
+      <p>Prepišimo korene kao stepene:</p>
+      <div class="math-block">\[ \sqrt[4]{x} = x^{1/4},\ \ \sqrt{y} = y^{1/2},\ \ \sqrt[3]{y^2} = y^{2/3},\ \ \sqrt[3]{x^2} = x^{2/3}. \]</div>
+      <p>Tako desne strane postaju:</p>
+      <div class="math-block">\[ y^2 \cdot y^{2/3} \;=\; y^{2 + 2/3} \;=\; y^{8/3}, \qquad x^{2/3}. \]</div>
+      <div class="callout callout-info">
+        <strong>Trik sa eksponentom u eksponentu.</strong> Izraz \( \sqrt[4]{x} + \sqrt{y} \) u eksponentu ima i \( x \) i \( y \) &mdash; mešavina koju je teško obrađivati direktno. Logaritmovanje će to pretvoriti u <em>običan proizvod</em>, mnogo lakše za rad.
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Logaritmovanje i uvođenje smena \( t, u, v \)</h3>
+      <p>Neka je</p>
+      <div class="math-block">\[ t \;=\; \sqrt[4]{x} + \sqrt{y} \;=\; x^{1/4} + y^{1/2}, \qquad u \;=\; \ln x, \qquad v \;=\; \ln y. \]</div>
+      <p>Uzmemo \( \ln \) obe strane svake jednačine. Koristeći \( \ln(a^b) = b \ln a \):</p>
+      <div class="math-block">\[ \text{(I)}: \quad t \cdot u \;=\; \tfrac{8}{3} \, v, \qquad \text{(II)}: \quad t \cdot v \;=\; \tfrac{2}{3} \, u. \]</div>
+      <p>Dobili smo sistem od dve linearne jednačine po \( u, v \) (parametar je \( t \), koji zavisi od \( x, y \)).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kako iz \( y^2 \cdot y^{2/3} \) dobijamo \( y^{8/3} \)?</summary>
+          <div class="detail-content"><p>Proizvod stepena iste osnove sabira eksponente: \( 2 + 2/3 = 6/3 + 2/3 = 8/3 \). Dakle \( y^{8/3} \), i \( \ln(y^{8/3}) = (8/3) \ln y = (8/3) v \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Množenje jednačina (I) i (II)</h3>
+      <p>Pomnožimo leve i desne strane:</p>
+      <div class="math-block">\[ (t \cdot u)(t \cdot v) \;=\; \tfrac{8}{3} v \cdot \tfrac{2}{3} u \quad \Longrightarrow \quad t^2 \cdot u \cdot v \;=\; \tfrac{16}{9} \, u \cdot v. \]</div>
+      <p>Sad imamo dva slučaja.</p>
+      <div class="substep" data-substep="A">
+        <p><strong>Slučaj A: \( u \cdot v \neq 0 \)</strong> (što znači \( x \neq 1 \) <em>i</em> \( y \neq 1 \)). Podelimo obe strane sa \( uv \):</p>
+        <div class="math-block">\[ t^2 \;=\; \frac{16}{9} \quad \Longrightarrow \quad t \;=\; \pm \frac{4}{3}. \]</div>
+        <p>Pošto je \( t = x^{1/4} + y^{1/2} \geq 0 \) (zbir nenegativnih korena pozitivnih brojeva), odbacujemo negativno:</p>
+        <div class="math-block">\[ t \;=\; \frac{4}{3}. \]</div>
+      </div>
+      <div class="substep" data-substep="B">
+        <p><strong>Slučaj B: \( u \cdot v = 0 \)</strong> (bar jedno od \( x, y \) je jednako \( 1 \)). Ovo ćemo posebno obraditi u koraku 6.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Veza \( x = y^2 \) iz jednačine (I)</h3>
+      <p>U slučaju A, iz (I) sa \( t = 4/3 \):</p>
+      <div class="math-block">\[ \frac{4}{3} \cdot u \;=\; \frac{8}{3} \cdot v \quad \Longrightarrow \quad u \;=\; 2v. \]</div>
+      <p>Vraćanjem \( u = \ln x \), \( v = \ln y \): \( \ln x = 2 \ln y = \ln y^2 \), dakle</p>
+      <div class="math-block">\[ x \;=\; y^2. \]</div>
+      <div class="callout callout-info">
+        <strong>Brza provera preko jednačine (II):</strong> \( (4/3) v = (2/3) u = (2/3)(2v) = (4/3) v \). Identitet &mdash; slaže se, nema dodatnih ograničenja.
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Zatvaranje: \( t = 4/3 \) i \( x = y^2 \) određuju \( x, y \)</h3>
+      <p>Sada znamo \( x = y^2 \), pa je \( x^{1/4} = (y^2)^{1/4} = y^{1/2} = \sqrt{y} \) (za \( y > 0 \)). Dakle:</p>
+      <div class="math-block">\[ t \;=\; \sqrt[4]{x} + \sqrt{y} \;=\; \sqrt{y} + \sqrt{y} \;=\; 2\sqrt{y}. \]</div>
+      <p>Uz \( t = 4/3 \):</p>
+      <div class="math-block">\[ 2\sqrt{y} \;=\; \frac{4}{3} \quad \Longrightarrow \quad \sqrt{y} \;=\; \frac{2}{3} \quad \Longrightarrow \quad y \;=\; \frac{4}{9}. \]</div>
+      <p>A onda:</p>
+      <div class="math-block">\[ x \;=\; y^2 \;=\; \left(\frac{4}{9}\right)^2 \;=\; \frac{16}{81}. \]</div>
+      <p>Prvo netrivijalno rešenje: \( \displaystyle (x, y) = \left(\frac{16}{81},\ \frac{4}{9}\right) \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj B: \( u = 0 \) ili \( v = 0 \)</h3>
+      <p>Razmotrimo šta se dešava kad je \( x = 1 \) (tj. \( u = 0 \)) ili \( y = 1 \) (tj. \( v = 0 \)).</p>
+
+      <div class="substep" data-substep="a)">
+        <p><strong>Ako \( x = 1 \):</strong> jednačina (I) glasi \( t \cdot 0 = (8/3) v \), dakle \( v = 0 \), tj. \( y = 1 \). I zaista, direktna provera: \( 1^{\sqrt[4]{1} + \sqrt{1}} = 1^2 \cdot \sqrt[3]{1^2} \Leftrightarrow 1 = 1 \) &check;, i \( 1^{\ldots} = \sqrt[3]{1} \Leftrightarrow 1 = 1 \) &check;. Dakle \( (1, 1) \) je rešenje.</p>
+      </div>
+
+      <div class="substep" data-substep="b)">
+        <p><strong>Ako \( y = 1 \) (uz \( x \neq 1 \)):</strong> jednačina (II) glasi \( t \cdot 0 = (2/3) u \), dakle \( u = 0 \), tj. \( x = 1 \). Kontradikcija sa pretpostavkom \( x \neq 1 \). Dakle ovaj slučaj ne daje novo rešenje.</p>
+      </div>
+
+      <p>Iz slučaja B imamo samo rešenje \( (x, y) = (1, 1) \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto \( x = 1,\ y \neq 1 \) nije rešenje?</summary>
+          <div class="detail-content"><p>Ako je \( x = 1 \), leva strana prve jednačine je \( 1^{\text{nešto}} = 1 \). Desna strana je \( y^{8/3} \). Jednakost \( 1 = y^{8/3} \) zahteva \( y = 1 \). Dakle \( x = 1 \) automatski povlači \( y = 1 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="7">
+    <div class="step-badge">7</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera oba rešenja direktnom zamenom</h3>
+      <p>Da budemo sigurni &mdash; zamenimo oba rešenja u polazni sistem.</p>
+
+      <div class="substep" data-substep="a)">
+        <p><strong>\( (x, y) = (1, 1) \):</strong> \( \sqrt[4]{1} + \sqrt{1} = 1 + 1 = 2 \). Leva (I): \( 1^2 = 1 \). Desna (I): \( 1^2 \cdot \sqrt[3]{1} = 1 \cdot 1 = 1 \). &check; Leva (II): \( 1^2 = 1 \). Desna (II): \( \sqrt[3]{1} = 1 \). &check;</p>
+      </div>
+
+      <div class="substep" data-substep="b)">
+        <p><strong>\( (x, y) = \left(\dfrac{16}{81},\ \dfrac{4}{9}\right) \):</strong> računamo ključne vrednosti.</p>
+        <div class="math-block">\[ \sqrt[4]{\tfrac{16}{81}} \;=\; \tfrac{\sqrt[4]{16}}{\sqrt[4]{81}} \;=\; \tfrac{2}{3},\qquad \sqrt{\tfrac{4}{9}} \;=\; \tfrac{2}{3}, \qquad t \;=\; \tfrac{2}{3} + \tfrac{2}{3} \;=\; \tfrac{4}{3}. \]</div>
+        <p><strong>Jednačina (I):</strong></p>
+        <div class="math-block">\[ \left(\tfrac{16}{81}\right)^{4/3} \;=\; \left(\left(\tfrac{4}{9}\right)^2\right)^{4/3} \;=\; \left(\tfrac{4}{9}\right)^{8/3}. \]</div>
+        <p>Desna strana: \( y^2 \cdot y^{2/3} = y^{8/3} = (4/9)^{8/3} \). Levo = Desno. &check;</p>
+        <p><strong>Jednačina (II):</strong></p>
+        <div class="math-block">\[ \left(\tfrac{4}{9}\right)^{4/3} \;=\; ?\;=\; \sqrt[3]{\left(\tfrac{16}{81}\right)^2} \;=\; \left(\tfrac{16}{81}\right)^{2/3} \;=\; \left(\left(\tfrac{4}{9}\right)^2\right)^{2/3} \;=\; \left(\tfrac{4}{9}\right)^{4/3}. \]</div>
+        <p>Levo = Desno. &check;</p>
+      </div>
+
+      <p>Oba rešenja su potvrđena.</p>
+      <div class="math-block">\[ \boxed{\; (x, y) \in \left\{\, (1, 1),\ \left(\tfrac{16}{81},\ \tfrac{4}{9}\right) \,\right\} \;} \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="visual-aid" data-title="Provera oba rešenja">
+  <h2>Vizuelni prikaz: tabela provere</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-check" width="760" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Tabela prikazuje sve ključne vrednosti za oba rešenja: \( t = \sqrt[4]{x} + \sqrt{y} \), \( x^t \), \( y^t \), \( y^{8/3} \), \( x^{2/3} \). Leve strane (\( x^t \) i \( y^t \)) poklapaju se sa desnima (\( y^{8/3} \) i \( x^{2/3} \)) za oba rešenja &mdash; zelene kvačice potvrđuju jednakost.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Dva rešenja u ravni">
+  <h2>Geometrijski prikaz: \( x = y^2 \) i rešenja</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-xy" width="760" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">U \( (x, y) \)-ravni crtana je kriva \( x = y^2 \) (parabola) na kojoj se nalaze <em>sva</em> potencijalna rešenja iz slučaja \( uv \neq 0 \). Tačka \( (16/81, 4/9) \) je jedinstvena tačka na toj krivoj koja zadovoljava uslov \( t = 2\sqrt{y} = 4/3 \). Druga tačka, \( (1, 1) \), potiče iz graničnog slučaja \( uv = 0 \) i <em>takođe leži</em> na krivoj \( x = y^2 \) &mdash; zanimljivo poklapanje (jer \( 1 = 1^2 \)), iako smo je dobili drugim putem.</p>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>Ključni uvid</h2>
+  <p>Kad u sistemu sa nepoznatima <em>i u bazi i u eksponentu</em> naiđete na simetrije, logaritmovanje je prvi kandidat &mdash; ono pretvara mešani izraz \( x^{f(x, y)} \) u običan proizvod \( f(x, y) \cdot \ln x \). U našem slučaju dobijamo linearan sistem po \( (u, v) = (\ln x, \ln y) \) sa parametrom \( t \). <strong>Množenje dve jednačine</strong> (tehnika koja je vrlo čest potez kada se sistem multiplikativno simetrično razlaže) eliminiše \( u, v \) i pronalazi \( t \). Ali pažnja: u trenutku kada podelimo sa \( uv \), moramo obraditi <em>granični slučaj</em> \( uv = 0 \) zasebno &mdash; iz njega ispada trivijalno rešenje \( (1, 1) \). Ova pažnja je presudna: opcija (B) propušta \( (16/81, 4/9) \) jer ne koristi tehniku množenja, dok opcija (C) greši u drugom rešenju (stavlja \( y = 1 \) umesto \( 4/9 \)).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ (x, y) \in \left\{\, (1, 1),\ \left(\tfrac{16}{81},\ \tfrac{4}{9}\right) \,\right\} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( (1, 1) \) i \( \left(\dfrac{16}{81},\ \dfrac{4}{9}\right) \)</span>
+    <span class="answer-option" data-option="B">(B) \( (1, 1) \)</span>
+    <span class="answer-option" data-option="C">(C) \( (1, 1) \) i \( \left(\dfrac{16}{81},\ 1\right) \)</span>
+  </div>
+  <p class="verification">Direktna provera za \( (16/81, 4/9) \): \( \sqrt[4]{16/81} = 2/3 \), \( \sqrt{4/9} = 2/3 \), \( t = 4/3 \). Leva strana (I): \( (16/81)^{4/3} = ((4/9)^2)^{4/3} = (4/9)^{8/3} \) &mdash; tačno jednako desnoj \( (4/9)^{8/3} \). Leva strana (II): \( (4/9)^{4/3} \); desna: \( (16/81)^{2/3} = ((4/9)^2)^{2/3} = (4/9)^{4/3} \). Slaže se. Opcija (C) je laka da se odbaci: za \( (16/81, 1) \) leva strana (I) je \( (16/81)^{\sqrt[4]{16/81} + 1} = (16/81)^{2/3 + 1} = (16/81)^{5/3} \), a desna je \( 1 \cdot 1 = 1 \) &mdash; jasno nije jednako.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Propuštanje netrivijalnog rešenja:</strong> studenti često primete \( (1, 1) \) i stanu. Sistem ima <em>dva</em> rešenja &mdash; drugo se dobija tek množenjem jednačina (I) i (II).</li>
+    <li><strong>Zaboravljanje slučaja \( uv = 0 \):</strong> kad se podeli sa \( uv \), mora se eksplicitno proveriti šta se dešava kada je \( u = 0 \) ili \( v = 0 \). Inače se može izgubiti rešenje \( (1, 1) \).</li>
+    <li><strong>Uzimanje \( t = -4/3 \):</strong> iz \( t^2 = 16/9 \) formalno slede oba znaka, ali \( t = \sqrt[4]{x} + \sqrt{y} \geq 0 \) (oba sabirka su nenegativni koreni). Negativni koren se odbacuje.</li>
+    <li><strong>Pogrešno sabiranje eksponenata:</strong> \( y^2 \cdot \sqrt[3]{y^2} = y^2 \cdot y^{2/3} = y^{8/3} \), a ne \( y^{4/3} \) ili \( y^{4/6} \). Eksponenti se sabiraju: \( 2 + 2/3 = 8/3 \).</li>
+    <li><strong>Pogrešan domen:</strong> neki stavljaju \( x \geq 0 \) i \( y \geq 0 \), pa ubacuju rešenje \( (0, 0) \). Ali \( 0^{\sqrt[4]{0} + \sqrt{0}} = 0^0 \) &mdash; neodređeno, nije rešenje. Strogo: \( x > 0, y > 0 \).</li>
+    <li><strong>Pogrešno pojednostavljenje \( (16/81)^{4/3} \):</strong> uvek prvo zapisati \( 16/81 = (4/9)^2 \) (provera: \( (4/9)^2 = 16/81 \) &check;), pa iskoristiti \( (a^2)^{4/3} = a^{8/3} \). Direktno vađenje korena bez ovog koraka je lako pogrešiti.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>Dodatni izazov</h2>
+  <p>Zamislite modifikovani sistem sa drugim eksponentima na desnim stranama:</p>
+  <div class="math-block">\[ x^{\sqrt[4]{x} + \sqrt{y}} \;=\; y^{\alpha}, \qquad y^{\sqrt[4]{x} + \sqrt{y}} \;=\; x^{\beta}, \]</div>
+  <p>gde su \( \alpha, \beta \) pozitivni parametri. Za koje vrednosti \( \alpha, \beta \) sistem ima rešenje \( (x, y) \neq (1, 1) \)? Ima li više od dva rešenja?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Istim postupkom: \( tu = \alpha v \), \( tv = \beta u \), pa \( t^2 uv = \alpha\beta uv \). Za \( uv \neq 0 \), \( t = \sqrt{\alpha\beta} \). Iz prve: \( u = (\alpha/t) v \), tj. \( \ln x = (\alpha/\sqrt{\alpha\beta}) \ln y = \sqrt{\alpha/\beta} \ln y \), pa \( x = y^{\sqrt{\alpha/\beta}} \). Da bi \( \sqrt[4]{x} = y^{(1/4)\sqrt{\alpha/\beta}} \) bilo jednako konstantnom \( \sqrt{y} \)-podobnom izrazu, treba \( (1/4)\sqrt{\alpha/\beta} = 1/2 \), tj. \( \sqrt{\alpha/\beta} = 2 \Leftrightarrow \alpha = 4\beta \). U ovom zadatku \( \alpha = 8/3,\ \beta = 2/3 \), pa \( \alpha/\beta = 4 \) i \( \sqrt{4} = 2 \) &check;. Za ostale odnose \( \alpha : \beta \neq 4 : 1 \) jednačina \( t = \sqrt[4]{x} + \sqrt{y} \) postaje transcendentna i teško je očekivati eksplicitna rešenja.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-check');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Tabela provere: vrednosti za oba rešenja', W / 2, 34);
+
+    // Table layout
+    var tableX = 40;
+    var tableY = 70;
+    var cols = [
+      { label: 'Rešenje',          w: 170 },
+      { label: '⁴√x',              w: 80 },
+      { label: '√y',               w: 80 },
+      { label: 't',                w: 80 },
+      { label: 'LEVO (I) = x^t',   w: 160 },
+      { label: 'DESNO (I) = y^(8/3)', w: 160 }
+    ];
+    var rowH = 58;
+
+    // Draw header
+    var hx = tableX;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    cols.forEach(function(c) {
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.2);
+      ctx.fillRect(hx, tableY, c.w, rowH);
+      ctx.strokeStyle = muted;
+      ctx.lineWidth = 1;
+      ctx.strokeRect(hx, tableY, c.w, rowH);
+      ctx.fillStyle = text;
+      ctx.fillText(c.label, hx + c.w / 2, tableY + rowH / 2);
+      hx += c.w;
+    });
+
+    // Rows
+    var rows = [
+      { solution: '(1, 1)',          v: ['1', '1', '2', '1^2 = 1', '1^(8/3) = 1'], match: true },
+      { solution: '(16/81, 4/9)',    v: ['2/3', '2/3', '4/3', '(16/81)^(4/3)', '(4/9)^(8/3)'], match: true, hint: '= (4/9)^(8/3)' }
+    ];
+
+    for (var i = 0; i < rows.length; i++) {
+      var ry = tableY + rowH * (i + 1);
+      var rx = tableX;
+      var rowBg = (i % 2 === 0) ? cvAlpha('--sol-canvas-muted', 0.05) : cvAlpha('--sol-canvas-muted', 0.12);
+      // First cell: solution
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.16);
+      ctx.fillRect(rx, ry, cols[0].w, rowH);
+      ctx.strokeStyle = muted;
+      ctx.strokeRect(rx, ry, cols[0].w, rowH);
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 15px "Cambria Math", Georgia, serif';
+      ctx.fillText(rows[i].solution, rx + cols[0].w / 2, ry + rowH / 2);
+      rx += cols[0].w;
+      // Remaining cells
+      for (var j = 0; j < rows[i].v.length; j++) {
+        ctx.fillStyle = rowBg;
+        ctx.fillRect(rx, ry, cols[j + 1].w, rowH);
+        ctx.strokeStyle = muted;
+        ctx.strokeRect(rx, ry, cols[j + 1].w, rowH);
+        ctx.fillStyle = text;
+        ctx.font = '13px "Cambria Math", Georgia, serif';
+        ctx.fillText(rows[i].v[j], rx + cols[j + 1].w / 2, ry + rowH / 2);
+        rx += cols[j + 1].w;
+      }
+    }
+
+    // Under-row result for (16/81, 4/9): key identity
+    var noteY = tableY + 3 * rowH + 24;
+    ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.18);
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2;
+    if (ctx.roundRect) {
+      ctx.beginPath();
+      ctx.roundRect(tableX, noteY, W - 2 * tableX, 50, 10);
+      ctx.fill();
+      ctx.stroke();
+    } else {
+      ctx.fillRect(tableX, noteY, W - 2 * tableX, 50);
+      ctx.strokeRect(tableX, noteY, W - 2 * tableX, 50);
+    }
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Ključna jednakost:  (16/81)^(4/3) = ((4/9)²)^(4/3) = (4/9)^(8/3)  ✓', W / 2, noteY + 25);
+
+    // Second equation check
+    var noteY2 = noteY + 70;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.15);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    if (ctx.roundRect) {
+      ctx.beginPath();
+      ctx.roundRect(tableX, noteY2, W - 2 * tableX, 50, 10);
+      ctx.fill();
+      ctx.stroke();
+    } else {
+      ctx.fillRect(tableX, noteY2, W - 2 * tableX, 50);
+      ctx.strokeRect(tableX, noteY2, W - 2 * tableX, 50);
+    }
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Jednačina (II):  (4/9)^(4/3) = (16/81)^(2/3) = ((4/9)²)^(2/3) = (4/9)^(4/3)  ✓', W / 2, noteY2 + 25);
+
+    ctx.textBaseline = 'alphabetic';
+
+    // Bottom caption
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Oba rešenja zadovoljavaju i jednačinu (I) i jednačinu (II) polaznog sistema.', W / 2, H - 22);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-xy');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  // Plot area
+  var marginL = 75, marginR = 40, marginT = 60, marginB = 80;
+  var plotW = W - marginL - marginR;
+  var plotH = H - marginT - marginB;
+
+  var xMin = 0, xMax = 1.3;
+  var yMin = 0, yMax = 1.3;
+
+  function X(x) { return marginL + (x - xMin) / (xMax - xMin) * plotW; }
+  function Y(y) { return marginT + (yMax - y) / (yMax - yMin) * plotH; }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Kriva x = y²  i  dva rešenja u (x, y)-ravni', W / 2, 30);
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 0.8;
+    var ticks = [0, 0.25, 0.5, 0.75, 1.0, 1.25];
+    ticks.forEach(function(t) {
+      ctx.beginPath();
+      ctx.moveTo(X(t), marginT);
+      ctx.lineTo(X(t), marginT + plotH);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(marginL, Y(t));
+      ctx.lineTo(marginL + plotW, Y(t));
+      ctx.stroke();
+    });
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(marginL, marginT + plotH);
+    ctx.lineTo(marginL + plotW, marginT + plotH);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(marginL, marginT);
+    ctx.lineTo(marginL, marginT + plotH);
+    ctx.stroke();
+
+    // Labels
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ticks.forEach(function(t) {
+      ctx.fillText(t.toFixed(2), X(t), marginT + plotH + 6);
+    });
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    ticks.forEach(function(t) {
+      ctx.fillText(t.toFixed(2), marginL - 6, Y(t));
+    });
+
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px "Cambria Math", Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('x', marginL + plotW - 10, marginT + plotH + 22);
+    ctx.textAlign = 'left';
+    ctx.fillText('y', marginL - 24, marginT + 4);
+
+    // Curve x = y² (parametrize by y)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    var N = 200;
+    for (var i = 0; i <= N; i++) {
+      var y = yMin + (yMax - yMin) * i / N;
+      var x = y * y;
+      if (x > xMax) break;
+      if (i === 0) ctx.moveTo(X(x), Y(y));
+      else ctx.lineTo(X(x), Y(y));
+    }
+    ctx.stroke();
+
+    // Curve label
+    ctx.font = 'bold 13px "Cambria Math", Georgia, serif';
+    ctx.fillStyle = primary;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('x = y²', X(0.45) + 10, Y(0.67));
+
+    // Two solutions
+    var solutions = [
+      { x: 16/81,  y: 4/9,  label: '(16/81, 4/9)',  col: '--sol-canvas-highlight' },
+      { x: 1,      y: 1,    label: '(1, 1)',        col: '--sol-canvas-accent' }
+    ];
+
+    solutions.forEach(function(s) {
+      // Glow
+      ctx.fillStyle = cvAlpha(s.col, 0.3);
+      ctx.beginPath();
+      ctx.arc(X(s.x), Y(s.y), 14, 0, Math.PI * 2);
+      ctx.fill();
+      // Solid dot
+      ctx.fillStyle = cv(s.col);
+      ctx.beginPath();
+      ctx.arc(X(s.x), Y(s.y), 7, 0, Math.PI * 2);
+      ctx.fill();
+      // Label
+      ctx.fillStyle = cv(s.col);
+      ctx.font = 'bold 13px "Cambria Math", Georgia, serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(s.label, X(s.x) + 14, Y(s.y) - 10);
+    });
+
+    // Line t = 2√y = 4/3 → √y = 2/3 → y = 4/9 horizontal band
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(marginL, Y(4/9));
+    ctx.lineTo(marginL + plotW, Y(4/9));
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 11px "Cambria Math", Georgia, serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('y = 4/9  (uslov  2√y = 4/3)', marginL + plotW - 170, Y(4/9) - 4);
+
+    // Legend
+    var legY = H - 48;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'left';
+
+    // Primary line for curve
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(60, legY);
+    ctx.lineTo(90, legY);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.fillText('kriva x = y²', 96, legY);
+
+    // Dots
+    ctx.fillStyle = cv('--sol-canvas-highlight');
+    ctx.beginPath();
+    ctx.arc(230, legY, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.fillText('netrivijalno: (16/81, 4/9)', 242, legY);
+
+    ctx.fillStyle = cv('--sol-canvas-accent');
+    ctx.beginPath();
+    ctx.arc(460, legY, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.fillText('trivijalno: (1, 1)', 472, legY);
+
+    ctx.textBaseline = 'alphabetic';
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Sistem x^(⁴√x + √y) = y^(8/3), y^(⁴√x + √y) = x^(2/3) rešen logaritmovanjem",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["sistem jednačina", "logaritmovanje", "eksponencijalne jednačine", "smene", "koreni"]
+}
+BRAINSPARK_META-->

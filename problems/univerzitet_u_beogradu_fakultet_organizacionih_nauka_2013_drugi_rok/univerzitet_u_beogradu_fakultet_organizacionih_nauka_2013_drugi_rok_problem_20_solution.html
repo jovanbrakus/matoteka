@@ -1,0 +1,475 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: U razvoju (x*y^(1/4) + y*x^(2/3))^2013, broj članova oblika M*x^a*y^b sa
+  celim a, b. (M je binomni koeficijent — uvek je ceo.)
+
+  Opšti član binomnog razvoja (u + v)^n, u = x*y^(1/4), v = y*x^(2/3), n = 2013:
+    T_{k+1} = C(2013, k) * u^(2013-k) * v^k, k = 0, 1, ..., 2013.
+
+  u^(2013-k) = x^(2013-k) * y^((2013-k)/4)
+  v^k = y^k * x^(2k/3)
+  Proizvod: x^( (2013-k) + 2k/3 ) * y^( (2013-k)/4 + k )
+
+  Eksponent x: a = (2013 - k) + 2k/3 = (3(2013 - k) + 2k)/3 = (3*2013 - 3k + 2k)/3
+             = (3*2013 - k)/3 = (6039 - k)/3.
+  Eksponent y: b = (2013 - k)/4 + k = (2013 - k + 4k)/4 = (2013 + 3k)/4.
+
+  Treba naći broj k u {0, 1, ..., 2013} tako da su oba eksponenta cela:
+  (1) (6039 - k)/3 ∈ Z  <=>  k ≡ 6039 ≡ 0 (mod 3), tj. k ≡ 0 (mod 3).
+      (6039 = 3 * 2013, deljivo sa 3.)
+  (2) (2013 + 3k)/4 ∈ Z <=>  2013 + 3k ≡ 0 (mod 4).
+      2013 = 4*503 + 1, tj. 2013 ≡ 1 (mod 4).
+      3k ≡ -1 ≡ 3 (mod 4) => k ≡ 1 (mod 4) (jer 3*1 = 3, 3*3 = 9 ≡ 1, itd;
+      inverz od 3 mod 4 je 3; pa k ≡ 3*3 = 9 ≡ 1 (mod 4)).
+
+  Sistem: k ≡ 0 (mod 3), k ≡ 1 (mod 4). Po CRT postoji jedinstveno k mod 12.
+  Probaj: k = 0: (0, 0) ne (0 mod 4 = 0 ≠ 1). k = 9: 9 mod 3 = 0 ✓, 9 mod 4 = 1 ✓. Dakle k ≡ 9 (mod 12).
+
+  Skup rešenja u {0, ..., 2013}: k = 9, 21, 33, ..., 9 + 12m ≤ 2013 => 12m ≤ 2004 => m ≤ 167.
+  m = 0, 1, ..., 167 => 168 rešenja.
+
+  Provera poslednjeg: 9 + 12*167 = 9 + 2004 = 2013 ≤ 2013. Dakle k = 2013 je dozvoljeno.
+  Broj članova = 168.
+
+  Odgovor: (E) 168.
+
+  Vizuelizacija (statička): tabela/dijagram CRT-a — rešetka 12 razreda (mod 12),
+  sa označenim validnim klasama mod 3 (kolone) i mod 4 (vrste). Presek jedinstveno
+  određuje klasu mod 12. Statika je odgovarajuća: problem je prebrojavanje,
+  nema slobodnog parametra koji ima smisla "prevlačiti".
+</script>
+
+<h1 data-card="problem-title">Broj članova racionalnih eksponenata u binomnom razvoju</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika — binomni razvoj, celobrojni eksponenti i kineska teorema o ostacima</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>U razvoju stepena</p>
+  <div class="math-block">\[ \bigl(x\,y^{1/4} + y\,x^{2/3}\bigr)^{2013}, \]</div>
+  <p>broj članova koji su oblika \( M \cdot x^{a} \cdot y^{b} \), gde su \( M \), \( a \) i \( b \) celi brojevi, jednak je:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">izraz</span>
+      <span class="given-value">\( (x\,y^{1/4} + y\,x^{2/3})^{2013} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">eksponent</span>
+      <span class="given-value">\( n = 2013 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">uslov</span>
+      <span class="given-value">\( a, b \in \mathbb{Z} \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 335 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 336 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 504 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 169 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 168 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Napišemo opšti član binomnog razvoja, izrazimo eksponente \( a \) i \( b \) preko indeksa \( k \), pa nađemo uslove deljivosti: jedan modulo \( 3 \), drugi modulo \( 4 \). Kombinujemo ih pomoću kineske teoreme o ostacima i prebrojimo valjane \( k \) u \( \{0, 1, \dots, 2013\} \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Binomna formula</span> \( (u + v)^n = \sum_{k=0}^{n} \binom{n}{k} u^{\,n-k}\, v^{k} \). Opšti član: \( T_{k+1} = \binom{n}{k}\, u^{\,n-k}\, v^{k} \).</li>
+        <li><span class="formula-label">Stepenovanje proizvoda</span> \( (x^p y^q)^r = x^{pr}\, y^{qr} \); \( x^p \cdot x^q = x^{p+q} \).</li>
+        <li><span class="formula-label">Kineska teorema o ostacima</span> Ako su \( m \) i \( n \) uzajamno prosti, sistem \( k \equiv a \pmod{m},\ k \equiv b \pmod{n} \) ima jedinstveno rešenje po modulu \( m \cdot n \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="crtGrid" width="760" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">CRT rešetka: redovi prikazuju ostatak \( k \bmod 3 \) (uslov za ceo \( a \)), kolone ostatak \( k \bmod 4 \) (uslov za ceo \( b \)). Zelena ćelija označava klasu \( k \equiv 9 \pmod{12} \) — jedinu klasu koja zadovoljava oba uslova.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Opšti član razvoja</h3>
+      <p>Stavimo \( u = x\,y^{1/4} \) i \( v = y\,x^{2/3} \). Po binomnoj formuli:</p>
+      <div class="math-block">\[ T_{k+1} = \binom{2013}{k}\, u^{\,2013 - k}\, v^{k}, \qquad k \in \{0, 1, \dots, 2013\}. \]</div>
+      <p>Koeficijent \( \binom{2013}{k} \) je uvek ceo broj, pa je \( M \) automatski iz \( \mathbb{Z} \). Treba obezbediti da su eksponenti uz \( x \) i \( y \) celi.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Eksponenti \( a \) i \( b \) kao funkcije od \( k \)</h3>
+      <p>Razvijemo:</p>
+      <div class="math-block">\[ u^{\,2013-k} = x^{\,2013-k}\, y^{\,(2013-k)/4}, \qquad v^{k} = y^{k}\, x^{\,2k/3}. \]</div>
+      <p>Sabiranjem eksponenata:</p>
+      <div class="math-block">\[ a = (2013 - k) + \tfrac{2k}{3} = \frac{6039 - k}{3}, \qquad b = \frac{2013 - k}{4} + k = \frac{2013 + 3k}{4}. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: odakle \( 6039 \)?</summary>
+          <div class="detail-content"><p>\( 3 \cdot (2013 - k) + 2k = 6039 - 3k + 2k = 6039 - k \). Zajednički imenilac \( 3 \) donosi \( 6039 = 3 \cdot 2013 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Uslov (1): \( a \in \mathbb{Z} \)</h3>
+      <p>Potrebno je \( 3 \mid (6039 - k) \). Kako je \( 6039 = 3 \cdot 2013 \equiv 0 \pmod{3} \):</p>
+      <div class="math-block">\[ k \equiv 0 \pmod{3}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Uslov (2): \( b \in \mathbb{Z} \)</h3>
+      <p>Potrebno je \( 4 \mid (2013 + 3k) \). Kako je \( 2013 = 4 \cdot 503 + 1 \equiv 1 \pmod{4} \):</p>
+      <div class="math-block">\[ 1 + 3k \equiv 0 \pmod{4} \iff 3k \equiv -1 \equiv 3 \pmod{4}. \]</div>
+      <p>Pošto je \( \gcd(3, 4) = 1 \), možemo deliti sa \( 3 \) (tj. pomnožiti inverzom \( 3^{-1} \equiv 3 \pmod{4} \)):</p>
+      <div class="math-block">\[ k \equiv 1 \pmod{4}. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: proveri \( k = 1 \) u uslov (2).</summary>
+          <div class="detail-content"><p>\( 2013 + 3 \cdot 1 = 2016 = 4 \cdot 504 \) — deljivo sa \( 4 \). ✓</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Spajanje pomoću kineske teoreme o ostacima</h3>
+      <p>Sistem \( k \equiv 0 \pmod{3} \) i \( k \equiv 1 \pmod{4} \) ima jedinstveno rešenje po modulu \( 12 \). Probamo \( k = 9 \):</p>
+      <div class="math-block">\[ 9 = 3 \cdot 3 \equiv 0 \pmod{3}, \qquad 9 = 2 \cdot 4 + 1 \equiv 1 \pmod{4}. \ \checkmark \]</div>
+      <p>Dakle:</p>
+      <div class="math-block">\[ k \equiv 9 \pmod{12}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Prebrojavanje validnih vrednosti</h3>
+      <p>Tražimo broj \( k \in \{0, 1, \dots, 2013\} \) takvih da je \( k = 9 + 12m \):</p>
+      <div class="math-block">\[ 0 \le 9 + 12m \le 2013 \iff -\tfrac{9}{12} \le m \le \tfrac{2004}{12} = 167. \]</div>
+      <p>Kako je \( m \) ceo, \( m \in \{0, 1, \dots, 167\} \), što daje <span class="result">\( 168 \)</span> vrednosti.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koji je najveći dozvoljeni \( k \)?</summary>
+          <div class="detail-content"><p>\( k = 9 + 12 \cdot 167 = 9 + 2004 = 2013 \) — tačno gornja granica. Za \( k = 2013 \): \( a = (6039 - 2013)/3 = 4026/3 = 1342 \), \( b = (2013 + 6039)/4 = 8052/4 = 2013 \). Oba cela.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Sva ozbiljna informacija sedi u <strong>dva nezavisna uslova deljivosti</strong>: jedan modulo \( 3 \) (iz imenioca eksponenta \( x \)) i jedan modulo \( 4 \) (iz imenioca eksponenta \( y \)). Kako su \( 3 \) i \( 4 \) uzajamno prosti, CRT spaja oba u jedan uslov modulo \( 12 \). Broj valjanih \( k \) je približno \( \tfrac{2014}{12} \approx 168 \) — što je tačno i odgovor.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \#\{k \in \{0, \dots, 2013\} : k \equiv 9 \pmod{12}\} = 168. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 335 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 336 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 504 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 169 \)</span>
+    <span class="answer-option correct" data-option="E">(E) \( 168 \)</span>
+  </div>
+  <p class="verification">Provera granica: za \( k = 9 \) imamo \( a = 6030/3 = 2010 \) i \( b = 2040/4 = 510 \); za \( k = 2013 \) imamo \( a = 1342 \) i \( b = 2013 \). Oba slučaja daju cele eksponente. Prvi i poslednji \( k \) razlikuju se za \( 2004 = 12 \cdot 167 \), što daje \( 167 + 1 = 168 \) vrednosti.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Ignorisanje faktora \( x \) i \( y \) u sabircima — \( u = x\,y^{1/4} \) (ne samo \( y^{1/4} \))!</li>
+    <li>Pogrešno zbrajanje eksponenata — zajednički imenilac je neophodan pre nego što se primeni uslov deljivosti.</li>
+    <li>Pomeranje intervala: \( k \) ide od \( 0 \) do \( 2013 \), to su \( 2014 \) vrednosti (ne \( 2013 \)).</li>
+    <li>Brojanje van intervala — npr. \( m = -1 \) daje \( k = -3 < 0 \), što nije u binomnom razvoju.</li>
+    <li>Odgovor \( \lceil 2014/12 \rceil = 168 \) je tačan samo jer \( k = 2013 \) "zaista" zadovoljava oba uslova. U opštem slučaju, treba pažljivo proveriti krajeve.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koliko bi bilo članova oblika \( M \cdot x^a \cdot y^b \) sa celim \( a, b \) u razvoju \( (x\,y^{1/4} + y\,x^{2/3})^{2014} \)? Koji \( n \) daje <em>tačno</em> \( 168 \) valjanih članova?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Za opšti \( n \), uslov (1) glasi \( k \equiv 0 \pmod{3} \) (ako \( 3 \mid n \)) ili zavisi od \( n \bmod 3 \) inače. Za \( n = 2014 \): \( 2014 \equiv 1 \pmod{3} \), pa iz \( a = (3n - k)/3 \) dobijamo \( k \equiv 0 \pmod{3} \) opet (jer \( 3n \equiv 0 \)); a iz \( b = (n + 3k)/4 \), \( 2014 \equiv 2 \pmod 4 \), pa \( 2 + 3k \equiv 0 \pmod 4 \Rightarrow k \equiv 2 \pmod 4 \). CRT: \( k \equiv 6 \pmod{12} \). U \( \{0, \dots, 2014\} \): \( k = 6, 18, \dots, 6 + 12m \le 2014 \Rightarrow m \le 167{,}33 \Rightarrow m \in \{0, \dots, 167\} \), tj. \( 168 \) članova. Dakle i \( n = 2014 \) daje \( 168 \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('crtGrid');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.font = 'bold 15px Inter, system-ui';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('CRT rešetka: k mod 3 (uslov za a)  \u00D7  k mod 4 (uslov za b)', W / 2, 14);
+
+    // Grid layout: 3 rows (mod 3), 4 cols (mod 4)
+    var rows = 3, cols = 4;
+    var cellW = 90, cellH = 90;
+    var gridW = cols * cellW;
+    var gridH = rows * cellH;
+    var originX = (W - gridW) / 2 + 20;
+    var originY = 90;
+
+    // Axis labels above grid
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('k mod 4', originX + gridW / 2, originY - 32);
+
+    // Column headers (0, 1, 2, 3)
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.fillStyle = text;
+    ctx.textBaseline = 'middle';
+    for (var c = 0; c < cols; c++) {
+      var cx = originX + c * cellW + cellW / 2;
+      ctx.fillStyle = (c === 1) ? accent : text;
+      ctx.fillText(String(c), cx, originY - 14);
+    }
+
+    // Row header label
+    ctx.save();
+    ctx.translate(originX - 58, originY + gridH / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('k mod 3', 0, 0);
+    ctx.restore();
+
+    // Row headers (0, 1, 2)
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (var r = 0; r < rows; r++) {
+      var cy = originY + r * cellH + cellH / 2;
+      ctx.fillStyle = (r === 0) ? accent : text;
+      ctx.fillText(String(r), originX - 12, cy);
+    }
+
+    // Highlight valid row (mod 3 = 0) strip — warm tint
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.10);
+    ctx.fillRect(originX, originY, gridW, cellH);
+    // Highlight valid column (mod 4 = 1) strip
+    ctx.fillRect(originX + cellW, originY, cellW, gridH);
+
+    // Cells: draw (k mod 12) value, highlight intersection
+    ctx.font = 'bold 15px Inter, system-ui';
+    for (var rr = 0; rr < rows; rr++) {
+      for (var cc = 0; cc < cols; cc++) {
+        var x = originX + cc * cellW;
+        var y = originY + rr * cellH;
+        var valid = (rr === 0 && cc === 1); // row 0 mod 3, col 1 mod 4 => k ≡ 9 (mod 12)
+
+        // Compute k mod 12 uniquely via CRT for each (rr mod 3, cc mod 4)
+        // Find smallest non-negative k: brute force
+        var kmod12 = -1;
+        for (var t = 0; t < 12; t++) {
+          if (t % 3 === rr && t % 4 === cc) { kmod12 = t; break; }
+        }
+
+        // Cell background
+        if (valid) {
+          ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.35);
+          ctx.fillRect(x, y, cellW, cellH);
+        } else {
+          ctx.fillStyle = cvAlpha('--sol-canvas-grid', 0.25);
+          ctx.fillRect(x, y, cellW, cellH);
+        }
+
+        // Cell border
+        ctx.strokeStyle = valid ? accent : grid;
+        ctx.lineWidth = valid ? 3 : 1;
+        ctx.strokeRect(x, y, cellW, cellH);
+
+        // k mod 12 label
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.font = 'bold 18px Inter, system-ui';
+        ctx.fillStyle = valid ? accent : text;
+        ctx.fillText(String(kmod12), x + cellW / 2, y + cellH / 2 - 8);
+
+        // "k\u226112" subscript
+        ctx.font = '10px Inter, system-ui';
+        ctx.fillStyle = muted;
+        ctx.fillText('(mod 12)', x + cellW / 2, y + cellH / 2 + 14);
+      }
+    }
+
+    // Arrow + callout for valid cell
+    var validX = originX + 1 * cellW + cellW / 2;
+    var validY = originY + 0 * cellH + cellH / 2;
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(validX + cellW / 2 + 10, validY - 20);
+    ctx.lineTo(originX + gridW + 60, validY - 40);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.fillStyle = accent;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('k \u2261 9 (mod 12)', originX + gridW + 10, validY - 50);
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillStyle = muted;
+    ctx.fillText('jedina valjana klasa', originX + gridW + 10, validY - 34);
+
+    // Bottom panel: enumeration bar showing valid k values
+    var barY = originY + gridH + 55;
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Valjani k u {0, 1, \u2026, 2013}: k = 9, 21, 33, \u2026, 2001, 2013', W / 2, barY);
+
+    // Draw a simple number line
+    var lineY = barY + 45;
+    var lineL = 80, lineR = W - 80;
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(lineL, lineY);
+    ctx.lineTo(lineR, lineY);
+    ctx.stroke();
+    // Endpoints
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('0', lineL, lineY + 8);
+    ctx.fillText('2013', lineR, lineY + 8);
+    ctx.beginPath(); ctx.moveTo(lineL, lineY - 5); ctx.lineTo(lineL, lineY + 5); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(lineR, lineY - 5); ctx.lineTo(lineR, lineY + 5); ctx.stroke();
+
+    // Dots at k = 9, 21, ..., 2013 — draw them evenly to fit; actual count = 168
+    var total = 168;
+    // Too dense to draw each — draw 24 representative dots evenly
+    var repr = 24;
+    for (var i = 0; i < repr; i++) {
+      var frac = i / (repr - 1);
+      // First valid k = 9, last = 2013
+      var kv = 9 + frac * (2013 - 9);
+      var xPos = lineL + (kv / 2013) * (lineR - lineL);
+      ctx.beginPath();
+      ctx.arc(xPos, lineY, 3.5, 0, Math.PI * 2);
+      ctx.fillStyle = accent;
+      ctx.fill();
+    }
+
+    // Count label
+    ctx.font = 'bold 16px Inter, system-ui';
+    ctx.fillStyle = accent;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Ukupno: 168 članova', W / 2, lineY + 40);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Broj članova sa celim eksponentima u razvoju (x y^(1/4) + y x^(2/3))^2013",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["binomni razvoj", "deljivost", "kineska teorema o ostacima", "celobrojni eksponenti", "prebrojavanje"]
+}
+BRAINSPARK_META-->

@@ -1,0 +1,642 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Koliko clanova u razvoju (2^(1/6) + 8^(1/2))^2025 je racionalno?
+  Opcije: A) 337; B) 1; C) 1013; D) 338; E) 0. Tacan odgovor: E) 0.
+
+  POSTAVKA:
+  Opsti clan binomnog razvoja (a + b)^n za a = 2^(1/6), b = 8^(1/2) = (2^3)^(1/2) = 2^(3/2):
+    T_{k+1} = C(2025, k) a^(2025-k) b^k
+           = C(2025, k) * 2^((2025-k)/6) * 2^(3k/2)
+           = C(2025, k) * 2^((2025-k)/6 + 3k/2).
+
+  Eksponent dvojke (koeficijent C(2025,k) je uvek racionalan, zapravo ceo broj):
+    E(k) = (2025-k)/6 + 3k/2
+         = (2025 - k)/6 + 9k/6
+         = (2025 - k + 9k)/6
+         = (2025 + 8k)/6.
+
+  USLOV RACIONALNOSTI:
+  Clan je racionalan akko 2^E(k) je racionalan. Kako je 2 ceo broj > 0, 2^x je racionalan akko
+  x je ceo broj (>= 0 ili negativan — ali ovde je E(k) >= 0 za k >= 0 jer 2025 + 8k > 0).
+  Dakle uslov je: 6 | (2025 + 8k).
+
+  ANALIZA MOD 6:
+    2025 = 6 * 337 + 3, pa 2025 ≡ 3 (mod 6).
+    8 ≡ 2 (mod 6).
+    Zato: 2025 + 8k ≡ 3 + 2k (mod 6).
+    Uslov: 3 + 2k ≡ 0 (mod 6), tj. 2k ≡ -3 ≡ 3 (mod 6).
+
+  KLJUCNI UVID:
+  Leva strana 2k je uvek parna (u mod 6 ona je iz skupa {0, 2, 4}).
+  Desna strana 3 je neparna (u mod 6).
+  Parno = neparno je NEMOGUCE. Dakle kongruencija nema resenja.
+
+  Za k = 0, 1, ..., 2025 (2026 mogucih clanova), nijedan eksponent nije ceo broj,
+  pa NIJEDAN CLAN NIJE RACIONALAN. Odgovor je 0.
+
+  DODATNA PROVERA VREDNOSTIMA:
+  k = 0: E = 2025/6 = 337.5 — nije ceo.
+  k = 1: E = (2025+8)/6 = 2033/6 = 338.833... — nije ceo.
+  k = 2: E = (2025+16)/6 = 2041/6 ≈ 340.16 — nije ceo.
+  k = 3: E = (2025+24)/6 = 2049/6 = 341.5 — nije ceo.
+  k = 4: E = (2025+32)/6 = 2057/6 ≈ 342.83 — nije ceo.
+  k = 5: E = (2025+40)/6 = 2065/6 ≈ 344.16 — nije ceo.
+  k = 6: E = (2025+48)/6 = 2073/6 = 345.5 — nije ceo.
+  Uzorak se periodicno ponavlja sa periodom 3 u k (jer 8k mod 6 ima period 3: 0, 2, 4, 0, 2, 4, ...)
+  i eksponent je uvek 337 + neka necela vrednost iz {0.5, 0.833, 0.166}.
+
+  DRUGACIJI POGLED (periodicnost):
+    k mod 3 = 0:  8k ≡ 0 (mod 6) → 2025+8k ≡ 3 (mod 6) → ne deli.
+    k mod 3 = 1:  8k ≡ 2 (mod 6) → 2025+8k ≡ 5 (mod 6) → ne deli.
+    k mod 3 = 2:  8k ≡ 4 (mod 6) → 2025+8k ≡ 1 (mod 6) → ne deli.
+  Nijedan residuum ne daje 0, pa nijedan k ne radi. Odgovor: 0 clanova.
+
+  GRESKA KOJU MOZE NAPRAVITI STUDENT:
+  Ako bi student pisao 8 = 2^3 ali zaboravio "sqrt", onda b = 2^3 = 8, pa E(k) = (2025-k)/6 + 3k.
+  To daje (2025-k+18k)/6 = (2025+17k)/6. Ovo je drugaciji problem (imao bi resenja).
+  Ali zadatak ima sqrt(8), tj. 8^(1/2), pa je eksponent 3/2, ne 3.
+
+  VIZUELIZACIJE:
+  1. Staticki — slika binomnog razvoja sa isticanjem opsteg clana, eksponentom.
+  2. Tabela ostataka 2025 + 8k mod 6 za k = 0..5 — vidi se da nijedan nije 0.
+  3. Interaktivni slajder za k od 0 do 2025, prikazuje vrednost eksponenta (2025+8k)/6
+     i da li je ceo broj (sa crvenom/zelenom oznakom).
+
+  ZAKLJUCAK: 2k je uvek parno, 3 je neparno (mod 6), tako da ne postoji k koje zadovoljava
+  uslov. Broj racionalnih clanova je 0. Odgovor E.
+</script>
+
+<h1 data-card="problem-title">Broj racionalnih članova u binomnom razvoju</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra &mdash; binomna formula, stepeni, deljivost i kongruencije</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Broj članova u razvoju \( \left(\sqrt[6]{2} + \sqrt{8}\right)^{2025} \) koji su racionalni brojevi jednak je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 337 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 1013 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 338 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 0 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Napišemo opšti član binomnog razvoja i svedemo oba sabirka na stepene broja \( 2 \). Dobijamo \( 2^{(2025 + 8k)/6} \) pomnoženo binomnim koeficijentom, pa je član racionalan isključivo kada je eksponent ceo broj, odnosno kada je \( 6 \mid (2025 + 8k) \). Analizom kongruencije po modulu \( 6 \) pokazaćemo da ta deljivost nije moguća ni za jedno \( k \), jer parna strana \( 2k \) ne može biti jednaka neparnoj strani \( 3 \) po modulu \( 6 \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i ideje</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Binomna formula:</strong> \( (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^{k} \). Opšti član (član sa indeksom \( k+1 \)) je \( T_{k+1} = \binom{n}{k} a^{n-k} b^{k} \).</li>
+        <li><strong>Zakoni stepena:</strong> \( a^{p} \cdot a^{q} = a^{p+q} \), \( (a^{p})^{q} = a^{pq} \), \( \sqrt[m]{a} = a^{1/m} \).</li>
+        <li><strong>Kada je \( 2^{x} \) racionalan?</strong> Za bazu \( 2 \) (prost broj), \( 2^{x} \in \mathbb{Q} \) važi akko \( x \in \mathbb{Z} \). (Za svako necelobrojno \( x \), \( 2^{x} \) je iracionalan.)</li>
+        <li><strong>Kongruencija po modulu \( 6 \):</strong> \( 6 \mid N \iff N \equiv 0 \pmod{6} \). Ako je \( N = A + B \), onda \( N \equiv A \pmod{6} + B \pmod{6} \) (mod 6).</li>
+        <li><strong>Binomni koeficijent:</strong> \( \binom{n}{k} = \dfrac{n!}{k!(n-k)!} \) je uvek ceo (dakle racionalan) broj za \( 0 \le k \le n \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — struktura opšteg člana">
+  <h2>📐 Vizuelni prikaz &mdash; struktura opšteg člana</h2>
+  <div class="canvas-wrapper">
+    <canvas id="termStructureCanvas" width="720" height="460"></canvas>
+  </div>
+  <p class="canvas-caption">Opšti član razvoja \( (\sqrt[6]{2} + \sqrt{8})^{2025} \) nastaje kombinacijom binomnog koeficijenta, stepena od \( \sqrt[6]{2} = 2^{1/6} \) i stepena od \( \sqrt{8} = 2^{3/2} \). Kada pomnožimo sve faktore, eksponent dvojke je \( \dfrac{2025 - k}{6} + \dfrac{3k}{2} = \dfrac{2025 + 8k}{6} \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Interaktivni prikaz — ostaci eksponenta po modulu 6">
+  <h2>📐 Interaktivni prikaz &mdash; ostaci \( 2025 + 8k \pmod{6} \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="modGridCanvas" width="720" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Pomeraj klizač da vidiš vrednost \( k \), eksponent \( (2025 + 8k)/6 \) i njegov ostatak po modulu \( 6 \). Zelena oznaka bi se pojavila samo ako je ostatak \( 0 \) &mdash; ali za ovaj problem to se ne dešava ni za jedno \( k \).</p>
+  <div class="canvas-controls">
+    <label for="kSlider"><strong>\( k \)</strong>: <span id="kValueLabel">0</span></label>
+    <input type="range" id="kSlider" min="0" max="30" step="1" value="0" />
+  </div>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Napišemo opšti član binomnog razvoja</h3>
+      <p>Za razvoj \( (a + b)^{n} \) opšti član je \( T_{k+1} = \binom{n}{k} a^{n-k} b^{k} \). Kod nas je \( a = \sqrt[6]{2} \), \( b = \sqrt{8} \), \( n = 2025 \):</p>
+      <div class="math-block">\[ T_{k+1} \;=\; \binom{2025}{k} \left(\sqrt[6]{2}\right)^{2025-k} \left(\sqrt{8}\right)^{k}, \qquad k = 0, 1, 2, \ldots, 2025. \]</div>
+      <p>Ukupno ima \( 2026 \) sabiraka (za \( k \) od \( 0 \) do \( 2025 \)).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Svedemo baze na zajednički broj \( 2 \)</h3>
+      <p>Koristimo \( \sqrt[6]{2} = 2^{1/6} \) i \( \sqrt{8} = \sqrt{2^{3}} = 2^{3/2} \). Oba faktora su stepeni od \( 2 \), pa:</p>
+      <div class="math-block">\[ \left(\sqrt[6]{2}\right)^{2025-k} = 2^{(2025-k)/6}, \qquad \left(\sqrt{8}\right)^{k} = 2^{3k/2}. \]</div>
+      <p>Množenjem dva stepena iste baze sabiramo eksponente:</p>
+      <div class="math-block">\[ T_{k+1} \;=\; \binom{2025}{k} \cdot 2^{\,(2025-k)/6 \;+\; 3k/2}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( \sqrt{8} = 2^{3/2} \), a ne \( 2^{3} \)?</summary>
+          <div class="detail-content"><p>\( \sqrt{8} = 8^{1/2} = (2^{3})^{1/2} = 2^{3 \cdot (1/2)} = 2^{3/2} \). Kvadratni koren znači stepen \( 1/2 \) &mdash; ne uklanja stepen \( 3 \), već ga smanjuje na pola.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Sredimo eksponent dvojke</h3>
+      <p>Saberemo razlomke koji čine eksponent (zajednički imenilac \( 6 \)):</p>
+      <div class="math-block">\[ \frac{2025 - k}{6} + \frac{3k}{2} = \frac{2025 - k}{6} + \frac{9k}{6} = \frac{2025 - k + 9k}{6} = \frac{2025 + 8k}{6}. \]</div>
+      <p>Dakle:</p>
+      <div class="math-block">\[ T_{k+1} \;=\; \binom{2025}{k} \cdot 2^{\,(2025 + 8k)/6}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Uslov racionalnosti člana</h3>
+      <p>Binomni koeficijent \( \binom{2025}{k} \) je ceo broj, pa je <em>racionalan</em>. Proizvod \( T_{k+1} \) je racionalan <strong>akko</strong> je \( 2^{(2025 + 8k)/6} \) racionalan.</p>
+      <p>Budući da je \( 2 \) prost broj, \( 2^{x} \in \mathbb{Q} \) važi tačno kada je \( x \in \mathbb{Z} \). Znači treba da važi:</p>
+      <div class="math-block">\[ \frac{2025 + 8k}{6} \in \mathbb{Z} \quad\Longleftrightarrow\quad 6 \mid (2025 + 8k). \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto iz \( 2^{x} \in \mathbb{Q} \) sledi \( x \in \mathbb{Z} \)?</summary>
+          <div class="detail-content"><p>Ako je \( x = p/q \) u najkraćem obliku i \( q \neq 1 \), onda je \( 2^{x} = \sqrt[q]{2^{p}} \). Pošto \( 2 \) nema racionalan \( q \)-ti koren za \( q \ge 2 \) (klasičan rezultat &mdash; kao iracionalnost od \( \sqrt{2} \)), \( 2^{x} \) je iracionalan. Dakle mora biti \( q = 1 \), tj. \( x \) je ceo broj.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Kongruencija po modulu \( 6 \)</h3>
+      <p>Izračunajmo \( 2025 + 8k \pmod{6} \). Najpre, \( 2025 = 6 \cdot 337 + 3 \), pa \( 2025 \equiv 3 \pmod{6} \). Takođe \( 8 \equiv 2 \pmod{6} \). Zato:</p>
+      <div class="math-block">\[ 2025 + 8k \;\equiv\; 3 + 2k \pmod{6}. \]</div>
+      <p>Uslov \( 6 \mid (2025 + 8k) \) postaje:</p>
+      <div class="math-block">\[ 3 + 2k \equiv 0 \pmod{6} \quad\Longleftrightarrow\quad 2k \equiv -3 \equiv 3 \pmod{6}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Dokažemo da kongruencija nema rešenja</h3>
+      <p>Pogledajmo koje vrednosti \( 2k \pmod{6} \) može uzeti. Za \( k = 0, 1, 2, 3, 4, 5 \) (dovoljno je zbog periodičnosti) dobijamo redom:</p>
+      <div class="math-block">\[ 2k \bmod 6 \;\in\; \{0, 2, 4, 0, 2, 4\} \;=\; \{0, 2, 4\}. \]</div>
+      <p>Sve moguće vrednosti leve strane su <strong>parne</strong>. Međutim \( 3 \) je <strong>neparan</strong> ostatak. Zato \( 2k \equiv 3 \pmod{6} \) nema rešenja &mdash; ni za koje nenegativno celo \( k \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je dovoljno proveriti \( k = 0, 1, \ldots, 5 \)?</summary>
+          <div class="detail-content"><p>Funkcija \( k \mapsto 2k \bmod 6 \) ima period \( 3 \) (jer \( 2(k+3) = 2k + 6 \equiv 2k \pmod{6} \)). Dakle sva ostala \( k \) ponavljaju istih \( 3 \) ostatka: \( \{0, 2, 4\} \). Nijedan nije \( 3 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="7">
+    <div class="step-badge">7</div>
+    <div class="step-content">
+      <h3 class="step-title">Zaključak o broju racionalnih članova</h3>
+      <p>Nijedno \( k \in \{0, 1, \ldots, 2025\} \) ne zadovoljava uslov \( 6 \mid (2025 + 8k) \). Prema tome, <strong>nijedan</strong> član razvoja \( \bigl(\sqrt[6]{2} + \sqrt{8}\bigr)^{2025} \) nije racionalan broj.</p>
+      <div class="math-block">\[ \#\{ \text{racionalnih članova} \} \;=\; 0. \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kada zberemo dva &bdquo;korena&ldquo; iste baze (\( 2^{1/6} \) i \( 2^{3/2} \)), oba završe kao stepeni broja \( 2 \) &mdash; pa se cela priča svodi na <em>jedan racionalni broj</em>: eksponent \( (2025 + 8k)/6 \). Pitanje racionalnosti člana postaje pitanje <strong>deljivosti</strong>. Trik je u <strong>paritetu</strong>: \( 2k \) je uvek paran ostatak (mod 6), a potrebno je \( 3 \) &mdash; neparan. Nemogućnost jednog nivoa (parnost) odmah ubija sve instance &mdash; bez ikakve eksplicitne pretrage. To je elegantna primena mod-aritmetike na binomni razvoj.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \text{Broj racionalnih članova} \;=\; 0. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 337 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 1 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 1013 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 338 \)</span>
+    <span class="answer-option correct" data-option="E">(E) \( 0 \)</span>
+  </div>
+  <p class="verification">Provera za prvih nekoliko \( k \): \( k = 0 \Rightarrow (2025)/6 = 337{,}5 \); \( k = 1 \Rightarrow 2033/6 = 338{,}833\ldots \); \( k = 2 \Rightarrow 2041/6 = 340{,}166\ldots \); \( k = 3 \Rightarrow 2049/6 = 341{,}5 \). Nijedna vrednost nije ceo broj &mdash; ostaci po modulu \( 6 \) su redom \( 3, 5, 1, 3, 5, 1, \ldots \) (period \( 3 \)), pa se \( 0 \) nikad ne pojavljuje. ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešno tumačenje \( \sqrt{8} \):</strong> ako napišemo \( \sqrt{8} = 2^{3} \) (zaboravljajući kvadratni koren), eksponent postaje \( (2025 + 17k)/6 \) i tada bi bilo oko \( 338 \) racionalnih članova &mdash; što je opcija \( (\mathrm{D}) \), verovatna &bdquo;zamka&ldquo;. Ispravno: \( \sqrt{8} = 2^{3/2} \).</li>
+    <li><strong>Brzopleto \( 2025/6 = 337{,}5 \Rightarrow 337 \) ili \( 338 \):</strong> to je broj <em>punih</em> šestica u \( 2025 \), ali nema veze sa brojem racionalnih članova. Opcije \( (\mathrm{A}) \) i \( (\mathrm{D}) \) su tu tačno zbog ove greške.</li>
+    <li><strong>Zaboraviti da je \( 2^{1/6} \) iracionalan:</strong> ako student pretpostavi da je svaki član automatski racionalan (pa tako svih \( 2026 \)), neće shvatiti da baš eksponent mora biti ceo broj.</li>
+    <li><strong>Mešanje &bdquo;broja članova&ldquo; i &bdquo;indeksa \( k \)&ldquo;:</strong> \( k \) ide od \( 0 \) do \( 2025 \), tj. ukupno \( 2026 \) članova (a ne \( 2025 \)). Za ovaj zadatak rezultat je svejedno \( 0 \), ali razlika je važna u srodnim zadacima.</li>
+    <li><strong>Pogrešna kongruencija \( 8k \equiv 2k \pmod{6} \) nije uvek tačna kod drugih modula:</strong> ovde je koristimo jer \( 8 - 2 = 6 \). Ne generalizovati automatski na druge module.</li>
+    <li><strong>Preskakanje parnosti:</strong> mnogi studenti pokušaju da reše \( 2k \equiv 3 \pmod{6} \) množenjem inverza, ali \( \gcd(2, 6) = 2 \neq 1 \) &mdash; \( 2 \) nema inverz u \( \mathbb{Z}_{6} \). Pravilna provera je uslov \( \gcd(2,6) \mid 3 \), tj. \( 2 \mid 3 \), što nije tačno &mdash; pa nema rešenja.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Razmisli: koliko članova je racionalno u razvoju \( \bigl(\sqrt[3]{2} + \sqrt{8}\bigr)^{2025} \)? (Dakle, promenili smo \( \sqrt[6]{2} \) u \( \sqrt[3]{2} = 2^{1/3} \).) Kako se menja eksponent i odgovor?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Sada je \( T_{k+1} = \binom{2025}{k} 2^{(2025-k)/3 + 3k/2} = \binom{2025}{k} 2^{(2(2025-k) + 9k)/6} = \binom{2025}{k} 2^{(4050 + 7k)/6} \). Uslov: \( 6 \mid 4050 + 7k \). Pošto \( 4050 = 6 \cdot 675 \), \( 4050 \equiv 0 \pmod{6} \), i \( 7 \equiv 1 \pmod{6} \). Treba \( k \equiv 0 \pmod{6} \). Broj takvih \( k \) u \( \{0, 1, \ldots, 2025\} \) je \( \lfloor 2025/6 \rfloor + 1 = 337 + 1 = 338 \). (Zanimljivo &mdash; opcija \( (\mathrm{D}) \) u originalnom zadatku!)</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  function roundRect(c, x, y, w, h, r) {
+    c.beginPath();
+    c.moveTo(x + r, y);
+    c.lineTo(x + w - r, y);
+    c.quadraticCurveTo(x + w, y, x + w, y + r);
+    c.lineTo(x + w, y + h - r);
+    c.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    c.lineTo(x + r, y + h);
+    c.quadraticCurveTo(x, y + h, x, y + h - r);
+    c.lineTo(x, y + r);
+    c.quadraticCurveTo(x, y, x + r, y);
+    c.closePath();
+  }
+
+  // ===== CANVAS 1: Structure of general term =====
+  var canvas1 = document.getElementById('termStructureCanvas');
+  if (canvas1) {
+    var ctx1 = canvas1.getContext('2d');
+    var W1 = canvas1.width, H1 = canvas1.height;
+
+    function draw1() {
+      var bg = cv('--sol-canvas-bg');
+      var primary = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text = cv('--sol-canvas-text');
+      var muted = cv('--sol-canvas-muted');
+      var tertiary = cv('--sol-canvas-tertiary');
+      var warning = cv('--sol-canvas-warning');
+
+      ctx1.clearRect(0, 0, W1, H1);
+      ctx1.fillStyle = bg;
+      ctx1.fillRect(0, 0, W1, H1);
+
+      // Title
+      ctx1.fillStyle = text;
+      ctx1.font = 'bold 17px Inter, Segoe UI, system-ui, sans-serif';
+      ctx1.textAlign = 'center';
+      ctx1.textBaseline = 'alphabetic';
+      ctx1.fillText('Opsti clan binomnog razvoja', W1 / 2, 34);
+
+      // Three colored boxes: binomial coef | (2^{1/6})^{2025-k} | (2^{3/2})^k
+      var boxY = 80;
+      var boxH = 100;
+      var gap = 18;
+      var boxW = (W1 - 60 - 2 * gap) / 3;
+      var x0 = 30;
+
+      // Box 1: binomial coefficient
+      ctx1.fillStyle = cvAlpha('--sol-canvas-primary', 0.14);
+      roundRect(ctx1, x0, boxY, boxW, boxH, 12);
+      ctx1.fill();
+      ctx1.strokeStyle = primary;
+      ctx1.lineWidth = 2;
+      roundRect(ctx1, x0, boxY, boxW, boxH, 12);
+      ctx1.stroke();
+
+      ctx1.fillStyle = primary;
+      ctx1.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx1.textAlign = 'center';
+      ctx1.fillText('binomni koef.', x0 + boxW / 2, boxY + 22);
+      ctx1.fillStyle = text;
+      ctx1.font = 'bold 26px serif';
+      ctx1.fillText('C(2025, k)', x0 + boxW / 2, boxY + 62);
+      ctx1.font = '12px Inter, system-ui, sans-serif';
+      ctx1.fillStyle = muted;
+      ctx1.fillText('ceo broj (racionalan)', x0 + boxW / 2, boxY + 88);
+
+      // Box 2: 2^{1/6} raised to (2025-k)
+      var x1 = x0 + boxW + gap;
+      ctx1.fillStyle = cvAlpha('--sol-canvas-secondary', 0.14);
+      roundRect(ctx1, x1, boxY, boxW, boxH, 12);
+      ctx1.fill();
+      ctx1.strokeStyle = secondary;
+      roundRect(ctx1, x1, boxY, boxW, boxH, 12);
+      ctx1.stroke();
+
+      ctx1.fillStyle = secondary;
+      ctx1.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx1.fillText('prvi sabirak ^ (2025-k)', x1 + boxW / 2, boxY + 22);
+      ctx1.fillStyle = text;
+      ctx1.font = 'bold 22px serif';
+      ctx1.fillText('(2^(1/6))^(2025-k)', x1 + boxW / 2, boxY + 56);
+      ctx1.font = 'bold 16px serif';
+      ctx1.fillStyle = secondary;
+      ctx1.fillText('= 2^((2025-k)/6)', x1 + boxW / 2, boxY + 85);
+
+      // Box 3: 2^{3/2} raised to k
+      var x2 = x1 + boxW + gap;
+      ctx1.fillStyle = cvAlpha('--sol-canvas-highlight', 0.14);
+      roundRect(ctx1, x2, boxY, boxW, boxH, 12);
+      ctx1.fill();
+      ctx1.strokeStyle = highlight;
+      roundRect(ctx1, x2, boxY, boxW, boxH, 12);
+      ctx1.stroke();
+
+      ctx1.fillStyle = highlight;
+      ctx1.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx1.fillText('drugi sabirak ^ k', x2 + boxW / 2, boxY + 22);
+      ctx1.fillStyle = text;
+      ctx1.font = 'bold 22px serif';
+      ctx1.fillText('(2^(3/2))^k', x2 + boxW / 2, boxY + 56);
+      ctx1.font = 'bold 16px serif';
+      ctx1.fillStyle = highlight;
+      ctx1.fillText('= 2^(3k/2)', x2 + boxW / 2, boxY + 85);
+
+      // Multiplication signs between boxes
+      ctx1.fillStyle = muted;
+      ctx1.font = 'bold 28px serif';
+      ctx1.fillText('×', x0 + boxW + gap / 2, boxY + 56);
+      ctx1.fillText('×', x1 + boxW + gap / 2, boxY + 56);
+
+      // Arrow down
+      var arrY1 = boxY + boxH + 12;
+      var arrY2 = arrY1 + 30;
+      ctx1.strokeStyle = accent;
+      ctx1.lineWidth = 2.5;
+      ctx1.beginPath();
+      ctx1.moveTo(W1 / 2, arrY1);
+      ctx1.lineTo(W1 / 2, arrY2);
+      ctx1.stroke();
+      ctx1.fillStyle = accent;
+      ctx1.beginPath();
+      ctx1.moveTo(W1 / 2, arrY2 + 8);
+      ctx1.lineTo(W1 / 2 - 7, arrY2);
+      ctx1.lineTo(W1 / 2 + 7, arrY2);
+      ctx1.closePath();
+      ctx1.fill();
+
+      // Result box: combined exponent
+      var resY = arrY2 + 22;
+      var resH = 90;
+      var resX = 60;
+      var resW = W1 - 120;
+      ctx1.fillStyle = cvAlpha('--sol-canvas-accent', 0.12);
+      roundRect(ctx1, resX, resY, resW, resH, 12);
+      ctx1.fill();
+      ctx1.strokeStyle = accent;
+      ctx1.lineWidth = 2;
+      roundRect(ctx1, resX, resY, resW, resH, 12);
+      ctx1.stroke();
+
+      ctx1.fillStyle = accent;
+      ctx1.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx1.textAlign = 'center';
+      ctx1.fillText('opsti clan posle sredjivanja eksponenata:', W1 / 2, resY + 22);
+
+      ctx1.fillStyle = text;
+      ctx1.font = 'bold 22px serif';
+      ctx1.fillText('T(k+1) = C(2025, k) · 2^((2025 + 8k) / 6)', W1 / 2, resY + 60);
+
+      ctx1.fillStyle = muted;
+      ctx1.font = '13px Inter, system-ui, sans-serif';
+      ctx1.fillText('racionalan akko  (2025 + 8k) / 6  je ceo broj', W1 / 2, resY + 82);
+
+      // Bottom footer hint
+      ctx1.fillStyle = warning;
+      ctx1.font = 'italic 13px Inter, system-ui, sans-serif';
+      ctx1.textAlign = 'center';
+      ctx1.fillText('▶ uslov se svodi na: 6 | (2025 + 8k)', W1 / 2, H1 - 18);
+    }
+
+    draw1();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() { styles = getComputedStyle(root); draw1(); }, 50);
+      }
+    });
+  }
+
+  // ===== CANVAS 2: Interactive mod-6 grid =====
+  var canvas2 = document.getElementById('modGridCanvas');
+  var slider = document.getElementById('kSlider');
+  var kLabel = document.getElementById('kValueLabel');
+
+  if (canvas2 && slider) {
+    var ctx2 = canvas2.getContext('2d');
+    var W2 = canvas2.width, H2 = canvas2.height;
+
+    function draw2(kVal) {
+      var bg = cv('--sol-canvas-bg');
+      var grid = cv('--sol-canvas-grid');
+      var axis = cv('--sol-canvas-axis');
+      var primary = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text = cv('--sol-canvas-text');
+      var muted = cv('--sol-canvas-muted');
+      var danger = cv('--sol-canvas-danger');
+      var warning = cv('--sol-canvas-warning');
+
+      ctx2.clearRect(0, 0, W2, H2);
+      ctx2.fillStyle = bg;
+      ctx2.fillRect(0, 0, W2, H2);
+
+      // Title
+      ctx2.fillStyle = text;
+      ctx2.font = 'bold 17px Inter, Segoe UI, system-ui, sans-serif';
+      ctx2.textAlign = 'center';
+      ctx2.textBaseline = 'alphabetic';
+      ctx2.fillText('Ostaci (2025 + 8k) mod 6 za k = 0, 1, 2, ...', W2 / 2, 32);
+
+      // Grid of cells
+      var rows = 5;   // 0..4
+      var cols = 6;   // k = 0..5 each row
+      var cellW = 90;
+      var cellH = 54;
+      var totalW = cellW * cols + 80; // +80 for row labels
+      var gridX = (W2 - totalW) / 2 + 80;
+      var gridY = 60;
+
+      // Row label: k
+      ctx2.fillStyle = muted;
+      ctx2.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx2.textAlign = 'right';
+      ctx2.fillText('k:', gridX - 12, gridY + 18);
+      ctx2.fillText('eksponent:', gridX - 12, gridY + 42);
+
+      // Header row (k values)
+      ctx2.textAlign = 'center';
+      ctx2.fillStyle = text;
+      ctx2.font = 'bold 14px Inter, system-ui, sans-serif';
+
+      // Show k = 0..5 in a single row, then k = 6..11 below, etc.
+      // Actually: show 5 rows of 6, covering k = 0..29
+      // Focus: periodicity mod 3 in exponent residues.
+
+      for (var r = 0; r < rows; r++) {
+        for (var c = 0; c < cols; c++) {
+          var k = r * cols + c;
+          if (k > 29) continue;
+          var cellX = gridX + c * cellW;
+          var cellY = gridY + r * cellH;
+
+          var residue = (2025 + 8 * k) % 6;
+          var isZero = residue === 0;
+          var isHighlighted = k === kVal;
+
+          // Cell background
+          var bgColor = isZero
+            ? cvAlpha('--sol-canvas-accent', 0.20)
+            : cvAlpha('--sol-canvas-danger', 0.08);
+          if (isHighlighted) {
+            bgColor = cvAlpha('--sol-canvas-highlight', 0.25);
+          }
+          ctx2.fillStyle = bgColor;
+          roundRect(ctx2, cellX + 2, cellY + 2, cellW - 4, cellH - 4, 6);
+          ctx2.fill();
+
+          // Cell border
+          ctx2.strokeStyle = isHighlighted ? highlight : (isZero ? accent : grid);
+          ctx2.lineWidth = isHighlighted ? 3 : 1;
+          roundRect(ctx2, cellX + 2, cellY + 2, cellW - 4, cellH - 4, 6);
+          ctx2.stroke();
+
+          // k label on top
+          ctx2.fillStyle = muted;
+          ctx2.font = '11px Inter, system-ui, sans-serif';
+          ctx2.textAlign = 'center';
+          ctx2.fillText('k = ' + k, cellX + cellW / 2, cellY + 14);
+
+          // Residue in middle
+          ctx2.fillStyle = isZero ? accent : danger;
+          ctx2.font = 'bold 20px Inter, system-ui, sans-serif';
+          ctx2.fillText('≡ ' + residue, cellX + cellW / 2, cellY + 38);
+        }
+      }
+
+      // Readout box (bottom)
+      var rbX = 50;
+      var rbY = gridY + rows * cellH + 30;
+      var rbW = W2 - 100;
+      var rbH = 130;
+
+      ctx2.fillStyle = cvAlpha('--sol-canvas-primary', 0.08);
+      roundRect(ctx2, rbX, rbY, rbW, rbH, 12);
+      ctx2.fill();
+      ctx2.strokeStyle = primary;
+      ctx2.lineWidth = 2;
+      roundRect(ctx2, rbX, rbY, rbW, rbH, 12);
+      ctx2.stroke();
+
+      var expVal = (2025 + 8 * kVal) / 6;
+      var expResidue = (2025 + 8 * kVal) % 6;
+      var isInt = expResidue === 0;
+
+      ctx2.textAlign = 'left';
+      ctx2.fillStyle = primary;
+      ctx2.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx2.fillText('Trenutno stanje (k = ' + kVal + '):', rbX + 20, rbY + 26);
+
+      ctx2.fillStyle = text;
+      ctx2.font = 'bold 16px serif';
+      ctx2.fillText('eksponent  (2025 + 8·' + kVal + ') / 6  =  ' + (2025 + 8 * kVal) + ' / 6  =  ' + expVal.toFixed(4), rbX + 20, rbY + 56);
+
+      ctx2.fillStyle = text;
+      ctx2.font = '14px Inter, system-ui, sans-serif';
+      ctx2.fillText('ostatak po modulu 6:  ' + expResidue, rbX + 20, rbY + 82);
+
+      ctx2.fillStyle = isInt ? accent : danger;
+      ctx2.font = 'bold 15px Inter, system-ui, sans-serif';
+      ctx2.fillText(isInt
+        ? '✓ eksponent je ceo broj — clan je racionalan'
+        : '✗ eksponent nije ceo broj — clan je iracionalan',
+        rbX + 20, rbY + 108);
+
+      // Legend at top-right
+      ctx2.textAlign = 'left';
+      ctx2.font = '11px Inter, system-ui, sans-serif';
+      ctx2.fillStyle = muted;
+      var legX = W2 - 210;
+      var legY = gridY + 4;
+      ctx2.fillStyle = cvAlpha('--sol-canvas-danger', 0.08);
+      ctx2.fillRect(legX, legY, 14, 14);
+      ctx2.fillStyle = danger;
+      ctx2.fillText('ostatak ≠ 0  (iracionalan)', legX + 20, legY + 11);
+      ctx2.fillStyle = cvAlpha('--sol-canvas-accent', 0.20);
+      ctx2.fillRect(legX, legY + 20, 14, 14);
+      ctx2.fillStyle = accent;
+      ctx2.fillText('ostatak = 0  (racionalan)', legX + 20, legY + 31);
+    }
+
+    var currentK = 0;
+    draw2(currentK);
+
+    slider.addEventListener('input', function() {
+      currentK = parseInt(slider.value, 10);
+      if (kLabel) kLabel.textContent = currentK;
+      draw2(currentK);
+    });
+
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() { styles = getComputedStyle(root); draw2(currentK); }, 50);
+      }
+    });
+  }
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Broj racionalnih članova u razvoju (∛∛2 + √8)^2025",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["binomna formula", "stepeni", "kongruencije", "deljivost", "iracionalni brojevi"]
+}
+BRAINSPARK_META-->

@@ -1,0 +1,377 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Problem: Koliko ima brojeva između 1000 i 4000 koji se završavaju sa 4 ili 5?
+
+Interpretacija "između": celi brojevi N sa 1000 < N < 4000, dakle N ∈ {1001, 1002, ..., 3999}.
+Ukupno celih brojeva u tom opsegu: 3999 - 1001 + 1 = 2999. (Nije potrebno za rešenje, ali je korisna provera.)
+
+Strategija 1 — prebrojavanje po poslednjoj cifri:
+
+Brojevi koji se završavaju sa 4:
+1004, 1014, 1024, ..., 3994.
+Ovo je aritmetička progresija sa a_1 = 1004, d = 10, a_n = 3994.
+n = (3994 - 1004)/10 + 1 = 2990/10 + 1 = 299 + 1 = 300.
+
+Brojevi koji se završavaju sa 5:
+1005, 1015, 1025, ..., 3995.
+n = (3995 - 1005)/10 + 1 = 2990/10 + 1 = 300.
+
+Ukupno: 300 + 300 = 600.
+
+Strategija 2 — brojanje po dekadama:
+
+Celi brojevi od 1000 do 3999 (uključujući 1000 — jer se "između" odnosi samo na početak i kraj, provera ispod):
+U svakih 10 uzastopnih celih brojeva (dekadi) koja počinju sa ...0, tačno su 2 završena sa 4 ili 5 (jedan sa 4, jedan sa 5).
+Dekade su: 1000–1009, 1010–1019, ..., 3990–3999. To su dekade od 100k do 100k+9 za neka k? Ne — dekade su od 10k do 10k+9 za k = 100, 101, ..., 399. Dakle 300 dekada.
+Svaka dekada daje 2 broja, ukupno 300 * 2 = 600.
+
+Napomena o intervalima:
+- Strogo između (1000, 4000): ne uključuje 1000 i 4000. Ali ni 1000 se ne završava sa 4 ili 5, niti 4000, pa različite interpretacije daju isti rezultat.
+- Uključujući jedan kraj ili oba: 3990–3999 je potpuna dekada unutar, i 3994, 3995 su uvek unutra.
+
+Odgovor: 600. Opcija (A).
+
+Provera preko unije skupova nije potrebna jer su skupovi disjunktni (broj ne može imati dve poslednje cifre istovremeno).
+
+Opcije:
+(A) 600 — tačno.
+(B) 800 — pogrešno; možda bi se dobilo ako bi se brojalo 3 cifre (npr. završava sa 4, 5, 6).
+(C) 700 — pogrešno.
+
+Za vizuelizaciju: 3x3 rešetka od tri uzastopne dekade pokazuje obrazac: u svakom redu tačno dva obojena polja (4 i 5).
+</script>
+
+<h1 data-card="problem-title">Prebrojavanje brojeva po poslednjoj cifri</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika — brojanje u intervalu</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Koliko ima brojeva između \( 1000 \) i \( 4000 \) koji se završavaju sa \( 4 \) ili \( 5 \)?</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 600 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 800 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 700 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Posmatramo brojeve po dekadama \( 10k,\ 10k+1,\ \dots,\ 10k+9 \): u svakoj dekadi su tačno dva broja koja se završavaju sa \( 4 \) ili \( 5 \). Izbrojimo koliko ima dekada u intervalu \( (1000, 4000) \) i pomnožimo sa \( 2 \). Alternativno: tretiramo dve aritmetičke progresije (cifra \( 4 \) i cifra \( 5 \)) odvojeno i zbrajamo.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Broj članova aritmetičke progresije</span> \( a_1, a_2, \dots, a_n \) sa razlikom \( d \): \( n = \dfrac{a_n - a_1}{d} + 1 \).</li>
+        <li><span class="formula-label">Princip sabiranja</span> ako su \( A \) i \( B \) disjunktni skupovi, onda \( |A \cup B| = |A| + |B| \).</li>
+        <li>Poslednja cifra broja \( N \) je ostatak pri deljenju sa \( 10 \): \( N \bmod 10 \).</li>
+        <li>Broj celih iz intervala \( [a, b] \) je \( b - a + 1 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="720" height="540"></canvas>
+  </div>
+  <p class="canvas-caption">Tri uzastopne dekade (blokovi od po \( 10 \) uzastopnih brojeva) kao primer: u svakoj dekadi se <em>tačno dva</em> broja završavaju sa \( 4 \) ili \( 5 \) (obojena polja). U intervalu od \( 1001 \) do \( 3999 \) ima \( 300 \) dekada, pa je ukupno \( 300 \cdot 2 = 600 \) traženih brojeva.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Preciziramo interval</h3>
+      <p>Izraz "između \( 1000 \) i \( 4000 \)" shvatamo strogo: tražimo cele brojeve \( N \) sa</p>
+      <div class="math-block">\[ 1000 < N < 4000, \quad \text{tj.}\ N \in \{1001,\, 1002,\, \dots,\, 3999\}. \]</div>
+      <p>Napomena: ni \( 1000 \), ni \( 4000 \) se ne završavaju sa \( 4 \) ili \( 5 \), pa se rezultat ne menja ako bismo uzeli zatvoren interval.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Brojimo brojeve koji se završavaju sa 4</h3>
+      <p>Traženi brojevi formiraju aritmetičku progresiju:</p>
+      <div class="math-block">\[ 1004,\ 1014,\ 1024,\ \dots,\ 3994 \]</div>
+      <p>sa prvim članom \( a_1 = 1004 \), razlikom \( d = 10 \) i poslednjim \( a_n = 3994 \). Primenjujemo formulu \( n = \dfrac{a_n - a_1}{d} + 1 \):</p>
+      <div class="math-block">\[ n_4 = \frac{3994 - 1004}{10} + 1 = \frac{2990}{10} + 1 = 299 + 1 = 300 \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto "\( +1 \)"?</summary>
+          <div class="detail-content"><p>Zato što brojimo i prvi i poslednji član. Npr. od \( 1 \) do \( 3 \) sa razlikom \( 1 \) imamo tri broja, ne dva: \( (3-1)/1 + 1 = 3 \). Bez "\( +1 \)" gubimo jedan član.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Brojimo brojeve koji se završavaju sa 5</h3>
+      <p>Potpuno isti postupak:</p>
+      <div class="math-block">\[ 1005,\ 1015,\ 1025,\ \dots,\ 3995 \]</div>
+      <div class="math-block">\[ n_5 = \frac{3995 - 1005}{10} + 1 = \frac{2990}{10} + 1 = 300 \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Sabiramo disjunktne slučajeve</h3>
+      <p>Nijedan broj nema istovremeno dve različite poslednje cifre, pa su skupovi disjunktni. Po principu sabiranja:</p>
+      <div class="math-block">\[ n = n_4 + n_5 = 300 + 300 = 600 \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto nema dvostrukog brojanja?</summary>
+          <div class="detail-content"><p>Broj se ne može istovremeno završavati i sa \( 4 \) i sa \( 5 \) — poslednja cifra je jedinstvena. Zato je presek skupova prazan i <em>ne</em> primenjujemo uključivanje–isključivanje, već prosto sabiramo.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Alternativno: brojanje po dekadama (sanity check)</h3>
+      <p>U svakoj dekadi \( \{10k,\ 10k{+}1,\ \dots,\ 10k{+}9\} \) postoje tačno \( 2 \) broja koji se završavaju sa \( 4 \) ili \( 5 \) — to su \( 10k{+}4 \) i \( 10k{+}5 \). U našem intervalu dekade su:</p>
+      <div class="math-block">\[ \{1000,\dots,1009\},\ \{1010,\dots,1019\},\ \dots,\ \{3990,\dots,3999\} \]</div>
+      <p>Njihov broj: \( k \) ide od \( 100 \) do \( 399 \), ukupno \( 300 \) dekada. Otud:</p>
+      <div class="math-block">\[ n = 300 \cdot 2 = 600 \ \checkmark \]</div>
+      <p>Dve nezavisne metode daju isti rezultat.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kada nas pitaju koliko brojeva u nekom opsegu zadovoljava uslov na poslednjoj cifri, najbrži pristup je <em>razmišljati po dekadama</em>. U svakoj dekadi od \( 10 \) uzastopnih celih brojeva, tačno jedan se završava svakom od cifara \( 0, 1, \dots, 9 \). Otud: \( (\text{broj dekada}) \cdot (\text{broj povoljnih cifara}) \). Ovo obrazloženje je i brže i manje podložno greškama nego formule za progresije.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ n = 600 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 600 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 800 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 700 \)</span>
+  </div>
+  <p class="verification">Provera: \( 300 \) dekada u intervalu \( (1000, 4000) \), u svakoj dekadi \( 2 \) povoljna broja, ukupno \( 300 \cdot 2 = 600 \). Nezavisno, zbir dve aritmetičke progresije: \( 300 + 300 = 600 \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Zaboravljanje da se doda \( +1 \) u formuli \( n = (a_n - a_1)/d + 1 \): tako se \( 299 \) greškom vidi kao rezultat za svaku od progresija, pa se dobije \( 598 \) umesto \( 600 \).</li>
+    <li>Pogrešna interpretacija "između": ako se smatra da \( 4000 \) ne smemo, ni mnogi pretpostavljaju da ni \( 1000 \) ne smemo; ovde to ne utiče jer granice \( 1000 \) i \( 4000 \) nisu povoljne.</li>
+    <li>Dvostruko brojanje: pokušaj da se primeni uključivanje–isključivanje iako su slučajevi "završava sa \( 4 \)" i "završava sa \( 5 \)" disjunktni (presek je prazan).</li>
+    <li>Mešanje "dve cifre" i "dve mogućnosti": \( 800 \) se može dobiti ako se greškom broje tri cifre (npr. \( 4, 5, 6 \)).</li>
+    <li>Pokušaj direktnog brojanja od \( 1000 \) do \( 4000 \) bez prepoznavanja strukture po dekadama — spor put i sklon greškama.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koliko ima brojeva u intervalu \( (1000, 4000) \) koji se završavaju cifrom \( 0 \) ili \( 5 \) (tj. deljivi su sa \( 5 \))? A koliko je onih koji se istovremeno završavaju ciframa \( 4 \) ili \( 5 \) <em>i</em> čiji je zbir cifara paran?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Prva stavka: u svakoj dekadi tačno \( 2 \) broja su deljiva sa \( 5 \) (oni sa poslednjom cifrom \( 0 \) ili \( 5 \)), pa je odgovor opet \( 300 \cdot 2 = 600 \). Druga stavka zahteva dodatnu analizu: za brojeve oblika \( \overline{abc4} \) zbir cifara je \( a + b + c + 4 \), pa je paran akko je \( a + b + c \) paran; za \( \overline{abc5} \), zbir je \( a + b + c + 5 \), pa je paran akko je \( a + b + c \) neparan. Ukupno, u svakom četvorocifrenom bloku sa fiksnom poslednjom cifrom tačno polovina slučajeva zadovoljava paritet, pa je odgovor \( 600 / 2 = 300 \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+    var secondary = cv('--sol-canvas-secondary');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 18px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Tri uzastopne dekade — obrazac brojanja', canvas.width / 2, 32);
+    ctx.fillStyle = muted;
+    ctx.font = '13px Inter, system-ui';
+    ctx.fillText('u svakoj dekadi tačno 2 broja se završavaju sa 4 ili 5', canvas.width / 2, 54);
+
+    // Parameters for the decade grid
+    var rows = 3;          // three decades
+    var cols = 10;         // ten numbers per decade
+    var padL = 55, padR = 40, padTop = 90;
+    var gridW = canvas.width - padL - padR;
+    var cellW = gridW / cols;
+    var cellH = 54;
+    var gap = 14;
+
+    // Three sample decades near the start and end of the range
+    var decadeBases = [1000, 1010, 3990];
+    var decadeLabels = [
+      'Dekada: 1000 – 1009',
+      'Dekada: 1010 – 1019',
+      'Dekada: 3990 – 3999 (poslednja)'
+    ];
+
+    for (var rrow = 0; rrow < rows; rrow++) {
+      var yTop = padTop + rrow * (cellH + gap + 24);
+
+      // Row label
+      ctx.fillStyle = text;
+      ctx.font = 'bold 13px Inter, system-ui';
+      ctx.textAlign = 'left';
+      ctx.fillText(decadeLabels[rrow], padL, yTop - 8);
+
+      for (var c = 0; c < cols; c++) {
+        var x0 = padL + c * cellW;
+        var y0 = yTop;
+        var num = decadeBases[rrow] + c;
+        var lastDigit = num % 10;
+        var highlighted = (lastDigit === 4 || lastDigit === 5);
+
+        // Cell background
+        if (highlighted) {
+          ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.25);
+        } else {
+          ctx.fillStyle = cvAlpha('--sol-canvas-muted', 0.08);
+        }
+        ctx.fillRect(x0 + 2, y0, cellW - 4, cellH);
+
+        // Border
+        ctx.strokeStyle = highlighted ? accent : cvAlpha('--sol-canvas-muted', 0.45);
+        ctx.lineWidth = highlighted ? 2.2 : 1;
+        ctx.strokeRect(x0 + 2, y0, cellW - 4, cellH);
+
+        // Number text
+        ctx.fillStyle = highlighted ? accent : text;
+        ctx.font = highlighted ? 'bold 14px Inter, system-ui' : '13px Inter, system-ui';
+        ctx.textAlign = 'center';
+        ctx.fillText(String(num), x0 + cellW / 2, y0 + cellH / 2 - 4);
+
+        // Last-digit subtext
+        ctx.fillStyle = muted;
+        ctx.font = '10px Inter, system-ui';
+        ctx.fillText('…' + lastDigit, x0 + cellW / 2, y0 + cellH / 2 + 14);
+      }
+
+      // Row total marker — "2 povoljna"
+      var rowY = yTop + cellH + 4;
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 11px Inter, system-ui';
+      ctx.textAlign = 'right';
+      ctx.fillText('→ 2 broja završavaju sa 4 ili 5', padL + gridW, rowY + 10);
+    }
+
+    // Bottom summary box
+    var boxY = padTop + rows * (cellH + gap + 24) + 30;
+    var boxH = 78;
+    var boxX = padL;
+    var boxW = gridW;
+
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.10);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.fillRect(boxX, boxY, boxW, boxH);
+    ctx.strokeRect(boxX, boxY, boxW, boxH);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Celih dekada u intervalu (1000, 4000):  300', canvas.width / 2, boxY + 24);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 18px Inter, system-ui';
+    ctx.fillText('Ukupan broj:  300 × 2 = 600', canvas.width / 2, boxY + 54);
+
+    // Small legend / color key
+    var keyY = canvas.height - 18;
+    ctx.textAlign = 'left';
+    ctx.font = '12px Inter, system-ui';
+
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.25);
+    ctx.fillRect(padL, keyY - 10, 16, 14);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(padL, keyY - 10, 16, 14);
+    ctx.fillStyle = text;
+    ctx.fillText('završava sa 4 ili 5 (povoljno)', padL + 22, keyY);
+
+    ctx.fillStyle = cvAlpha('--sol-canvas-muted', 0.08);
+    ctx.fillRect(padL + 260, keyY - 10, 16, 14);
+    ctx.strokeStyle = cvAlpha('--sol-canvas-muted', 0.45);
+    ctx.lineWidth = 1;
+    ctx.strokeRect(padL + 260, keyY - 10, 16, 14);
+    ctx.fillStyle = text;
+    ctx.fillText('ostale cifre (ne brojimo)', padL + 282, keyY);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Prebrojavanje brojeva po poslednjoj cifri",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["prebrojavanje", "aritmetička progresija", "poslednja cifra", "princip sabiranja"]
+}
+BRAINSPARK_META-->

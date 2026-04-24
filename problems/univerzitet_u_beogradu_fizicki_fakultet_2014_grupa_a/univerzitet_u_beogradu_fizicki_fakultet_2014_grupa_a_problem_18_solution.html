@@ -1,0 +1,1076 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Krug x² + y² + 4x − 2y − 11 = 0, tačka A(4, −7). B je najudaljenija tačka kruga od A.
+  Traži se dužina duži AB.
+
+  Korak 1: Svođenje jednačine kruga na centralni oblik.
+    x² + 4x + y² − 2y − 11 = 0
+    (x² + 4x + 4) + (y² − 2y + 1) = 11 + 4 + 1
+    (x + 2)² + (y − 1)² = 16.
+    Dakle centar S = (−2, 1), poluprečnik r = √16 = 4.
+
+  Korak 2: Udaljenost centra S od tačke A.
+    |AS| = √((4 − (−2))² + (−7 − 1)²) = √(6² + (−8)²) = √(36 + 64) = √100 = 10.
+
+  Korak 3: Analiza pozicije A u odnosu na krug.
+    |AS| = 10 > r = 4, dakle A je izvan kruga.
+
+  Korak 4: Najudaljenija tačka kruga od A.
+    Geometrijski: sve tačke kruga su oblika S + r·u gde je |u| = 1 (jedinični vektor).
+    Udaljenost od A je |A − S − r·u|. Ako označimo vektor AS normalizovan kao e = (S − A)/|AS|,
+    onda za tačku P = S + r·u imamo |AP|² = |AS|² + r² + 2·r·(AS·u... ne, bolje klasično.
+    Klasični rezultat: za tačku A izvan kruga, najbliža tačka kruga je na pravoj AS,
+    sa iste strane kao S (na polupravoj od A ka S): |AA'| = |AS| − r.
+    Najdalja je na pravoj AS, sa suprotne strane, na polupravoj dalje od A: |AB| = |AS| + r.
+
+  Dakle: |AB| = |AS| + r = 10 + 4 = 14.
+
+  Provera: B se nalazi tako da je S između A i B na liniji AS, i |SB| = r = 4.
+    Parametarski: A + t · (B − A) gde t = 1 daje B.
+    Vektor od A ka S: S − A = (−6, 8). Dužina 10. Jedinični: (−0.6, 0.8).
+    B = S + 4 · (−0.6, 0.8) = (−2 − 2.4, 1 + 3.2) = (−4.4, 4.2).
+    Provera da je B na krugu: (−4.4 + 2)² + (4.2 − 1)² = (−2.4)² + (3.2)² = 5.76 + 10.24 = 16. ✓
+    |AB| = √((−4.4 − 4)² + (4.2 − (−7))²) = √((−8.4)² + (11.2)²) = √(70.56 + 125.44) = √196 = 14. ✓
+
+  Tačan odgovor: (C) 14.
+
+  Canvas plan:
+    Canvas 1 — Koordinatni sistem sa krugom, centrom S, tačkama A i B, linijom AS-AB.
+               Označiti dužine |AS|=10, |SB|=4, |AB|=14.
+    Canvas 2 — Detalj: isti prikaz sa istaknutom NAJBLIŽOM tačkom A' (da se vidi kontrast |AA'|=6 vs |AB|=14).
+    Canvas 3 — Ilustracija koraka "kompletiranje kvadrata": x² + 4x + 4 + y² − 2y + 1 = 11 + 4 + 1.
+               Ne, jednostavnije: koordinatni sistem sa više "kandidatnih" tačaka kruga i linijama od A,
+               pokazujući da je B upravo maksimum.
+</script>
+
+<h1 data-card="problem-title">Najudaljenija tačka kruga od zadate spoljašnje tačke</h1>
+<p data-card="problem-subtitle" class="subtitle">Analitička geometrija &mdash; krug, kompletiranje kvadrata, udaljenost tačke i centra, ekstremalne tačke</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>Tekst zadatka</h2>
+  <p>Dat je krug \( x^2 + y^2 + 4x - 2y - 11 = 0 \) i tačka \( A \) sa koordinatama \( (4, -7) \). Ako je \( B \) najudaljenija tačka kruga od tačke \( A \), onda je dužina duži \( AB \):</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">krug</span>
+      <span class="given-value">\( x^2 + y^2 + 4x - 2y - 11 = 0 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">tačka A</span>
+      <span class="given-value">\( (4,\, -7) \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">tražimo</span>
+      <span class="given-value">\( |AB|_{\max} \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 10 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 105 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 14 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>Plan rešavanja</h2>
+  <p class="plan-text">Datu jednačinu kruga svešćemo na <em>centralni oblik</em> \( (x - p)^2 + (y - q)^2 = r^2 \) kompletiranjem kvadrata. Odatle pročitamo centar \( S \) i poluprečnik \( r \). Izračunaćemo \( |AS| \) i iskoristiti geometrijski princip: najudaljenija tačka kruga od spoljašnje tačke \( A \) leži na pravoj \( AS \) na suprotnoj strani od \( A \), pa je \( |AB| = |AS| + r \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>Podsetnik iz teorije</h2>
+  <details>
+    <summary>Krug u ravni: opšti i centralni oblik, najbliža i najdalja tačka</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Centralni oblik kruga:</strong> <span class="formula-label">\( (x - p)^2 + (y - q)^2 = r^2 \)</span> gde je \( S(p, q) \) centar i \( r > 0 \) poluprečnik.</li>
+        <li><strong>Opšti oblik kruga:</strong> <span class="formula-label">\( x^2 + y^2 + Dx + Ey + F = 0 \)</span>. Kompletiranjem kvadrata: \( \bigl(x + \tfrac{D}{2}\bigr)^2 + \bigl(y + \tfrac{E}{2}\bigr)^2 = \tfrac{D^2 + E^2}{4} - F \). Centar je \( S\bigl(-\tfrac{D}{2}, -\tfrac{E}{2}\bigr) \), a \( r^2 = \tfrac{D^2 + E^2}{4} - F \) (mora biti pozitivno da bi krug postojao).</li>
+        <li><strong>Rastojanje dve tačke:</strong> \( |PQ| = \sqrt{(x_Q - x_P)^2 + (y_Q - y_P)^2} \).</li>
+        <li><strong>Najbliža i najdalja tačka kruga od spoljašnje tačke A:</strong>
+          <ul>
+            <li>ako je \( d = |AS| > r \) (tačka van kruga), najbliža tačka \( A' \) je presek <em>poluprave iz A ka S</em> sa krugom, i \( |AA'| = d - r \);</li>
+            <li>najdalja tačka \( B \) je presek <em>poluprave iz A preko S u suprotnom smeru</em> sa krugom, i <span class="formula-label">\( |AB| = d + r \)</span>;</li>
+            <li>obe leže na pravoj \( AS \); centar \( S \) je <em>sredina</em> između \( A' \) i \( B \) (jer su obe od \( S \) udaljene tačno \( r \)).</li>
+          </ul>
+        </li>
+        <li><strong>Zašto baš na pravoj \( AS \)?</strong> Za proizvoljnu tačku \( P \) kruga važi nejednakost trougla: \( |AP| \leq |AS| + |SP| = d + r \), sa jednakošću ako i samo ako je \( S \) između \( A \) i \( P \) (tačke kolinearne na pravoj \( AS \)).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Krug, tačka A i najdalja tačka B">
+  <h2>Vizuelni prikaz: krug sa centrom \( S(-2, 1) \) i tačke \( A, B \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-main" width="760" height="720"></canvas>
+  </div>
+  <p class="canvas-caption">Koordinatni sistem sa krugom poluprečnika \( r = 4 \) i centrom \( S(-2, 1) \). Spoljašnja tačka \( A(4, -7) \) je udaljena \( |AS| = 10 \) od centra. Prava kroz \( A \) i \( S \) preseca krug u dve tačke: bližoj \( A' \) (na strani ka \( A \)) i dalju \( B \) (na suprotnoj strani). Maksimalna udaljenost \( |AB| = |AS| + r = 10 + 4 = 14 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Svođenje jednačine kruga na centralni oblik &mdash; kompletiranje kvadrata</h3>
+      <p>Polazna jednačina:</p>
+      <div class="math-block">\[ x^2 + y^2 + 4x - 2y - 11 = 0. \]</div>
+      <p>Grupišimo članove po promenljivama i dodajmo potrebne konstante:</p>
+      <div class="math-block">\[ (x^2 + 4x) + (y^2 - 2y) = 11. \]</div>
+      <p>Za \( x \)-članove: \( x^2 + 4x = (x + 2)^2 - 4 \). Za \( y \)-članove: \( y^2 - 2y = (y - 1)^2 - 1 \). Uvrstimo:</p>
+      <div class="math-block">\[ (x + 2)^2 - 4 + (y - 1)^2 - 1 = 11. \]</div>
+      <div class="math-block">\[ (x + 2)^2 + (y - 1)^2 = 16. \]</div>
+      <p>Iz centralnog oblika čitamo centar i poluprečnik:</p>
+      <div class="math-block">\[ S(-2,\, 1), \qquad r = \sqrt{16} = 4. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kako pamtiš obrazac \( x^2 + 2ax = (x + a)^2 - a^2 \)?</summary>
+          <div class="detail-content"><p>Iz kvadrata zbira: \( (x + a)^2 = x^2 + 2ax + a^2 \). Dakle \( x^2 + 2ax = (x + a)^2 - a^2 \). U našem primeru: \( 4x = 2 \cdot 2 \cdot x \), pa je \( a = 2 \), i \( x^2 + 4x = (x+2)^2 - 4 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Udaljenost tačke \( A \) od centra \( S \)</h3>
+      <p>Formula za rastojanje: \( |AS| = \sqrt{(x_A - x_S)^2 + (y_A - y_S)^2} \). Uvrstimo \( A(4, -7) \) i \( S(-2, 1) \):</p>
+      <div class="math-block">\[ |AS| = \sqrt{(4 - (-2))^2 + (-7 - 1)^2} = \sqrt{6^2 + (-8)^2}. \]</div>
+      <div class="math-block">\[ |AS| = \sqrt{36 + 64} = \sqrt{100} = 10. \]</div>
+      <div class="callout callout-info">
+        <strong>Pitagorina trojka:</strong> razlike koordinata \( 6 \) i \( 8 \) grade pravougli trougao sa hipotenuzom \( 10 \) &mdash; klasična trojka \( (6, 8, 10) = 2 \cdot (3, 4, 5) \). Brojevi su namerno izabrani tako da korenovanje bude &bdquo;lepo&rdquo;.
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Uporedi \( |AS| \) sa poluprečnikom \( r \)</h3>
+      <p>Imamo \( |AS| = 10 \) i \( r = 4 \). Pošto je \( 10 > 4 \), zaključujemo:</p>
+      <div class="math-block">\[ |AS| > r \;\;\Longrightarrow\;\; A \text{ je \textbf{van} kruga.} \]</div>
+      <p>Ovo je važno jer u tom slučaju tačka \( A \) &bdquo;vidi&rdquo; krug sa spoljne strane, pa postoji i <em>najbliža</em> i <em>najudaljenija</em> tačka kruga od \( A \), obe na pravoj \( AS \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Lokacija najudaljenije tačke \( B \)</h3>
+      <p>Geometrijski princip: za proizvoljnu tačku \( P \) kruga, iz nejednakosti trougla za trougao \( \triangle APS \) imamo</p>
+      <div class="math-block">\[ |AP| \leq |AS| + |SP| = |AS| + r. \]</div>
+      <p>Jednakost \( |AP| = |AS| + r \) nastupa <em>isključivo</em> ako je \( S \) između \( A \) i \( P \), tj. ako su \( A \), \( S \), \( P \) kolinearne i \( P \) je na suprotnoj strani od \( A \) u odnosu na \( S \). Ta tačka je naša \( B \).</p>
+
+      <div class="substep" data-substep="a)">
+        <p><strong>Geometrijska konstrukcija:</strong> povući polupravu iz \( A \) kroz \( S \) i produžiti je preko \( S \); tačka preseka te poluprave sa krugom na <em>drugoj</em> strani od \( A \) je \( B \). Pošto je udaljenost \( S \) do \( B \) tačno \( r \) (jer je \( B \) na krugu), imamo:</p>
+        <div class="math-block">\[ |AB| = |AS| + |SB| = |AS| + r. \]</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Računanje maksimuma</h3>
+      <p>Uvrstimo \( |AS| = 10 \) i \( r = 4 \):</p>
+      <div class="math-block">\[ |AB| = 10 + 4 = 14. \]</div>
+      <div class="math-block">\[ \boxed{\; |AB| = 14 \;} \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera: koordinate tačke \( B \) i direktan račun</h3>
+      <p>Jedinični vektor od \( A \) ka \( S \) je \( \dfrac{S - A}{|AS|} = \dfrac{(-6, 8)}{10} = (-0{,}6,\; 0{,}8) \).</p>
+      <p>Tačka \( B \) je na suprotnoj strani od \( S \) u odnosu na \( A \), na udaljenosti \( r = 4 \) od \( S \):</p>
+      <div class="math-block">\[ B = S + r \cdot (-0{,}6,\, 0{,}8) = (-2,\, 1) + (-2{,}4,\, 3{,}2) = (-4{,}4,\, 4{,}2). \]</div>
+      <p>Provera da je \( B \) na krugu:</p>
+      <div class="math-block">\[ (-4{,}4 + 2)^2 + (4{,}2 - 1)^2 = (-2{,}4)^2 + (3{,}2)^2 = 5{,}76 + 10{,}24 = 16 = r^2. \ \checkmark \]</div>
+      <p>Direktno računanje \( |AB| \):</p>
+      <div class="math-block">\[ |AB| = \sqrt{(-4{,}4 - 4)^2 + (4{,}2 - (-7))^2} = \sqrt{(-8{,}4)^2 + (11{,}2)^2}. \]</div>
+      <div class="math-block">\[ |AB| = \sqrt{70{,}56 + 125{,}44} = \sqrt{196} = 14. \ \checkmark \]</div>
+      <p>Poklapa se sa rezultatom iz koraka 5.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="visual-aid" data-title="Nejednakost trougla — zašto je B baš na pravoj AS">
+  <h2>Vizuelni prikaz: zašto je B baš na pravoj \( AS \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-triangle" width="760" height="640"></canvas>
+  </div>
+  <p class="canvas-caption">Za proizvoljnu tačku \( P \) na krugu formira se trougao \( \triangle APS \) sa stranicama \( |AS| = 10 \), \( |SP| = r = 4 \), i \( |AP| \) (koju tražimo). Po nejednakosti trougla je \( |AP| \leq |AS| + |SP| \), pri čemu jednakost važi tek ako trougao &bdquo;degenerisano&rdquo; legne na pravu &mdash; kad \( P \) postane baš \( B \). Prikazano je nekoliko kandidata \( P_1, P_2, P_3 \) sa kraćim rastojanjima, i konačna tačka \( B \) koja maksimizuje \( |AP| = 14 \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Kontrast — najbliža tačka A'">
+  <h2>Vizuelni prikaz: najbliža vs najdalja tačka kruga</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-min-max" width="760" height="580"></canvas>
+  </div>
+  <p class="canvas-caption">Ista prava \( AS \) seče krug u <em>dve</em> tačke: najbližoj \( A' \) (na strani ka \( A \)) i najdaljoj \( B \) (na suprotnoj strani). Imamo \( |AA'| = |AS| - r = 10 - 4 = 6 \) i \( |AB| = |AS| + r = 10 + 4 = 14 \). Razlika \( |AB| - |AA'| = 2r = 8 \) je <em>prečnik</em> kruga &mdash; što potvrđuje da su \( A' \) i \( B \) dijametralno suprotne tačke kruga.</p>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>Ključni uvid</h2>
+  <p>Problem se na prvi pogled čini kao optimizacioni zadatak &mdash; &bdquo;maksimiziraj udaljenost po svim tačkama kruga&rdquo; &mdash; i mogao bi da se reši i preko parametrizacije \( P(\theta) = S + r(\cos\theta, \sin\theta) \) i izvoda. Ali <strong>nejednakost trougla svodi ga na jedan trenutak uvida</strong>: maksimum je \( |AS| + r \), minimum je \( |AS| - r \) (kad je \( A \) van kruga). Cela složenost algebarskog sistema se sklanja, i ostaje samo <em>dve udaljenosti plus trojka za Pitagoru</em>. U širem smislu: ovo je isto što i problem &bdquo;najdalja tačka na sferi&rdquo; u 3D, i isti princip važi za konveksne skupove &mdash; uvek se ekstremalne tačke u odnosu na spoljašnju tačku nalaze duž pravca kroz &bdquo;centar&rdquo; (težište, centar simetrije).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ |AB| = |AS| + r = 10 + 4 = 14 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 10 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 105 \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( 14 \)</span>
+  </div>
+  <p class="verification">Provera: centar \( S(-2, 1) \), poluprečnik \( r = 4 \). \( |AS| = \sqrt{36 + 64} = 10 \) (Pitagorina trojka \( 6{-}8{-}10 \)). Najdalja tačka na krugu: \( B = (-4{,}4,\, 4{,}2) \). Direktan račun \( |AB| = \sqrt{(-8{,}4)^2 + 11{,}2^2} = \sqrt{196} = 14 \) &check;. Opcija (A) \( 10 \) je samo \( |AS| \) &mdash; previđen je poluprečnik. Opcija (B) \( 105 \) nije geometrijski smislena na ovom merilu (tačka \( A \) je udaljena svega \( 10 \) od centra, krug je poluprečnika \( 4 \)), pa je očigledno udaljenost ograničena na \( \leq 14 \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešan znak u kompletiranju kvadrata:</strong> iz \( 4x \) sledi \( (x + 2)^2 \), a ne \( (x - 2)^2 \), jer je \( (x + 2)^2 = x^2 + 4x + 4 \). Slično, \( -2y \) daje \( (y - 1)^2 \). Loš znak donosi pogrešan centar i poluprečnik.</li>
+    <li><strong>Zaboravljanje da se dodato oduzme:</strong> kad dodamo \( 4 \) i \( 1 \) da kompletiramo kvadrate, <em>moramo</em> dodati iste brojeve i na desnu stranu jednačine. Rezultat: \( 11 + 4 + 1 = 16 \), a ne samo \( 11 \).</li>
+    <li><strong>Odgovor \( |AB| = |AS| = 10 \) (opcija A):</strong> to je udaljenost <em>centra</em> od \( A \), ne udaljenost najudaljenije <em>tačke kruga</em>. Mora se još dodati poluprečnik \( r = 4 \) jer \( B \) leži na obimu, udaljeno \( r \) od \( S \) u suprotnom smeru.</li>
+    <li><strong>Oduzimanje umesto sabiranja:</strong> formula za <em>najbližu</em> tačku je \( |AA'| = |AS| - r = 6 \), a za najdalju \( |AB| = |AS| + r = 14 \). Zamena donosi pogrešan odgovor.</li>
+    <li><strong>Primena formule kad je \( A \) unutar kruga:</strong> ako je \( |AS| < r \), formula \( |AB| = |AS| + r \) i dalje važi za najdalju tačku, ali <em>najbliža</em> postaje \( r - |AS| \) (ne \( |AS| - r \), što bi bilo negativno). U našem zadatku je \( A \) van kruga pa ne brinemo za tu zamku, ali je dobro imati je na umu.</li>
+    <li><strong>Neprovera da se centar pravilno pročitao:</strong> iz \( (x + 2)^2 + (y - 1)^2 = 16 \) centar je \( S(-2, +1) \), ne \( S(+2, -1) \) &mdash; znak unutar zagrade je suprotan od znaka koordinate centra.</li>
+    <li><strong>Forsiranje koordinatne geometrije umesto sinteze:</strong> mogli biste parametrisati krug kao \( (\cos\theta, \sin\theta) \), formirati \( |AP(\theta)|^2 \), derivirati po \( \theta \), tražiti maksimum. To radi, ali gubi mnogo vremena. Nejednakost trougla daje odgovor u jednom redu.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>Dodatni izazov</h2>
+  <p>Neka su data dva kruga: \( k_1:\, (x + 2)^2 + (y - 1)^2 = 16 \) (isti kao u zadatku) i \( k_2:\, (x - 5)^2 + (y + 3)^2 = 9 \). Naći <em>najveću moguću</em> i <em>najmanju moguću</em> udaljenost između tačke \( P_1 \) sa kruga \( k_1 \) i tačke \( P_2 \) sa kruga \( k_2 \).</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Centri su \( S_1(-2, 1) \) i \( S_2(5, -3) \). Udaljenost centara: \( d = \sqrt{7^2 + 4^2} = \sqrt{65} \approx 8{,}06 \). Poluprečnici: \( r_1 = 4 \), \( r_2 = 3 \). Najveća udaljenost: \( d + r_1 + r_2 = \sqrt{65} + 7 \approx 15{,}06 \) (tačke su dijametralno suprotne od linije centara, svaka &bdquo;napolje&rdquo;). Najmanja udaljenost: \( d - r_1 - r_2 = \sqrt{65} - 7 \approx 1{,}06 \) (tačke na liniji centara okrenute jedna ka drugoj). Pošto je \( d > r_1 + r_2 \), krugovi su razdvojeni (ne seku se), pa su obe formule validne. Ako bi \( d < r_1 + r_2 \) (krugovi se seku) najmanje rastojanje bi bilo \( 0 \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-main');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+    var danger    = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Krug (x+2)² + (y−1)² = 16 i tačke A, B', W / 2, 30);
+
+    // Coordinate system: we need to show x in roughly [-7, 7] and y in [-9, 6].
+    // Use a cell size; originX, originY in canvas coords.
+    var scale = 38;  // px per math unit
+    var originX = W / 2 - 10;
+    var originY = 240;  // y=0 position in canvas space
+    function X(mx) { return originX + mx * scale; }
+    function Y(my) { return originY - my * scale; }
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 0.8;
+    for (var gx = -8; gx <= 8; gx++) {
+      ctx.beginPath();
+      ctx.moveTo(X(gx), 70);
+      ctx.lineTo(X(gx), H - 100);
+      ctx.stroke();
+    }
+    for (var gy = -10; gy <= 5; gy++) {
+      ctx.beginPath();
+      ctx.moveTo(60, Y(gy));
+      ctx.lineTo(W - 50, Y(gy));
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(60, Y(0));
+    ctx.lineTo(W - 50, Y(0));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(X(0), 70);
+    ctx.lineTo(X(0), H - 100);
+    ctx.stroke();
+
+    // Arrowheads on axes
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(W - 50, Y(0));
+    ctx.lineTo(W - 58, Y(0) - 5);
+    ctx.lineTo(W - 58, Y(0) + 5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(X(0), 70);
+    ctx.lineTo(X(0) - 5, 78);
+    ctx.lineTo(X(0) + 5, 78);
+    ctx.closePath();
+    ctx.fill();
+
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px "Cambria Math", Georgia, serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('x', W - 42, Y(0));
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('y', X(0), 66);
+
+    // Tick labels
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (var tx = -6; tx <= 6; tx += 2) {
+      if (tx === 0) continue;
+      ctx.fillText(tx.toString(), X(tx), Y(0) + 4);
+    }
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (var ty = -8; ty <= 4; ty += 2) {
+      if (ty === 0) continue;
+      ctx.fillText(ty.toString(), X(0) - 6, Y(ty));
+    }
+
+    // Circle: center S(-2, 1), radius r=4
+    var Sx = -2, Sy = 1, r = 4;
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.2;
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.08);
+    ctx.beginPath();
+    ctx.arc(X(Sx), Y(Sy), r * scale, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Line from A through S, extending to B (and beyond)
+    var Ax = 4, Ay = -7;
+    // Direction from A to S
+    var dx = Sx - Ax, dy = Sy - Ay;  // (-6, 8)
+    var dlen = Math.hypot(dx, dy);   // 10
+    var ux = dx / dlen, uy = dy / dlen;  // (-0.6, 0.8)
+    // B = S + r * u  (further in direction away from A through S)
+    var Bx = Sx + r * ux, By = Sy + r * uy;  // (-4.4, 4.2)
+    // A' = S - r * u  (closer, toward A)
+    var Apx = Sx - r * ux, Apy = Sy - r * uy;  // (-2 + 2.4, 1 - 3.2) = (0.4, -2.2)... wait
+    // Actually closer A' is between A and S: A' = S - r * u (u points from A toward S)
+    // So A' = S - r*u = (-2 - (-0.6*4), 1 - 0.8*4) = (-2 + 2.4, 1 - 3.2) = (0.4, -2.2).  Check: distance from A = (4 - 0.4, -7 - (-2.2)) = (3.6, -4.8), len = sqrt(12.96 + 23.04) = sqrt(36) = 6. ✓
+
+    // Draw line from A through A' through S through B
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2.0;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(X(Ax), Y(Ay));
+    ctx.lineTo(X(Bx), Y(By));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Highlight AB segment in accent color
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 3.0;
+    ctx.beginPath();
+    ctx.moveTo(X(Ax), Y(Ay));
+    ctx.lineTo(X(Bx), Y(By));
+    ctx.stroke();
+
+    // Center S
+    ctx.fillStyle = primary;
+    ctx.beginPath();
+    ctx.arc(X(Sx), Y(Sy), 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px "Cambria Math", Georgia, serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('S(−2, 1)', X(Sx) + 8, Y(Sy) - 6);
+
+    // Point A
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(X(Ax), Y(Ay), 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 15px "Cambria Math", Georgia, serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('A(4, −7)', X(Ax) + 10, Y(Ay) + 4);
+
+    // Point B (furthest)
+    ctx.fillStyle = highlight;
+    ctx.beginPath();
+    ctx.arc(X(Bx), Y(By), 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 15px "Cambria Math", Georgia, serif';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('B(−4,4; 4,2)', X(Bx) - 10, Y(By) - 8);
+
+    // Point A' (nearest)
+    ctx.fillStyle = warning;
+    ctx.beginPath();
+    ctx.arc(X(Apx), Y(Apy), 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 13px "Cambria Math", Georgia, serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText("A' (najbliža)", X(Apx) + 8, Y(Apy) + 2);
+
+    // Distance labels
+    // Midpoint of AS for |AS|=10
+    var asMidX = (X(Ax) + X(Sx)) / 2;
+    var asMidY = (Y(Ay) + Y(Sy)) / 2;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px "Cambria Math", Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    // Offset perpendicular to line
+    ctx.save();
+    ctx.fillStyle = cvAlpha('--sol-canvas-bg', 0.9);
+    ctx.fillRect(asMidX - 40, asMidY - 10, 80, 20);
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(asMidX - 40, asMidY - 10, 80, 20);
+    ctx.fillStyle = secondary;
+    ctx.fillText('|AS| = 10', asMidX, asMidY);
+    ctx.restore();
+
+    // Midpoint of SB for |SB|=4
+    var sbMidX = (X(Sx) + X(Bx)) / 2;
+    var sbMidY = (Y(Sy) + Y(By)) / 2;
+    ctx.save();
+    ctx.fillStyle = cvAlpha('--sol-canvas-bg', 0.9);
+    ctx.fillRect(sbMidX - 32, sbMidY - 10, 64, 20);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(sbMidX - 32, sbMidY - 10, 64, 20);
+    ctx.fillStyle = primary;
+    ctx.fillText('|SB| = 4', sbMidX, sbMidY);
+    ctx.restore();
+
+    // |AB| = 14 label near center of AB
+    var abMidX = (X(Ax) + X(Bx)) / 2;
+    var abMidY = (Y(Ay) + Y(By)) / 2;
+    ctx.save();
+    ctx.fillStyle = cvAlpha('--sol-canvas-bg', 0.95);
+    ctx.fillRect(abMidX + 14, abMidY - 12, 90, 24);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 1.4;
+    ctx.strokeRect(abMidX + 14, abMidY - 12, 90, 24);
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 14px "Cambria Math", Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('|AB| = 14', abMidX + 59, abMidY);
+    ctx.restore();
+
+    // Small radius tick from S to the edge of the circle (downward direction, NOT on AS line)
+    var rx = Sx + r * 0;  // just go right
+    var ry = Sy;
+    // Use a different direction to avoid overlap: going right (east)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1.4;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(X(Sx), Y(Sy));
+    ctx.lineTo(X(Sx + r), Y(Sy));
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = primary;
+    ctx.font = 'italic 12px "Cambria Math", Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('r = 4', X(Sx + r / 2), Y(Sy) - 5);
+
+    // Bottom info: equation of the circle
+    var infoY = H - 68;
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.12);
+    ctx.fillRect(60, infoY - 18, W - 120, 34);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1.2;
+    ctx.strokeRect(60, infoY - 18, W - 120, 34);
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px "Cambria Math", Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('(x + 2)² + (y − 1)² = 16     ⇒     centar S(−2, 1), r = 4', W / 2, infoY - 1);
+
+    // Legend
+    var ly = H - 22;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'left';
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(80, ly, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.fillText('A (spoljašnja tačka)', 92, ly);
+    ctx.fillStyle = primary;
+    ctx.beginPath();
+    ctx.arc(240, ly, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.fillText('S (centar kruga)', 252, ly);
+    ctx.fillStyle = highlight;
+    ctx.beginPath();
+    ctx.arc(390, ly, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.fillText('B (najdalja tačka)', 402, ly);
+    ctx.fillStyle = warning;
+    ctx.beginPath();
+    ctx.arc(540, ly, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.fillText("A' (najbliža tačka)", 552, ly);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-triangle');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Nejednakost trougla: |AP| ≤ |AS| + |SP| = 10 + 4 = 14', W / 2, 30);
+
+    // Coord system
+    var scale = 36;
+    var originX = W / 2 - 10;
+    var originY = 230;
+    function X(mx) { return originX + mx * scale; }
+    function Y(my) { return originY - my * scale; }
+
+    // Light grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 0.7;
+    for (var gx = -8; gx <= 8; gx++) {
+      ctx.beginPath();
+      ctx.moveTo(X(gx), 70);
+      ctx.lineTo(X(gx), H - 90);
+      ctx.stroke();
+    }
+    for (var gy = -9; gy <= 5; gy++) {
+      ctx.beginPath();
+      ctx.moveTo(60, Y(gy));
+      ctx.lineTo(W - 50, Y(gy));
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(60, Y(0));
+    ctx.lineTo(W - 50, Y(0));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(X(0), 70);
+    ctx.lineTo(X(0), H - 90);
+    ctx.stroke();
+
+    // Circle
+    var Sx = -2, Sy = 1, r = 4;
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.0;
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.06);
+    ctx.beginPath();
+    ctx.arc(X(Sx), Y(Sy), r * scale, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // A position
+    var Ax = 4, Ay = -7;
+    var dx = Sx - Ax, dy = Sy - Ay;
+    var dlen = Math.hypot(dx, dy);
+    var ux = dx / dlen, uy = dy / dlen;
+    var Bx = Sx + r * ux, By = Sy + r * uy;
+
+    // Three "candidate" points P1, P2, P3 on the circle (NOT on line AS)
+    // Pick angles in degrees from east direction
+    var candAngles = [45, 120, 200];
+    var candCols = [secondary, accent, warning];
+    for (var k = 0; k < candAngles.length; k++) {
+      var ang = candAngles[k] * Math.PI / 180;
+      var px = Sx + r * Math.cos(ang);
+      var py = Sy + r * Math.sin(ang);
+      // Triangle A-S-P
+      ctx.strokeStyle = candCols[k];
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 3]);
+      // Line AS
+      ctx.beginPath();
+      ctx.moveTo(X(Ax), Y(Ay));
+      ctx.lineTo(X(Sx), Y(Sy));
+      ctx.stroke();
+      // Line SP
+      ctx.beginPath();
+      ctx.moveTo(X(Sx), Y(Sy));
+      ctx.lineTo(X(px), Y(py));
+      ctx.stroke();
+      // Line AP
+      ctx.beginPath();
+      ctx.moveTo(X(Ax), Y(Ay));
+      ctx.lineTo(X(px), Y(py));
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Candidate point
+      ctx.fillStyle = candCols[k];
+      ctx.beginPath();
+      ctx.arc(X(px), Y(py), 4, 0, Math.PI * 2);
+      ctx.fill();
+      // Label
+      var apLen = Math.hypot(px - Ax, py - Ay);
+      ctx.font = 'bold 12px "Cambria Math", Georgia, serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = candCols[k];
+      ctx.fillText('P' + (k + 1) + ' (|AP|≈' + apLen.toFixed(1) + ')', X(px) + 8, Y(py));
+    }
+
+    // Main line A to B (thick highlight)
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 3.0;
+    ctx.beginPath();
+    ctx.moveTo(X(Ax), Y(Ay));
+    ctx.lineTo(X(Bx), Y(By));
+    ctx.stroke();
+
+    // S
+    ctx.fillStyle = primary;
+    ctx.beginPath();
+    ctx.arc(X(Sx), Y(Sy), 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px "Cambria Math", Georgia, serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('S', X(Sx) + 8, Y(Sy) + 4);
+
+    // A
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(X(Ax), Y(Ay), 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px "Cambria Math", Georgia, serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('A', X(Ax) + 10, Y(Ay) + 4);
+
+    // B (furthest)
+    ctx.fillStyle = highlight;
+    ctx.beginPath();
+    ctx.arc(X(Bx), Y(By), 7, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 15px "Cambria Math", Georgia, serif';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('B (|AB| = 14 — MAX)', X(Bx) - 10, Y(By) - 8);
+
+    // Explanation box at bottom
+    var boxY = H - 72;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.10);
+    ctx.fillRect(60, boxY - 10, W - 120, 42);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.2;
+    ctx.strokeRect(60, boxY - 10, W - 120, 42);
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('|AP| ≤ |AS| + |SP| = 10 + 4 = 14, sa jednakošću tek kad je A-S-P kolinearno (P = B)', W / 2, boxY);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('(za sve druge tačke P, trougao APS je pravi trougao — zbir dve stranice veći od treće)', W / 2, boxY + 18);
+
+    // Legend bottom
+    var ly = H - 22;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'left';
+    ctx.strokeStyle = secondary;
+    ctx.setLineDash([4, 3]);
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(70, ly);
+    ctx.lineTo(110, ly);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = text;
+    ctx.fillText('trougao ASP za neku P ∈ krug', 118, ly);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 3.0;
+    ctx.beginPath();
+    ctx.moveTo(330, ly);
+    ctx.lineTo(370, ly);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.fillText('segment AB — dostiže maksimum', 378, ly);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-min-max');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Prava AS seče krug: najbliža A\' i najdalja B', W / 2, 30);
+
+    var scale = 36;
+    var originX = W / 2 - 10;
+    var originY = 230;
+    function X(mx) { return originX + mx * scale; }
+    function Y(my) { return originY - my * scale; }
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 0.7;
+    for (var gx = -8; gx <= 8; gx++) {
+      ctx.beginPath();
+      ctx.moveTo(X(gx), 70);
+      ctx.lineTo(X(gx), H - 110);
+      ctx.stroke();
+    }
+    for (var gy = -9; gy <= 5; gy++) {
+      ctx.beginPath();
+      ctx.moveTo(60, Y(gy));
+      ctx.lineTo(W - 50, Y(gy));
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(60, Y(0));
+    ctx.lineTo(W - 50, Y(0));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(X(0), 70);
+    ctx.lineTo(X(0), H - 110);
+    ctx.stroke();
+
+    // Circle
+    var Sx = -2, Sy = 1, r = 4;
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.0;
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.06);
+    ctx.beginPath();
+    ctx.arc(X(Sx), Y(Sy), r * scale, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    var Ax = 4, Ay = -7;
+    var dx = Sx - Ax, dy = Sy - Ay;
+    var dlen = Math.hypot(dx, dy);
+    var ux = dx / dlen, uy = dy / dlen;
+    var Bx = Sx + r * ux, By = Sy + r * uy;
+    var Apx = Sx - r * ux, Apy = Sy - r * uy;
+
+    // Full line A -> B extended
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(X(Ax), Y(Ay));
+    ctx.lineTo(X(Bx + 1 * ux), Y(By + 1 * uy));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // A-A' segment (green - nearest)
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 3.0;
+    ctx.beginPath();
+    ctx.moveTo(X(Ax), Y(Ay));
+    ctx.lineTo(X(Apx), Y(Apy));
+    ctx.stroke();
+
+    // A'-B segment (diameter through the circle)
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(X(Apx), Y(Apy));
+    ctx.lineTo(X(Bx), Y(By));
+    ctx.stroke();
+
+    // Points
+    ctx.fillStyle = primary;
+    ctx.beginPath();
+    ctx.arc(X(Sx), Y(Sy), 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px "Cambria Math", Georgia, serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('S', X(Sx) + 8, Y(Sy) + 4);
+
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(X(Ax), Y(Ay), 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px "Cambria Math", Georgia, serif';
+    ctx.fillText('A', X(Ax) + 10, Y(Ay) + 4);
+
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(X(Apx), Y(Apy), 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px "Cambria Math", Georgia, serif';
+    ctx.textBaseline = 'top';
+    ctx.fillText("A'", X(Apx) + 8, Y(Apy) + 4);
+
+    ctx.fillStyle = highlight;
+    ctx.beginPath();
+    ctx.arc(X(Bx), Y(By), 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 14px "Cambria Math", Georgia, serif';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('B', X(Bx) - 8, Y(By) - 6);
+
+    // Distance labels
+    // |AA'| = 6 (on green segment)
+    var aaMidX = (X(Ax) + X(Apx)) / 2;
+    var aaMidY = (Y(Ay) + Y(Apy)) / 2;
+    ctx.save();
+    ctx.fillStyle = cvAlpha('--sol-canvas-bg', 0.95);
+    ctx.fillRect(aaMidX + 10, aaMidY - 12, 95, 24);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.3;
+    ctx.strokeRect(aaMidX + 10, aaMidY - 12, 95, 24);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px "Cambria Math", Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText("|AA'| = 6", aaMidX + 57, aaMidY);
+    ctx.restore();
+
+    // |A'B| = 2r = 8
+    var abpMidX = (X(Apx) + X(Bx)) / 2;
+    var abpMidY = (Y(Apy) + Y(By)) / 2;
+    ctx.save();
+    ctx.fillStyle = cvAlpha('--sol-canvas-bg', 0.95);
+    ctx.fillRect(abpMidX - 100, abpMidY - 12, 95, 24);
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 1.3;
+    ctx.strokeRect(abpMidX - 100, abpMidY - 12, 95, 24);
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 13px "Cambria Math", Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText("|A'B| = 2r = 8", abpMidX - 53, abpMidY);
+    ctx.restore();
+
+    // Formula summary
+    var infoY = H - 85;
+    ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.10);
+    ctx.fillRect(60, infoY - 12, W - 120, 56);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 1.2;
+    ctx.strokeRect(60, infoY - 12, W - 120, 56);
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px "Cambria Math", Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText("|AA'| = |AS| − r = 10 − 4 = 6   (najkraća)", W / 2, infoY + 3);
+    ctx.fillText("|AB| = |AS| + r = 10 + 4 = 14   (najduža)", W / 2, infoY + 23);
+
+    // Legend bottom
+    var ly = H - 22;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'left';
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 3.0;
+    ctx.beginPath();
+    ctx.moveTo(70, ly);
+    ctx.lineTo(110, ly);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.fillText('A → A\' (najkraća = 6)', 118, ly);
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(310, ly);
+    ctx.lineTo(350, ly);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.fillText("A' → B (prečnik = 8)", 358, ly);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2.0;
+    ctx.beginPath();
+    ctx.moveTo(520, ly);
+    ctx.lineTo(560, ly);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.fillText('zbir = |AB| = 14', 568, ly);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Najudaljenija tačka kruga od zadate spoljašnje tačke — |AB| = |AS| + r",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["analitička geometrija", "krug", "kompletiranje kvadrata", "rastojanje tačaka", "ekstremi na krugu", "nejednakost trougla"]
+}
+BRAINSPARK_META-->

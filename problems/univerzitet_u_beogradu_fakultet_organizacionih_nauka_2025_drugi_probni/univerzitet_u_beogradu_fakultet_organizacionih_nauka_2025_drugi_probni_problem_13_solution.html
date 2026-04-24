@@ -1,0 +1,652 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Maksimalna zapremina prave kupe čija izvodnica ima dužinu S.
+
+  Kod prave (kružne) kupe: izvodnica s, poluprečnik osnove r, visina h. Veza: r^2 + h^2 = s^2.
+  Zapremina: V = (1/3) * π * r^2 * h.
+
+  Cilj: za fiksno s = S, maksimizovati V po (r, h) uz r^2 + h^2 = S^2, r > 0, h > 0.
+
+  Eliminišemo r^2: r^2 = S^2 - h^2 (zahteva 0 < h < S).
+    V(h) = (π/3) * (S^2 - h^2) * h = (π/3) * (S^2 h - h^3).
+
+  Izvod po h:
+    V'(h) = (π/3) * (S^2 - 3 h^2).
+    V'(h) = 0  ↔  S^2 - 3 h^2 = 0  ↔  h^2 = S^2 / 3  ↔  h = S / sqrt(3).
+
+  Druga provera (drugi izvod ili znak):
+    V''(h) = (π/3) * (-6h) < 0 za h > 0 → maksimum.
+
+  U optimumu:
+    r^2 = S^2 - S^2 / 3 = 2 S^2 / 3   →  r = S * sqrt(2/3) = S * sqrt(2) / sqrt(3).
+    V_max = (π/3) * (2 S^2 / 3) * (S / sqrt(3)) = (2 π S^3) / (9 * sqrt(3)).
+
+  Racionalizacija (proverimo sve opcije):
+    (2 π S^3) / (9 sqrt(3)) = (2 π S^3 * sqrt(3)) / (9 * 3) = (2 sqrt(3) π S^3) / 27.
+
+  Opcije:
+    A) π S^3 / 6 ≈ 0,524 * S^3 * (1) ... = 0,5236 S^3
+    B) π S^3 / 9 ≈ 0,3491 S^3
+    C) sqrt(2) π S^3 / 9 ≈ 0,4936 S^3
+    D) 2 π S^3 / (9 sqrt(3)) = 2π S^3 / 15,588 ≈ 0,4031 S^3
+    E) sqrt(3) π S^3 / 9 ≈ 0,6046 S^3
+
+  Numerički: π/3 * (2/3) * (1/sqrt(3)) ≈ 1,047 * 0,6667 * 0,5774 ≈ 0,4031. To se slaže sa D. ✓
+
+  Dakle, odgovor je D) (2π) / (9 sqrt(3)) * S^3.
+
+  Visualizacija (interaktivno):
+    Levo: poprečni presek kupe (osovinski) — jednakokraki trougao sa visinom h i osnovicom 2r.
+      Izvodnica je hipotenuza pravouglog trougla (h, r). Prevlačenjem vrha (ili osnove) menja se h
+      uz uslov r^2 + h^2 = S^2.
+    Desno: grafik V(h) = (π/3)(S^2 - h^2) h za h ∈ (0, S), sa markerom trenutnog h.
+    Iznad grafika prikazujemo trenutnu vrednost V/S^3.
+    Maksimum je u h = S/√3 ≈ 0,577 S. Tada je V/S^3 ≈ 0,4031.
+
+  Plan rešenja:
+    1) Postaviti vezu r^2 + h^2 = S^2.
+    2) Izraziti V kao funkciju samo h: V(h) = (π/3)(S^2 - h^2) h.
+    3) Naći V'(h) = 0, dobiti h = S/√3.
+    4) Izračunati r u optimumu i V_max.
+    5) Racionalizovati i uporediti sa opcijama → D.
+</script>
+
+<h1 data-card="problem-title">Maksimalna zapremina prave kupe sa zadatom izvodnicom</h1>
+<p data-card="problem-subtitle" class="subtitle">Stereometrija i optimizacija &mdash; ekstremum funkcije zapremine pomoću izvoda</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Maksimalna zapremina prave kupe čija izvodnica ima dužinu \( S \) jednaka je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \dfrac{\pi}{6}\, S^{3} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \dfrac{\pi}{9}\, S^{3} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \dfrac{\sqrt{2}\,\pi}{9}\, S^{3} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \dfrac{2\pi}{9\sqrt{3}}\, S^{3} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \dfrac{\sqrt{3}\,\pi}{9}\, S^{3} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Iskoristimo Pitagorinu vezu \( r^{2} + h^{2} = S^{2} \) između poluprečnika osnove \( r \), visine \( h \) i izvodnice \( S \) da zapreminu izrazimo kao funkciju jedne promenljive \( V(h) = \tfrac{\pi}{3}(S^{2}-h^{2})h \). Iz \( V'(h)=0 \) nađemo kritičnu tačku \( h = S/\sqrt{3} \), proverimo da je to maksimum i izračunamo \( V_{\max} \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Zapremina kupe:</strong> \( V = \tfrac{1}{3}\,B\,h = \tfrac{1}{3}\,\pi r^{2}\, h \), gde je \( B = \pi r^{2} \) površina osnove, a \( h \) visina.</li>
+        <li><strong>Pitagora u osovinskom preseku:</strong> izvodnica \( S \), visina \( h \) i poluprečnik osnove \( r \) zadovoljavaju \( r^{2} + h^{2} = S^{2} \).</li>
+        <li><strong>Lokalni ekstremum:</strong> ako je \( V'(h_{0}) = 0 \) i \( V''(h_{0}) < 0 \), tada je \( V \) u tački \( h_{0} \) ima lokalni (i ovde globalni) maksimum.</li>
+        <li><strong>Domen problema:</strong> \( h \in (0, S) \) (visina je pozitivna i strogo manja od izvodnice, jer mora biti \( r > 0 \)).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Interaktivni osovinski presek i grafik V(h)">
+  <h2>📐 Interaktivni osovinski presek i grafik \( V(h) \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="coneInteractive" width="760" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Levo je osovinski presek kupe (jednakokraki trougao). Prevuci vrh \( V \) gore-dole &mdash; visina \( h \) se menja, a poluprečnik \( r \) automatski sledi iz \( r^{2}+h^{2}=S^{2} \). Desno je grafik \( V(h) \) sa zelenom oznakom trenutne tačke i ljubičastom oznakom maksimuma u \( h=S/\sqrt{3} \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Veza izvodnice, visine i poluprečnika</h3>
+      <p>U pravoj (kružnoj) kupi, osovinski presek je jednakokraki trougao. Spustimo li visinu iz vrha kupe na osnovu, dobijamo pravougli trougao sa katetama \( r \) i \( h \) i hipotenuzom \( S \). Po Pitagorinoj teoremi:</p>
+      <div class="math-block">\[ r^{2} + h^{2} = S^{2}. \]</div>
+      <p>Pošto je \( S \) zadato (i konstantno), promene \( r \) i \( h \) su povezane.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Zapreminu svodimo na funkciju jedne promenljive</h3>
+      <p>Zapremina kupe je \( V = \tfrac{1}{3}\pi r^{2} h \). Iz prethodne veze izrazimo \( r^{2} = S^{2} - h^{2} \) i ubacimo:</p>
+      <div class="math-block">\[ V(h) = \frac{\pi}{3}\bigl(S^{2} - h^{2}\bigr)\, h = \frac{\pi}{3}\bigl(S^{2} h - h^{3}\bigr). \]</div>
+      <p>Domen je \( h \in (0,\, S) \) (mora biti \( r > 0 \), tj. \( h^{2} < S^{2} \), i \( h > 0 \)). U krajnjim tačkama \( h\to 0^{+} \) ili \( h\to S^{-} \) zapremina teži nuli, pa je maksimum unutar intervala.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto u krajnjim slučajevima zapremina ide u nulu?</summary>
+          <div class="detail-content"><p>Za \( h\to 0 \) kupa postaje pljosnata (visina nestaje). Za \( h\to S \) iz \( r^{2}=S^{2}-h^{2}\to 0 \) sledi da osnova nestaje. U oba slučaja \( V = \tfrac{1}{3}\pi r^{2} h \to 0 \). Pošto je \( V \) neprekidna i pozitivna unutar \( (0,S) \), maksimum je u nekoj unutrašnjoj tački.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Prvi izvod i kritična tačka</h3>
+      <p>Diferenciramo \( V(h) \) po \( h \):</p>
+      <div class="math-block">\[ V'(h) = \frac{\pi}{3}\bigl(S^{2} - 3h^{2}\bigr). \]</div>
+      <p>Postavimo \( V'(h) = 0 \):</p>
+      <div class="math-block">\[ S^{2} - 3h^{2} = 0 \;\Longrightarrow\; h^{2} = \frac{S^{2}}{3} \;\Longrightarrow\; h = \frac{S}{\sqrt{3}}. \]</div>
+      <p>(Negativno rešenje \( h = -S/\sqrt{3} \) odbacujemo, jer je visina pozitivna.)</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera da je to maksimum</h3>
+      <p>Drugi izvod:</p>
+      <div class="math-block">\[ V''(h) = \frac{\pi}{3}\cdot (-6h) = -2\pi h. \]</div>
+      <p>Za \( h = S/\sqrt{3} > 0 \) je \( V''(h) < 0 \), pa se u toj tački stvarno postiže <strong>maksimum</strong> funkcije \( V \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kako bi proverio bez drugog izvoda?</summary>
+          <div class="detail-content"><p>Posmatraj znak \( V'(h) = \tfrac{\pi}{3}(S^{2}-3h^{2}) \). Za \( h &lt; S/\sqrt{3} \) izraz je pozitivan (raste), za \( h &gt; S/\sqrt{3} \) je negativan (opada). Promena znaka iz \( + \) u \( - \) potvrđuje lokalni maksimum.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Poluprečnik u optimumu</h3>
+      <p>Iz \( r^{2} = S^{2} - h^{2} \) i \( h^{2} = S^{2}/3 \):</p>
+      <div class="math-block">\[ r^{2} = S^{2} - \frac{S^{2}}{3} = \frac{2 S^{2}}{3}. \]</div>
+      <p>Dakle \( r = S\sqrt{2/3} = \dfrac{S\sqrt{2}}{\sqrt{3}} \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Maksimalna zapremina</h3>
+      <p>Uvrštavamo \( r^{2} = 2S^{2}/3 \) i \( h = S/\sqrt{3} \) u \( V = \tfrac{1}{3}\pi r^{2} h \):</p>
+      <div class="math-block">\[ V_{\max} = \frac{1}{3}\,\pi\,\cdot \frac{2 S^{2}}{3}\,\cdot \frac{S}{\sqrt{3}} = \frac{2\pi S^{3}}{9\sqrt{3}}. \]</div>
+      <p>Racionalizacijom (množenjem sa \( \tfrac{\sqrt{3}}{\sqrt{3}} \)) ovo se može zapisati kao:</p>
+      <div class="math-block">\[ V_{\max} = \frac{2\pi S^{3}}{9\sqrt{3}} = \frac{2\sqrt{3}\,\pi S^{3}}{27}. \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Tip&shy;ična stereometrijska optimizacija: jedna geometrijska veza (ovde Pitagora \( r^{2}+h^{2}=S^{2} \)) eliminiše jednu od dve promenljive i pretvara višedimenzioni problem u jednu funkciju \( V(h) \) na intervalu \( (0,\,S) \). Otuda klasičan trik &mdash; izvod, kritična tačka, drugi izvod (ili promena znaka prvog), pa se u nađenu tačku uvrste izrazi za ostale veličine.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ V_{\max} = \frac{2\pi}{9\sqrt{3}}\, S^{3} = \frac{2\sqrt{3}\,\pi}{27}\, S^{3} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( \dfrac{\pi}{6}\, S^{3} \)</span>
+    <span class="answer-option" data-option="B">(B) \( \dfrac{\pi}{9}\, S^{3} \)</span>
+    <span class="answer-option" data-option="C">(C) \( \dfrac{\sqrt{2}\,\pi}{9}\, S^{3} \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( \dfrac{2\pi}{9\sqrt{3}}\, S^{3} \)</span>
+    <span class="answer-option" data-option="E">(E) \( \dfrac{\sqrt{3}\,\pi}{9}\, S^{3} \)</span>
+  </div>
+  <p class="verification">Numerička provera za \( S = 1 \): \( V_{\max} = 2\pi/(9\sqrt{3}) \approx 0{,}4031 \). Druge opcije: (A) \( \approx 0{,}524 \) (preveliko), (B) \( \approx 0{,}349 \), (C) \( \approx 0{,}494 \), (E) \( \approx 0{,}605 \). U \( h = S/\sqrt{3} \approx 0{,}577 \) i \( r^{2}=2/3 \) direktno: \( V = \tfrac{1}{3}\pi\cdot 0{,}6667 \cdot 0{,}577 \approx 0{,}4031 \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešna veza izvodnice:</strong> u pravoj kupi je \( r^{2}+h^{2}=S^{2} \) (Pitagora u osovinskom preseku). Koristiti \( r+h=S \) ili \( r\cdot h = S \) je tipična greška.</li>
+    <li><strong>Maksimum u \( h = S \):</strong> ako se zapremina pogrešno zapiše kao \( V = \tfrac{1}{3}\pi S^{2} h \) (kao da je \( r=S \)), čini se da je optimalno uzeti najveće \( h \). Ali \( r \) zavisi od \( h \), pa pri velikom \( h \) osnova nestaje.</li>
+    <li><strong>Pogrešno odbacivanje rešenja:</strong> \( S^{2}-3h^{2}=0 \) daje \( h = \pm S/\sqrt{3} \). Negativno odbacujemo jer je visina pozitivna; ne sme se odbaciti i pozitivno rešenje.</li>
+    <li><strong>Nepotpuna provera maksimuma:</strong> nužan uslov \( V'(h)=0 \) sam po sebi ne garantuje maksimum &mdash; treba još drugi izvod ili znak prvog izvoda. (U ovom problemu, krajnje vrednosti \( V \to 0 \) takođe potvrđuju da je kritična tačka maksimum.)</li>
+    <li><strong>Račun sa \( r \) i \( h \) različito:</strong> kada se izrazi \( r^{2}=2S^{2}/3 \) lako se pomeša \( r \) i \( r^{2} \). Pazite da u formulu za \( V \) ulazi \( r^{2} \), ne \( r \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Kakav je odnos visine \( h \) i poluprečnika \( r \) kupe sa maksimalnom zapreminom (uz fiksnu izvodnicu)? Da li ta optimalna kupa ima neki poseban geometrijski naziv? Pokušaj da odrediš i ugao \( \alpha \) između izvodnice i ose kupe u optimumu.</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>U optimumu je \( h = S/\sqrt{3} \), a \( r = S\sqrt{2}/\sqrt{3} \), pa je \( r/h = \sqrt{2} \), tj. poluprečnik je \( \sqrt{2} \) puta veći od visine. Za ugao \( \alpha \) između izvodnice i ose važi \( \cos\alpha = h/S = 1/\sqrt{3} \), tj. \( \alpha = \arccos(1/\sqrt{3}) \approx 54{,}7^{\circ} \). To je tzv. &bdquo;magični ugao&ldquo; koji se sreće i u trodimenzionoj geometriji (npr. ugao između prostorne dijagonale kocke i njenih stranica).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('coneInteractive');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  canvas.style.touchAction = 'none';
+
+  var W = canvas.width, H = canvas.height;
+
+  // Layout: left half = cross-section, right half = V(h) graph
+  var leftPad = 30;
+  var midGap = 30;
+  var leftW = (W - leftPad - midGap) * 0.46;   // cross-section panel width
+  var rightW = (W - leftPad - midGap) * 0.54;  // graph panel width
+  var leftX0 = leftPad;
+  var rightX0 = leftPad + leftW + midGap;
+  var topPad = 50;
+  var bottomPad = 110;
+  var panelH = H - topPad - bottomPad;
+
+  // Cross-section coordinates: apex at top, base centered.
+  // We use S = 1 (normalized). Map h ∈ [0, 1] to a vertical pixel range.
+  var crossLeft = leftX0 + 12;
+  var crossRight = leftX0 + leftW - 12;
+  var crossWidth = crossRight - crossLeft;
+  var crossCx = (crossLeft + crossRight) / 2;
+  var crossTop = topPad + 6;
+  var crossBottom = topPad + panelH - 36;
+  var crossPlotH = crossBottom - crossTop;
+
+  // We display height of triangle scaled relative to S.
+  // The triangle base (2r) and height (h) both depend on h (via r = sqrt(S^2 - h^2)).
+  // We'll pick a pixel scale L_PX = 280 px = S, so all geometries fit in left panel.
+  var SCALE = Math.min(crossPlotH / 1.05, crossWidth / 2.1); // px per unit (S = 1)
+
+  // Graph panel coordinates
+  var gxLeft = rightX0 + 50;
+  var gxRight = rightX0 + rightW - 16;
+  var gyTop = topPad + 28;
+  var gyBottom = topPad + panelH - 36;
+  var gW = gxRight - gxLeft;
+  var gH = gyBottom - gyTop;
+
+  // V(h) = (π/3)(1 - h^2) h, max at h = 1/√3 ≈ 0.5774, max V ≈ (2π)/(9√3) ≈ 0.4031
+  var H_OPT = 1 / Math.sqrt(3);
+  var V_OPT = (2 * Math.PI) / (9 * Math.sqrt(3));
+  var V_MAX_PLOT = V_OPT * 1.15; // y-axis upper bound
+
+  function Vh(h) { return (Math.PI / 3) * (1 - h * h) * h; }
+
+  // State
+  var hState = H_OPT; // start at the optimum so it's visually obvious
+  var dragging = false;
+  var GRAB_RADIUS = 22; // px
+
+  // Map cross-section: apex point (vertex of cone) sits at top of triangle.
+  // Total triangle height = h (in units), so in pixels: hPx = h * SCALE.
+  // We put the BASE (bottom of triangle) at fixed y = baseY, apex moves up.
+  function apexY(h) {
+    var baseY = crossBottom;
+    return baseY - h * SCALE;
+  }
+  function baseY() { return crossBottom; }
+  function rOf(h) { return Math.sqrt(Math.max(0, 1 - h * h)); }
+
+  // Map graph coordinates
+  function gxOf(h) { return gxLeft + (h / 1) * gW; }
+  function gyOf(v) { return gyBottom - (v / V_MAX_PLOT) * gH; }
+
+  function getPos(e) {
+    var rct = canvas.getBoundingClientRect();
+    var sx = canvas.width / rct.width;
+    var sy = canvas.height / rct.height;
+    var evt = e.touches ? e.touches[0] : e;
+    return { x: (evt.clientX - rct.left) * sx, y: (evt.clientY - rct.top) * sy };
+  }
+
+  function isNearApex(pos) {
+    var ax = crossCx;
+    var ay = apexY(hState);
+    return Math.hypot(pos.x - ax, pos.y - ay) < GRAB_RADIUS;
+  }
+
+  function constrainH(h) {
+    // Keep slightly inside (0, 1)
+    var eps = 0.04;
+    return Math.min(1 - eps, Math.max(eps, h));
+  }
+
+  function setHFromPos(pos) {
+    // Pixels above base map to height
+    var pxAboveBase = baseY() - pos.y;
+    var newH = pxAboveBase / SCALE;
+    hState = constrainH(newH);
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // ===== LEFT PANEL: cross-section =====
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Osovinski presek kupe', leftX0 + leftW / 2, 24);
+
+    // Ground line (base of triangle) extension
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(crossLeft, baseY());
+    ctx.lineTo(crossRight, baseY());
+    ctx.stroke();
+
+    // Compute current geometry
+    var h = hState;
+    var r = rOf(h);
+
+    // Triangle vertices in canvas coordinates
+    var apex = { x: crossCx, y: apexY(h) };
+    var leftBase = { x: crossCx - r * SCALE, y: baseY() };
+    var rightBase = { x: crossCx + r * SCALE, y: baseY() };
+
+    // Filled triangle
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.14);
+    ctx.beginPath();
+    ctx.moveTo(apex.x, apex.y);
+    ctx.lineTo(leftBase.x, leftBase.y);
+    ctx.lineTo(rightBase.x, rightBase.y);
+    ctx.closePath();
+    ctx.fill();
+
+    // Slant edges (izvodnice S)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(apex.x, apex.y);
+    ctx.lineTo(leftBase.x, leftBase.y);
+    ctx.moveTo(apex.x, apex.y);
+    ctx.lineTo(rightBase.x, rightBase.y);
+    ctx.stroke();
+
+    // Base (osnova): ellipse-like double line for "round base"
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(leftBase.x, leftBase.y);
+    ctx.lineTo(rightBase.x, rightBase.y);
+    ctx.stroke();
+
+    // Visina (axis from apex to base center): dashed
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 5]);
+    ctx.beginPath();
+    ctx.moveTo(apex.x, apex.y);
+    ctx.lineTo(crossCx, baseY());
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Right-angle marker at base center
+    var rmSize = 9;
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(crossCx, baseY() - rmSize);
+    ctx.lineTo(crossCx + rmSize, baseY() - rmSize);
+    ctx.lineTo(crossCx + rmSize, baseY());
+    ctx.stroke();
+
+    // Right half-base: r (red bracket)
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('r', (crossCx + rightBase.x) / 2, baseY() + 18);
+
+    // Visina label h
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('h', crossCx + 6, (apex.y + baseY()) / 2 + 4);
+
+    // Izvodnica label S (mid of right slant)
+    ctx.fillStyle = primary;
+    ctx.textAlign = 'left';
+    ctx.fillText('S', (apex.x + rightBase.x) / 2 + 5, (apex.y + rightBase.y) / 2 - 4);
+
+    // Optimum guide: ghost apex at h = H_OPT
+    var ghostY = baseY() - H_OPT * SCALE;
+    ctx.strokeStyle = cvAlpha('--sol-canvas-secondary', 0.55);
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([3, 4]);
+    ctx.beginPath();
+    ctx.moveTo(crossLeft + 4, ghostY);
+    ctx.lineTo(crossRight - 4, ghostY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.85);
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('h = S/√3', crossRight - 4, ghostY - 4);
+
+    // Draggable apex point (with glow)
+    ctx.beginPath();
+    ctx.arc(apex.x, apex.y, 14, 0, Math.PI * 2);
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.22);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(apex.x, apex.y, 7, 0, Math.PI * 2);
+    ctx.fillStyle = primary;
+    ctx.fill();
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('prevuci', apex.x + 16, apex.y - 6);
+
+    // Vertex label V at apex
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('V', apex.x, apex.y - 18);
+
+    // Numerical readout under cross-section
+    var v = Vh(h);
+    var info1 = 'h/S = ' + h.toFixed(3) + ',  r/S = ' + r.toFixed(3);
+    var info2 = 'V/S³ = ' + v.toFixed(4);
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(info1, leftX0 + leftW / 2, H - bottomPad + 28);
+    ctx.fillStyle = (Math.abs(h - H_OPT) < 0.015) ? accent : text;
+    ctx.fillText(info2, leftX0 + leftW / 2, H - bottomPad + 50);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('V_max/S³ = 2π/(9√3) ≈ 0,4031 (u h = S/√3 ≈ 0,577)',
+      leftX0 + leftW / 2, H - bottomPad + 72);
+
+    // ===== RIGHT PANEL: V(h) graph =====
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Grafik V(h) = (π/3)(S² − h²) h, S = 1', rightX0 + rightW / 2, 24);
+
+    // Plot background grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 0.6;
+    ctx.beginPath();
+    for (var k = 0; k <= 5; k++) {
+      var xv = k / 5;
+      ctx.moveTo(gxOf(xv), gyTop);
+      ctx.lineTo(gxOf(xv), gyBottom);
+    }
+    var yticks = [0.1, 0.2, 0.3, 0.4];
+    for (var i = 0; i < yticks.length; i++) {
+      var yv = yticks[i];
+      ctx.moveTo(gxLeft, gyOf(yv));
+      ctx.lineTo(gxRight, gyOf(yv));
+    }
+    ctx.stroke();
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(gxLeft, gyTop);
+    ctx.lineTo(gxLeft, gyBottom);
+    ctx.lineTo(gxRight, gyBottom);
+    ctx.stroke();
+
+    // x-axis ticks
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var k2 = 0; k2 <= 5; k2++) {
+      var xv2 = k2 / 5;
+      ctx.fillText(xv2.toFixed(1), gxOf(xv2), gyBottom + 14);
+    }
+    // y-axis ticks
+    ctx.textAlign = 'right';
+    for (var i2 = 0; i2 < yticks.length; i2++) {
+      ctx.fillText(yticks[i2].toFixed(1), gxLeft - 6, gyOf(yticks[i2]) + 4);
+    }
+    // axis labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('h / S', (gxLeft + gxRight) / 2, gyBottom + 32);
+    ctx.save();
+    ctx.translate(gxLeft - 34, (gyTop + gyBottom) / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('V / S³', 0, 0);
+    ctx.restore();
+
+    // Curve V(h)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    var first = true;
+    for (var s = 0; s <= 200; s++) {
+      var hv = s / 200;
+      var vv = Vh(hv);
+      var px = gxOf(hv);
+      var py = gyOf(vv);
+      if (first) { ctx.moveTo(px, py); first = false; }
+      else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+
+    // Optimum vertical line
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(gxOf(H_OPT), gyTop);
+    ctx.lineTo(gxOf(H_OPT), gyBottom);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Optimum marker
+    ctx.beginPath();
+    ctx.arc(gxOf(H_OPT), gyOf(V_OPT), 5, 0, Math.PI * 2);
+    ctx.fillStyle = secondary;
+    ctx.fill();
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('max', gxOf(H_OPT) + 8, gyOf(V_OPT) - 6);
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillText('h = S/√3', gxOf(H_OPT) + 8, gyBottom - 4);
+
+    // Current point on the curve (green)
+    ctx.beginPath();
+    ctx.arc(gxOf(h), gyOf(v), 13, 0, Math.PI * 2);
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.25);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(gxOf(h), gyOf(v), 6, 0, Math.PI * 2);
+    ctx.fillStyle = accent;
+    ctx.fill();
+
+    // Vertical drop from current point to x-axis
+    ctx.strokeStyle = cvAlpha('--sol-canvas-accent', 0.6);
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(gxOf(h), gyOf(v));
+    ctx.lineTo(gxOf(h), gyBottom);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  draw();
+
+  canvas.addEventListener('mousedown', function(e) {
+    var pos = getPos(e);
+    if (isNearApex(pos)) { dragging = true; canvas.style.cursor = 'grabbing'; }
+  });
+  canvas.addEventListener('mousemove', function(e) {
+    var pos = getPos(e);
+    if (dragging) { setHFromPos(pos); draw(); }
+    else { canvas.style.cursor = isNearApex(pos) ? 'grab' : 'default'; }
+  });
+  canvas.addEventListener('mouseup', function() { dragging = false; canvas.style.cursor = 'default'; });
+  canvas.addEventListener('mouseleave', function() { dragging = false; canvas.style.cursor = 'default'; });
+
+  canvas.addEventListener('touchstart', function(e) {
+    var pos = getPos(e);
+    if (isNearApex(pos)) { dragging = true; e.preventDefault(); }
+  }, { passive: false });
+  canvas.addEventListener('touchmove', function(e) {
+    if (!dragging) return;
+    e.preventDefault();
+    var pos = getPos(e);
+    setHFromPos(pos); draw();
+  }, { passive: false });
+  canvas.addEventListener('touchend', function() { dragging = false; });
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Maksimalna zapremina prave kupe sa zadatom izvodnicom",
+  "subject": "math",
+  "unit": "calculus",
+  "topic_tags": ["optimizacija", "stereometrija", "kupa", "izvodi", "zapremina"]
+}
+BRAINSPARK_META-->

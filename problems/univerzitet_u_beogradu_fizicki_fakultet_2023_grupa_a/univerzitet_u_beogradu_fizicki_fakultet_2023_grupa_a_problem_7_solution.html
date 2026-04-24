@@ -1,0 +1,426 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Vrednost izraza
+    E(x) = [(x - 1) / (⁴√x³ + √x)] · [(√x + ⁴√x) / (⁴√x + 1)] · ⁴√x³ + 1
+  za x = 16. Opcije: (A) 20, (B) √20, (C) 21, (D) ⁴√20. Tačan odgovor: (C) 21.
+
+  VAŽNA NAPOMENA O PARSIRANJU: Poslednji "+ 1" NIJE deo razlomka niti faktora — to je
+  sabirak DODAT NA KRAJU, nakon što pomnožimo prva tri faktora. Dakle:
+    E(x) = { [(x-1)/(⁴√x³ + √x)] · [(√x + ⁴√x)/(⁴√x + 1)] · ⁴√x³ } + 1
+
+  Rešenje preko smene t = ⁴√x, t > 0:
+    Tada je √x = t², ⁴√x³ = t³, x = t⁴.
+    x - 1 = t⁴ - 1 = (t² - 1)(t² + 1) = (t - 1)(t + 1)(t² + 1).
+    Prvi imenilac: ⁴√x³ + √x = t³ + t² = t²(t + 1).
+    Prvi razlomak: [(t - 1)(t + 1)(t² + 1)] / [t²(t + 1)] = (t - 1)(t² + 1) / t².
+    Drugi brojilac: √x + ⁴√x = t² + t = t(t + 1).
+    Drugi razlomak: t(t + 1) / (t + 1) = t.
+    Proizvod razlomaka: [(t - 1)(t² + 1) / t²] · t = (t - 1)(t² + 1) / t.
+    Pomnožimo sa ⁴√x³ = t³: [(t - 1)(t² + 1) / t] · t³ = (t - 1)(t² + 1) · t².
+    Na kraju dodajemo 1: E = (t - 1)(t² + 1) · t² + 1.
+
+  Za x = 16 imamo t = ⁴√16 = 2:
+    (2 - 1)(4 + 1) · 4 + 1 = 1 · 5 · 4 + 1 = 20 + 1 = 21. ✓
+
+  Direktna provera bez smene (x = 16):
+    ⁴√16 = 2, √16 = 4, ⁴√16³ = ⁴√4096 = 8.
+    Prvi razlomak: (16 - 1)/(8 + 4) = 15/12 = 5/4.
+    Drugi razlomak: (4 + 2)/(2 + 1) = 6/3 = 2.
+    (5/4) · 2 · 8 + 1 = (5/4) · 16 + 1 = 20 + 1 = 21. ✓
+
+  Uvid: Izraz je pripremljen tako da nakon uvođenja smene t = ⁴√x nestaju koreni,
+  a razlika kvadrata/kubova faktoriše brojilac. Celi proizvod razlomaka se svodi
+  na (t - 1)(t² + 1) / t, što pomnoženo sa t³ daje (t⁴ - 1)·t² / t² + ... zapravo
+  (t⁴ - 1) = 15 za t = 2, pa 15·t²/t · (?) — ne, najčistije je pisati (t-1)(t²+1)·t² = 20, +1 = 21.
+
+  Vizuelni prikaz (STATIC): mapa transformacija — dolazni blok, smena t = ⁴√x, faktorizacija
+  brojioca, skraćivanja, umnožak = 20, +1 = 21. Ovo nije problem za drag interakciju.
+</script>
+
+<h1 data-card="problem-title">Algebarsko uprošćavanje izraza sa korenima i smena ⁴√x = t</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra &mdash; četvrti i kvadratni koreni, smena promenljive, faktorizacija razlike kvadrata</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Vrednost izraza</p>
+  <div class="math-block">\[ \dfrac{x - 1}{\sqrt[4]{x^3} + \sqrt{x}} \cdot \dfrac{\sqrt{x} + \sqrt[4]{x}}{\sqrt[4]{x} + 1} \cdot \sqrt[4]{x^3} \;+\; 1 \]</div>
+  <p>za \( x = 16 \) je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 20 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \sqrt{20} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 21 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \sqrt[4]{20} \)</span>
+    </div>
+  </div>
+  <p class="note">Pažnja: poslednji sabirak \( +1 \) nije unutar razlomka &mdash; on se dodaje na kraju, posle množenja tri faktora.</p>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Uvešćemo smenu \( t = \sqrt[4]{x} \), čime svi koreni postaju stepeni promenljive \( t \): \( \sqrt{x} = t^2 \), \( \sqrt[4]{x^3} = t^3 \), \( x = t^4 \). Zatim faktorišemo brojilac \( t^4 - 1 = (t-1)(t+1)(t^2+1) \) i izvlačimo zajedničke činioce iz imenioca. Posle skraćivanja se celo proizvod-čudo svodi na \( (t-1)(t^2+1)\cdot t^2 \), na šta dodajemo \( +1 \). Za \( x = 16 \) je \( t = 2 \), pa rezultat možemo brzo izračunati.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Veza korena i stepena:</strong> \( \sqrt[n]{x^m} = x^{m/n} \) za \( x \ge 0 \). Otuda \( \sqrt[4]{x} = x^{1/4} \), \( \sqrt{x} = x^{1/2} \), \( \sqrt[4]{x^3} = x^{3/4} \).</li>
+        <li><strong>Smena promenljive:</strong> ako uvedemo \( t = \sqrt[4]{x} \) (\( t \ge 0 \)), onda je \( x = t^4 \), \( \sqrt{x} = t^2 \), \( \sqrt[4]{x^3} = t^3 \). Svi iracionalni sabirci postaju polinomski.</li>
+        <li><strong>Razlika kvadrata:</strong> \( a^2 - b^2 = (a-b)(a+b) \). Primenom dvaput: \( t^4 - 1 = (t^2-1)(t^2+1) = (t-1)(t+1)(t^2+1) \).</li>
+        <li><strong>Izvlačenje zajedničkog činioca:</strong> \( t^3 + t^2 = t^2(t+1) \) i \( t^2 + t = t(t+1) \) &mdash; ovo je ključno za skraćivanja u oba razlomka.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-p7" width="720" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Dijagram toka: smena \( t = \sqrt[4]{x} \) pretvara sve korene u stepene, faktorizacija \( t^4 - 1 = (t-1)(t+1)(t^2+1) \) omogućava skraćivanja, a za \( x = 16 \) je \( t = 2 \) pa sve postaje aritmetika.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Uvodimo smenu \( t = \sqrt[4]{x} \)</h3>
+      <p>Pošto nam u izrazu stoje tri različita korena (\( \sqrt[4]{x} \), \( \sqrt{x} \) i \( \sqrt[4]{x^3} \)), pametno je da ih sve izrazimo preko jedne promenljive. Biramo najfiniju jedinicu &mdash; \( t = \sqrt[4]{x} \), \( t \ge 0 \). Tada važi:</p>
+      <div class="math-block">\[ \sqrt[4]{x} = t, \quad \sqrt{x} = t^2, \quad \sqrt[4]{x^3} = t^3, \quad x = t^4. \]</div>
+      <p>Za \( x = 16 \) imamo \( t = \sqrt[4]{16} = 2 \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš \( t = \sqrt[4]{x} \), a ne \( t = \sqrt{x} \)?</summary>
+          <div class="detail-content"><p>Jer se u izrazu pojavljuje <em>i</em> \( \sqrt[4]{x} \) <em>i</em> \( \sqrt{x} \). Ako krenemo od \( t = \sqrt{x} \), \( \sqrt[4]{x} \) ostaje kao \( \sqrt{t} \) i ponovo imamo koren. Ako krenemo od \( t = \sqrt[4]{x} \), i \( \sqrt{x} = t^2 \) i sve ostalo postaje polinomsko &mdash; biramo najfiniju jedinicu.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Prepisujemo izraz preko \( t \)</h3>
+      <p>Zamenjujemo sve korene i razlažemo brojilac prvog razlomka. Ključno je \( x - 1 = t^4 - 1 = (t-1)(t+1)(t^2+1) \).</p>
+      <div class="math-block">\[ \dfrac{x - 1}{\sqrt[4]{x^3} + \sqrt{x}} \cdot \dfrac{\sqrt{x} + \sqrt[4]{x}}{\sqrt[4]{x} + 1} \cdot \sqrt[4]{x^3} \;+\; 1 \;=\; \dfrac{(t-1)(t+1)(t^2+1)}{t^3 + t^2} \cdot \dfrac{t^2 + t}{t + 1} \cdot t^3 \;+\; 1. \]</div>
+      <p>Primetimo odmah: \( t^3 + t^2 = t^2(t+1) \) i \( t^2 + t = t(t+1) \) &mdash; oba imenioca imaju \( (t+1) \), što najavljuje fina skraćivanja.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Skraćujemo prvi razlomak</h3>
+      <p>U prvom razlomku izvlačimo \( t^2(t+1) \) iz imenioca i skraćujemo \( (t+1) \) iz brojioca i imenioca:</p>
+      <div class="math-block">\[ \dfrac{(t-1)(t+1)(t^2+1)}{t^2(t+1)} \;=\; \dfrac{(t-1)(t^2+1)}{t^2}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: sme li se skratiti \( (t+1) \)?</summary>
+          <div class="detail-content"><p>Da, jer je \( t = \sqrt[4]{x} \ge 0 \), pa je \( t + 1 \ge 1 &gt; 0 \) i nikada nije nula. Za \( x = 16 \) je \( t + 1 = 3 \neq 0 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Skraćujemo drugi razlomak</h3>
+      <p>U drugom razlomku izvlačimo \( t \) iz brojioca i skraćujemo \( (t+1) \):</p>
+      <div class="math-block">\[ \dfrac{t^2 + t}{t + 1} \;=\; \dfrac{t(t+1)}{t+1} \;=\; t. \]</div>
+      <p>Drugi razlomak se, dakle, cepa na sam \( t \) &mdash; veoma uredno.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Spajamo tri faktora</h3>
+      <p>Množimo rezultate iz 3. i 4. koraka, pa zatim sa \( \sqrt[4]{x^3} = t^3 \):</p>
+      <div class="math-block">\[ \dfrac{(t-1)(t^2+1)}{t^2} \cdot t \cdot t^3 \;=\; \dfrac{(t-1)(t^2+1) \cdot t^4}{t^2} \;=\; (t-1)(t^2+1) \cdot t^2. \]</div>
+      <p>Koreni su u potpunosti nestali; ostao je čist polinom po \( t \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliko je \( (t-1)(t^2+1) \cdot t^2 \) razvijeno?</summary>
+          <div class="detail-content"><p>\( (t-1)(t^2+1) = t^3 + t - t^2 - 1 = t^3 - t^2 + t - 1 \). Pomnoženo sa \( t^2 \) daje \( t^5 - t^4 + t^3 - t^2 \). Za \( t = 2 \): \( 32 - 16 + 8 - 4 = 20 \). ✓</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Dodajemo sabirak \( +1 \) i uvrštavamo \( t = 2 \)</h3>
+      <p>Ceo izraz glasi:</p>
+      <div class="math-block">\[ E(x) \;=\; (t-1)(t^2+1) \cdot t^2 \;+\; 1. \]</div>
+      <p>Za \( x = 16 \) je \( t = 2 \):</p>
+      <div class="math-block">\[ E(16) \;=\; (2-1)\cdot(2^2+1)\cdot 2^2 \;+\; 1 \;=\; 1 \cdot 5 \cdot 4 + 1 \;=\; 20 + 1 \;=\; 21. \]</div>
+      <p>Napomena: bez sabirka \( +1 \) dobili bismo \( 20 \) &mdash; to je baš zamka koja vodi na pogrešan odgovor (A).</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kad god u izrazu srećemo korene različitih indeksa istog broja (\( \sqrt[4]{x}, \sqrt{x}, \sqrt[4]{x^3} \)), najbolji potez je smena <strong>najfinijim</strong> korenom &mdash; ovde \( t = \sqrt[4]{x} \). Svi ostali koreni tada postaju stepeni \( t^2, t^3, t^4 \), pa problem prelazi iz iracionalnog u polinomski. Ostatak je klasična faktorizacija razlike \( t^4 - 1 \) i skraćivanja preko \( (t+1) \).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ E(16) \;=\; 20 + 1 \;=\; 21 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 20 \)</span>
+    <span class="answer-option" data-option="B">(B) \( \sqrt{20} \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( 21 \)</span>
+    <span class="answer-option" data-option="D">(D) \( \sqrt[4]{20} \)</span>
+  </div>
+  <p class="verification">Direktna numerička provera za \( x = 16 \): \( \sqrt[4]{16} = 2 \), \( \sqrt{16} = 4 \), \( \sqrt[4]{16^3} = \sqrt[4]{4096} = 8 \). Prvi razlomak \( = 15/12 = 5/4 \); drugi razlomak \( = 6/3 = 2 \). Proizvod sa \( 8 \): \( (5/4)\cdot 2 \cdot 8 = 20 \). Dodavanjem \( 1 \) dobijamo \( 21 \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pripajanje sabirka \( +1 \) razlomku &mdash; pogrešno čitanje kao \( \sqrt[4]{x^3} + 1 \) u brojiocu. Posle množenja dobijemo \( 20 \), pa ko zaboravi na \( +1 \) odlazi na (A).</li>
+    <li>Smena \( t = \sqrt{x} \) umesto \( t = \sqrt[4]{x} \). Tada \( \sqrt[4]{x} = \sqrt{t} \) i opet imamo koren &mdash; gubi se cela poenta smene.</li>
+    <li>Pokušaj da se \( \sqrt[4]{x^3} \) skrati sa \( \sqrt{x} \) kao da su isti broj. Nisu: za \( x = 16 \) su to \( 8 \) i \( 4 \).</li>
+    <li>Pogrešna faktorizacija \( t^4 - 1 = (t-1)^4 \) ili \( (t^2 - 1)^2 \). Tačno je \( t^4 - 1 = (t-1)(t+1)(t^2+1) \) &mdash; dvaput primenjena razlika kvadrata.</li>
+    <li>Skraćivanje \( (t+1) \) iz imenioca bez proveravanja da li je \( t + 1 \ne 0 \). Ovde je bezbedno jer \( t \ge 0 \), ali generalno treba obratiti pažnju.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Pokaži da za svako \( x \ge 0 \) važi</p>
+  <div class="math-block">\[ \dfrac{x - 1}{\sqrt[4]{x^3} + \sqrt{x}} \cdot \dfrac{\sqrt{x} + \sqrt[4]{x}}{\sqrt[4]{x} + 1} \cdot \sqrt[4]{x^3} \;=\; x\sqrt{x} \,-\, x \,+\, \sqrt{x} \,-\, 1. \]</div>
+  <p>Zatim pronađi za koje \( x \) je vrednost ovog razlomačkog izraza (bez \( +1 \)) jednaka \( 80 \).</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Sa istom smenom \( t = \sqrt[4]{x} \) dobili smo \( (t-1)(t^2+1)\cdot t^2 = t^5 - t^4 + t^3 - t^2 = x\sqrt{x} - x + \sqrt{x} - 1 \). Za vrednost \( 80 \) tražimo \( t^5 - t^4 + t^3 - t^2 = 80 \). Pokušaj \( t = 3 \): \( 243 - 81 + 27 - 9 = 180 \) (previše). Pokušaj \( t = \sqrt[4]{16\cdot\!?} \) &mdash; interpoliraj između 2 i 3. Preciznije, treba numerički ili kubnom jednačinom za \( t^2 \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-p7');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function drawBox(x, y, w, h, fillColor, strokeColor, label, sub, labelColor) {
+    ctx.fillStyle = fillColor;
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(x, y, w, h, 8);
+    else ctx.rect(x, y, w, h);
+    ctx.fill();
+    ctx.strokeStyle = strokeColor;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(x, y, w, h, 8);
+    else ctx.rect(x, y, w, h);
+    ctx.stroke();
+    ctx.fillStyle = labelColor;
+    ctx.font = 'bold 14px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    if (sub) {
+      ctx.fillText(label, x + w / 2, y + h / 2 - 9);
+      ctx.fillStyle = cv('--sol-canvas-muted');
+      ctx.font = '11px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.fillText(sub, x + w / 2, y + h / 2 + 10);
+    } else {
+      ctx.fillText(label, x + w / 2, y + h / 2);
+    }
+    ctx.textBaseline = 'alphabetic';
+  }
+
+  function drawArrow(x1, y1, x2, y2, color) {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    var angle = Math.atan2(y2 - y1, x2 - x1);
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - 10 * Math.cos(angle - 0.35), y2 - 10 * Math.sin(angle - 0.35));
+    ctx.lineTo(x2 - 10 * Math.cos(angle + 0.35), y2 - 10 * Math.sin(angle + 0.35));
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.fill();
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Smena t = ⁴√x pretvara korene u stepene, a onda sve „pada" u polinom', W / 2, 26);
+
+    // ----- ROW 1: substitution mapping -----
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 13px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('1) Smena: t = ⁴√x  (za x = 16 → t = 2)', 30, 58);
+
+    var row1Y = 72;
+    drawBox(30,  row1Y, 150, 54, cvAlpha('--sol-canvas-primary', 0.12), primary, '⁴√x  =  t', 't = 2', primary);
+    drawBox(200, row1Y, 150, 54, cvAlpha('--sol-canvas-primary', 0.12), primary, '√x  =  t²', 't² = 4', primary);
+    drawBox(370, row1Y, 170, 54, cvAlpha('--sol-canvas-primary', 0.12), primary, '⁴√x³  =  t³', 't³ = 8', primary);
+    drawBox(560, row1Y, 130, 54, cvAlpha('--sol-canvas-primary', 0.12), primary, 'x  =  t⁴', 't⁴ = 16', primary);
+
+    // ----- ROW 2: factoring numerator -----
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 13px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('2) Faktorizacija: x − 1 = t⁴ − 1 = (t − 1)(t + 1)(t² + 1)', 30, 156);
+
+    var row2Y = 170;
+    drawBox(30, row2Y, 180, 54, cvAlpha('--sol-canvas-secondary', 0.14), secondary, 't⁴ − 1', 'razlika kvadrata', secondary);
+    drawArrow(213, row2Y + 27, 253, row2Y + 27, muted);
+    drawBox(258, row2Y, 200, 54, cvAlpha('--sol-canvas-secondary', 0.14), secondary, '(t² − 1)(t² + 1)', 'još jednom', secondary);
+    drawArrow(461, row2Y + 27, 501, row2Y + 27, muted);
+    drawBox(506, row2Y, 190, 54, cvAlpha('--sol-canvas-secondary', 0.22), secondary, '(t−1)(t+1)(t²+1)', 'konačna faktorizacija', secondary);
+
+    // ----- ROW 3: two fractions simplifying -----
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('3) Skraćivanja u razlomcima (skraćuje se (t + 1))', 30, 254);
+
+    var row3Y = 268;
+    // First fraction
+    drawBox(30, row3Y, 210, 62, cvAlpha('--sol-canvas-accent', 0.12), accent, '(t−1)(t+1)(t²+1) / t²(t+1)', 'prvi razlomak', accent);
+    drawArrow(243, row3Y + 31, 283, row3Y + 31, muted);
+    drawBox(288, row3Y, 180, 62, cvAlpha('--sol-canvas-accent', 0.22), accent, '(t−1)(t²+1) / t²', 'posle skraćivanja', accent);
+
+    var row3Y2 = row3Y + 80;
+    // Second fraction
+    drawBox(30, row3Y2, 210, 62, cvAlpha('--sol-canvas-accent', 0.12), accent, 't(t+1) / (t+1)', 'drugi razlomak', accent);
+    drawArrow(243, row3Y2 + 31, 283, row3Y2 + 31, muted);
+    drawBox(288, row3Y2, 180, 62, cvAlpha('--sol-canvas-accent', 0.22), accent, '=  t', 'svodi se na t', accent);
+
+    // Multiplication by t^3 on the right
+    drawBox(495, row3Y + 20, 200, 62, cvAlpha('--sol-canvas-highlight', 0.15), highlight, '· t³  = ⁴√x³', 'treći faktor', highlight);
+    // Final combined
+    drawBox(495, row3Y2 + 20, 200, 62, cvAlpha('--sol-canvas-highlight', 0.22), highlight, '(t−1)(t²+1) · t²', 'posle množenja', highlight);
+
+    // ----- ROW 4: arithmetic evaluation at t = 2 -----
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 13px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('4) Uvrštavamo t = 2 i dodajemo sabirak  + 1', 30, 448);
+
+    var row4Y = 462;
+    drawBox(30,  row4Y, 130, 54, cvAlpha('--sol-canvas-warning', 0.14), warning, '(2 − 1)', '= 1', warning);
+    drawBox(175, row4Y, 130, 54, cvAlpha('--sol-canvas-warning', 0.14), warning, '(4 + 1)', '= 5', warning);
+    drawBox(320, row4Y, 130, 54, cvAlpha('--sol-canvas-warning', 0.14), warning, 't² = 4', '= 4', warning);
+    drawArrow(453, row4Y + 27, 486, row4Y + 27, muted);
+    drawBox(491, row4Y, 100, 54, cvAlpha('--sol-canvas-accent', 0.22), accent, '= 20', 'proizvod', accent);
+    drawArrow(594, row4Y + 27, 624, row4Y + 27, muted);
+    drawBox(629, row4Y, 62, 54, cvAlpha('--sol-canvas-accent', 0.35), accent, '+1', null, accent);
+
+    // Big result
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.15);
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(260, H - 54, 200, 38, 10);
+    else ctx.rect(260, H - 54, 200, 38);
+    ctx.fill();
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(260, H - 54, 200, 38, 10);
+    else ctx.rect(260, H - 54, 200, 38);
+    ctx.stroke();
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 18px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('E(16)  =  21', 360, H - 35);
+    ctx.textBaseline = 'alphabetic';
+
+    // Legend
+    var legY = H - 10;
+    ctx.textAlign = 'left';
+    ctx.font = '11px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = primary;   ctx.fillRect(30, legY - 11, 10, 10);
+    ctx.fillStyle = muted;     ctx.fillText('smena', 45, legY - 3);
+    ctx.fillStyle = secondary; ctx.fillRect(120, legY - 11, 10, 10);
+    ctx.fillStyle = muted;     ctx.fillText('faktorizacija', 135, legY - 3);
+    ctx.fillStyle = accent;    ctx.fillRect(240, legY - 11, 10, 10);
+    ctx.fillStyle = muted;     ctx.fillText('skraćivanje / proizvod', 255, legY - 3);
+    ctx.fillStyle = highlight; ctx.fillRect(420, legY - 11, 10, 10);
+    ctx.fillStyle = muted;     ctx.fillText('treći faktor', 435, legY - 3);
+    ctx.fillStyle = warning;   ctx.fillRect(520, legY - 11, 10, 10);
+    ctx.fillStyle = muted;     ctx.fillText('aritmetika za t = 2', 535, legY - 3);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Uprošćavanje izraza sa korenima i smena t = ⁴√x, vrednost za x = 16",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["koreni", "smena promenljive", "faktorizacija", "razlika kvadrata", "skraćivanje razlomaka"]
+}
+BRAINSPARK_META-->

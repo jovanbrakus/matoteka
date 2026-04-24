@@ -1,0 +1,578 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Count solutions of cos(x)cos(pi/5) + sin(x)sin(pi/5) = sqrt(3)/2 in [-pi/4, 9pi/4].
+  (A) 4  (B) 2  (C) 1  (D) 3  (E) 0
+
+  Step 1: Recognize RHS of cosine subtraction formula:
+    cos(A - B) = cos(A)cos(B) + sin(A)sin(B).
+  With A = x, B = pi/5, equation becomes:
+    cos(x - pi/5) = sqrt(3)/2.
+
+  Step 2: General solution of cos(theta) = sqrt(3)/2:
+    theta = +/- pi/6 + 2k*pi.
+  So x - pi/5 = +/- pi/6 + 2k*pi.
+  => x = pi/5 + pi/6 + 2k*pi = 11pi/30 + 2k*pi  (Family 1)
+  => x = pi/5 - pi/6 + 2k*pi = pi/30 + 2k*pi     (Family 2)
+
+  Common denominator: pi/5 = 6pi/30; pi/6 = 5pi/30.
+    6pi/30 + 5pi/30 = 11pi/30.
+    6pi/30 - 5pi/30 = pi/30.
+
+  Step 3: Find which fall in [-pi/4, 9pi/4] = [-0.7854, 7.0686].
+  In units of pi/30: interval = [-7.5pi/30, 67.5pi/30].
+
+  Family 2: x = pi/30 + 2k*pi = (1 + 60k) * pi/30.
+    k = 0: pi/30 ≈ 0.1047 — in [-0.785, 7.069]? YES.
+    k = 1: 61pi/30 ≈ 6.388 — YES.
+    k = -1: -59pi/30 ≈ -6.178 — NO (below -0.785).
+    k = 2: 121pi/30 ≈ 12.67 — NO.
+
+  Family 1: x = 11pi/30 + 2k*pi = (11 + 60k) * pi/30.
+    k = 0: 11pi/30 ≈ 1.152 — in [-0.785, 7.069]? YES.
+    k = 1: 71pi/30 ≈ 7.435 — compare to 9pi/4 = 67.5pi/30 ≈ 7.0686. 71 > 67.5, so NO.
+    k = -1: -49pi/30 ≈ -5.131 — NO.
+
+  Total count: 3 solutions: pi/30, 11pi/30, 61pi/30.
+  Answer: (D) 3.
+
+  Verification (numerical):
+    cos(pi/30 - pi/5) = cos(pi/30 - 6pi/30) = cos(-5pi/30) = cos(pi/6) = sqrt(3)/2. ✓
+    cos(11pi/30 - pi/5) = cos(5pi/30) = cos(pi/6) = sqrt(3)/2. ✓
+    cos(61pi/30 - pi/5) = cos(55pi/30) = cos(11pi/6) = cos(-pi/6) = sqrt(3)/2. ✓
+
+  For k=1 in Family 1: x = 71pi/30. cos(71pi/30 - 6pi/30) = cos(65pi/30) = cos(13pi/6) = cos(pi/6) = sqrt(3)/2, yes it IS a solution, but it falls OUTSIDE [-pi/4, 9pi/4] since 71pi/30 > 67.5pi/30. So correctly rejected.
+
+  Visual: Graph y = cos(x - pi/5) over [-pi/4, 9pi/4] with horizontal line y = sqrt(3)/2 ≈ 0.866. Show the 3 intersection points.
+
+  Common pitfalls:
+  - Not recognizing cos subtraction formula.
+  - Getting general solution wrong (forgetting +/- sign).
+  - Confusing interval length 5pi/2 with 2pi; this is 1.25 periods so up to 3 solutions per family is possible, but since intervals don't align exactly, we have to check endpoints.
+  - Missing that k=1 of Family 1 is just barely outside (71pi/30 vs 67.5pi/30).
+  - Interval is CLOSED (square brackets), so endpoints count if a solution lands on them (neither does here).
+
+  Category: trigonometric equations, cosine subtraction formula, counting solutions in interval.
+</script>
+
+<h1 data-card="problem-title">Broj rešenja trigonometrijske jednačine u intervalu</h1>
+<p data-card="problem-subtitle" class="subtitle">Trigonometrija &mdash; adicione formule i brojanje rešenja</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Broj rešenja jednačine</p>
+  <div class="math-block">\[ \cos x \cos \frac{\pi}{5} + \sin x \sin \frac{\pi}{5} = \frac{\sqrt{3}}{2} \]</div>
+  <p>koja pripadaju intervalu \( \left[-\dfrac{\pi}{4},\, \dfrac{9\pi}{4}\right] \) je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 4 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 0 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Prepoznajemo da je leva strana razvoj adicione formule za \( \cos(x - \pi/5) \), pa jednačinu svodimo na \( \cos(x - \pi/5) = \sqrt{3}/2 \). Pišemo opšte rešenje u obliku dve familije, pa brojimo koja od njih leže u zadatom intervalu dužine \( 5\pi/2 \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Adiciona formula za kosinus razlike:</strong> \( \cos(A - B) = \cos A \cos B + \sin A \sin B \).</li>
+        <li><strong>Opšte rešenje jednačine \( \cos\theta = c \) za \( |c| \le 1 \):</strong> \( \theta = \pm \arccos c + 2k\pi,\; k \in \mathbb{Z} \).</li>
+        <li><strong>Specijalno:</strong> \( \cos\theta = \dfrac{\sqrt{3}}{2} \iff \theta = \pm \dfrac{\pi}{6} + 2k\pi \).</li>
+        <li><strong>Period:</strong> \( \cos(\cdot) \) je periodična funkcija sa periodom \( 2\pi \); dužina zadatog intervala je \( \dfrac{9\pi}{4} - \left(-\dfrac{\pi}{4}\right) = \dfrac{5\pi}{2} = 1{,}25 \cdot 2\pi \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="cosGraph" width="760" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Grafik funkcije \( y = \cos(x - \pi/5) \) nad intervalom \( [-\pi/4,\, 9\pi/4] \) i horizontalna prava \( y = \sqrt{3}/2 \). Presečne tačke su upravo rešenja jednačine &mdash; vidimo ih tačno \( 3 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Prepoznajemo adicionu formulu za kosinus razlike</h3>
+      <p>Leva strana jednačine ima tačno oblik adicione formule</p>
+      <div class="math-block">\[ \cos A \cos B + \sin A \sin B = \cos(A - B). \]</div>
+      <p>Kod nas je \( A = x \) i \( B = \dfrac{\pi}{5} \), pa jednačina postaje:</p>
+      <div class="math-block">\[ \cos\!\left(x - \frac{\pi}{5}\right) = \frac{\sqrt{3}}{2}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koja je razlika između \( \cos(A-B) \) i \( \cos(A+B) \)?</summary>
+          <div class="detail-content"><p>\( \cos(A-B) = \cos A \cos B + \sin A \sin B \) (plus između), dok je \( \cos(A+B) = \cos A \cos B - \sin A \sin B \) (minus između). Znak između članova je presudan za razlikovanje.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Pišemo opšte rešenje jednačine \( \cos\theta = \sqrt{3}/2 \)</h3>
+      <p>Uvedemo zamenu \( \theta = x - \dfrac{\pi}{5} \). Jednačina \( \cos\theta = \dfrac{\sqrt{3}}{2} \) ima dve familije rešenja:</p>
+      <div class="math-block">\[ \theta = \frac{\pi}{6} + 2k\pi \quad\text{ili}\quad \theta = -\frac{\pi}{6} + 2k\pi,\quad k \in \mathbb{Z}. \]</div>
+      <p>Vraćanjem na \( x \):</p>
+      <div class="math-block">\[ x = \frac{\pi}{5} + \frac{\pi}{6} + 2k\pi \quad\text{ili}\quad x = \frac{\pi}{5} - \frac{\pi}{6} + 2k\pi. \]</div>
+      <p>Zajednički imenilac za \( \dfrac{\pi}{5} \) i \( \dfrac{\pi}{6} \) je \( 30 \): \( \dfrac{\pi}{5} = \dfrac{6\pi}{30},\; \dfrac{\pi}{6} = \dfrac{5\pi}{30} \). Zbog toga dobijamo:</p>
+      <div class="math-block">\[ \text{Familija 1: }\; x = \frac{11\pi}{30} + 2k\pi, \qquad \text{Familija 2: }\; x = \frac{\pi}{30} + 2k\pi. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto pišemo \( \pm\pi/6 \), a ne samo \( \pi/6 \)?</summary>
+          <div class="detail-content"><p>Funkcija \( \cos \) je parna: \( \cos(-\theta) = \cos\theta \). Zato za svaku vrednost \( \theta = \alpha \) koja zadovoljava \( \cos\theta = c \), i \( \theta = -\alpha \) zadovoljava istu jednačinu. Zato postoje dve familije: jedna sa \( +\pi/6 \) i druga sa \( -\pi/6 \), ponovljene periodom \( 2\pi \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Prebacujemo interval u jedinice \( \pi/30 \)</h3>
+      <p>Zadati interval je \( I = \left[-\dfrac{\pi}{4},\, \dfrac{9\pi}{4}\right] \). Da bismo jednostavno upoređivali sa rešenjima, izrazimo krajeve kao razlomke sa imeniocem \( 30 \):</p>
+      <div class="math-block">\[ -\frac{\pi}{4} = -\frac{7{,}5\,\pi}{30}, \qquad \frac{9\pi}{4} = \frac{67{,}5\,\pi}{30}. \]</div>
+      <p>Dužina intervala je \( \dfrac{9\pi}{4} - \left(-\dfrac{\pi}{4}\right) = \dfrac{10\pi}{4} = \dfrac{5\pi}{2} \), što je \( 1{,}25 \) punih perioda. Zato u svakoj familiji treba očekivati \( 1 \) ili \( 2 \) rešenja.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Familija 2: \( x = \pi/30 + 2k\pi \)</h3>
+      <p>Vrednosti po celim brojevima \( k \):</p>
+      <div class="math-block">\[ \begin{aligned} k = 0 &:\; x = \frac{\pi}{30} \approx 0{,}105 \quad\in I?\;\; \text{DA} \\ k = 1 &:\; x = \frac{\pi}{30} + 2\pi = \frac{61\pi}{30} \approx 6{,}388 \quad\in I?\;\; \text{DA} \\ k = -1 &:\; x = \frac{\pi}{30} - 2\pi = -\frac{59\pi}{30} \approx -6{,}178 \quad\in I?\;\; \text{NE} \\ k = 2 &:\; x \approx 12{,}671 \quad\in I?\;\; \text{NE} \end{aligned} \]</div>
+      <p>Iz Familije 2 u interval upadaju <em>dva</em> rešenja.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kako brzo proveriti da \( 61\pi/30 \) jeste unutar intervala?</summary>
+          <div class="detail-content"><p>Gornja granica je \( 9\pi/4 = 67{,}5\pi/30 \). Pošto je \( 61 < 67{,}5 \), vrednost \( 61\pi/30 \) je strogo manja od gornje granice, pa je u intervalu.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Familija 1: \( x = 11\pi/30 + 2k\pi \)</h3>
+      <p>Vrednosti po celim brojevima \( k \):</p>
+      <div class="math-block">\[ \begin{aligned} k = 0 &:\; x = \frac{11\pi}{30} \approx 1{,}152 \quad\in I?\;\; \text{DA} \\ k = 1 &:\; x = \frac{11\pi}{30} + 2\pi = \frac{71\pi}{30} \approx 7{,}435 \quad\in I?\;\; \text{NE} \\ k = -1 &:\; x = \frac{11\pi}{30} - 2\pi = -\frac{49\pi}{30} \approx -5{,}131 \quad\in I?\;\; \text{NE} \end{aligned} \]</div>
+      <p>Poređenje za \( k = 1 \): gornja granica je \( 67{,}5\pi/30 \), a kandidat je \( 71\pi/30 \). Kako \( 71 > 67{,}5 \), vrednost je <em>van</em> intervala.</p>
+      <p>Iz Familije 1 u interval upada samo <em>jedno</em> rešenje.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliko je \( 71\pi/30 \) veće od \( 9\pi/4 \)?</summary>
+          <div class="detail-content"><p>\( \dfrac{71\pi}{30} - \dfrac{9\pi}{4} = \dfrac{71\pi}{30} - \dfrac{67{,}5\pi}{30} = \dfrac{3{,}5\pi}{30} = \dfrac{7\pi}{60} \approx 0{,}367 \). Dakle, \( k = 1 \) prelazi desnu granicu za malo, pa se ne računa.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Sabiramo: ukupno rešenja u intervalu</h3>
+      <p>Dva iz Familije 2 (\( \pi/30 \) i \( 61\pi/30 \)) plus jedno iz Familije 1 (\( 11\pi/30 \)) daje:</p>
+      <div class="math-block">\[ \boxed{\,3\;\text{rešenja:}\quad \frac{\pi}{30},\; \frac{11\pi}{30},\; \frac{61\pi}{30}\,} \]</div>
+      <p>Dakle, traženi broj rešenja je \( 3 \).</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Bez prepoznavanja adicione formule bi se jednačina činila vrlo komplikovana. Čim se vidi da je leva strana upravo \( \cos(x - \pi/5) \), zadatak se svodi na standardno brojanje presečnih tačaka krive kosinusa sa horizontalnom pravom &mdash; a u intervalu dužine \( 5\pi/2 \) (tj. \( 1{,}25 \) perioda) imamo \( 2 \) ili \( 3 \) takve tačke u zavisnosti od toga kako se interval &bdquo;poklopi&rdquo; sa periodom. Ovde poklopljenost daje <em>tačno 3</em>.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \text{Broj rešenja} = 3 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 4 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 2 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 1 \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 3 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 0 \)</span>
+  </div>
+  <p class="verification">Provera: rešenja \( \dfrac{\pi}{30},\; \dfrac{11\pi}{30},\; \dfrac{61\pi}{30} \) sva leže u \( \left[-\dfrac{\pi}{4},\, \dfrac{9\pi}{4}\right] \) i zadovoljavaju \( \cos(x - \pi/5) = \dfrac{\sqrt{3}}{2} \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Ne prepoznati adicionu formulu i pokušati rešavanje preko tablica ili smenama za \( \sin x,\; \cos x \) &mdash; mnogo duži put i lako dovodi do greške.</li>
+    <li>Zaboraviti znak \( \pm \) u opštem rešenju \( \cos\theta = c \) i dobiti samo jednu familiju &mdash; gubi se polovina rešenja.</li>
+    <li>Pogrešno izračunati \( \dfrac{9\pi}{4} \) u jedinicama \( \pi/30 \): tačno je \( 67{,}5\pi/30 \), ne \( 60\pi/30 \) ili \( 70\pi/30 \).</li>
+    <li>Propustiti graničnu proveru za \( k = 1 \) u Familiji 1: \( 71\pi/30 \approx 7{,}435 \), a \( 9\pi/4 \approx 7{,}069 \) &mdash; razlika je mala, pa lako zaključiti pogrešno.</li>
+    <li>Zamena \( 2k\pi \) sa \( k\pi \) (pola perioda) &mdash; to uključuje rešenja jednačine \( \cos\theta = -\sqrt{3}/2 \) i vodi do preterane vrednosti.</li>
+    <li>Zaboraviti da je interval <em>zatvoren</em> &mdash; ali u ovom zadatku nijedno rešenje ne pada baš na granicu, pa ta finesa ne menja ishod.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koliko bi rešenja imala ista jednačina \( \cos\!\left(x - \dfrac{\pi}{5}\right) = \dfrac{\sqrt{3}}{2} \) u proširenom intervalu \( \left[-\dfrac{\pi}{4},\, \dfrac{13\pi}{4}\right] \)? A šta ako desnu stranu zamenimo sa \( -\dfrac{\sqrt{3}}{2} \) na istom intervalu \( \left[-\dfrac{\pi}{4},\, \dfrac{9\pi}{4}\right] \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>U proširenom intervalu \( \left[-\pi/4,\, 13\pi/4\right] \) dužina raste na \( 7\pi/2 = 1{,}75 \cdot 2\pi \). Sada za \( k = 1 \) u Familiji 1 \( x = 71\pi/30 \approx 7{,}435 \) upada, a proveri i \( k = 2 \) (dodatni \( 2\pi \) u svakoj familiji). Za \( -\sqrt{3}/2 \): opšte rešenje \( \theta = \pm \dfrac{5\pi}{6} + 2k\pi \); ponovi brojanje u istom intervalu.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('cosGraph');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  // Math coordinate bounds
+  // Show slightly past the interval edges for context
+  var xMin = -1.3;     // a bit past -pi/4 ≈ -0.785
+  var xMax = 7.8;      // a bit past 9pi/4 ≈ 7.069
+  var yMin = -1.25;
+  var yMax = 1.25;
+
+  // Plot area margins
+  var marginL = 70;
+  var marginR = 40;
+  var marginT = 70;
+  var marginB = 200; // room for labels and caption
+
+  function toCanvas(x, y) {
+    var plotW = W - marginL - marginR;
+    var plotH = H - marginT - marginB;
+    return {
+      x: marginL + (x - xMin) / (xMax - xMin) * plotW,
+      y: marginT + (yMax - y) / (yMax - yMin) * plotH
+    };
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+    var danger    = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('y = cos(x - π/5)  i  y = √3/2  nad  [-π/4, 9π/4]', W / 2, 30);
+
+    var plotLeft   = marginL;
+    var plotRight  = W - marginR;
+    var plotTop    = marginT;
+    var plotBottom = H - marginB;
+
+    // Highlight interval [-pi/4, 9pi/4] as a tinted band
+    var xLeftI  = toCanvas(-Math.PI / 4, 0).x;
+    var xRightI = toCanvas(9 * Math.PI / 4, 0).x;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.07);
+    ctx.fillRect(xLeftI, plotTop, xRightI - xLeftI, plotBottom - plotTop);
+
+    // Grid - vertical lines at multiples of pi/4
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 3]);
+    var step = Math.PI / 2; // grid every pi/2
+    var gStart = Math.ceil(xMin / step) * step;
+    for (var gx = gStart; gx <= xMax; gx += step) {
+      var px = toCanvas(gx, 0).x;
+      ctx.beginPath();
+      ctx.moveTo(px, plotTop);
+      ctx.lineTo(px, plotBottom);
+      ctx.stroke();
+    }
+    // horizontal grid lines at y = -1, -0.5, 0, 0.5, 1
+    for (var gy = -1; gy <= 1; gy += 0.5) {
+      var py = toCanvas(0, gy).y;
+      ctx.beginPath();
+      ctx.moveTo(plotLeft, py);
+      ctx.lineTo(plotRight, py);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    var yAxis0 = toCanvas(0, 0).y;
+    ctx.beginPath();
+    ctx.moveTo(plotLeft, yAxis0);
+    ctx.lineTo(plotRight, yAxis0);
+    ctx.stroke();
+    var xAxis0 = toCanvas(0, 0).x;
+    ctx.beginPath();
+    ctx.moveTo(xAxis0, plotTop);
+    ctx.lineTo(xAxis0, plotBottom);
+    ctx.stroke();
+
+    // Arrowheads
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(plotRight, yAxis0);
+    ctx.lineTo(plotRight - 8, yAxis0 - 4);
+    ctx.lineTo(plotRight - 8, yAxis0 + 4);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(xAxis0, plotTop);
+    ctx.lineTo(xAxis0 - 4, plotTop + 8);
+    ctx.lineTo(xAxis0 + 4, plotTop + 8);
+    ctx.closePath();
+    ctx.fill();
+
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('x', plotRight + 6, yAxis0 + 4);
+    ctx.textAlign = 'center';
+    ctx.fillText('y', xAxis0, plotTop - 10);
+
+    // x-axis tick labels at multiples of pi/2
+    ctx.font = '11px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    var piLabels = [
+      { val: -Math.PI / 2, label: '-π/2' },
+      { val: 0,            label: '0' },
+      { val: Math.PI / 2,  label: 'π/2' },
+      { val: Math.PI,      label: 'π' },
+      { val: 3 * Math.PI / 2, label: '3π/2' },
+      { val: 2 * Math.PI,  label: '2π' }
+    ];
+    for (var i = 0; i < piLabels.length; i++) {
+      var pt = toCanvas(piLabels[i].val, 0);
+      ctx.fillText(piLabels[i].label, pt.x, pt.y + 16);
+    }
+
+    // y-axis tick labels
+    ctx.textAlign = 'right';
+    [-1, -0.5, 0.5, 1].forEach(function(yv) {
+      var pt = toCanvas(0, yv);
+      ctx.fillText(String(yv), pt.x - 6, pt.y + 4);
+    });
+
+    // Interval endpoint markers at -pi/4 and 9pi/4
+    // dashed vertical boundary lines
+    ctx.strokeStyle = cv('--sol-canvas-accent');
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(xLeftI, plotTop);
+    ctx.lineTo(xLeftI, plotBottom);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(xRightI, plotTop);
+    ctx.lineTo(xRightI, plotBottom);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Label interval endpoints above the plot
+    ctx.fillStyle = cv('--sol-canvas-accent');
+    ctx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('-π/4', xLeftI, plotTop - 6);
+    ctx.fillText('9π/4', xRightI, plotTop - 6);
+
+    // Plot y = cos(x - pi/5) as a continuous curve
+    ctx.strokeStyle = cv('--sol-canvas-primary');
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    var N = 500;
+    for (var n = 0; n <= N; n++) {
+      var xv = xMin + (xMax - xMin) * n / N;
+      var yv = Math.cos(xv - Math.PI / 5);
+      var p = toCanvas(xv, yv);
+      if (n === 0) ctx.moveTo(p.x, p.y);
+      else ctx.lineTo(p.x, p.y);
+    }
+    ctx.stroke();
+
+    // Horizontal line y = sqrt(3)/2
+    var yLine = Math.sqrt(3) / 2;
+    ctx.strokeStyle = cv('--sol-canvas-highlight');
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    var hL = toCanvas(xMin, yLine);
+    var hR = toCanvas(xMax, yLine);
+    ctx.beginPath();
+    ctx.moveTo(hL.x, hL.y);
+    ctx.lineTo(hR.x, hR.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // label horizontal line
+    ctx.fillStyle = cv('--sol-canvas-highlight');
+    ctx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('y = √3/2', hR.x - 4, hR.y - 6);
+
+    // Mark the 3 solution points within the interval
+    var solutions = [
+      { x: Math.PI / 30,             label: 'π/30'   },
+      { x: 11 * Math.PI / 30,        label: '11π/30' },
+      { x: Math.PI / 30 + 2 * Math.PI, label: '61π/30' }
+    ];
+
+    // Also show the rejected point (outside interval, barely)
+    var rejected = { x: 11 * Math.PI / 30 + 2 * Math.PI, label: '71π/30 (van)' };
+
+    // Draw solutions - vertical drop lines + dots
+    for (var s = 0; s < solutions.length; s++) {
+      var sol = solutions[s];
+      var topP = toCanvas(sol.x, yLine);
+      var botP = toCanvas(sol.x, 0);
+      // drop line
+      ctx.strokeStyle = cvAlpha('--sol-canvas-accent', 0.6);
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([3, 3]);
+      ctx.beginPath();
+      ctx.moveTo(topP.x, topP.y);
+      ctx.lineTo(botP.x, botP.y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      // glow + dot at intersection
+      ctx.beginPath();
+      ctx.arc(topP.x, topP.y, 11, 0, Math.PI * 2);
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.25);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(topP.x, topP.y, 6, 0, Math.PI * 2);
+      ctx.fillStyle = cv('--sol-canvas-accent');
+      ctx.fill();
+      ctx.strokeStyle = cv('--sol-canvas-bg');
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
+    // Draw rejected point as red X outside interval
+    var rej = toCanvas(rejected.x, yLine);
+    ctx.strokeStyle = cv('--sol-canvas-danger');
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(rej.x - 6, rej.y - 6);
+    ctx.lineTo(rej.x + 6, rej.y + 6);
+    ctx.moveTo(rej.x + 6, rej.y - 6);
+    ctx.lineTo(rej.x - 6, rej.y + 6);
+    ctx.stroke();
+
+    // Label solutions below x-axis
+    ctx.font = 'bold 11px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = cv('--sol-canvas-accent');
+    ctx.textAlign = 'center';
+    var labelY = toCanvas(0, 0).y + 32;
+    for (var s2 = 0; s2 < solutions.length; s2++) {
+      var solL = solutions[s2];
+      var lp = toCanvas(solL.x, 0);
+      ctx.fillText(solL.label, lp.x, labelY);
+    }
+    // Rejected label
+    ctx.fillStyle = cv('--sol-canvas-danger');
+    var lpR = toCanvas(rejected.x, 0);
+    ctx.fillText(rejected.label, lpR.x, labelY);
+
+    // Bottom summary block
+    var bY = plotBottom + 70;
+    ctx.textAlign = 'left';
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('Transformacija:  cos(x)cos(π/5) + sin(x)sin(π/5)  =  cos(x - π/5)', marginL, bY);
+
+    ctx.font = '13px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('Opšte rešenje:  x = π/5 ± π/6 + 2kπ  ⇒  Familija 1: 11π/30 + 2kπ,  Familija 2: π/30 + 2kπ', marginL, bY + 22);
+
+    ctx.fillStyle = cv('--sol-canvas-accent');
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('U intervalu: π/30 ≈ 0,105  •  11π/30 ≈ 1,152  •  61π/30 ≈ 6,388  ⇒  3 rešenja ✓', marginL, bY + 50);
+
+    ctx.fillStyle = cv('--sol-canvas-danger');
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('Van intervala: 71π/30 ≈ 7,435 > 9π/4 ≈ 7,069', marginL, bY + 74);
+
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 11px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('Senčena zelena traka prikazuje zadati interval [-π/4, 9π/4].', marginL, bY + 96);
+  }
+
+  draw();
+
+  // Re-draw on theme change
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Broj rešenja trigonometrijske jednačine u intervalu",
+  "subject": "math",
+  "unit": "trigonometry",
+  "topic_tags": ["trigonometrijske jednačine", "adicione formule", "kosinus razlike", "brojanje rešenja", "opšte rešenje"]
+}
+BRAINSPARK_META-->

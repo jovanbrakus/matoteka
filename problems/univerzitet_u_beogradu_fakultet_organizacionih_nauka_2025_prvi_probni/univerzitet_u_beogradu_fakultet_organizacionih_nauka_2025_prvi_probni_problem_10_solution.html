@@ -1,0 +1,447 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Zadatak: naci broj celobrojnih resenja jednacine
+      (2 + sqrt(3))^{x^2} + (2 - sqrt(3))^{x^2} = 4.
+
+  KLJUCNA OPSERVACIJA:
+    (2 + sqrt(3)) * (2 - sqrt(3)) = 4 - 3 = 1.
+    Dakle 2 - sqrt(3) = 1 / (2 + sqrt(3)), ili jednako (2 + sqrt(3))^{-1}.
+
+  SUPSTITUCIJA:
+    Neka t = (2 + sqrt(3))^{x^2}, t > 0.
+    Tada je (2 - sqrt(3))^{x^2} = ((2 + sqrt(3))^{-1})^{x^2} = 1/t.
+    Jednacina: t + 1/t = 4, tj. t^2 - 4t + 1 = 0.
+    Diskriminanta: D = 16 - 4 = 12. Resenja: t = (4 ± sqrt(12))/2 = 2 ± sqrt(3).
+    Oba korena su pozitivna, ok.
+
+  RETURNING VARIJABLU x:
+    Slucaj 1: (2 + sqrt(3))^{x^2} = 2 + sqrt(3) = (2 + sqrt(3))^1.
+      Baza 2 + sqrt(3) > 1, funkcija injektivna => x^2 = 1 => x = ±1.
+    Slucaj 2: (2 + sqrt(3))^{x^2} = 2 - sqrt(3) = (2 + sqrt(3))^{-1}.
+      => x^2 = -1. Nema realnog resenja.
+
+  SKUP RESENJA: {-1, 1}.
+  Oba su cela. Broj celobrojnih resenja = 2.
+  Odgovor: A) 2.
+
+  PROVERA x = 1:
+    (2 + sqrt(3))^1 + (2 - sqrt(3))^1 = 4.  OK.
+  PROVERA x = -1:
+    x^2 = 1, isto kao iznad. OK.
+
+  SMISLJENA ZAMKA: neko moze zaboraviti da x^2 ≥ 0, pa "resiti" x^2 = -1
+  i reci da ima i kompleksna resenja; ili moze racunati samo x = 1 (zanemariti -1)
+  i dati odgovor D) 1. Ili moze dodati fiktivno x = 0 (tada x^2 = 0, svaki clan = 1,
+  zbir = 2, ne 4 — ne zadovoljava!) pa dati odgovor E) 3. Ili jos gore, misliti
+  da x^2 ima 4 resenja (±1, ±0) — daje C) 4.
+
+  VIZUELNI PRIKAZ:
+  Canvas 1: grafik funkcije f(u) = (2 + sqrt(3))^u + (2 - sqrt(3))^u, gde u = x^2 >= 0.
+     Funkcija je rastuca za u ≥ 0 (jer clanovi... pazljivo: za u > 0 prvi clan raste
+     jer baza > 1, drugi opada jer baza < 1. Ali zbir? f(0) = 1 + 1 = 2. Limit kad u -> inf:
+     prvi clan -> inf, drugi -> 0, zbir -> inf. Izvod? Uzmimo u = 1: f(1) = 4. Jedinstveno.
+     u = 2: f(2) = (2+√3)^2 + (2-√3)^2 = (7+4√3) + (7-4√3) = 14. Jeste raste monotono za u ≥ 0.
+     Na grafu horizontalna linija y=4 sece u u = 1. Od u = x^2, samo x = ±1 daju u = 1.
+  Canvas STATICAN je dovoljan — cilj je pokazati da postoji tacno jedno u ≥ 0, pa dva cela x.
+</script>
+
+<h1 data-card="problem-title">Celobrojna rešenja jednačine sa konjugovanim bazama</h1>
+<p data-card="problem-subtitle" class="subtitle">Eksponencijalna jednačina — trik sa recipročnim bazama i kvadratnom supstitucijom</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>Tekst zadatka</h2>
+  <p>Broj svih celobrojnih rešenja jednačine</p>
+  <div class="math-block">\[ (2+\sqrt{3})^{x^2} + (2-\sqrt{3})^{x^2} = 4 \]</div>
+  <p>jednak je:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 0 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 4 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>Plan rešavanja</h2>
+  <p class="plan-text">Primetimo da su baze \( 2+\sqrt{3} \) i \( 2-\sqrt{3} \) uzajamno recipročne — njihov proizvod je 1. Uvedemo smenu \( t = (2+\sqrt{3})^{x^2} \), pa drugi sabirak postaje \( 1/t \). Dobijamo kvadratnu jednačinu po \( t \), zatim se vraćamo na \( x \) koristeći monotonost eksponencijalne funkcije.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i svojstva</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Razlika kvadrata:</strong> \( (a+b)(a-b) = a^2 - b^2 \).</li>
+        <li><strong>Recipročne baze:</strong> ako je \( p \cdot q = 1 \), tada je \( q = p^{-1} \), pa \( q^{y} = p^{-y} \).</li>
+        <li><strong>Monotonost eksponencijale:</strong> za bazu \( a > 1 \) i \( a \ne 1 \), funkcija \( a^{u} \) je strogo monotona; iz \( a^{u_1} = a^{u_2} \) sledi \( u_1 = u_2 \).</li>
+        <li><strong>Kvadrat je nenegativan:</strong> \( x^2 \ge 0 \) za svako realno \( x \); iz \( x^2 = c \) sa \( c \ge 0 \) sledi \( x = \pm\sqrt{c} \), a ako je \( c < 0 \) nema realnih rešenja.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Grafik zbira">
+  <h2>Grafik zbira</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram10" width="720" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Funkcija \( f(u) = (2+\sqrt{3})^{u} + (2-\sqrt{3})^{u} \) je strogo rastuća za \( u \ge 0 \). Horizontalna linija \( y = 4 \) je seče tačno u \( u = 1 \), što daje \( x^2 = 1 \), tj. \( x = \pm 1 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Iskoristi recipročne baze</h3>
+      <p>Primenom razlike kvadrata imamo:</p>
+      <div class="math-block">\[ (2+\sqrt{3})(2-\sqrt{3}) = 4 - 3 = 1. \]</div>
+      <p>Odatle je \( 2-\sqrt{3} = (2+\sqrt{3})^{-1} \), pa se drugi sabirak u polaznoj jednačini može zapisati kao:</p>
+      <div class="math-block">\[ (2-\sqrt{3})^{x^2} = \big((2+\sqrt{3})^{-1}\big)^{x^2} = \frac{1}{(2+\sqrt{3})^{x^2}}. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( 2-\sqrt{3} > 0 \) važno?</summary>
+          <div class="detail-content"><p>Zato što dizanje na realni stepen \( x^2 \) zahteva pozitivnu bazu. Numerički, \( 2-\sqrt{3} \approx 0{,}268 > 0 \), pa je izraz definisan za svako realno \( x \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Uvedi smenu \( t \)</h3>
+      <p>Neka je \( t = (2+\sqrt{3})^{x^2} \). Kako je baza \( 2+\sqrt{3} > 1 \), a \( x^2 \ge 0 \), važi \( t \ge 1 > 0 \). Jednačina postaje:</p>
+      <div class="math-block">\[ t + \frac{1}{t} = 4. \]</div>
+      <p>Pomnožimo sa \( t \) (sme, jer je \( t > 0 \)):</p>
+      <div class="math-block">\[ t^2 - 4t + 1 = 0. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Reši kvadratnu jednačinu po \( t \)</h3>
+      <p>Diskriminanta je \( D = 16 - 4 = 12 \), pa:</p>
+      <div class="math-block">\[ t_{1,2} = \frac{4 \pm \sqrt{12}}{2} = 2 \pm \sqrt{3}. \]</div>
+      <p>Oba korena su pozitivna, pa oba ulaze u razmatranje.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto su \( 2 \pm \sqrt{3} \) dopustive vrednosti za \( t \)?</summary>
+          <div class="detail-content"><p>Tražimo \( t > 0 \). Pošto je \( \sqrt{3} \approx 1{,}732 \), dobijamo \( 2+\sqrt{3} \approx 3{,}73 \) i \( 2-\sqrt{3} \approx 0{,}27 \) — oba su pozitivna.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Vrati se na \( x \): slučaj \( t = 2+\sqrt{3} \)</h3>
+      <p>Dobili smo jednačinu:</p>
+      <div class="math-block">\[ (2+\sqrt{3})^{x^2} = 2+\sqrt{3} = (2+\sqrt{3})^{1}. \]</div>
+      <p>Pošto je eksponencijalna funkcija sa bazom \( 2+\sqrt{3} > 1 \) strogo rastuća (dakle injektivna), jednaki stepenovi povlače jednake eksponente:</p>
+      <div class="math-block">\[ x^2 = 1 \;\;\Longrightarrow\;\; x = 1 \quad \text{ili} \quad x = -1. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj \( t = 2-\sqrt{3} \)</h3>
+      <p>Sada je:</p>
+      <div class="math-block">\[ (2+\sqrt{3})^{x^2} = 2-\sqrt{3} = (2+\sqrt{3})^{-1}. \]</div>
+      <p>Primenom istog argumenta monotonosti:</p>
+      <div class="math-block">\[ x^2 = -1. \]</div>
+      <p>Ovo <strong>nema realnih rešenja</strong>, jer je kvadrat realnog broja uvek nenegativan.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: da li je \( x = 0 \) rešenje?</summary>
+          <div class="detail-content"><p>Ako je \( x = 0 \), onda je \( x^2 = 0 \), pa je svaki sabirak \( \text{baza}^0 = 1 \). Zbir je \( 1 + 1 = 2 \ne 4 \). Dakle, \( x = 0 \) <em>nije</em> rešenje.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Prebroj celobrojna rešenja</h3>
+      <p>Skup svih realnih rešenja je \( \{-1,\; 1\} \). Oba elementa su celi brojevi, pa je broj celobrojnih rešenja jednak <span class="result">\( 2 \)</span>.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>Ključni uvid</h2>
+  <p>Kada god vidiš zbir \( A^{f(x)} + B^{f(x)} \) gde je \( A \cdot B = 1 \), smena \( t = A^{f(x)} \) prevodi jednačinu u <em>simetričnu</em> kvadratnu jednačinu \( t + 1/t = k \). Konjugovani par \( (2+\sqrt{3},\; 2-\sqrt{3}) \) je klasičan primer — proveri razliku kvadrata pre nego što počneš da gledaš tablice.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Zaboravljanje da <em>oba</em> rešenja kvadratne jednačine po \( t \) treba ispitati — a ne samo jedno.</li>
+    <li>Tvrdnja da \( x^2 = -1 \) ima rešenje (u skupu realnih brojeva nema!); ovo čest previd pri zadacima sa kvadratom nepoznate.</li>
+    <li>Dodavanje "rešenja" \( x = 0 \). Proverom: \( (2+\sqrt{3})^0 + (2-\sqrt{3})^0 = 1+1 = 2 \ne 4 \), pa nije rešenje.</li>
+    <li>Brojanje samo pozitivnog rešenja \( x = 1 \) (jedno) umesto oba \( \pm 1 \) — zbog toga se gubi iz vida činjenica da \( x^2 = 1 \) ima dva realna korena.</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ x \in \{-1,\; 1\} \;\;\Longrightarrow\;\; \text{broj celobrojnih rešenja} = 2. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 2 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 0 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 4 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 1 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 3 \)</span>
+  </div>
+  <p class="verification">Provera: za \( x = 1 \) imamo \( (2+\sqrt{3})^1 + (2-\sqrt{3})^1 = 4 \). Za \( x = -1 \) je \( x^2 = 1 \), isto. Za \( x = 0 \) zbir je \( 2 \ne 4 \). Nema drugih celih kandidata.</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>Dodatni izazov</h2>
+  <p>Koliko celobrojnih rešenja ima jednačina \( (2+\sqrt{3})^{x^2} + (2-\sqrt{3})^{x^2} = 14 \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Ista smena daje \( t + 1/t = 14 \), tj. \( t^2 - 14t + 1 = 0 \), pa \( t = 7 \pm 4\sqrt{3} = (2 \pm \sqrt{3})^2 \). Odatle \( x^2 = 2 \) ili \( x^2 = -2 \); prva jednačina daje \( x = \pm\sqrt{2} \) — <em>nisu celi</em>. Dakle broj celobrojnih rešenja je 0.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram10');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Plot area
+    var padL = 70, padR = 30, padT = 60, padB = 80;
+    var plotW = W - padL - padR;
+    var plotH = H - padT - padB;
+
+    // Math range
+    var uMin = 0, uMax = 2.2;
+    var yMin = 0, yMax = 16;
+
+    function toX(u) { return padL + (u - uMin) / (uMax - uMin) * plotW; }
+    function toY(y) { return padT + plotH - (y - yMin) / (yMax - yMin) * plotH; }
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var i = 0; i <= 11; i++) {
+      var u = uMin + i * (uMax - uMin) / 11;
+      ctx.beginPath();
+      ctx.moveTo(toX(u), padT);
+      ctx.lineTo(toX(u), padT + plotH);
+      ctx.stroke();
+    }
+    for (var j = 0; j <= 8; j++) {
+      var y = yMin + j * (yMax - yMin) / 8;
+      ctx.beginPath();
+      ctx.moveTo(padL, toY(y));
+      ctx.lineTo(padL + plotW, toY(y));
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(padL, padT + plotH);
+    ctx.lineTo(padL + plotW, padT + plotH);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(padL, padT);
+    ctx.lineTo(padL, padT + plotH);
+    ctx.stroke();
+
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('u = x²', padL + plotW / 2, padT + plotH + 50);
+    ctx.save();
+    ctx.translate(22, padT + plotH / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('f(u)', 0, 0);
+    ctx.restore();
+
+    // Tick labels x
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    for (var k = 0; k <= 4; k++) {
+      var uu = k * 0.5;
+      if (uu > uMax) break;
+      ctx.beginPath();
+      ctx.moveTo(toX(uu), padT + plotH);
+      ctx.lineTo(toX(uu), padT + plotH + 5);
+      ctx.strokeStyle = axis;
+      ctx.stroke();
+      ctx.fillText(uu.toFixed(1).replace('.', ','), toX(uu), padT + plotH + 20);
+    }
+    // Tick labels y
+    ctx.textAlign = 'right';
+    for (var m = 0; m <= 8; m += 2) {
+      var yy = m * 2;
+      ctx.beginPath();
+      ctx.moveTo(padL - 5, toY(yy));
+      ctx.lineTo(padL, toY(yy));
+      ctx.stroke();
+      ctx.fillText(yy.toString(), padL - 8, toY(yy) + 4);
+    }
+
+    // Function f(u) = (2+sqrt(3))^u + (2-sqrt(3))^u
+    var A = 2 + Math.sqrt(3);
+    var B = 2 - Math.sqrt(3);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    var first = true;
+    for (var px = 0; px <= plotW; px++) {
+      var u = uMin + (px / plotW) * (uMax - uMin);
+      var fu = Math.pow(A, u) + Math.pow(B, u);
+      if (fu < yMax + 2) {
+        var cx = toX(u), cy = toY(fu);
+        if (first) { ctx.moveTo(cx, cy); first = false; }
+        else ctx.lineTo(cx, cy);
+      }
+    }
+    ctx.stroke();
+
+    // Horizontal line y = 4
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(padL, toY(4));
+    ctx.lineTo(padL + plotW, toY(4));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('y = 4', padL + plotW - 50, toY(4) - 8);
+
+    // Vertical dashed at u = 1
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(toX(1), padT);
+    ctx.lineTo(toX(1), toY(4));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Intersection dot at (1, 4)
+    ctx.beginPath();
+    ctx.arc(toX(1), toY(4), 7, 0, Math.PI * 2);
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.25);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(toX(1), toY(4), 5, 0, Math.PI * 2);
+    ctx.fillStyle = accent;
+    ctx.fill();
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('(1, 4)', toX(1) + 10, toY(4) - 10);
+
+    // Mark u = 0: f(0) = 2
+    ctx.beginPath();
+    ctx.arc(toX(0), toY(2), 4, 0, Math.PI * 2);
+    ctx.fillStyle = highlight;
+    ctx.fill();
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('f(0) = 2', toX(0) + 8, toY(2) + 4);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('f(u) = (2+√3)ᵘ + (2−√3)ᵘ  —  jedinstven presek sa y = 4', W / 2, 28);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Celobrojna rešenja eksponencijalne jednačine sa konjugovanim bazama",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["eksponencijalne jednačine", "konjugovane baze", "kvadratna supstitucija", "celobrojna rešenja", "monotonost eksponencijale"]
+}
+BRAINSPARK_META-->
