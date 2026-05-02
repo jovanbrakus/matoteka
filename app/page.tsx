@@ -3,12 +3,14 @@ import LandingHero from "@/components/landing/landing-hero";
 import Dashboard from "@/components/dashboard/dashboard";
 import AuthenticatedLayout from "@/components/layout/authenticated-layout";
 import { TopNav } from "@/components/nav/top-nav";
+import { getDashboardData } from "@/lib/dashboard-data";
 
 export default async function HomePage() {
   const session = await auth();
 
   if (session?.user) {
     const user = session.user;
+    const initialData = await getDashboardData(user.id);
     return (
       <AuthenticatedLayout
         user={{
@@ -24,6 +26,7 @@ export default async function HomePage() {
             targetFaculties: (user.targetFaculties as string[]) || [],
             role: user.role || "student",
           }}
+          initialData={initialData}
         />
       </AuthenticatedLayout>
     );

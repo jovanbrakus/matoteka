@@ -51,7 +51,7 @@ test.describe("Authentication", () => {
 
     // Now visit root — should see dashboard, not landing
     await page.goto("/");
-    await expect(page.locator("text=E2E Student")).toBeVisible({
+    await expect(page.getByRole("heading", { name: /Zdravo, E2E Student/ })).toBeVisible({
       timeout: 15_000,
     });
   });

@@ -7,6 +7,7 @@ import {
   Sparkles,
   ChevronRight,
 } from "lucide-react";
+import type { DashboardData } from "@/lib/dashboard-data";
 
 /* ─── types ─── */
 
@@ -18,82 +19,7 @@ interface DashboardProps {
     targetFaculties: string[];
     role: string;
   };
-}
-
-interface CategoryData {
-  id: string;
-  name: string;
-  total: number;
-  solved: number;
-  percent: number;
-  readinessScore?: number;
-}
-
-interface CategoryGroupData {
-  id: string;
-  name: string;
-  total: number;
-  solved: number;
-  percent: number;
-  readinessScore?: number;
-  categories: CategoryData[];
-}
-
-interface DashboardData {
-  user: {
-    displayName: string;
-    avatarUrl: string | null;
-    streakCurrent: number;
-    streakBest: number;
-    targetFaculties: string[];
-  };
-  progress: {
-    total: number;
-    solved: number;
-    dailyGoal: number;
-    solvedToday: number;
-  };
-  lastExam: {
-    scorePercent: string;
-    facultyName: string;
-    startedAt: string;
-  } | null;
-  countdown: string | null;
-  categoryGroups: CategoryGroupData[];
-  rank: {
-    position: number | null;
-    totalParticipants: number;
-    totalScore: string;
-    problemsSolved: number;
-    avgScore: string;
-  };
-  facultyExamDates: Array<{
-    id: string;
-    name: string;
-    shortName: string;
-    examDate: string | null;
-  }>;
-  readinessScore: number;
-  recommendations: Array<{
-    type: "practice" | "simulation" | "lesson";
-    title: string;
-    subtitle: string;
-    href: string;
-    icon: string;
-    badge: string;
-  }>;
-  recentExams: Array<{
-    id: string;
-    facultyName: string;
-    scorePercent: string;
-    numCorrect: number;
-    numWrong: number;
-    numBlank: number;
-    timeSpent: number;
-    durationLimit: number | null;
-    testSize: string;
-    startedAt: string;
-  }>;
+  initialData?: DashboardData;
 }
 
 /* ─── exam table helpers ─── */
@@ -184,13 +110,14 @@ function getMotivationalMessage(): string {
 
 /* ─── component ─── */
 
-export default function Dashboard({ user }: DashboardProps) {
-  const [data, setData] = useState<DashboardData | null>(null);
-  const [loading, setLoading] = useState(true);
+export default function Dashboard({ user, initialData }: DashboardProps) {
+  const [data, setData] = useState<DashboardData | null>(initialData ?? null);
+  const [loading, setLoading] = useState(!initialData);
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
   const [showCategoryBreakdown, setShowCategoryBreakdown] = useState(false);
 
   useEffect(() => {
+    if (initialData) return;
     fetch("/api/user/dashboard")
       .then((r) => r.json())
       .then((d) => {
