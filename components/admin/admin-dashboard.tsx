@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 interface Analytics {
   totalUsers: number;
@@ -25,11 +26,37 @@ interface UserRow {
 }
 
 export default function AdminDashboard() {
+  const { data: session } = useSession();
+  const currentUserId = session?.user?.id;
   const [analytics, setAnalytics] = useState<Analytics | null>(null);
   const [users, setUsers] = useState<UserRow[]>([]);
   const [totalUsers, setTotalUsers] = useState(0);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [togglingId, setTogglingId] = useState<string | null>(null);
+
+  async function toggleActive(user: UserRow) {
+    const action = user.isActive ? "onemogućiti" : "omogućiti";
+    if (!confirm(`Da li želite da ${action} nalog ${user.email}?`)) return;
+    setTogglingId(user.id);
+    try {
+      const res = await fetch(`/api/admin/users/${user.id}/toggle-active`, {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data?.error || "Greška pri menjanju statusa.");
+        return;
+      }
+      setUsers((prev) =>
+        prev.map((u) => (u.id === user.id ? { ...u, isActive: data.isActive } : u))
+      );
+    } catch {
+      alert("Greška pri menjanju statusa.");
+    } finally {
+      setTogglingId(null);
+    }
+  }
 
   useEffect(() => {
     Promise.all([
@@ -184,6 +211,9 @@ export default function AdminDashboard() {
                 <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-[#ec5b13]/60">
                   Registracija
                 </th>
+                <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-[#ec5b13]/60 text-center">
+                  Akcije
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#ec5b13]/5">
@@ -240,11 +270,35 @@ export default function AdminDashboard() {
                       ? new Date(u.createdAt).toLocaleDateString("sr-Latn-RS")
                       : "—"}
                   </td>
+                  <td className="px-6 py-4 text-center">
+                    {u.role === "admin" || u.id === currentUserId ? (
+                      <span className="text-xs text-muted">—</span>
+                    ) : (
+                      <button
+                        onClick={() => toggleActive(u)}
+                        disabled={togglingId === u.id}
+                        className={`inline-flex items-center gap-1 rounded-lg border px-3 py-1.5 text-xs font-bold transition-colors disabled:opacity-50 ${
+                          u.isActive
+                            ? "border-red-500/30 bg-red-500/10 text-red-600 hover:bg-red-500/20"
+                            : "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20"
+                        }`}
+                      >
+                        <span className="material-symbols-outlined text-sm">
+                          {u.isActive ? "block" : "check_circle"}
+                        </span>
+                        {togglingId === u.id
+                          ? "..."
+                          : u.isActive
+                          ? "Onemogući"
+                          : "Omogući"}
+                      </button>
+                    )}
+                  </td>
                 </tr>
               ))}
               {users.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-text-secondary">
+                  <td colSpan={8} className="px-6 py-12 text-center text-text-secondary">
                     {search ? "Nema rezultata za pretragu." : "Nema korisnika."}
                   </td>
                 </tr>

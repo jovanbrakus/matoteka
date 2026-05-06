@@ -26,6 +26,12 @@ export default function LoginPage() {
   }, [status, callbackUrl, router]);
 
   useEffect(() => {
+    if (searchParams.get("error") === "AccountDisabled") {
+      setError("Nažalost, onemogućen vam je pristup Matoteka servisu.");
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
     getProviders().then((providers) => {
       if (providers?.google) setHasGoogle(true);
       if (providers?.credentials) setHasCredentials(true);
@@ -46,7 +52,11 @@ export default function LoginPage() {
     setLoading(false);
 
     if (result?.error) {
-      setError("Pogrešan email ili lozinka.");
+      if (result.code === "AccountDisabled") {
+        setError("Nažalost, onemogućen vam je pristup Matoteka servisu.");
+      } else {
+        setError("Pogrešan email ili lozinka.");
+      }
     } else {
       window.location.href = callbackUrl;
     }

@@ -1,4 +1,4 @@
-import NextAuth from "next-auth";
+import NextAuth, { CredentialsSignin } from "next-auth";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import { db } from "@/lib/db";
@@ -7,6 +7,10 @@ import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 
 const passwordEnabled = process.env.AUTH_PASSWORD_ENABLED !== "false";
+
+class AccountDisabledError extends CredentialsSignin {
+  code = "AccountDisabled";
+}
 
 // In-memory rate limiter for credential auth (per email)
 const loginAttempts = new Map<string, { count: number; resetAt: number }>();
@@ -55,6 +59,8 @@ const providers = [
           const isValid = await bcrypt.compare(password, user.passwordHash);
           if (!isValid) return null;
 
+          if (!user.isActive) throw new AccountDisabledError();
+
           clearRateLimit(email);
 
           return {
@@ -98,7 +104,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         .where(eq(users.googleId, account.providerAccountId))
         .limit(1);
 
-      if (existingByGoogleId.length === 0) {
+      if (existingByGoogleId.length > 0) {
+        if (!existingByGoogleId[0].isActive) {
+          return "/prijava?error=AccountDisabled";
+        }
+      } else {
         // Check if a user with this email already exists (e.g. created via password)
         const existingByEmail = await db
           .select()
@@ -107,6 +117,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           .limit(1);
 
         if (existingByEmail.length > 0) {
+          if (!existingByEmail[0].isActive) {
+            return "/prijava?error=AccountDisabled";
+          }
           // Link Google account to existing user
           await db
             .update(users)
