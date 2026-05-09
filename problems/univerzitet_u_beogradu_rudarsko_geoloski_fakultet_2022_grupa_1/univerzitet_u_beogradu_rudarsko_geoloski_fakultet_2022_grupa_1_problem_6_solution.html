@@ -1,0 +1,438 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Jednačina: |2x - 1| + 2x = 1.
+Prebacimo: |2x - 1| = 1 - 2x.
+
+Apsolutna vrednost je uvek nenegativna, pa mora biti 1 - 2x ≥ 0, tj. x ≤ 1/2.
+
+Pod uslovom x ≤ 1/2: 2x - 1 ≤ 0, pa |2x - 1| = -(2x - 1) = 1 - 2x.
+Jednačina: 1 - 2x = 1 - 2x → identitet, važi za sve x ≤ 1/2.
+
+Šta ako bismo otvarali apsolutnu vrednost po slučajevima?
+- Slučaj A: 2x - 1 ≥ 0, tj. x ≥ 1/2. Tada |2x-1| = 2x-1. Jednačina: 2x - 1 + 2x = 1 → 4x = 2 → x = 1/2. Provera u uslovu: x ≥ 1/2 ✓. Dakle x = 1/2 je rešenje.
+- Slučaj B: 2x - 1 < 0, tj. x < 1/2. Tada |2x-1| = 1 - 2x. Jednačina: 1 - 2x + 2x = 1 → 1 = 1 → uvek tačno. Sva x < 1/2 su rešenja.
+Unija: x ≤ 1/2.
+
+Skup rešenja: (-∞, 1/2].
+Tačan odgovor: A.
+
+Provera nekoliko vrednosti:
+- x = 0: |0-1| + 0 = 1. ✓
+- x = -3: |-7| + (-6) = 7 - 6 = 1. ✓
+- x = 1/2: |0| + 1 = 1. ✓
+- x = 1: |1| + 2 = 3 ≠ 1. ✗ (van rešenja)
+</script>
+<h1 data-card="problem-title">Jednačina sa apsolutnom vrednošću</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — analiza po slučajevima i identiteti</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Skup svih rešenja jednačine</p>
+  <div class="math-block">\[ |2x - 1| + 2x = 1 \]</div>
+  <p>je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \left(-\infty, \tfrac{1}{2}\right] \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( (-\infty, 1] \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \{-1, 0\} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">prazan skup</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Izolujemo apsolutnu vrednost na jednu stranu jednakosti i koristimo nužni uslov nenegativnosti druge strane. Zatim rešavamo jednačinu po dva slučaja: \( 2x - 1 \ge 0 \) i \( 2x - 1 < 0 \). Za svaki slučaj proveravamo da rešenje pripada definisanom intervalu.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Apsolutna vrednost — definicija</summary>
+    <div class="detail-content">
+      <ul>
+        <li>\( |a| = a \) ako je \( a \ge 0 \), a \( |a| = -a \) ako je \( a < 0 \).</li>
+        <li>Posledica: \( |a| \ge 0 \) za svako \( a \in \mathbb{R} \).</li>
+        <li>Iz \( |A| = B \) sledi nužno \( B \ge 0 \). Tada je \( A = B \) ili \( A = -B \).</li>
+        <li>Pri rešavanju po slučajevima moramo proveriti da rešenje zadovoljava pretpostavku slučaja.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="700" height="550"></canvas>
+  </div>
+  <p class="canvas-caption">Grafici funkcija \( y = |2x - 1| + 2x \) (puna kriva) i \( y = 1 \) (vodoravna linija). Sve tačke poklapanja čine skup rešenja \( (-\infty, \tfrac{1}{2}] \). Ispod je istaknuta brojna prava sa rešenjem.</p>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+    var highlight = cv('--sol-canvas-highlight');
+
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Plot region for f(x) = |2x-1| + 2x and y = 1
+    var plotLeft = 70, plotRight = W - 50;
+    var plotTop = 60, plotBottom = 360;
+
+    var xMin = -3, xMax = 3;
+    var yMin = -1, yMax = 7;
+
+    function xToPx(x) { return plotLeft + (x - xMin) / (xMax - xMin) * (plotRight - plotLeft); }
+    function yToPx(y) { return plotBottom - (y - yMin) / (yMax - yMin) * (plotBottom - plotTop); }
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var gx = xMin; gx <= xMax; gx++) {
+      ctx.beginPath();
+      ctx.moveTo(xToPx(gx), plotTop);
+      ctx.lineTo(xToPx(gx), plotBottom);
+      ctx.stroke();
+    }
+    for (var gy = 0; gy <= 7; gy++) {
+      ctx.beginPath();
+      ctx.moveTo(plotLeft, yToPx(gy));
+      ctx.lineTo(plotRight, yToPx(gy));
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(plotLeft, yToPx(0));
+    ctx.lineTo(plotRight, yToPx(0));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(xToPx(0), plotTop);
+    ctx.lineTo(xToPx(0), plotBottom);
+    ctx.stroke();
+
+    // Arrowheads
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(plotRight, yToPx(0));
+    ctx.lineTo(plotRight - 8, yToPx(0) - 5);
+    ctx.lineTo(plotRight - 8, yToPx(0) + 5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(xToPx(0), plotTop);
+    ctx.lineTo(xToPx(0) - 5, plotTop + 8);
+    ctx.lineTo(xToPx(0) + 5, plotTop + 8);
+    ctx.closePath();
+    ctx.fill();
+
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('x', plotRight + 4, yToPx(0) + 4);
+    ctx.fillText('y', xToPx(0) - 14, plotTop - 4);
+
+    // Tick labels
+    ctx.font = '12px sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    for (var tx2 = xMin; tx2 <= xMax; tx2++) {
+      if (tx2 === 0) continue;
+      ctx.fillText(String(tx2), xToPx(tx2), yToPx(0) + 16);
+    }
+    ctx.textAlign = 'right';
+    for (var ty2 = 1; ty2 <= 7; ty2++) {
+      ctx.fillText(String(ty2), xToPx(0) - 6, yToPx(ty2) + 4);
+    }
+
+    // y = 1 horizontal line (red)
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([8, 6]);
+    ctx.beginPath();
+    ctx.moveTo(plotLeft, yToPx(1));
+    ctx.lineTo(plotRight, yToPx(1));
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = danger;
+    ctx.font = 'bold 14px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('y = 1', plotRight - 60, yToPx(1) - 8);
+
+    // Plot f(x) = |2x-1| + 2x
+    // For x <= 1/2: f = (1 - 2x) + 2x = 1.
+    // For x > 1/2:  f = (2x - 1) + 2x = 4x - 1.
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    // Left branch: from xMin to 1/2 at y=1
+    ctx.moveTo(xToPx(xMin), yToPx(1));
+    ctx.lineTo(xToPx(0.5), yToPx(1));
+    // Right branch: from (1/2, 1) to (xMax, 4*xMax-1)
+    var yEnd = 4 * xMax - 1;
+    ctx.lineTo(xToPx(xMax), yToPx(yEnd));
+    ctx.stroke();
+
+    // Highlight overlap segment (x <= 1/2, y = 1) thicker accent line
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 6;
+    ctx.beginPath();
+    ctx.moveTo(xToPx(xMin), yToPx(1));
+    ctx.lineTo(xToPx(0.5), yToPx(1));
+    ctx.stroke();
+
+    // Mark corner point (1/2, 1) with closed dot
+    var cx = xToPx(0.5), cy = yToPx(1);
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('(1/2, 1)', cx + 10, cy - 8);
+
+    // Function label
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 14px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('y = |2x − 1| + 2x', xToPx(1.4), yToPx(4.2));
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 18px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Grafici  y = |2x − 1| + 2x  i  y = 1', W / 2, 32);
+
+    // ---- Number line at the bottom showing solution set ----
+    var nlY = 460;
+    var nlLeft = plotLeft, nlRight = plotRight;
+    var nMin = -3, nMax = 3;
+    function nToPx(x) { return nlLeft + (x - nMin) / (nMax - nMin) * (nlRight - nlLeft); }
+
+    // Shaded region for solution (-inf, 1/2]
+    ctx.fillStyle = accent;
+    ctx.globalAlpha = 0.32;
+    ctx.fillRect(nlLeft, nlY - 12, nToPx(0.5) - nlLeft, 24);
+    ctx.globalAlpha = 1;
+
+    // Number line itself
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(nlLeft - 10, nlY);
+    ctx.lineTo(nlRight + 10, nlY);
+    ctx.stroke();
+
+    // Arrows
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(nlRight + 10, nlY);
+    ctx.lineTo(nlRight, nlY - 6);
+    ctx.lineTo(nlRight, nlY + 6);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(nlLeft - 10, nlY);
+    ctx.lineTo(nlLeft, nlY - 6);
+    ctx.lineTo(nlLeft, nlY + 6);
+    ctx.closePath();
+    ctx.fill();
+
+    // Tick marks and labels
+    ctx.fillStyle = text;
+    ctx.font = '13px sans-serif';
+    ctx.textAlign = 'center';
+    for (var ti = nMin; ti <= nMax; ti++) {
+      var tpx = nToPx(ti);
+      ctx.strokeStyle = grid;
+      ctx.beginPath();
+      ctx.moveTo(tpx, nlY - 5);
+      ctx.lineTo(tpx, nlY + 5);
+      ctx.stroke();
+      ctx.fillStyle = text;
+      ctx.fillText(String(ti), tpx, nlY + 22);
+    }
+
+    // Closed circle at 1/2
+    var hpx = nToPx(0.5);
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(hpx, nlY, 7, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(hpx, nlY, 7, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('1/2', hpx, nlY - 16);
+
+    // Caption above number line
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Skup rešenja: (−∞, 1/2]', plotLeft, nlY - 30);
+
+    // Footer note
+    ctx.fillStyle = muted;
+    ctx.font = '13px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Funkcija je konstantno jednaka 1 za x ≤ 1/2, pa se na tom delu poklapa sa pravom y = 1.', W / 2, H - 18);
+  }
+
+  draw();
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Izolujemo apsolutnu vrednost</h3>
+      <p>Iz \( |2x - 1| + 2x = 1 \) prebacujemo \( 2x \) na desnu stranu:</p>
+      <div class="math-block">\[ |2x - 1| = 1 - 2x. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koji uslov mora da zadovolji desna strana?</summary>
+          <div class="detail-content"><p>Pošto je apsolutna vrednost uvek nenegativna, mora biti \( 1 - 2x \ge 0 \), tj. \( x \le \tfrac{1}{2} \). Inače jednakost ne može da važi.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Razmatramo dva slučaja</h3>
+      <p><strong>Slučaj A:</strong> \( 2x - 1 \ge 0 \), tj. \( x \ge \tfrac{1}{2} \). Tada je \( |2x - 1| = 2x - 1 \), pa polazna jednačina postaje:</p>
+      <div class="math-block">\[ (2x - 1) + 2x = 1 \;\Longrightarrow\; 4x = 2 \;\Longrightarrow\; x = \tfrac{1}{2}. \]</div>
+      <p>Vrednost \( x = \tfrac{1}{2} \) zadovoljava uslov slučaja, pa je rešenje.</p>
+      <p><strong>Slučaj B:</strong> \( 2x - 1 < 0 \), tj. \( x < \tfrac{1}{2} \). Tada je \( |2x - 1| = -(2x - 1) = 1 - 2x \), pa jednačina postaje:</p>
+      <div class="math-block">\[ (1 - 2x) + 2x = 1 \;\Longrightarrow\; 1 = 1. \]</div>
+      <p>Identitet — tačno za sve \( x < \tfrac{1}{2} \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Spajamo rešenja oba slučaja</h3>
+      <p>Slučaj A daje \( \{\tfrac{1}{2}\} \), a slučaj B daje \( (-\infty, \tfrac{1}{2}) \). Unija:</p>
+      <div class="math-block">\[ \bigl\{\tfrac{1}{2}\bigr\} \cup (-\infty, \tfrac{1}{2}) = (-\infty, \tfrac{1}{2}]. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto desna granica \( \tfrac{1}{2} \) jeste uključena?</summary>
+          <div class="detail-content"><p>Slučaj A je dao tačno tu vrednost kao rešenje, pa je interval zatvoren u \( \tfrac{1}{2} \). Drugačije rečeno, na grafiku funkcija \( |2x-1| + 2x \) dotiče pravu \( y = 1 \) još i u tački \( x = \tfrac{1}{2} \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera nekoliko vrednosti</h3>
+      <p>Ubacimo različite tačke u polaznu jednačinu:</p>
+      <div class="math-block">\[ x = 0:\;\; |0 - 1| + 0 = 1 \;\checkmark \]</div>
+      <div class="math-block">\[ x = -3:\;\; |-7| + (-6) = 7 - 6 = 1 \;\checkmark \]</div>
+      <div class="math-block">\[ x = \tfrac{1}{2}:\;\; |0| + 1 = 1 \;\checkmark \]</div>
+      <div class="math-block">\[ x = 1:\;\; |1| + 2 = 3 \ne 1 \;\text{(van rešenja)} \]</div>
+      <p>Sve se slaže sa intervalom \( (-\infty, \tfrac{1}{2}] \).</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Funkcija \( f(x) = |2x - 1| + 2x \) je konstantno jednaka \( 1 \) za \( x \le \tfrac{1}{2} \), a zatim raste linearno. Geometrijski, ravna „leva polica” grafika seče pravu \( y = 1 \) na celom intervalu \( (-\infty, \tfrac{1}{2}] \) — zato jednačina ima beskonačno mnogo rešenja, a ne dva ili nula.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ x \in \left(-\infty, \tfrac{1}{2}\right] \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( \left(-\infty, \tfrac{1}{2}\right] \)</span>
+    <span class="answer-option" data-option="B">(B) \( (-\infty, 1] \)</span>
+    <span class="answer-option" data-option="C">(C) \( \{-1, 0\} \)</span>
+    <span class="answer-option" data-option="D">(D) prazan skup</span>
+  </div>
+  <p class="verification">Provera: za \( x = 0 \) i \( x = -3 \) leva strana je \( 1 \); za \( x = \tfrac{1}{2} \) je \( 0 + 1 = 1 \); za \( x = 1 \) je \( 1 + 2 = 3 \ne 1 \). Tačan odgovor je A.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pretpostavka da je \( |A| = -A \) za negativno \( A \) zaboravlja minus: \( |2x - 1| = -(2x - 1) = 1 - 2x \), a ne \( -(2x) - 1 \).</li>
+    <li>Izostavljanje uslova \( 1 - 2x \ge 0 \) pri postavljanju \( |2x - 1| = 1 - 2x \) (kasnije bi se to ispostavilo automatski, ali olakšava rasuđivanje).</li>
+    <li>Zaključak da je \( x = \tfrac{1}{2} \) jedino rešenje, jer se „od linearne jednačine očekuje samo jedan koren”. Identitet \( 1 = 1 \) u slučaju B daje ceo interval.</li>
+    <li>Mešanje granica intervala: rešenje uključuje \( x = \tfrac{1}{2} \), pa zagrada mora biti zatvorena.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Reši jednačinu \( |2x - 1| - 2x = 1 \). Da li i ona ima beskonačan skup rešenja, ili samo jednu tačku?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Sada izolujemo: \( |2x - 1| = 1 + 2x \), uz uslov \( 1 + 2x \ge 0 \), tj. \( x \ge -\tfrac{1}{2} \). Slučaj A (\( x \ge \tfrac{1}{2} \)): \( 2x - 1 = 1 + 2x \) → \( -1 = 1 \), nema rešenja. Slučaj B (\( -\tfrac{1}{2} \le x < \tfrac{1}{2} \)): \( 1 - 2x = 1 + 2x \) → \( x = 0 \). Konačno rešenje je \( \{0\} \) — samo jedna tačka.</p></div>
+  </details>
+</div>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Jednačina |2x − 1| + 2x = 1",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["apsolutna_vrednost", "linearna_jednacina", "analiza_po_slucajevima"]
+}
+BRAINSPARK_META-->

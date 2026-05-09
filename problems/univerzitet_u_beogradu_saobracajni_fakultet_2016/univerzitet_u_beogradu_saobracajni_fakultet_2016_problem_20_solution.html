@@ -1,0 +1,616 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Skup S svih resenja nejednacine
+   log_{2π - 5}(x^2 - 3)  >=  log_{2π - 5}(2x).
+Naci oblik skupa S.
+
+Korak 1 — analiza baze.
+Baza b = 2π - 5. Kako je π ≈ 3,14159..., 2π ≈ 6,28318..., pa je b ≈ 1,28318...
+b > 1 (jer 2π > 6 > 5, dakle 2π - 5 > 1; preciznije 2π - 5 ≈ 1,28).
+Takodje b ≠ 1 (potreban uslov za logaritam).
+Posto je b > 1, log_b je STROGO RASTUCA funkcija. Znaci kod nejednakosti log_b(A) >= log_b(B) ekvivalentno je A >= B (uz uslov A>0, B>0, naravno).
+
+Korak 2 — uslovi domena.
+Argument levog logaritma: x^2 - 3 > 0  <=>  x^2 > 3  <=>  x < -√3  ili  x > √3.
+Argument desnog logaritma: 2x > 0  <=>  x > 0.
+Presek: (x < -√3 ili x > √3) AND x > 0  =>  x > √3.
+(√3 ≈ 1,732)
+
+Korak 3 — sama nejednakost (baza > 1, znak se cuva).
+   x^2 - 3 >= 2x
+   x^2 - 2x - 3 >= 0
+   (x - 3)(x + 1) >= 0
+Resenje (parabola otvorena nagore, nule -1 i 3): x <= -1 ili x >= 3.
+
+Korak 4 — presek sa domenom.
+Domen: x > √3 ≈ 1,732.
+Resenje algebra nejednakosti: x <= -1 ili x >= 3.
+Presek:
+  - (x <= -1) ∩ (x > √3): prazno (jer -1 < √3).
+  - (x >= 3) ∩ (x > √3): x >= 3 (jer 3 > √3).
+Dakle S = [3, +∞).
+
+Oblik: [a, +∞) sa a = 3.
+Odgovor: (A).
+
+Provera za x = 3: x^2 - 3 = 6, 2x = 6, log_b(6) = log_b(6) — vazi >= (jednakost). ✓ Tacka 3 PRIPADA skupu (zatvoren krajni broj a = 3).
+Provera za x = 4: x^2 - 3 = 13, 2x = 8, 13 > 8. log_b(13) > log_b(8) jer baza > 1. ✓
+Provera za x = 2 (ne sme biti u S): x^2 - 3 = 1, 2x = 4. log_b(1) = 0, log_b(4) > 0 (jer 4 > 1 i b > 1). 0 >= log_b(4)? Ne, jer log_b(4) > 0. ✓ (nije u S)
+Provera za x = √3 + 0,01: u domenu, ali x^2 - 3 ≈ 0,035, 2x ≈ 3,46. 0,035 >= 3,46? Ne. ✓
+Provera za x = -2 (ne sme biti — nije u domenu desnog log): 2x = -4 < 0. Iskljuceno. ✓
+
+Pitfalls:
+1) Zaboraviti analizu baze. Mnogi automatski "skinu log" i napisu x^2 - 3 >= 2x bez provere da je b > 1.
+2) Uzeti pogresno: ako bi b bilo izmedju 0 i 1, log bi bio opadajuca funkcija i znak bi se OKRENUO (x^2 - 3 <= 2x), pa bi resenje bilo drugacije.
+3) Zaboraviti uslov 2x > 0 — tada bi se "dobile" i negativne vrednosti za x.
+4) Zaboraviti uslov x^2 - 3 > 0 i ukljuciti x = ±√3 ili interval [-√3, √3] gde log nije definisan.
+5) Mesati strogo i nestrogo: u nejednakosti samog argumenta, kraj x = 3 SE UKLJUCUJE (jer >= u logu); domenski uslovi x^2 - 3 > 0 i 2x > 0 su STROGI (log nije definisan u 0). Srecom, u resenju x = 3 oba su zadovoljena strogo (6 > 0, 6 > 0).
+
+Visual: dve numericke prave jedna iznad druge, stack:
+  - "Domen": izbacuje [-√3, √3] (i x <= 0), ostaje (√3, +∞).
+  - "Algebra: (x-3)(x+1) >= 0": x <= -1 ili x >= 3.
+  - "Presek = S": [3, +∞).
+Plus drugi canvas: parabola y = x^2 - 3 i prava y = 2x, sa istaknutom oblascu gde je x^2 - 3 >= 2x i u domenu. Static — fokus je algebra, slika potvrdjuje.
+</script>
+
+<h1 data-card="problem-title">Logaritamska nejednakost — oblik skupa rešenja</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — logaritamske nejednakosti, analiza baze, uslovi domena i presek skupova</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Neka je \( S \) skup svih rešenja nejednačine</p>
+  <div class="math-block">
+    \[ \log_{2\pi - 5}(x^2 - 3) \;\geq\; \log_{2\pi - 5}(2x). \]
+  </div>
+  <p>Tada za neke realne brojeve \( a, b, c \), pri čemu \( a < b < c \), skup \( S \) je oblika:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( [a, +\infty) \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( (a, b) \cup [c, +\infty) \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( (a, +\infty) \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( [a, b) \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( (a, b] \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Najpre proveravamo bazu \( 2\pi - 5 \) — pošto je \( 2\pi \approx 6{,}28 \), baza je \( \approx 1{,}28 > 1 \), pa je logaritam <em>rastuća</em> funkcija i znak nejednakosti se čuva. Zatim ispisujemo domenske uslove (oba argumenta moraju biti pozitivna), rešavamo algebarsku nejednakost \( x^2 - 3 \geq 2x \), i na kraju uzimamo presek dobijenog skupa s domenom. Krajnji oblik skupa rešenja upoređujemo sa ponuđenim opcijama.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Logaritmi, monotonost po bazi i kvadratne nejednakosti</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Domen logaritma</span> \( \log_b(A) \) je definisan akko \( b > 0,\ b \neq 1 \) i \( A > 0 \). Argument <em>uvek</em> mora biti strogo pozitivan.</li>
+        <li><span class="formula-label">Monotonost po bazi</span> — funkcija \( y = \log_b(t) \) je <em>strogo rastuća</em> ako \( b > 1 \), a <em>strogo opadajuća</em> ako \( 0 < b < 1 \). Otuda:
+          <ul>
+            <li>\( b > 1 \): \( \log_b(A) \geq \log_b(B) \iff A \geq B \) (znak se čuva).</li>
+            <li>\( 0 < b < 1 \): \( \log_b(A) \geq \log_b(B) \iff A \leq B \) (znak se okreće).</li>
+          </ul>
+        </li>
+        <li><span class="formula-label">Kvadratna nejednakost</span> \( (x - r_1)(x - r_2) \geq 0 \) za \( r_1 < r_2 \) ima rešenje \( x \leq r_1 \) ili \( x \geq r_2 \) (vodeći koeficijent pozitivan, „smeš se napolju iz korena”).</li>
+        <li><span class="formula-label">Vrednosti</span> \( \pi \approx 3{,}14159 \), pa \( 2\pi \approx 6{,}28 \) i \( 2\pi - 5 \approx 1{,}28 \). Takođe \( \sqrt{3} \approx 1{,}732 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — preseci na brojnoj pravoj">
+  <h2>📐 Vizuelni prikaz — preseci na brojnoj pravoj</h2>
+  <div class="canvas-wrapper">
+    <canvas id="numberLineCanvas" width="720" height="380"></canvas>
+  </div>
+  <p class="canvas-caption">Tri brojne prave (odozgo nadole): (1) domen \( x > \sqrt{3} \) iz uslova \( x^2 - 3 > 0 \) i \( 2x > 0 \), (2) skup rešenja same nejednakosti \( (x-3)(x+1) \geq 0 \), tj. \( x \leq -1 \) ili \( x \geq 3 \), (3) njihov presek — skup \( S = [3, +\infty) \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — parabola i prava">
+  <h2>📐 Vizuelni prikaz — parabola i prava</h2>
+  <div class="canvas-wrapper">
+    <canvas id="graphCanvas" width="720" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Plavo: \( y = x^2 - 3 \). Ljubičasto: \( y = 2x \). Zelena oblast je \( x \in [3, +\infty) \) — tu je istovremeno \( x^2 - 3 \geq 2x \), \( x^2 - 3 > 0 \) i \( 2x > 0 \). Tačka preseka grafova u prvom kvadrantu je \( (3, 6) \): leva i desna strana se izjednačavaju, pa nestroga nejednakost \( \geq \) <em>uključuje</em> \( x = 3 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera baze logaritma</h3>
+      <p>Baza je \( b = 2\pi - 5 \). Pošto je \( \pi \approx 3{,}14159 \), imamo \( 2\pi \approx 6{,}28 \), pa</p>
+      <div class="math-block">
+        \[ b = 2\pi - 5 \approx 1{,}28 \;>\; 1. \]
+      </div>
+      <p>Dakle \( \log_b \) je <em>strogo rastuća</em> funkcija. Posledica: kod nejednakosti \( \log_b(A) \geq \log_b(B) \) znak se <em>čuva</em>, pa to (uz uslove domena) postaje \( A \geq B \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kako tačno znamo da je \( 2\pi - 5 > 1 \)?</summary>
+          <div class="detail-content"><p>Treba pokazati \( 2\pi > 6 \), tj. \( \pi > 3 \) — što je očigledno (\( \pi \approx 3{,}14 \)). Strogo: \( \pi > 3 \Rightarrow 2\pi > 6 \Rightarrow 2\pi - 5 > 1 \). Takođe je očigledno \( 2\pi - 5 \neq 1 \) (jer bi to značilo \( \pi = 3 \)).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavljanje uslova domena</h3>
+      <p>Logaritam zahteva strogo pozitivan argument. Imamo dva uslova:</p>
+      <div class="math-block">
+        \[ \begin{cases} x^2 - 3 > 0, \\[2pt] 2x > 0. \end{cases} \]
+      </div>
+      <p>Drugi: \( 2x > 0 \iff x > 0 \). Prvi: \( x^2 > 3 \iff x < -\sqrt{3} \ \text{ili} \ x > \sqrt{3} \). Presek (oba moraju važiti):</p>
+      <div class="math-block">
+        \[ \mathcal{D} = \{ x \in \mathbb{R} : x > \sqrt{3} \} = (\sqrt{3},\, +\infty). \]
+      </div>
+      <p>(Grana \( x < -\sqrt{3} \) iz prvog uslova nestaje pri preseku sa \( x > 0 \).)</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto su uslovi <em>strogi</em> (a ne \( \geq 0 \))?</summary>
+          <div class="detail-content"><p>Logaritam nije definisan u 0 niti u negativnim brojevima. \( \log_b(0) \) ne postoji (limes je \( -\infty \)), zato se argument mora strogo razlikovati od nule. Otuda \( > 0 \), ne \( \geq 0 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">„Skidanje” logaritma</h3>
+      <p>Pošto je baza \( > 1 \), nejednakost između logaritama prelazi u nejednakost između argumenata <em>uz isti znak</em>:</p>
+      <div class="math-block">
+        \[ x^2 - 3 \;\geq\; 2x. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Rešavanje kvadratne nejednakosti</h3>
+      <p>Sve prebacujemo na levu stranu i faktorisujemo:</p>
+      <div class="math-block">
+        \[ x^2 - 2x - 3 \geq 0 \;\Longleftrightarrow\; (x - 3)(x + 1) \geq 0. \]
+      </div>
+      <p>Nule \( x = -1 \) i \( x = 3 \). Vodeći koeficijent je pozitivan (parabola otvorena nagore), pa je izraz \( \geq 0 \) <em>napolju</em> od korena:</p>
+      <div class="math-block">
+        \[ x \leq -1 \quad \text{ili} \quad x \geq 3. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Presek sa domenom</h3>
+      <p>Sad pravimo presek skupa rešenja iz koraka 4 sa domenom \( \mathcal{D} = (\sqrt{3}, +\infty) \), pri čemu je \( \sqrt{3} \approx 1{,}732 \):</p>
+      <ul>
+        <li>Grana \( x \leq -1 \): u preseku sa \( x > \sqrt{3} \) daje <em>prazan skup</em> (jer \( -1 < \sqrt{3} \)).</li>
+        <li>Grana \( x \geq 3 \): pošto je \( 3 > \sqrt{3} \), ova celokupna grana je već u domenu, pa presek daje \( [3, +\infty) \).</li>
+      </ul>
+      <div class="math-block">
+        \[ S = [3, +\infty). \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: da li je krajnja tačka \( x = 3 \) u skupu?</summary>
+          <div class="detail-content"><p>Da. Za \( x = 3 \): \( x^2 - 3 = 6 > 0 \) i \( 2x = 6 > 0 \) (oba u domenu). Levo: \( \log_b(6) \). Desno: \( \log_b(6) \). Imamo \( \log_b(6) \geq \log_b(6) \) ✓ (jednakost je dozvoljena). Otuda zatvorena leva granica \([3, +\infty)\).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Identifikacija oblika skupa</h3>
+      <p>Skup \( S = [3, +\infty) \) je upravo oblika \( [a, +\infty) \) sa \( a = 3 \). Brojeva \( b \) i \( c \) iz nekih opcija nije ni potrebno — postoji samo jedna konačna granica. Odgovara opcija (A).</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Najzamršeniji deo zadatka je <em>baza</em> \( 2\pi - 5 \): nije eksplicitan broj, pa lako previdimo da nam je upravo taj iracionalni izraz potreban da odredimo da li je logaritam rastuća ili opadajuća funkcija. Ključ: uporedi je sa \( 1 \). Drugi „klik” je da uslovi domena (oba argumenta \( > 0 \)) sami isprave grešku — grana \( x \leq -1 \) iz kvadratne nejednakosti deluje kao validno rešenje, ali se odbacuje jer tu \( 2x \) nije pozitivno.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ S = [3,\, +\infty) \quad\Rightarrow\quad \text{oblik } [a, +\infty). \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( [a, +\infty) \)</span>
+    <span class="answer-option" data-option="B">(B) \( (a, b) \cup [c, +\infty) \)</span>
+    <span class="answer-option" data-option="C">(C) \( (a, +\infty) \)</span>
+    <span class="answer-option" data-option="D">(D) \( [a, b) \)</span>
+    <span class="answer-option" data-option="E">(E) \( (a, b] \)</span>
+  </div>
+  <p class="verification">Provera: \( x = 3 \): \( 6 \geq 6 \) ✓. \( x = 4 \): \( 13 \geq 8 \) ✓. \( x = 2 \) (van \( S \)): \( 1 \geq 4 \) — netačno ✓. \( x = -2 \) (van domena): \( 2x = -4 < 0 \), \( \log_b(-4) \) ne postoji — pravilno odbačeno ✓.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zaboravljanje analize baze.</strong> Mehaničko „skidanje” logaritma bez provere da li je baza veća ili manja od 1. Ako bi neko pretpostavio \( 0 < b < 1 \), znak nejednakosti bi se okrenuo, pa bi se rešavalo \( x^2 - 3 \leq 2x \) — pogrešno za ovaj zadatak.</li>
+    <li><strong>Izostavljanje uslova domena \( 2x > 0 \).</strong> Tada se zadržava grana \( x \leq -1 \) iz kvadratne nejednakosti i pogrešno se uključuju negativne vrednosti, pa skup ispada oblika \( (-\infty, -1] \cup [3, +\infty) \) — što odgovara (B), ali to je <em>pogrešno</em> jer logaritam tamo nije definisan.</li>
+    <li><strong>Izostavljanje uslova \( x^2 - 3 > 0 \).</strong> Tada bi se uključio interval \( (-\sqrt{3}, \sqrt{3}) \), ali tu argument logaritma nije pozitivan.</li>
+    <li><strong>Zatvaranje/otvaranje pogrešnog kraja.</strong> U tački \( x = 3 \) je jednakost — pošto je nejednakost <em>nestrogo</em> \( \geq \), tačka \( 3 \) <em>pripada</em> \( S \). Otuda \( [3, +\infty) \), a ne \( (3, +\infty) \) (koje bi odgovaralo opciji (C)).</li>
+    <li><strong>Mešanje \( \sqrt{3} \) i \( 3 \).</strong> Domen je \( x > \sqrt{3} \approx 1{,}732 \), a granica iz nejednakosti je \( x \geq 3 \). Pošto \( 3 > \sqrt{3} \), domenski uslov ne menja krajnju levu granicu.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta bi se promenilo ako bismo bazu zamenili sa \( \pi - 3 \) (umesto \( 2\pi - 5 \))? A šta ako bismo umesto \( \log_{2\pi-5}(2x) \) imali \( \log_{2\pi-5}(2x - 6) \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p><strong>Baza \( \pi - 3 \approx 0{,}14 \).</strong> Sada je \( 0 < b < 1 \), pa je \( \log_b \) <em>opadajuća</em> i znak nejednakosti se okreće: \( x^2 - 3 \leq 2x \), tj. \( (x-3)(x+1) \leq 0 \), tj. \( -1 \leq x \leq 3 \). Domen je i dalje \( x > \sqrt{3} \). Presek: \( (\sqrt{3}, 3] \) — oblika \( (a, b] \), opcija (E).</p>
+      <p><strong>Argument \( 2x - 6 \).</strong> Domen postaje \( 2x - 6 > 0 \iff x > 3 \), uz \( x^2 - 3 > 0 \) — već važi za \( x > 3 \). Nejednakost: \( x^2 - 3 \geq 2x - 6 \iff x^2 - 2x + 3 \geq 0 \) — diskriminanta \( 4 - 12 = -8 < 0 \), pa važi za sve \( x \). Presek sa domenom: \( S = (3, +\infty) \) — oblika \( (a, +\infty) \), opcija (C).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  // ---------- Number-line stack canvas ----------
+  var canvas = document.getElementById('numberLineCanvas');
+  if (canvas) {
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, H = canvas.height;
+
+    function drawNL() {
+      var bg      = cv('--sol-canvas-bg');
+      var axis    = cv('--sol-canvas-axis');
+      var primary = cv('--sol-canvas-primary');
+      var accent  = cv('--sol-canvas-accent');
+      var warning = cv('--sol-canvas-warning');
+      var danger  = cv('--sol-canvas-danger');
+      var text    = cv('--sol-canvas-text');
+      var muted   = cv('--sol-canvas-muted');
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      var xMin = -4, xMax = 6;
+      var marginL = 90, marginR = 40;
+      var plotW = W - marginL - marginR;
+      function xToCanvas(x) { return marginL + (x - xMin) / (xMax - xMin) * plotW; }
+
+      var rows = [
+        { y: 70,  label: '1) Domen',  desc: 'x > √3 ≈ 1{,}732', color: primary,
+          ranges: [{ from: Math.sqrt(3), fromOpen: true, to: xMax + 1, toOpen: true }] },
+        { y: 170, label: '2) Algebra', desc: '(x − 3)(x + 1) ≥ 0', color: warning,
+          ranges: [
+            { from: xMin - 1, fromOpen: true, to: -1, toOpen: false },
+            { from: 3, fromOpen: false, to: xMax + 1, toOpen: true }
+          ] },
+        { y: 280, label: '3) Presek = S', desc: 'S = [3, +∞)', color: accent,
+          ranges: [{ from: 3, fromOpen: false, to: xMax + 1, toOpen: true }] }
+      ];
+
+      rows.forEach(function(row) {
+        // Row label
+        ctx.fillStyle = text;
+        ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText(row.label, 12, row.y - 14);
+        ctx.fillStyle = muted;
+        ctx.font = '11px Inter, system-ui, sans-serif';
+        ctx.fillText(row.desc, 12, row.y + 2);
+
+        // Axis line
+        ctx.strokeStyle = axis;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(marginL - 10, row.y);
+        ctx.lineTo(marginL + plotW + 10, row.y);
+        ctx.stroke();
+
+        // Arrow at right
+        ctx.beginPath();
+        ctx.moveTo(marginL + plotW + 10, row.y);
+        ctx.lineTo(marginL + plotW + 4, row.y - 4);
+        ctx.moveTo(marginL + plotW + 10, row.y);
+        ctx.lineTo(marginL + plotW + 4, row.y + 4);
+        ctx.stroke();
+
+        // Tick marks (integers)
+        ctx.strokeStyle = axis;
+        ctx.fillStyle = muted;
+        ctx.font = '10px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        for (var t = -3; t <= 5; t++) {
+          var cx = xToCanvas(t);
+          ctx.beginPath();
+          ctx.moveTo(cx, row.y - 3);
+          ctx.lineTo(cx, row.y + 3);
+          ctx.stroke();
+          if (t % 1 === 0) ctx.fillText(String(t), cx, row.y + 16);
+        }
+
+        // Highlight ranges
+        row.ranges.forEach(function(rg) {
+          var x1 = Math.max(rg.from, xMin);
+          var x2 = Math.min(rg.to, xMax);
+          if (x1 >= x2) return;
+          ctx.strokeStyle = row.color;
+          ctx.lineWidth = 5;
+          ctx.beginPath();
+          ctx.moveTo(xToCanvas(x1), row.y);
+          ctx.lineTo(xToCanvas(x2), row.y);
+          ctx.stroke();
+
+          // Endpoint markers
+          // From endpoint
+          if (rg.from >= xMin) {
+            ctx.beginPath();
+            ctx.arc(xToCanvas(rg.from), row.y, 6, 0, Math.PI*2);
+            if (rg.fromOpen) {
+              ctx.fillStyle = cv('--sol-canvas-bg');
+              ctx.fill();
+              ctx.strokeStyle = row.color;
+              ctx.lineWidth = 2;
+              ctx.stroke();
+            } else {
+              ctx.fillStyle = row.color;
+              ctx.fill();
+            }
+          }
+          // To endpoint (only if finite within view)
+          if (rg.to <= xMax) {
+            ctx.beginPath();
+            ctx.arc(xToCanvas(rg.to), row.y, 6, 0, Math.PI*2);
+            if (rg.toOpen) {
+              ctx.fillStyle = cv('--sol-canvas-bg');
+              ctx.fill();
+              ctx.strokeStyle = row.color;
+              ctx.lineWidth = 2;
+              ctx.stroke();
+            } else {
+              ctx.fillStyle = row.color;
+              ctx.fill();
+            }
+          }
+        });
+      });
+
+      // Mark √3 and 3 on first row, 3 on third row
+      ctx.fillStyle = text;
+      ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('√3', xToCanvas(Math.sqrt(3)), 70 - 10);
+      ctx.fillText('−1', xToCanvas(-1), 170 - 10);
+      ctx.fillText('3', xToCanvas(3), 170 - 10);
+      ctx.fillText('3', xToCanvas(3), 280 - 10);
+
+      // Bottom note
+      ctx.fillStyle = muted;
+      ctx.textAlign = 'center';
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.fillText('Pun krug = uključeno (≤ ili ≥);   prazan krug = isključeno (< ili >)', W/2, H - 14);
+    }
+
+    drawNL();
+
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() {
+          styles = getComputedStyle(root);
+          drawNL();
+        }, 50);
+      }
+    });
+  }
+
+  // ---------- Graph canvas: y = x^2 - 3 and y = 2x ----------
+  var gCanvas = document.getElementById('graphCanvas');
+  if (gCanvas) {
+    var gctx = gCanvas.getContext('2d');
+    var GW = gCanvas.width, GH = gCanvas.height;
+    var gMarginL = 60, gMarginR = 40, gMarginT = 50, gMarginB = 60;
+    var gPlotW = GW - gMarginL - gMarginR;
+    var gPlotH = GH - gMarginT - gMarginB;
+    var gxMin = -4, gxMax = 6;
+    var gyMin = -6, gyMax = 22;
+
+    function gxToC(x) { return gMarginL + (x - gxMin) / (gxMax - gxMin) * gPlotW; }
+    function gyToC(y) { return gMarginT + (gyMax - y) / (gyMax - gyMin) * gPlotH; }
+
+    function drawGraph() {
+      var bg      = cv('--sol-canvas-bg');
+      var grid    = cv('--sol-canvas-grid');
+      var axis    = cv('--sol-canvas-axis');
+      var primary = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent  = cv('--sol-canvas-accent');
+      var text    = cv('--sol-canvas-text');
+      var muted   = cv('--sol-canvas-muted');
+
+      gctx.clearRect(0, 0, GW, GH);
+      gctx.fillStyle = bg;
+      gctx.fillRect(0, 0, GW, GH);
+
+      // Grid
+      gctx.strokeStyle = grid;
+      gctx.lineWidth = 1;
+      gctx.beginPath();
+      for (var ix = Math.ceil(gxMin); ix <= Math.floor(gxMax); ix++) {
+        gctx.moveTo(gxToC(ix), gMarginT);
+        gctx.lineTo(gxToC(ix), gMarginT + gPlotH);
+      }
+      for (var iy = Math.ceil(gyMin/2)*2; iy <= Math.floor(gyMax/2)*2; iy += 2) {
+        gctx.moveTo(gMarginL, gyToC(iy));
+        gctx.lineTo(gMarginL + gPlotW, gyToC(iy));
+      }
+      gctx.stroke();
+
+      // Shaded region: x >= 3 (the solution set)
+      gctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.20);
+      gctx.fillRect(gxToC(3), gMarginT, gxToC(gxMax) - gxToC(3), gPlotH);
+
+      // Axes
+      gctx.strokeStyle = axis;
+      gctx.lineWidth = 2;
+      gctx.beginPath();
+      gctx.moveTo(gMarginL, gyToC(0));
+      gctx.lineTo(gMarginL + gPlotW, gyToC(0));
+      gctx.moveTo(gxToC(0), gMarginT);
+      gctx.lineTo(gxToC(0), gMarginT + gPlotH);
+      gctx.stroke();
+
+      // Axis numerals
+      gctx.fillStyle = text;
+      gctx.font = '11px Inter, system-ui, sans-serif';
+      gctx.textAlign = 'center';
+      for (var lx = -3; lx <= 5; lx++) {
+        if (lx === 0) continue;
+        gctx.fillText(String(lx), gxToC(lx), gyToC(0) + 14);
+      }
+      gctx.textAlign = 'right';
+      for (var ly = -4; ly <= 20; ly += 2) {
+        if (ly === 0) continue;
+        gctx.fillText(String(ly), gxToC(0) - 6, gyToC(ly) + 4);
+      }
+      gctx.fillStyle = muted;
+      gctx.textAlign = 'left';
+      gctx.fillText('x', gMarginL + gPlotW - 12, gyToC(0) - 6);
+      gctx.fillText('y', gxToC(0) + 6, gMarginT + 12);
+
+      // Plot y = x^2 - 3 (parabola)
+      gctx.strokeStyle = primary;
+      gctx.lineWidth = 2.5;
+      gctx.beginPath();
+      var step = (gxMax - gxMin) / 400;
+      var firstP = true;
+      for (var xp = gxMin; xp <= gxMax + 1e-9; xp += step) {
+        var yp = xp*xp - 3;
+        if (yp < gyMin - 1 || yp > gyMax + 1) { firstP = true; continue; }
+        if (firstP) { gctx.moveTo(gxToC(xp), gyToC(yp)); firstP = false; }
+        else gctx.lineTo(gxToC(xp), gyToC(yp));
+      }
+      gctx.stroke();
+
+      // Plot y = 2x (line)
+      gctx.strokeStyle = secondary;
+      gctx.lineWidth = 2.5;
+      gctx.beginPath();
+      gctx.moveTo(gxToC(gxMin), gyToC(2*gxMin));
+      gctx.lineTo(gxToC(gxMax), gyToC(2*gxMax));
+      gctx.stroke();
+
+      // Mark intersection at (3, 6)
+      gctx.beginPath();
+      gctx.arc(gxToC(3), gyToC(6), 6, 0, Math.PI*2);
+      gctx.fillStyle = accent;
+      gctx.fill();
+      gctx.strokeStyle = cv('--sol-canvas-bg');
+      gctx.lineWidth = 2;
+      gctx.stroke();
+
+      gctx.fillStyle = text;
+      gctx.font = 'bold 12px Inter, system-ui, sans-serif';
+      gctx.textAlign = 'left';
+      gctx.fillText('(3, 6)', gxToC(3) + 10, gyToC(6) - 6);
+
+      // Mark x = √3 on x-axis (boundary of domain)
+      gctx.strokeStyle = muted;
+      gctx.setLineDash([4, 4]);
+      gctx.lineWidth = 1.2;
+      gctx.beginPath();
+      gctx.moveTo(gxToC(Math.sqrt(3)), gMarginT);
+      gctx.lineTo(gxToC(Math.sqrt(3)), gMarginT + gPlotH);
+      gctx.stroke();
+      gctx.setLineDash([]);
+      gctx.fillStyle = muted;
+      gctx.font = '11px Inter, system-ui, sans-serif';
+      gctx.textAlign = 'center';
+      gctx.fillText('x = √3', gxToC(Math.sqrt(3)), gMarginT + 12);
+
+      // Legend
+      gctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      gctx.textAlign = 'left';
+      var legX = gMarginL + 10;
+      var legY = gMarginT + 8;
+      gctx.strokeStyle = primary;
+      gctx.lineWidth = 3;
+      gctx.beginPath(); gctx.moveTo(legX, legY); gctx.lineTo(legX + 24, legY); gctx.stroke();
+      gctx.fillStyle = text;
+      gctx.fillText('y = x² − 3', legX + 30, legY + 4);
+
+      gctx.strokeStyle = secondary;
+      gctx.beginPath(); gctx.moveTo(legX + 130, legY); gctx.lineTo(legX + 154, legY); gctx.stroke();
+      gctx.fillStyle = text;
+      gctx.fillText('y = 2x', legX + 160, legY + 4);
+
+      // Region label
+      gctx.fillStyle = accent;
+      gctx.font = 'bold 12px Inter, system-ui, sans-serif';
+      gctx.textAlign = 'center';
+      gctx.fillText('S = [3, +∞)', gxToC(4.5), gyToC(15));
+
+      // Bottom caption inside canvas
+      gctx.fillStyle = muted;
+      gctx.font = '11px Inter, system-ui, sans-serif';
+      gctx.textAlign = 'center';
+      gctx.fillText('Zelena oblast: parabola je iznad ili na pravoj, oba argumenta logaritma su pozitivna.', GW/2, GH - 18);
+    }
+
+    drawGraph();
+
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() {
+          styles = getComputedStyle(root);
+          drawGraph();
+        }, 50);
+      }
+    });
+  }
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Logaritamska nejednakost — oblik skupa rešenja",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["logaritamske nejednakosti", "monotonost logaritma", "uslovi domena", "kvadratne nejednakosti", "presek skupova"]
+}
+BRAINSPARK_META-->

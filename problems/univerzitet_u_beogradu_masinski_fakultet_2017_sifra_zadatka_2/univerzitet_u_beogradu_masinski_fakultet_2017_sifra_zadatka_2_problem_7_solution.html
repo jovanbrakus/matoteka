@@ -1,0 +1,525 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: f(x) = sqrt(x^2 - 6x + 16) na [1, 6]. Razlika najmanje i najveće vrednosti?
+
+  Posmatrajmo g(x) = x^2 - 6x + 16. Dopuna do potpunog kvadrata:
+  g(x) = (x - 3)^2 + 7, što je >= 7 za sve x. Dakle g je svuda pozitivno, a koren je dobro definisan.
+
+  f(x) = sqrt(g(x)). Kako je sqrt monotono rastuća funkcija, f dostiže ekstreme tamo gde i g.
+
+  g'(x) = 2x - 6 = 0 daje x = 3 (kritična tačka, unutar [1, 6]).
+  g(3) = 9 - 18 + 16 = 7 (minimum, unutrašnji)
+  Krajevi: g(1) = 1 - 6 + 16 = 11; g(6) = 36 - 36 + 16 = 16
+
+  Maksimum g na [1, 6]: g(6) = 16 (krajnja tačka).
+  Minimum g na [1, 6]: g(3) = 7 (unutrašnja).
+
+  Onda je f_min = sqrt(7) ≈ 2,6458 (u tački x = 3)
+  f_max = sqrt(16) = 4 (u tački x = 6)
+
+  Razlika "najmanje i najveće" = f_min - f_max = sqrt(7) - 4 ≈ 2,6458 - 4 ≈ -1,3542
+
+  Provera: -1,3542 ∈ (-2, -1]? -2 < -1,3542 i -1,3542 < -1. Da, jeste u (-2, -1].
+  Strogo: sqrt(7) > sqrt(4) = 2 i sqrt(7) < sqrt(9) = 3, pa sqrt(7) - 4 ∈ (2 - 4, 3 - 4) = (-2, -1).
+  Tačnije: sqrt(7) - 4 < sqrt(9) - 4 = -1, ali znamo i sqrt(7) > sqrt(4) = 2 daje sqrt(7) - 4 > -2.
+  Pripada (-2, -1) ⊂ (-2, -1]. Odgovor (A).
+
+  PITFALL: ako se uzme |max - min| = 4 - sqrt(7) ≈ 1,3542, to bi pripadalo (1, 2] = opcija (B), što je greška u tumačenju.
+</script>
+
+<h1 data-card="problem-title">Razlika najmanje i najveće vrednosti funkcije sa kvadratnim korenom</h1>
+<p data-card="problem-subtitle" class="subtitle">Analiza &mdash; ekstremi neprekidne funkcije na zatvorenom intervalu</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Razlika najmanje i najveće vrednosti funkcije \( f(x) = \sqrt{x^2 - 6x + 16} \) na segmentu \( [1, 6] \) pripada skupu:</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">funkcija</span>
+      <span class="given-value">\( f(x) = \sqrt{x^2 - 6x + 16} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">domen ispitivanja</span>
+      <span class="given-value">\( [1, 6] \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">tražimo</span>
+      <span class="given-value">\( \min f - \max f \)</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( (-2, -1] \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( (1, 2] \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( (-\infty, -2] \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( (2, \infty) \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( (-1, 1] \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Pošto je \( \sqrt{\cdot} \) monotono rastuća, ekstremi funkcije \( f \) su tamo gde i ekstremi izraza \( g(x) = x^2 - 6x + 16 \). Dopunom do potpunog kvadrata \( g(x) = (x-3)^2 + 7 \) odmah se vidi temenska tačka \( x = 3 \), a vrednosti \( g \) na krajevima \( 1 \) i \( 6 \) određuju maksimum. Na kraju računamo \( f_{\min} - f_{\max} \) i proveravamo kojem skupu broj pripada.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Vajerštrasova teorema:</strong> Neprekidna funkcija na zatvorenom segmentu \( [a, b] \) dostiže svoj minimum i maksimum na tom segmentu.</li>
+        <li><strong>Gde tražiti ekstreme:</strong> u krajevima \( a, b \) i u unutrašnjim kritičnim tačkama (gde je \( f'(x) = 0 \) ili \( f' \) nije definisano).</li>
+        <li><strong>Monotonost kompozicije:</strong> ako je \( h \) monotono rastuća, onda \( h \circ g \) ima ekstreme tamo gde i \( g \). Zato se kod \( f = \sqrt{g} \) bavimo sa \( g \).</li>
+        <li><strong>Dopuna do potpunog kvadrata:</strong> \( x^2 - 6x + 16 = (x-3)^2 + 7 \). Minimum se dostiže u \( x = 3 \) i iznosi \( 7 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Grafik funkcije na segmentu">
+  <h2>📐 Grafik funkcije na segmentu</h2>
+  <div class="canvas-wrapper">
+    <canvas id="extremaPlot" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Grafik \( f(x) = \sqrt{x^2 - 6x + 16} \) na \( [1, 6] \). Zelenom tačkom obeležen je minimum u \( x = 3 \) sa vrednošću \( \sqrt{7} \approx 2{,}65 \), a crvenom tačkom maksimum u \( x = 6 \) sa vrednošću \( 4 \). Vidi se i pad sa nivoa \( 4 \) na nivo \( \sqrt{7} \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Prebacimo problem na funkciju ispod korena</h3>
+      <p>Označimo \( g(x) = x^2 - 6x + 16 \). Pošto je \( \sqrt{\cdot} \) strogo rastuća, traženje \( \min f \) i \( \max f \) svodi se na traženje \( \min g \) i \( \max g \) na \( [1, 6] \). Onda je \( f_{\min} = \sqrt{g_{\min}} \) i \( f_{\max} = \sqrt{g_{\max}} \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je dovoljno gledati ekstreme od \( g \)?</summary>
+          <div class="detail-content"><p>Ako je \( g(a) \le g(b) \), onda zbog monotonosti korena i \( \sqrt{g(a)} \le \sqrt{g(b)} \). Tačka u kojoj \( g \) postiže minimum jeste i tačka u kojoj \( f \) postiže minimum (i analogno za maksimum). Takođe, vidimo da je \( g(x) = (x-3)^2 + 7 \ge 7 > 0 \), pa je koren uvek dobro definisan.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Dopuna do potpunog kvadrata i kritična tačka</h3>
+      <p>Zapišimo \( g \) u temenom obliku:</p>
+      <div class="math-block">\[ g(x) = x^2 - 6x + 16 = (x-3)^2 + 7 \]</div>
+      <p>Odavde se direktno čita: minimum kvadratne funkcije \( g \) je u tački \( x = 3 \) i iznosi \( 7 \). Tačka \( x = 3 \) pripada intervalu \( [1, 6] \), pa je to legitiman kandidat za minimum na segmentu.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Vrednosti u krajevima i izbor maksimuma</h3>
+      <p>Računamo \( g \) u krajnjim tačkama segmenta:</p>
+      <div class="math-block">\[ g(1) = 1 - 6 + 16 = 11, \qquad g(6) = 36 - 36 + 16 = 16 \]</div>
+      <p>Poređenje tri kandidata:</p>
+      <div class="math-block">\[ g(3) = 7 < g(1) = 11 < g(6) = 16 \]</div>
+      <p>Dakle \( g_{\min} = 7 \) (u \( x = 3 \)) i \( g_{\max} = 16 \) (u \( x = 6 \)).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto u \( x = 6 \), a ne u \( x = 1 \)?</summary>
+          <div class="detail-content"><p>Parabola \( g \) ima teme u \( x = 3 \). Krajevi segmenta su na rastojanjima \( |1 - 3| = 2 \) i \( |6 - 3| = 3 \) od temena. Pošto je grana otvorena nagore, vrednost \( g \) je veća u krajnjoj tački koja je <em>dalja</em> od temena, a to je \( x = 6 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Vraćanje pod koren</h3>
+      <p>Sada je:</p>
+      <div class="math-block">\[ f_{\min} = \sqrt{7}, \qquad f_{\max} = \sqrt{16} = 4 \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Razlika najmanje i najveće vrednosti</h3>
+      <p>Pažljivo čitamo zahtev: traži se <strong>razlika najmanje i najveće</strong>, dakle redom \( f_{\min} - f_{\max} \) (redosled u rečenici se poštuje):</p>
+      <div class="math-block">\[ f_{\min} - f_{\max} = \sqrt{7} - 4 \]</div>
+      <p>Brojčano: \( \sqrt{7} \approx 2{,}6458 \), pa je razlika \( \approx -1{,}3542 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Određivanje skupa kojem razlika pripada</h3>
+      <p>Treba ograničiti \( \sqrt{7} - 4 \) bez kalkulatora. Iz \( 4 < 7 < 9 \) sledi:</p>
+      <div class="math-block">\[ 2 = \sqrt{4} < \sqrt{7} < \sqrt{9} = 3 \]</div>
+      <p>Oduzimanjem \( 4 \) od svake strane (ne menja smer nejednakosti):</p>
+      <div class="math-block">\[ -2 < \sqrt{7} - 4 < -1 \]</div>
+      <p>Dakle \( \sqrt{7} - 4 \in (-2, -1) \subset (-2, -1] \). Odgovara intervalu pod (A).</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Dva uvida zajedno čine ovaj zadatak rešivim u par redova: <strong>(1)</strong> ekstreme \( f = \sqrt{g} \) ne moramo tražiti diferenciranjem korena &mdash; dovoljno je naći ekstreme od \( g \), jer je \( \sqrt{\cdot} \) monotona; <strong>(2)</strong> dopuna do potpunog kvadrata daje teme parabole &bdquo;na licu mesta&ldquo;, a krajevi segmenta se proveravaju samo da se izabere veća vrednost. Na kraju je presudan i <strong>redosled u tekstu</strong>: &bdquo;razlika najmanje i najveće&ldquo; znači \( \min - \max \), što daje <em>negativan</em> rezultat.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \sqrt{7} - 4 \in (-2, -1] \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( (-2, -1] \)</span>
+    <span class="answer-option" data-option="B">(B) \( (1, 2] \)</span>
+    <span class="answer-option" data-option="C">(C) \( (-\infty, -2] \)</span>
+    <span class="answer-option" data-option="D">(D) \( (2, \infty) \)</span>
+    <span class="answer-option" data-option="E">(E) \( (-1, 1] \)</span>
+  </div>
+  <p class="verification">Provera ograničenja: \( \sqrt{4} < \sqrt{7} < \sqrt{9} \) daje \( 2 < \sqrt{7} < 3 \), pa \( -2 < \sqrt{7} - 4 < -1 \). Numerički \( \sqrt{7} - 4 \approx -1{,}3542 \), što leži u \( (-2, -1] \). \( \checkmark \)</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Računanje \( |f_{\max} - f_{\min}| \) umesto \( f_{\min} - f_{\max} \).</strong> Tada se dobije \( 4 - \sqrt{7} \approx 1{,}3542 \), što leži u \( (1, 2] \) i navodi na pogrešan odgovor (B). Tekst kaže &bdquo;razlika najmanje <em>i</em> najveće&ldquo; &mdash; redosled u rečenici određuje znak.</li>
+    <li><strong>Tražiti maksimum samo u temenu.</strong> Teme \( x = 3 \) je <em>minimum</em> grane otvorene nagore, ne maksimum. Maksimum na zatvorenom segmentu se dostiže u krajnjoj tački koja je dalja od temena.</li>
+    <li><strong>Pogrešna procena \( \sqrt{7} \).</strong> Često se uzme \( \sqrt{7} \approx 2{,}65 \) i potom napravi računska greška u oduzimanju. Bezbednije je uporediti \( \sqrt{7} \) sa \( \sqrt{4} \) i \( \sqrt{9} \) i raditi sa nejednakostima.</li>
+    <li><strong>Diferenciranje korena bez razloga.</strong> \( f'(x) = \dfrac{2x-6}{2\sqrt{x^2-6x+16}} \) tačno je, ali nije potrebno &mdash; dovoljno je posmatrati \( g \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Posmatraj istu funkciju \( f(x) = \sqrt{x^2 - 6x + 16} \), ali sada na segmentu \( [0, 4] \). Ko je sada \( f_{\min} \), a ko \( f_{\max} \)? Da li je \( f_{\min} - f_{\max} \) i dalje u istom skupu \( (-2, -1] \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Teme \( x = 3 \) je i dalje u segmentu \( [0, 4] \), pa je \( g_{\min} = 7 \), tj. \( f_{\min} = \sqrt{7} \). Krajevi: \( g(0) = 16 \) i \( g(4) = 16 - 24 + 16 = 8 \). Dakle \( g_{\max} = 16 \) u \( x = 0 \), a \( f_{\max} = 4 \). Razlika je opet \( \sqrt{7} - 4 \), pa pripada istom skupu \( (-2, -1] \). Ovo pokazuje da je rezultat osetljiv na izbor segmenta samo onoliko koliko se menjaju krajevi &mdash; teme \( x = 3 \) ostaje &bdquo;jezgro&ldquo; problema dokle god je u segmentu.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('extremaPlot');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  // Math coordinate system: x in [0, 7], y in [0, 5]
+  var xMin = 0, xMax = 7;
+  var yMin = 0, yMax = 5;
+  var marginL = 60, marginR = 30, marginT = 50, marginB = 70;
+  var plotW = W - marginL - marginR;
+  var plotH = H - marginT - marginB;
+  var sx = plotW / (xMax - xMin);
+  var sy = plotH / (yMax - yMin);
+  function tx(x) { return marginL + (x - xMin) * sx; }
+  function ty(y) { return marginT + (yMax - y) * sy; }
+
+  function f(x) { return Math.sqrt(x * x - 6 * x + 16); }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('f(x) = √(x² - 6x + 16)  na segmentu [1, 6]', W / 2, 25);
+
+    // Highlighted segment band [1, 6]
+    ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.10);
+    ctx.fillRect(tx(1), marginT, tx(6) - tx(1), plotH);
+
+    // Grid (vertical)
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var gx = Math.ceil(xMin); gx <= Math.floor(xMax); gx++) {
+      ctx.beginPath();
+      ctx.moveTo(tx(gx), marginT);
+      ctx.lineTo(tx(gx), marginT + plotH);
+      ctx.stroke();
+    }
+    for (var gy = Math.ceil(yMin); gy <= Math.floor(yMax); gy++) {
+      ctx.beginPath();
+      ctx.moveTo(marginL, ty(gy));
+      ctx.lineTo(marginL + plotW, ty(gy));
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(marginL, ty(0));
+    ctx.lineTo(marginL + plotW, ty(0));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(tx(0), marginT);
+    ctx.lineTo(tx(0), marginT + plotH);
+    ctx.stroke();
+
+    // Arrowheads
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(marginL + plotW, ty(0));
+    ctx.lineTo(marginL + plotW - 10, ty(0) - 5);
+    ctx.lineTo(marginL + plotW - 10, ty(0) + 5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(tx(0), marginT);
+    ctx.lineTo(tx(0) - 5, marginT + 10);
+    ctx.lineTo(tx(0) + 5, marginT + 10);
+    ctx.closePath();
+    ctx.fill();
+
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('x', marginL + plotW + 5, ty(0) + 4);
+    ctx.textAlign = 'center';
+    ctx.fillText('y', tx(0) - 12, marginT - 5);
+
+    // Tick labels
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    for (var ix = Math.ceil(xMin); ix <= Math.floor(xMax); ix++) {
+      if (ix === 0) continue;
+      ctx.fillText(ix.toString(), tx(ix), ty(0) + 16);
+    }
+    ctx.textAlign = 'right';
+    for (var iy = Math.ceil(yMin); iy <= Math.floor(yMax); iy++) {
+      if (iy === 0) continue;
+      ctx.fillText(iy.toString(), tx(0) - 6, ty(iy) + 4);
+    }
+
+    // Plot full curve (lighter, outside segment)
+    ctx.strokeStyle = cvAlpha('--sol-canvas-primary', 0.35);
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    var firstA = true;
+    for (var pxA = 0; pxA <= plotW; pxA++) {
+      var xA = xMin + pxA / sx;
+      if (xA >= 1 && xA <= 6) { firstA = true; continue; }
+      var yA = f(xA);
+      if (yA > yMax + 1) { firstA = true; continue; }
+      var XA = marginL + pxA;
+      var YA = ty(yA);
+      if (firstA) { ctx.moveTo(XA, YA); firstA = false; }
+      else ctx.lineTo(XA, YA);
+    }
+    ctx.stroke();
+
+    // Plot curve on segment [1,6] in primary color, thick
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    var firstB = true;
+    for (var pxB = 0; pxB <= plotW; pxB++) {
+      var xB = xMin + pxB / sx;
+      if (xB < 1 || xB > 6) { firstB = true; continue; }
+      var yB = f(xB);
+      var XB = marginL + pxB;
+      var YB = ty(yB);
+      if (firstB) { ctx.moveTo(XB, YB); firstB = false; }
+      else ctx.lineTo(XB, YB);
+    }
+    ctx.stroke();
+
+    // Endpoints of segment on x-axis (boundary marks)
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath();
+    ctx.moveTo(tx(1), ty(0));
+    ctx.lineTo(tx(1), ty(f(1)));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(tx(6), ty(0));
+    ctx.lineTo(tx(6), ty(f(6)));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Min point at x=3, y=sqrt(7)
+    var minX = 3, minY = Math.sqrt(7);
+    var Mx = tx(minX), My = ty(minY);
+    ctx.beginPath();
+    ctx.arc(Mx, My, 11, 0, 2 * Math.PI);
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.25);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(Mx, My, 6, 0, 2 * Math.PI);
+    ctx.fillStyle = accent;
+    ctx.fill();
+
+    // Max point at x=6, y=4
+    var maxX = 6, maxY = 4;
+    var Xx = tx(maxX), Xy = ty(maxY);
+    ctx.beginPath();
+    ctx.arc(Xx, Xy, 11, 0, 2 * Math.PI);
+    ctx.fillStyle = cvAlpha('--sol-canvas-danger', 0.25);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(Xx, Xy, 6, 0, 2 * Math.PI);
+    ctx.fillStyle = danger;
+    ctx.fill();
+
+    // Dashed lines from extremes to axes
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(Mx, My);
+    ctx.lineTo(Mx, ty(0));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(Mx, My);
+    ctx.lineTo(tx(0), My);
+    ctx.stroke();
+
+    ctx.strokeStyle = danger;
+    ctx.beginPath();
+    ctx.moveTo(Xx, Xy);
+    ctx.lineTo(tx(0), Xy);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Drop arrow from y=4 to y=sqrt(7) on the y-axis side (illustrate the difference)
+    var arrowX = tx(0) - 38;
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(arrowX, ty(maxY));
+    ctx.lineTo(arrowX, ty(minY));
+    ctx.stroke();
+    // arrowhead pointing down
+    ctx.beginPath();
+    ctx.moveTo(arrowX, ty(minY));
+    ctx.lineTo(arrowX - 4, ty(minY) - 7);
+    ctx.lineTo(arrowX + 4, ty(minY) - 7);
+    ctx.closePath();
+    ctx.fillStyle = highlight;
+    ctx.fill();
+
+    // Labels for special values on y-axis
+    ctx.fillStyle = danger;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('4', tx(0) - 6, ty(4) + 4);
+
+    ctx.fillStyle = accent;
+    ctx.fillText('√7', tx(0) - 6, ty(Math.sqrt(7)) + 4);
+
+    // Labels for special x values
+    ctx.fillStyle = accent;
+    ctx.textAlign = 'center';
+    ctx.fillText('3', tx(3), ty(0) + 16);
+
+    // Label points
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = accent;
+    ctx.textAlign = 'left';
+    ctx.fillText('min: (3, √7)', Mx + 14, My + 5);
+
+    ctx.fillStyle = danger;
+    ctx.textAlign = 'right';
+    ctx.fillText('max: (6, 4)', Xx - 14, Xy - 8);
+
+    // Segment endpoints on x-axis
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('1', tx(1), ty(0) + 30);
+    ctx.fillText('6', tx(6), ty(0) + 30);
+
+    // Legend at bottom
+    var legendY = H - 22;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(60, legendY, 5, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.fillText('minimum √7 u x = 3', 72, legendY + 4);
+
+    ctx.fillStyle = danger;
+    ctx.beginPath();
+    ctx.arc(280, legendY, 5, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.fillText('maksimum 4 u x = 6', 292, legendY + 4);
+
+    ctx.fillStyle = highlight;
+    ctx.fillText('razlika √7 − 4 ≈ −1,35', 510, legendY + 4);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Razlika minimuma i maksimuma funkcije sa kvadratnim korenom na segmentu",
+  "subject": "math",
+  "unit": "calculus",
+  "topic_tags": ["ekstremi funkcije", "kvadratna funkcija", "kvadratni koren", "zatvoren interval", "monotonost kompozicije"]
+}
+BRAINSPARK_META-->

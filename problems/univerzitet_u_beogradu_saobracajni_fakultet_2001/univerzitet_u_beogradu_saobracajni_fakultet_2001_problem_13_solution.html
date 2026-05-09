@@ -1,0 +1,993 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: U trouglu ABC ugao kod temena C je 60°, AC = 5 i BC = 7. Naci sin A * sin B.
+
+Oznake (standardne):
+  a = BC = 7 (naspram ugla A)
+  b = AC = 5 (naspram ugla B)
+  c = AB = ? (naspram ugla C = 60°)
+  C = 60°
+
+Korak 1: Kosinusna teorema da nadjemo c.
+  c^2 = a^2 + b^2 - 2ab*cos C
+  c^2 = 49 + 25 - 2*7*5*cos 60° = 74 - 70*(1/2) = 74 - 35 = 39
+  c = sqrt(39).
+
+Provera (nejednakost trougla): |a - b| = 2 < c = sqrt(39) ≈ 6,24 < a + b = 12. ✓
+
+Korak 2: Sinusna teorema:
+  a/sin A = b/sin B = c/sin C  (= 2R)
+  sin A = a*sin C / c = 7*(sqrt(3)/2) / sqrt(39) = 7*sqrt(3) / (2*sqrt(39))
+  sin B = b*sin C / c = 5*(sqrt(3)/2) / sqrt(39) = 5*sqrt(3) / (2*sqrt(39))
+
+Korak 3: Proizvod
+  sin A * sin B = (7*sqrt(3)) * (5*sqrt(3)) / (4*39)
+                = 35 * 3 / (4*39)
+                = 105 / 156
+                = 35 / 52  (delimo sa 3)
+
+Elegantna formula: sin A * sin B = (a*b*sin^2 C) / c^2 = 35 * (3/4) / 39 = (35*3)/(4*39) = 105/156 = 35/52.
+
+Numerička provera:
+  c = sqrt(39) ≈ 6,2450
+  sin A ≈ 7*1,7321/(2*6,2450) ≈ 12,1244/12,4900 ≈ 0,9707
+  sin B ≈ 5*1,7321/(2*6,2450) ≈ 8,6603/12,4900 ≈ 0,6934
+  proizvod ≈ 0,6731 ; 35/52 ≈ 0,6731 ✓
+
+Eliminacija ostalih:
+  (A) 35/156 — ako se ne kvadrira sin 60° (zaboravljen sqrt(3)*sqrt(3) = 3).
+  (B) 35/39 — ako se podeli samo sa 39, bez 4 u imeniocu (ne uracuna se 1/2 dva puta).
+  (C) 35/52 — TACAN.
+  (D) 105/296 — pogresan imenilac.
+  (E) 71/78 — nepovezana vrednost.
+
+Tacan odgovor: (C) 35/52.
+
+Vizuelni prikaz: 4 STATIC canvas-a:
+  1) Osnovni trougao ABC sa AC=5, BC=7, ugao C=60° (Step 1).
+  2) Kosinusna teorema vizualizovana — pokazujemo c^2 = 49 + 25 - 35.
+  3) Sinusna teorema sa opisanim krugom (2R = c/sin C), sa svim sin A i sin B.
+  4) Sumarni dijagram sa svim oznakama i finalnim odgovorom 35/52.
+
+Geometrija je sintetska — kosinusna i sinusna teorema su klasicni alati. NEMA koordinata.
+Static (nepokretni) jer su svi parametri fiksirani.
+</script>
+
+<h1 data-card="problem-title">Proizvod sinusa uglova u trouglu</h1>
+<p data-card="problem-subtitle" class="subtitle">Trigonometrija trougla — kosinusna i sinusna teorema</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>U trouglu \( ABC \) ugao kod temena \( C \) je \( 60^\circ \), \( AC = 5 \) i \( BC = 7 \). Proizvod sinusa uglova kod temena \( A \) i \( B \) je:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">stranica \( AC \)</span>
+      <span class="given-value">\( 5 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">stranica \( BC \)</span>
+      <span class="given-value">\( 7 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">ugao kod \( C \)</span>
+      <span class="given-value">\( 60^\circ \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">tražimo</span>
+      <span class="given-value">\( \sin A \cdot \sin B \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \dfrac{35}{156} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \dfrac{35}{39} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \dfrac{35}{52} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \dfrac{105}{296} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \dfrac{71}{78} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Najpre kosinusnom teoremom nađemo treću stranicu \( c = AB \) (jer je dat ugao između stranica \( a = 7 \) i \( b = 5 \)). Zatim iz sinusne teoreme izrazimo \( \sin A \) i \( \sin B \) preko \( \sin C \) i poznatih dužina, pa napravimo proizvod. Na kraju skratimo razlomak.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Kosinusna i sinusna teorema, vrednosti za \( 60^\circ \)</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Kosinusna teorema</span> Za trougao sa stranicama \( a, b, c \) i uglom \( \gamma \) naspram \( c \):
+          \( c^2 = a^2 + b^2 - 2ab\cos\gamma \). Daje treću stranicu kada su poznate dve i ugao između njih.</li>
+        <li><span class="formula-label">Sinusna teorema</span> \( \dfrac{a}{\sin A} = \dfrac{b}{\sin B} = \dfrac{c}{\sin C} = 2R \), gde je \( R \) poluprečnik opisanog kruga.</li>
+        <li>Posledica: \( \sin A = \dfrac{a\sin C}{c} \), \( \sin B = \dfrac{b\sin C}{c} \).</li>
+        <li>Vrednosti: \( \sin 60^\circ = \dfrac{\sqrt{3}}{2} \), \( \cos 60^\circ = \dfrac{1}{2} \), pa \( \sin^2 60^\circ = \dfrac{3}{4} \).</li>
+        <li>Standardno označavanje: stranica naspram ugla \( A \) je \( a = BC \), naspram \( B \) je \( b = AC \), naspram \( C \) je \( c = AB \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Trougao ABC sa datim podacima">
+  <h2>📐 Trougao \( ABC \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagramTriangle" width="720" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Trougao sa stranicama \( a = BC = 7 \), \( b = AC = 5 \) i uglom \( \angle C = 60^\circ \). Stranica \( c = AB \) (naspram ugla \( C \)) još nije poznata.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Standardno označavanje stranica</h3>
+      <p>U trouglu \( ABC \) stranica naspram ugla je „stranica istog imena malim slovom":</p>
+      <div class="math-block">\[ a = BC = 7,\quad b = AC = 5,\quad c = AB = ?,\quad \angle C = 60^\circ. \]</div>
+      <p>Pošto je dat ugao između stranica \( a \) i \( b \), prirodan alat je <strong>kosinusna teorema</strong> za nalaženje stranice \( c \).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš kosinusna teorema, a ne Pitagorina?</summary>
+          <div class="detail-content"><p>Pitagorina važi samo za pravougli trougao. Naš trougao ima ugao \( 60^\circ \) (nije \( 90^\circ \)), pa primenjujemo opštu kosinusnu teoremu, koja je generalizacija Pitagorine.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Kosinusna teorema za stranicu \( c \)</h3>
+      <p>Postavljamo formulu sa uglom \( C \) između stranica \( a \) i \( b \):</p>
+      <div class="math-block">\[ c^2 = a^2 + b^2 - 2ab\cos C. \]</div>
+      <p>Zamenjujemo brojeve i koristimo \( \cos 60^\circ = \dfrac{1}{2} \):</p>
+      <div class="math-block">\[ c^2 = 7^2 + 5^2 - 2\cdot 7\cdot 5\cdot \tfrac{1}{2} = 49 + 25 - 35 = 39. \]</div>
+      <p>Dakle:</p>
+      <div class="math-block">\[ c = AB = \sqrt{39}. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: da li \( \sqrt{39} \) zadovoljava nejednakost trougla?</summary>
+          <div class="detail-content"><p>Mora da važi \( |a - b| < c < a + b \), tj. \( 2 < \sqrt{39} < 12 \). Pošto je \( \sqrt{39} \approx 6{,}24 \), uslov je ispunjen.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="visual-aid" data-title="Kosinusna teorema — geometrijska slika">
+  <h2>📐 Kosinusna teorema u akciji</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagramCos" width="720" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Vizualizacija \( c^2 = 49 + 25 - 35 = 39 \): od zbira kvadrata stranica \( a \) i \( b \) oduzimamo „korekciju" \( 2ab\cos C \), koja zavisi od ugla.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak — sinusna teorema">
+  <h2>✏️ Sinusna teorema</h2>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Izraz za \( \sin A \) i \( \sin B \)</h3>
+      <p>Iz sinusne teoreme \( \dfrac{a}{\sin A} = \dfrac{c}{\sin C} \) sledi:</p>
+      <div class="math-block">\[ \sin A = \dfrac{a\sin C}{c} = \dfrac{7\cdot \dfrac{\sqrt{3}}{2}}{\sqrt{39}} = \dfrac{7\sqrt{3}}{2\sqrt{39}}. \]</div>
+      <p>Analogno, iz \( \dfrac{b}{\sin B} = \dfrac{c}{\sin C} \):</p>
+      <div class="math-block">\[ \sin B = \dfrac{b\sin C}{c} = \dfrac{5\cdot \dfrac{\sqrt{3}}{2}}{\sqrt{39}} = \dfrac{5\sqrt{3}}{2\sqrt{39}}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Proizvod \( \sin A \cdot \sin B \)</h3>
+      <p>Množimo direktno:</p>
+      <div class="math-block">\[ \sin A \cdot \sin B = \dfrac{7\sqrt{3}}{2\sqrt{39}}\cdot \dfrac{5\sqrt{3}}{2\sqrt{39}} = \dfrac{7\cdot 5\cdot (\sqrt{3})^2}{4\cdot (\sqrt{39})^2} = \dfrac{35\cdot 3}{4\cdot 39} = \dfrac{105}{156}. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliko je \( (\sqrt{3})^2 \), a koliko \( (\sqrt{39})^2 \)?</summary>
+          <div class="detail-content"><p>Po definiciji kvadratnog korena: \( (\sqrt{x})^2 = x \) za \( x \geq 0 \). Zato \( (\sqrt{3})^2 = 3 \) i \( (\sqrt{39})^2 = 39 \). Korenovi se „pojedu" pri kvadriranju.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Skraćivanje razlomka</h3>
+      <p>Razlažemo brojilac i imenilac na proste činioce: \( 105 = 3\cdot 5\cdot 7 \), \( 156 = 4\cdot 39 = 2^2\cdot 3\cdot 13 \). Zajednički činilac je \( 3 \):</p>
+      <div class="math-block">\[ \dfrac{105}{156} = \dfrac{35}{52}. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: numerička kontrola</summary>
+          <div class="detail-content">
+            <p>\( \dfrac{35}{52} \approx 0{,}673 \). Sa druge strane, \( \sin A \approx 0{,}971 \) i \( \sin B \approx 0{,}693 \), pa je \( \sin A\cdot \sin B \approx 0{,}673 \). Poklapa se. ✓</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="visual-aid" data-title="Sinusna teorema i opisani krug">
+  <h2>📐 Sinusna teorema — opisani krug</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagramSin" width="720" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Iz sinusne teoreme \( \dfrac{c}{\sin C} = 2R \) dobijamo poluprečnik opisanog kruga \( R = \dfrac{c}{2\sin C} = \dfrac{\sqrt{39}}{\sqrt{3}} = \sqrt{13} \). Sve tri visine sinusa potiču iz iste konstante \( 2R = \dfrac{2\sqrt{39}}{\sqrt{3}} \).</p>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kombinacijom kosinusne i sinusne teoreme dobijamo elegantnu formulu za proizvod sinusa dva ugla u trouglu kada je dat treći ugao i dve stranice oko njega:</p>
+  <div class="math-block">\[ \sin A\cdot \sin B = \dfrac{a\,b\,\sin^2 C}{c^2}. \]</div>
+  <p>U brojiocu se kvadrira \( \sin C = \dfrac{\sqrt{3}}{2} \), pa pojavljuje faktor \( \dfrac{3}{4} \) — ne sam \( \dfrac{\sqrt{3}}{2} \). To je glavni razlog zašto se rešenje ne može svesti na obični „prepolovljeni" razlomak.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Sumarni dijagram sa rešenjem">
+  <h2>📐 Sumarni dijagram</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagramSummary" width="720" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Trougao sa svim oznakama: \( a = 7 \), \( b = 5 \), \( c = \sqrt{39} \), \( \angle C = 60^\circ \). Sa strane je sumarni račun koji vodi do \( \sin A\cdot \sin B = \dfrac{35}{52} \).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \sin A\cdot \sin B = \dfrac{35}{52} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( \dfrac{35}{156} \)</span>
+    <span class="answer-option" data-option="B">(B) \( \dfrac{35}{39} \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( \dfrac{35}{52} \)</span>
+    <span class="answer-option" data-option="D">(D) \( \dfrac{105}{296} \)</span>
+    <span class="answer-option" data-option="E">(E) \( \dfrac{71}{78} \)</span>
+  </div>
+  <p class="verification">Numerička provera: \( \sin A \approx 0{,}9707 \), \( \sin B \approx 0{,}6934 \), proizvod \( \approx 0{,}6731 \), a \( \dfrac{35}{52} \approx 0{,}6731 \). ✓ Tačan odgovor je <strong>(C)</strong>.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Koristiti \( \sin 60^\circ = \dfrac{\sqrt{3}}{2} \) bez kvadriranja — kvadriranje daje \( \dfrac{3}{4} \), a ne \( \dfrac{\sqrt{3}}{2} \). Iz toga sledi pogrešan rezultat \( \dfrac{35}{156} \) (odgovor A).</li>
+    <li>Pogrešno postaviti kosinusnu teoremu, npr. \( c^2 = a^2 + b^2 + 2ab\cos C \) (sa plus umesto minus) — daje \( c^2 = 109 \), pa kasnije pogrešan razlomak.</li>
+    <li>Pomešati koja je stranica naspram kog ugla. Standardno: \( a \) je naspram \( A \), \( b \) naspram \( B \), \( c \) naspram \( C \). Ako pomešamo \( a \) i \( b \), kosinusna teorema će nas spasti, ali sinusna će dati pogrešne sinuse.</li>
+    <li>Zaboraviti da skratimo razlomak — \( \dfrac{105}{156} \) nije među odgovorima, a tačan oblik je \( \dfrac{35}{52} \).</li>
+    <li>Pokušati da se \( \sin A \) i \( \sin B \) izračunaju kao decimalne vrednosti pa pomnože — uvodi se zaokruživanje i lako se dobije pogrešan razlomak iz tabele.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>U istom trouglu izračunaj poluprečnik opisanog kruga \( R \) i površinu trougla \( P \). Zatim proveri formulu \( P = \dfrac{abc}{4R} \).</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Iz sinusne teoreme: \( 2R = \dfrac{c}{\sin C} = \dfrac{\sqrt{39}}{\sqrt{3}/2} = \dfrac{2\sqrt{39}}{\sqrt{3}} = 2\sqrt{13} \), pa \( R = \sqrt{13} \).</p>
+      <p>Površina: \( P = \dfrac{1}{2}ab\sin C = \dfrac{1}{2}\cdot 7\cdot 5\cdot \dfrac{\sqrt{3}}{2} = \dfrac{35\sqrt{3}}{4} \).</p>
+      <p>Provera: \( \dfrac{abc}{4R} = \dfrac{7\cdot 5\cdot \sqrt{39}}{4\sqrt{13}} = \dfrac{35\sqrt{39}}{4\sqrt{13}} = \dfrac{35\sqrt{3}}{4} = P \). ✓</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagramTriangle');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var warning = cv('--sol-canvas-warning');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var W = canvas.width, H = canvas.height;
+
+    // Title
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.fillText('Trougao ABC: AC = 5,  BC = 7,  ∠C = 60°', W/2, 32);
+
+    // Math coords: place C at (0,0), B at (7, 0), A at (5cos60°, 5sin60°) = (2.5, 4.33)
+    var Cx = 0, Cy = 0;
+    var Bx = 7, By = 0;
+    var Ax = 5 * Math.cos(Math.PI/3);
+    var Ay = 5 * Math.sin(Math.PI/3);
+
+    // Map to canvas: y points up
+    var scale = 55;
+    var originX = W/2 - 90;
+    var originY = H - 110;
+    function tx(x) { return originX + x * scale; }
+    function ty(y) { return originY - y * scale; }
+
+    // Triangle fill
+    ctx.beginPath();
+    ctx.moveTo(tx(Ax), ty(Ay));
+    ctx.lineTo(tx(Bx), ty(By));
+    ctx.lineTo(tx(Cx), ty(Cy));
+    ctx.closePath();
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.10);
+    ctx.fill();
+
+    // Edges
+    ctx.lineWidth = 3;
+    // BC (a = 7) — green (accent)
+    ctx.strokeStyle = accent;
+    ctx.beginPath();
+    ctx.moveTo(tx(Cx), ty(Cy));
+    ctx.lineTo(tx(Bx), ty(By));
+    ctx.stroke();
+    // AC (b = 5) — primary
+    ctx.strokeStyle = primary;
+    ctx.beginPath();
+    ctx.moveTo(tx(Cx), ty(Cy));
+    ctx.lineTo(tx(Ax), ty(Ay));
+    ctx.stroke();
+    // AB (c = ?) — dashed warning
+    ctx.strokeStyle = warning;
+    ctx.setLineDash([8, 6]);
+    ctx.beginPath();
+    ctx.moveTo(tx(Ax), ty(Ay));
+    ctx.lineTo(tx(Bx), ty(By));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Angle arc at C (60°)
+    var arcR = 42;
+    ctx.beginPath();
+    ctx.arc(tx(Cx), ty(Cy), arcR, -Math.PI/3, 0, false);
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+    // 60° label
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.fillStyle = secondary;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('60°', tx(Cx) + (arcR + 22) * Math.cos(-Math.PI/6), ty(Cy) + (arcR + 22) * Math.sin(-Math.PI/6));
+
+    // Vertex labels
+    ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('A', tx(Ax), ty(Ay) - 14);
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('B', tx(Bx) + 12, ty(By) + 6);
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'top';
+    ctx.fillText('C', tx(Cx) - 12, ty(Cy) + 6);
+
+    // Side labels
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    // b = AC = 5
+    var midACx = (tx(Cx) + tx(Ax)) / 2;
+    var midACy = (ty(Cy) + ty(Ay)) / 2;
+    ctx.fillStyle = primary;
+    ctx.fillText('b = 5', midACx - 32, midACy - 6);
+    // a = BC = 7
+    var midBCx = (tx(Cx) + tx(Bx)) / 2;
+    var midBCy = (ty(Cy) + ty(By)) / 2;
+    ctx.fillStyle = accent;
+    ctx.fillText('a = 7', midBCx, midBCy + 22);
+    // c = AB = ?
+    var midABx = (tx(Ax) + tx(Bx)) / 2;
+    var midABy = (ty(Ay) + ty(By)) / 2;
+    ctx.fillStyle = warning;
+    ctx.fillText('c = ?', midABx + 28, midABy - 12);
+
+    // Vertex dots
+    [[Ax, Ay], [Bx, By], [Cx, Cy]].forEach(function(p) {
+      ctx.beginPath();
+      ctx.arc(tx(p[0]), ty(p[1]), 5, 0, Math.PI * 2);
+      ctx.fillStyle = text;
+      ctx.fill();
+    });
+
+    // Info box (right side)
+    var boxX = W - 230, boxY = 60, boxW = 210, boxH = 165;
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.06);
+    ctx.fillRect(boxX, boxY, boxW, boxH);
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(boxX, boxY, boxW, boxH);
+
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Dato:', boxX + 14, boxY + 12);
+
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    var lh = 22;
+    ctx.fillStyle = primary;
+    ctx.fillText('AC = b = 5', boxX + 14, boxY + 12 + lh);
+    ctx.fillStyle = accent;
+    ctx.fillText('BC = a = 7', boxX + 14, boxY + 12 + 2*lh);
+    ctx.fillStyle = secondary;
+    ctx.fillText('∠C = 60°', boxX + 14, boxY + 12 + 3*lh);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('Tražimo:', boxX + 14, boxY + 12 + 4*lh + 4);
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = highlight;
+    ctx.fillText('sinA · sinB = ?', boxX + 14, boxY + 12 + 5*lh + 4);
+  }
+
+  draw();
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagramCos');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var warning = cv('--sol-canvas-warning');
+    var danger = cv('--sol-canvas-danger');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var W = canvas.width, H = canvas.height;
+
+    // Title
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.fillText('Kosinusna teorema:  c² = a² + b² − 2ab·cosC', W/2, 32);
+
+    // Visualize as three squares with areas
+    // Square a²= 49 on left, square b² = 25 in middle, "minus" 2ab cos C = 35 in red
+    // Then equals c² = 39 on right.
+
+    // Box dimensions: scale areas to similar pixel sizes
+    // Use sqrt of area as side length (proportional)
+    var areaScale = 7; // px per unit-side (so 7x7 box for area 49 → side 49 px)
+    var aSide = Math.sqrt(49) * areaScale; // = 49
+    var bSide = Math.sqrt(25) * areaScale; // = 35
+    var corrSide = Math.sqrt(35) * areaScale; // ≈ 41.4
+    var cSide = Math.sqrt(39) * areaScale; // ≈ 43.7
+
+    var cy = H/2 + 10;
+    var spacing = 95;
+    var startX = 60;
+
+    // a² = 49 (accent color)
+    var x = startX;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.25);
+    ctx.fillRect(x, cy - aSide/2, aSide, aSide);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(x, cy - aSide/2, aSide, aSide);
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillStyle = accent;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('a² = 49', x + aSide/2, cy);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('(7 × 7)', x + aSide/2, cy + 18);
+
+    // Plus sign
+    ctx.font = 'bold 24px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.fillText('+', x + aSide + 18, cy);
+
+    // b² = 25 (primary)
+    x = x + aSide + 40;
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.25);
+    ctx.fillRect(x, cy - bSide/2, bSide, bSide);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(x, cy - bSide/2, bSide, bSide);
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillStyle = primary;
+    ctx.fillText('b² = 25', x + bSide/2, cy);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('(5 × 5)', x + bSide/2, cy + 14);
+
+    // Minus sign
+    ctx.font = 'bold 24px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.fillText('−', x + bSide + 18, cy);
+
+    // 2ab cos C = 35 (danger / red — to subtract)
+    x = x + bSide + 40;
+    ctx.fillStyle = cvAlpha('--sol-canvas-danger', 0.20);
+    ctx.fillRect(x, cy - corrSide/2, corrSide, corrSide);
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(x, cy - corrSide/2, corrSide, corrSide);
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.fillStyle = danger;
+    ctx.fillText('2ab·cos60°', x + corrSide/2, cy - 6);
+    ctx.fillText('= 35', x + corrSide/2, cy + 14);
+
+    // Equals sign
+    ctx.font = 'bold 26px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.fillText('=', x + corrSide + 22, cy);
+
+    // c² = 39 (warning — highlight result)
+    x = x + corrSide + 50;
+    ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.30);
+    ctx.fillRect(x, cy - cSide/2, cSide, cSide);
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 3;
+    ctx.strokeRect(x, cy - cSide/2, cSide, cSide);
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillStyle = warning;
+    ctx.fillText('c² = 39', x + cSide/2, cy);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('c = √39 ≈ 6,24', x + cSide/2, cy + 18);
+
+    // Top numeric line
+    ctx.font = '14px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('49 + 25 − 35 = 39', W/2, 65);
+
+    // Bottom note about cos 60°
+    ctx.font = 'italic 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('cos 60° = 1/2,   pa  2·7·5·(1/2) = 35', W/2, H - 60);
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.fillStyle = warning;
+    ctx.fillText('Stranica naspram ugla od 60°:  c = AB = √39', W/2, H - 30);
+  }
+
+  draw();
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagramSin');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var warning = cv('--sol-canvas-warning');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var W = canvas.width, H = canvas.height;
+
+    // Title
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.fillText('Sinusna teorema:  a/sinA = b/sinB = c/sinC = 2R', W/2, 32);
+
+    // Compute circumradius R = sqrt(13) ≈ 3.606
+    // Place center O at canvas (W/2, H/2 + 20). Triangle inscribed in this circle.
+    var ox = W/2 - 50;
+    var oy = H/2 + 30;
+    var Rmath = Math.sqrt(13);
+    var pxPerUnit = 38;
+    var Rpx = Rmath * pxPerUnit;
+
+    // Place vertices on the circle. Using known triangle:
+    //   Side c=AB is opposite to angle C=60°, by inscribed angle 2*C = 120° subtended by AB at center.
+    //   Place A at angle 90° (top), B at angle (90° - 120°) = -30° (right-ish).
+    //   Then C somewhere on the major arc.
+    // sin A = 0.9707 → A ≈ 76.1°, sin B = 0.6934 → B ≈ 43.9°  (A+B+C=180°  ✓)
+    // 2*A = 152.2° opposite side a=BC; 2*B = 87.8° opposite side b=AC.
+    // Choose: A_vert at top (angle 90°), B_vert such that arc AB seen from O has angle 120° (since 2C=120°)
+    var angA = Math.PI/2;       // 90°
+    var angB = angA - 120 * Math.PI/180;  // -30°
+    // For C: it's opposite side c (= AB). Side a=BC opposite A. The arc BC subtends angle 2A at center.
+    // Going from B at -30° downward (clockwise) by 2A=152.2° to reach C: angC = angB - 2*A_rad
+    var Aangle = Math.asin(0.9707); // ≈ 76.13°
+    var angC = angB - 2 * Aangle;   // ≈ -30° - 152.26° = -182.26° (i.e., go around)
+
+    function ptOnCircle(theta) {
+      return { x: ox + Rpx * Math.cos(theta), y: oy - Rpx * Math.sin(theta) };
+    }
+
+    var A = ptOnCircle(angA);
+    var B = ptOnCircle(angB);
+    var C = ptOnCircle(angC);
+
+    // Draw circle
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 5]);
+    ctx.beginPath();
+    ctx.arc(ox, oy, Rpx, 0, Math.PI*2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.05);
+    ctx.beginPath();
+    ctx.arc(ox, oy, Rpx, 0, Math.PI*2);
+    ctx.fill();
+
+    // Triangle
+    ctx.beginPath();
+    ctx.moveTo(A.x, A.y);
+    ctx.lineTo(B.x, B.y);
+    ctx.lineTo(C.x, C.y);
+    ctx.closePath();
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.10);
+    ctx.fill();
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    // Side labels
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    // c = AB on top
+    ctx.fillStyle = warning;
+    var midABx = (A.x + B.x) / 2;
+    var midABy = (A.y + B.y) / 2;
+    ctx.fillText('c = √39', midABx + 28, midABy - 12);
+    // a = BC opposite A
+    ctx.fillStyle = accent;
+    var midBCx = (B.x + C.x) / 2;
+    var midBCy = (B.y + C.y) / 2;
+    ctx.fillText('a = 7', midBCx + 22, midBCy + 8);
+    // b = AC opposite B
+    ctx.fillStyle = primary;
+    var midACx = (A.x + C.x) / 2;
+    var midACy = (A.y + C.y) / 2;
+    ctx.fillText('b = 5', midACx - 28, midACy + 4);
+
+    // Center O and radius from O to A
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(ox, oy);
+    ctx.lineTo(A.x, A.y);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(ox, oy, 4, 0, Math.PI*2);
+    ctx.fillStyle = text;
+    ctx.fill();
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'left';
+    ctx.fillText('O', ox + 8, oy + 14);
+    ctx.fillStyle = secondary;
+    ctx.textAlign = 'center';
+    ctx.fillText('R = √13', (ox + A.x) / 2 - 30, (oy + A.y) / 2 + 4);
+
+    // Vertex dots and labels
+    [['A', A], ['B', B], ['C', C]].forEach(function(arr) {
+      var name = arr[0], P = arr[1];
+      ctx.beginPath();
+      ctx.arc(P.x, P.y, 5, 0, Math.PI*2);
+      ctx.fillStyle = text;
+      ctx.fill();
+      ctx.font = 'bold 17px Inter, system-ui, sans-serif';
+      ctx.fillStyle = text;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      // offset label outward from center O
+      var dx = P.x - ox, dy = P.y - oy;
+      var len = Math.hypot(dx, dy);
+      ctx.fillText(name, P.x + 18 * dx / len, P.y + 18 * dy / len);
+    });
+
+    // Right side: formulas summary
+    var fxL = W - 250;
+    var fyL = 70;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Sinusna teorema:', fxL, fyL);
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = primary;
+    ctx.fillText('sinA = a·sinC / c', fxL, fyL + 22);
+    ctx.fillText('     = 7·(√3/2)/√39', fxL, fyL + 40);
+    ctx.fillText('     = 7√3 / (2√39)', fxL, fyL + 58);
+    ctx.fillStyle = accent;
+    ctx.fillText('sinB = b·sinC / c', fxL, fyL + 88);
+    ctx.fillText('     = 5·(√3/2)/√39', fxL, fyL + 106);
+    ctx.fillText('     = 5√3 / (2√39)', fxL, fyL + 124);
+
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.fillStyle = highlight;
+    ctx.fillText('sinA · sinB =', fxL, fyL + 160);
+    ctx.fillText('   35·3 / (4·39) = 35/52', fxL, fyL + 180);
+
+    // Caption at bottom
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    ctx.fillText('Trougao upisan u krug poluprečnika R = √13. Iz 2R = c/sinC sledi 2R = 2√13.', W/2, H - 14);
+  }
+
+  draw();
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagramSummary');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var warning = cv('--sol-canvas-warning');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var W = canvas.width, H = canvas.height;
+
+    // Title
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.fillText('Sumarni dijagram: trougao sa svim oznakama i finalnim odgovorom', W/2, 32);
+
+    // Triangle in math coordinates: same as first canvas
+    var Cx = 0, Cy = 0;
+    var Bx = 7, By = 0;
+    var Ax = 5 * Math.cos(Math.PI/3);
+    var Ay = 5 * Math.sin(Math.PI/3);
+
+    var scale = 50;
+    var originX = 100;
+    var originY = H - 100;
+    function tx(x) { return originX + x * scale; }
+    function ty(y) { return originY - y * scale; }
+
+    // Triangle fill
+    ctx.beginPath();
+    ctx.moveTo(tx(Ax), ty(Ay));
+    ctx.lineTo(tx(Bx), ty(By));
+    ctx.lineTo(tx(Cx), ty(Cy));
+    ctx.closePath();
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.10);
+    ctx.fill();
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    // Angle arc at C (60°)
+    var arcR = 38;
+    ctx.beginPath();
+    ctx.arc(tx(Cx), ty(Cy), arcR, -Math.PI/3, 0, false);
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = secondary;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('60°', tx(Cx) + (arcR + 18) * Math.cos(-Math.PI/6), ty(Cy) + (arcR + 18) * Math.sin(-Math.PI/6));
+
+    // Vertex labels
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('A', tx(Ax), ty(Ay) - 12);
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('B', tx(Bx) + 10, ty(By) + 6);
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'top';
+    ctx.fillText('C', tx(Cx) - 10, ty(Cy) + 6);
+
+    // Side labels with all values
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = primary;
+    ctx.fillText('b = 5', (tx(Cx) + tx(Ax)) / 2 - 28, (ty(Cy) + ty(Ay)) / 2 - 4);
+    ctx.fillStyle = accent;
+    ctx.fillText('a = 7', (tx(Cx) + tx(Bx)) / 2, (ty(Cy) + ty(By)) / 2 + 18);
+    ctx.fillStyle = warning;
+    ctx.fillText('c = √39', (tx(Ax) + tx(Bx)) / 2 + 28, (ty(Ay) + ty(By)) / 2 - 12);
+
+    // Vertex dots
+    [[Ax, Ay], [Bx, By], [Cx, Cy]].forEach(function(p) {
+      ctx.beginPath();
+      ctx.arc(tx(p[0]), ty(p[1]), 4.5, 0, Math.PI * 2);
+      ctx.fillStyle = text;
+      ctx.fill();
+    });
+
+    // Right side: summary with steps
+    var rx = W - 320;
+    var ry = 75;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Sumarni račun:', rx, ry);
+
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    var dy = 22;
+    ctx.fillStyle = muted;
+    ctx.fillText('1)  c² = 49 + 25 − 35 = 39', rx, ry + dy);
+    ctx.fillText('     ⇒ c = √39', rx, ry + 2*dy);
+
+    ctx.fillText('2)  sinA = 7√3 / (2√39)', rx, ry + 3*dy + 8);
+    ctx.fillText('     sinB = 5√3 / (2√39)', rx, ry + 4*dy + 8);
+
+    ctx.fillText('3)  sinA · sinB', rx, ry + 5*dy + 16);
+    ctx.fillText('     = 35 · 3 / (4 · 39)', rx, ry + 6*dy + 16);
+    ctx.fillText('     = 105 / 156', rx, ry + 7*dy + 16);
+
+    // Final result box
+    var fbX = rx, fbY = ry + 8*dy + 30;
+    var fbW = 290, fbH = 64;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.20);
+    ctx.fillRect(fbX, fbY, fbW, fbH);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(fbX, fbY, fbW, fbH);
+    ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+    ctx.fillStyle = accent;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('sinA · sinB = 35/52', fbX + fbW/2, fbY + fbH/2 - 8);
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('odgovor (C)', fbX + fbW/2, fbY + fbH/2 + 16);
+  }
+
+  draw();
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Proizvod sinusa uglova u trouglu sa datim uglom 60° i dve stranice",
+  "subject": "math",
+  "unit": "trigonometry",
+  "topic_tags": ["kosinusna teorema", "sinusna teorema", "trougao", "proizvod sinusa", "opisani krug"]
+}
+BRAINSPARK_META-->

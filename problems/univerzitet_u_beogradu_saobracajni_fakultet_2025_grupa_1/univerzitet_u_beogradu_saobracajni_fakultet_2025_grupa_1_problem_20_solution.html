@@ -1,0 +1,1270 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Jednakokraki trapez sa osnovicama a = 12 cm i b = 6 cm rotira oko kraće osnovice (b = 6).
+Zapremina dobijenog tela je 160π cm^3. Naći površinu tog tela.
+
+Postavka u ravni (osa rotacije = x-osa):
+  Postavi kraću osnovicu (b = 6) na x-osu od (-3, 0) do (3, 0).
+  Duža osnovica (a = 12) je paralelna i nalazi se na visini h:
+    od (-6, h) do (6, h).
+  Kraci spajaju krajnje tačke: (-3, 0) — (-6, h) i (3, 0) — (6, h).
+  Horizontalna projekcija svakog kraka iznosi (12 - 6)/2 = 3.
+  Dužina kraka c = sqrt(h^2 + 3^2) = sqrt(h^2 + 9).
+
+Telo nastalo rotacijom oko kraće osnovice (x-ose):
+  Uzimamo trapez kao zatvorenu oblast. Za svako x:
+    x ∈ [-3, 3]: trapez ide od y = 0 (na donjoj osnovici) do y = h (na gornjoj).
+                 Rotacijom dobijamo PUN DISK poluprečnika h.
+    x ∈ [3, 6]:  trapez ide od y = h(x-3)/3 (na desnom kraku) do y = h (gore).
+                 Rotacijom dobijamo PRSTEN: spoljni poluprečnik h, unutrašnji h(x-3)/3.
+    Simetrično za x ∈ [-6, -3].
+
+Rezultat: telo = (cilindar dužine 12, poluprečnika h) MINUS (dva konusa, svaki sa
+  vrhom u (±3, 0) na osi i osnovom poluprečnika h u krajevima x = ±6).
+
+Volume:
+  V = (cilindar 12) - 2*(konus visine 3, R = h)
+    = π h^2 * 12 - 2 * (1/3) π h^2 * 3
+    = 12π h^2 - 2π h^2
+    = 10 π h^2.
+
+Postavi 10 π h^2 = 160 π → h^2 = 16 → h = 4 cm.
+Krak c = sqrt(16 + 9) = sqrt(25) = 5 cm.
+
+Površina (rotacijom dobijene granice trapeza):
+  - Spoljni omotač: cilindar dužine 12, R = h. To dolazi od rotacije gornje osnovice
+    y = h za x ∈ [-6, 6]. M_cyl = 2π h * 12 = 24π h.
+  - Krajevi cilindra (x = ±6): tačka (6, h) rotacijom daje krug poluprečnika h. Ali to je
+    samo krug (1D), ne disk — jer u toj tački trapez je jednodimenzionalan. Konusi se
+    upravo tu spajaju sa cilindrom: spoljni poluprečnik prstena pri x = 6 je h
+    (gornji ugao), a unutrašnji takođe h (donji ugao kraka). Prsten kolapsira u krug —
+    nema ravne površine na krajevima.
+  - Unutrašnja konusna površina: rotacijom svakog kraka (npr. od (3,0) do (6, h))
+    dobija se omotač konusa sa vrhom (3, 0), poluprečnikom osnove h, izvodnicom
+    L = sqrt(h^2 + 3^2) = c = 5. M_cone = π * R * L = π h * c = π h sqrt(h^2 + 9).
+    Dva konusa: 2π h * c.
+  - Rotacija kraće osnovice (x ∈ [-3, 3], y = 0) ostaje SAMA OSA — nema doprinosa površini.
+
+S = M_cyl + 2 * M_cone = 24π h + 2π h c.
+Sa h = 4, c = 5:
+  S = 24π * 4 + 2π * 4 * 5 = 96π + 40π = 136π cm^2. ✓
+
+Pappus za zapreminu (provera): centroid trapeza i dužina osnovica trebalo bi da daju isti V.
+  Težište trapeza (sa b = 6 na osi, a = 12 na visini h = 4):
+    y_T = h * (a + 2b)/(3(a + b)) za visinu od kraće — formula daje rastojanje težišta
+    od kraće osnovice y_T = h(a + 2b)/(3(a+b)) = 4*(12 + 12)/(3*18) = 4*24/54 = 96/54 = 16/9.
+  Površina trapeza P = (a + b)/2 * h = 18/2 * 4 = 36.
+  Pappusovim teoremom: V = 2π * y_T * P = 2π * 16/9 * 36 = 2π * 64 = 128π. Hmm.
+  Ali mi smo izračunali V = 10π h^2 = 160π. Različito! Razlog: kada trapez rotira oko
+  kraće osnovice, deo trapeza (rectangular core preko osnovice) leži tačno na osi i ne
+  doprinosi zapremini odvojeno na način kako Pappus zahteva — Pappusova teorema važi
+  AKO osa rotacije ne preseca lik. Ali kraća osnovica JESTE granica trapeza (a ne unutar njega!).
+
+  Kontroliši — u našoj postavci, kraća osnovica je deo granice trapeza i leži na osi rotacije.
+  Trapez je u poluravni y >= 0 (jer i kraci idu nagore), pa NE preseca osu — graniči je.
+  Pappusova teorema važi i u ovom slučaju.
+
+  Težište mojom formulom: y_T = h(2a + b)/(3(a+b)) — moram pažljivo. Postoji formula:
+  za trapez sa osnovicama a (donja) i b (gornja), visine h, težište na visini
+  y_T = h * (2a + b) / (3(a + b)) iznad donje osnovice.
+
+  U našem slučaju "donja" je b = 6 (na osi), "gornja" je a = 12 na visini h = 4.
+  y_T (iznad b) = 4 * (2*6 + 12) / (3*(6+12)) = 4 * 24 / 54 = 96/54 = 16/9.
+  V_pappus = 2π * y_T * P = 2π * 16/9 * 36 = 2π * 64 = 128π. Hmm to je 128π, nije 160π.
+
+  Pa nešto ne valja. Hajde da proverim integralima ponovo:
+
+  V = ∫_{-6}^{6} π * (R(x))^2 dx ali pažljivo, telo NIJE zatvoreno ovako, jer za
+  x ∈ [3, 6] presek trapeza je prsten.
+  V = ∫_{-3}^{3} π h^2 dx + 2 * ∫_3^6 π (h^2 - (h(x-3)/3)^2) dx
+    = 6 π h^2 + 2 π ∫_0^3 (h^2 - h^2 u^2/9) du   (sa u = x - 3)
+    = 6 π h^2 + 2 π h^2 [u - u^3/27]_0^3
+    = 6 π h^2 + 2 π h^2 (3 - 1)
+    = 6 π h^2 + 4 π h^2
+    = 10 π h^2. ✓
+
+  Pappusova kontrola: za rotaciju ravne oblasti oko ose KOJA NE PRESECA OBLAST (samo dotiče,
+  ne preseca):
+    V = 2π * d * P, gde je d = rastojanje težišta od ose, P = površina.
+  P = 36 cm^2 ✓
+  d = y_T = 16/9
+  V_pappus = 2π * 16/9 * 36 = 128π. To je 128π.
+
+  Ali integralom dobijam 10 π h^2 = 160π. Različito! Pa proveri integral...
+  V = ∫_{-3}^{3} π h^2 dx — ovo je celokupan disk (od y=0 do y=h) na 6 jedinica osnove.
+  Hmm, ali u trapezu, za x ∈ [-3, 3], trapez se proteže od y = 0 do y = h. Da, ali rotacija
+  daje prstenu od r = 0 do r = h, što je disk poluprečnika h. ✓
+
+  Za x ∈ [3, 6]: trapez se proteže od y = h(x-3)/3 (donja granica je krak!) do y = h. Rotacija
+  daje prsten r ∈ [h(x-3)/3, h]. Površina prstena = π(h^2 - (h(x-3)/3)^2). ✓
+
+  Sigurno je 10 π h^2.
+
+  Pappusov rezultat 128π = 2π * 16/9 * 36. Ali 2π y_T P = 2π * 16/9 * 36 = 32π * 16/9
+    = 512π/9 ≈ 56.9π... pa to nije 128π.
+
+  Iznova: 2π * (16/9) * 36 = 2 * 16 * 36 / 9 * π = 1152π / 9 = 128π. Da, 128π je tačno.
+
+  Ali integral daje 10 π * 16 = 160π. Različito.
+
+  Hm, možda mi je formula za težište trapeza pogrešna. Da proverim:
+  Trapez sa osnovicama b = 6 (donja, y=0) i a = 12 (gornja, y=h=4). Težište:
+
+  Postavi koordinate: donja osnovica od (-3, 0) do (3, 0), gornja od (-6, 4) do (6, 4).
+  Centroid po simetriji ima x_T = 0.
+  Za y_T, koristim integraciju. Trapez je oblast {(x,y): -3 + (-3)*y/h <= x <= 3 + 3*y/h, 0 <= y <= h},
+  širina kao funkcija y: w(y) = (3 + 3y/h) - (-3 - 3y/h) = 6 + 6y/h.
+  Hmm, za y = 0: w(0) = 6 ✓. Za y = h = 4: w(4) = 6 + 6 = 12 ✓.
+
+  Težište: y_T = (1/P) ∫_0^h y w(y) dy = (1/36) ∫_0^4 y (6 + 6y/4) dy
+    = (1/36) ∫_0^4 (6y + 1.5 y^2) dy
+    = (1/36) [3y^2 + 0.5 y^3]_0^4
+    = (1/36) [48 + 32]
+    = 80/36 = 20/9.
+
+  Pappusov: V = 2π * 20/9 * 36 = 2π * 80 = 160π ✓✓✓
+
+  Aha, formula koju sam pre koristio je pogrešna. Tačna y_T = 20/9 (a ne 16/9). Pappusova
+  potvrda: 160π ✓.
+
+  Odlično, integral je tačan.
+
+Surface (Pappus za površinu): za rotaciju krive (granice trapeza) oko ose koja je ne seče,
+  M = 2π * d_centroid * L_curve.
+
+  Granica trapeza ima 4 dela: kraća osnovica (na osi, ne doprinosi), dva kraka, duža osnovica.
+  - Duža osnovica: dužina 12, težište na rastojanju d = h = 4 od ose.
+    M_top = 2π * 4 * 12 = 96π. ✓ (slaže se sa 24π h = 24π * 4 = 96π) ✓
+  - Svaki krak: dužina c = 5, ide od y = 0 do y = h = 4. Težište kraka je u sredini
+    pa je rastojanje d = h/2 = 2. M_leg = 2π * 2 * 5 = 20π. Dva kraka: 40π.
+    (Ali pažljivo: ovo je formula koja računa rotaciju krive, pa daje "proširi-Pappus" za
+    površinu. Stara formula πRL za konus ima drugu izvedbu: π * R * L gde su R = h, L = c.
+    π * 4 * 5 = 20π. ✓ Slaže se.)
+  - Kraća osnovica: na osi, M = 0.
+
+  Ukupno: S = 96π + 40π = 136π cm^2 ✓
+
+Final answer: (A) 136π cm^2.
+
+Visualization plan (4 canvases):
+  1. The trapezoid in 2D with all measurements (h, c, a, b, the projections of length 3).
+     Show axis of rotation as the shorter base. Label everything.
+  2. The body of revolution in 3D-perspective. Show cylinder (transparent outer surface)
+     with inner conical cavities. Cross-section showing the cone-cylinder structure.
+  3. A radial cross-section (vertical slice through axis). Show how the rotation works:
+     trapezoid + its mirror = "diamond-like" cross-section.
+  4. Surface area decomposition: bar chart-like — outer cylinder lateral surface + 2 cones.
+
+Pitfalls:
+  - Confuse "rotate around shorter base" with "rotate around longer base". The body
+    differs significantly.
+  - Forget that the inner surface (cone walls) contributes to total surface.
+  - Confuse h (height of trapezoid) with leg c.
+  - Treat the body as just a cylinder (forgetting the conical hollows).
+  - Compute h from V incorrectly: V = π h^2 * 12 - 2 * (1/3) π h^2 * 3 = 12πh^2 - 2πh^2 = 10πh^2.
+</script>
+
+<h1 data-card="problem-title">Površina tela nastalog rotacijom jednakokrakog trapeza</h1>
+<p data-card="problem-subtitle" class="subtitle">Stereometrija — telo rotacije, sintetički račun zapremine i površine</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Jednakokraki trapez, čije su osnovice dužine \( 6\,\text{cm} \) i \( 12\,\text{cm} \), rotira oko kraće osnovice. Ako je zapremina tako nastalog tela \( 160\pi\,\text{cm}^3 \), tada je površina tog tela jednaka:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">kraća osnovica</span>
+      <span class="given-value">\( b = 6\,\text{cm} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">duža osnovica</span>
+      <span class="given-value">\( a = 12\,\text{cm} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">osa rotacije</span>
+      <span class="given-value">kraća osnovica \( b \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">zapremina</span>
+      <span class="given-value">\( V = 160\pi\,\text{cm}^3 \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 136\pi\,\text{cm}^2 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 116\pi\,\text{cm}^2 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 152\pi\,\text{cm}^2 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 168\pi\,\text{cm}^2 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 96\pi\,\text{cm}^2 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Postavimo trapez tako da kraća osnovica leži na osi rotacije i razložimo ga na pravougaonik (rotacija → cilindar) i dva pravougla trougla na krajevima (rotacija → konusi). Telo je tada cilindar sa dve <em>konusne udubine</em> usečene na krajevima. Iz zadate zapremine izračunamo visinu trapeza, pa onda izvodnicu krakova, i konačno površinu — spoljni omotač cilindra plus dva konusna omotača.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Cilindar, konus, jednakokraki trapez i Pappus</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Cilindar (poluprečnik \( R \), visina \( H \)):</strong> zapremina \( V_{\text{cil}} = \pi R^2 H \), <em>omotač</em> \( M_{\text{cil}} = 2\pi R H \).</li>
+        <li><strong>Konus (poluprečnik osnove \( R \), visina \( H \), izvodnica \( L=\sqrt{R^2+H^2} \)):</strong> zapremina \( V_{\text{kon}} = \tfrac{1}{3}\pi R^2 H \), <em>omotač</em> \( M_{\text{kon}} = \pi R L \).</li>
+        <li><strong>Jednakokraki trapez sa osnovicama \( a>b \) i krakom \( c \):</strong> ako je visina \( h \), tada \( c=\sqrt{h^2 + \big(\tfrac{a-b}{2}\big)^2} \) (Pitagorina teorema na pravouglom trouglu sa krakovima \( h \) i \( \tfrac{a-b}{2} \)).</li>
+        <li><strong>Pappusova teorema (zapremina) — provera:</strong> ako ravna oblast površine \( P \), čiji je centroid na rastojanju \( d \) od ose, rotira oko te ose (a osa je ne seče), tada \( V = 2\pi\,d\,P \).</li>
+        <li><strong>Pappusova teorema (površina):</strong> ako kriva dužine \( L \) sa centroidom na rastojanju \( d \) od ose rotira oko nje, tada \( M = 2\pi\,d\,L \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Trapez i osa rotacije">
+  <h2>📐 Vizuelni prikaz — trapez pre rotacije</h2>
+  <p>Postavljamo kraću osnovicu na samu osu rotacije. Iz simetrije, svaki krak ima horizontalnu projekciju \( \tfrac{a-b}{2} = \tfrac{12-6}{2} = 3 \), pa krajevi duže osnovice „štrče" za 3 cm preko krajeva kraće osnovice.</p>
+  <div class="canvas-wrapper">
+    <canvas id="trapezoid" width="780" height="460"></canvas>
+  </div>
+  <p class="canvas-caption">Trapez \( ABCD \): kraća osnovica \( BC = b = 6 \) leži na osi rotacije; duža \( AD = a = 12 \) je paralelna na visini \( h \). Pravougli trouglovi na krajevima imaju katete \( h \) i \( 3 \), hipotenuza je krak \( c \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Razlažemo trapez na pravougaonik i dva trougla</h3>
+      <p>Spustimo iz krajeva kraće osnovice normale na dužu osnovicu (zapravo, u našoj postavci — iz krajeva duže osnovice normale na osu, jer je kraća na osi). Time trapez razlažemo na <strong>pravougaonik</strong> dimenzija \( 6\times h \) (postavljen tačno nad kraćom osnovicom) i <strong>dva podudarna pravougla trougla</strong> sa katetama \( 3 \) i \( h \) na krajevima.</p>
+      <div class="math-block">
+        \[ \frac{a-b}{2} = \frac{12-6}{2} = 3,\qquad c = \sqrt{h^2 + 3^2}. \]
+      </div>
+      <div class="callout callout-info">
+        <p>Ova dekompozicija je ključna: rotirani pravougaonik daje cilindar, a rotirani trouglovi daju konuse — celo telo se time razlaže na poznate likove.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Identifikujemo telo nastalo rotacijom</h3>
+      <p>Rotacijom oko kraće osnovice:</p>
+      <ul>
+        <li>Pravougaonik \( 6\times h \) (sa jednom stranicom na osi) postaje <strong>cilindar</strong> visine \( 6 \) i poluprečnika \( h \).</li>
+        <li>Svaki pravougli trougao (sa katetom \( h \) ali bez stranice na osi rotacije, jer se nalazi izvan kraće osnovice) postaje <strong>konus</strong> sa vrhom u tački gde se srete sa cilindrom (na osi), visine \( 3 \) i poluprečnika osnove \( h \).</li>
+      </ul>
+      <p>Ali pažnja: konusi se „dodaju" tako da im se baze poklapaju sa baza­ma cilindra. Samo što umesto da popunjavaju krajeve cilindra, oni <em>oduzimaju</em> materijal — kraci trapeza ograničavaju oblast iznutra. Drugim rečima:</p>
+      <div class="math-block">
+        \[ \boxed{\;\text{Telo} = \big(\text{cilindar dužine } 12,\ R=h\big) \;\setminus\; \big(\text{dva konusa},\ R=h,\ H=3\big).\;} \]
+      </div>
+      <p>Spoljni omotač je cilindar dužine \( 12 \) (tj. dužine duže osnovice \( a \)), a unutrašnjost je „oguljena" sa dve kupaste šupljine na krajevima čiji vrhovi leže u krajevima kraće osnovice.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto su konusi <em>oduzeti</em>, a ne dodati?</summary>
+          <div class="detail-content"><p>Krak ide od kraja kraće osnovice (na osi) prema kraju duže osnovice (na poluprečniku \( h \)) — i to <em>iznutra</em> ka spolja. Materijal trapeza leži <em>iznad</em> kraka (između kraka i duže osnovice), pa rotacijom popunjava <em>prsten</em>, ne disk. Šupljina između ose i kraka ostaje prazna — to je konus.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavljamo jednačinu zapremine i nalazimo \( h \)</h3>
+      <p>Iz dekompozicije:</p>
+      <div class="math-block">
+        \[ V = V_{\text{cil}}(\text{dužine } 12) - 2\,V_{\text{kon}}(\text{vis. } 3) = \pi h^2\cdot 12 - 2\cdot\tfrac{1}{3}\pi h^2\cdot 3 = 12\pi h^2 - 2\pi h^2 = 10\pi h^2. \]
+      </div>
+      <p>Iz uslova \( V = 160\pi \):</p>
+      <div class="math-block">
+        \[ 10\pi h^2 = 160\pi \;\;\Longrightarrow\;\; h^2 = 16 \;\;\Longrightarrow\;\; h = 4\,\text{cm}. \]
+      </div>
+      <p>Krak trapeza:</p>
+      <div class="math-block">
+        \[ c = \sqrt{h^2 + 3^2} = \sqrt{16 + 9} = \sqrt{25} = 5\,\text{cm}. \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe — Pappusova teorema kao kontrola</summary>
+          <div class="detail-content">
+            <p>Centroid trapeza je na visini \( y_T = \dfrac{h(2a+b)}{3(a+b)} = \dfrac{4\cdot 24}{3\cdot 18} = \dfrac{96}{54} \). Hmm — pravilna formula za rastojanje centroida trapeza od osnovice \( b \) (one koja leži na osi) glasi \( y_T = \dfrac{h(2a+b)}{3(a+b)} = \dfrac{4(2\cdot 12 + 6)}{3\cdot 18} = \dfrac{4\cdot 30}{54} = \dfrac{120}{54} = \dfrac{20}{9} \). Površina trapeza \( P = \dfrac{a+b}{2}\,h = 9\cdot 4 = 36 \). Tada \( V = 2\pi\,y_T\,P = 2\pi\cdot \dfrac{20}{9}\cdot 36 = 160\pi \) ✓.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo površinu — koje su <em>rotirajuće</em> ivice</h3>
+      <p>Površina tela rotacije se sastoji od slika ivica trapeza koje se ne nalaze na osi rotacije. Trapez ima 4 ivice:</p>
+      <ul>
+        <li><strong>Kraća osnovica</strong> \( BC = b = 6 \): leži na osi rotacije \(\Rightarrow\) ne doprinosi površini (rotira se sama u sebe).</li>
+        <li><strong>Duža osnovica</strong> \( AD = a = 12 \): paralelna sa osom, na rastojanju \( h \) \(\Rightarrow\) rotacijom daje <em>cilindar</em> dužine \( 12 \) i poluprečnika \( h \).</li>
+        <li><strong>Dva kraka</strong> \( AB \) i \( CD \) (svaki dužine \( c \)): rotacijom svaki daje <em>konusni omotač</em>, jer mu jedan kraj leži na osi (poluprečnik \( 0 \)) a drugi na rastojanju \( h \).</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Sabiramo doprinose pojedinih površina</h3>
+      <div class="substep" data-substep="a)">
+        <p><strong>a) Spoljni cilindrični omotač</strong> (od duže osnovice):</p>
+        <div class="math-block">
+          \[ M_{\text{cil}} = 2\pi\cdot R\cdot H = 2\pi\cdot h\cdot a = 2\pi\cdot 4\cdot 12 = 96\pi\,\text{cm}^2. \]
+        </div>
+      </div>
+
+      <div class="substep" data-substep="b)">
+        <p><strong>b) Dva konusna omotača</strong> (od krakova). Za svaki konus: poluprečnik osnove \( R = h = 4 \), izvodnica \( L = c = 5 \).</p>
+        <div class="math-block">
+          \[ M_{\text{kon}} = \pi R L = \pi\cdot 4\cdot 5 = 20\pi\,\text{cm}^2,\qquad 2 M_{\text{kon}} = 40\pi\,\text{cm}^2. \]
+        </div>
+      </div>
+
+      <div class="substep" data-substep="c)">
+        <p><strong>c) Krajevi</strong> (\( x=\pm 6 \)): u tim mestima poluprečnik konusa (unutrašnji rub) i poluprečnik cilindra (spoljni rub) <em>poklapaju se</em> — oba iznose \( h \). Telo se tu glatko zatvara: <em>nema dodatnog ravnog diska</em>.</p>
+        <div class="callout callout-warning">
+          <p>Ovo je tananiji deo: ne postoji nikakav „poklopac" na krajevima. Konus se pripaja cilindru duž zajedničke kružnice poluprečnika \( h \), pa je granica već zatvorena.</p>
+        </div>
+      </div>
+
+      <div class="substep" data-substep="d)">
+        <p><strong>d) Ukupna površina:</strong></p>
+        <div class="math-block">
+          \[ S = M_{\text{cil}} + 2\,M_{\text{kon}} = 96\pi + 40\pi = 136\pi\,\text{cm}^2. \]
+        </div>
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe — Pappusova teorema za površinu</summary>
+          <div class="detail-content">
+            <p>Granična kriva trapeza koja se okreće (bez kraće osnovice) ima dužinu \( 12 + 2\cdot 5 = 22 \). Centroid duže osnovice je na visini \( h = 4 \), centroid svakog kraka je na sredini, tj. na visini \( h/2 = 2 \). Računamo „težište" cele krive: \( \bar{y}\cdot L = 12\cdot 4 + 2\cdot 5\cdot 2 = 48 + 20 = 68 \). Tada je po Pappusu \( S = 2\pi\cdot 68 = 136\pi \) ✓.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="visual-aid" data-title="Telo rotacije u 3D">
+  <h2>🌀 Telo rotacije — 3D presek</h2>
+  <p>Sledeći prikaz pokazuje kako trapez „pometa" prostor pri rotaciji. Spoljna granica je cilindar dužine \( a = 12 \), poluprečnika \( h = 4 \). Iznutra, na svakom kraju, „izgrizena" je konusna šupljina visine \( 3 \), takođe poluprečnika \( h = 4 \).</p>
+  <div class="canvas-wrapper">
+    <canvas id="solid-3d" width="780" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Spoljni cilindar prikazan plavom bojom, unutrašnji konusni omotači zelenom bojom. Vrhovi konusa leže na osi u tačkama \( B \) i \( C \) (krajevi kraće osnovice). Duža osnovica \( AD \) traga gornju ivicu cilindra.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Osni presek tela">
+  <h2>📏 Vizuelni prikaz — osni presek</h2>
+  <p>Ravna ravan kroz osu rotacije seče telo na dva podudarna trapeza (nad i pod osom). Spoljnji obris je pravougaonik dužine \( 12 \) i visine \( 2h = 8 \); iznutra, dva trougla istih dimenzija „pojedu" materijal.</p>
+  <div class="canvas-wrapper">
+    <canvas id="cross-section" width="780" height="380"></canvas>
+  </div>
+  <p class="canvas-caption">Osni presek: spoljni obris (cilindar) je pravougaonik; unutrašnji prazan prostor (dva konusa) prikazan je kao dva crvena trougla. Plava oblast (telo) je sve između, simetrično oko ose.</p>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Najmoćniji potez je <em>postaviti osu rotacije baš na granicu trapeza</em>. Tada se trapez razlaže na pravougaonik (postaje cilindar) i dva pravougla trougla (postaju konusi), a telo se opisuje rečenicom „cilindar minus dva konusa". Sve ostalo — i zapremina i površina — se onda direktno računa po školskim formulama, bez integrala.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Razlaganje površine">
+  <h2>📊 Razlaganje površine \( 136\pi \)</h2>
+  <p>Sledeći grafički prikaz pokazuje kako se konačna površina sastavlja od dva doprinosa: spoljni cilindrični omotač i dva konusna omotača (sa krakova).</p>
+  <div class="canvas-wrapper">
+    <canvas id="surface-bars" width="780" height="380"></canvas>
+  </div>
+  <p class="canvas-caption">Cilindar daje glavni doprinos \( 96\pi \), dva konusa zajedno \( 40\pi \). Krajnji diskovi <em>ne postoje</em> — telo se na krajevima zatvara samim spojem cilindra i konusa duž zajedničkog kruga.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešna osa.</strong> Rotacija oko <em>duže</em> osnovice daje sasvim drugo telo (cilindar plus dva konusa); ovde je osa kraća osnovica.</li>
+    <li><strong>Zaboravljanje konusnih udubljenja u zapremini.</strong> Zapremina nije \( \pi h^2\cdot 12 \) (ceo cilindar), već \( 12\pi h^2 - 2\pi h^2 = 10\pi h^2 \).</li>
+    <li><strong>Dodavanje krajnjih diskova u površinu.</strong> Cilindar i konusi dele krajnje krugove, pa nema slobodnih ravnih površina — krajevi su već zatvoreni.</li>
+    <li><strong>Mešanje visine \( h \) i kraka \( c \).</strong> U formuli za omotač konusa stoji <em>izvodnica</em> \( L = c \), a u formuli za omotač cilindra stoji <em>poluprečnik</em> \( R = h \).</li>
+    <li><strong>Brkanje \( (a-b)/2 \) i \( (a+b)/2 \).</strong> Horizontalna projekcija kraka jeste \( (a-b)/2 = 3 \), a srednja linija trapeza je \( (a+b)/2 = 9 \) — različite stvari.</li>
+    <li><strong>Pisati \( c=\sqrt{h^2+a^2} \) ili \( c=h+3 \).</strong> Ispravno je \( c=\sqrt{h^2+\big(\tfrac{a-b}{2}\big)^2} \).</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ S = 2\pi h\,a + 2\pi h\,c = 2\pi\cdot 4\cdot 12 + 2\pi\cdot 4\cdot 5 = 96\pi + 40\pi = 136\pi\,\text{cm}^2. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 136\pi\,\text{cm}^2 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 116\pi\,\text{cm}^2 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 152\pi\,\text{cm}^2 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 168\pi\,\text{cm}^2 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 96\pi\,\text{cm}^2 \)</span>
+  </div>
+  <p class="verification">Kontrola Pappusovom teoremom: granična kriva (duža osnovica + dva kraka) ima ukupnu „težinu obrtanja" \( 12\cdot 4 + 2\cdot 5\cdot 2 = 68 \), pa \( S = 2\pi\cdot 68 = 136\pi \) ✓. I zapremina se proverava: \( V = 2\pi\cdot \tfrac{20}{9}\cdot 36 = 160\pi \) ✓.</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta ako bi se isti trapez rotirao oko <em>duže</em> osnovice (\( a = 12 \)), pri istim dimenzijama \( a=12,\,b=6,\,h=4 \)? Skiciraj nastalo telo i izračunaj njegovu zapreminu i površinu. Da li je veće ili manje od \( 160\pi \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Tada duža osnovica leži na osi, a kraci „izlaze" iz nje pod uglovima ka kraćoj osnovici. Telo postaje cilindar (od kraće osnovice) <em>plus</em> dva konusa (od krakova) — sad se sabiraju, a ne oduzimaju. Volumen \( V = \pi h^2\cdot b + 2\cdot \tfrac{1}{3}\pi h^2\cdot 3 = 6\pi h^2 + 2\pi h^2 = 8\pi h^2 = 128\pi \). Površina: \( S = 2\pi h\cdot b + 2\pi h\,c = 48\pi + 40\pi = 88\pi \). I jedno i drugo manje nego u izvornom zadatku — to ima smisla, jer se rotacijom oko duže osnovice „obavija" manji prostor (centroid trapeza je sad bliži osi).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('trapezoid');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var secondary = cv('--sol-canvas-secondary');
+    var tertiary  = cv('--sol-canvas-tertiary');
+    var warning   = cv('--sol-canvas-warning');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var W = canvas.width, H = canvas.height;
+    // map: x in [-8, 8], y in [-1, 6] (extra space below axis for labels)
+    var xMin = -8, xMax = 8;
+    var yMin = -1.5, yMax = 6;
+    var pad = { l: 60, r: 40, t: 70, b: 70 };
+    var plotW = W - pad.l - pad.r;
+    var plotH = H - pad.t - pad.b;
+    var sx = plotW / (xMax - xMin);
+    var sy = plotH / (yMax - yMin);
+    function X(x) { return pad.l + (x - xMin) * sx; }
+    function Y(y) { return pad.t + (yMax - y) * sy; }
+
+    // light grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var gx = -8; gx <= 8; gx++) {
+      ctx.beginPath();
+      ctx.moveTo(X(gx), pad.t);
+      ctx.lineTo(X(gx), pad.t + plotH);
+      ctx.stroke();
+    }
+    for (var gy = 0; gy <= 5; gy++) {
+      ctx.beginPath();
+      ctx.moveTo(pad.l, Y(gy));
+      ctx.lineTo(pad.l + plotW, Y(gy));
+      ctx.stroke();
+    }
+
+    // axis of rotation = horizontal line y = 0
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([10, 6]);
+    ctx.beginPath();
+    ctx.moveTo(X(xMin) + 10, Y(0));
+    ctx.lineTo(X(xMax) - 10, Y(0));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // arrowheads on axis
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(X(xMax) - 10, Y(0));
+    ctx.lineTo(X(xMax) - 22, Y(0) - 6);
+    ctx.lineTo(X(xMax) - 22, Y(0) + 6);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(X(xMin) + 10, Y(0));
+    ctx.lineTo(X(xMin) + 22, Y(0) - 6);
+    ctx.lineTo(X(xMin) + 22, Y(0) + 6);
+    ctx.closePath();
+    ctx.fill();
+
+    // axis label
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('osa rotacije', X(xMax) - 30, Y(0) - 8);
+
+    // trapezoid: B(-3,0), C(3,0), D(6,h), A(-6,h) with h = 4
+    var h = 4;
+    var Bx = -3, Cx = 3, Dx = 6, Ax = -6;
+    // fill trapezoid
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.18);
+    ctx.beginPath();
+    ctx.moveTo(X(Bx), Y(0));
+    ctx.lineTo(X(Cx), Y(0));
+    ctx.lineTo(X(Dx), Y(h));
+    ctx.lineTo(X(Ax), Y(h));
+    ctx.closePath();
+    ctx.fill();
+
+    // shade rectangular core (over the shorter base)
+    ctx.fillStyle = cvAlpha('--sol-canvas-tertiary', 0.18);
+    ctx.beginPath();
+    ctx.moveTo(X(Bx), Y(0));
+    ctx.lineTo(X(Cx), Y(0));
+    ctx.lineTo(X(Cx), Y(h));
+    ctx.lineTo(X(Bx), Y(h));
+    ctx.closePath();
+    ctx.fill();
+
+    // shade triangles
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.18);
+    ctx.beginPath();
+    ctx.moveTo(X(Cx), Y(0));
+    ctx.lineTo(X(Dx), Y(h));
+    ctx.lineTo(X(Cx), Y(h));
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(X(Bx), Y(0));
+    ctx.lineTo(X(Ax), Y(h));
+    ctx.lineTo(X(Bx), Y(h));
+    ctx.closePath();
+    ctx.fill();
+
+    // dashed inner verticals separating decomposition
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 1.6;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(X(Bx), Y(0));
+    ctx.lineTo(X(Bx), Y(h));
+    ctx.moveTo(X(Cx), Y(0));
+    ctx.lineTo(X(Cx), Y(h));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // trapezoid outline
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.moveTo(X(Bx), Y(0));
+    ctx.lineTo(X(Cx), Y(0));
+    ctx.lineTo(X(Dx), Y(h));
+    ctx.lineTo(X(Ax), Y(h));
+    ctx.closePath();
+    ctx.stroke();
+
+    // emphasize legs
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(X(Bx), Y(0));
+    ctx.lineTo(X(Ax), Y(h));
+    ctx.moveTo(X(Cx), Y(0));
+    ctx.lineTo(X(Dx), Y(h));
+    ctx.stroke();
+
+    // vertices
+    function vert(x, y) {
+      ctx.fillStyle = primary;
+      ctx.beginPath();
+      ctx.arc(X(x), Y(y), 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = bg;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+    vert(Ax, h); vert(Dx, h); vert(Bx, 0); vert(Cx, 0);
+
+    // labels A, D, B, C
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('A', X(Ax) - 8, Y(h) - 4);
+    ctx.textAlign = 'left';
+    ctx.fillText('D', X(Dx) + 8, Y(h) - 4);
+    ctx.textAlign = 'right';
+    ctx.fillText('B', X(Bx) - 8, Y(0) + 16);
+    ctx.textAlign = 'left';
+    ctx.fillText('C', X(Cx) + 8, Y(0) + 16);
+
+    // dimension labels: a = 12 along top
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.2;
+    var topY = Y(h) - 26;
+    ctx.beginPath();
+    ctx.moveTo(X(Ax), topY); ctx.lineTo(X(Dx), topY);
+    ctx.moveTo(X(Ax), topY - 4); ctx.lineTo(X(Ax), topY + 4);
+    ctx.moveTo(X(Dx), topY - 4); ctx.lineTo(X(Dx), topY + 4);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('a = 12', X(0), topY - 6);
+
+    // b = 6 along bottom
+    var botY = Y(0) + 38;
+    ctx.strokeStyle = muted;
+    ctx.beginPath();
+    ctx.moveTo(X(Bx), botY); ctx.lineTo(X(Cx), botY);
+    ctx.moveTo(X(Bx), botY - 4); ctx.lineTo(X(Bx), botY + 4);
+    ctx.moveTo(X(Cx), botY - 4); ctx.lineTo(X(Cx), botY + 4);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.fillText('b = 6  (osa)', X(0), botY + 14);
+
+    // h
+    ctx.strokeStyle = muted;
+    var hX = X(Cx) + 32;
+    ctx.beginPath();
+    ctx.moveTo(hX, Y(0)); ctx.lineTo(hX, Y(h));
+    ctx.moveTo(hX - 4, Y(0)); ctx.lineTo(hX + 4, Y(0));
+    ctx.moveTo(hX - 4, Y(h)); ctx.lineTo(hX + 4, Y(h));
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.textAlign = 'left';
+    ctx.fillText('h', hX + 6, Y(h/2) + 4);
+
+    // (a-b)/2 = 3 on top right end (between Cx=3 and Dx=6 horizontally at top)
+    var midY = Y(h) + 18;
+    ctx.strokeStyle = muted;
+    ctx.beginPath();
+    ctx.moveTo(X(Cx), midY); ctx.lineTo(X(Dx), midY);
+    ctx.moveTo(X(Cx), midY - 4); ctx.lineTo(X(Cx), midY + 4);
+    ctx.moveTo(X(Dx), midY - 4); ctx.lineTo(X(Dx), midY + 4);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.fillText('(a−b)/2 = 3', X((Cx + Dx)/2), midY + 14);
+
+    // leg label c
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('c (krak)', X((Cx + Dx)/2) + 6, Y(h/2) - 4);
+
+    // right-angle marks at corners (B, C interior with vertical leg)
+    function rightAngleAt(cx, cy, dx, dy, size) {
+      // rectangle marker at corner
+      ctx.strokeStyle = muted;
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(X(cx), Y(cy));
+      ctx.lineTo(X(cx) + dx*size, Y(cy));
+      ctx.lineTo(X(cx) + dx*size, Y(cy) + dy*size);
+      ctx.lineTo(X(cx), Y(cy) + dy*size);
+      ctx.stroke();
+    }
+
+    // title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Jednakokraki trapez ABCD pre rotacije', W/2, 28);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('plavo: pravougaonik (→ cilindar);  zeleno: trouglovi (→ konusi)', W/2, 48);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('solid-3d');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var secondary = cv('--sol-canvas-secondary');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var W = canvas.width, H = canvas.height;
+
+    // 3D-ish: axis horizontal (left-right), with elliptical cross-sections
+    // Cylinder length 12, radius 4. Cones at each end of length 3 (going INWARD as cavity).
+    // Coordinates: center of body at canvas center.
+    var cx = W/2, cy = H * 0.55;
+    var unit = 24;          // 1 cm = 24 px horizontally
+    var ry = 0.32;          // ellipse aspect ratio (depth perspective)
+    var radPx = 4 * unit;   // cylinder radius (4 cm)
+    var halfLen = 6 * unit; // half-length of cylinder (12/2 cm)
+    var coneLenPx = 3 * unit;
+
+    // axis line (long, dashed)
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.6;
+    ctx.setLineDash([8, 6]);
+    ctx.beginPath();
+    ctx.moveTo(cx - halfLen - 60, cy);
+    ctx.lineTo(cx + halfLen + 60, cy);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(cx + halfLen + 60, cy);
+    ctx.lineTo(cx + halfLen + 48, cy - 6);
+    ctx.lineTo(cx + halfLen + 48, cy + 6);
+    ctx.closePath();
+    ctx.fill();
+
+    // helper: draw an ellipse outline
+    function ellipse(x, y, rx, rry, fillColor, strokeColor, dashed) {
+      ctx.beginPath();
+      ctx.ellipse(x, y, rx, rry, 0, 0, Math.PI * 2);
+      if (fillColor) {
+        ctx.fillStyle = fillColor;
+        ctx.fill();
+      }
+      if (strokeColor) {
+        ctx.strokeStyle = strokeColor;
+        ctx.lineWidth = 2;
+        if (dashed) ctx.setLineDash([5, 5]); else ctx.setLineDash([]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+    }
+
+    // CYLINDER FILL — body of revolution outer surface
+    var leftEndX  = cx - halfLen;
+    var rightEndX = cx + halfLen;
+
+    // body: rectangle in the front (cylinder side)
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.22);
+    ctx.fillRect(leftEndX, cy - radPx, halfLen * 2, radPx * 2);
+
+    // back ellipse (visible behind via dashed)
+    ellipse(rightEndX, cy, radPx * 0.18, radPx * ry, null, muted, true);
+    ellipse(leftEndX, cy, radPx * 0.18, radPx * ry, null, muted, true);
+
+    // CONE CAVITIES — inside the cylinder ends
+    // Right cavity: vertex at (rightEndX - coneLenPx, cy), base ellipse at rightEndX
+    var rightApexX = rightEndX - coneLenPx;
+    var leftApexX  = leftEndX  + coneLenPx;
+
+    // shading for cavity (cone walls)
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.30);
+    // right cone (cavity)
+    ctx.beginPath();
+    ctx.moveTo(rightApexX, cy);
+    ctx.lineTo(rightEndX, cy - radPx);
+    ctx.lineTo(rightEndX, cy + radPx);
+    ctx.closePath();
+    ctx.fill();
+    // left cone (cavity)
+    ctx.beginPath();
+    ctx.moveTo(leftApexX, cy);
+    ctx.lineTo(leftEndX, cy - radPx);
+    ctx.lineTo(leftEndX, cy + radPx);
+    ctx.closePath();
+    ctx.fill();
+
+    // Cylinder side outline
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.moveTo(leftEndX, cy - radPx);
+    ctx.lineTo(rightEndX, cy - radPx);
+    ctx.moveTo(leftEndX, cy + radPx);
+    ctx.lineTo(rightEndX, cy + radPx);
+    ctx.stroke();
+
+    // End ellipses (the rim circles at x = ±6)
+    ellipse(rightEndX, cy, radPx * 0.18, radPx * ry, null, primary, false);
+    ellipse(leftEndX, cy, radPx * 0.18, radPx * ry, null, primary, false);
+
+    // back ellipses (left half = solid, right half = dashed)
+    function ellipseFrontBack(x, y, rx, rry, color) {
+      // front half (visible)
+      ctx.beginPath();
+      ctx.ellipse(x, y, rx, rry, 0, 0, Math.PI, false);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.setLineDash([]);
+      ctx.stroke();
+      // back half (dashed)
+      ctx.beginPath();
+      ctx.ellipse(x, y, rx, rry, 0, Math.PI, 2 * Math.PI, false);
+      ctx.setLineDash([5, 5]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // Cone outlines (cavity walls)
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.moveTo(rightApexX, cy);
+    ctx.lineTo(rightEndX, cy - radPx);
+    ctx.moveTo(rightApexX, cy);
+    ctx.lineTo(rightEndX, cy + radPx);
+    ctx.moveTo(leftApexX, cy);
+    ctx.lineTo(leftEndX, cy - radPx);
+    ctx.moveTo(leftApexX, cy);
+    ctx.lineTo(leftEndX, cy + radPx);
+    ctx.stroke();
+
+    // points on the axis at apex (B and C)
+    ctx.fillStyle = secondary;
+    ctx.beginPath();
+    ctx.arc(rightApexX, cy, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(leftApexX, cy, 5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Labels: B and C at apexes
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('B', leftApexX, cy + 22);
+    ctx.fillText('C', rightApexX, cy + 22);
+
+    // Length label "12 = a" along top
+    var topLabelY = cy - radPx - 22;
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(leftEndX, topLabelY); ctx.lineTo(rightEndX, topLabelY);
+    ctx.moveTo(leftEndX, topLabelY - 4); ctx.lineTo(leftEndX, topLabelY + 4);
+    ctx.moveTo(rightEndX, topLabelY - 4); ctx.lineTo(rightEndX, topLabelY + 4);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillText('a = 12  (dužina cilindra)', cx, topLabelY - 6);
+
+    // radius h
+    var rLabelX = rightEndX + 32;
+    ctx.strokeStyle = muted;
+    ctx.beginPath();
+    ctx.moveTo(rLabelX, cy);
+    ctx.lineTo(rLabelX, cy - radPx);
+    ctx.moveTo(rLabelX - 4, cy); ctx.lineTo(rLabelX + 4, cy);
+    ctx.moveTo(rLabelX - 4, cy - radPx); ctx.lineTo(rLabelX + 4, cy - radPx);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.textAlign = 'left';
+    ctx.fillText('h = 4', rLabelX + 6, cy - radPx/2 + 4);
+
+    // cone height label "3"
+    var coneLabelY = cy + radPx + 38;
+    ctx.strokeStyle = muted;
+    ctx.beginPath();
+    ctx.moveTo(rightApexX, coneLabelY); ctx.lineTo(rightEndX, coneLabelY);
+    ctx.moveTo(rightApexX, coneLabelY - 4); ctx.lineTo(rightApexX, coneLabelY + 4);
+    ctx.moveTo(rightEndX, coneLabelY - 4); ctx.lineTo(rightEndX, coneLabelY + 4);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.fillText('3 (visina konusa)', (rightApexX + rightEndX)/2, coneLabelY + 14);
+
+    // legend
+    var legY = H - 22;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = primary;
+    ctx.fillRect(40, legY - 8, 16, 10);
+    ctx.fillStyle = text;
+    ctx.textAlign = 'left';
+    ctx.fillText('cilindar (spoljni omotač)', 62, legY + 1);
+    ctx.fillStyle = accent;
+    ctx.fillRect(260, legY - 8, 16, 10);
+    ctx.fillStyle = text;
+    ctx.fillText('konusne šupljine (od krakova)', 282, legY + 1);
+
+    // title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Telo nastalo rotacijom — cilindar minus dva konusa', W/2, 26);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('cross-section');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var danger    = cv('--sol-canvas-danger');
+    var accent    = cv('--sol-canvas-accent');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var W = canvas.width, H = canvas.height;
+
+    // map: x cm -> px, y cm -> px; center body
+    var cx = W/2, cy = H * 0.55;
+    var unit = 26;
+    var halfLen = 6 * unit;  // 12 cm wide
+    var radPx = 4 * unit;
+    var coneLen = 3 * unit;
+
+    // axis (horizontal, dashed)
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([10, 6]);
+    ctx.beginPath();
+    ctx.moveTo(cx - halfLen - 50, cy);
+    ctx.lineTo(cx + halfLen + 50, cy);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(cx + halfLen + 50, cy);
+    ctx.lineTo(cx + halfLen + 38, cy - 6);
+    ctx.lineTo(cx + halfLen + 38, cy + 6);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('osa rotacije', cx + halfLen + 30, cy - 8);
+
+    // outer rectangle (cylinder cross-section through axis)
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.22);
+    ctx.fillRect(cx - halfLen, cy - radPx, halfLen * 2, radPx * 2);
+
+    // inner triangles (cones cavity cross-section) — RIGHT
+    ctx.fillStyle = bg;
+    ctx.beginPath();
+    ctx.moveTo(cx + halfLen - coneLen, cy);
+    ctx.lineTo(cx + halfLen, cy - radPx);
+    ctx.lineTo(cx + halfLen, cy + radPx);
+    ctx.closePath();
+    ctx.fill();
+
+    // LEFT
+    ctx.beginPath();
+    ctx.moveTo(cx - halfLen + coneLen, cy);
+    ctx.lineTo(cx - halfLen, cy - radPx);
+    ctx.lineTo(cx - halfLen, cy + radPx);
+    ctx.closePath();
+    ctx.fill();
+
+    // outline outer rectangle
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.4;
+    ctx.strokeRect(cx - halfLen, cy - radPx, halfLen * 2, radPx * 2);
+
+    // outline inner triangles in red dashed (the cavities)
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 2.2;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(cx + halfLen - coneLen, cy);
+    ctx.lineTo(cx + halfLen, cy - radPx);
+    ctx.moveTo(cx + halfLen - coneLen, cy);
+    ctx.lineTo(cx + halfLen, cy + radPx);
+    ctx.moveTo(cx - halfLen + coneLen, cy);
+    ctx.lineTo(cx - halfLen, cy - radPx);
+    ctx.moveTo(cx - halfLen + coneLen, cy);
+    ctx.lineTo(cx - halfLen, cy + radPx);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // dimension labels
+    // horizontal length 12
+    var topY = cy - radPx - 22;
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(cx - halfLen, topY); ctx.lineTo(cx + halfLen, topY);
+    ctx.moveTo(cx - halfLen, topY - 4); ctx.lineTo(cx - halfLen, topY + 4);
+    ctx.moveTo(cx + halfLen, topY - 4); ctx.lineTo(cx + halfLen, topY + 4);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('12 cm', cx, topY - 6);
+
+    // vertical 2h
+    var rightX = cx + halfLen + 32;
+    ctx.strokeStyle = muted;
+    ctx.beginPath();
+    ctx.moveTo(rightX, cy - radPx); ctx.lineTo(rightX, cy + radPx);
+    ctx.moveTo(rightX - 4, cy - radPx); ctx.lineTo(rightX + 4, cy - radPx);
+    ctx.moveTo(rightX - 4, cy + radPx); ctx.lineTo(rightX + 4, cy + radPx);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.textAlign = 'left';
+    ctx.fillText('2h = 8 cm', rightX + 6, cy + 4);
+
+    // legend
+    var legY = H - 22;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.45);
+    ctx.fillRect(40, legY - 9, 16, 12);
+    ctx.fillStyle = text;
+    ctx.textAlign = 'left';
+    ctx.fillText('telo (popunjeno)', 62, legY);
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(220, legY - 4); ctx.lineTo(248, legY - 4);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = text;
+    ctx.fillText('konusne šupljine', 256, legY);
+
+    // title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Osni presek tela rotacije', W/2, 26);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+
+  var canvas = document.getElementById('surface-bars');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg      = cv('--sol-canvas-bg');
+    var grid    = cv('--sol-canvas-grid');
+    var axis    = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var accent  = cv('--sol-canvas-accent');
+    var text    = cv('--sol-canvas-text');
+    var muted   = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var W = canvas.width, H = canvas.height;
+    var pad = { l: 80, r: 60, t: 70, b: 70 };
+    var plotW = W - pad.l - pad.r;
+    var plotH = H - pad.t - pad.b;
+
+    var bars = [
+      { label: 'Cilindar  M = 2π·h·a', value: 96, formula: '2π·4·12 = 96π', color: primary },
+      { label: 'Konusi (×2)  M = 2·πhc', value: 40, formula: '2·π·4·5 = 40π', color: accent },
+      { label: 'UKUPNO', value: 136, formula: '96π + 40π = 136π', color: cv('--sol-canvas-secondary') }
+    ];
+
+    var maxVal = 150;
+    var n = bars.length;
+    var barWidth = plotW / (n * 1.6);
+    var gap = (plotW - n * barWidth) / (n + 1);
+
+    // baseline
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(pad.l, pad.t + plotH);
+    ctx.lineTo(pad.l + plotW, pad.t + plotH);
+    ctx.stroke();
+
+    // y-axis ticks
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    for (var t = 0; t <= maxVal; t += 30) {
+      var py = pad.t + plotH - (t / maxVal) * plotH;
+      ctx.beginPath();
+      ctx.moveTo(pad.l, py);
+      ctx.lineTo(pad.l + plotW, py);
+      ctx.stroke();
+      ctx.fillText(t + 'π', pad.l - 8, py + 4);
+    }
+
+    // bars
+    for (var i = 0; i < n; i++) {
+      var b = bars[i];
+      var bx = pad.l + gap + i * (barWidth + gap);
+      var bh = (b.value / maxVal) * plotH;
+      var by = pad.t + plotH - bh;
+      ctx.fillStyle = b.color;
+      ctx.globalAlpha = 0.85;
+      ctx.fillRect(bx, by, barWidth, bh);
+      ctx.globalAlpha = 1;
+      ctx.strokeStyle = b.color;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(bx, by, barWidth, bh);
+
+      // value above bar
+      ctx.fillStyle = text;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(b.value + 'π', bx + barWidth/2, by - 8);
+
+      // label below
+      ctx.fillStyle = text;
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.fillText(b.label, bx + barWidth/2, pad.t + plotH + 18);
+      ctx.fillStyle = muted;
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.fillText(b.formula, bx + barWidth/2, pad.t + plotH + 36);
+    }
+
+    // y-axis label
+    ctx.save();
+    ctx.translate(28, pad.t + plotH/2);
+    ctx.rotate(-Math.PI/2);
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Površina  (cm²)', 0, 0);
+    ctx.restore();
+
+    // title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Razlaganje ukupne površine', W/2, 28);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('cilindar + dva konusa = 96π + 40π = 136π cm²', W/2, 48);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Površina tela nastalog rotacijom jednakokrakog trapeza",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["telo rotacije", "stereometrija", "cilindar", "konus", "jednakokraki trapez", "Pappusova teorema"]
+}
+BRAINSPARK_META-->

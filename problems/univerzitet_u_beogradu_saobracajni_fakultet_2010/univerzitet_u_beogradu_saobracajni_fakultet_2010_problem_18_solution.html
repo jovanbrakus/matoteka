@@ -1,0 +1,513 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Koliko ima celih brojeva m takvih da kvadratna jednacina
+   m*x^2 + 8*x + (m - 6) = 0
+ima realna, medjusobno razlicita resenja x_1, x_2 ISTOG ZNAKA?
+
+Tri uslova:
+  (1) Da je zaista kvadratna: a = m != 0.
+  (2) Realna i razlicita resenja: D > 0 (strogo > 0).
+      D = 8^2 - 4*m*(m - 6) = 64 - 4m^2 + 24m = -4m^2 + 24m + 64.
+      D > 0  <=>  -4m^2 + 24m + 64 > 0  /:(-4)  (znak se obrce)
+                  m^2 - 6m - 16 < 0
+                  Nule: m = (6 ± sqrt(36 + 64))/2 = (6 ± 10)/2 = 8 ili -2.
+                  Pa (m - 8)(m + 2) < 0  =>  m in (-2, 8).
+  (3) Isti znak: x_1 * x_2 > 0 (Vieta: x_1*x_2 = c/a = (m-6)/m).
+      (m - 6)/m > 0
+      <=>  m i (m-6) imaju isti znak (oba > 0 ili oba < 0):
+           m > 6  (oba > 0)  ili  m < 0  (oba < 0).
+      Pa M_3 = (-oo, 0) U (6, +oo).
+      (Naravno m != 0 vec garantovano.)
+
+Presek:
+  M_1 ∩ M_2 ∩ M_3 = (m != 0) ∩ (-2, 8) ∩ ((-oo, 0) U (6, +oo))
+  = ((-2, 8) ∩ (-oo, 0)) U ((-2, 8) ∩ (6, +oo))
+  = (-2, 0) U (6, 8).
+  (m != 0 je automatski jer 0 nije u (-2, 0) niti u (6, 8) — ovi otvoreni intervali iskljucuju krajnje tacke.)
+
+Celi brojevi u (-2, 0) U (6, 8):
+  (-2, 0): cele tacke su -1.  (samo -1, jer -2 i 0 nisu strogo unutar).
+  (6, 8): cele tacke su 7.   (samo 7).
+Ukupno: 2 vrednosti — m = -1 i m = 7.
+
+Tacan odgovor: (A) 2.
+
+Provera:
+  m = -1:  -x^2 + 8x - 7 = 0  /*(-1)*  =>  x^2 - 8x + 7 = 0
+            (x-1)(x-7) = 0  =>  x = 1, 7. Oba pozitivna ✓, razlicita ✓.
+  m = 7:   7x^2 + 8x + 1 = 0
+            D = 64 - 28 = 36; sqrt(36) = 6.
+            x = (-8 ± 6)/14 = -2/14 = -1/7  ili  -14/14 = -1.
+            Oba negativna ✓, razlicita ✓.
+
+Eliminacija drugih:
+  (B) 6, (C) 8 — verovatno racunska greska kod uslova (3).
+  (D) 3 — pogresno tumaciti "isti znak" ili pogresno obraditi D > 0 / D >= 0.
+  (E) 5 — slicno.
+
+Vizuelni prikaz:
+  Brojevna prava sa istaknutim:
+    - Plavi (D > 0): segment (-2, 8).
+    - Narandzasti (proizvod > 0): (-oo, 0) U (6, +oo).
+    - Zeleni (presek): (-2, 0) U (6, 8). Otvoreni krugovi na -2, 0, 6, 8.
+    - Oznaceni cele tacke -1 i 7 kao zelene zvezdice / istaknute tacke.
+
+Statican prikaz je dovoljan jer je presek konacnog skupa intervala — niti jedan parametar nije slobodan.
+
+NE potreban interaktivnost. Ipak, mozda dodati malo bolje: na drugom mestu pokazati parabole za m = -1 i m = 7, sa korenima oznacenim, ali to bi bilo predetajno.
+
+Bolje: jedan canvas — number line sa tri reda (D, proizvod, presek) i tackama m = -1, 7 oznacenim.
+
+Pitfalls:
+  - Zaboraviti m != 0 (jer onda jednacina nije kvadratna, samo linearna).
+  - D >= 0 umesto D > 0 (a "razlicita" zahteva strogo > 0).
+  - Pomesati x_1 + x_2 sa x_1 * x_2 (i tako pogresno proveriti znak).
+  - Pomesati formulu Vieta — c/a, ne a/c.
+  - Pri (m-6)/m > 0 zaboraviti slucaj m < 0 (oba negativna).
+  - Kraj intervala uracunati u presek (treba otvoreni).
+  - Brojati cele brojeve pogresno: u (-2, 0) sigurno samo -1 (ne -2, ne 0).
+</script>
+
+<h1 data-card="problem-title">Realni koreni istog znaka — uslovi po parametru</h1>
+<p data-card="problem-subtitle" class="subtitle">Kvadratna jednačina sa parametrom — diskriminanta, Vietove formule i analiza znaka korena</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Celih brojeva \( m \), za koje su rešenja kvadratne jednačine</p>
+  <div class="math-block">\[ m\,x^{2} + 8x + m - 6 = 0 \]</div>
+  <p>realna, međusobno različita i istog znaka (oba pozitivna ili oba negativna), ima:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 6 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 8 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 5 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Postavi tri uslova: (1) jednačina mora biti kvadratna (\( m \neq 0 \)), (2) realna i različita rešenja (\( D > 0 \)), (3) isti znak rešenja (po Vieti: \( x_{1} x_{2} = \tfrac{m-6}{m} > 0 \)). Reši svaku nejednačinu za \( m \), preseci sve tri, pa prebroj cele brojeve u dobijenom skupu.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Diskriminanta i Vietove formule</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Diskriminanta</span> Za \( ax^{2} + bx + c = 0,\; a \neq 0 \), je \( D = b^{2} - 4ac \). Realna i različita rešenja: \( D > 0 \). Realna jednaka: \( D = 0 \). Bez realnih rešenja: \( D < 0 \).</li>
+        <li><span class="formula-label">Vietove formule</span> Ako su \( x_{1},\,x_{2} \) rešenja iste jednačine, onda \[ x_{1} + x_{2} = -\dfrac{b}{a}, \qquad x_{1} \cdot x_{2} = \dfrac{c}{a}. \]</li>
+        <li><span class="formula-label">Znak proizvoda</span> Dva broja imaju isti znak (\( x_{1} x_{2} > 0 \)) <em>ili</em> različite znake (\( x_{1} x_{2} < 0 \)). Za "isti znak" tražimo \( x_{1} x_{2} > 0 \).</li>
+        <li><span class="formula-label">Pojačanje za "oba pozitivna" / "oba negativna"</span> Ako se traži <em>baš</em> "oba pozitivna", uz \( x_{1} x_{2} > 0 \) treba i \( x_{1} + x_{2} > 0 \). Za "oba negativna": \( x_{1} x_{2} > 0 \) i \( x_{1} + x_{2} < 0 \). U ovom zadatku, dovoljno je samo \( x_{1} x_{2} > 0 \) (jer "isti znak" pokriva oba slučaja).</li>
+        <li><span class="formula-label">Vodeći koeficijent ne sme biti nula</span> Ako bi \( m = 0 \), jednačina postaje linearna \( 8x - 6 = 0 \) — ima jedno rešenje, ne dva, pa "dva različita rešenja" nema smisla. Zato \( m \neq 0 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — preseci uslova">
+  <h2>📐 Vizuelni prikaz — preseci uslova po m</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diag-intervals" width="780" height="540"></canvas>
+  </div>
+  <p class="canvas-caption">Tri reda iznad zajedničke brojevne prave po \( m \): plavi pojas je \( D > 0 \) tj. \( m \in (-2,\,8) \); narandžasti su \( x_{1} x_{2} > 0 \) tj. \( m \in (-\infty,\,0) \cup (6,\,+\infty) \); na donjem redu zeleni pojas je presek (zajedno sa \( m \neq 0 \)) — \( m \in (-2,\,0) \cup (6,\,8) \). Celi brojevi u zelenom skupu su istaknuti zvezdama: \( m = -1 \) i \( m = 7 \) — ukupno dva.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Uslov (1): jednačina je zaista kvadratna</h3>
+      <p>Da bi \( m\,x^{2} + 8x + m - 6 = 0 \) bila kvadratna jednačina, vodeći koeficijent ne sme biti nula:</p>
+      <div class="math-block">\[ m \neq 0. \]</div>
+      <p>Ako bi \( m = 0 \), dobili bismo linearnu jednačinu \( 8x - 6 = 0 \) sa jednim rešenjem \( x = \tfrac{3}{4} \) — to ne spada pod "dva različita rešenja".</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Uslov (2): realna i različita rešenja, \( D > 0 \)</h3>
+      <p>Računamo diskriminantu sa \( a = m,\; b = 8,\; c = m - 6 \):</p>
+      <div class="math-block">\[ D = 8^{2} - 4 \cdot m \cdot (m - 6) = 64 - 4m^{2} + 24m = -4m^{2} + 24m + 64. \]</div>
+      <p>Tražimo \( D > 0 \). Podelimo sa \( -4 \) (znak se obrće):</p>
+      <div class="math-block">\[ -4m^{2} + 24m + 64 > 0 \;\Longleftrightarrow\; m^{2} - 6m - 16 < 0. \]</div>
+      <p>Faktorisanje: \( m^{2} - 6m - 16 = (m - 8)(m + 2) \) (provera: \( -8 \cdot 2 = -16,\; -8 + 2 = -6 \) ✓). Dakle:</p>
+      <div class="math-block">\[ (m - 8)(m + 2) < 0 \;\Longleftrightarrow\; m \in (-2,\,8). \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto \( D > 0 \), a ne \( D \geq 0 \)?</summary>
+          <div class="detail-content"><p>\( D = 0 \) daje <em>jedan</em> dvostruki realan koren (oba "rešenja" se poklapaju), a zadatak izričito traži "međusobno <em>različita</em>" rešenja. Pa nejednakost mora biti stroga: \( D > 0 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Uslov (3): isti znak, po Vieti \( x_{1} x_{2} > 0 \)</h3>
+      <p>Po Vietovoj formuli</p>
+      <div class="math-block">\[ x_{1} \cdot x_{2} = \dfrac{c}{a} = \dfrac{m - 6}{m}. \]</div>
+      <p>Tražimo da to bude pozitivno:</p>
+      <div class="math-block">\[ \dfrac{m - 6}{m} > 0. \]</div>
+      <p>Razlomak je pozitivan kada \( m \) i \( m - 6 \) imaju isti znak. Dva slučaja:</p>
+      <ul>
+        <li>Oba pozitivna: \( m > 0 \) i \( m > 6 \) → \( m > 6 \).</li>
+        <li>Oba negativna: \( m < 0 \) i \( m < 6 \) → \( m < 0 \).</li>
+      </ul>
+      <div class="math-block">\[ \dfrac{m - 6}{m} > 0 \iff m \in (-\infty,\,0) \cup (6,\,+\infty). \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( x_{1} x_{2} \), a ne \( x_{1} + x_{2} \), ključan za "isti znak"?</summary>
+          <div class="detail-content"><p>Proizvod dva broja je pozitivan onda i samo onda kad oni imaju isti znak (oba pozitivna ili oba negativna), a negativan kad imaju različite znake. Suma se može simbolički zameniti — npr. \( 5 + (-3) = 2 > 0 \), iako su znakovi različiti — pa suma <em>ne</em> određuje znakove. Proizvod je pravi alat.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Preseci sva tri uslova</h3>
+      <p>Spajamo:</p>
+      <div class="math-block">\[
+        \underbrace{\{m : m \neq 0\}}_{(1)} \cap \underbrace{(-2,\,8)}_{(2)} \cap \underbrace{\bigl((-\infty,\,0) \cup (6,\,+\infty)\bigr)}_{(3)}.
+      \]</div>
+      <p>Najpre presek (2) ∩ (3):</p>
+      <div class="math-block">\[
+        (-2,\,8) \cap \bigl((-\infty,\,0) \cup (6,\,+\infty)\bigr) = (-2,\,0) \cup (6,\,8).
+      \]</div>
+      <p>Uslov (1) (\( m \neq 0 \)) je već zadovoljen jer su intervali <em>otvoreni</em> u \( 0 \) (i u \( 6,\,8,\,-2 \)). Konačan dozvoljen skup za parametar:</p>
+      <div class="math-block">\[ m \in (-2,\,0) \cup (6,\,8). \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Prebroji cele brojeve</h3>
+      <p>U intervalu \( (-2,\,0) \) (otvoren!) jedini ceo broj je \( -1 \). U intervalu \( (6,\,8) \) (otvoren!) jedini ceo broj je \( 7 \). Krajnje tačke \( -2,\,0,\,6,\,8 \) su isključene.</p>
+      <div class="math-block">\[ \text{Celi brojevi: } m \in \{-1,\; 7\} \;\Longrightarrow\; \boxed{2\text{ celih brojeva}}. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: provera za m = −1 i m = 7</summary>
+          <div class="detail-content">
+            <p><em>m = −1:</em> jednačina \( -x^{2} + 8x - 7 = 0 \), tj. \( x^{2} - 8x + 7 = 0 \), pa \( (x-1)(x-7) = 0 \). Rešenja \( x_{1} = 1,\, x_{2} = 7 \) — oba <strong>pozitivna</strong>, različita ✓.</p>
+            <p><em>m = 7:</em> \( 7x^{2} + 8x + 1 = 0 \). \( D = 64 - 28 = 36 \), \( \sqrt{D} = 6 \). \( x = \tfrac{-8 \pm 6}{14} \), pa \( x_{1} = -\tfrac{1}{7},\, x_{2} = -1 \) — oba <strong>negativna</strong>, različita ✓.</p>
+            <p>Granica <em>m = −2:</em> \( D = 0 \), pa rešenja se poklapaju — nije dozvoljeno (zato je interval otvoren). Granica <em>m = 8:</em> takođe \( D = 0 \). Granica <em>m = 6:</em> \( c = m - 6 = 0 \), pa je \( x_{1} x_{2} = 0 \) — jedan koren je nula, drugi nije, što znači da rešenja nisu "oba pozitivna" niti "oba negativna" (nula nije ni pozitivna ni negativna). Granica <em>m = 0:</em> jednačina nije kvadratna.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Vietove formule pretvaraju pitanja o <em>znakovima rešenja</em> u jednostavne uslove na <em>koeficijente</em>. Bez Viete, morali bismo da "ručno" računamo rešenja kvadratnom formulom za svako \( m \) i ispitujemo svaki znak — gotovo nemoguće za parametarski skup. Sa Vietom: znak proizvoda \( = \) znak količnika \( c/a \), znak sume \( = \) znak \( -b/a \). Tri uslova ovog zadatka — kvadratna, realna različita, isti znak — direktno se prevode u tri lake nejednačine po \( m \). Onda je sve samo presek skupova.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \text{Broj celih } m: \; 2 \quad (m \in \{-1,\,7\}). \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 2 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 6 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 8 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 3 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 5 \)</span>
+  </div>
+  <p class="verification">Verifikacija: za \( m = -1 \) jednačina daje rešenja \( 1,\,7 \) (oba \( > 0 \), različita) ✓. Za \( m = 7 \) rešenja \( -\tfrac{1}{7},\,-1 \) (oba \( < 0 \), različita) ✓. Granične tačke parametra (\( -2,\,0,\,6,\,8 \)) i sve cele tačke izvan \( (-2,\,0) \cup (6,\,8) \) krše bar jedan od tri uslova.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zaboraviti uslov \( m \neq 0 \).</strong> Ako \( m = 0 \), jednačina postaje linearna i nema smisla govoriti o "dva različita rešenja". Iako u ovom zadatku interval \( (-2,\,0) \) već isključuje \( 0 \), uslov treba <em>napisati</em> kao prvi korak — da bismo izbegli grešku u sličnim zadacima.</li>
+    <li><strong>\( D \geq 0 \) umesto \( D > 0 \).</strong> "Različita" zahteva strogo pozitivnu diskriminantu. Sa \( D = 0 \), rešenja se poklapaju.</li>
+    <li><strong>Pomešati \( x_{1} x_{2} \) sa \( x_{1} + x_{2} \)</strong> kod uslova "isti znak". Suma može biti pozitivna i kad su rešenja različitog znaka (npr. \( 5 + (-3) > 0 \)). Pravi indikator je proizvod.</li>
+    <li><strong>Pogrešne Vietove formule:</strong> \( x_{1} x_{2} = \tfrac{c}{a} \), <em>ne</em> \( \tfrac{a}{c} \). I \( x_{1} + x_{2} = -\tfrac{b}{a} \) (sa <em>minus</em>).</li>
+    <li><strong>Pri rešavanju \( \tfrac{m-6}{m} > 0 \), zaboraviti slučaj \( m < 0 \)</strong> (oba negativna). Ako se uzme samo \( m > 6 \), gubi se polovina rešenja, što vodi pogrešnom broju celih.</li>
+    <li><strong>Uračunati granične tačke u presek.</strong> Sve tri nejednakosti su <em>stroge</em>, pa su i preseci otvoreni intervali. Ulazak \( m = -2 \) ili \( m = 8 \) bi pogrešno povećao broj celih.</li>
+    <li><strong>Brojati cele brojeve u zatvorenom intervalu.</strong> U otvorenom \( (-2,\,0) \) ima <em>jedan</em> ceo broj (\( -1 \)), ne tri. U \( (6,\,8) \) takođe jedan (\( 7 \)).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Pojačaj zadatak: za koje cele \( m \) su rešenja kvadratne jednačine \( m\,x^{2} + 8x + m - 6 = 0 \) realna, različita i <em>oba pozitivna</em> (ne samo "istog znaka")? Koja od dve naše vrednosti \( m \in \{-1,\,7\} \) preživi ovo pojačanje?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Za "oba pozitivna" treba dodatno: \( x_{1} + x_{2} > 0 \). Po Vieti</p>
+      <div class="math-block">\[ x_{1} + x_{2} = -\dfrac{b}{a} = -\dfrac{8}{m} > 0 \iff m < 0. \]</div>
+      <p>Spajamo sa već dobijenim \( m \in (-2,\,0) \cup (6,\,8) \): presek sa \( m < 0 \) je samo \( (-2,\,0) \). Ceo broj iz tog skupa: <strong>\( m = -1 \)</strong>. Provera: za \( m = -1 \) rešenja su \( 1 \) i \( 7 \) — oba pozitivna ✓. Vrednost \( m = 7 \) otpada (rešenja su \( -\tfrac{1}{7},\,-1 \) — oba negativna, ne pozitivna). Dakle za "oba pozitivna" ima <strong>jedan</strong> ceo broj.</p>
+      <p>Slično, "oba negativna" zahteva \( m > 0 \): presek sa \( (-2,\,0) \cup (6,\,8) \) je \( (6,\,8) \), ceo broj \( m = 7 \) — opet jedan.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diag-intervals');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  // Map m in [-4, 10]
+  var mMin = -4, mMax = 10;
+  var marginL = 90, marginR = 50;
+  function nlX(m) {
+    return marginL + (m - mMin) / (mMax - mMin) * (W - marginL - marginR);
+  }
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var warning = cv('--sol-canvas-warning');
+    var tertiary = cv('--sol-canvas-tertiary');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Tri uslova po parametru m, presek i celi brojevi', W / 2, 30);
+
+    // Common reference vertical lines at -2, 0, 6, 8
+    var verticals = [-2, 0, 6, 8];
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    for (var v = 0; v < verticals.length; v++) {
+      var vx = nlX(verticals[v]);
+      ctx.beginPath();
+      ctx.moveTo(vx, 60);
+      ctx.lineTo(vx, 460);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Helper to draw a number line at given Y, with band intervals
+    function drawRow(y, label, sublabel, intervals, color) {
+      // Label on left
+      ctx.fillStyle = text;
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(label, marginL - 12, y - 3);
+      ctx.fillStyle = muted;
+      ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+      ctx.fillText(sublabel, marginL - 12, y + 12);
+
+      // Bands
+      for (var i = 0; i < intervals.length; i++) {
+        var iv = intervals[i];
+        var lo = isFinite(iv[0]) ? nlX(iv[0]) : marginL - 30;
+        var hi = isFinite(iv[1]) ? nlX(iv[1]) : (W - marginR + 30);
+        ctx.fillStyle = cvAlpha(color, 0.32);
+        ctx.fillRect(lo, y - 8, hi - lo, 16);
+      }
+
+      // Number line
+      ctx.strokeStyle = axis;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(marginL - 30, y);
+      ctx.lineTo(W - marginR + 30, y);
+      ctx.stroke();
+
+      // Arrow heads on the line
+      ctx.beginPath();
+      ctx.moveTo(W - marginR + 30, y);
+      ctx.lineTo(W - marginR + 22, y - 4);
+      ctx.moveTo(W - marginR + 30, y);
+      ctx.lineTo(W - marginR + 22, y + 4);
+      ctx.moveTo(marginL - 30, y);
+      ctx.lineTo(marginL - 22, y - 4);
+      ctx.moveTo(marginL - 30, y);
+      ctx.lineTo(marginL - 22, y + 4);
+      ctx.stroke();
+
+      // Open circles at finite endpoints
+      for (var j = 0; j < intervals.length; j++) {
+        var iv2 = intervals[j];
+        if (isFinite(iv2[0])) openCircle(nlX(iv2[0]), y, color);
+        if (isFinite(iv2[1])) openCircle(nlX(iv2[1]), y, color);
+      }
+    }
+    function openCircle(x, y, colorVar) {
+      ctx.beginPath();
+      ctx.arc(x, y, 6, 0, Math.PI * 2);
+      ctx.fillStyle = bg;
+      ctx.fill();
+      ctx.strokeStyle = cv(colorVar);
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
+    // Row 1: D > 0  ⇒  m ∈ (-2, 8)
+    drawRow(110, '(2) D > 0', 'm ∈ (−2, 8)', [[-2, 8]], '--sol-canvas-primary');
+
+    // Row 2: x1 x2 > 0  ⇒  m ∈ (-∞, 0) ∪ (6, +∞)
+    drawRow(180, '(3) x₁·x₂ > 0', 'm ∈ (−∞, 0) ∪ (6, +∞)', [[-Infinity, 0], [6, Infinity]], '--sol-canvas-warning');
+
+    // Row 3: m ≠ 0 (entire line minus 0)
+    drawRow(250, '(1) m ≠ 0', 'cela R \\ {0}', [[-Infinity, 0], [0, Infinity]], '--sol-canvas-tertiary');
+
+    // Row 4: presek
+    drawRow(340, 'Presek', 'm ∈ (−2, 0) ∪ (6, 8)', [[-2, 0], [6, 8]], '--sol-canvas-accent');
+
+    // Bottom row: integer m values within the union
+    var intRowY = 410;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('Celi m', marginL - 12, intRowY - 3);
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+    ctx.fillText('m ∈ {−1, 7}', marginL - 12, intRowY + 12);
+
+    // Number line for integer row
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(marginL - 30, intRowY);
+    ctx.lineTo(W - marginR + 30, intRowY);
+    ctx.stroke();
+
+    // Tick marks at every integer
+    ctx.fillStyle = text;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var im = mMin; im <= mMax; im++) {
+      var ix = nlX(im);
+      ctx.beginPath();
+      ctx.moveTo(ix, intRowY - 4);
+      ctx.lineTo(ix, intRowY + 4);
+      ctx.strokeStyle = axis;
+      ctx.stroke();
+      ctx.fillStyle = text;
+      ctx.fillText(String(im), ix, intRowY + 22);
+    }
+
+    // Highlight integers -1 and 7 with a star/circle
+    function star(x, y, sz, color) {
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      // 5-point star
+      var spikes = 5;
+      var outer = sz, inner = sz * 0.45;
+      var rot = -Math.PI / 2;
+      ctx.moveTo(x + Math.cos(rot) * outer, y + Math.sin(rot) * outer);
+      for (var s = 0; s < spikes; s++) {
+        rot += Math.PI / spikes;
+        ctx.lineTo(x + Math.cos(rot) * inner, y + Math.sin(rot) * inner);
+        rot += Math.PI / spikes;
+        ctx.lineTo(x + Math.cos(rot) * outer, y + Math.sin(rot) * outer);
+      }
+      ctx.closePath();
+      ctx.fill();
+    }
+    // glow ring + star for -1
+    [{ m: -1, label: 'm = −1' }, { m: 7, label: 'm = 7' }].forEach(function(pt) {
+      var px = nlX(pt.m);
+      ctx.beginPath();
+      ctx.arc(px, intRowY, 14, 0, Math.PI * 2);
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.25);
+      ctx.fill();
+      star(px, intRowY, 10, accent);
+      ctx.fillStyle = text;
+      ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(pt.label, px, intRowY - 18);
+    });
+
+    // Endpoint labels above number lines
+    ctx.fillStyle = text;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    [-2, 0, 6, 8].forEach(function(v) {
+      ctx.fillText(String(v), nlX(v), 56);
+    });
+
+    // Bottom caption / count
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Ukupno celih brojeva m:  2', W / 2, 500);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('(otvoreni krugovi: krajevi nisu uključeni; sva tri uslova traže stroge nejednakosti)', W / 2, 522);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Celi parametri za realne korene istog znaka kvadratne jednačine",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["kvadratna jednačina", "diskriminanta", "Vietove formule", "parametar", "znak korena"]
+}
+BRAINSPARK_META-->

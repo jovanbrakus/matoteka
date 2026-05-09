@@ -1,0 +1,589 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: evaluate ( sqrt((-2025)^2) + cuberoot((-2025)^3) ) / |-2025|.
+
+  Key facts:
+   - For real numbers: sqrt(x^2) = |x| (square root yields the non-negative value).
+     So sqrt((-2025)^2) = |-2025| = 2025.
+   - For real numbers: cuberoot(x^3) = x (cube root preserves sign because cubing is one-to-one on R).
+     So cuberoot((-2025)^3) = -2025.
+   - |-2025| = 2025.
+
+  Numerator: 2025 + (-2025) = 0.
+  Denominator: 2025.
+  Result: 0 / 2025 = 0.
+
+  Answer: C) 0.
+
+  Generalization:
+   - For any real a:
+       sqrt(a^2) + cuberoot(a^3) = |a| + a.
+     If a >= 0: |a| + a = 2a, divided by |a| = a, so the result is 2 (matches option A).
+     If a <= 0: |a| + a = -a + a = 0, divided by |a| = -a, so result is 0 (our case, since -2025 < 0).
+     If a = 0: indeterminate (0/0); but here a = -2025 != 0.
+
+  Visual idea: number line illustration of |x| (even root) vs preservation of sign by odd root.
+  Or: bar chart showing the two terms cancelling (2025 + (-2025) = 0) over denominator 2025.
+
+  We will draw a horizontal "balance" or two stacked bars:
+   - First bar at +2025 (sqrt of square)
+   - Second bar at -2025 (cube root of cube)
+   - Sum = 0
+   - Then divide by 2025 = denominator (absolute value)
+   - Final = 0.
+  Add a numeric line for the parameter "a" with marker at -2025 and the formula |a|+a, showing it equals 0 for a<=0.
+
+  Use canvas to draw two horizontal bars and the resulting zero, plus a small inset showing y = |a|+a piecewise:
+    y = 2a for a >= 0
+    y = 0 for a <= 0.
+
+  We want a static canvas - no interactivity needed (pure expression evaluation).
+</script>
+
+<h1 data-card="problem-title">Parni i neparni koreni — \( \sqrt{x^2} \) i \( \sqrt[3]{x^3} \)</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebarski izrazi sa korenima — odnos znaka i parnosti korena</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Vrednost izraza</p>
+  <div class="math-block">
+    \[ \frac{\sqrt{(-2025)^{2}} \;+\; \sqrt[3]{(-2025)^{3}}}{\,\bigl|-2025\bigr|\,} \]
+  </div>
+  <p>je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( -2 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 0 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( -1 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">
+    Trik je u <strong>parnosti korena</strong>: parni koren \( \sqrt{x^{2}} \) uvek vraća nenegativnu vrednost \( |x| \), dok neparni koren \( \sqrt[3]{x^{3}} \) zadržava znak i jednostavno daje \( x \). Zato ćemo brojilac razdvojiti na dva člana, odmah videti da se „poništavaju“, i deliti pozitivnim imeniocem \( |-2025| = 2025 \).
+  </p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Parni koren kvadrata:</strong> za svako realno \( x \) važi \( \sqrt{x^{2}} = |x| \). Drugim rečima, kvadratni koren <em>nikad nije negativan</em>, pa „guta“ znak.</li>
+        <li><strong>Neparni koren kuba:</strong> za svako realno \( x \) važi \( \sqrt[3]{x^{3}} = x \). Kubiranje je bijekcija na \( \mathbb{R} \), pa neparni koren <em>zadržava znak</em>.</li>
+        <li><strong>Apsolutna vrednost:</strong> \( |x| = \begin{cases} x, & x \geq 0 \\ -x, & x < 0 \end{cases} \). Specijalno, \( |-2025| = 2025 \).</li>
+        <li><strong>Parnost stepena pod parnim korenom:</strong> važi <em>opštija</em> formula \( \sqrt[2k]{x^{2k}} = |x| \), dok \( \sqrt[2k+1]{x^{2k+1}} = x \). Naš zadatak je instanca \( k = 1 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="700" height="600"></canvas>
+  </div>
+  <p class="canvas-caption">Gornja brojevna prava: parni koren \( \sqrt{x^{2}} \) preslikava \( -2025 \) u \( +2025 \). Donja brojevna prava: neparni koren \( \sqrt[3]{x^{3}} \) ostavlja \( -2025 \) na mestu. Sabiranjem dva člana dobijamo \( 0 \). Donji panel prikazuje funkciju \( g(a) = |a| + a \): za \( a \leq 0 \) ona je nula, za \( a \geq 0 \) raste kao \( 2a \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Pojednostavi parni koren u brojiocu</h3>
+      <p>Drugi (parni) koren kvadrata daje apsolutnu vrednost — to je posledica zahteva da koren bude nenegativan:</p>
+      <div class="math-block">
+        \[ \sqrt{(-2025)^{2}} = \bigl|-2025\bigr| = 2025. \]
+      </div>
+      <p>Da naglasimo zašto: \( (-2025)^{2} = 2025^{2} \), pa je \( \sqrt{2025^{2}} = 2025 \) (uzimamo nenegativan koren).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto NE pišemo \( \sqrt{(-2025)^{2}} = -2025 \)?</summary>
+          <div class="detail-content">
+            <p>Po definiciji, simbol \( \sqrt{\cdot} \) uvek označava <em>nenegativan</em> kvadratni koren. Kvadrat je uvek nenegativan, ali kvadratni koren tog kvadrata mora i sam biti nenegativan, što znači \( |x| \). Tačno je da i \( -2025 \) i \( 2025 \) zadovoljavaju \( y^{2} = 2025^{2} \), ali samo jedna od te dve vrednosti se zove „glavni“ kvadratni koren.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Pojednostavi neparni koren u brojiocu</h3>
+      <p>Neparni koren <em>zadržava znak</em>. Kubiranje preslikava negativne brojeve u negativne, a kubni koren ih vraća:</p>
+      <div class="math-block">
+        \[ \sqrt[3]{(-2025)^{3}} = -2025. \]
+      </div>
+      <p>Ekvivalentno: \( \sqrt[3]{x^{3}} = x \) za svako realno \( x \), bez apsolutne vrednosti.</p>
+
+      <div class="callout callout-info">
+        <p><strong>Suština:</strong> kod parnih korenova „poklopac“ \( |\cdot| \) pojede znak, kod neparnih ne. Zato \( \sqrt{x^{2}} = |x| \) ali \( \sqrt[3]{x^{3}} = x \).</p>
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliko je \( \sqrt[3]{-8} \)?</summary>
+          <div class="detail-content">
+            <p>\( \sqrt[3]{-8} = -2 \), jer je \( (-2)^{3} = -8 \). Neparni koren negativnog broja ima realnu, negativnu vrednost. Suprotno, \( \sqrt{-8} \) uopšte nije realan broj.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Saberi članove brojioca</h3>
+      <p>Sada brojilac postaje:</p>
+      <div class="math-block">
+        \[ \sqrt{(-2025)^{2}} + \sqrt[3]{(-2025)^{3}} = 2025 + (-2025) = 0. \]
+      </div>
+      <p>Dakle čitav brojilac je nula, bez obzira na to koliki je broj \( 2025 \) — efekat se „poništava“ jer parni koren preokreće znak, a neparni ne.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Pojednostavi imenilac</h3>
+      <p>Imenilac je apsolutna vrednost, dakle nije nula:</p>
+      <div class="math-block">
+        \[ \bigl|-2025\bigr| = 2025. \]
+      </div>
+      <p>Pošto imenilac jeste različit od nule, deljenje je <em>dopušteno</em> i razlomak je dobro definisan.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Sastavi razlomak</h3>
+      <div class="math-block">
+        \[ \frac{\sqrt{(-2025)^{2}} + \sqrt[3]{(-2025)^{3}}}{\bigl|-2025\bigr|} = \frac{0}{2025} = 0. \]
+      </div>
+      <p>Konačan rezultat je <span class="result">0</span>. Konkretna vrednost broja \( 2025 \) ovde uopšte nije bitna — bilo koji broj različit od nule dao bi isti rezultat.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: šta bi se desilo ako umesto \( -2025 \) imamo \( +2025 \)?</summary>
+          <div class="detail-content">
+            <p>Tada brojilac postaje \( |2025| + 2025 = 2025 + 2025 = 4050 \), a imenilac je opet \( 2025 \). Razlomak je \( \dfrac{4050}{2025} = 2 \). Vidi se da rezultat zavisi <em>od znaka</em>, a ne od veličine broja: za pozitivan ulaz dobijamo \( 2 \), za negativan \( 0 \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>
+    Razlika između <strong>parnih</strong> i <strong>neparnih</strong> korenova je suštinska:
+    \( \sqrt[\text{parno}]{x^{\text{parno}}} = |x| \), a \( \sqrt[\text{neparno}]{x^{\text{neparno}}} = x \).
+    Kada se ova dva korena sabiraju za negativno \( x \), oni se <em>tačno poništavaju</em>, jer parni koren prebaci znak iz minus u plus, a neparni ostavi minus. Posledica: za svako \( x < 0 \) brojilac je nula, pa je i ceo izraz nula. Broj \( 2025 \) je samo „dekor“ — bilo koji negativan broj dao bi isti rezultat. To je još jedan podsetnik da <em>pokazatelj korena diktira ponašanje znaka</em>.
+  </p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \frac{\sqrt{(-2025)^{2}} + \sqrt[3]{(-2025)^{3}}}{|-2025|} = \frac{2025 + (-2025)}{2025} = \frac{0}{2025} = 0 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 2 \)</span>
+    <span class="answer-option" data-option="B">(B) \( -2 \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( 0 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 1 \)</span>
+    <span class="answer-option" data-option="E">(E) \( -1 \)</span>
+  </div>
+  <p class="verification">Provera: \( \sqrt{(-2025)^{2}} = 2025 \), \( \sqrt[3]{(-2025)^{3}} = -2025 \), zbir je \( 0 \); imenilac \( |-2025| = 2025 \neq 0 \), pa razlomak iznosi \( 0 \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>„Skraćivanje“ \( \sqrt{x^{2}} = x \) bez apsolutne vrednosti:</strong> tačno samo za \( x \geq 0 \). Pravilo je \( \sqrt{x^{2}} = |x| \), pa za negativno \( x \) dobijamo \( -x \), a ne \( x \).</li>
+    <li><strong>Pretpostavka da je \( \sqrt[3]{x^{3}} = |x| \):</strong> ne. Kod neparnog korena nema apsolutne vrednosti — \( \sqrt[3]{x^{3}} = x \) za svako realno \( x \), čak i za negativno.</li>
+    <li><strong>Mešanje znaka \( -2025 \) i \( 2025 \) u brojiocu:</strong> ako previdiš da prvi član postane \( +2025 \), a drugi ostane \( -2025 \), dobićeš \( 0 \) iz pogrešnog razloga ili pogrešnu vrednost (npr. \( 2 \cdot 2025 \) ili \( -2 \cdot 2025 \)).</li>
+    <li><strong>Strah od velikog broja \( 2025 \):</strong> izraz se ne računa kalkulatorom. Konačni rezultat ne zavisi od veličine — zavisi <em>samo</em> od znaka. Trik je u strukturi izraza, ne u aritmetici.</li>
+    <li><strong>Deljenje sa nulom:</strong> da je u zadatku stajalo \( |x| \) za \( x = 0 \), izraz ne bi bio definisan. Uvek se uveri da imenilac nije nula pre nego što „prečicom“ napišeš \( 0/\text{nešto} = 0 \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Posmatraj funkciju</p>
+  <p>\[ g(a) = \frac{\sqrt{a^{2}} + \sqrt[3]{a^{3}}}{|a|} \quad \text{za } a \neq 0. \]</p>
+  <p>(a) Pojednostavi \( g(a) \) zasebno za \( a > 0 \) i za \( a < 0 \).<br>
+     (b) Da li je \( g \) neprekidna na svom domenu? Skiciraj njen grafik.</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>(a) Iskoristimo \( \sqrt{a^{2}} = |a| \) i \( \sqrt[3]{a^{3}} = a \). Tada</p>
+      <p>\( g(a) = \dfrac{|a| + a}{|a|} = 1 + \dfrac{a}{|a|} = 1 + \operatorname{sgn}(a). \)</p>
+      <p>Za \( a > 0 \): \( g(a) = 1 + 1 = 2 \). Za \( a < 0 \): \( g(a) = 1 + (-1) = 0 \). Naš zadatak je samo specijalan slučaj sa \( a = -2025 < 0 \), dakle \( g(-2025) = 0 \).</p>
+      <p>(b) \( g \) je <em>prekidna</em> u \( a = 0 \) (gde nije ni definisana), a inače je „step“ funkcija sa skokom \( 2 \) u nuli.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && (c.length === 7 || c.length === 4)) {
+      var hex = c.length === 4
+        ? '#' + c[1] + c[1] + c[2] + c[2] + c[3] + c[3]
+        : c;
+      var r = parseInt(hex.slice(1, 3), 16);
+      var g = parseInt(hex.slice(3, 5), 16);
+      var b = parseInt(hex.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Parni koren preokreće znak; neparni ga zadržava', W / 2, 26);
+
+    // ─── Top: two number lines showing the action of the two roots ───
+    var marginL = 70, marginR = 70;
+    var nlW = W - marginL - marginR;
+    var nlMinX = -3000, nlMaxX = 3000;
+    function nlToX(v) { return marginL + ((v - nlMinX) / (nlMaxX - nlMinX)) * nlW; }
+
+    function drawNumberLine(yLine, label, mapsLabel) {
+      // axis
+      ctx.strokeStyle = axis;
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(marginL, yLine);
+      ctx.lineTo(marginL + nlW, yLine);
+      ctx.stroke();
+
+      // ticks
+      ctx.fillStyle = muted;
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      var ticks = [-3000, -2025, -1000, 0, 1000, 2025, 3000];
+      for (var i = 0; i < ticks.length; i++) {
+        var tx = nlToX(ticks[i]);
+        ctx.strokeStyle = axis;
+        ctx.beginPath();
+        ctx.moveTo(tx, yLine - 5);
+        ctx.lineTo(tx, yLine + 5);
+        ctx.stroke();
+        ctx.fillText(String(ticks[i]), tx, yLine + 20);
+      }
+
+      // line label on the left
+      ctx.fillStyle = text;
+      ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(label, marginL - 12, yLine + 4);
+
+      // operation arrow caption (will be drawn separately)
+      ctx.textAlign = 'center';
+    }
+
+    var topY = 78;
+    var midY = 175;
+    drawNumberLine(topY, '−2025', 'Polazno');
+    drawNumberLine(midY, '√x²', 'Parni koren');
+
+    // Arrow from -2025 on top line to +2025 on mid line (parni koren)
+    var fromTop = { x: nlToX(-2025), y: topY };
+    var toMid   = { x: nlToX(2025),  y: midY };
+
+    // Mark -2025 on top line as the input
+    ctx.fillStyle = danger;
+    ctx.beginPath();
+    ctx.arc(fromTop.x, fromTop.y, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = danger;
+    ctx.textAlign = 'center';
+    ctx.fillText('x = −2025', fromTop.x, fromTop.y - 12);
+
+    // Arrow curve to +2025
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(fromTop.x, fromTop.y + 6);
+    ctx.bezierCurveTo(
+      fromTop.x + 60, fromTop.y + 30,
+      toMid.x - 60, toMid.y - 30,
+      toMid.x, toMid.y - 6
+    );
+    ctx.stroke();
+
+    // arrowhead at toMid
+    function arrowHead(x, y, angle, color) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(angle);
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(-9, -4);
+      ctx.lineTo(-9, 4);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+    arrowHead(toMid.x, toMid.y - 6, Math.PI / 2, primary);
+
+    // Output mark on mid line: +2025
+    ctx.fillStyle = primary;
+    ctx.beginPath();
+    ctx.arc(toMid.x, toMid.y, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('+2025', toMid.x, toMid.y - 12);
+
+    // Caption between: "√(x²) = |x|"
+    ctx.fillStyle = primary;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('√x² = |x|  →  preokreće znak', (fromTop.x + toMid.x) / 2 + 60, (fromTop.y + toMid.y) / 2 + 4);
+
+    // Third number line: cube root output
+    var botY = 272;
+    drawNumberLine(botY, '∛x³', 'Neparni koren');
+
+    // Arrow from -2025 (top) to -2025 on bottom line (neparni koren)
+    var fromTop2 = { x: nlToX(-2025), y: topY + 8 };
+    var toBot    = { x: nlToX(-2025), y: botY };
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(fromTop2.x - 16, fromTop2.y);
+    ctx.bezierCurveTo(
+      fromTop2.x - 90, fromTop2.y + 60,
+      toBot.x - 90,    toBot.y - 60,
+      toBot.x - 8,     toBot.y - 4
+    );
+    ctx.stroke();
+    arrowHead(toBot.x - 8, toBot.y - 4, Math.PI / 4, secondary);
+
+    // Output mark on bot line: -2025
+    ctx.fillStyle = secondary;
+    ctx.beginPath();
+    ctx.arc(toBot.x, toBot.y, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('−2025', toBot.x, toBot.y - 12);
+
+    ctx.fillStyle = secondary;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('∛x³ = x  →  zadržava znak', toBot.x - 110, toBot.y + 38);
+
+    // Sum line: 2025 + (-2025) = 0
+    var sumY = 348;
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.8;
+    ctx.setLineDash([5, 5]);
+    ctx.beginPath();
+    ctx.moveTo(marginL, sumY);
+    ctx.lineTo(marginL + nlW, sumY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // tick at 0
+    ctx.strokeStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(nlToX(0), sumY - 5);
+    ctx.lineTo(nlToX(0), sumY + 5);
+    ctx.stroke();
+
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(nlToX(0), sumY, 8, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('Zbir:', marginL - 12, sumY + 4);
+    ctx.textAlign = 'center';
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.fillText('(+2025) + (−2025) = 0', nlToX(0), sumY - 14);
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Zatim: 0 / |−2025| = 0 / 2025 = 0', nlToX(0), sumY + 22);
+
+    // ─── Bottom panel: function g(a) = |a| + a (small graph) ───
+    var pX0 = 70, pY0 = 410;
+    var pW = W - 140, pH = 130;
+
+    // panel background separator line
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(pX0, pY0 - 12);
+    ctx.lineTo(pX0 + pW, pY0 - 12);
+    ctx.stroke();
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Pomoćni grafik:  g(a) = |a| + a', pX0, pY0 + 4);
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('za a ≤ 0: g(a) = 0  •  za a ≥ 0: g(a) = 2a', pX0, pY0 + 22);
+    ctx.textAlign = 'center';
+
+    // Mini coordinate system inside panel
+    var miniX0 = pX0 + 320;
+    var miniY0 = pY0 + 25;
+    var miniW = 320, miniH = 90;
+    var aMin = -3, aMax = 3;
+    var gMin = 0, gMax = 6;
+    function miniToCanvas(a, gv) {
+      return {
+        x: miniX0 + ((a - aMin) / (aMax - aMin)) * miniW,
+        y: miniY0 + miniH - ((gv - gMin) / (gMax - gMin)) * miniH
+      };
+    }
+    // axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.4;
+    var aX1 = miniToCanvas(aMin, 0), aX2 = miniToCanvas(aMax, 0);
+    var aY1 = miniToCanvas(0, gMin), aY2 = miniToCanvas(0, gMax);
+    ctx.beginPath();
+    ctx.moveTo(aX1.x, aX1.y); ctx.lineTo(aX2.x, aX2.y);
+    ctx.moveTo(aY1.x, aY1.y); ctx.lineTo(aY2.x, aY2.y);
+    ctx.stroke();
+
+    // labels
+    ctx.fillStyle = muted;
+    ctx.font = '10px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('a', aX2.x + 4, aX2.y + 4);
+    ctx.fillText('g', aY2.x - 12, aY2.y - 4);
+    ctx.textAlign = 'center';
+
+    // ticks
+    for (var ai = aMin; ai <= aMax; ai++) {
+      if (ai === 0) continue;
+      var tp = miniToCanvas(ai, 0);
+      ctx.fillText(String(ai), tp.x, tp.y + 12);
+    }
+
+    // Curve: piecewise
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    var c1 = miniToCanvas(aMin, 0);
+    var c2 = miniToCanvas(0, 0);
+    ctx.moveTo(c1.x, c1.y);
+    ctx.lineTo(c2.x, c2.y);
+    var c3 = miniToCanvas(aMax, 2 * aMax);
+    ctx.lineTo(c3.x, c3.y);
+    ctx.stroke();
+
+    // mark a = -2025 (clamped at the left, since axis only goes to -3)
+    // We will instead draw a representative point at a = -2 (negative side) and a = 2 (positive side)
+    var pNeg = miniToCanvas(-2, 0);
+    ctx.fillStyle = danger;
+    ctx.beginPath();
+    ctx.arc(pNeg.x, pNeg.y, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.font = '10px Inter, system-ui, sans-serif';
+    ctx.fillStyle = danger;
+    ctx.textAlign = 'center';
+    ctx.fillText('a < 0  ⇒  g = 0', pNeg.x, pNeg.y - 8);
+
+    var pPos = miniToCanvas(2, 4);
+    ctx.fillStyle = highlight;
+    ctx.beginPath();
+    ctx.arc(pPos.x, pPos.y, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = highlight;
+    ctx.fillText('a > 0  ⇒  g = 2a', pPos.x, pPos.y - 8);
+
+    // Bottom-most footer: final formula
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Zaključak:  ( √(−2025)² + ∛(−2025)³ ) / |−2025|  =  0 / 2025  =  0', W / 2, H - 18);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Parni i neparni koren broja −2025 — vrednost izraza",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["koreni", "apsolutna vrednost", "parni koren", "neparni koren", "algebarski izrazi"]
+}
+BRAINSPARK_META-->

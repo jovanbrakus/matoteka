@@ -1,0 +1,499 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Trocifrenih brojeva čije su sve cifre različite i pripadaju skupu {1,2,3,4,5}.
+
+Tip prebrojavanja: variacije bez ponavljanja od 5 elemenata, klase 3.
+Razlog: redosled cifara stotine-desetice-jedinice je važan (123 ≠ 321) → ne kombinacije; cifre moraju biti različite → bez ponavljanja.
+
+Dva načina prebrojavanja:
+
+Metod A — Princip množenja:
+  - 1. mesto (stotine): 5 izbora (bilo koja od 5 cifara; ne brinemo o "vodećoj nuli" jer 0 nije u skupu).
+  - 2. mesto (desetice): 4 izbora (bilo koja koja nije već iskorišćena).
+  - 3. mesto (jedinice): 3 izbora.
+  Ukupno: 5 · 4 · 3 = 60.
+
+Metod B — formula varijacija:
+  V(5,3) = 5! / (5−3)! = 120 / 2 = 60.
+
+Provera presekom:
+  - Ukupno trocifrenih sa ciframa iz {1,...,5} (sa ponavljanjem dozvoljenim): 5^3 = 125 → odgovor (C). To je zamka.
+  - Brojevi sa SVIM jednakim ciframa: 5 (111, 222, ..., 555).
+  - Brojevi sa tačno dve jednake cifre: ukupno - sve_različito - sve_iste = 125 - 60 - 5 = 60.
+
+Drugi pogrešni odgovor:
+  - 120 = V(5,3) ako bi se koristila formula 5!/(5−3)! ali pogrešno se napiše kao 5! = 120 (zaboravi se podeliti sa (n-k)!).
+  - 27 = 3^3 (loš model: 3 mesta sa 3 cifre).
+  - 20 = C(5,3) → kombinacije (zanemarivanje redosleda).
+
+Tačan odgovor: (D) 60.
+
+Vizuel: stablo (tree) izbora cifre po pozicijama: koren → 5 grana stotina → svaka grana ima 4 podgrane desetica → svaka 3 lista jedinica. Istaknuti više primera trocifrenih brojeva. Drugi panel: kompaktan grid 5x4x3.
+</script>
+
+<h1 data-card="problem-title">Trocifreni brojevi sa različitim ciframa iz skupa {1,2,3,4,5}</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika — variacije bez ponavljanja, princip množenja</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Trocifrenih brojeva čije su sve cifre različite i pripadaju skupu \( \{1,2,3,4,5\} \) ima:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 27 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 120 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 125 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 60 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 20 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Identifikovaćemo da je redosled cifara bitan (123 ≠ 321) i da su cifre različite, pa imamo <em>variacije bez ponavljanja</em>. Iskoristićemo princip množenja: 5 izbora za prvu cifru, 4 za drugu i 3 za treću, što daje \( 5 \cdot 4 \cdot 3 = 60 \). Isto možemo dobiti formulom \( V(n,k) = \dfrac{n!}{(n-k)!} \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Variacije, kombinacije, princip množenja</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Princip množenja</span> Ako se neki postupak izvodi u \( k \) nezavisnih koraka, sa \( n_1, n_2, \ldots, n_k \) izbora, ukupan broj ishoda je \( n_1 \cdot n_2 \cdots n_k \).</li>
+        <li><span class="formula-label">Variacije bez ponavljanja</span> Broj uređenih izbora od \( k \) elemenata iz skupa od \( n \): \( V(n,k) = n(n-1)(n-2)\cdots(n-k+1) = \dfrac{n!}{(n-k)!} \).</li>
+        <li><span class="formula-label">Variacije sa ponavljanjem</span> \( V_p(n,k) = n^{k} \) — kada se elementi smeju ponavljati.</li>
+        <li><span class="formula-label">Kombinacije</span> \( C(n,k) = \binom{n}{k} = \dfrac{n!}{k!(n-k)!} \) — kada redosled NIJE bitan.</li>
+        <li><span class="formula-label">Kako razlikovati</span> Pitaj se: "Da li se \( 123 \) i \( 321 \) broje kao isti ili različit ishod?" Različit ⇒ variacije; isti ⇒ kombinacije.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <p>Stablo izbora pokazuje kako se broj mogućnosti smanjuje sa svakom popunjenom pozicijom: 5 grana za cifru stotina, 4 grane za desetice (jer je jedna cifra iskorišćena), pa 3 grane za jedinice. Ukupan broj listova je \( 5 \cdot 4 \cdot 3 = 60 \).</p>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-p5" width="860" height="700"></canvas>
+  </div>
+  <p class="canvas-caption">Stablo izbora: 5 izbora za prvu cifru, 4 za drugu, 3 za treću. Donji panel prikazuje kompaktan grid \( 5 \times 4 \times 3 = 60 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Identifikuj tip prebrojavanja</h3>
+      <p>Zadatak traži broj <em>uređenih</em> trojki cifara iz skupa od \( 5 \) elemenata, gde su sve tri cifre <em>različite</em>. Dva ključna pitanja:</p>
+      <ul>
+        <li>Da li je redosled važan? <strong>Da</strong> — broj \( 123 \) nije isti broj kao \( 321 \).</li>
+        <li>Da li se cifre mogu ponavljati? <strong>Ne</strong> — uslov "sve cifre različite".</li>
+      </ul>
+      <p>Dakle, koristimo <strong>variacije bez ponavljanja</strong> od \( n = 5 \) elemenata, klase \( k = 3 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Princip množenja po pozicijama</h3>
+      <p>Brojimo po pozicijama trocifrenog broja \( \overline{abc} \):</p>
+      <ul>
+        <li><strong>Cifra stotina</strong> \( a \): bilo koja od \( \{1,2,3,4,5\} \) — \( 5 \) izbora. (Bez brige za "vodeću nulu" — \( 0 \) i nije u skupu.)</li>
+        <li><strong>Cifra desetica</strong> \( b \): bilo koja koja nije \( a \) — \( 4 \) izbora.</li>
+        <li><strong>Cifra jedinica</strong> \( c \): bilo koja koja nije \( a \) ni \( b \) — \( 3 \) izbora.</li>
+      </ul>
+      <p>Princip množenja:</p>
+      <div class="math-block">
+        \[ N = 5 \cdot 4 \cdot 3 = 60. \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto se izbori množe, a ne sabiraju?</summary>
+          <div class="detail-content">
+            <p>Sabiranje koristimo kada je ishod "ili‑ili" (disjunktni slučajevi). Ovde je svaki broj kombinacija jedne cifre stotina <em>i</em> jedne cifre desetica <em>i</em> jedne cifre jedinica — sve tri biramo zajedno. Svaki od \( 5 \) izbora prve cifre dopušta \( 4 \) izbora druge, što daje \( 5 \times 4 = 20 \) parova; za svaki par \( 3 \) izbora treće cifre, ukupno \( 60 \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera formulom variacija</h3>
+      <p>Direktno preko formule:</p>
+      <div class="math-block">
+        \[ V(5,3) = \dfrac{5!}{(5-3)!} = \dfrac{5!}{2!} = \dfrac{120}{2} = 60. \]
+      </div>
+      <p>Razvijeno: \( V(5,3) = 5 \cdot 4 \cdot 3 = 60 \). Oba puta isti rezultat.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera presekom (kontrolni račun)</h3>
+      <p>Korisno upoređivanje sa ostalim ponuđenim odgovorima:</p>
+      <ul>
+        <li>Sve trocifrene sa ciframa iz \( \{1,\ldots,5\} \) <em>sa ponavljanjem dozvoljenim</em>: \( 5^{3} = 125 \) — to je zamka (C).</li>
+        <li>Brojevi sa svim jednakim ciframa: \( 5 \) (\( 111, 222, 333, 444, 555 \)).</li>
+        <li>Brojevi sa različitim ciframa: \( 125 - 5 - (\text{sa tačno dve jednake}) \). Ostatak \( 120 \) bi obuhvatio i one sa tačno dve jednake. Direktno: brojevi sa različitim ciframa = \( 60 \).</li>
+        <li>Provera: brojevi sa <em>tačno dve</em> jednake cifre ima \( 125 - 60 - 5 = 60 \), što je doslovce isti broj — još jedna potvrda.</li>
+      </ul>
+      <div class="checkpoint">
+        <details>
+          <summary>Listing nekoliko primera</summary>
+          <div class="detail-content">
+            <p>Sa ciframa \( \{1, 2, 3\} \), permutacije: \( 123, 132, 213, 231, 312, 321 \) — to je \( 3! = 6 \). Pošto biramo bilo koji 3-podskup od \( \{1,2,3,4,5\} \), takvih podskupova ima \( \binom{5}{3} = 10 \), i svaki daje \( 3! = 6 \) različitih brojeva. Ukupno \( 10 \cdot 6 = 60 \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Variacije bez ponavljanja \( V(n,k) = n(n-1)\cdots(n-k+1) \) su "padajući proizvod" počev od \( n \). Lako se dobijaju iz principa množenja "popunjavanja pozicija": svaki sledeći izbor ima jedan element manje, jer su prethodne već iskorišćene. Razlika prema kombinacijama \( \binom{n}{k} \) je faktor \( k! \) — kombinacije zanemaruju redosled, variacije ga čuvaju. Ovde je \( V(5,3) = \binom{5}{3} \cdot 3! = 10 \cdot 6 = 60 \).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ V(5,3) = 5 \cdot 4 \cdot 3 = 60. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 27 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 120 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 125 \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 60 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 20 \)</span>
+  </div>
+  <p class="verification">Provera: \( \binom{5}{3} \cdot 3! = 10 \cdot 6 = 60 \) ✓; takođe \( 125 - 5 - 60 = 60 \) (komplementaran račun) ✓.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Brojanje sa ponavljanjem (odgovor C: \( 125 \)).</strong> Ako se zaboravi uslov "sve različite", dobija se \( 5^3 = 125 \). Klasična zamka — pažljivo pročitaj uslov zadatka.</li>
+    <li><strong>Korišćenje samo \( 5! \) (odgovor B: \( 120 \)).</strong> Greška: napiše se \( V(5,3) = 5! = 120 \) bez deljenja sa \( (5-3)! = 2! \). Ispravno: \( V(5,3) = \dfrac{5!}{2!} = 60 \).</li>
+    <li><strong>Mešanje sa kombinacijama (odgovor E: \( 20 \)).</strong> \( \binom{5}{3} = 10 \), a ne \( 20 \) — ali bi neko ko zameni \( \binom{5}{3} \cdot 2 \) ili napravi sličnu grešku mogao doći do \( 20 \). U svakom slučaju, \( 20 \) je premalo: redosled cifara stvara nove brojeve.</li>
+    <li><strong>Pogrešan model \( 3^3 = 27 \) (odgovor A).</strong> Niko zapravo ne računa ovako u ovom kontekstu — ali ako se zameni "broj cifara" i "veličina skupa", greška se može desiti.</li>
+    <li><strong>Briga oko vodeće nule.</strong> Ovde nule nema u skupu, pa nije potrebno dodatno isključivati slučaj \( a = 0 \). Da je skup bio \( \{0, 1, \ldots, 5\} \), računali bismo \( 5 \cdot 5 \cdot 4 = 100 \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koliko ima trocifrenih brojeva čije su sve cifre različite i pripadaju skupu \( \{0, 1, 2, 3, 4, 5\} \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Sada moramo paziti da prva cifra (stotine) nije \( 0 \). Za stotine: \( 5 \) izbora (sve osim \( 0 \)). Za desetice: \( 5 \) izbora (preostalih \( 5 \) cifara, uključujući \( 0 \) ako nije izabrana, i bez izabrane stotine). Za jedinice: \( 4 \) izbora. Ukupno: \( 5 \cdot 5 \cdot 4 = 100 \). Alternativno: \( V(6,3) - V(5,2) = 120 - 20 = 100 \) (ukupne variacije minus one sa nulom na mestu stotina).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.indexOf('#') === 0) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-p5');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var tertiary  = cv('--sol-canvas-tertiary');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Stablo izbora cifara: 5 · 4 · 3 = 60', W / 2, 14);
+
+    // ---- TOP: TREE (showing root + 5 hundreds, then a couple of expanded branches) ----
+    var rootY = 70;
+    var huY = 160;
+    var deY = 270;
+    var unY = 380;
+
+    // Root node
+    var rootX = W / 2;
+    function drawNode(x, y, r, fill, stroke, label, lblColor) {
+      ctx.fillStyle = fill;
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = lblColor;
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(label, x, y);
+    }
+
+    drawNode(rootX, rootY, 22, cvAlpha('--sol-canvas-accent', 0.25), accent, '·', accent);
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('start', rootX + 28, rootY);
+
+    // Stage labels (left column)
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('stotine (5 izbora)', 110, huY);
+    ctx.fillText('desetice (4 izbora)', 110, deY);
+    ctx.fillText('jedinice (3 izbora)', 110, unY);
+
+    // 5 hundreds nodes spanning width
+    var huXs = [];
+    var huLeft = 140, huRight = W - 60;
+    for (var i = 0; i < 5; i++) {
+      var x = huLeft + (huRight - huLeft) * i / 4;
+      huXs.push(x);
+    }
+    var labels = ['1', '2', '3', '4', '5'];
+    var huColors = [primary, secondary, accent, highlight, tertiary];
+
+    // Edges from root to hundreds
+    for (var i = 0; i < 5; i++) {
+      ctx.strokeStyle = cvAlpha('--sol-canvas-grid', 0.9);
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(rootX, rootY + 22);
+      ctx.lineTo(huXs[i], huY - 18);
+      ctx.stroke();
+    }
+    // Hundreds nodes
+    for (var i = 0; i < 5; i++) {
+      drawNode(huXs[i], huY, 18, cvAlpha(
+        i === 0 ? '--sol-canvas-primary' :
+        i === 1 ? '--sol-canvas-secondary' :
+        i === 2 ? '--sol-canvas-accent' :
+        i === 3 ? '--sol-canvas-highlight' : '--sol-canvas-tertiary',
+        0.25
+      ), huColors[i], labels[i], huColors[i]);
+    }
+
+    // Expand branches "1" and "5" (first and last) to show 4 → 3
+    function expandBranch(huIdx, deDigits, branchColor) {
+      var huX = huXs[huIdx];
+      // 4 deceties nodes around huX
+      var deCount = deDigits.length;
+      var span = 110;
+      var deXs = [];
+      for (var j = 0; j < deCount; j++) {
+        var x = huX - span / 2 + span * j / (deCount - 1);
+        deXs.push(x);
+      }
+      // edges hu -> de
+      for (var j = 0; j < deCount; j++) {
+        ctx.strokeStyle = cvAlpha(
+          huIdx === 0 ? '--sol-canvas-primary' :
+          huIdx === 4 ? '--sol-canvas-tertiary' : '--sol-canvas-grid',
+          0.7
+        );
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(huX, huY + 18);
+        ctx.lineTo(deXs[j], deY - 13);
+        ctx.stroke();
+      }
+      // de nodes
+      for (var j = 0; j < deCount; j++) {
+        drawNode(deXs[j], deY, 13, cvAlpha(
+          huIdx === 0 ? '--sol-canvas-primary' : '--sol-canvas-tertiary', 0.18
+        ), branchColor, deDigits[j], branchColor);
+      }
+      // expand only first deceties branch fully (3 unities)
+      var firstDeX = deXs[0];
+      var firstDeDig = deDigits[0];
+      var unDigits = [];
+      var allDigs = ['1','2','3','4','5'];
+      var huDig = labels[huIdx];
+      for (var k = 0; k < allDigs.length; k++) {
+        if (allDigs[k] !== huDig && allDigs[k] !== firstDeDig) unDigits.push(allDigs[k]);
+      }
+      // 3 unities under firstDeX
+      var unCount = unDigits.length;
+      var unSpan = 80;
+      for (var k = 0; k < unCount; k++) {
+        var ux = firstDeX - unSpan / 2 + unSpan * k / (unCount - 1);
+        ctx.strokeStyle = cvAlpha(
+          huIdx === 0 ? '--sol-canvas-primary' : '--sol-canvas-tertiary', 0.6
+        );
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(firstDeX, deY + 13);
+        ctx.lineTo(ux, unY - 11);
+        ctx.stroke();
+        drawNode(ux, unY, 11, cvAlpha(
+          huIdx === 0 ? '--sol-canvas-primary' : '--sol-canvas-tertiary', 0.12
+        ), branchColor, unDigits[k], branchColor);
+        // 3-digit number label
+        ctx.fillStyle = muted;
+        ctx.font = '10px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.fillText(huDig + firstDeDig + unDigits[k], ux, unY + 14);
+      }
+      // mark "..." for other deceties branches
+      for (var j = 1; j < deCount; j++) {
+        ctx.fillStyle = muted;
+        ctx.font = '11px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.fillText('...', deXs[j], deY + 16);
+      }
+    }
+    // Expand branch "1" -> deceties {2,3,4,5}
+    expandBranch(0, ['2','3','4','5'], primary);
+    // Expand branch "5" -> deceties {1,2,3,4}
+    expandBranch(4, ['1','2','3','4'], tertiary);
+
+    // For middle hundreds, just show "..." indicator
+    for (var i = 1; i <= 3; i++) {
+      ctx.fillStyle = muted;
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText('...', huXs[i], huY + 24);
+    }
+
+    // ---- BOTTOM: 5 x 4 x 3 grid summary ----
+    var gridY = 470;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Princip množenja: po pozicijama', W / 2, gridY);
+
+    // Three "slot" rows
+    var slotY1 = gridY + 30;
+    var slotY2 = gridY + 90;
+    var slotY3 = gridY + 150;
+    var slotXs = [W / 2 - 220, W / 2, W / 2 + 220];
+    function slotBox(x, y, count, color, label) {
+      var bw = 160, bh = 44;
+      ctx.fillStyle = cvAlpha(
+        color === primary ? '--sol-canvas-primary' :
+        color === secondary ? '--sol-canvas-secondary' : '--sol-canvas-accent',
+        0.18
+      );
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.rect(x - bw / 2, y - bh / 2, bw, bh);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = color;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(label + ': ' + count, x, y);
+    }
+    slotBox(slotXs[0], slotY1 + 22, 5, primary, 'stotine');
+    slotBox(slotXs[1], slotY1 + 22, 4, secondary, 'desetice');
+    slotBox(slotXs[2], slotY1 + 22, 3, accent, 'jedinice');
+
+    // multiplication symbols
+    ctx.fillStyle = text;
+    ctx.font = 'bold 22px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('×', (slotXs[0] + slotXs[1]) / 2, slotY1 + 22);
+    ctx.fillText('×', (slotXs[1] + slotXs[2]) / 2, slotY1 + 22);
+
+    // Result strip
+    var resY = slotY1 + 90;
+    var stripW = 380;
+    var stripX = W / 2 - stripW / 2;
+    ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.18);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.rect(stripX, resY - 22, stripW, 44);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('5 · 4 · 3  =  60', W / 2, resY);
+
+    // Note about V(5,3)
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('= V(5, 3) = 5! / 2! = 120 / 2 = 60', W / 2, resY + 28);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Trocifreni brojevi sa različitim ciframa iz petočlanog skupa",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["variacije bez ponavljanja", "princip množenja", "kombinatorika cifara", "permutacije", "prebrojavanje"]
+}
+BRAINSPARK_META-->

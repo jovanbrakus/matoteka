@@ -1,0 +1,625 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Jednačina x^2 + mx + 1 = 0 ima realne korene x1, x2 takve da je
+x1/x2 + x2/x1 < 7 ako i samo ako (?).
+
+Korak 1: Vietove formule. Iz x^2 + mx + 1 = 0:
+s = x1 + x2 = -m
+p = x1*x2 = 1
+
+Korak 2: Uslov realnih korena (diskriminanta).
+D = m^2 - 4 ≥ 0 ⇔ m^2 ≥ 4 ⇔ |m| ≥ 2.
+
+Korak 3: Simetrični izraz.
+x1/x2 + x2/x1 = (x1^2 + x2^2) / (x1*x2)
+              = ((x1+x2)^2 - 2*x1*x2) / (x1*x2)
+              = (s^2 - 2p) / p
+              = ((-m)^2 - 2*1) / 1
+              = m^2 - 2.
+
+Korak 4: Uslov nejednakosti.
+m^2 - 2 < 7 ⇔ m^2 < 9 ⇔ |m| < 3.
+
+Korak 5: Spoj uslova.
+|m| ≥ 2 i |m| < 3, što je 2 ≤ |m| < 3.
+
+Provera odgovora:
+(A) 2 ≤ m < 3 — propušta interval -3 < m ≤ -2.
+(B) |m| ≥ 2 — ne uključuje uslov |m| < 3.
+(C) 2 ≤ m < √7 — pogrešna granica (√7 ≈ 2,646), takođe samo pozitivna grana.
+(D) |m| > 3 — pogrešno, isključuje rešenja koja su tačna.
+(E) 2 ≤ |m| < 3 — TAČNO.
+
+Provera primerom:
+m = 2: D = 0, x1 = x2 = -1. x1/x2 + x2/x1 = 1 + 1 = 2 < 7. ✓
+m = 3: D = 5, x1,x2 = (-3 ± √5)/2. p = 1. m^2 - 2 = 7. NIJE < 7. Granica.
+m = -2,5 (|m|=2,5): D = 6,25-4 = 2,25 > 0. m^2 - 2 = 4,25 < 7. ✓
+m = -3,5 (|m|=3,5): D > 0, m^2 - 2 = 10,25 > 7. NE zadovoljava.
+
+Pedagogija: Ključ je prepoznati simetričan izraz koji se preko Vietovih svodi na funkciju od s^2 i p. I obavezno uzeti |m|, ne samo m, jer je m^2 simetrično po m → -m.
+
+Vizuelizacija: Brojevna prava sa intervalima |m| ∈ [2,3), dakle dva razdvojena intervala (-3, -2] ∪ [2, 3). Plus, mali graf m ↦ m^2 - 2 sa horizontalnom linijom y=7, da se vidi gde se seku.
+
+Idem sa STATIC vizuelizacijom: brojevna prava sa zatvorenim/otvorenim tačkama u -3, -2, 2, 3 + grafik m^2 - 2 sa y=7. Sve na jednom canvas-u — pažljivo s prostorom. Možda dva canvas-a u dve visual-aid karte da se izbegne pretrpanost. Idem sa jednim canvas-om koji ima vertikalno raspoređene segmente: gornji deo grafik m^2 - 2, donji deo brojevna prava. Visina 700px.
+
+Ipak: dva odvojena canvas-a u dve odvojene visual-aid kartice je čistije. Format dozvoljava više od jednog visual-aid bloka. Idem sa tim.
+</script>
+
+<h1 data-card="problem-title">Vietove formule i simetrični izraz u korenima</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — kvadratna jednačina sa parametrom, realnost korena i nejednakost u simetričnom izrazu</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Jednačina</p>
+  <div class="math-block">
+    \[ x^2 + mx + 1 = 0, \qquad m \in \mathbb{R} \]
+  </div>
+  <p>ima realne korene \( x_1 \) i \( x_2 \) koji zadovoljavaju uslov</p>
+  <div class="math-block">
+    \[ \dfrac{x_1}{x_2} + \dfrac{x_2}{x_1} < 7 \]
+  </div>
+  <p>ako i samo ako je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 2 \leq m < 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( |m| \geq 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 2 \leq m < \sqrt{7} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( |m| > 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 2 \leq |m| < 3 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Iz Vietovih formula očitamo zbir i proizvod korena, zatim simetrični izraz \( x_1/x_2 + x_2/x_1 \) izrazimo preko \( s^2 \) i \( p \). Posebno postavimo uslov realnosti (diskriminanta) i uslov same nejednakosti, pa presečemo dva skupa po \( m \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Vietove formule i simetrični izrazi</summary>
+    <div class="detail-content">
+      <ul>
+        <li>Za jednačinu \( ax^2 + bx + c = 0 \) sa korenima \( x_1, x_2 \): <span class="formula-label">Vietove formule</span> \( x_1 + x_2 = -\dfrac{b}{a} \), \( x_1 x_2 = \dfrac{c}{a} \).</li>
+        <li>Realnost korena: \( D = b^2 - 4ac \geq 0 \).</li>
+        <li>Često korišćen identitet: \( x_1^2 + x_2^2 = (x_1 + x_2)^2 - 2x_1 x_2 \).</li>
+        <li>Svaki simetričan polinom u \( x_1, x_2 \) može se izraziti preko \( s = x_1 + x_2 \) i \( p = x_1 x_2 \).</li>
+        <li>Specijalno: \( \dfrac{x_1}{x_2} + \dfrac{x_2}{x_1} = \dfrac{x_1^2 + x_2^2}{x_1 x_2} = \dfrac{s^2 - 2p}{p} \), pod uslovom \( p \neq 0 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — funkcija m^2 − 2">
+  <h2>📐 Vizuelni prikaz — funkcija \( m^2 - 2 \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="parabola" width="720" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Parabola \( y = m^2 - 2 \) i horizontalne prave \( y = 7 \) (gornja granica) i \( y = 2 \) (vrednost u \( m = \pm 2 \), gde počinje realnost korena). Zelena oblast pokazuje gde važe oba uslova: realnost korena (\( |m| \geq 2 \)) i sama nejednakost (\( m^2 - 2 < 7 \), tj. \( |m| < 3 \)).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — skup rešenja na brojevnoj pravoj">
+  <h2>📐 Vizuelni prikaz — skup rešenja</h2>
+  <div class="canvas-wrapper">
+    <canvas id="numberline" width="720" height="280"></canvas>
+  </div>
+  <p class="canvas-caption">Skup \( \{m : 2 \leq |m| < 3\} = (-3,\,-2] \cup [2,\,3) \) na brojevnoj pravoj. Pune tačke u \( m = -2 \) i \( m = 2 \) znače „uključeno”, prazne u \( m = -3 \) i \( m = 3 \) znače „isključeno”.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Vietove formule</h3>
+      <p>Iz \( x^2 + mx + 1 = 0 \) (vodeći koeficijent je \( 1 \)) direktno čitamo:</p>
+      <div class="math-block">
+        \[ s = x_1 + x_2 = -m, \qquad p = x_1 x_2 = 1. \]
+      </div>
+      <p>Posebno: \( p = 1 \neq 0 \), pa je deljenje sa \( x_1 x_2 \) u izrazu \( x_1/x_2 + x_2/x_1 \) bezbedno.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Uslov realnih korena</h3>
+      <p>Diskriminanta mora biti nenegativna.</p>
+      <div class="math-block">
+        \[ D = m^2 - 4 \cdot 1 \cdot 1 = m^2 - 4 \geq 0 \;\Longleftrightarrow\; m^2 \geq 4 \;\Longleftrightarrow\; |m| \geq 2. \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš \( |m| \geq 2 \), a ne \( m \geq 2 \)?</summary>
+          <div class="detail-content"><p>Iz \( m^2 \geq 4 \) sledi \( |m| \geq 2 \), što obuhvata i pozitivnu i negativnu granu: \( m \leq -2 \) ili \( m \geq 2 \). Ako bismo napisali samo \( m \geq 2 \), izgubili bismo polovinu rešenja.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Simetrični izraz preko \( s \) i \( p \)</h3>
+      <p>Sastavimo razlomke i upotrebimo identitet \( x_1^2 + x_2^2 = s^2 - 2p \).</p>
+      <div class="math-block">
+        \[ \dfrac{x_1}{x_2} + \dfrac{x_2}{x_1} \;=\; \dfrac{x_1^2 + x_2^2}{x_1 x_2} \;=\; \dfrac{s^2 - 2p}{p} \;=\; \dfrac{(-m)^2 - 2 \cdot 1}{1} \;=\; m^2 - 2. \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto se ovako uvek može izračunati simetrični izraz, bez znanja samih korena?</summary>
+          <div class="detail-content"><p>Svaki simetričan polinom (a takav je svaki izraz koji se ne menja zamenom \( x_1 \leftrightarrow x_2 \)) može se izraziti preko elementarnih simetričnih polinoma \( s \) i \( p \). Vietove formule onda direktno daju vrednost preko koeficijenata.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Uslov nejednakosti</h3>
+      <p>Postavimo \( m^2 - 2 < 7 \).</p>
+      <div class="math-block">
+        \[ m^2 - 2 < 7 \;\Longleftrightarrow\; m^2 < 9 \;\Longleftrightarrow\; |m| < 3. \]
+      </div>
+      <p>Pažnja: opet se javlja \( |m| \), a ne samo \( m \) — kvadrat ne razlikuje predznak.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Spoj oba uslova</h3>
+      <p>Tražimo \( m \) koje istovremeno zadovoljava oba uslova: realnost korena <em>i</em> nejednakost.</p>
+      <div class="compare-grid">
+        <div class="compare-left">
+          <p><strong>Uslov realnosti:</strong></p>
+          <div class="math-block">\[ |m| \geq 2 \]</div>
+        </div>
+        <div class="compare-right">
+          <p><strong>Uslov nejednakosti:</strong></p>
+          <div class="math-block">\[ |m| < 3 \]</div>
+        </div>
+      </div>
+      <p>Presek je <span class="result">\( 2 \leq |m| < 3 \)</span>, što na brojevnoj pravoj daje uniju \( (-3,\,-2] \cup [2,\,3) \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Brza provera primerima</h3>
+      <p>Probajmo nekoliko vrednosti da uverimo sebe da uslov ima oblik upravo \( 2 \leq |m| < 3 \).</p>
+      <ul>
+        <li>\( m = 2 \): \( D = 0 \), dvostruki koren \( x_1 = x_2 = -1 \). Tada \( x_1/x_2 + x_2/x_1 = 1 + 1 = 2 < 7 \). ✓</li>
+        <li>\( m = -2{,}5 \): \( D = 2{,}25 > 0 \) i \( m^2 - 2 = 4{,}25 < 7 \). ✓</li>
+        <li>\( m = 3 \): \( m^2 - 2 = 7 \). Granica nije strogo manja, pa <em>ne</em> ulazi u skup. ✗</li>
+        <li>\( m = 1 \): \( D = -3 < 0 \), nema realnih korena. ✗</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kada izraz u korenima zavisi samo od \( m^2 \) (kao ovde \( m^2 - 2 \)), odgovor je nužno simetričan po \( m \to -m \). Zato pravi opis skupa koristi <em>apsolutnu vrednost</em> \( |m| \), a ne samo pozitivnu granu \( m \). Opcije sa „\( 2 \leq m < \ldots \)” bez apsolutne vrednosti gube polovinu rešenja.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ 2 \leq |m| < 3 \;\;\Longleftrightarrow\;\; m \in (-3,\,-2] \cup [2,\,3). \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 2 \leq m < 3 \)</span>
+    <span class="answer-option" data-option="B">(B) \( |m| \geq 2 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 2 \leq m < \sqrt{7} \)</span>
+    <span class="answer-option" data-option="D">(D) \( |m| > 3 \)</span>
+    <span class="answer-option correct" data-option="E">(E) \( 2 \leq |m| < 3 \)</span>
+  </div>
+  <p class="verification">Provera krajeva: za \( m = 2 \) je \( m^2 - 2 = 2 < 7 \) i \( D = 0 \) (uključeno); za \( m = 3 \) je \( m^2 - 2 = 7 \), nejednakost nije strogo manja (isključeno). Opcije (A) i (C) gube negativnu granu, (B) ignoriše gornju granicu, (D) je suprotno tačnom skupu.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Ispustiti uslov realnosti korena. Bez \( D \geq 0 \) izraz \( x_1/x_2 + x_2/x_1 \) nema smisla nad realnim brojevima — to bi vodilo u opciju \( |m| < 3 \) bez donje granice.</li>
+    <li>Pisati samo \( m \geq 2 \) umesto \( |m| \geq 2 \) — gubi se cela negativna grana.</li>
+    <li>Pomešati granice: u opciji (C) granica \( \sqrt{7} \) potiče od pogrešnog rešavanja \( m^2 < 7 \) umesto \( m^2 < 9 \). Tačno je \( m^2 - 2 < 7 \Rightarrow m^2 < 9 \).</li>
+    <li>Zaboraviti da je granica \( m = 2 \) <em>uključena</em> (jer dvostruki koren \( x_1 = x_2 = -1 \) ipak postoji i daje \( 1 + 1 = 2 < 7 \)).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Razmotri opštiji slučaj: jednačina \( x^2 + mx + c = 0 \) sa parametrom \( c \) (umesto \( 1 \)). Koliki je tada izraz \( \dfrac{x_1}{x_2} + \dfrac{x_2}{x_1} \) preko \( m \) i \( c \)? Za koje \( m \) i \( c \) ovaj izraz iznosi tačno \( 7 \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Po Vietama: \( s = -m \), \( p = c \). Tada \( \dfrac{x_1}{x_2} + \dfrac{x_2}{x_1} = \dfrac{s^2 - 2p}{p} = \dfrac{m^2 - 2c}{c} = \dfrac{m^2}{c} - 2 \). Uslov da je to \( = 7 \) daje \( \dfrac{m^2}{c} = 9 \), tj. \( m^2 = 9c \). Naravno, treba i \( D = m^2 - 4c \geq 0 \), tj. \( 9c - 4c = 5c \geq 0 \), pa \( c \geq 0 \), a \( c \neq 0 \) zbog deljenja, dakle \( c > 0 \) i \( m = \pm 3\sqrt{c} \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  // ─── Canvas 1: parabola y = m^2 - 2 with horizontal lines y=7 and y=2 ───
+  var canvas1 = document.getElementById('parabola');
+  if (canvas1) {
+    var ctx = canvas1.getContext('2d');
+    var W = canvas1.width, H = canvas1.height;
+    var marginL = 60, marginR = 30, marginT = 50, marginB = 80;
+    var plotW = W - marginL - marginR;
+    var plotH = H - marginT - marginB;
+
+    var xMin = -4, xMax = 4;
+    var yMin = -3, yMax = 16;
+
+    function mapX(x) { return marginL + (x - xMin) / (xMax - xMin) * plotW; }
+    function mapY(y) { return marginT + plotH - (y - yMin) / (yMax - yMin) * plotH; }
+
+    function draw1() {
+      var bg        = cv('--sol-canvas-bg');
+      var grid      = cv('--sol-canvas-grid');
+      var axis      = cv('--sol-canvas-axis');
+      var primary   = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent    = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var warning   = cv('--sol-canvas-warning');
+      var text      = cv('--sol-canvas-text');
+      var muted     = cv('--sol-canvas-muted');
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      // Title
+      ctx.fillStyle = text;
+      ctx.font = '600 15px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('y = m² − 2 i prag y = 7', W / 2, 26);
+
+      // Grid
+      ctx.strokeStyle = grid;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (var xv = Math.ceil(xMin); xv <= Math.floor(xMax); xv++) {
+        ctx.moveTo(mapX(xv), marginT);
+        ctx.lineTo(mapX(xv), marginT + plotH);
+      }
+      for (var yv = Math.ceil(yMin / 2) * 2; yv <= yMax; yv += 2) {
+        ctx.moveTo(marginL, mapY(yv));
+        ctx.lineTo(marginL + plotW, mapY(yv));
+      }
+      ctx.stroke();
+
+      // Highlight green band: |m| in [2,3) where parabola lies between 2 and 7
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.18);
+      // Left band: m in (-3, -2]
+      var bLx = mapX(-3), bRx = mapX(-2);
+      ctx.fillRect(bLx, marginT, bRx - bLx, plotH);
+      // Right band: m in [2, 3)
+      bLx = mapX(2); bRx = mapX(3);
+      ctx.fillRect(bLx, marginT, bRx - bLx, plotH);
+
+      // Axes
+      ctx.strokeStyle = axis;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      var y0 = mapY(0), x0 = mapX(0);
+      ctx.moveTo(marginL, y0);
+      ctx.lineTo(marginL + plotW, y0);
+      ctx.moveTo(x0, marginT);
+      ctx.lineTo(x0, marginT + plotH);
+      ctx.stroke();
+
+      // Tick labels
+      ctx.fillStyle = muted;
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      for (var xv2 = Math.ceil(xMin); xv2 <= Math.floor(xMax); xv2++) {
+        if (xv2 === 0) continue;
+        ctx.fillText(String(xv2), mapX(xv2), y0 + 16);
+      }
+      ctx.textAlign = 'right';
+      for (var yv2 = Math.ceil(yMin / 2) * 2; yv2 <= yMax; yv2 += 2) {
+        if (yv2 === 0) continue;
+        ctx.fillText(String(yv2), x0 - 8, mapY(yv2) + 4);
+      }
+      ctx.fillText('0', x0 - 8, y0 + 4);
+
+      // Axis labels
+      ctx.fillStyle = text;
+      ctx.font = '600 12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('m', marginL + plotW + 6, y0 + 4);
+      ctx.textAlign = 'center';
+      ctx.fillText('y', x0, marginT - 12);
+
+      // Horizontal line y = 7 (threshold)
+      ctx.strokeStyle = highlight;
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6, 5]);
+      ctx.beginPath();
+      ctx.moveTo(marginL, mapY(7));
+      ctx.lineTo(marginL + plotW, mapY(7));
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = highlight;
+      ctx.font = '600 12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('y = 7  (gornja granica)', marginL + 6, mapY(7) - 8);
+
+      // Horizontal line y = 2 (value at |m|=2)
+      ctx.strokeStyle = warning;
+      ctx.lineWidth = 2;
+      ctx.setLineDash([3, 4]);
+      ctx.beginPath();
+      ctx.moveTo(marginL, mapY(2));
+      ctx.lineTo(marginL + plotW, mapY(2));
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = warning;
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText('y = 2  (vrednost u |m| = 2)', marginL + plotW - 6, mapY(2) - 6);
+
+      // Parabola y = m^2 - 2
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      var first = true;
+      for (var px = 0; px <= plotW; px++) {
+        var mv = xMin + (px / plotW) * (xMax - xMin);
+        var yv = mv * mv - 2;
+        if (yv > yMax + 1) { first = true; continue; }
+        var cx = marginL + px;
+        var cy = mapY(yv);
+        if (first) { ctx.moveTo(cx, cy); first = false; }
+        else ctx.lineTo(cx, cy);
+      }
+      ctx.stroke();
+
+      // Critical points: (-3, 7), (-2, 2), (2, 2), (3, 7)
+      function marker(mx, my, filled, color) {
+        var cx = mapX(mx), cy = mapY(my);
+        ctx.beginPath();
+        ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+        if (filled) {
+          ctx.fillStyle = color;
+          ctx.fill();
+          ctx.strokeStyle = bg;
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        } else {
+          ctx.fillStyle = bg;
+          ctx.fill();
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 2.5;
+          ctx.stroke();
+        }
+      }
+      // m = -2 and m = 2 are INCLUDED (filled)
+      marker(-2, 2, true, accent);
+      marker(2, 2, true, accent);
+      // m = -3 and m = 3 are EXCLUDED (open circles)
+      marker(-3, 7, false, highlight);
+      marker(3, 7, false, highlight);
+
+      // Legend
+      var ly = H - 38;
+      ctx.fillStyle = primary;
+      ctx.fillRect(marginL, ly, 22, 4);
+      ctx.fillStyle = text;
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('y = m² − 2', marginL + 30, ly + 6);
+
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.4);
+      ctx.fillRect(marginL + 130, ly - 2, 22, 10);
+      ctx.fillStyle = text;
+      ctx.fillText('skup rešenja po m', marginL + 160, ly + 6);
+
+      ctx.fillStyle = muted;
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Pune tačke uključene; prazne (na y = 7) isključene jer je nejednakost stroga.', W / 2, H - 14);
+    }
+    draw1();
+
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() {
+          styles = getComputedStyle(root);
+          draw1();
+        }, 50);
+      }
+    });
+  }
+
+  // ─── Canvas 2: number line with the solution set ───
+  var canvas2 = document.getElementById('numberline');
+  if (canvas2) {
+    var ctx2 = canvas2.getContext('2d');
+    var W2 = canvas2.width, H2 = canvas2.height;
+
+    function draw2() {
+      var bg        = cv('--sol-canvas-bg');
+      var axis      = cv('--sol-canvas-axis');
+      var primary   = cv('--sol-canvas-primary');
+      var accent    = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text      = cv('--sol-canvas-text');
+      var muted     = cv('--sol-canvas-muted');
+      var grid      = cv('--sol-canvas-grid');
+
+      ctx2.clearRect(0, 0, W2, H2);
+      ctx2.fillStyle = bg;
+      ctx2.fillRect(0, 0, W2, H2);
+
+      // Title
+      ctx2.fillStyle = text;
+      ctx2.font = '600 15px Inter, system-ui, sans-serif';
+      ctx2.textAlign = 'center';
+      ctx2.fillText('Skup rešenja: m ∈ (−3, −2] ∪ [2, 3)', W2 / 2, 30);
+
+      // Number line baseline
+      var lineY = 150;
+      var leftX = 60, rightX = W2 - 60;
+      var minM = -5, maxM = 5;
+      function mx(m) { return leftX + (m - minM) / (maxM - minM) * (rightX - leftX); }
+
+      // Tick lines
+      ctx2.strokeStyle = grid;
+      ctx2.lineWidth = 1;
+      ctx2.beginPath();
+      for (var i = minM; i <= maxM; i++) {
+        ctx2.moveTo(mx(i), lineY - 6);
+        ctx2.lineTo(mx(i), lineY + 6);
+      }
+      ctx2.stroke();
+
+      // Solution shaded segments
+      ctx2.fillStyle = cvAlpha('--sol-canvas-accent', 0.4);
+      // Left interval: (-3, -2]
+      ctx2.fillRect(mx(-3), lineY - 12, mx(-2) - mx(-3), 24);
+      // Right interval: [2, 3)
+      ctx2.fillRect(mx(2), lineY - 12, mx(3) - mx(2), 24);
+
+      // Main axis
+      ctx2.strokeStyle = axis;
+      ctx2.lineWidth = 2;
+      ctx2.beginPath();
+      ctx2.moveTo(leftX - 10, lineY);
+      ctx2.lineTo(rightX + 10, lineY);
+      ctx2.stroke();
+
+      // Arrowheads
+      ctx2.fillStyle = axis;
+      ctx2.beginPath();
+      ctx2.moveTo(rightX + 10, lineY);
+      ctx2.lineTo(rightX + 2, lineY - 5);
+      ctx2.lineTo(rightX + 2, lineY + 5);
+      ctx2.fill();
+      ctx2.beginPath();
+      ctx2.moveTo(leftX - 10, lineY);
+      ctx2.lineTo(leftX - 2, lineY - 5);
+      ctx2.lineTo(leftX - 2, lineY + 5);
+      ctx2.fill();
+
+      // Tick labels
+      ctx2.fillStyle = muted;
+      ctx2.font = '13px Inter, system-ui, sans-serif';
+      ctx2.textAlign = 'center';
+      for (var j = minM; j <= maxM; j++) {
+        ctx2.fillText(String(j), mx(j), lineY + 26);
+      }
+      ctx2.fillStyle = text;
+      ctx2.font = '600 13px Inter, system-ui, sans-serif';
+      ctx2.fillText('m', rightX + 20, lineY + 5);
+
+      // Mark critical points
+      function point(m, filled, color, label) {
+        var cx = mx(m);
+        ctx2.beginPath();
+        ctx2.arc(cx, lineY, 8, 0, Math.PI * 2);
+        if (filled) {
+          ctx2.fillStyle = color;
+          ctx2.fill();
+          ctx2.strokeStyle = bg;
+          ctx2.lineWidth = 2;
+          ctx2.stroke();
+        } else {
+          ctx2.fillStyle = bg;
+          ctx2.fill();
+          ctx2.strokeStyle = color;
+          ctx2.lineWidth = 2.5;
+          ctx2.stroke();
+        }
+        if (label) {
+          ctx2.fillStyle = color;
+          ctx2.font = '600 13px Inter, system-ui, sans-serif';
+          ctx2.textAlign = 'center';
+          ctx2.fillText(label, cx, lineY - 18);
+        }
+      }
+      // Filled (included): m = -2, m = 2
+      point(-2, true, accent, '−2');
+      point(2, true, accent, '2');
+      // Open (excluded): m = -3, m = 3
+      point(-3, false, highlight, '−3');
+      point(3, false, highlight, '3');
+
+      // Legend underneath
+      var legY = H2 - 40;
+      ctx2.fillStyle = accent;
+      ctx2.beginPath();
+      ctx2.arc(110, legY, 7, 0, Math.PI * 2);
+      ctx2.fill();
+      ctx2.fillStyle = text;
+      ctx2.font = '12px Inter, system-ui, sans-serif';
+      ctx2.textAlign = 'left';
+      ctx2.fillText('uključeno (granica zadovoljava uslov)', 124, legY + 4);
+
+      ctx2.fillStyle = bg;
+      ctx2.beginPath();
+      ctx2.arc(W2 / 2 + 110, legY, 7, 0, Math.PI * 2);
+      ctx2.fill();
+      ctx2.strokeStyle = highlight;
+      ctx2.lineWidth = 2.5;
+      ctx2.stroke();
+      ctx2.fillStyle = text;
+      ctx2.fillText('isključeno (granica ne zadovoljava)', W2 / 2 + 124, legY + 4);
+    }
+    draw2();
+
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() {
+          styles = getComputedStyle(root);
+          draw2();
+        }, 50);
+      }
+    });
+  }
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Vietove formule i simetrični izraz x1/x2 + x2/x1 < 7",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["Vietove formule", "kvadratna jednačina", "simetrični polinomi", "diskriminanta", "apsolutna vrednost"]
+}
+BRAINSPARK_META-->

@@ -1,0 +1,921 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+PROBLEM:
+Naći visinu H valjka maksimalne zapremine upisanog u sferu poluprečnika R.
+
+SETUP — geometrija upisanog valjka:
+  • Sfera centra O, poluprečnika R.
+  • Valjak je "pravi" (right cylinder) sa osom kroz centar O sfere (po simetriji to mora biti tako za maksimum).
+  • Označimo:
+      H = visina valjka
+      r = poluprečnik osnove valjka
+  • Aksijalni presek (presek ravni kroz osu) = pravougaonik dimenzija (2r) x H upisan u krug poluprečnika R.
+  • Dijagonala pravougaonika je prečnik kruga = 2R, dakle:
+      (2r)^2 + H^2 = (2R)^2
+      4r^2 + H^2 = 4R^2
+      r^2 = R^2 - H^2/4
+
+ZAPREMINA VALJKA:
+  V = π · r^2 · H = π (R^2 - H^2/4) · H = π R^2 H - (π/4) H^3
+
+DOMEN: H ∈ (0, 2R) — za H = 0 ili H = 2R valjak degeneriše.
+
+OPTIMIZACIJA — prvi izvod:
+  V(H) = π R^2 H - (π/4) H^3
+  V'(H) = π R^2 - (3π/4) H^2
+
+  V'(H) = 0:
+    π R^2 = (3π/4) H^2
+    R^2 = (3/4) H^2
+    H^2 = 4 R^2 / 3
+    H = 2R/√3 = 2R√3/3
+
+PROVERA — drugi izvod:
+  V''(H) = -(3π/2) H
+  Za H = 2R√3/3 > 0: V''(H) = -(3π/2)(2R√3/3) = -π R √3 < 0
+  → STRIKTNI MAKSIMUM ✓
+
+VREDNOST MAKSIMUMA (za kontekst):
+  Pri H = 2R√3/3:
+    H^2/4 = (4 R^2/3)/4 = R^2/3
+    r^2 = R^2 - R^2/3 = 2 R^2 / 3
+    V_max = π · (2 R^2/3) · (2R√3/3) = (4π R^3 √3)/9
+
+PROVERA NUMERIČKI (R = 1):
+  H = 2/√3 ≈ 1.1547
+  r^2 = 1 - 1/3 = 2/3, r ≈ 0.8165
+  V = π · (2/3) · (2/√3) = (4π)/(3√3) ≈ 2.4184
+  Probaj H = 1: V = π·(1 - 0.25)·1 = 0.75π ≈ 2.356  (manje ✓)
+  Probaj H = 1.4: V = π·(1 - 0.49)·1.4 = π·0.51·1.4 ≈ 2.243 (manje ✓)
+  → maksimum potvrđen.
+
+ODGOVOR: (A) H = 2R√3/3
+
+DISTRACTORI:
+  (B) R√2  — to je dijagonala kvadrata sa stranicom R, deluje "okruglo"
+  (C) R√2/2 — to je R/√2, polovina (B)
+  (D) R√3/3 = R/√3 — POLOVINA tačnog odgovora (zaboravljen faktor 2)
+  (E) R√3 — preveliko (više od 2R, valjak ne bi stao u sferu)
+
+PEDAGOŠKI NAGLASAK:
+  • Ključ: aksijalni presek redukuje 3D problem na 2D — pravougaonik upisan u krug.
+  • Pitagora veza r^2 + (H/2)^2 = R^2 svodi V na funkciju jedne promenljive.
+  • Tipična "calculus" optimizacija — nula prvog izvoda + provera drugim.
+  • Veza sa kockom: pri maksimumu, H : 2r = (2R/√3) : (2R√(2/3)) = 1 : √2,
+    tj. valjak nije ni "tanak ni nizak" — geometrijski ima specifične proporcije.
+
+CANVAS PLAN:
+  1. 3D-ish izometrijska sfera sa upisanim valjkom (osa vertikalna).
+  2. Aksijalni presek: krug poluprečnika R + pravougaonik 2r × H + Pitagora oznake.
+  3. Graf V(H) na [0, 2R] sa istaknutim maksimumom na H = 2R√3/3.
+</script>
+
+<h1 data-card="problem-title">Visina valjka maksimalne zapremine upisanog u sferu</h1>
+<p data-card="problem-subtitle" class="subtitle">Stereometrija i optimizacija &mdash; aksijalni presek, Pitagorina teorema, prvi izvod</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Visina valjka maksimalne zapremine upisanog u sferu poluprečnika \( R \) iznosi:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">Poluprečnik sfere</span>
+      <span class="given-value">\( R \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Tražimo</span>
+      <span class="given-value">\( H_{\max} = ? \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Uslov</span>
+      <span class="given-value">\( V(H) \to \max \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \dfrac{2R\sqrt{3}}{3} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( R\sqrt{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \dfrac{R\sqrt{2}}{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \dfrac{R\sqrt{3}}{3} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( R\sqrt{3} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Iz simetrije postavimo osu valjka kroz centar sfere i posmatrajmo aksijalni presek &mdash; tako 3D problem postaje 2D: pravougaonik dimenzija \( 2r \times H \) upisan u krug poluprečnika \( R \). Pitagorina teorema (dijagonala pravougaonika je prečnik kruga) povezuje \( r \) i \( H \), pa zapremina \( V = \pi r^2 H \) postaje funkcija samo \( H \). Onda nalazimo maksimum klasično &mdash; preko nule prvog izvoda i znaka drugog.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Zapremina valjka</span> \( V = \pi r^2 H \), gde je \( r \) poluprečnik osnove, \( H \) visina.</li>
+        <li><span class="formula-label">Aksijalni presek</span> Presek pravog valjka ravni koja sadrži njegovu osu je pravougaonik dimenzija \( 2r \times H \). Ako je valjak upisan u sferu i osa prolazi kroz centar sfere, ovaj pravougaonik je upisan u glavni krug sfere (poluprečnika \( R \)).</li>
+        <li><span class="formula-label">Pitagorina teorema u krugu</span> Dijagonala pravougaonika upisanog u krug jednaka je prečniku kruga: \( (2r)^2 + H^2 = (2R)^2 \).</li>
+        <li><span class="formula-label">Lokalni maksimum (prvi izvod)</span> Ako je \( V'(H_0) = 0 \) i \( V''(H_0) &lt; 0 \), onda \( V \) ima striktni lokalni maksimum u \( H_0 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Sfera sa upisanim valjkom">
+  <h2>📐 Sfera sa upisanim valjkom</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-3d" width="700" height="480"></canvas>
+  </div>
+  <p class="canvas-caption">Pravi valjak visine \( H \) i poluprečnika osnove \( r \) upisan u sferu poluprečnika \( R \) tako da osa valjka prolazi kroz centar sfere \( O \). Po simetriji, optimalan valjak ima ovakvu konfiguraciju.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Aksijalni presek (Pitagora)">
+  <h2>📐 Aksijalni presek (Pitagora)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-cross" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Presek ravni kroz osu valjka: pravougaonik osnove \( 2r \) i visine \( H \) upisan je u krug poluprečnika \( R \). Dijagonala pravougaonika je prečnik kruga \( 2R \), pa važi \( (2r)^2 + H^2 = (2R)^2 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavi geometriju i uvedi promenljive</h3>
+      <p>Po simetriji, valjak maksimalne zapremine upisan u sferu mora imati osu koja prolazi kroz centar sfere \( O \) (svako pomeranje smanjuje slobodu &mdash; valjak postaje "uži"). Označimo:</p>
+      <ul>
+        <li>\( H \) &mdash; visina valjka,</li>
+        <li>\( r \) &mdash; poluprečnik osnove valjka.</li>
+      </ul>
+      <p>Aksijalni presek (presek ravni koja sadrži osu) je pravougaonik dimenzija \( 2r \times H \) upisan u glavni krug sfere &mdash; krug poluprečnika \( R \) sa centrom \( O \).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je centar pravougaonika baš \( O \)?</summary>
+          <div class="detail-content">
+            <p>Zato što pravougaonik upisan u krug ima centar (presek dijagonala) koji se poklapa sa centrom kruga. A osa valjka spaja centre dveju kružnih osnova &mdash; obe leže na sferi simetrično u odnosu na \( O \), pa centar pravougaonika nužno pada u \( O \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Pitagorina veza između \( r \) i \( H \)</h3>
+      <p>Dijagonala pravougaonika upisanog u krug jednaka je prečniku kruga, dakle \( 2R \). Posmatrajmo pravougli trougao u pola pravougaonika sa katetama \( r \) i \( H/2 \) i hipotenuzom \( R \) (poluprečnik sfere povučen do gornjeg ugla pravougaonika):</p>
+      <div class="math-block">\[ r^2 + \left( \frac{H}{2} \right)^2 = R^2 \]</div>
+      <p>Odavde izrazimo \( r^2 \) preko \( H \):</p>
+      <div class="math-block">\[ r^2 = R^2 - \frac{H^2}{4} \]</div>
+      <p>Uslov \( r^2 \ge 0 \) daje \( H \in [0, 2R] \), a za nedegenerisani valjak \( H \in (0, 2R) \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Zapremina kao funkcija jedne promenljive</h3>
+      <p>Zapremina valjka je \( V = \pi r^2 H \). Zamenom izraza iz koraka 2:</p>
+      <div class="math-block">\[ V(H) = \pi \left( R^2 - \frac{H^2}{4} \right) H = \pi R^2 H - \frac{\pi}{4} H^3 \]</div>
+      <p>To je polinom trećeg stepena u \( H \) (za fiksno \( R \)). Tražimo maksimum na intervalu \( (0, 2R) \).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koje vrednosti uzima \( V \) na rubovima domena?</summary>
+          <div class="detail-content">
+            <p>\( V(0) = 0 \) (visina nula &mdash; nema valjka) i \( V(2R) = \pi (R^2 - R^2) \cdot 2R = 0 \) (poluprečnik nula &mdash; valjak je samo prečnik). Pošto je \( V \) neprekidna i pozitivna unutar otvorenog intervala, maksimum je u nekoj unutrašnjoj tački &mdash; tu nam izvod pomaže.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Prvi izvod i kritična tačka</h3>
+      <p>Diferenciranje po \( H \) (\( R \) je konstanta):</p>
+      <div class="math-block">\[ V'(H) = \pi R^2 - \frac{3\pi}{4} H^2 \]</div>
+      <p>Postavimo \( V'(H) = 0 \) i rešimo:</p>
+      <div class="math-block">\[ \pi R^2 = \frac{3\pi}{4} H^2 \;\Longleftrightarrow\; H^2 = \frac{4 R^2}{3} \;\Longleftrightarrow\; H = \frac{2R}{\sqrt{3}} \]</div>
+      <p>Racionalizacijom imenioca:</p>
+      <div class="math-block">\[ H = \frac{2R}{\sqrt{3}} \cdot \frac{\sqrt{3}}{\sqrt{3}} = \frac{2R\sqrt{3}}{3} \]</div>
+      <p>Pošto tražimo pozitivnu visinu, uzimamo samo pozitivan koren. Vrednost \( H = \dfrac{2R\sqrt{3}}{3} \approx 1{,}155\,R \) leži unutar \( (0, 2R) \), pa je validna.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera drugog izvoda &mdash; jeste maksimum</h3>
+      <p>Drugi izvod:</p>
+      <div class="math-block">\[ V''(H) = -\frac{3\pi}{2} H \]</div>
+      <p>Za \( H = \dfrac{2R\sqrt{3}}{3} &gt; 0 \) imamo \( V''(H) &lt; 0 \), što potvrđuje da je u toj tački striktni lokalni maksimum. Pošto je \( V \) neprekidna na \( [0, 2R] \) i jednaka nuli na rubovima, ovo je i globalni maksimum.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kolika je odgovarajuća zapremina \( V_{\max} \)?</summary>
+          <div class="detail-content">
+            <p>Pri \( H = \dfrac{2R\sqrt{3}}{3} \): \( H^2/4 = R^2/3 \), pa \( r^2 = R^2 - R^2/3 = \dfrac{2R^2}{3} \). Tada:</p>
+            <p>\( V_{\max} = \pi \cdot \dfrac{2R^2}{3} \cdot \dfrac{2R\sqrt{3}}{3} = \dfrac{4\pi R^3 \sqrt{3}}{9} \).</p>
+            <p>To je oko \( 0{,}77 \) zapremine sfere &mdash; valjak "popunjava" oko 77% sfere svojom zapreminom (zapremina sfere je \( \tfrac{4}{3}\pi R^3 \)).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Numerička provera (slučaj \( R = 1 \))</h3>
+      <p>Stavimo \( R = 1 \) i probajmo nekoliko vrednosti \( H \) u izrazu \( V(H) = \pi H \left(1 - \dfrac{H^2}{4}\right) \):</p>
+      <div class="math-block">\[ \begin{array}{c|c} H & V(H)/\pi \\ \hline 0{,}8 & 0{,}672 \\ 1{,}0 & 0{,}750 \\ \mathbf{1{,}1547} & \mathbf{0{,}7698} \\ 1{,}3 & 0{,}7508 \\ 1{,}6 & 0{,}576 \end{array} \]</div>
+      <p>Maksimum se postiže baš oko \( H \approx 1{,}1547 \approx \dfrac{2\sqrt{3}}{3} \) &mdash; tačno kao što tvrdi formula.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="visual-aid" data-title="Graf zapremine V(H)">
+  <h2>📐 Graf zapremine \( V(H) \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-vh" width="700" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Funkcija \( V(H) = \pi H (R^2 - H^2/4) \) na \( [0, 2R] \) za \( R = 1 \). Nule su na rubovima domena, a maksimum je u \( H = \dfrac{2R\sqrt{3}}{3} \approx 1{,}1547 \).</p>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Trik koji rešava sve probleme upisivanja tela u sferu &mdash; <strong>posmatraj aksijalni presek</strong>. Za pravi valjak sa osom kroz centar sfere, presek je pravougaonik upisan u krug; veza Pitagorom \( (2r)^2 + H^2 = (2R)^2 \) odmah svodi 3D problem na funkciju jedne promenljive. Slično se rešava i konus upisan u sferu, sfera upisana u konus i mnogi drugi klasični problemi optimizacije.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ H_{\max} = \frac{2R\sqrt{3}}{3} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( \dfrac{2R\sqrt{3}}{3} \)</span>
+    <span class="answer-option" data-option="B">(B) \( R\sqrt{2} \)</span>
+    <span class="answer-option" data-option="C">(C) \( \dfrac{R\sqrt{2}}{2} \)</span>
+    <span class="answer-option" data-option="D">(D) \( \dfrac{R\sqrt{3}}{3} \)</span>
+    <span class="answer-option" data-option="E">(E) \( R\sqrt{3} \)</span>
+  </div>
+  <p class="verification">Provera: pri \( H = \dfrac{2R\sqrt{3}}{3} \) je \( V''(H) = -\pi R \sqrt{3} &lt; 0 \), što garantuje maksimum. Numerički, za \( R = 1 \) najveća zapremina \( V \approx 2{,}418 \) postiže se na \( H \approx 1{,}1547 \) &mdash; što se odlično slaže.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Mešanje \( H \) i \( H/2 \) u Pitagori:</strong> Pravougli trougao u aksijalnom preseku ima katete \( r \) i \( H/2 \) (od centra \( O \) do gornjeg ugla je polovina visine), a hipotenuzu \( R \). Ako napišete \( r^2 + H^2 = R^2 \), dobićete \( H = R\sqrt{3}/3 \) &mdash; to je distractor (D), tačno duplo manje.</li>
+    <li><strong>Zaboravljanje racionalizacije:</strong> Odgovor \( \dfrac{2R}{\sqrt{3}} \) je tačan, ali ga test daje u racionalizovanom obliku \( \dfrac{2R\sqrt{3}}{3} \). Ovo su isti brojevi; uvek pomnožite brojilac i imenilac sa \( \sqrt{3} \) ako rešenja imaju racionalisane imenioce.</li>
+    <li><strong>Optimizacija \( r \) umesto \( H \):</strong> Test traži <em>visinu</em>, a ne poluprečnik \( r \). Često se po inerciji rešava jednačina po \( r \) (ispada \( r = R\sqrt{2/3} \)), pa odgovor "ne bude u listi".</li>
+    <li><strong>Pogrešan domen:</strong> \( H \) može uzeti vrednosti iz \( (0, 2R) \), ne iz \( (0, R) \). Granica je \( 2R \) jer \( H \) je cela visina valjka, a najveća dužina kroz sferu je prečnik \( 2R \).</li>
+    <li><strong>Da je maksimum, ne minimum:</strong> Treba <em>uvek</em> potvrditi znakom drugog izvoda (ili intervalnom analizom). \( V''(H) &lt; 0 \) za pozitivno \( H \) &mdash; znak je negativan, dakle maksimum, ne minimum.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Generalizacija: pri optimalnoj visini, koliki je odnos zapremine valjka i zapremine sfere? Da li ovaj odnos zavisi od \( R \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Zapremina sfere: \( V_{\text{sfere}} = \dfrac{4}{3}\pi R^3 \). Pri optimalnoj visini smo dobili \( V_{\max} = \dfrac{4\pi R^3 \sqrt{3}}{9} \). Onda:</p>
+      <p>\( \dfrac{V_{\max}}{V_{\text{sfere}}} = \dfrac{4\pi R^3 \sqrt{3}/9}{4\pi R^3/3} = \dfrac{3\sqrt{3}}{9} = \dfrac{\sqrt{3}}{3} \approx 0{,}577 \).</p>
+      <p>Dakle valjak maksimalne zapremine "popunjava" tačno \( \dfrac{1}{\sqrt{3}} \) sfere &mdash; oko \( 57{,}7\% \) &mdash; <strong>nezavisno od \( R \)</strong>! Razlozi: kad sve dimenzije skaliraju za isti faktor, i poluprečnik valjka i visina, oba se skaliraju isto, pa se zapreminski odnos ne menja.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.charAt(0) === '#') {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-3d');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var axis      = cv('--sol-canvas-axis');
+    var warning   = cv('--sol-canvas-warning');
+
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Valjak upisan u sferu (osa kroz centar)', W/2, 30);
+
+    // Center of figure
+    var cx = W/2, cy = H/2 + 30;
+    var R = 150;          // radius of sphere on screen
+    var rCyl = 122;       // r of cylinder on screen (= R*sqrt(2/3))
+    var Hcyl = 173;       // H of cylinder on screen (= 2R/sqrt(3))
+    var ellipseFlatten = 0.32;
+
+    // Sphere as ellipse (front silhouette)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0, Math.PI * 2);
+    ctx.stroke();
+    // Sphere equator (back, dashed)
+    ctx.strokeStyle = cvAlpha('--sol-canvas-primary', 0.55);
+    ctx.lineWidth = 1.4;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, R, R * ellipseFlatten, 0, 0, Math.PI, true);
+    ctx.stroke();
+    // Sphere equator (front, solid)
+    ctx.setLineDash([]);
+    ctx.strokeStyle = cvAlpha('--sol-canvas-primary', 0.85);
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, R, R * ellipseFlatten, 0, 0, Math.PI, false);
+    ctx.stroke();
+
+    // Cylinder body
+    var cylTop = cy - Hcyl/2;
+    var cylBot = cy + Hcyl/2;
+
+    // Top ellipse fill
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.18);
+    ctx.beginPath();
+    ctx.ellipse(cx, cylTop, rCyl, rCyl * ellipseFlatten, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // Top ellipse outline
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.ellipse(cx, cylTop, rCyl, rCyl * ellipseFlatten, 0, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Side lines of cylinder (front)
+    ctx.beginPath();
+    ctx.moveTo(cx - rCyl, cylTop);
+    ctx.lineTo(cx - rCyl, cylBot);
+    ctx.moveTo(cx + rCyl, cylTop);
+    ctx.lineTo(cx + rCyl, cylBot);
+    ctx.stroke();
+
+    // Cylinder side fill (subtle)
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.10);
+    ctx.beginPath();
+    ctx.moveTo(cx - rCyl, cylTop);
+    ctx.lineTo(cx + rCyl, cylTop);
+    ctx.lineTo(cx + rCyl, cylBot);
+    ctx.lineTo(cx - rCyl, cylBot);
+    ctx.closePath();
+    ctx.fill();
+
+    // Bottom ellipse — back half dashed
+    ctx.strokeStyle = cvAlpha('--sol-canvas-accent', 0.55);
+    ctx.lineWidth = 1.6;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.ellipse(cx, cylBot, rCyl, rCyl * ellipseFlatten, 0, 0, Math.PI, true);
+    ctx.stroke();
+    // Bottom ellipse — front half solid
+    ctx.setLineDash([]);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.ellipse(cx, cylBot, rCyl, rCyl * ellipseFlatten, 0, 0, Math.PI, false);
+    ctx.stroke();
+
+    // Vertical axis through center
+    ctx.strokeStyle = cvAlpha('--sol-canvas-axis', 0.7);
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([2, 4]);
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - R - 8);
+    ctx.lineTo(cx, cy + R + 8);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Center O
+    ctx.fillStyle = text;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('O', cx + 7, cy + 4);
+
+    // Radius R from O to sphere top-right at 35°
+    var theta = Math.PI / 4.5;
+    var rx = cx + R * Math.cos(theta);
+    var ry = cy - R * Math.sin(theta);
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(rx, ry);
+    ctx.stroke();
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('R', (cx + rx)/2 + 6, (cy + ry)/2 - 2);
+
+    // H label (left of cylinder)
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(cx - rCyl - 30, cylTop);
+    ctx.lineTo(cx - rCyl - 30, cylBot);
+    // arrows
+    ctx.moveTo(cx - rCyl - 35, cylTop + 7);
+    ctx.lineTo(cx - rCyl - 30, cylTop);
+    ctx.lineTo(cx - rCyl - 25, cylTop + 7);
+    ctx.moveTo(cx - rCyl - 35, cylBot - 7);
+    ctx.lineTo(cx - rCyl - 30, cylBot);
+    ctx.lineTo(cx - rCyl - 25, cylBot - 7);
+    ctx.stroke();
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('H', cx - rCyl - 38, cy + 5);
+
+    // r label (radius of cylinder, on top)
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.6;
+    var topY = cylTop - 10;
+    ctx.beginPath();
+    ctx.moveTo(cx, topY - 22);
+    ctx.lineTo(cx + rCyl, topY - 22);
+    // arrows
+    ctx.moveTo(cx + 7, topY - 27);
+    ctx.lineTo(cx, topY - 22);
+    ctx.lineTo(cx + 7, topY - 17);
+    ctx.moveTo(cx + rCyl - 7, topY - 27);
+    ctx.lineTo(cx + rCyl, topY - 22);
+    ctx.lineTo(cx + rCyl - 7, topY - 17);
+    ctx.stroke();
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('r', cx + rCyl/2, topY - 27);
+
+    // Legend at bottom
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('— sfera (poluprečnik R)', 30, H - 50);
+    ctx.fillStyle = accent;
+    ctx.fillText('— valjak (visina H, poluprečnik r)', 30, H - 30);
+    ctx.fillStyle = warning;
+    ctx.fillText('— poluprečnik R', 360, H - 50);
+    ctx.fillStyle = secondary;
+    ctx.fillText('— oznaka visine H', 360, H - 30);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.charAt(0) === '#') {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-cross');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var axis      = cv('--sol-canvas-axis');
+    var warning   = cv('--sol-canvas-warning');
+
+    var W = canvas.width, Hc = canvas.height;
+    ctx.clearRect(0, 0, W, Hc);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, Hc);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Aksijalni presek: pravougaonik upisan u krug', W/2, 30);
+
+    // Geometry: at optimum H = 2R/√3, 2r = 2R√(2/3)
+    var cx = W/2, cy = Hc/2 + 20;
+    var R = 175;            // px
+    var rCyl = R * Math.sqrt(2/3);   // ≈ 142.9
+    var hHalf = R / Math.sqrt(3);    // = H/2 ≈ 101
+
+    // Circle (sphere cross-section)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Rectangle (cylinder cross-section)
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.16);
+    ctx.fillRect(cx - rCyl, cy - hHalf, 2*rCyl, 2*hHalf);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.2;
+    ctx.strokeRect(cx - rCyl, cy - hHalf, 2*rCyl, 2*hHalf);
+
+    // Diagonals of rectangle (= diameter of circle)
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 1.6;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(cx - rCyl, cy - hHalf);
+    ctx.lineTo(cx + rCyl, cy + hHalf);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Right triangle highlighted: from O to (rCyl, -hHalf) — radius = R
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + rCyl, cy);    // along base — r
+    ctx.lineTo(cx + rCyl, cy - hHalf); // up — H/2
+    ctx.lineTo(cx, cy);            // back via hypotenuse — R
+    ctx.stroke();
+
+    // Right-angle marker at (rCyl, 0)
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 1.4;
+    var sq = 11;
+    ctx.beginPath();
+    ctx.moveTo(cx + rCyl - sq, cy);
+    ctx.lineTo(cx + rCyl - sq, cy - sq);
+    ctx.lineTo(cx + rCyl, cy - sq);
+    ctx.stroke();
+
+    // Center O
+    ctx.fillStyle = text;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('O', cx - 7, cy + 5);
+
+    // Label r along base
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('r', cx + rCyl/2, cy + 18);
+
+    // Label H/2 along right edge
+    ctx.textAlign = 'left';
+    ctx.fillText('H/2', cx + rCyl + 7, cy - hHalf/2 + 5);
+
+    // Label R on hypotenuse
+    ctx.fillStyle = warning;
+    ctx.fillText('R', cx + rCyl/2 - 18, cy - hHalf/2 - 4);
+
+    // Label 2R (diameter via diagonal of rectangle)
+    ctx.fillStyle = highlight;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('dijagonala = 2R', cx + 75, cy + hHalf - 12);
+
+    // Label 2r on top edge
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.fillText('2r', cx, cy - hHalf - 8);
+    // H on left edge
+    ctx.fillStyle = secondary;
+    ctx.textAlign = 'right';
+    ctx.fillText('H', cx - rCyl - 8, cy + 5);
+
+    // Pythagoras identity at the bottom
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('r² + (H/2)² = R²', cx, Hc - 50);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('(Pitagorina teorema u žuto označenom pravouglom trouglu)', cx, Hc - 28);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.charAt(0) === '#') {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-vh');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    var W = canvas.width, Hc = canvas.height;
+    ctx.clearRect(0, 0, W, Hc);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, Hc);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('V(H) = π H (R² − H²/4)   za R = 1', W/2, 30);
+
+    // Plot bounds: H ∈ [0, 2.2], V/π ∈ [0, ~0.85]
+    var leftMargin = 80;
+    var rightMargin = 30;
+    var topMargin = 60;
+    var bottomMargin = 110;
+    var plotW = W - leftMargin - rightMargin;
+    var plotH = Hc - topMargin - bottomMargin;
+
+    var Hmin = 0, Hmax = 2.2;
+    var Vmin = 0, Vmax = 0.85;
+
+    function tx(h) { return leftMargin + (h - Hmin) / (Hmax - Hmin) * plotW; }
+    function ty(v) { return topMargin + plotH - (v - Vmin) / (Vmax - Vmin) * plotH; }
+
+    // Grid (light)
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var i = 0; i <= 11; i++) {
+      var hv = Hmin + (Hmax - Hmin) * i / 11;
+      ctx.beginPath();
+      ctx.moveTo(tx(hv), topMargin);
+      ctx.lineTo(tx(hv), topMargin + plotH);
+      ctx.stroke();
+    }
+    for (var j = 0; j <= 8; j++) {
+      var vv = Vmin + (Vmax - Vmin) * j / 8;
+      ctx.beginPath();
+      ctx.moveTo(leftMargin, ty(vv));
+      ctx.lineTo(leftMargin + plotW, ty(vv));
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(leftMargin, topMargin);
+    ctx.lineTo(leftMargin, topMargin + plotH);
+    ctx.lineTo(leftMargin + plotW, topMargin + plotH);
+    ctx.stroke();
+
+    // Domain shaded region [0, 2R = 2]
+    ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.06);
+    ctx.fillRect(tx(0), topMargin, tx(2) - tx(0), plotH);
+
+    // Mark H = 2R = 2 with dashed line (boundary of domain)
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 1.4;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(tx(2), topMargin);
+    ctx.lineTo(tx(2), topMargin + plotH);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Function curve: V/π = H(1 - H²/4) for H in [0, 2]
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    var first = true;
+    for (var k = 0; k <= 200; k++) {
+      var h = 0 + (2 - 0) * k / 200;
+      var v = h * (1 - h*h/4);
+      if (v < 0) v = 0;
+      if (first) { ctx.moveTo(tx(h), ty(v)); first = false; }
+      else ctx.lineTo(tx(h), ty(v));
+    }
+    ctx.stroke();
+
+    // Maximum point
+    var Hopt = 2 / Math.sqrt(3);            // ≈ 1.1547
+    var Vopt = Hopt * (1 - Hopt*Hopt/4);    // = (4/(3√3))/π·π = 4√3/9 ≈ 0.7698
+
+    // Vertical line at Hopt
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.8;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(tx(Hopt), topMargin + plotH);
+    ctx.lineTo(tx(Hopt), ty(Vopt));
+    ctx.stroke();
+    // Horizontal line at Vopt
+    ctx.beginPath();
+    ctx.moveTo(leftMargin, ty(Vopt));
+    ctx.lineTo(tx(Hopt), ty(Vopt));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Maximum dot
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(tx(Hopt), ty(Vopt), 7, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = bg;
+    ctx.beginPath();
+    ctx.arc(tx(Hopt), ty(Vopt), 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Maximum label
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('maksimum: V/π ≈ 0,770', tx(Hopt) + 12, ty(Vopt) - 8);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('na H = 2√3/3 ≈ 1,155', tx(Hopt) + 12, ty(Vopt) + 8);
+
+    // Endpoints (V = 0)
+    ctx.fillStyle = highlight;
+    ctx.beginPath();
+    ctx.arc(tx(0), ty(0), 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(tx(2), ty(0), 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('V(0)=0', tx(0) + 6, ty(0) + 18);
+    ctx.textAlign = 'right';
+    ctx.fillText('V(2R)=0', tx(2) - 6, ty(0) - 8);
+
+    // X-axis labels
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    var xticks = [0, 0.5, 1.0, Hopt, 1.5, 2.0];
+    var xlabels = ['0', '0,5', '1', '2R/√3', '1,5', '2R'];
+    for (var t = 0; t < xticks.length; t++) {
+      var xpx = tx(xticks[t]);
+      ctx.strokeStyle = axis;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(xpx, topMargin + plotH);
+      ctx.lineTo(xpx, topMargin + plotH + 5);
+      ctx.stroke();
+      ctx.fillStyle = (t === 3) ? accent : text;
+      ctx.font = (t === 3) ? 'bold 12px Inter, system-ui' : '12px Inter, system-ui';
+      ctx.fillText(xlabels[t], xpx, topMargin + plotH + 22);
+    }
+
+    // Y-axis labels
+    ctx.fillStyle = text;
+    ctx.textAlign = 'right';
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    var yticks = [0, 0.2, 0.4, 0.6, Vopt, 0.85];
+    var ylabels = ['0', '0,2', '0,4', '0,6', '0,77', ''];
+    for (var u = 0; u < yticks.length; u++) {
+      if (!ylabels[u]) continue;
+      var ypx = ty(yticks[u]);
+      ctx.strokeStyle = axis;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(leftMargin - 5, ypx);
+      ctx.lineTo(leftMargin, ypx);
+      ctx.stroke();
+      ctx.fillStyle = (u === 4) ? accent : text;
+      ctx.font = (u === 4) ? 'bold 12px Inter, system-ui' : '12px Inter, system-ui';
+      ctx.fillText(ylabels[u], leftMargin - 8, ypx + 4);
+    }
+
+    // Axis names
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('H  (visina valjka)', leftMargin + plotW / 2, Hc - 65);
+    ctx.save();
+    ctx.translate(20, topMargin + plotH/2);
+    ctx.rotate(-Math.PI/2);
+    ctx.fillText('V(H) / π', 0, 0);
+    ctx.restore();
+
+    // Bottom note
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('V′(H) = π R² − (3π/4) H² = 0  ⇒  H = 2R/√3 = 2R√3/3', W/2, Hc - 35);
+    ctx.fillText('Domen: H ∈ [0, 2R] (žuto). Na rubovima V = 0; maksimum unutar.', W/2, Hc - 18);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Visina valjka maksimalne zapremine upisanog u sferu",
+  "subject": "math",
+  "unit": "calculus",
+  "topic_tags": ["optimizacija", "stereometrija", "sfera", "valjak", "izvod", "ekstremi", "Pitagorina teorema", "aksijalni presek"]
+}
+BRAINSPARK_META-->

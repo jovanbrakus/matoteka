@@ -1,0 +1,405 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Broj načina da se u niz poređaju n nula i k jedinica (k < n+1), tako da nikoje dve jedinice nisu susedne.
+
+(A) (n+1)!/k!
+(B) C(n+1, k)
+(C) (n+1)!/(k!(n+1-k)!)
+(D) n!/(k!(n-k)!)
+(E) (n+1)!/(k!(n-k)!)
+
+Tačan odgovor: C.
+
+Strategija ("metod razmaka"): postavi prvih n nula u red. To stvara n+1 mesta — n-1 unutrašnjih razmaka između susednih nula i 2 krajnja mesta (pre prve nule i posle poslednje). Ako u svako od tih mesta stavimo najviše jednu jedinicu, garantovano je da nikoje dve jedinice nisu susedne (svaki par jedinica razdvaja bar jedna nula).
+
+Treba izabrati k od n+1 mesta za jedinice — broj načina je C(n+1, k).
+
+Uslov k < n+1 je upravo uslov da je C(n+1, k) > 0 (možemo izabrati k mesta od n+1 dostupnih). Inače (kad je k = n+1) imamo tačno jedan način (svako od n+1 mesta dobija po jednu jedinicu); kada je k > n+1, ne postoji raspored.
+
+Eksplicitno: C(n+1, k) = (n+1)! / (k!(n+1-k)!).
+
+NAPOMENA: opcije B i C su matematički ekvivalentne (notacija C(n+1,k) je samo skraćenica za isti binomni koeficijent). U zvaničnom rešenju je tačan odgovor označen kao C jer to je eksplicitan oblik (n+1)!/(k!(n+1-k)!). Treba to objasniti u rešenju, ali označiti C kao tačan.
+
+Ostali su pogrešni:
+(A) (n+1)!/k! — broj uređenih nizova ako bi se birali pozicije sa k uređenih jedinica iz n+1 (permutacije od n+1 dužine k); ovde su jedinice međusobno identične, pa se deli sa još k!.
+(D) n!/(k!(n-k)!) = C(n, k) — bira mesta od n nula umesto n+1, što ignoriše krajeve.
+(E) (n+1)!/(k!(n-k)!) — sintaktička zamka; nije pravi binomni koeficijent.
+
+Provera primerima:
+n=3, k=2: C(4,2) = 6. Nizovi sa 3 nule i 2 jedinice gde 1-1 nisu susedne: ukupno 5C2 = 10 nizova; oni gde su jedinice susedne — tretiraj 11 kao blok, pa imamo 4 elementa (000 + 11), broj = 4!/(3!·1!) = 4. Validnih = 10 - 4 = 6 ✓.
+
+n=2, k=1: C(3,1) = 3. Nizovi 0 0 sa 1 jedinicom: 100, 010, 001. Tri rasporeda, sve nesusedne (samo jedna jedinica) ✓.
+
+n=4, k=2: C(5,2) = 10. Lakše: ukupno 6C2 = 15 rasporeda; sa 11 kao blok: 5 elemenata (0000 + 11), 5 rasporeda. 15 - 5 = 10 ✓.
+</script>
+
+<h1 data-card="problem-title">Broj nizova nula i jedinica bez susednih jedinica</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorički „metod razmaka” i binomni koeficijent</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>Tekst zadatka</h2>
+  <p>Broj načina na koje se mogu poređati u niz \( n \) nula i \( k \) jedinica (\( k < n+1 \)), tako da nikoje dve jedinice nisu susedne, je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \dfrac{(n+1)!}{k!} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \dbinom{n+1}{k} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \dfrac{(n+1)!}{k!\,(n+1-k)!} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \dfrac{n!}{k!\,(n-k)!} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \dfrac{(n+1)!}{k!\,(n-k)!} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>Plan rešavanja</h2>
+  <p class="plan-text">Iskoristićemo standardan kombinatorički trik poznat kao <em>metod razmaka</em> (engl. „stars and bars” varijanta sa zabranom susednosti). Najpre fiksiramo \( n \) nula u red — one stvaraju tačno \( n+1 \) „šupljina” (uključujući oba kraja). U svaku šupljinu staviti <em>najviše</em> jednu jedinicu garantuje da između bilo koje dve jedinice postoji bar jedna nula, tj. nijedan par jedinica nije susedan. Broj rasporeda je tada broj načina da se izabere \( k \) od \( n+1 \) šupljina, a to je binomni koeficijent. Na kraju upoređujemo eksplicitnu formulu sa ponuđenim opcijama.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>Podsetnik iz teorije</h2>
+  <details>
+    <summary>Binomni koeficijent i metod razmaka</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Binomni koeficijent:</strong> broj načina da se iz skupa od \( m \) elemenata izabere podskup od \( k \) elemenata (bez uređenja) je \( \dbinom{m}{k} = \dfrac{m!}{k!(m-k)!} \).</li>
+        <li>Notacija \( C(m, k) \) i \( \dbinom{m}{k} \) označavaju istu veličinu.</li>
+        <li><strong>Metod razmaka:</strong> ako u nizu fiksiramo \( n \) jedinakih objekata (npr. nula), oni stvaraju \( n+1 \) razmaka — \( n-1 \) unutrašnjih + 2 krajnja. Ako u svaku „rupu” stavimo najviše jedan dodatni objekat (npr. jedinicu), automatski osiguravamo da nikoja dva nova objekta nisu susedna.</li>
+        <li>Uslov \( k \le n+1 \) je nužan: ne može se izabrati više od \( n+1 \) različitih razmaka. Pošto je u zadatku \( k < n+1 \), formula daje pozitivan rezultat.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelizacija razmaka oko nula">
+  <h2>Vizuelizacija razmaka oko nula</h2>
+  <div class="canvas-wrapper">
+    <canvas id="gaps-canvas" width="700" height="450"></canvas>
+  </div>
+  <p class="canvas-caption">Primer za \( n = 4 \) nule: postoji \( n+1 = 5 \) razmaka u koje se mogu staviti jedinice (oba kraja + 3 unutrašnja). Da bi se izabrale pozicije za \( k \) jedinica tako da nikoje dve nisu susedne, biramo \( k \) od ovih \( 5 \) razmaka — što je \( \dbinom{5}{k} \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postaviti \( n \) nula u red</h3>
+      <p>Pošto su sve nule međusobno identične, postoji samo jedan način da se one same poređaju u red:</p>
+      <div class="math-block">
+        \[ \underbrace{0\;0\;0\;\cdots\;0}_{n\;\text{nula}} \]
+      </div>
+      <p>Ove nule definišu „kostur” niza; nije bitno koju nulu zovemo prvom.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Identifikovati \( n+1 \) razmaka</h3>
+      <p>Između susednih nula i na oba kraja niza imamo „rupe” u koje se mogu ubaciti jedinice. Označimo ih sa \( \square \):</p>
+      <div class="math-block">
+        \[ \square\;0\;\square\;0\;\square\;0\;\cdots\;0\;\square \]
+      </div>
+      <p>Broj rupa je: <strong>2 krajnje</strong> + <strong>\( n-1 \) unutrašnjih</strong> = \( n + 1 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Pravilo: najviše jedna jedinica po razmaku</h3>
+      <p>Ako u svaku rupu stavimo <em>najviše jednu</em> jedinicu, onda se između bilo koje dve jedinice nalazi bar jedna nula — pa nikoje dve jedinice nisu susedne.</p>
+      <div class="callout callout-info">
+        <p>Obrnuto: ako su dve jedinice susedne u rezultujućem nizu, one moraju biti u istoj rupi. Dakle uslov „najviše jedna jedinica po rupi” je <em>ekvivalentan</em> uslovu „nikoje dve jedinice nisu susedne”.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Brojanje izbora</h3>
+      <p>Treba izabrati \( k \) od \( n+1 \) različitih rupa u koje će ići po jedna jedinica. Pošto su rupe različite (po poziciji), a jedinice međusobno identične, broj načina je:</p>
+      <div class="math-block">
+        \[ \binom{n+1}{k} = \frac{(n+1)!}{k!\,(n+1-k)!} \]
+      </div>
+      <p>Uslov \( k < n+1 \) iz zadatka garantuje da \( \binom{n+1}{k} \) ima smisla i da je strogo pozitivno.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera na malom primeru</h3>
+      <p>Uzmimo \( n = 3,\; k = 2 \). Po formuli: \( \binom{4}{2} = 6 \). Direktnim ispisom svih validnih nizova dužine \( 5 \) sa tri nule i dve jedinice u kojima \( 11 \) nije podniz:</p>
+      <div class="math-block">
+        \[ 10100,\; 10010,\; 10001,\; 01010,\; 01001,\; 00101 \]
+      </div>
+      <p>Tačno <strong>6</strong> nizova ✓.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Poređenje sa ponuđenim opcijama</h3>
+      <p>Naš rezultat je \( \binom{n+1}{k} = \dfrac{(n+1)!}{k!\,(n+1-k)!} \). Pregled opcija:</p>
+      <div class="math-block">
+        \[ \text{(B)}\; \binom{n+1}{k} \;=\; \text{(C)}\; \frac{(n+1)!}{k!\,(n+1-k)!} \quad\text{— ekvivalentne formule} \]
+      </div>
+      <p>Opcije \( (B) \) i \( (C) \) opisuju <em>istu</em> vrednost (samo različita notacija). U zvaničnom rešenju zadatka kao tačan odgovor je označena <strong>(C)</strong>, jer prikazuje eksplicitnu formulu binomnog koeficijenta.</p>
+      <p>Preostale opcije su netačne:</p>
+      <ul>
+        <li><strong>(A)</strong> \( \tfrac{(n+1)!}{k!} = \tfrac{(n+1)!}{k!\,1!} \) — to su <em>permutacije</em> bez ponavljanja \( P(n+1, k) \) podeljene sa \( k! \) bi dalo binomni koeficijent, ali ovde nedostaje \( (n+1-k)! \) u imeniocu.</li>
+        <li><strong>(D)</strong> \( \tfrac{n!}{k!(n-k)!} = \binom{n}{k} \) — bira mesta od samo \( n \) (npr. samo unutrašnjih), ignorišući krajeve.</li>
+        <li><strong>(E)</strong> \( \tfrac{(n+1)!}{k!\,(n-k)!} \) — sintaktička zamka koja meša \( n \) i \( n+1 \).</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ N = \binom{n+1}{k} = \frac{(n+1)!}{k!\,(n+1-k)!} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( \dfrac{(n+1)!}{k!} \)</span>
+    <span class="answer-option" data-option="B">(B) \( \dbinom{n+1}{k} \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( \dfrac{(n+1)!}{k!\,(n+1-k)!} \)</span>
+    <span class="answer-option" data-option="D">(D) \( \dfrac{n!}{k!\,(n-k)!} \)</span>
+    <span class="answer-option" data-option="E">(E) \( \dfrac{(n+1)!}{k!\,(n-k)!} \)</span>
+  </div>
+  <p class="verification">Provera (\( n=3,\; k=2 \)): \( \binom{4}{2} = \tfrac{24}{2 \cdot 2} = 6 \). Direktno prebrojavanje validnih nizova daje takođe \( 6 \) ✓.</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>Dodatni izazov</h2>
+  <p>Koliko ima načina da se u niz poređaju \( n \) nula i \( k \) jedinica tako da <em>nikoje dve</em> nule i <em>nikoje dve</em> jedinice nisu susedne istovremeno?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Da bi nikoje dve nule ne bile susedne, simboli moraju da se „smenjuju”, a to je moguće samo ako se \( n \) i \( k \) razlikuju za najviše \( 1 \).</p>
+      <ul>
+        <li>Ako \( |n - k| \ge 2 \): \( 0 \) rasporeda.</li>
+        <li>Ako \( n = k \): mogući su rasporedi \( 0101\ldots01 \) i \( 1010\ldots10 \), ukupno \( 2 \) rasporeda.</li>
+        <li>Ako \( n = k+1 \): jedini raspored je \( 0\,1\,0\,1\,\ldots\,0 \), tj. \( 1 \) raspored.</li>
+        <li>Ako \( k = n+1 \): jedini raspored je \( 1\,0\,1\,0\,\ldots\,1 \), tj. \( 1 \) raspored.</li>
+      </ul>
+      <p>Dakle u opštem slučaju odgovor je \( 0,\; 1 \) ili \( 2 \), zavisno od odnosa \( n \) i \( k \).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('gaps-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('„Metod razmaka”: n = 4 nula daje n + 1 = 5 mogućih mesta', W/2, 28);
+
+    // Layout: row of zero cells with gap markers between them
+    var n = 4;
+    var totalSlots = 2 * n + 1;            // gap, 0, gap, 0, ..., 0, gap
+    var midY = 170;
+    var cellW = 60;
+    var totalW = totalSlots * cellW;
+    var startX = (W - totalW) / 2;
+
+    // Draw cells: even index = gap (square), odd index = zero
+    for (var i = 0; i < totalSlots; i++) {
+      var cx = startX + i * cellW + cellW/2;
+      var isGap = (i % 2 === 0);
+      if (isGap) {
+        // Empty box
+        ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.18);
+        ctx.strokeStyle = highlight;
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5, 4]);
+        var bx = cx - 22, by = midY - 22, bw = 44, bh = 44;
+        ctx.beginPath();
+        ctx.rect(bx, by, bw, bh);
+        ctx.fill();
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = highlight;
+        ctx.font = 'bold 22px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('☐', cx, midY + 8);
+      } else {
+        // Zero
+        ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.20);
+        ctx.strokeStyle = primary;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(cx, midY, 22, 0, 2*Math.PI);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = primary;
+        ctx.font = 'bold 22px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('0', cx, midY + 8);
+      }
+    }
+
+    // Number gaps 1..5
+    var gapIdx = 1;
+    for (var j = 0; j < totalSlots; j++) {
+      if (j % 2 === 0) {
+        var cxg = startX + j * cellW + cellW/2;
+        ctx.fillStyle = highlight;
+        ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('mesto ' + gapIdx, cxg, midY - 36);
+        gapIdx++;
+      }
+    }
+
+    // Below the row, show example with k=2 ones placed in two of the 5 gaps
+    var midY2 = 300;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Primer: k = 2, jedinice u mestima 1 i 4', W/2, midY2 - 50);
+
+    // Sequence: 1 0 0 0 1 0  (positions 0,2,4,6,8 are gaps; we put 1 in gap1 (index 0) and gap4 (index 6))
+    var chosenGaps = [0, 6]; // 0-based index in slots
+    for (var i2 = 0; i2 < totalSlots; i2++) {
+      var cx2 = startX + i2 * cellW + cellW/2;
+      var isGap2 = (i2 % 2 === 0);
+      if (isGap2) {
+        var hasOne = chosenGaps.indexOf(i2) !== -1;
+        if (hasOne) {
+          ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.25);
+          ctx.strokeStyle = accent;
+          ctx.lineWidth = 2;
+          var bx2 = cx2 - 22, by2 = midY2 - 22, bw2 = 44, bh2 = 44;
+          ctx.beginPath();
+          ctx.rect(bx2, by2, bw2, bh2);
+          ctx.fill();
+          ctx.stroke();
+          ctx.fillStyle = accent;
+          ctx.font = 'bold 22px Inter, system-ui, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('1', cx2, midY2 + 8);
+        } else {
+          // Empty (skipped) gap — small dash
+          ctx.strokeStyle = muted;
+          ctx.lineWidth = 1;
+          ctx.setLineDash([3, 3]);
+          ctx.beginPath();
+          ctx.moveTo(cx2 - 12, midY2);
+          ctx.lineTo(cx2 + 12, midY2);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+      } else {
+        // Zero, but smaller / faded
+        ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.15);
+        ctx.strokeStyle = primary;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(cx2, midY2, 20, 0, 2*Math.PI);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = primary;
+        ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('0', cx2, midY2 + 6);
+      }
+    }
+
+    // Resulting sequence label below
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('rezultujući niz:  1 0 0 0 1 0', W/2, midY2 + 46);
+
+    // Bottom box with formula
+    var sumY = 380;
+    var sumX = 80;
+    var sumW = W - 160;
+    var sumH = 50;
+    ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.15);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.rect(sumX, sumY, sumW, sumH);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px "Times New Roman", serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Ukupno: birati k mesta od n + 1  ⇒  C(n+1, k) = (n+1)! / (k! · (n+1−k)!)', sumX + sumW/2, sumY + 30);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Broj rasporeda n nula i k jedinica bez susednih jedinica",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["kombinatorika", "binomni koeficijent", "metod razmaka", "raspoređivanje sa zabranom susednosti", "stars and bars"]
+}
+BRAINSPARK_META-->

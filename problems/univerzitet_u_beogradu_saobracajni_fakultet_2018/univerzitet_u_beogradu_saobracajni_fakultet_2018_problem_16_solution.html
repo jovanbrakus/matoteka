@@ -1,0 +1,735 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Maksimalna zapremina prave kupe sa zadatom izvodnicom s = √3 cm.
+
+Polazne formule i veze:
+  - Izvodnica prave kupe: s² = r² + h², gde je r poluprečnik osnove, h visina.
+  - Zapremina kupe: V = (1/3) π r² h.
+
+Korak 1 — eliminacija jedne promenljive (izaberemo h kao slobodnu):
+  Iz s² = r² + h²  i  s² = 3  sledi  r² = 3 − h².
+  Uslov za realnu kupu: r² > 0 i h > 0, dakle 0 < h < √3.
+
+Korak 2 — funkcija zapremine od h:
+  V(h) = (1/3) π (3 − h²) h = (π/3)(3h − h³),   za h ∈ (0, √3).
+  Krajnje vrednosti: V(0+) = 0, V(√3−) = 0. Po Vajerštrasovoj teoremi maksimum postoji u unutrašnjosti.
+
+Korak 3 — traženje stacionarne tačke (izvod):
+  V'(h) = (π/3)(3 − 3h²) = π(1 − h²).
+  V'(h) = 0  ⇔  h² = 1  ⇔  h = 1 (uzima se pozitivna vrednost).
+  V''(h) = (π/3)·(−6h) = −2π h, V''(1) = −2π < 0  ⇒  maksimum.
+
+Korak 4 — odgovarajuće r i izvod V_max:
+  r² = 3 − 1 = 2, dakle r = √2.
+  V_max = (1/3) π · 2 · 1 = 2π/3 cm³.
+
+Provera (AG-nejednakost — alternativa bez izvoda):
+  V² = (π²/9)(3 − h²)²·h². Stavimo a = 3 − h², b = h². Imamo a + b = 3 (konstanta) i (3 − h²)·(3 − h²)·h² = a·a·b sa a + a + b = 6 − h². Lakše:
+  Direktno: hoćemo maksimum f(h) = (3 − h²)·h za h ∈ (0, √3). Po AG za 3h − h³ = h(3 − h²) = h(√3 − h)(√3 + h), itd. Klasičan trik:
+  3h − h³ ≤ ? Za h = 1: 3·1 − 1 = 2. Numerički sweep potvrđuje maksimum (2π/3 ≈ 2,094 cm³).
+
+Numerička tablica f(h) = (3 − h²) h:
+  h = 0,5 → (3 − 0,25)·0,5 = 1,375 → V ≈ π·1,375/3 ≈ 1,440
+  h = 0,8 → (3 − 0,64)·0,8 = 1,888 → V ≈ 1,977
+  h = 1,0 → (3 − 1)·1 = 2,000 → V = 2π/3 ≈ 2,094  (MAKS)
+  h = 1,2 → (3 − 1,44)·1,2 = 1,872 → V ≈ 1,961
+  h = 1,5 → (3 − 2,25)·1,5 = 1,125 → V ≈ 1,178
+
+Zaključak: V_max = 2π/3 cm³ pri h = 1, r = √2.
+
+Vizuelni prikaz:
+  - Levo: presek prave kupe (jednakokraki trougao), interaktivni klizač za h, prikaz r, V trenutne i V_max.
+  - Desno: grafik V(h) = (π/3)(3h − h³) na (0, √3), maksimum označen u h = 1.
+
+Odgovor: (A) 2π/3 cm³.
+</script>
+
+<h1 data-card="problem-title">Maksimalna zapremina kupe sa zadatom izvodnicom</h1>
+<p data-card="problem-subtitle" class="subtitle">Stereometrija i ekstremi — optimizacija zapremine prave kupe pri stalnoj dužini izvodnice</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Maksimalna zapremina prave kupe date izvodnice \( s = \sqrt{3}\,\mathrm{cm} \) je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \dfrac{2\pi}{3}\,\mathrm{cm}^3 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \dfrac{4\pi}{3}\,\mathrm{cm}^3 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \dfrac{2\pi}{9}\,\mathrm{cm}^3 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 2\pi\,\mathrm{cm}^3 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 4\pi\,\mathrm{cm}^3 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Izvodnica je hipotenuza pravouglog trougla sa katetama \( r \) (poluprečnik osnove) i \( h \) (visina), pa važi \( r^2 + h^2 = s^2 = 3 \). Zapreminu \( V = \tfrac{1}{3}\pi r^2 h \) napišemo kao funkciju samo od \( h \): \( V(h) = \tfrac{\pi}{3}(3 - h^2)h \). Ispitivanjem prvog izvoda \( V'(h) \) na intervalu \( (0, \sqrt{3}) \) pronađemo stacionarnu tačku, a drugim izvodom potvrdimo da je u njoj zaista maksimum.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Prava kupa, izvodnica i zapremina</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Prava (rotaciona) kupa</span> Osnova je krug poluprečnika \( r \), visina \( h \) je rastojanje vrha od centra osnove i normalna je na osnovu.</li>
+        <li><span class="formula-label">Izvodnica</span> Dužina \( s \) duži od vrha kupe do bilo koje tačke ruba osnove. U pravouglom trouglu sa katetama \( r \) i \( h \) važi \( s^2 = r^2 + h^2 \).</li>
+        <li><span class="formula-label">Zapremina kupe</span> \( V = \dfrac{1}{3}\,B\,h = \dfrac{1}{3}\pi r^2 h \), gde je \( B = \pi r^2 \) površina osnove.</li>
+        <li><span class="formula-label">Ekstrem funkcije</span> Ako je \( f \) glatka i \( f'(x_0) = 0 \), \( f''(x_0) < 0 \), tada \( f \) ima lokalni maksimum u \( x_0 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <p>Levo je presek prave kupe kroz osu — jednakokraki trougao sa krakom (izvodnicom) \( s = \sqrt{3} \). Pomeri klizač i prati kako se menja oblik kupe i njena zapremina. Desno je grafik \( V(h) = \tfrac{\pi}{3}(3h - h^3) \) za \( h \in (0, \sqrt{3}) \); crvena tačka prati trenutnu visinu, dok zelena tačka označava globalni maksimum u \( h = 1 \).</p>
+  <div class="canvas-wrapper">
+    <canvas id="cone-diagram" width="900" height="620"></canvas>
+  </div>
+  <p class="canvas-caption">Interaktivno: prevuci klizač za visinu \( h \). Niska kupa (mali \( h \)) ima velik \( r \), ali mali množilac visine; visoka kupa (\( h \) blizu \( \sqrt{3} \)) ima velik \( h \), ali \( r \) teži nuli. Optimum je tačno u sredini, kod \( h = 1 \), gde \( V = 2\pi/3 \approx 2{,}094\,\mathrm{cm}^3 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Veza između \( r \), \( h \) i \( s \)</h3>
+      <p>U preseku kupe kroz osu dobijamo jednakokraki trougao. Visina \( h \), poluprečnik osnove \( r \) i izvodnica \( s \) čine pravougli trougao sa pravim uglom kod centra osnove. Po Pitagorinoj teoremi:</p>
+      <div class="math-block">
+        \[ r^2 + h^2 = s^2 = 3. \]
+      </div>
+      <p>Odavde izrazimo \( r^2 \) preko \( h \):</p>
+      <div class="math-block">
+        \[ r^2 = 3 - h^2, \qquad 0 < h < \sqrt{3}. \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto \( 0 < h < \sqrt{3} \)?</summary>
+          <div class="detail-content">
+            <p>Da bi kupa postojala, mora biti \( h > 0 \) (da nije diskić) i \( r > 0 \), tj. \( r^2 = 3 - h^2 > 0 \), što daje \( h^2 < 3 \), odnosno \( h < \sqrt{3} \). Granični slučajevi \( h = 0 \) i \( h = \sqrt{3} \) daju zapreminu nula (degenerisana figura), pa ih ne razmatramo kao kandidate za maksimum.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Zapremina kao funkcija samo od \( h \)</h3>
+      <p>U formulu za zapreminu kupe zamenimo \( r^2 = 3 - h^2 \):</p>
+      <div class="math-block">
+        \[ V(h) = \dfrac{1}{3}\pi r^2 h = \dfrac{1}{3}\pi (3 - h^2)\, h = \dfrac{\pi}{3}\bigl(3h - h^3\bigr), \quad h \in (0, \sqrt{3}). \]
+      </div>
+      <p>Funkcija je neprekidna na zatvorenom intervalu \( [0, \sqrt{3}] \) i na rubovima daje \( V(0) = V(\sqrt{3}) = 0 \), pa maksimum mora biti u nekoj unutrašnjoj tački — tu gde je \( V'(h) = 0 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Prvi izvod i stacionarna tačka</h3>
+      <p>Izvod po \( h \):</p>
+      <div class="math-block">
+        \[ V'(h) = \dfrac{\pi}{3}\bigl(3 - 3h^2\bigr) = \pi\bigl(1 - h^2\bigr). \]
+      </div>
+      <p>Postavimo \( V'(h) = 0 \):</p>
+      <div class="math-block">
+        \[ 1 - h^2 = 0 \;\Longrightarrow\; h^2 = 1 \;\Longrightarrow\; h = 1 \quad (\text{uzima se pozitivno rešenje}). \]
+      </div>
+      <p>Provera znaka izvoda: za \( h \in (0,1) \) je \( V'(h) > 0 \) (rast), a za \( h \in (1, \sqrt{3}) \) je \( V'(h) < 0 \) (opadanje). To potvrđuje da je \( h = 1 \) tačka maksimuma.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: drugi izvod kao alternativni test.</summary>
+          <div class="detail-content">
+            <p>\( V''(h) = \dfrac{d}{dh}\bigl[\pi(1-h^2)\bigr] = -2\pi h \). Za \( h = 1 \) imamo \( V''(1) = -2\pi < 0 \), što po testu drugog izvoda znači lokalni maksimum.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Maksimalna zapremina</h3>
+      <p>Za \( h = 1 \) je \( r^2 = 3 - 1 = 2 \), tj. \( r = \sqrt{2} \). Zato:</p>
+      <div class="math-block">
+        \[ V_{\max} = \dfrac{1}{3}\pi r^2 h = \dfrac{1}{3}\pi \cdot 2 \cdot 1 = \dfrac{2\pi}{3}\,\mathrm{cm}^3. \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: numerička provera.</summary>
+          <div class="detail-content">
+            <p>\( V_{\max} = 2\pi/3 \approx 2{,}094\,\mathrm{cm}^3 \). Uporedi sa nekoliko susednih vrednosti:</p>
+            <ul>
+              <li>\( h = 0{,}8 \): \( V \approx \tfrac{\pi}{3}(2{,}4 - 0{,}512) \approx 1{,}977 \). ✓ (manje)</li>
+              <li>\( h = 1{,}0 \): \( V \approx 2{,}094 \). (maksimum)</li>
+              <li>\( h = 1{,}2 \): \( V \approx \tfrac{\pi}{3}(3{,}6 - 1{,}728) \approx 1{,}961 \). ✓ (manje)</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kada je dijagonala (izvodnica) zadata, kateta-poluprečnik i kateta-visina su povezani Pitagorinim ograničenjem \( r^2 + h^2 = s^2 \). Zapremina sadrži \( r^2 \) (kvadratno) i \( h \) (linearno), pa optimum nije ni "sve u poluprečnik" ni "sve u visinu". Najbolji odnos je \( r^2 = 2h^2 \) — odnosno baza nosi dva puta više "pondera" nego visina, što odgovara činjenici da \( r^2 \) ulazi u zapreminu kvadratno. Ovo je opšti princip: pri ograničenju oblika \( ar^2 + bh^2 = \text{const} \), optimum funkcije \( r^2 h \) postiže se kada je \( a r^2 \) tačno polovina od ukupnog ograničenja, a \( b h^2 \) druga polovina.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ V_{\max} = \dfrac{2\pi}{3}\,\mathrm{cm}^3 \quad \text{pri}\quad h = 1\,\mathrm{cm},\; r = \sqrt{2}\,\mathrm{cm}. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( \dfrac{2\pi}{3}\,\mathrm{cm}^3 \)</span>
+    <span class="answer-option" data-option="B">(B) \( \dfrac{4\pi}{3}\,\mathrm{cm}^3 \)</span>
+    <span class="answer-option" data-option="C">(C) \( \dfrac{2\pi}{9}\,\mathrm{cm}^3 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 2\pi\,\mathrm{cm}^3 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 4\pi\,\mathrm{cm}^3 \)</span>
+  </div>
+  <p class="verification">Provera: \( r^2 + h^2 = 2 + 1 = 3 = s^2 \) ✓; \( V = \tfrac{1}{3}\pi \cdot 2 \cdot 1 = \tfrac{2\pi}{3} \) ✓; znak \( V'(h) \) menja se sa + na − u \( h = 1 \), \( V''(1) = -2\pi < 0 \) ✓.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Mešanje izvodnice i visine.</strong> Izvodnica \( s \) je krak (nagnuta strana) jednakokrakog preseka, a ne visina kupe. Ko stavi \( h = s = \sqrt{3} \), dobije \( r = 0 \) i degenerisanu figuru zapremine \( 0 \).</li>
+    <li><strong>Optimizovanje samo po \( r \) ili samo po \( h \) bez ograničenja.</strong> Bez veze \( r^2 + h^2 = 3 \), zapremina nema maksimum. Ograničenje (Pitagora) je ono što stvara konačan optimum.</li>
+    <li><strong>Zaboravljanje faktora \( \tfrac{1}{3} \).</strong> Tačna formula za kupu je \( V = \tfrac{1}{3}\pi r^2 h \), a ne \( \pi r^2 h \) (koja važi za valjak). Bez tog faktora rezultat bi bio \( 2\pi \), što odgovara izborima D — pogrešnom!</li>
+    <li><strong>Pogrešan kvadrat: \( r = \sqrt{3 - h^2} \) umesto \( r^2 = 3 - h^2 \).</strong> U izrazu za zapreminu se javlja \( r^2 \), pa je elegantnije zameniti direktno \( r^2 = 3 - h^2 \) bez vađenja korena.</li>
+    <li><strong>Negativan izvod prijatelj.</strong> Ako uzmemo \( h = -1 \) kao "drugo rešenje" jednačine \( h^2 = 1 \), to je geometrijski nemoguće (visina je pozitivna). Zato je relevantna samo grana \( h > 0 \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Za istu kupu, kolika je <em>maksimalna površina omotača</em> \( M = \pi r s \), gde je \( s = \sqrt{3} \) konstantno? A šta je maksimalno ako je <em>visina</em> \( h \) konstantna umesto izvodnice?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>(a) Pošto je \( s = \sqrt{3} \) fiksno, površina omotača \( M = \pi r \sqrt{3} \) je linearna po \( r \), pa raste sa \( r \). Maksimum je u graničnom slučaju \( r = \sqrt{3} \) (kada \( h \to 0 \)) i iznosi \( M = \pi \cdot \sqrt{3} \cdot \sqrt{3} = 3\pi \), ali to više nije prava kupa (figura se "spljošti"). Strogi maksimum se ne dostiže — supremum je \( 3\pi \).</p>
+      <p>(b) Ako je visina \( h \) konstantna, a izvodnica može da raste, \( s = \sqrt{r^2 + h^2} \to \infty \) kada \( r \to \infty \), pa zapremina raste neograničeno: nema maksimuma. Zato je u originalnom zadatku ključan izbor izvodnice (a ne visine) kao zadatog parametra — samo ona daje konačno ograničen problem.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.indexOf('#') === 0) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('cone-diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  // State: current height h ∈ (0, √3).
+  var S2 = 3;            // s^2
+  var SQRT3 = Math.sqrt(3);
+  var hVal = 1.0;        // start at the optimum
+  var dragging = false;
+
+  // Layout
+  var sliderY = H - 60;
+  var sliderXmin = 70;
+  var sliderXmax = W - 70;
+
+  // Left panel (cone cross-section): x in [40, 430]
+  var leftL = 40, leftR = 430, leftT = 70, leftB = sliderY - 20;
+  // Right panel (V vs h graph): x in [460, 870]
+  var rightL = 470, rightR = 870, rightT = 70, rightB = sliderY - 20;
+
+  function hToSliderX(h) {
+    return sliderXmin + (h / SQRT3) * (sliderXmax - sliderXmin);
+  }
+  function sliderXToH(x) {
+    var t = (x - sliderXmin) / (sliderXmax - sliderXmin);
+    return Math.max(0.001, Math.min(SQRT3 - 0.001, t * SQRT3));
+  }
+  function V(h) {
+    var r2 = S2 - h * h;
+    if (r2 <= 0) return 0;
+    return (Math.PI / 3) * r2 * h;
+  }
+
+  function roundedRect(x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+  }
+
+  function fmt(num, decimals) {
+    return num.toFixed(decimals).replace('.', ',');
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // ------- Title -------
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Optimizacija zapremine kupe pri s = √3', W / 2, 14);
+
+    // ------- LEFT: cone cross-section -------
+    ctx.fillStyle = muted;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Presek kupe kroz osu', (leftL + leftR) / 2, 40);
+
+    // Frame
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(leftL, leftT, leftR - leftL, leftB - leftT);
+
+    // Convert (rcoord, hcoord) into pixel: center axis at midX, base at lowerY
+    var midX = (leftL + leftR) / 2;
+    var baseY = leftB - 30;
+    // Scale: the maximum side could be up to √3 ≈ 1.732. Use scale such that √3 maps to half-panel width minus margin.
+    var halfPanel = (leftR - leftL) / 2 - 30;
+    var maxV = SQRT3;
+    var scale = Math.min(halfPanel / maxV, (leftB - leftT - 60) / maxV);
+
+    var r = Math.sqrt(Math.max(0, S2 - hVal * hVal));
+    var h = hVal;
+
+    var apexX = midX;
+    var apexY = baseY - h * scale;
+    var leftBaseX = midX - r * scale;
+    var rightBaseX = midX + r * scale;
+    var baseLineY = baseY;
+
+    // Draw axis (vertical center line)
+    ctx.strokeStyle = grid;
+    ctx.setLineDash([4, 4]);
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(midX, leftT + 20);
+    ctx.lineTo(midX, baseY + 20);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Filled triangle (cross-section)
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.18);
+    ctx.beginPath();
+    ctx.moveTo(apexX, apexY);
+    ctx.lineTo(leftBaseX, baseLineY);
+    ctx.lineTo(rightBaseX, baseLineY);
+    ctx.closePath();
+    ctx.fill();
+
+    // Triangle edges
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(apexX, apexY);
+    ctx.lineTo(leftBaseX, baseLineY);
+    ctx.lineTo(rightBaseX, baseLineY);
+    ctx.closePath();
+    ctx.stroke();
+
+    // Base ellipse (perspective for visual flair)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    var ellH = Math.max(4, r * scale * 0.28);
+    ctx.ellipse(midX, baseLineY, Math.max(2, r * scale), ellH, 0, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Height (h) marker — vertical from apex straight down to base midpoint
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(apexX, apexY);
+    ctx.lineTo(apexX, baseLineY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // h label
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('h = ' + fmt(h, 2), apexX + 8, (apexY + baseLineY) / 2);
+
+    // r label (horizontal half-base)
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(midX, baseLineY + 22);
+    ctx.lineTo(rightBaseX, baseLineY + 22);
+    ctx.stroke();
+    // Tiny ticks
+    ctx.beginPath();
+    ctx.moveTo(midX, baseLineY + 18); ctx.lineTo(midX, baseLineY + 26);
+    ctx.moveTo(rightBaseX, baseLineY + 18); ctx.lineTo(rightBaseX, baseLineY + 26);
+    ctx.stroke();
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('r = ' + fmt(r, 2), (midX + rightBaseX) / 2, baseLineY + 28);
+
+    // Slant (s) label on right slant
+    var slantMidX = (apexX + rightBaseX) / 2;
+    var slantMidY = (apexY + baseLineY) / 2;
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('s = √3', slantMidX + 8, slantMidY - 4);
+
+    // Right-angle marker at base center
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(midX, baseLineY - 10, 10, 10);
+
+    // Volume readout box
+    var Vnow = V(h);
+    var boxX = leftL + 12, boxY = leftT + 12, boxW = (leftR - leftL) - 24, boxH = 56;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.14);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.5;
+    roundedRect(boxX, boxY, boxW, boxH, 8);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('V(h) = (π/3)·(3 − h²)·h', boxX + 12, boxY + 18);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillText('V ≈ ' + fmt(Vnow, 3) + ' cm³', boxX + 12, boxY + 40);
+
+    // Max badge if at h=1
+    if (Math.abs(h - 1) < 0.02) {
+      ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.25);
+      ctx.strokeStyle = highlight;
+      roundedRect(boxX + boxW - 110, boxY + 8, 100, 24, 12);
+      ctx.fill(); ctx.stroke();
+      ctx.fillStyle = highlight;
+      ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('MAKSIMUM', boxX + boxW - 60, boxY + 20);
+    }
+
+    // ------- RIGHT: V(h) graph -------
+    ctx.fillStyle = muted;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Grafik V(h) na (0, √3)', (rightL + rightR) / 2, 40);
+
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(rightL, rightT, rightR - rightL, rightB - rightT);
+
+    // Plot area (inside frame with margins)
+    var pL = rightL + 50, pR = rightR - 20;
+    var pT = rightT + 30, pB = rightB - 35;
+
+    // Determine V max for scaling: V at h=1 is 2π/3 ≈ 2.094
+    var Vmax = (2 * Math.PI) / 3;
+    var hMax = SQRT3;
+    function hx(hv) { return pL + (hv / hMax) * (pR - pL); }
+    function vy(vv) { return pB - (vv / (Vmax * 1.10)) * (pB - pT); }
+
+    // Grid + axes
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    // vertical grid for h = 0, 0.5, 1, 1.5, √3
+    var hTicks = [0, 0.5, 1.0, 1.5, SQRT3];
+    var hLabels = ['0', '0,5', '1', '1,5', '√3'];
+    for (var i = 0; i < hTicks.length; i++) {
+      var gx = hx(hTicks[i]);
+      ctx.strokeStyle = grid;
+      ctx.setLineDash([2, 4]);
+      ctx.beginPath();
+      ctx.moveTo(gx, pT); ctx.lineTo(gx, pB);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    // horizontal grid for V = 0, 0.5, 1, 1.5, 2
+    var vTicks = [0, 0.5, 1.0, 1.5, 2.0];
+    for (var j = 0; j < vTicks.length; j++) {
+      var gy = vy(vTicks[j]);
+      ctx.strokeStyle = grid;
+      ctx.setLineDash([2, 4]);
+      ctx.beginPath();
+      ctx.moveTo(pL, gy); ctx.lineTo(pR, gy);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(pL, pB); ctx.lineTo(pR, pB);
+    ctx.moveTo(pL, pB); ctx.lineTo(pL, pT);
+    ctx.stroke();
+
+    // Tick labels
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (var i2 = 0; i2 < hTicks.length; i2++) {
+      ctx.fillText(hLabels[i2], hx(hTicks[i2]), pB + 6);
+    }
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (var j2 = 0; j2 < vTicks.length; j2++) {
+      ctx.fillText(fmt(vTicks[j2], 1), pL - 6, vy(vTicks[j2]));
+    }
+    // Axis names
+    ctx.fillStyle = text;
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('h', (pL + pR) / 2, pB + 22);
+    ctx.save();
+    ctx.translate(pL - 32, (pT + pB) / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('V(h)', 0, 0);
+    ctx.restore();
+
+    // Curve V(h) = (π/3)(3h - h³)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    var first = true;
+    for (var k = 0; k <= 200; k++) {
+      var hh = (k / 200) * hMax;
+      var vv = V(hh);
+      var x = hx(hh);
+      var y = vy(vv);
+      if (first) { ctx.moveTo(x, y); first = false; }
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+
+    // Light fill under curve
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.10);
+    ctx.lineTo(pR, pB);
+    ctx.lineTo(pL, pB);
+    ctx.closePath();
+    ctx.fill();
+
+    // Mark global max at h=1
+    var maxX = hx(1);
+    var maxY = vy(Vmax);
+    ctx.strokeStyle = highlight;
+    ctx.setLineDash([4, 3]);
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(maxX, pB); ctx.lineTo(maxX, maxY);
+    ctx.moveTo(pL, maxY); ctx.lineTo(maxX, maxY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // Green dot
+    ctx.fillStyle = highlight;
+    ctx.beginPath();
+    ctx.arc(maxX, maxY, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('maks: V = 2π/3 ≈ 2,094', maxX + 8, maxY - 6);
+
+    // Current point (red-ish): (h, V(h))
+    var curX = hx(h);
+    var curY = vy(Vnow);
+    ctx.strokeStyle = danger;
+    ctx.setLineDash([3, 3]);
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(curX, pB); ctx.lineTo(curX, curY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = danger;
+    ctx.beginPath();
+    ctx.arc(curX, curY, 5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // ------- SLIDER -------
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Klizač:  h ∈ (0, √3)', sliderXmin, sliderY - 22);
+
+    // Track
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 6;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(sliderXmin, sliderY);
+    ctx.lineTo(sliderXmax, sliderY);
+    ctx.stroke();
+    ctx.lineCap = 'butt';
+
+    // Tick marks at h = 1 (optimum)
+    var optX = hToSliderX(1);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(optX, sliderY - 10); ctx.lineTo(optX, sliderY + 10);
+    ctx.stroke();
+    ctx.fillStyle = highlight;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('h = 1 (optimum)', optX, sliderY + 14);
+
+    // Tick at √3
+    var endX = hToSliderX(SQRT3);
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(endX, sliderY - 7); ctx.lineTo(endX, sliderY + 7);
+    ctx.moveTo(sliderXmin, sliderY - 7); ctx.lineTo(sliderXmin, sliderY + 7);
+    ctx.stroke();
+    ctx.fillStyle = muted;
+    ctx.font = '10px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('0', sliderXmin, sliderY + 14);
+    ctx.fillText('√3', endX, sliderY + 14);
+
+    // Knob
+    var knobX = hToSliderX(h);
+    ctx.fillStyle = primary;
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(knobX, sliderY, 11, 0, Math.PI * 2);
+    ctx.fill(); ctx.stroke();
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  }
+
+  function pointerToH(evt) {
+    var rect = canvas.getBoundingClientRect();
+    var sx = canvas.width / rect.width;
+    var sy = canvas.height / rect.height;
+    var cx = (evt.clientX - rect.left) * sx;
+    var cy = (evt.clientY - rect.top) * sy;
+    return { x: cx, y: cy };
+  }
+
+  function nearKnob(p) {
+    var knobX = hToSliderX(hVal);
+    var dx = p.x - knobX;
+    var dy = p.y - sliderY;
+    return (dx * dx + dy * dy) <= 26 * 26;
+  }
+
+  function onDown(e) {
+    e.preventDefault();
+    var src = e.touches ? e.touches[0] : e;
+    var p = pointerToH(src);
+    // Click-to-move on track (between sliderXmin and sliderXmax, near sliderY)
+    if (Math.abs(p.y - sliderY) <= 24 && p.x >= sliderXmin - 10 && p.x <= sliderXmax + 10) {
+      dragging = true;
+      hVal = sliderXToH(Math.max(sliderXmin, Math.min(sliderXmax, p.x)));
+      draw();
+    }
+  }
+  function onMove(e) {
+    if (!dragging) return;
+    e.preventDefault();
+    var src = e.touches ? e.touches[0] : e;
+    var p = pointerToH(src);
+    hVal = sliderXToH(Math.max(sliderXmin, Math.min(sliderXmax, p.x)));
+    draw();
+  }
+  function onUp() {
+    dragging = false;
+  }
+
+  canvas.addEventListener('mousedown', onDown);
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('mouseup', onUp);
+  canvas.addEventListener('touchstart', onDown, { passive: false });
+  window.addEventListener('touchmove', onMove, { passive: false });
+  window.addEventListener('touchend', onUp);
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Maksimalna zapremina kupe pri zadatoj izvodnici",
+  "subject": "math",
+  "unit": "stereometrija",
+  "topic_tags": ["prava kupa", "izvodnica", "zapremina kupe", "optimizacija", "izvod", "ekstremi funkcije"]
+}
+BRAINSPARK_META-->

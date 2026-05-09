@@ -1,0 +1,391 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Tražimo trocifrene prirodne brojeve deljive sa 5, čije sve cifre su različite i pripadaju skupu S = {0, 2, 4, 6, 8}.
+
+Korak 1: Deljivost sa 5 — broj je deljiv sa 5 akko je poslednja cifra 0 ili 5.
+  Skup S sadrži 0, ali NE sadrži 5. Dakle poslednja cifra mora biti 0.
+
+Korak 2: Trocifrenost — prva cifra (cifra stotina) ne sme biti 0.
+  Pošto je 0 već iskorišćeno na poziciji jedinica, prva cifra mora biti iz {2, 4, 6, 8}.
+  Sve cifre su različite, i 0 je već zauzeto, pa nema dodatnog ograničenja od različitosti za prvu cifru osim zabrane 0.
+  Broj izbora za prvu cifru: 4.
+
+Korak 3: Srednja cifra (cifra desetica) — može biti bilo šta iz S osim cifre koja je već iskorišćena za jedinice (0) i osim cifre iskorišćene za stotine.
+  Preostalo: 5 - 2 = 3 cifre.
+  Broj izbora za srednju cifru: 3.
+
+Ukupno: 4 × 3 × 1 = 12.
+
+Provera enumeracijom (po prvoj cifri):
+- 2_0: 240, 260, 280 → 3
+- 4_0: 420, 460, 480 → 3
+- 6_0: 620, 640, 680 → 3
+- 8_0: 820, 840, 860 → 3
+Ukupno: 12. Slaže se.
+
+Tačan odgovor: (A) 12.
+
+Vizuelno: statička slika sa tri pozicije (slot 1, slot 2, slot 3), prikazuje koje cifre mogu da idu u svaku poziciju i broj izbora. Kombinatorika je nespacijalna, pa je statički prikaz sasvim u redu.
+</script>
+
+<h1 data-card="problem-title">Brojanje trocifrenih brojeva deljivih sa 5</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika: princip množenja, deljivost sa 5, ograničenja na cifre</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Trocifrenih prirodnih brojeva deljivih sa \( 5 \), čije su sve cifre različite i pripadaju skupu \( \{0, 2, 4, 6, 8\} \), ima:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 12 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 9 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 28 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 60 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 100 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Iskoristićemo deljivost sa 5 da fiksiramo poslednju cifru, pa ćemo principom množenja prebrojati izbore za preostale dve pozicije, vodeći računa o tome da prva cifra ne sme biti 0 i da sve cifre moraju biti različite.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li>Pravilo deljivosti sa 5: prirodan broj je deljiv sa 5 akko mu je poslednja cifra \( 0 \) ili \( 5 \).</li>
+        <li>Princip množenja: ako prvi izbor možeš napraviti na \( m \) načina, a (nezavisno) drugi na \( n \) načina, ukupno ima \( m \cdot n \) načina.</li>
+        <li>Trocifren broj: prva cifra (stotice) je iz \( \{1,2,\dots,9\} \) — nikada \( 0 \).</li>
+        <li>Različite cifre = biranje bez ponavljanja: ako je jedna cifra već iskorišćena, ostaje \( |S| - 1 \) opcija za sledeću poziciju.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="720" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Tri pozicije trocifrenog broja sa dozvoljenim ciframa: stotice imaju 4 izbora, desetice 3 (jedna cifra iz \( \{2,4,6,8\} \) je već zauzeta na stoticama), jedinice su fiksirane na 0.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Cifra jedinica je nužno 0</h3>
+      <p>Broj je deljiv sa \( 5 \) akko mu je poslednja cifra \( 0 \) ili \( 5 \). U skupu \( \{0,2,4,6,8\} \) cifre \( 5 \) <span class="crossed">nema</span>, pa cifra jedinica mora biti <span class="result">\( 0 \)</span>.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto poslednja cifra ne može biti 5?</summary>
+          <div class="detail-content"><p>Zato što zadatak izričito zahteva da sve cifre budu iz skupa \( \{0,2,4,6,8\} \), a \( 5 \) tu nije.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Cifra stotica — 4 izbora</h3>
+      <p>Cifra stotica ne sme biti \( 0 \) (broj je trocifren), niti sme da se ponovi sa već iskorišćenom \( 0 \) na jedinicama. Dakle bira se iz skupa \( \{2, 4, 6, 8\} \):</p>
+      <div class="math-block">\[ \text{stotice} \in \{2, 4, 6, 8\} \quad\Longrightarrow\quad 4 \text{ izbora} \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Cifra desetica — 3 izbora</h3>
+      <p>Cifra desetica može biti bilo koja iz \( \{0,2,4,6,8\} \) <em>osim</em> \( 0 \) (već iskorišćena) i <em>osim</em> cifre već stavljene na stotice. Ostaje \( 5 - 2 = 3 \) cifre:</p>
+      <div class="math-block">\[ \text{desetice} \in \{2, 4, 6, 8\} \setminus \{\text{stotice}\} \quad\Longrightarrow\quad 3 \text{ izbora} \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: može li 0 biti cifra desetica?</summary>
+          <div class="detail-content"><p>Ne — uslov "sve cifre različite" zabranjuje ponavljanje \( 0 \) koja je već stavljena na poziciju jedinica.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Princip množenja</h3>
+      <p>Izbori za tri pozicije su nezavisni (svaki sledeći samo izbacuje već iskorišćene cifre), pa je ukupan broj brojeva proizvod:</p>
+      <div class="math-block">\[ N = \underbrace{4}_{\text{stotice}} \cdot \underbrace{3}_{\text{desetice}} \cdot \underbrace{1}_{\text{jedinice} = 0} = 12 \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera nabrajanjem</h3>
+      <p>Po prvoj cifri:</p>
+      <div class="math-block">\[ \begin{array}{c|l} \text{stotice} & \text{brojevi} \\ \hline 2 & 240,\; 260,\; 280 \\ 4 & 420,\; 460,\; 480 \\ 6 & 620,\; 640,\; 680 \\ 8 & 820,\; 840,\; 860 \end{array} \]</div>
+      <p>Tačno <span class="result">\( 4 \cdot 3 = 12 \)</span> brojeva. Slaže se.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kada je u skupu cifara prisutna \( 0 \) i tražimo deljivost sa \( 5 \) bez prisustva cifre \( 5 \), pozicija jedinica je <em>fiksirana</em> na \( 0 \). To rešava i problem trocifrenosti: pošto je jedina nula iskorišćena na kraju, prva cifra <em>automatski</em> ne može biti \( 0 \). Tako se uslov "trocifren" pretvara iz dodatne komplikacije u besplatnu pogodnost.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ N = 4 \cdot 3 \cdot 1 = 12 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 12 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 9 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 28 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 60 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 100 \)</span>
+  </div>
+  <p class="verification">Provera: nabrajanjem dobijamo tačno 12 brojeva (240, 260, 280, 420, 460, 480, 620, 640, 680, 820, 840, 860). Svaki je trocifren, deljiv sa 5 i ima sve različite cifre iz traženog skupa.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Računanje kao da je i \( 5 \) u skupu — vodilo bi do dva slučaja za poslednju cifru (\( 0 \) i \( 5 \)), što daje pogrešan rezultat.</li>
+    <li>Zaboravljanje uslova "trocifren" i dozvoljavanje \( 0 \) na poziciji stotica (npr. \( 020 \)) — to je dvocifren broj \( 20 \).</li>
+    <li>Brojanje varijacija \( V_5^3 = 5 \cdot 4 \cdot 3 = 60 \) bez ikakvih ograničenja (to je odgovor (D), klopka).</li>
+    <li>Brkanje sa permutacijama: \( 5! = 120 \) ili \( 5 \cdot 5 \cdot 5 = 125 \) — ne odnosi se na slučaj sa različitim ciframa i fiksiranom poslednjom.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koliko ima trocifrenih prirodnih brojeva deljivih sa \( 5 \), čije su sve cifre različite i pripadaju skupu \( \{0, 2, 4, 5, 8\} \) (sad je u skupu \( 5 \) umesto \( 6 \))?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Sada poslednja cifra može biti \( 0 \) ili \( 5 \). Razdvoji na dva slučaja:<br/>• Poslednja \( 0 \): stotice iz \( \{2,4,5,8\} \) (4 izbora), desetice iz preostalih 3 → \( 4 \cdot 3 = 12 \).<br/>• Poslednja \( 5 \): stotice iz \( \{2,4,8\} \) (jer ne sme biti \( 0 \) ni \( 5 \)) → 3 izbora; desetice iz preostala 3 (uključujući \( 0 \), bez stotica i bez \( 5 \)) → 3 izbora; \( 3 \cdot 3 = 9 \).<br/>Ukupno: \( 12 + 9 = 21 \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  var W = canvas.width, H = canvas.height;
+
+  function drawBox(x, y, w, h, fillColor, strokeColor, lineWidth) {
+    ctx.fillStyle = fillColor;
+    ctx.strokeStyle = strokeColor;
+    ctx.lineWidth = lineWidth || 2;
+    var r = 12;
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var warning   = cv('--sol-canvas-warning');
+    var danger    = cv('--sol-canvas-danger');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var grid      = cv('--sol-canvas-grid');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 17px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Trocifren broj — tri pozicije', W / 2, 18);
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Cifre iz skupa S = {0, 2, 4, 6, 8}, sve različite, broj deljiv sa 5', W / 2, 42);
+
+    // Three position boxes
+    var boxW = 170, boxH = 110;
+    var gap = 30;
+    var totalW = 3 * boxW + 2 * gap;
+    var startX = (W - totalW) / 2;
+    var boxY = 90;
+
+    var labels = ['stotice', 'desetice', 'jedinice'];
+    var counts = ['4 izbora', '3 izbora', '1 izbor'];
+    var setsText = ['{2, 4, 6, 8}', 'preostale 3', '{0}'];
+    var colors = [primary, warning, accent];
+
+    for (var i = 0; i < 3; i++) {
+      var bx = startX + i * (boxW + gap);
+      drawBox(bx, boxY, boxW, boxH, cvAlpha(['--sol-canvas-primary','--sol-canvas-warning','--sol-canvas-accent'][i], 0.12), colors[i], 2.5);
+
+      // Position label
+      ctx.fillStyle = colors[i];
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText(labels[i], bx + boxW / 2, boxY + 12);
+
+      // Set
+      ctx.fillStyle = text;
+      ctx.font = '15px ui-monospace, Menlo, monospace';
+      ctx.fillText(setsText[i], bx + boxW / 2, boxY + 38);
+
+      // Count
+      ctx.fillStyle = colors[i];
+      ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+      ctx.fillText(counts[i], bx + boxW / 2, boxY + 70);
+    }
+
+    // Multiplication symbols between boxes
+    ctx.fillStyle = text;
+    ctx.font = 'bold 28px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    for (var k = 0; k < 2; k++) {
+      var mx = startX + (k + 1) * boxW + k * gap + gap / 2;
+      ctx.fillText('×', mx, boxY + boxH / 2);
+    }
+
+    // Tree-like enumeration below
+    var treeY = boxY + boxH + 50;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Nabrajanje po stoticama (12 brojeva ukupno)', W / 2, treeY);
+
+    var rowY = treeY + 32;
+    var rows = [
+      { hund: '2', nums: ['240', '260', '280'] },
+      { hund: '4', nums: ['420', '460', '480'] },
+      { hund: '6', nums: ['620', '640', '680'] },
+      { hund: '8', nums: ['820', '840', '860'] }
+    ];
+    var rowH = 28;
+    var hundX = 130;
+    var numStartX = 200;
+    var numGap = 110;
+
+    for (var r = 0; r < rows.length; r++) {
+      var ry = rowY + r * rowH;
+
+      // Hundred digit chip
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.18);
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(hundX, ry + 10, 14, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = primary;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(rows[r].hund, hundX, ry + 10);
+
+      // Connecting line
+      ctx.strokeStyle = grid;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(hundX + 16, ry + 10);
+      ctx.lineTo(numStartX - 10, ry + 10);
+      ctx.stroke();
+
+      // Numbers
+      ctx.fillStyle = text;
+      ctx.font = '14px ui-monospace, Menlo, monospace';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      for (var j = 0; j < rows[r].nums.length; j++) {
+        var nx = numStartX + j * numGap;
+        // Soft background pill
+        ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.10);
+        ctx.beginPath();
+        var pillW = 70, pillH = 22;
+        ctx.fillRect(nx - 4, ry + 10 - pillH / 2, pillW, pillH);
+        // Number text
+        ctx.fillStyle = text;
+        ctx.fillText(rows[r].nums[j], nx + 2, ry + 10);
+      }
+    }
+
+    // Bottom result
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('Ukupno:  4 × 3 × 1 = 12 brojeva', W / 2, H - 22);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Trocifreni brojevi deljivi sa 5 sa različitim ciframa iz {0,2,4,6,8}",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["princip množenja", "deljivost sa 5", "permutacije bez ponavljanja", "cifre", "trocifreni brojevi"]
+}
+BRAINSPARK_META-->

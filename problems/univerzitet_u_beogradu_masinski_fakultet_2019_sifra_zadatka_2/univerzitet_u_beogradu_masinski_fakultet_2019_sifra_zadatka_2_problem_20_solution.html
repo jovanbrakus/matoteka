@@ -1,0 +1,610 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Problem: Koliko ima petocifrenih prirodnih brojeva u cijem su zapisu sve cifre parne?
+
+Postavka:
+  Petocifren prirodan broj ima zapis d_1 d_2 d_3 d_4 d_5, gde je d_1 ≠ 0 (vodeca cifra ne sme biti 0).
+  Sve cifre parne => svaka cifra iz skupa {0, 2, 4, 6, 8}, koji ima 5 elemenata.
+
+Brojanje:
+  Pozicija 1 (vodeca cifra): mora biti parna i razlicita od 0. Skup: {2, 4, 6, 8} — 4 izbora.
+  Pozicija 2: bilo koja parna cifra. Skup: {0, 2, 4, 6, 8} — 5 izbora.
+  Pozicija 3: 5 izbora.
+  Pozicija 4: 5 izbora.
+  Pozicija 5: 5 izbora.
+
+Ukupno (princip multiplikativnosti — slobodan, nezavisan izbor svake cifre):
+  N = 4 * 5 * 5 * 5 * 5 = 4 * 5^4 = 4 * 625 = 2500.
+
+Provera:
+  5^4 = 625; 4 * 625 = 2500. ✓
+  Najmanji takav broj: 20000. Najveci: 88888. Razumno mnogo izmedju.
+
+  Sanity check pristupom „svi minus oni sa nulom napred":
+    Svi 5-pozicijski stringovi sa parnim ciframa (ukljucujuci one koji pocinju nulom): 5^5 = 3125.
+    Oni koji pocinju nulom (cetvorocifreni stringovi sa parnim ciframa, bez ogranicenja na vodecu): 5^4 = 625.
+    Petocifreni brojevi sa svim parnim ciframa: 3125 - 625 = 2500. ✓ Slaze se.
+
+ODGOVOR: (B) 2500.
+
+Distractor analiza:
+(A) 2125 — nepravilna brojka, npr. ako bi neko racunao 5^5 - 1000.
+(B) 2500 — TACNO.
+(C) 2750 — verovatno greska tipa 4 * 5^4 + nesto.
+(D) 3000 — mozda iz pogresnog 5 * 5 * 5 * 5 * 5 - 125.
+(E) 3125 = 5^5 — to je broj svih 5-pozicijskih stringova sa parnim ciframa, ali ukljucuje i one sa nulom na pocetku (sto NIJE petocifren broj). Klasicna zamka.
+
+Zamke:
+1) Zaboraviti da prva cifra ne sme biti 0 — daje 5^5 = 3125 (E).
+2) Pogresno smatrati da prva cifra moze biti 0 jer „petocifrenih ima 5 cifara“ — ali tada zapis 02468 zapravo predstavlja cetvorocifren broj 2468, ne petocifren.
+3) Brkati „cifra“ i „pozicija“. Imamo 5 razlicitih parnih cifara, i 5 pozicija — ne treba pomesati 5 sa 5.
+4) Greska u stepenu: 5^5 vs 5^4. Pet pozicija ali samo 4 imaju 5 izbora; prva ima 4.
+
+Vizuelni plan:
+  Canvas 1 (slot diagram): 5 pravougaonika (slotova) jedan pored drugog, svaki sa svojim brojem opcija — 4, 5, 5, 5, 5. Iznad svakog slota istaknut skup dozvoljenih cifara: {2,4,6,8} za prvi, {0,2,4,6,8} za ostale. Mnozenje ispod: 4 × 5 × 5 × 5 × 5 = 2500.
+  Canvas 2 (mali primeri): tabela primera petocifrenih brojeva sa svim parnim ciframa, sa nekoliko ne-primera (vodeca 0 ili neparne cifre) precrtana.
+</script>
+
+<h1 data-card="problem-title">Petocifreni brojevi sa svim parnim ciframa</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika — princip množenja, ograničenje na vodeću cifru</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Koliko ima petocifrenih prirodnih brojeva u čijem su zapisu sve cifre parne?</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">broj cifara</span>
+      <span class="given-value">\( 5 \) (petocifren)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">dozvoljene cifre</span>
+      <span class="given-value">parne: \( \{0, 2, 4, 6, 8\} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">ograničenje</span>
+      <span class="given-value">vodeća cifra \( \neq 0 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">traži se</span>
+      <span class="given-value">broj takvih brojeva</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 2125 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 2500 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 2750 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 3000 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 3125 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Petocifren broj ima pet pozicija \( d_1 d_2 d_3 d_4 d_5 \). Svaka cifra mora biti parna, ali <strong>vodeća cifra ne sme biti \( 0 \)</strong> — inače broj nije petocifren. Skup parnih cifara \( \{0, 2, 4, 6, 8\} \) ima \( 5 \) elemenata; bez nule \( 4 \). Po principu množenja: \( 4 \) izbora za prvu poziciju, \( 5 \) izbora za svaku od preostale \( 4 \) pozicije. Rezultat \( 4 \cdot 5^4 \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Princip množenja i parne cifre</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Princip množenja (kombinatorni).</strong> Ako se prva odluka može doneti na \( n_1 \) načina, druga (nezavisno) na \( n_2 \) načina, …, \( k \)-ta na \( n_k \) načina, onda je ukupan broj kombinacija
+          \[ n_1 \cdot n_2 \cdot \ldots \cdot n_k. \]
+          Princip važi kada izbori nisu uzajamno zavisni (jedna odluka ne sužava skup mogućnosti druge).</li>
+        <li><strong>Parne cifre.</strong> Cifre dekadnog sistema su \( 0, 1, \ldots, 9 \). Parne (deljive sa \( 2 \)): \( \{0, 2, 4, 6, 8\} \) — pet cifara.</li>
+        <li><strong>Vodeća cifra prirodnog broja.</strong> Petocifren prirodan broj zauzima opseg \( [10000,\ 99999] \). Vodeća cifra \( d_1 \in \{1, 2, \ldots, 9\} \) — <em>nikad \( 0 \)</em>, jer bi tada broj zapravo imao manje od pet cifara (npr. \( 02468 = 2468 \), četvorocifren).</li>
+        <li><strong>Komplementarno brojanje.</strong> Kada je teško direktno brojati, ponekad je lakše prebrojati „svih sa nekim svojstvom A“ pa oduzeti „onih u kojima je narušeno potrebno ograničenje“. Ovde: svih \( 5^5 = 3125 \) stringova parnih cifara, minus \( 5^4 = 625 \) onih koji počinju nulom, daje \( 2500 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — pet pozicija sa izborima">
+  <h2>📐 Vizuelni prikaz — pet pozicija sa izborima</h2>
+  <div class="canvas-wrapper">
+    <canvas id="slotsDiagram" width="780" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Pet pozicija u zapisu petocifrenog broja. Iznad svake pozicije ispisan je skup dozvoljenih (parnih) cifara, a u samoj poziciji broj izbora. Vodeća pozicija ima samo \( 4 \) izbora (bez \( 0 \)), ostale po \( 5 \). Ukupno: \( 4 \times 5 \times 5 \times 5 \times 5 = 2500 \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Primeri i ne-primeri">
+  <h2>📐 Primeri i ne-primeri</h2>
+  <div class="canvas-wrapper">
+    <canvas id="examples" width="780" height="430"></canvas>
+  </div>
+  <p class="canvas-caption">Levo: pet validnih primera (svih cifara parne, vodeća \( \neq 0 \)). Desno: pet ne-primera — neki imaju neparnu cifru, neki počinju nulom (pa nisu petocifreni). Validni se broje principom množenja, ne-primeri se isključuju.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Identifikuj skup parnih cifara</h3>
+      <p>U dekadnom sistemu cifre su \( 0, 1, 2, \ldots, 9 \). Parne (deljive sa \( 2 \)) su</p>
+      <div class="math-block">\[ \{0,\ 2,\ 4,\ 6,\ 8\} \quad \text{— ukupno } 5 \text{ cifara}. \]</div>
+      <p>Ovaj skup ima jedan važan element koji posebno tretiramo: <strong>nula</strong>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Razdvoji vodeću cifru od ostalih</h3>
+      <p>Petocifren prirodan broj ima zapis \( d_1 d_2 d_3 d_4 d_5 \), gde je broj iz opsega \( [10000,\ 99999] \). Bitno ograničenje:</p>
+      <div class="callout callout-warning">
+        <p><strong>Vodeća cifra \( d_1 \) ne sme biti \( 0 \).</strong> Ako bi bila, npr. \( 02468 \), to bi se zapravo pisalo kao \( 2468 \) — četvorocifren broj. Petocifrenih brojeva u opsegu \( [00000,\ 09999] \) prosto nema.</p>
+      </div>
+      <p>Dakle:</p>
+      <ul>
+        <li><strong>Vodeća cifra \( d_1 \):</strong> mora biti parna i različita od \( 0 \). Mogući izbori: \( \{2, 4, 6, 8\} \) — <span class="result">\( 4 \) izbora</span>.</li>
+        <li><strong>Ostale cifre \( d_2, d_3, d_4, d_5 \):</strong> svaka može biti bilo koja parna cifra, uključujući \( 0 \). Mogući izbori za svaku: \( \{0, 2, 4, 6, 8\} \) — <span class="result">\( 5 \) izbora</span>.</li>
+      </ul>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto nule u sredini broja (npr. \( 20406 \)) <em>ne</em> predstavljaju problem?</summary>
+          <div class="detail-content"><p>Nula u sredini ili na kraju je sasvim legitimna — broj \( 20406 \) je petocifren, jer je između \( 10000 \) i \( 99999 \). Samo nula <em>na početku</em> menja stvarni broj cifara: \( 02406 = 2406 \) (četvorocifren). Zato samo prva pozicija ima ograničenje \( d_1 \neq 0 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Primeni princip množenja</h3>
+      <p>Pošto su izbori cifara <em>nezavisni</em> (izbor \( d_1 \) ne utiče na to šta \( d_2 \) može biti, itd.), ukupan broj petocifrenih brojeva sa svim parnim ciframa je proizvod broja izbora po pozicijama:</p>
+      <div class="math-block">\[ N \;=\; \underbrace{4}_{d_1} \cdot \underbrace{5}_{d_2} \cdot \underbrace{5}_{d_3} \cdot \underbrace{5}_{d_4} \cdot \underbrace{5}_{d_5} \;=\; 4 \cdot 5^4. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunaj proizvod</h3>
+      <div class="math-block">\[ 5^4 = 5 \cdot 5 \cdot 5 \cdot 5 = 25 \cdot 25 = 625. \]</div>
+      <div class="math-block">\[ N \;=\; 4 \cdot 625 \;=\; 2500. \]</div>
+      <p><span class="result">\( N = 2500 \)</span> — to je odgovor (B).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera komplementarnim brojanjem</h3>
+      <p>Da bismo se uverili u rezultat, prebrojmo ga drugim metodom — <strong>komplementarno brojanje</strong>:</p>
+      <ul>
+        <li><strong>Svi 5-pozicijski stringovi sa parnim ciframa (uključujući one koji počinju nulom):</strong>
+          \[ 5 \cdot 5 \cdot 5 \cdot 5 \cdot 5 = 5^5 = 3125. \]</li>
+        <li><strong>Oni koji počinju nulom \( (0\,d_2 d_3 d_4 d_5) \):</strong> \( d_1 = 0 \) je fiksiran, ostale 4 cifre po 5 izbora:
+          \[ 1 \cdot 5^4 = 625. \]
+          (To su zapravo 4-cifreni brojevi sa svim parnim ciframa.)</li>
+        <li><strong>Petocifreni brojevi sa svim parnim ciframa:</strong>
+          \[ 3125 - 625 = 2500. \;\checkmark \]</li>
+      </ul>
+      <p>Oba pristupa daju \( 2500 \), pa je rešenje pouzdano.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliko ima trocifrenih brojeva sa svim parnim ciframa?</summary>
+          <div class="detail-content"><p>Vodeća cifra: \( 4 \) izbora; svaka od preostale dve: \( 5 \) izbora. Ukupno \( 4 \cdot 5 \cdot 5 = 100 \). Najmanji: \( 200 \), najveći: \( 888 \). U opsegu od \( 100 \) do \( 999 \) ima \( 100 \) takvih, što je tačno \( \frac{4 \cdot 5^2}{1} = 100 \). ✔️</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Sanity provera — granični primeri</h3>
+      <ul>
+        <li><strong>Najmanji takav broj:</strong> \( 20000 \) (vodeća \( 2 \), ostale nule). \( \in [10000, 99999] \). ✔️</li>
+        <li><strong>Najveći takav broj:</strong> \( 88888 \) (sve osmice). \( \in [10000, 99999] \). ✔️</li>
+        <li><strong>Veličina rezultata:</strong> \( 2500 \) je oko \( 2{,}8\% \) od svih petocifrenih brojeva (kojih ima \( 90\,000 \)). To je razumno: parnih cifara je \( 5/10 = 50\% \), a uslov se traži za 5 cifara — \( 0{,}5^5 = 0{,}03125 \), pa očekivano oko \( 90000 \cdot 0{,}03125 \approx 2812 \). Naših \( 2500 \) je nešto manje (jer vodeća cifra ima slabiju verovatnoću \( 4/9 \), ne \( 5/10 \)). Konzistentno.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Princip množenja nije puko „pomnoži brojeve“ — on traži <strong>nezavisnost izbora</strong> i <strong>jasnu strukturu pozicija</strong>. Kod brojeva ova struktura je dekadni zapis: svaka pozicija ima zaseban skup dozvoljenih cifara, ali je ključno proveriti da li izbor jedne pozicije sužava izbor druge.</p>
+  <p>Ovde nije sužen — \( d_2 \) može biti <em>bilo koja</em> parna cifra bez obzira na \( d_1 \). Zato je odgovor jednostavan proizvod \( 4 \cdot 5 \cdot 5 \cdot 5 \cdot 5 \). Da je tražen broj cifara koje su <em>različite</em> ili da postoje druga ograničenja (npr. „bez ponavljanja“), formula bi morala da koristi varijacije ili permutacije, ne samo proizvod.</p>
+  <p>Najveći zamka: <em>zaboravljanje da vodeća cifra ne sme biti nula</em>. Razlika između \( 5^5 = 3125 \) (sa nulom) i \( 4 \cdot 5^4 = 2500 \) (bez nule na početku) iznosi tačno \( 5^4 = 625 \) — to je broj kombinacija u kojima je nula na čelu.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ N \;=\; 4 \cdot 5^4 \;=\; 4 \cdot 625 \;=\; 2500. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 2125 \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( 2500 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 2750 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 3000 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 3125 \)</span>
+  </div>
+  <p class="verification">Provera komplementarnim brojanjem: \( 5^5 - 5^4 = 3125 - 625 = 2500 \) ✔️.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Račun \( 5^5 = 3125 \) bez ograničenja na vodeću cifru.</strong> To je odgovor (E) — klasičan distrakor. Tu se zaboravlja da \( 02468 \) nije petocifren broj, već četvorocifren.</li>
+    <li><strong>Pogrešno tumačenje „petocifren“.</strong> Petocifren prirodan broj je iz opsega \( [10000,\ 99999] \). Stringovi tipa \( 04826 \) (sa nulom napred) ne ulaze.</li>
+    <li><strong>Pogrešan stepen.</strong> \( 4 \cdot 5^5 = 12500 \) (greška: pet petica) ili \( 5^4 = 625 \) bez množenja sa \( 4 \) (zaboravljen vodeći faktor) — oba pogrešna.</li>
+    <li><strong>Brkanje cifre i pozicije.</strong> Skup parnih cifara ima \( 5 \) elemenata, a broj cifara u petocifrenom broju je takođe \( 5 \). Lako je u žurbi pomešati šta čime množiš.</li>
+    <li><strong>Ne razlikovati „bilo koje cifre“ od „različite cifre“.</strong> Zadatak ne zahteva da cifre budu različite, pa ponavljanje je dozvoljeno (princip množenja). Da je traženo „različite parne cifre“, bilo bi \( 4 \cdot 4 \cdot 3 \cdot 2 \cdot 1 = 96 \) (varijacije bez ponavljanja) — sasvim drugi problem.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koliko ima petocifrenih prirodnih brojeva u kojima su <em>sve cifre različite parne</em> cifre? (Tj. svaka pozicija ima parnu cifru, i nijedna se ne ponavlja.)</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Sad biramo iz \( \{0, 2, 4, 6, 8\} \) <em>bez ponavljanja</em>, a vodeća cifra ne sme biti \( 0 \). To su <em>varijacije bez ponavljanja</em> sa dodatnim ograničenjem.
+      <br><br>
+      <strong>Pristup A — direktno.</strong> Vodeća cifra: 4 izbora (\( \{2,4,6,8\} \)). Za drugu poziciju: 4 izbora (preostala 4 elementa od \( \{0,2,4,6,8\} \) bez ono što smo iskoristili). Treću: 3. Četvrtu: 2. Petu: 1.
+      <br>\( 4 \cdot 4 \cdot 3 \cdot 2 \cdot 1 = 4 \cdot 24 = 96 \).
+      <br><br>
+      <strong>Pristup B — sve permutacije minus one sa nulom napred.</strong> Sve permutacije pet parnih cifara: \( 5! = 120 \). One sa nulom na prvoj poziciji: \( 4! = 24 \). Ostaje \( 120 - 24 = 96 \). ✔️
+      <br><br>
+      Dakle takvih ima samo <strong>96</strong> — daleko manje od opštih \( 2500 \), jer ograničenje „različite cifre“ je vrlo strogo (već posle 5 cifara su iscrpljene sve parne).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('slotsDiagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var tertiary  = cv('--sol-canvas-tertiary');
+    var warning   = cv('--sol-canvas-warning');
+
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Pet pozicija petocifrenog broja sa svim parnim ciframa', W / 2, 30);
+
+    // Slot sizing
+    var nSlots = 5;
+    var marginX = 40;
+    var slotGap = 18;
+    var totalGap = (nSlots - 1) * slotGap;
+    var slotW = (W - 2 * marginX - totalGap) / nSlots;
+    var slotH = 100;
+    var slotY = 200;
+
+    // Draw each slot
+    var slots = [
+      { count: 4, allowed: '{2, 4, 6, 8}', color: primary, label: 'd₁ (vodeća)', note: 'bez 0' },
+      { count: 5, allowed: '{0, 2, 4, 6, 8}', color: accent, label: 'd₂', note: '' },
+      { count: 5, allowed: '{0, 2, 4, 6, 8}', color: accent, label: 'd₃', note: '' },
+      { count: 5, allowed: '{0, 2, 4, 6, 8}', color: accent, label: 'd₄', note: '' },
+      { count: 5, allowed: '{0, 2, 4, 6, 8}', color: accent, label: 'd₅', note: '' }
+    ];
+
+    for (var i = 0; i < nSlots; i++) {
+      var sx = marginX + i * (slotW + slotGap);
+      var s = slots[i];
+
+      // Allowed set above slot
+      ctx.fillStyle = s.color;
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(s.allowed, sx + slotW / 2, slotY - 50);
+      // Note (e.g., "bez 0")
+      if (s.note) {
+        ctx.fillStyle = warning;
+        ctx.font = '12px Inter, system-ui, sans-serif';
+        ctx.fillText(s.note, sx + slotW / 2, slotY - 32);
+      }
+
+      // Slot rectangle (with rounded corners)
+      ctx.fillStyle = cvAlpha(s.color === primary ? '--sol-canvas-primary' : '--sol-canvas-accent', 0.18);
+      var rad = 10;
+      ctx.beginPath();
+      ctx.moveTo(sx + rad, slotY);
+      ctx.lineTo(sx + slotW - rad, slotY);
+      ctx.quadraticCurveTo(sx + slotW, slotY, sx + slotW, slotY + rad);
+      ctx.lineTo(sx + slotW, slotY + slotH - rad);
+      ctx.quadraticCurveTo(sx + slotW, slotY + slotH, sx + slotW - rad, slotY + slotH);
+      ctx.lineTo(sx + rad, slotY + slotH);
+      ctx.quadraticCurveTo(sx, slotY + slotH, sx, slotY + slotH - rad);
+      ctx.lineTo(sx, slotY + rad);
+      ctx.quadraticCurveTo(sx, slotY, sx + rad, slotY);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = s.color;
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      // Number of choices inside the slot (large)
+      ctx.fillStyle = s.color;
+      ctx.font = 'bold 44px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(String(s.count), sx + slotW / 2, slotY + slotH / 2 + 14);
+
+      // "izbora" small text below number
+      ctx.fillStyle = muted;
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.fillText('izbora', sx + slotW / 2, slotY + slotH / 2 + 32);
+
+      // Position label below slot
+      ctx.fillStyle = text;
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.fillText(s.label, sx + slotW / 2, slotY + slotH + 22);
+    }
+
+    // Multiplication signs between slots
+    ctx.fillStyle = muted;
+    ctx.font = 'bold 24px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var i = 0; i < nSlots - 1; i++) {
+      var sx = marginX + i * (slotW + slotGap);
+      var midX = sx + slotW + slotGap / 2;
+      ctx.fillText('×', midX, slotY + slotH / 2 + 8);
+    }
+
+    // Final calculation footer
+    var footY = slotY + slotH + 70;
+    ctx.fillStyle = text;
+    ctx.font = '15px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Ukupno (princip množenja):', W / 2, footY);
+
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 22px Inter, system-ui, sans-serif';
+    ctx.fillText('4 × 5 × 5 × 5 × 5  =  4 · 5⁴  =  2500', W / 2, footY + 32);
+
+    // Bottom hint
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('(Vodeća cifra ne sme biti 0; ostale cifre nisu ograničene unutar parnih.)', W / 2, footY + 60);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('examples');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var warning   = cv('--sol-canvas-warning');
+
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Primeri (validni) i ne-primeri (odbačeni)', W / 2, 30);
+
+    // Two columns
+    var leftX = 60, rightX = W / 2 + 40;
+    var colW = (W - 120) / 2;
+
+    // Headers
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Validni primeri', leftX + colW / 2, 70);
+
+    ctx.fillStyle = danger;
+    ctx.fillText('Ne-primeri', rightX + colW / 2, 70);
+
+    // Lines under headers
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(leftX, 78);
+    ctx.lineTo(leftX + colW, 78);
+    ctx.stroke();
+    ctx.strokeStyle = danger;
+    ctx.beginPath();
+    ctx.moveTo(rightX, 78);
+    ctx.lineTo(rightX + colW, 78);
+    ctx.stroke();
+
+    var validExamples = [
+      { num: '20000', note: 'najmanji' },
+      { num: '24680', note: 'sve različite' },
+      { num: '88888', note: 'najveći (sve isto)' },
+      { num: '40208', note: 'nule u sredini OK' },
+      { num: '62046', note: 'tipičan' }
+    ];
+
+    var invalidExamples = [
+      { num: '02468', reason: 'počinje 0 → 4-cifren', cross: 'leading' },
+      { num: '23456', reason: 'cifra 3 i 5 neparne', cross: 'odd' },
+      { num: '04060', reason: 'počinje 0 (4-cifren)', cross: 'leading' },
+      { num: '12345', reason: 'mnogo neparnih', cross: 'odd' },
+      { num: '00248', reason: 'počinje 0 → 3-cifren', cross: 'leading' }
+    ];
+
+    var lineH = 50;
+    var startY = 110;
+
+    // Draw valid examples
+    for (var i = 0; i < validExamples.length; i++) {
+      var ex = validExamples[i];
+      var y = startY + i * lineH;
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.15);
+      ctx.fillRect(leftX, y - 16, colW, 38);
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(leftX, y - 16, colW, 38);
+
+      // Number
+      ctx.fillStyle = primary;
+      ctx.font = 'bold 22px monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText(ex.num, leftX + 14, y + 6);
+
+      // Note
+      ctx.fillStyle = muted;
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(ex.note, leftX + colW - 14, y + 6);
+
+      // checkmark
+      ctx.fillStyle = primary;
+      ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('✓', leftX + 105, y + 6);
+    }
+
+    // Draw invalid examples
+    for (var i = 0; i < invalidExamples.length; i++) {
+      var ex = invalidExamples[i];
+      var y = startY + i * lineH;
+      ctx.fillStyle = cvAlpha('--sol-canvas-danger', 0.12);
+      ctx.fillRect(rightX, y - 16, colW, 38);
+      ctx.strokeStyle = danger;
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(rightX, y - 16, colW, 38);
+
+      // Number with strike-through
+      ctx.fillStyle = danger;
+      ctx.font = 'bold 22px monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText(ex.num, rightX + 14, y + 6);
+      // strike line
+      var nW = ctx.measureText(ex.num).width;
+      ctx.strokeStyle = danger;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(rightX + 14, y);
+      ctx.lineTo(rightX + 14 + nW, y);
+      ctx.stroke();
+
+      // Reason
+      ctx.fillStyle = muted;
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(ex.reason, rightX + colW - 14, y + 6);
+
+      // X mark
+      ctx.fillStyle = danger;
+      ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('✗', rightX + 105, y + 6);
+    }
+
+    // Footer
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Ukupno validnih: 2500', W / 2, H - 22);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Petocifreni brojevi sa svim parnim ciframa — princip množenja",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["princip množenja", "brojanje", "varijacije sa ponavljanjem", "vodeća cifra"]
+}
+BRAINSPARK_META-->

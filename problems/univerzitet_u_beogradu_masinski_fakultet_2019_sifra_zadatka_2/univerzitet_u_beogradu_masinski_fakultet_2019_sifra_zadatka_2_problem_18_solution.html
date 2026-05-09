@@ -1,0 +1,641 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+PROBLEM: Krug ima jednacinu x^2 + y^2 + 2x - y - 11/4 = 0. Naci x_C + r, gde su (x_C, y_C) koordinate centra i r poluprecnik.
+
+KOMPLETIRANJE KVADRATA:
+x^2 + y^2 + 2x - y - 11/4 = 0
+(x^2 + 2x) + (y^2 - y) = 11/4
+(x^2 + 2x + 1) - 1 + (y^2 - y + 1/4) - 1/4 = 11/4
+(x + 1)^2 + (y - 1/2)^2 = 11/4 + 1 + 1/4
+                        = 11/4 + 4/4 + 1/4
+                        = 16/4 = 4
+
+KANONSKI OBLIK: (x + 1)^2 + (y - 1/2)^2 = 4
+Centar: C = (-1, 1/2)
+Poluprecnik: r = sqrt(4) = 2
+
+ZBIR: x_C + r = -1 + 2 = 1.
+
+OPSTI OBLIK kruga: x^2 + y^2 + Dx + Ey + F = 0
+Centar: (-D/2, -E/2)
+Poluprecnik: r = sqrt((D/2)^2 + (E/2)^2 - F)
+
+Ovde D = 2, E = -1, F = -11/4
+Centar: (-1, 1/2) ✓
+r = sqrt((1)^2 + (1/2)^2 - (-11/4)) = sqrt(1 + 1/4 + 11/4) = sqrt(1 + 12/4) = sqrt(1 + 3) = sqrt(4) = 2 ✓
+
+ODGOVOR: (B) 1.
+
+OPCIJE:
+- (A) 3 — ako bi neko zaboravio da je x_C negativan, pa stavio 1 + 2 = 3
+- (B) 1 — TACAN
+- (C) 4 — ako bi zaboravio negativnost x_C ali pomeren r
+- (D) 2 — ako bi neko stavio samo r (zaboraviti centar)
+- (E) 7/4 — ako bi neko pogresno racunao (npr. y_C + r)
+
+VIZUELNI PRIKAZ — 3 statična canvasa:
+1) Krug u xy-ravni sa centrom C = (-1, 1/2), poluprecnikom r = 2 — sa koordinatnim sistemom, x i y osama, mrezom
+2) Vizualizacija kompletiranja kvadrata kao algebraicke transformacije: pokazujemo koji clanovi se grupisu, koji se "prelijevaju" sa desne strane
+3) Naglasak na tome sta je x_C i sta je r, vizualno
+
+Uradicu samo 2 canvasa za #18 jer je manje slozeno od #16/17.
+
+Zapravo, dovoljno je 2-3 canvasa. Neka budu 2: krug u koordinatnom sistemu i tabela kompletiranja kvadrata — ali tabela nije canvas, vec HTML... Ipak, mozemo napraviti 2 canvasa:
+1) Krug sa centrom i poluprecnikom u koordinatnom sistemu
+2) Vizuelno pamtenje formule: opsti oblik vs kanonski
+
+Ili 3 canvasa za premium kvalitet:
+1) Krug u xy ravni
+2) Kompletiranje kvadrata (vizualizovano)
+3) Geometrijska interpretacija x_C + r kao "koordinate krajnje desne tacke kruga preko x-ose"
+
+Zapravo, najlepsi pristup: x_C + r = x-koordinata krajnje desne tacke kruga (jer od centra na rastojanju r udesno).
+Tako odmah vidimo: x_C + r = -1 + 2 = 1, i to je x-koordinata tacke (1, 1/2) — najistocnija tacka kruga.
+
+INTERAKTIVNI element nije neophodan, ali mozemo dodati slider ako zelimo. Bolje statika.
+</script>
+
+<h1 data-card="problem-title">Centar i poluprečnik kruga iz opšteg oblika</h1>
+<p data-card="problem-subtitle" class="subtitle">Analitička geometrija: kompletiranje kvadrata, kanonski oblik kružnice</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Zbir \( x \)-koordinate centra i poluprečnika kruga zadatog jednačinom</p>
+  <div class="math-block">\[ x^2 + y^2 + 2x - y - \dfrac{11}{4} = 0 \]</div>
+  <p>je:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">jednačina</span>
+      <span class="given-value">\( x^2 + y^2 + 2x - y - \tfrac{11}{4} = 0 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">tražimo</span>
+      <span class="given-value">\( x_C + r \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 4 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \tfrac{7}{4} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Kompletiraćemo kvadrate u izrazima sa \( x \) i \( y \), čime ćemo prevesti opštu jednačinu u kanonski oblik \( (x - x_C)^2 + (y - y_C)^2 = r^2 \). Tada se centar i poluprečnik direktno čitaju iz kanonskog oblika, pa ostaje samo \( x_C + r \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Jednačina kruga i kompletiranje kvadrata</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Kanonski oblik</span> \( (x - x_C)^2 + (y - y_C)^2 = r^2 \) — krug sa centrom \( C(x_C, y_C) \) i poluprečnikom \( r \).</li>
+        <li><span class="formula-label">Opšti oblik</span> \( x^2 + y^2 + Dx + Ey + F = 0 \). Centar: \( C(-D/2,\, -E/2) \). Poluprečnik: \( r = \sqrt{(D/2)^2 + (E/2)^2 - F} \), pod uslovom da je izraz pod korenom pozitivan.</li>
+        <li><span class="formula-label">Kompletiranje kvadrata</span> \( x^2 + 2px = (x + p)^2 - p^2 \). Najčešće: dodaj i oduzmi \( p^2 \), gde je \( p \) polovina koeficijenta linearnog člana.</li>
+        <li><span class="formula-label">Identifikator za krug</span> Da bi opšta kvadratna jednačina predstavljala krug, koeficijenti uz \( x^2 \) i \( y^2 \) moraju biti jednaki, mešovitog \( xy \) člana ne sme biti, i \( r^2 > 0 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Dijagram 1 — krug u koordinatnoj ravni">
+  <h2>📐 Dijagram 1 — krug u koordinatnoj ravni</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram1" width="700" height="600"></canvas>
+  </div>
+  <p class="canvas-caption">Krug \( (x+1)^2 + (y - \tfrac{1}{2})^2 = 4 \) sa centrom \( C(-1, \tfrac{1}{2}) \) i poluprečnikom \( r = 2 \). Najistočnija tačka kruga je \( (x_C + r,\, y_C) = (1, \tfrac{1}{2}) \), pa traženi zbir \( x_C + r \) ima jasno geometrijsko značenje: <em>x-koordinata krajnje desne tačke kruga</em>.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Dijagram 2 — kompletiranje kvadrata">
+  <h2>📐 Dijagram 2 — kompletiranje kvadrata</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram2" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Vizualizacija prevođenja iz opšteg u kanonski oblik. Iz \( x^2 + 2x \) izvlačimo \( (x+1)^2 - 1 \); iz \( y^2 - y \) izvlačimo \( (y - \tfrac{1}{2})^2 - \tfrac{1}{4} \). Konstantne ostatke \( -1 \) i \( -\tfrac{1}{4} \) prebacujemo na desnu stranu, gde se sabiraju sa \( \tfrac{11}{4} \) i daju \( 4 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Grupišemo \( x \)-članove i \( y \)-članove</h3>
+      <p>Polazimo od jednačine</p>
+      <div class="math-block">\[ x^2 + y^2 + 2x - y - \dfrac{11}{4} = 0. \]</div>
+      <p>Razdvojimo članove sa \( x \) od onih sa \( y \) i prebacimo konstantu na desnu stranu:</p>
+      <div class="math-block">\[ (x^2 + 2x) + (y^2 - y) = \dfrac{11}{4}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Kompletiramo kvadrat za \( x \)</h3>
+      <p>Linearni koeficijent uz \( x \) je \( 2 \), a polovina toga je \( 1 \). Dodajemo i oduzimamo \( 1^2 = 1 \):</p>
+      <div class="math-block">\[ x^2 + 2x = (x + 1)^2 - 1. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kako se „pogađa" sabirak za kompletiranje?</summary>
+          <div class="detail-content"><p>Pravilo: ako linearni član ima oblik \( 2px \), onda je sabirak koji „popunjava" kvadrat upravo \( p^2 \). Ovde \( 2p = 2 \Rightarrow p = 1 \), pa sabirak je \( 1 \). Nakon dodavanja i oduzimanja, \( x^2 + 2x + 1 = (x+1)^2 \) i ostatak \( -1 \) odlazi pod „repke".</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Kompletiramo kvadrat za \( y \)</h3>
+      <p>Linearni koeficijent uz \( y \) je \( -1 \), a polovina toga je \( -\tfrac{1}{2} \). Dodajemo i oduzimamo \( \left(-\tfrac{1}{2}\right)^2 = \tfrac{1}{4} \):</p>
+      <div class="math-block">\[ y^2 - y = \left(y - \dfrac{1}{2}\right)^2 - \dfrac{1}{4}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Sklapamo kanonski oblik</h3>
+      <p>Vraćamo se u jednačinu sa kompletiranim kvadratima:</p>
+      <div class="math-block">\[ (x + 1)^2 - 1 + \left(y - \dfrac{1}{2}\right)^2 - \dfrac{1}{4} = \dfrac{11}{4}. \]</div>
+      <p>Konstantne ostatke \( -1 \) i \( -\tfrac{1}{4} \) prebacujemo na desnu stranu (tj. dodajemo \( 1 \) i \( \tfrac{1}{4} \)):</p>
+      <div class="math-block">\[ (x + 1)^2 + \left(y - \dfrac{1}{2}\right)^2 = \dfrac{11}{4} + 1 + \dfrac{1}{4} = \dfrac{11 + 4 + 1}{4} = \dfrac{16}{4} = 4. \]</div>
+      <div class="math-block">\[ \boxed{(x + 1)^2 + \left(y - \dfrac{1}{2}\right)^2 = 4.} \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Čitamo centar i poluprečnik</h3>
+      <p>Iz kanonskog oblika \( (x - x_C)^2 + (y - y_C)^2 = r^2 \), poredeći sa \( (x + 1)^2 + (y - \tfrac{1}{2})^2 = 4 \), dobijamo</p>
+      <div class="math-block">\[ x_C = -1, \quad y_C = \dfrac{1}{2}, \quad r^2 = 4 \;\Longrightarrow\; r = 2. \]</div>
+      <p>Pažnja na znakove: \( (x + 1)^2 = (x - (-1))^2 \), pa \( x_C = -1 \), a ne \( +1 \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš pozitivan koren \( r = 2 \)?</summary>
+          <div class="detail-content"><p>Poluprečnik je po definiciji nenegativan broj. Iz \( r^2 = 4 \) imamo \( r = \pm 2 \), ali geometrijski uzima samo \( r = +2 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Konačan zbir</h3>
+      <p>Tražimo</p>
+      <div class="math-block">\[ x_C + r = -1 + 2 = 1. \]</div>
+      <p>Geometrijski, to je \( x \)-koordinata krajnje desne tačke kruga, jer dodavanjem \( r \) na \( x_C \) pomeramo se „udesno" za poluprečnik. Najistočnija tačka kruga je \( (1, \tfrac{1}{2}) \).</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Izraz \( x_C + r \) ima <em>geometrijsko</em> značenje: to je \( x \)-koordinata <strong>krajnje desne tačke kruga</strong>. Slično, \( x_C - r \) je krajnje leva tačka, \( y_C + r \) najgornja, a \( y_C - r \) najdonja. Ovaj uvid daje brzu proveru: ako vidimo da je krajnje desna tačka u \( (1, \tfrac{1}{2}) \), odmah je \( x_C + r = 1 \). Drugi važan uvid: <em>kompletiranje kvadrata uvek prebacuje konstantu na desnu stranu sa <u>plus</u> znakom</em> jer „popravljamo" levo dodajući kvadrate.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ x_C + r = -1 + 2 = 1 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 3 \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( 1 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 4 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 2 \)</span>
+    <span class="answer-option" data-option="E">(E) \( \tfrac{7}{4} \)</span>
+  </div>
+  <p class="verification">Provera preko opšteg oblika: za \( x^2 + y^2 + Dx + Ey + F = 0 \) je \( D = 2 \), \( E = -1 \), \( F = -\tfrac{11}{4} \). Centar \( (-D/2, -E/2) = (-1, \tfrac{1}{2}) \), a \( r = \sqrt{(D/2)^2 + (E/2)^2 - F} = \sqrt{1 + \tfrac{1}{4} + \tfrac{11}{4}} = \sqrt{4} = 2 \). Otud \( x_C + r = -1 + 2 = 1 \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pomešati znak: misliti da \( (x + 1)^2 \) znači \( x_C = +1 \). U kanonskom obliku je \( (x - x_C)^2 \), pa \( (x + 1)^2 = (x - (-1))^2 \) i \( x_C = -1 \).</li>
+    <li>Pri kompletiranju kvadrata zaboraviti da se „repki" \( -p^2 \) i \( -q^2 \) <em>oduzimaju</em> sa leve strane, pa kada ih prebacujemo na desnu, oni se tamo <em>dodaju</em> sa pozitivnim znakom.</li>
+    <li>Pomešati \( r^2 \) sa \( r \): iz \( r^2 = 4 \) <strong>nije</strong> \( r = 4 \), nego \( r = 2 \). Zaboravljanjem korena dobija se opcija (C) ili (E).</li>
+    <li>Greška u aritmetici sa razlomcima: \( \tfrac{11}{4} + 1 + \tfrac{1}{4} \) treba pretvoriti u zajednički imenilac \( 4 \), pa \( \tfrac{11 + 4 + 1}{4} = \tfrac{16}{4} = 4 \), a ne npr. \( \tfrac{12}{4} = 3 \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Pokaži da opšta kvadratna jednačina \( x^2 + y^2 + Dx + Ey + F = 0 \) predstavlja krug ako i samo ako je \( D^2 + E^2 - 4F > 0 \). Šta se događa kada je \( D^2 + E^2 - 4F = 0 \), odnosno kada je negativno?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Kompletiranjem kvadrata: \( (x + D/2)^2 + (y + E/2)^2 = D^2/4 + E^2/4 - F = (D^2 + E^2 - 4F)/4 \). Ako je desna strana strogo pozitivna, dobijamo krug poluprečnika \( r = \tfrac{1}{2}\sqrt{D^2 + E^2 - 4F} \). Ako je \( = 0 \), jednačina ima samo jedno rešenje — tačku \( (-D/2, -E/2) \) — što je <em>degenerisani krug poluprečnika 0</em>. Ako je \( < 0 \), nema realnih rešenja, pa skup rešenja je prazan (formalno: „imaginarni krug"). Za naš zadatak: \( D^2 + E^2 - 4F = 4 + 1 + 11 = 16 > 0 \), pa imamo pravi krug poluprečnika \( \tfrac{1}{2} \cdot 4 = 2 \). ✓</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram1');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var gridC     = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Koordinatni sistem: x od -5 do 5, y od -3 do 4
+    var xMin = -5, xMax = 5, yMin = -3, yMax = 4;
+    var leftPad = 50, topPad = 60, rightPad = 30, bottomPad = 40;
+    var W = canvas.width - leftPad - rightPad;
+    var H = canvas.height - topPad - bottomPad;
+    var unit = Math.min(W / (xMax - xMin), H / (yMax - yMin));
+    var ox = leftPad + (-xMin) * unit;
+    var oy = topPad + yMax * unit;
+
+    function X(x) { return ox + x * unit; }
+    function Y(y) { return oy - y * unit; }
+
+    // Mreza
+    ctx.strokeStyle = gridC;
+    ctx.lineWidth = 1;
+    for (var i = Math.ceil(xMin); i <= Math.floor(xMax); i++) {
+      ctx.beginPath();
+      ctx.moveTo(X(i), topPad);
+      ctx.lineTo(X(i), topPad + H);
+      ctx.stroke();
+    }
+    for (var j = Math.ceil(yMin); j <= Math.floor(yMax); j++) {
+      ctx.beginPath();
+      ctx.moveTo(leftPad, Y(j));
+      ctx.lineTo(leftPad + W, Y(j));
+      ctx.stroke();
+    }
+
+    // Ose
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.8;
+    // x-osa
+    ctx.beginPath();
+    ctx.moveTo(leftPad, Y(0));
+    ctx.lineTo(leftPad + W, Y(0));
+    ctx.stroke();
+    // y-osa
+    ctx.beginPath();
+    ctx.moveTo(X(0), topPad);
+    ctx.lineTo(X(0), topPad + H);
+    ctx.stroke();
+
+    // Strelice na osama
+    function arrow(x1, y1, x2, y2) {
+      ctx.beginPath();
+      ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+      var ang = Math.atan2(y2-y1, x2-x1);
+      ctx.beginPath();
+      ctx.moveTo(x2, y2);
+      ctx.lineTo(x2 - 8*Math.cos(ang - Math.PI/6), y2 - 8*Math.sin(ang - Math.PI/6));
+      ctx.lineTo(x2 - 8*Math.cos(ang + Math.PI/6), y2 - 8*Math.sin(ang + Math.PI/6));
+      ctx.closePath();
+      ctx.fillStyle = axis;
+      ctx.fill();
+    }
+    arrow(X(0), topPad + H, X(0), topPad - 8); // y up
+    arrow(leftPad, Y(0), leftPad + W + 8, Y(0)); // x right
+
+    // Oznake brojeva
+    ctx.font = '13px sans-serif';
+    ctx.fillStyle = text;
+    for (var i = Math.ceil(xMin); i <= Math.floor(xMax); i++) {
+      if (i === 0) continue;
+      ctx.fillText(String(i), X(i) - 5, Y(0) + 16);
+    }
+    for (var j = Math.ceil(yMin); j <= Math.floor(yMax); j++) {
+      if (j === 0) continue;
+      ctx.fillText(String(j), X(0) + 6, Y(j) + 4);
+    }
+    ctx.fillText('0', X(0) + 6, Y(0) + 16);
+
+    // Oznake osa
+    ctx.font = 'bold italic 16px sans-serif';
+    ctx.fillStyle = axis;
+    ctx.fillText('x', leftPad + W + 8, Y(0) + 18);
+    ctx.fillText('y', X(0) - 16, topPad - 4);
+
+    // KRUG: centar (-1, 0.5), poluprecnik 2
+    var cxGeom = -1, cyGeom = 0.5, rGeom = 2;
+    var cxCanvas = X(cxGeom), cyCanvas = Y(cyGeom);
+    var rCanvas = rGeom * unit;
+
+    // Popuna
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.10);
+    ctx.beginPath();
+    ctx.arc(cxCanvas, cyCanvas, rCanvas, 0, Math.PI*2);
+    ctx.fill();
+
+    // Kontura
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.arc(cxCanvas, cyCanvas, rCanvas, 0, Math.PI*2);
+    ctx.stroke();
+
+    // Centar
+    ctx.fillStyle = secondary;
+    ctx.beginPath();
+    ctx.arc(cxCanvas, cyCanvas, 6, 0, Math.PI*2);
+    ctx.fill();
+    ctx.strokeStyle = text;
+    ctx.lineWidth = 1.4;
+    ctx.stroke();
+
+    // Poluprecnik (linija od centra do najistocnije tacke)
+    var rEastX = X(cxGeom + rGeom), rEastY = Y(cyGeom);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.moveTo(cxCanvas, cyCanvas);
+    ctx.lineTo(rEastX, rEastY);
+    ctx.stroke();
+
+    // Krajnje desna tacka
+    ctx.fillStyle = highlight;
+    ctx.beginPath();
+    ctx.arc(rEastX, rEastY, 6, 0, Math.PI*2);
+    ctx.fill();
+    ctx.strokeStyle = text;
+    ctx.lineWidth = 1.4;
+    ctx.stroke();
+
+    // Vertikalni vodeci linija od najistocnije tacke do x-ose
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(rEastX, rEastY);
+    ctx.lineTo(rEastX, Y(0));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Tacka na x-osi (1, 0)
+    ctx.fillStyle = highlight;
+    ctx.beginPath();
+    ctx.arc(rEastX, Y(0), 5, 0, Math.PI*2);
+    ctx.fill();
+    ctx.strokeStyle = text;
+    ctx.lineWidth = 1.2;
+    ctx.stroke();
+
+    // Oznake
+    ctx.font = 'bold 15px sans-serif';
+    ctx.fillStyle = secondary;
+    ctx.fillText('C(−1, ½)', cxCanvas + 10, cyCanvas - 12);
+
+    ctx.fillStyle = highlight;
+    ctx.fillText('(1, ½)', rEastX + 10, rEastY - 8);
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold italic 14px sans-serif';
+    ctx.fillText('r = 2', (cxCanvas + rEastX)/2 - 14, cyCanvas - 8);
+
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 14px sans-serif';
+    ctx.fillText('x = 1', rEastX - 16, Y(0) + 32);
+
+    // Naslov
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px sans-serif';
+    ctx.fillText('Krug: (x+1)² + (y−½)² = 4', 20, 28);
+
+    ctx.fillStyle = muted;
+    ctx.font = '13px sans-serif';
+    ctx.fillText('x_C + r = −1 + 2 = 1 → x-koordinata najistočnije tačke kruga.', 20, 50);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram2');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Vizualizacija kompletiranja kvadrata kao "tabela transformacija"
+    // Tri reda:
+    // 1) Pocetni: x^2 + 2x + y^2 - y = 11/4
+    // 2) Sa kompletiranim kvadratima: (x+1)^2 - 1 + (y - 1/2)^2 - 1/4 = 11/4
+    // 3) Konacni kanonski oblik: (x+1)^2 + (y - 1/2)^2 = 4
+
+    var leftMargin = 40, topMargin = 70;
+    var rowH = 90;
+
+    // Naslov
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px sans-serif';
+    ctx.fillText('Vizualizacija kompletiranja kvadrata', 20, 28);
+
+    ctx.fillStyle = muted;
+    ctx.font = '13px sans-serif';
+    ctx.fillText('Iz opšteg oblika u kanonski: dodajemo kvadrate, a ostatke prebacujemo desno.', 20, 50);
+
+    // Kutije za x-grupu i y-grupu
+    function box(x, y, w, h, fill, stroke, label, sublabel) {
+      ctx.fillStyle = fill;
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.rect(x, y, w, h);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = text;
+      ctx.font = 'bold italic 16px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, x + w/2, y + 24);
+      if (sublabel) {
+        ctx.font = '13px sans-serif';
+        ctx.fillStyle = muted;
+        ctx.fillText(sublabel, x + w/2, y + 44);
+      }
+      ctx.textAlign = 'left';
+    }
+
+    // Red 1: x^2 + 2x | y^2 − y | = 11/4
+    var y1 = topMargin + 10;
+    ctx.font = 'bold 18px sans-serif';
+    ctx.fillStyle = text;
+    ctx.fillText('1. Grupišemo članove sa istom promenljivom:', leftMargin, y1);
+
+    box(leftMargin + 40, y1 + 16, 160, 50, cvAlpha('--sol-canvas-primary', 0.18), primary, 'x² + 2x', 'x-grupa');
+    ctx.fillStyle = text;
+    ctx.font = 'bold 22px serif';
+    ctx.fillText('+', leftMargin + 210, y1 + 50);
+    box(leftMargin + 230, y1 + 16, 160, 50, cvAlpha('--sol-canvas-accent', 0.18), accent, 'y² − y', 'y-grupa');
+    ctx.fillStyle = text;
+    ctx.font = 'bold 22px serif';
+    ctx.fillText('=  11/4', leftMargin + 400, y1 + 50);
+
+    // Red 2: (x+1)^2 − 1 | (y − 1/2)^2 − 1/4 | = 11/4
+    var y2 = y1 + rowH;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 18px sans-serif';
+    ctx.fillText('2. Kompletiramo kvadrate:', leftMargin, y2);
+
+    box(leftMargin + 40, y2 + 16, 195, 50, cvAlpha('--sol-canvas-primary', 0.18), primary, '(x + 1)² − 1', 'p = 1, p² = 1');
+    ctx.fillStyle = text;
+    ctx.font = 'bold 22px serif';
+    ctx.fillText('+', leftMargin + 245, y2 + 50);
+    box(leftMargin + 265, y2 + 16, 215, 50, cvAlpha('--sol-canvas-accent', 0.18), accent, '(y − 1/2)² − 1/4', 'p = −1/2, p² = 1/4');
+    ctx.fillStyle = text;
+    ctx.font = 'bold 22px serif';
+    ctx.fillText('=  11/4', leftMargin + 490, y2 + 50);
+
+    // Red 3: (x+1)^2 + (y − 1/2)^2 = 4
+    var y3 = y2 + rowH;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 18px sans-serif';
+    ctx.fillText('3. Repke prebacujemo desno (11/4 + 1 + 1/4 = 4):', leftMargin, y3);
+
+    box(leftMargin + 40, y3 + 16, 175, 50, cvAlpha('--sol-canvas-primary', 0.20), primary, '(x + 1)²', '');
+    ctx.fillStyle = text;
+    ctx.font = 'bold 22px serif';
+    ctx.fillText('+', leftMargin + 225, y3 + 50);
+    box(leftMargin + 245, y3 + 16, 195, 50, cvAlpha('--sol-canvas-accent', 0.20), accent, '(y − 1/2)²', '');
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 24px serif';
+    ctx.fillText('=  4', leftMargin + 450, y3 + 50);
+
+    // Strelice (vertikalne) izmedju redova
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.8;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(leftMargin + 130, y1 + 70);
+    ctx.lineTo(leftMargin + 130, y2 + 14);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(leftMargin + 320, y1 + 70);
+    ctx.lineTo(leftMargin + 360, y2 + 14);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(leftMargin + 140, y2 + 70);
+    ctx.lineTo(leftMargin + 130, y3 + 14);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(leftMargin + 360, y2 + 70);
+    ctx.lineTo(leftMargin + 350, y3 + 14);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Donji komentar
+    var y4 = y3 + rowH + 5;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px sans-serif';
+    ctx.fillText('Iz kanonskog oblika čitamo: x_C = −1, y_C = 1/2, r² = 4 → r = 2.', leftMargin, y4);
+    ctx.fillStyle = highlight;
+    ctx.fillText('Konačan zbir: x_C + r = −1 + 2 = 1.', leftMargin, y4 + 22);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Centar i poluprečnik kruga preko kompletiranja kvadrata",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["analitička geometrija", "krug", "kompletiranje kvadrata", "kanonski oblik", "centar i poluprečnik"]
+}
+BRAINSPARK_META-->

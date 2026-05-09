@@ -1,0 +1,703 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: A(1,2), B(4,-7), C(6,-3). D(x0, y0) je podnožje visine spuštene
+iz C na stranicu AB. Naci x0 · y0.
+
+Pristup 1 — preko jednacine prave AB i formule za podnožje normale.
+
+Pravac AB: B - A = (3, -9), kolinearan sa (1, -3).
+Normala na AB ima pravac koji je upravan na (1,-3) → (3,1).
+Slope of AB: -9/3 = -3, pa je k_AB = -3.
+Jednacina prave AB:  y - 2 = -3(x - 1)  →  y = -3x + 5  →  3x + y - 5 = 0.
+
+Provera: A(1,2): 3·1 + 2 - 5 = 0 ✓. B(4,-7): 3·4 + (-7) - 5 = 12 - 7 - 5 = 0 ✓.
+
+Podnožje normale iz C(6,-3) na pravu 3x + y - 5 = 0:
+Formula: ako je prava ax + by + c = 0 i tačka P, onda podnožje normale iz P je
+  D = P - (a·Px + b·Py + c) / (a² + b²) · (a, b).
+
+Ovde: a=3, b=1, c=-5.
+a·Cx + b·Cy + c = 3·6 + 1·(-3) + (-5) = 18 - 3 - 5 = 10.
+a² + b² = 9 + 1 = 10.
+Faktor t = 10/10 = 1.
+D = C - 1·(3, 1) = (6 - 3, -3 - 1) = (3, -4).
+
+Provera 1: D na pravoj? 3·3 + (-4) - 5 = 9 - 4 - 5 = 0 ✓.
+Provera 2: CD ⊥ AB? CD = D - C = (3-6, -4-(-3)) = (-3, -1).
+   AB pravac = (3, -9). CD · AB = -3·3 + (-1)·(-9) = -9 + 9 = 0 ✓.
+
+x0 · y0 = 3 · (-4) = -12.
+
+Tacan odgovor: (A) -12.
+
+Pristup 2 — parametarski.
+D = A + t·(B - A) = (1 + 3t, 2 - 9t).
+CD = D - C = (1 + 3t - 6, 2 - 9t - (-3)) = (-5 + 3t, 5 - 9t).
+CD ⊥ (B - A) = (3, -9):
+  (-5 + 3t)·3 + (5 - 9t)·(-9) = 0
+  -15 + 9t - 45 + 81t = 0
+  90t - 60 = 0
+  t = 60/90 = 2/3.
+Pa D = (1 + 3·(2/3), 2 - 9·(2/3)) = (1 + 2, 2 - 6) = (3, -4). ✓
+
+Pristup 3 — preko presečne tačke prave AB i normale iz C.
+Normala iz C upravna je na AB, dakle ima slope = 1/3 (recipročno-suprotno -3).
+Jednacina: y - (-3) = (1/3)(x - 6)  →  y = x/3 - 2  →  x - 3y - 6 = 0.
+Sistem:
+  3x + y - 5 = 0
+  x - 3y - 6 = 0
+Iz druge: x = 3y + 6. Zameni: 3(3y + 6) + y - 5 = 0 → 9y + 18 + y - 5 = 0 → 10y = -13 → y = -13/10. (?)
+Hmm, dobijam y = -1.3, ne -4. Provera...
+3x + y - 5 = 0 i x - 3y - 6 = 0.
+Iz prve: y = 5 - 3x. Zameni u drugu: x - 3(5 - 3x) - 6 = 0 → x - 15 + 9x - 6 = 0 → 10x = 21 → x = 2.1.
+y = 5 - 3·2.1 = 5 - 6.3 = -1.3. Hmm.
+Stop. Slope normale iz C je -1/k_AB = -1/(-3) = 1/3. ✓ OK to je dobro.
+Ali normalna ide kroz C(6,-3). y - (-3) = (1/3)(x - 6) → y + 3 = (x - 6)/3 → 3(y+3) = x - 6 → 3y + 9 = x - 6 → x - 3y = 15 → x - 3y - 15 = 0.
+
+GREŠKA! Ne -6 nego -15.
+Sistem:
+  3x + y = 5
+  x - 3y = 15
+Iz druge: x = 3y + 15. Zameni: 3(3y + 15) + y = 5 → 9y + 45 + y = 5 → 10y = -40 → y = -4. ✓
+Pa x = 3·(-4) + 15 = -12 + 15 = 3. ✓
+Tako D = (3, -4), x0·y0 = -12. ✓
+
+Sva tri pristupa daju isti rezultat.
+
+Najelegantniji za prikaz: pristup 1 (formula direktno) ili pristup 2 (parametarski sa
+ortogonalnoscu). Pokazaću parametarski jer je geometrijski najjasniji.
+
+Visualizacije (3 canvas-a):
+  1. STATIC: koordinatni sistem sa A, B, C označenima, trougao ABC nacrtan,
+     pravu AB istaknuta i prikazani vektor B - A.
+  2. STATIC: dodavanje podnožja D na AB sa malim kvadratićem (right-angle
+     marker) na D pokazujuci CD ⊥ AB. Konstrukcijska linija od C do D
+     iscrtkana ili istaknuta.
+  3. STATIC sa konacnim odgovorom: D(3, -4), x0·y0 = -12 istaknuto.
+
+Static je dovoljan jer su tačke fiksne.
+
+Pitfalls:
+  - Pomesati pravac AB sa pravcem CA ili CB.
+  - Pogrešno izvesti slope (preokrenut znak): slope = (y_B - y_A)/(x_B - x_A) = (-7-2)/(4-1) = -9/3 = -3.
+  - Pri pisanju normale: slope normale = -1/k = 1/3 (NE -3 i NE 3).
+  - Aritmetička greška u sistemu (vidi gore — bila je u skripti pre korekcije).
+  - Pomesati D sa centrom (sredinom) AB ili težištem trougla.
+  - Računati x0 + y0 umesto x0 · y0.
+  - Greška u znaku: y0 = -4, ne 4.
+</script>
+
+<h1 data-card="problem-title">Podnožje visine trougla — analitička geometrija</h1>
+<p data-card="problem-subtitle" class="subtitle">Geometrija u koordinatnoj ravni — prava kroz dve tačke, normala, presečna tačka, podnožje visine</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Date su tačke \( A(1, 2) \), \( B(4, -7) \) i \( C(6, -3) \). Ako je \( D(x_0, y_0) \) podnožje visine spuštene iz tačke \( C \) na stranicu \( AB \) trougla \( ABC \), tada je \( x_0 \cdot y_0 \) jednako:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">A</span>
+      <span class="given-value">\( (1, 2) \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">B</span>
+      <span class="given-value">\( (4, -7) \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">C</span>
+      <span class="given-value">\( (6, -3) \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">tražimo</span>
+      <span class="given-value">\( x_0 \cdot y_0 = ? \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( -12 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( -6 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 4 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 8 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 16 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Napišemo jednačinu prave \( AB \) (npr. \( 3x + y - 5 = 0 \)). Visina iz \( C \) je normala na \( AB \) kroz \( C \); njeno podnožje \( D \) je presečna tačka prave \( AB \) i te normale. Alternativno, parametarski stavimo \( D = A + t(B - A) \) i nametnemo uslov ortogonalnosti \( \vec{CD} \perp \vec{AB} \). Oba pristupa daju \( D = (3, -4) \), pa je \( x_0 y_0 = -12 \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Prava kroz dve tačke, normala i podnožje normale</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Prava kroz dve tačke</span> Kroz \( A(x_1, y_1) \) i \( B(x_2, y_2) \) prolazi prava koeficijenta pravca \( k = \dfrac{y_2 - y_1}{x_2 - x_1} \) (ako \( x_1 \neq x_2 \)). Jednačina: \( y - y_1 = k(x - x_1) \).</li>
+        <li><span class="formula-label">Uslov upravnosti</span> Dve prave sa koeficijentima pravca \( k_1, k_2 \) su upravne ako \( k_1 \cdot k_2 = -1 \). Ekvivalentno, vektori pravaca \( \vec{u}, \vec{v} \) su upravni ako \( \vec{u} \cdot \vec{v} = 0 \).</li>
+        <li><span class="formula-label">Parametarski oblik prave</span> Tačka na pravoj \( AB \) ima oblik \( P(t) = A + t(B - A) \), \( t \in \mathbb{R} \). Za \( t = 0 \) vraća \( A \), za \( t = 1 \) vraća \( B \), za \( t \in (0,1) \) — između.</li>
+        <li><span class="formula-label">Skalarni proizvod</span> \( \vec{u} \cdot \vec{v} = u_1 v_1 + u_2 v_2 \). Vektori su upravni \( \iff \) skalarni proizvod jednak nuli.</li>
+        <li><span class="formula-label">Podnožje normale (formula)</span> Iz tačke \( P \) na pravu \( ax + by + c = 0 \), podnožje normale je \( D = P - \dfrac{aP_x + bP_y + c}{a^2 + b^2}(a, b) \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — trougao ABC">
+  <h2>📐 Vizuelni prikaz — trougao ABC</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diag-triangle" width="720" height="600"></canvas>
+  </div>
+  <p class="canvas-caption">Tačke \( A(1, 2) \), \( B(4, -7) \), \( C(6, -3) \) i trougao \( ABC \). Stranica \( AB \) ima koeficijent pravca \( k_{AB} = \dfrac{-7 - 2}{4 - 1} = -3 \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — visina iz C i podnožje D">
+  <h2>📐 Vizuelni prikaz — visina iz \( C \) i podnožje \( D \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diag-foot" width="720" height="600"></canvas>
+  </div>
+  <p class="canvas-caption">Visina iz \( C \) je normala na \( AB \) kroz \( C \); njeno podnožje \( D = (3, -4) \) leži na \( AB \). Mali kvadratić u \( D \) označava da je \( CD \perp AB \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavi jednačinu prave \( AB \)</h3>
+      <p>Kroz \( A(1, 2) \) i \( B(4, -7) \). Koeficijent pravca:</p>
+      <div class="math-block">\[ k_{AB} = \frac{y_B - y_A}{x_B - x_A} = \frac{-7 - 2}{4 - 1} = \frac{-9}{3} = -3. \]</div>
+      <p>Jednačina prave kroz \( A(1, 2) \) sa koeficijentom \( -3 \):</p>
+      <div class="math-block">\[ y - 2 = -3(x - 1) \;\;\Longleftrightarrow\;\; y = -3x + 5 \;\;\Longleftrightarrow\;\; 3x + y - 5 = 0. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: leži li \( B(4, -7) \) na ovoj pravoj?</summary>
+          <div class="detail-content"><p>Zameni: \( 3 \cdot 4 + (-7) - 5 = 12 - 7 - 5 = 0 \) ✓. Da, leži — što je i očekivano jer smo pravu konstruisali kroz \( A \) i \( B \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Napiši jednačinu visine — normale iz \( C \) na \( AB \)</h3>
+      <p>Visina je upravna na \( AB \), pa je njen koeficijent pravca:</p>
+      <div class="math-block">\[ k_h = -\frac{1}{k_{AB}} = -\frac{1}{-3} = \frac{1}{3}. \]</div>
+      <p>Visina prolazi kroz \( C(6, -3) \):</p>
+      <div class="math-block">\[ y - (-3) = \frac{1}{3}(x - 6) \;\;\Longleftrightarrow\;\; 3(y + 3) = x - 6 \;\;\Longleftrightarrow\;\; x - 3y - 15 = 0. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je koeficijent normale \( -1/k_{AB} \)?</summary>
+          <div class="detail-content"><p>Ako su dve prave upravne, tangense njihovih nagiba zadovoljavaju \( k_1 \cdot k_2 = -1 \). Otuda \( k_2 = -1/k_1 \). Konkretno: za \( k_{AB} = -3 \), normala ima koeficijent \( -1/(-3) = 1/3 \). Geometrijski: rotacija pravca za \( 90^\circ \) preokreće odnos \( \Delta y : \Delta x \) i menja znak.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Reši sistem dve jednačine — nađi presečnu tačku</h3>
+      <p>Podnožje \( D \) je presek prave \( AB \) i visine iz \( C \):</p>
+      <div class="math-block">\[ \begin{cases} 3x + y = 5, \\ x - 3y = 15. \end{cases} \]</div>
+      <p>Iz druge jednačine \( x = 3y + 15 \). Zamena u prvu:</p>
+      <div class="math-block">\[ 3(3y + 15) + y = 5 \;\;\Longleftrightarrow\;\; 9y + 45 + y = 5 \;\;\Longleftrightarrow\;\; 10y = -40 \;\;\Longleftrightarrow\;\; y = -4. \]</div>
+      <p>Pa \( x = 3 \cdot (-4) + 15 = -12 + 15 = 3 \). Dakle <span class="result">\( D = (3, -4) \)</span>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera ortogonalnosti \( \vec{CD} \perp \vec{AB} \)</h3>
+      <p>\( \vec{CD} = D - C = (3 - 6,\; -4 - (-3)) = (-3, -1) \).<br>
+      \( \vec{AB} = B - A = (3, -9) \).<br>
+      Skalarni proizvod:</p>
+      <div class="math-block">\[ \vec{CD} \cdot \vec{AB} = (-3) \cdot 3 + (-1) \cdot (-9) = -9 + 9 = 0. \]</div>
+      <p>Ortogonalno ✓. Takođe, \( D \) leži na \( AB \): \( 3 \cdot 3 + (-4) - 5 = 0 \) ✓.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je dovoljno proveriti i ortogonalnost i pripadnost?</summary>
+          <div class="detail-content"><p>Podnožje normale iz \( C \) na \( AB \) je <em>jedinstvena</em> tačka koja istovremeno (1) leži na \( AB \) i (2) zadovoljava \( \vec{CD} \perp \vec{AB} \). Pošto smo proverili oba uslova, sa sigurnošću smo identifikovali pravo \( D \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunaj \( x_0 \cdot y_0 \)</h3>
+      <p>Iz \( D(x_0, y_0) = (3, -4) \):</p>
+      <div class="math-block">\[ x_0 \cdot y_0 = 3 \cdot (-4) = -12. \]</div>
+      <p>Dakle <span class="result">\( x_0 \cdot y_0 = -12 \)</span>.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Podnožje normale iz tačke \( C \) na pravu je <em>jedinstvena</em> tačka prave koja čini ortogonalan ugao sa \( C \). Koja god dva uslova izaberete — (1) tačka na pravoj \( AB \), (2) skalarni proizvod \( \vec{CD} \cdot \vec{AB} = 0 \) — daju istu \( D \). Najbrži pristup je: nađi jednačinu \( AB \), nađi jednačinu normale kroz \( C \), preseci. Alternativa preko parametarskog \( D = A + t(B-A) \) daje \( t = 2/3 \) — što potvrđuje da je \( D \) na otvorenom segmentu \( AB \), pa je visina <em>unutrašnja</em> u trouglu \( ABC \).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ D = (3, -4), \quad x_0 \cdot y_0 = 3 \cdot (-4) = -12. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( -12 \)</span>
+    <span class="answer-option" data-option="B">(B) \( -6 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 4 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 8 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 16 \)</span>
+  </div>
+  <p class="verification">Verifikacija: \( D \) je na pravoj \( AB \) jer \( 3 \cdot 3 + (-4) - 5 = 0 \) ✓. Vektori \( \vec{CD} = (-3, -1) \) i \( \vec{AB} = (3, -9) \) su ortogonalni jer \( (-3) \cdot 3 + (-1) \cdot (-9) = 0 \) ✓. Parametar \( t = 2/3 \in (0, 1) \) — \( D \) je strogo unutar segmenta \( AB \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešan koeficijent pravca:</strong> \( k = \dfrac{\Delta y}{\Delta x} \), <em>ne</em> \( \dfrac{\Delta x}{\Delta y} \). Za \( A \to B \): \( k = \dfrac{-7-2}{4-1} = -3 \).</li>
+    <li><strong>Pogrešan koeficijent normale:</strong> \( k_h = -1/k_{AB} = 1/3 \), <em>ne</em> \( -3 \) i ne \( 3 \). Pravilo: <em>recipročna</em> i <em>suprotnog znaka</em>.</li>
+    <li><strong>Greška u znaku konstante prave:</strong> jednačina visine je \( x - 3y - 15 = 0 \), <em>ne</em> \( x - 3y - 6 = 0 \). Pažljiv prolaz kroz \( y - (-3) = \tfrac{1}{3}(x - 6) \) daje \( 3(y+3) = x - 6 \), tj. \( 3y + 9 = x - 6 \), tj. \( x - 3y = 15 \).</li>
+    <li><strong>Pomešati \( x_0 \cdot y_0 \) sa \( x_0 + y_0 \):</strong> \( 3 + (-4) = -1 \), što nije među opcijama; \( 3 \cdot (-4) = -12 \), to traži zadatak.</li>
+    <li><strong>Pomešati \( D \) sa težištem trougla:</strong> težište \( T = \tfrac{1}{3}(A + B + C) = \tfrac{1}{3}(11, -8) \) — sasvim druga tačka. Težište je presek <em>težišnih duži</em>, ne visina.</li>
+    <li><strong>Pomešati visinu iz \( C \) sa medijalom iz \( C \):</strong> medijala (težišna duž) iz \( C \) ide kroz središte \( AB \), a podnožje visine je tamo gde normala kroz \( C \) seče \( AB \) — različite tačke (osim u jednakokrakom trouglu).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Sada kada znamo \( D = (3, -4) \), izračunaj <em>dužinu</em> visine \( h_c = |CD| \) i <em>površinu</em> trougla \( ABC \). Da li možeš proveriti rezultat preko formule za površinu trougla po koordinatama?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Dužina visine: \( |CD| = \sqrt{(-3)^2 + (-1)^2} = \sqrt{10} \).</p>
+      <p>Dužina osnove: \( |AB| = \sqrt{3^2 + (-9)^2} = \sqrt{90} = 3\sqrt{10} \).</p>
+      <p>Površina trougla: \( S = \tfrac{1}{2} \cdot |AB| \cdot |CD| = \tfrac{1}{2} \cdot 3\sqrt{10} \cdot \sqrt{10} = \tfrac{1}{2} \cdot 30 = 15 \).</p>
+      <p>Provera koordinatnom formulom \( S = \tfrac{1}{2} |x_A(y_B - y_C) + x_B(y_C - y_A) + x_C(y_A - y_B)| = \tfrac{1}{2} |1 \cdot (-7 - (-3)) + 4 \cdot (-3 - 2) + 6 \cdot (2 - (-7))| = \tfrac{1}{2}|1 \cdot (-4) + 4 \cdot (-5) + 6 \cdot 9| = \tfrac{1}{2}|-4 - 20 + 54| = \tfrac{1}{2} \cdot 30 = 15 \) ✓.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  // Shared coordinate system for both diagrams
+  function buildCoordSystem(canvas, ctx) {
+    var W = canvas.width, H = canvas.height;
+    // Math range: x in [-2, 8], y in [-10, 4]
+    var xMin = -2, xMax = 8;
+    var yMin = -10, yMax = 4;
+    var marginL = 60, marginR = 40, marginT = 60, marginB = 60;
+    var plotW = W - marginL - marginR;
+    var plotH = H - marginT - marginB;
+    var scaleX = plotW / (xMax - xMin);
+    var scaleY = plotH / (yMax - yMin);
+    var originX = marginL + (-xMin) * scaleX;
+    var originY = marginT + (yMax) * scaleY;
+    function tx(x) { return marginL + (x - xMin) * scaleX; }
+    function ty(y) { return marginT + (yMax - y) * scaleY; }
+    return {
+      W: W, H: H,
+      xMin: xMin, xMax: xMax, yMin: yMin, yMax: yMax,
+      marginL: marginL, marginR: marginR, marginT: marginT, marginB: marginB,
+      plotW: plotW, plotH: plotH,
+      tx: tx, ty: ty
+    };
+  }
+
+  function drawAxes(ctx, cs, colors) {
+    var W = cs.W, H = cs.H;
+    var grid = colors.grid, axis = colors.axis, text = colors.text, muted = colors.muted;
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (var x = Math.ceil(cs.xMin); x <= Math.floor(cs.xMax); x++) {
+      ctx.moveTo(cs.tx(x), cs.ty(cs.yMax));
+      ctx.lineTo(cs.tx(x), cs.ty(cs.yMin));
+    }
+    for (var y = Math.ceil(cs.yMin); y <= Math.floor(cs.yMax); y++) {
+      ctx.moveTo(cs.tx(cs.xMin), cs.ty(y));
+      ctx.lineTo(cs.tx(cs.xMax), cs.ty(y));
+    }
+    ctx.stroke();
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.6;
+    // x-axis
+    ctx.beginPath();
+    ctx.moveTo(cs.tx(cs.xMin), cs.ty(0));
+    ctx.lineTo(cs.tx(cs.xMax), cs.ty(0));
+    // y-axis
+    ctx.moveTo(cs.tx(0), cs.ty(cs.yMin));
+    ctx.lineTo(cs.tx(0), cs.ty(cs.yMax));
+    ctx.stroke();
+
+    // Arrowheads
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(cs.tx(cs.xMax), cs.ty(0));
+    ctx.lineTo(cs.tx(cs.xMax) - 8, cs.ty(0) - 4);
+    ctx.lineTo(cs.tx(cs.xMax) - 8, cs.ty(0) + 4);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(cs.tx(0), cs.ty(cs.yMax));
+    ctx.lineTo(cs.tx(0) - 4, cs.ty(cs.yMax) + 8);
+    ctx.lineTo(cs.tx(0) + 4, cs.ty(cs.yMax) + 8);
+    ctx.closePath();
+    ctx.fill();
+
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = 'italic 13px "Latin Modern Math", Cambria Math, serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('x', cs.tx(cs.xMax) + 4, cs.ty(0) + 4);
+    ctx.textAlign = 'right';
+    ctx.fillText('y', cs.tx(0) - 6, cs.ty(cs.yMax) + 4);
+
+    // Tick labels
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var x2 = Math.ceil(cs.xMin); x2 <= Math.floor(cs.xMax); x2++) {
+      if (x2 === 0) continue;
+      ctx.fillText(String(x2), cs.tx(x2), cs.ty(0) + 14);
+    }
+    ctx.textAlign = 'right';
+    for (var y2 = Math.ceil(cs.yMin); y2 <= Math.floor(cs.yMax); y2++) {
+      if (y2 === 0) continue;
+      ctx.fillText(String(y2), cs.tx(0) - 5, cs.ty(y2) + 4);
+    }
+    // O at origin
+    ctx.textAlign = 'right';
+    ctx.fillText('O', cs.tx(0) - 5, cs.ty(0) + 14);
+  }
+
+  function drawPoint(ctx, cs, x, y, color, label, labelOffset) {
+    var px = cs.tx(x), py = cs.ty(y);
+    ctx.fillStyle = color;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(px, py, 5.5, 0, Math.PI * 2);
+    ctx.fill();
+    if (label) {
+      ctx.font = 'bold 15px "Latin Modern Math", Cambria Math, serif';
+      ctx.textAlign = labelOffset && labelOffset.align ? labelOffset.align : 'left';
+      var dx = labelOffset && labelOffset.dx !== undefined ? labelOffset.dx : 8;
+      var dy = labelOffset && labelOffset.dy !== undefined ? labelOffset.dy : -8;
+      ctx.fillText(label, px + dx, py + dy);
+    }
+  }
+
+  // ============ DIAGRAM 1: triangle ABC ============
+  (function() {
+    var canvas = document.getElementById('diag-triangle');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+
+    function draw() {
+      var bg = cv('--sol-canvas-bg');
+      var grid = cv('--sol-canvas-grid');
+      var axis = cv('--sol-canvas-axis');
+      var primary = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text = cv('--sol-canvas-text');
+      var muted = cv('--sol-canvas-muted');
+      var tertiary = cv('--sol-canvas-tertiary');
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Title
+      ctx.fillStyle = text;
+      ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Trougao ABC u koordinatnoj ravni', canvas.width / 2, 28);
+
+      var cs = buildCoordSystem(canvas, ctx);
+      drawAxes(ctx, cs, { grid: grid, axis: axis, text: text, muted: muted });
+
+      // Triangle fill
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.10);
+      ctx.beginPath();
+      ctx.moveTo(cs.tx(1), cs.ty(2));
+      ctx.lineTo(cs.tx(4), cs.ty(-7));
+      ctx.lineTo(cs.tx(6), cs.ty(-3));
+      ctx.closePath();
+      ctx.fill();
+
+      // Triangle edges
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 2.2;
+      ctx.beginPath();
+      ctx.moveTo(cs.tx(1), cs.ty(2));
+      ctx.lineTo(cs.tx(4), cs.ty(-7));
+      ctx.lineTo(cs.tx(6), cs.ty(-3));
+      ctx.closePath();
+      ctx.stroke();
+
+      // Highlight AB more strongly (primary)
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 3.2;
+      ctx.beginPath();
+      ctx.moveTo(cs.tx(1), cs.ty(2));
+      ctx.lineTo(cs.tx(4), cs.ty(-7));
+      ctx.stroke();
+
+      // Edge label (mid of AB)
+      ctx.fillStyle = primary;
+      ctx.font = 'italic 13px "Latin Modern Math", Cambria Math, serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('AB:  3x + y − 5 = 0', cs.tx(2.5) + 6, cs.ty(-2.5) - 8);
+      ctx.fillStyle = muted;
+      ctx.fillText('k_AB = −3', cs.tx(2.5) + 6, cs.ty(-2.5) + 8);
+
+      // Points
+      drawPoint(ctx, cs, 1, 2, secondary, 'A(1, 2)', { dx: -56, dy: -10, align: 'left' });
+      drawPoint(ctx, cs, 4, -7, secondary, 'B(4, −7)', { dx: 8, dy: 18, align: 'left' });
+      drawPoint(ctx, cs, 6, -3, accent, 'C(6, −3)', { dx: 10, dy: 4, align: 'left' });
+
+      // Bottom note
+      ctx.fillStyle = muted;
+      ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Sledeći korak: spustimo visinu iz C na AB i tražimo podnožje D.', canvas.width / 2, canvas.height - 20);
+    }
+
+    draw();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() {
+          styles = getComputedStyle(root);
+          draw();
+        }, 50);
+      }
+    });
+  })();
+
+  // ============ DIAGRAM 2: foot of altitude D ============
+  (function() {
+    var canvas = document.getElementById('diag-foot');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+
+    function draw() {
+      var bg = cv('--sol-canvas-bg');
+      var grid = cv('--sol-canvas-grid');
+      var axis = cv('--sol-canvas-axis');
+      var primary = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text = cv('--sol-canvas-text');
+      var muted = cv('--sol-canvas-muted');
+      var tertiary = cv('--sol-canvas-tertiary');
+      var warning = cv('--sol-canvas-warning');
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Title
+      ctx.fillStyle = text;
+      ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Visina iz C i podnožje D = (3, −4)', canvas.width / 2, 28);
+
+      var cs = buildCoordSystem(canvas, ctx);
+      drawAxes(ctx, cs, { grid: grid, axis: axis, text: text, muted: muted });
+
+      // Triangle fill (faint)
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.07);
+      ctx.beginPath();
+      ctx.moveTo(cs.tx(1), cs.ty(2));
+      ctx.lineTo(cs.tx(4), cs.ty(-7));
+      ctx.lineTo(cs.tx(6), cs.ty(-3));
+      ctx.closePath();
+      ctx.fill();
+
+      // Triangle edges (lighter)
+      ctx.strokeStyle = cvAlpha('--sol-canvas-primary', 0.6);
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(cs.tx(1), cs.ty(2));
+      ctx.lineTo(cs.tx(4), cs.ty(-7));
+      ctx.lineTo(cs.tx(6), cs.ty(-3));
+      ctx.closePath();
+      ctx.stroke();
+
+      // Extended line AB (subtle)
+      ctx.strokeStyle = cvAlpha('--sol-canvas-primary', 0.4);
+      ctx.setLineDash([5, 4]);
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      ctx.moveTo(cs.tx(-1), cs.ty(8));   // y = -3x + 5 at x=-1: y=8
+      ctx.lineTo(cs.tx(5), cs.ty(-10));  // at x=5: y=-10
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Highlight AB segment
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(cs.tx(1), cs.ty(2));
+      ctx.lineTo(cs.tx(4), cs.ty(-7));
+      ctx.stroke();
+
+      // Altitude line from C to D (highlighted)
+      ctx.strokeStyle = highlight;
+      ctx.lineWidth = 2.6;
+      ctx.beginPath();
+      ctx.moveTo(cs.tx(6), cs.ty(-3));
+      ctx.lineTo(cs.tx(3), cs.ty(-4));
+      ctx.stroke();
+
+      // Right-angle marker at D
+      // Direction along AB at D: AB unit vector ≈ (3,-9)/sqrt(90) = (1,-3)/sqrt(10)
+      // Direction along CD at D: CD = (-3,-1)/sqrt(10), but pointing FROM D toward C is (3,1)/sqrt(10)
+      var sz = 12; // pixel size of right-angle square
+      var Dpx = cs.tx(3), Dpy = cs.ty(-4);
+      // Use canvas pixel directions for consistency:
+      // along AB direction (toward A from D): A - D = (1-3, 2-(-4)) = (-2, 6) → normalize in pixel space
+      // along CD direction (toward C from D): C - D = (3, 1)
+      var u1x = -2, u1y = 6; // toward A in math
+      var u2x = 3, u2y = 1;  // toward C in math
+      // Convert to canvas pixel directions
+      var u1px = cs.tx(3 + u1x) - cs.tx(3);
+      var u1py = cs.ty(-4 + u1y) - cs.ty(-4);
+      var n1 = Math.hypot(u1px, u1py); u1px /= n1; u1py /= n1;
+      var u2px = cs.tx(3 + u2x) - cs.tx(3);
+      var u2py = cs.ty(-4 + u2y) - cs.ty(-4);
+      var n2 = Math.hypot(u2px, u2py); u2px /= n2; u2py /= n2;
+
+      ctx.strokeStyle = warning;
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      // First leg of square: from D along u1 by sz
+      ctx.moveTo(Dpx + u1px * sz, Dpy + u1py * sz);
+      // Then to corner: along u1 + u2
+      ctx.lineTo(Dpx + u1px * sz + u2px * sz, Dpy + u1py * sz + u2py * sz);
+      // Then back along u2 to D's u2 leg
+      ctx.lineTo(Dpx + u2px * sz, Dpy + u2py * sz);
+      ctx.stroke();
+
+      // Triangle edges fade-in for clarity, redraw point markers
+      // Vector AB and CD (annotated)
+      ctx.fillStyle = primary;
+      ctx.font = 'italic 13px "Latin Modern Math", Cambria Math, serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('AB', cs.tx(2.6), cs.ty(-2.5) - 6);
+      ctx.fillStyle = highlight;
+      ctx.fillText('h_c (visina iz C)', cs.tx(4.2) + 6, cs.ty(-3.4));
+
+      // Points
+      drawPoint(ctx, cs, 1, 2, secondary, 'A(1, 2)', { dx: -56, dy: -10, align: 'left' });
+      drawPoint(ctx, cs, 4, -7, secondary, 'B(4, −7)', { dx: 8, dy: 18, align: 'left' });
+      drawPoint(ctx, cs, 6, -3, accent, 'C(6, −3)', { dx: 10, dy: 4, align: 'left' });
+      // D — emphasized
+      var Dx = cs.tx(3), Dy = cs.ty(-4);
+      ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.25);
+      ctx.beginPath();
+      ctx.arc(Dx, Dy, 12, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = warning;
+      ctx.beginPath();
+      ctx.arc(Dx, Dy, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.font = 'bold 16px "Latin Modern Math", Cambria Math, serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('D(3, −4)', Dx + 12, Dy + 6);
+
+      // Bottom note — final answer pill
+      var pillW = 360, pillH = 36;
+      var pillX = (canvas.width - pillW) / 2, pillY = canvas.height - 50;
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.20);
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      var pr = 16;
+      ctx.moveTo(pillX + pr, pillY);
+      ctx.lineTo(pillX + pillW - pr, pillY);
+      ctx.quadraticCurveTo(pillX + pillW, pillY, pillX + pillW, pillY + pr);
+      ctx.lineTo(pillX + pillW, pillY + pillH - pr);
+      ctx.quadraticCurveTo(pillX + pillW, pillY + pillH, pillX + pillW - pr, pillY + pillH);
+      ctx.lineTo(pillX + pr, pillY + pillH);
+      ctx.quadraticCurveTo(pillX, pillY + pillH, pillX, pillY + pillH - pr);
+      ctx.lineTo(pillX, pillY + pr);
+      ctx.quadraticCurveTo(pillX, pillY, pillX + pr, pillY);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 16px "Latin Modern Math", Cambria Math, serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('x₀ · y₀ = 3 · (−4) = −12', pillX + pillW / 2, pillY + 23);
+    }
+
+    draw();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() {
+          styles = getComputedStyle(root);
+          draw();
+        }, 50);
+      }
+    });
+  })();
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Podnožje visine trougla — analitička geometrija (D iz C na AB)",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["analitička geometrija", "trougao", "visina", "podnožje normale", "ortogonalnost"]
+}
+BRAINSPARK_META-->

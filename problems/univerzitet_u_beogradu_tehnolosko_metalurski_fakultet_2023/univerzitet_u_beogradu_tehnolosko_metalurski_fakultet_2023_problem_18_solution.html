@@ -1,0 +1,655 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Zadatak: Zbir koordinata tačke M(x, y) na paraboli y = x^2 + 2x koja je najbliža pravoj
+  y = 4x - 6 jednak je:
+  Ponuđeni odgovori: (A) -1, (B) 1, (C) 3, (D) -2/5, (E) 4.
+
+  Ključni uvid: tačka na glatkoj krivoj koja je najbliža datoj pravoj (koja krivu ne seče)
+  je ona u kojoj je tangenta na krivu PARALELNA sa datom pravom. Ako bi tangenta bila
+  pod uglom prema pravoj, mogli bismo &bdquo;klizati&rdquo; po krivoj u jednom smeru i
+  smanjivati rastojanje — kontradiktoricija.
+
+  Postavka: parabola y = x^2 + 2x, prava y = 4x - 6, tj. 4x - y - 6 = 0.
+
+  Korak 1: izvod parabole y' = 2x + 2.
+  Korak 2: nagib prave y = 4x - 6 je 4. Uslov paralelnosti:
+           2x + 2 = 4  →  2x = 2  →  x = 1.
+  Korak 3: y = 1^2 + 2·1 = 1 + 2 = 3. Dakle M(1, 3).
+  Korak 4: zbir koordinata: 1 + 3 = 4.
+
+  Verifikacija da prava i parabola NE seku jedna drugu:
+    x^2 + 2x = 4x - 6  →  x^2 - 2x + 6 = 0  →  diskriminanta D = 4 - 24 = -20 < 0.
+    Nema realnih rešenja, dakle prava i parabola se ne seku — uslov paralelne tangente
+    je ispravan kriterijum minimuma rastojanja.
+
+  Provera rastojanjem:
+    Linija: 4x - y - 6 = 0. Tačka M(1, 3).
+    Rastojanje d = |4·1 - 3 - 6| / sqrt(16 + 1) = |-5| / sqrt(17) = 5 / sqrt(17) ≈ 1.213.
+    Manje rastojanje od bilo koje druge tačke parabole? Probamo M'(0, 0):
+      d' = |0 - 0 - 6| / sqrt(17) = 6 / sqrt(17) ≈ 1.456. Veće od 1.213. ✓
+    M''(2, 8): d'' = |8 - 8 - 6| / sqrt(17) = 6/sqrt(17) ≈ 1.456. Veće. ✓
+
+  Tačan odgovor: (E) 4.
+
+  Pitfalls:
+    - Postaviti minimizaciju rastojanja od MA do tačke na pravoj (npr. (0,-6)) — to nije
+      isto kao rastojanje od tačke do prave.
+    - Pomešati derivate: d/dx(x^2 + 2x) = 2x + 2, ne x^2 + 2 ili 2x.
+    - Brute-force minimum rastojanja (tj. d^2(x) = (x - a)^2 + (y - b)^2 gde je (a,b) tačka
+      na pravoj) — ali da bi to dao isti odgovor, mora se za svako x naći najbliža tačka
+      na pravoj, što je dvostruka optimizacija. Tangenta-paralelna-pravoj je elegantno.
+    - Greška znaka pri rešavanju 2x + 2 = 4: dobiti x = -1 (postaviti 2x + 2 = -4 zbunjeni).
+    - Sabrati pogrešno: 1 + 3 = 4, ali neki sabiraju x i (-y) ili sl. — tekst kaže ZBIR
+      koordinata, dakle x + y.
+
+  Vizuelni prikaz: INTERAKTIVAN.
+    - Parabola y = x^2 + 2x na intervalu [-4, 3] otprilike.
+    - Prava y = 4x - 6 (paralelna sa tangentom u tačci minimuma).
+    - Draggable tačka P na paraboli (drag X u opsegu [-4, 4], Y se računa).
+    - Crta normalu od P na pravu, pokazuje rastojanje d brojkom.
+    - Crta tangentu u P kao kratku duž — kad je nagib tangente jednak 4, tangenta je
+      paralelna i rastojanje je minimalno.
+    - Glow ring + cursor pointer / grabbing.
+    - Touch support sa touch-action: none.
+
+  Kategorija: optimizacija, parabola, derivati, analitička geometrija.
+</script>
+
+<h1 data-card="problem-title">Najbliža tačka parabole datoj pravoj</h1>
+<p data-card="problem-subtitle" class="subtitle">Optimizacija &mdash; tangenta paralelna pravoj, rastojanje tačka–prava</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Zbir koordinata tačke \( M(x, y) \) na paraboli \( y = x^{2} + 2x \) koja je najbliža pravoj \( y = 4x - 6 \) jednak je:</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">parabola</span>
+      <span class="given-value">\( y = x^{2} + 2x \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">prava</span>
+      <span class="given-value">\( y = 4x - 6 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">tražimo</span>
+      <span class="given-value">\( x_{M} + y_{M} \)</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( -1 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( -\dfrac{2}{5} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 4 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Tačka glatke krive koja je najbliža datoj pravoj (koja krivu ne seče) je ona u kojoj je <em>tangenta na krivu paralelna</em> toj pravoj. Iz uslova \( y'(x) = 4 \) (nagib prave) nađemo \( x \), pa \( y \), i saberemo. Na kraju proverimo da prava i parabola zaista nemaju zajedničkih tačaka (diskriminanta \( < 0 \)) i da je rastojanje minimalno.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Tangenta, rastojanje i kriterijum minimuma</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Nagib tangente:</strong> ako je kriva \( y = f(x) \), nagib tangente u tački \( (x_{0}, f(x_{0})) \) je \( f'(x_{0}) \).</li>
+        <li><strong>Rastojanje tačke od prave:</strong> za pravu \( Ax + By + C = 0 \) i tačku \( P(x_{0}, y_{0}) \): \( \displaystyle d(P, p) = \dfrac{|Ax_{0} + By_{0} + C|}{\sqrt{A^{2} + B^{2}}} \).</li>
+        <li><strong>Kriterijum minimuma rastojanja krive od prave:</strong> u tački krive najbližoj pravoj, tangenta na krivu je <em>paralelna</em> pravoj. (Ako bi se sekle pod uglom, &bdquo;klizanjem&rdquo; po krivoj smanjili bismo rastojanje.)</li>
+        <li><strong>Diskriminanta kao test preseka:</strong> sistem \( y = x^{2} + 2x \), \( y = 4x - 6 \) daje \( x^{2} - 2x + 6 = 0 \). Ako je \( D = b^{2} - 4ac < 0 \), prava i parabola se ne seku.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — interaktivna parabola, prava i tangenta">
+  <h2>📐 Vizuelni prikaz (interaktivno)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="opt-canvas" width="700" height="640"></canvas>
+  </div>
+  <p class="canvas-caption">Parabola \( y = x^{2} + 2x \) (plavo) i prava \( y = 4x - 6 \) (ljubičasto). <strong>Prevuci tačku \( P \)</strong> po paraboli &mdash; vidiš živo rastojanje do prave i tangentu u tački \( P \). Minimum rastojanja se postiže baš kad tangenta postane <em>paralelna</em> pravoj (nagibi \( 2x + 2 \) i \( 4 \) izjednačeni \( \Rightarrow x = 1 \), \( y = 3 \)).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Proverimo da prava ne seče parabolu</h3>
+      <p>Da bismo bili sigurni da minimum rastojanja postoji u unutrašnjoj tački parabole (a nije \( 0 \)), proverimo da li se prava i parabola seku. Postavljamo \( x^{2} + 2x = 4x - 6 \):</p>
+      <div class="math-block">\[ x^{2} + 2x - 4x + 6 = 0 \quad \Longrightarrow \quad x^{2} - 2x + 6 = 0. \]</div>
+      <p>Diskriminanta: \( D = (-2)^{2} - 4 \cdot 1 \cdot 6 = 4 - 24 = -20 < 0 \). Realnih rešenja nema &mdash; prava ne seče parabolu. ✓</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je ovaj test važan?</summary>
+          <div class="detail-content"><p>Da se kriva i prava seku, najbliža tačka bi bila <em>tačka preseka</em> sa rastojanjem \( 0 \). Tada uslov &bdquo;tangenta paralelna pravoj&rdquo; ne bi davao traženu najbližu tačku, već neku lokalnu osobenost. Pošto diskriminanta kaže da preseka nema, kriterijum paralelne tangente je punovažan.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Iskoristimo kriterijum &bdquo;tangenta paralelna pravoj&rdquo;</h3>
+      <p>U tački parabole najbližoj pravoj, tangenta na parabolu je paralelna toj pravoj. Nagib date prave \( y = 4x - 6 \) je \( k = 4 \).</p>
+      <p>Nagib tangente parabole \( y = x^{2} + 2x \) u tački sa apscisom \( x \) je njen izvod:</p>
+      <div class="math-block">\[ y'(x) = 2x + 2. \]</div>
+      <p>Postavljamo uslov paralelnosti:</p>
+      <div class="math-block">\[ y'(x) = 4 \quad \Longrightarrow \quad 2x + 2 = 4. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Rešimo po x i nađemo y</h3>
+      <p>Iz \( 2x + 2 = 4 \):</p>
+      <div class="math-block">\[ 2x = 2 \quad \Longrightarrow \quad x = 1. \]</div>
+      <p>Vratimo \( x = 1 \) u jednačinu parabole:</p>
+      <div class="math-block">\[ y = 1^{2} + 2 \cdot 1 = 1 + 2 = 3. \]</div>
+      <p>Dakle, najbliža tačka je \( M(1,\, 3) \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Saberemo koordinate</h3>
+      <p>Zbir koordinata tačke \( M \) je:</p>
+      <div class="math-block">\[ x_{M} + y_{M} = 1 + 3 = 4. \]</div>
+      <p>Konačno: <span class="result">\( 4 \)</span>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera: rastojanje od M do prave</h3>
+      <p>Pravu \( y = 4x - 6 \) zapišimo u opštem obliku \( 4x - y - 6 = 0 \). Po formuli rastojanja tačke od prave:</p>
+      <div class="math-block">\[ d(M, p) = \dfrac{|4 \cdot 1 - 3 - 6|}{\sqrt{4^{2} + (-1)^{2}}} = \dfrac{|{-5}|}{\sqrt{17}} = \dfrac{5}{\sqrt{17}} \approx 1{,}213. \]</div>
+      <p>Provera za druge tačke parabole, npr. \( M_{1}(0, 0) \):</p>
+      <div class="math-block">\[ d(M_{1}, p) = \dfrac{|0 - 0 - 6|}{\sqrt{17}} = \dfrac{6}{\sqrt{17}} \approx 1{,}456. \]</div>
+      <p>Veće rastojanje &mdash; znači \( M(1, 3) \) je zaista bliže. Slično za \( M_{2}(2, 8) \): \( d = \dfrac{|8 - 8 - 6|}{\sqrt{17}} = \dfrac{6}{\sqrt{17}} \approx 1{,}456 \). I to je veće. ✓</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: alternativni put preko \( d^{2}(x) \)</summary>
+          <div class="detail-content"><p>Možemo direktno minimizovati \( d^{2}(x) = \dfrac{(4x - (x^{2} + 2x) - 6)^{2}}{17} = \dfrac{(-x^{2} + 2x - 6)^{2}}{17} \). Izvod brojnog dela: \( 2(-x^{2} + 2x - 6)(-2x + 2) = 0 \). Prvi faktor je uvek negativan (jer \( -x^{2} + 2x - 6 = -(x^{2} - 2x + 6) \), a \( x^{2} - 2x + 6 > 0 \) jer je \( D < 0 \)). Dakle mora biti \( -2x + 2 = 0 \), pa \( x = 1 \) — isti rezultat.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Tačka na glatkoj krivoj koja je najbliža datoj pravoj (koja krivu ne seče) je ona u kojoj je <strong>tangenta na krivu paralelna</strong> toj pravoj. Razlog je geometrijski: ako tangenta nije paralelna pravoj, &bdquo;projekcija&rdquo; krive na pravac normale pravoj ima nenula nagib u toj tački &mdash; pa malo pomerivši se po krivoj u prikladnom smeru, možemo smanjiti rastojanje. Ovaj princip pretvara čisto geometrijsku optimizaciju u jednostavnu jednačinu \( f'(x) = k \), gde je \( k \) nagib date prave.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ M(1,\, 3), \qquad x_{M} + y_{M} = 1 + 3 = 4 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( -1 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 1 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 3 \)</span>
+    <span class="answer-option" data-option="D">(D) \( -\dfrac{2}{5} \)</span>
+    <span class="answer-option correct" data-option="E">(E) \( 4 \)</span>
+  </div>
+  <p class="verification">Provera: \( y'(1) = 4 \) (paralelno pravoj), rastojanje \( d = \dfrac{5}{\sqrt{17}} \approx 1{,}21 \), a obližnje tačke parabole \( (0,0) \) i \( (2,8) \) imaju rastojanje \( \dfrac{6}{\sqrt{17}} \approx 1{,}46 \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Minimizovati rastojanje od \( M \) do <em>jedne fiksne tačke na pravoj</em> (npr. odsečka \( (0, -6) \)) umesto do same prave. Rastojanje tačka-prava se računa po formuli sa apsolutnom vrednošću i normom vektora \( (A, B) \).</li>
+    <li>Pogrešan izvod parabole: napisati \( y' = 2x \) (zaboravi se izvod od \( 2x \)) ili \( y' = x^{2} + 2 \). Tačno je \( y'(x) = 2x + 2 \).</li>
+    <li>Pomešati nagibe: postaviti \( 2x + 2 = -\dfrac{1}{4} \) (uslov za <em>normalu</em>, ne tangentu) &mdash; daje \( x = -\dfrac{9}{8} \) i besmislen rezultat za zbir koordinata.</li>
+    <li>Zaboraviti proveriti da prava ne seče parabolu &mdash; ako bi se sekle, &bdquo;najbliža tačka&rdquo; bi bila tačka preseka, sa \( d = 0 \).</li>
+    <li>Sabrati pogrešno: \( 1 + 3 = 4 \), ali neki napišu \( 1 - 3 = -2 \) ili \( 1 \cdot 3 = 3 \) (odgovor C, klasična zamka).</li>
+    <li>Pomešati pravu \( y = 4x - 6 \) sa \( y = -4x + 6 \) (suprotan nagib), pa postaviti \( 2x + 2 = -4 \) i dobiti \( x = -3 \), \( y = 3 \), zbir \( 0 \) &mdash; pogrešna prava.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Razmisli o uopštenju: dat je parabola \( y = x^{2} + 2x \) i prava \( y = kx + n \) za neke \( k \) i \( n \). Za koje vrednosti \( n \) (uz fiksiran \( k \)) prava ne seče parabolu? I koliko iznosi minimalno rastojanje između parabole i prave kao funkcija od \( k \) i \( n \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Iz uslova paralelne tangente: \( 2x + 2 = k \), pa \( x = \dfrac{k - 2}{2} \) i \( y = x^{2} + 2x = \dfrac{(k-2)^{2}}{4} + (k-2) = \dfrac{k^{2} - 4}{4} \). Rastojanje od \( M(x, y) \) do prave \( kx - y + n = 0 \): \( d = \dfrac{|kx - y + n|}{\sqrt{k^{2} + 1}} \). Posle zamene i sređivanja: \( d_{\min} = \dfrac{|n + 1 + (k - 2)^{2}/4|}{\sqrt{k^{2} + 1}} \) (uz uslov da je izraz iznad nezavisan od znaka, tj. da prava ne seče parabolu &mdash; što je ekvivalentno \( n + 1 + (k - 2)^{2}/4 \neq 0 \) sa istim znakom).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('opt-canvas');
+  if (!canvas) return;
+  // touch-action: none on the canvas to prevent native scroll while dragging.
+  canvas.style.touchAction = 'none';
+
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  // World coordinates
+  // x in [-4.5, 4.5], y in [-9, 13]
+  var xMin = -4.5, xMax = 4.5;
+  var yMin = -9, yMax = 13;
+  var plotL = 60, plotR = W - 30;
+  var plotT = 70, plotB = H - 60;
+
+  function xPx(x) { return plotL + (x - xMin) / (xMax - xMin) * (plotR - plotL); }
+  function yPx(y) { return plotB - (y - yMin) / (yMax - yMin) * (plotB - plotT); }
+
+  function toMath(cx, cy) {
+    var x = xMin + (cx - plotL) / (plotR - plotL) * (xMax - xMin);
+    var y = yMin + (plotB - cy) / (plotB - plotT) * (yMax - yMin);
+    return { x: x, y: y };
+  }
+
+  // Drag state — point on parabola y = x^2 + 2x, controlled by dragX
+  var dragX = -2.5; // start somewhere noticeably off-optimum
+  var dragging = false;
+  var GRAB_RADIUS = 22;
+
+  function paraY(x) { return x * x + 2 * x; }
+  function lineY(x) { return 4 * x - 6; }
+  function paraSlope(x) { return 2 * x + 2; }
+
+  function clampDragX(x) {
+    if (x < xMin + 0.3) return xMin + 0.3;
+    if (x > xMax - 0.3) return xMax - 0.3;
+    return x;
+  }
+
+  function getPos(e) {
+    var r = canvas.getBoundingClientRect();
+    var evt = (e.touches && e.touches.length) ? e.touches[0] : ((e.changedTouches && e.changedTouches.length) ? e.changedTouches[0] : e);
+    return { x: evt.clientX - r.left, y: evt.clientY - r.top };
+  }
+
+  function dragPointPx() {
+    return { x: xPx(dragX), y: yPx(paraY(dragX)) };
+  }
+
+  function isNear(pos) {
+    var p = dragPointPx();
+    return Math.hypot(pos.x - p.x, pos.y - p.y) < GRAB_RADIUS;
+  }
+
+  canvas.addEventListener('mousedown', function(e) {
+    var pos = getPos(e);
+    if (isNear(pos)) {
+      dragging = true;
+      canvas.style.cursor = 'grabbing';
+    }
+  });
+  canvas.addEventListener('mousemove', function(e) {
+    var pos = getPos(e);
+    if (dragging) {
+      var m = toMath(pos.x, pos.y);
+      dragX = clampDragX(m.x);
+      draw();
+    } else {
+      canvas.style.cursor = isNear(pos) ? 'grab' : 'default';
+    }
+  });
+  canvas.addEventListener('mouseup', function() {
+    dragging = false;
+    canvas.style.cursor = 'default';
+  });
+  canvas.addEventListener('mouseleave', function() {
+    dragging = false;
+    canvas.style.cursor = 'default';
+  });
+
+  // Touch support
+  canvas.addEventListener('touchstart', function(e) {
+    var pos = getPos(e);
+    if (isNear(pos)) {
+      dragging = true;
+      e.preventDefault();
+    }
+  }, { passive: false });
+  canvas.addEventListener('touchmove', function(e) {
+    if (!dragging) return;
+    e.preventDefault();
+    var pos = getPos(e);
+    var m = toMath(pos.x, pos.y);
+    dragX = clampDragX(m.x);
+    draw();
+  }, { passive: false });
+  canvas.addEventListener('touchend', function() { dragging = false; });
+  canvas.addEventListener('touchcancel', function() { dragging = false; });
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var tertiary  = cv('--sol-canvas-tertiary');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Najbliža tačka parabole y = x² + 2x pravoj y = 4x − 6', W / 2, 28);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('prevuci tačku P po paraboli — tangenta postaje paralelna pravoj u tački minimuma', W / 2, 48);
+
+    // Grid (every 1 unit on x; every 2 on y)
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var gx = Math.ceil(xMin); gx <= Math.floor(xMax); gx++) {
+      var gpx = xPx(gx);
+      ctx.beginPath();
+      ctx.moveTo(gpx, plotT);
+      ctx.lineTo(gpx, plotB);
+      ctx.stroke();
+    }
+    for (var gy = Math.ceil(yMin / 2) * 2; gy <= Math.floor(yMax); gy += 2) {
+      var gpy = yPx(gy);
+      ctx.beginPath();
+      ctx.moveTo(plotL, gpy);
+      ctx.lineTo(plotR, gpy);
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    // x-axis (y = 0)
+    if (yMin <= 0 && yMax >= 0) {
+      ctx.beginPath();
+      ctx.moveTo(plotL, yPx(0));
+      ctx.lineTo(plotR, yPx(0));
+      ctx.stroke();
+    }
+    // y-axis (x = 0)
+    if (xMin <= 0 && xMax >= 0) {
+      ctx.beginPath();
+      ctx.moveTo(xPx(0), plotT);
+      ctx.lineTo(xPx(0), plotB);
+      ctx.stroke();
+    }
+
+    // Tick labels
+    ctx.fillStyle = muted;
+    ctx.font = '11px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (var tx = Math.ceil(xMin); tx <= Math.floor(xMax); tx++) {
+      if (tx === 0) continue;
+      ctx.fillText(String(tx), xPx(tx), yPx(0) + 4);
+    }
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (var ty = Math.ceil(yMin / 2) * 2; ty <= Math.floor(yMax); ty += 2) {
+      if (ty === 0) continue;
+      ctx.fillText(String(ty), xPx(0) - 6, yPx(ty));
+    }
+    // origin label
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'top';
+    ctx.fillText('0', xPx(0) - 6, yPx(0) + 4);
+
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = 'italic 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'top';
+    ctx.fillText('x', plotR - 6, yPx(0) + 6);
+    ctx.textAlign = 'left';
+    ctx.fillText('y', xPx(0) + 8, plotT + 4);
+
+    // Draw line y = 4x - 6
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    var firstLine = true;
+    for (var x = xMin; x <= xMax; x += 0.05) {
+      var y = lineY(x);
+      if (y < yMin || y > yMax) { firstLine = true; continue; }
+      var px = xPx(x), py = yPx(y);
+      if (firstLine) { ctx.moveTo(px, py); firstLine = false; }
+      else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+
+    // Line label
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    var lineLabelX = 2.6;
+    var lineLabelY = lineY(lineLabelX);
+    if (lineLabelY >= yMin && lineLabelY <= yMax) {
+      ctx.fillText('y = 4x − 6', xPx(lineLabelX) + 10, yPx(lineLabelY) - 4);
+    }
+
+    // Draw parabola
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    var firstP = true;
+    for (var x2 = xMin; x2 <= xMax; x2 += 0.02) {
+      var yp = paraY(x2);
+      if (yp < yMin || yp > yMax) { firstP = true; continue; }
+      var px = xPx(x2), py = yPx(yp);
+      if (firstP) { ctx.moveTo(px, py); firstP = false; }
+      else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+
+    // Parabola label
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    var pLabelX = -3.7;
+    var pLabelY = paraY(pLabelX);
+    if (pLabelY >= yMin && pLabelY <= yMax) {
+      ctx.fillText('y = x² + 2x', xPx(pLabelX) + 6, yPx(pLabelY) - 14);
+    }
+
+    // Compute draggable point and tangent at P
+    var px0 = dragX;
+    var py0 = paraY(px0);
+    var slope = paraSlope(px0);
+    var pPix = { x: xPx(px0), y: yPx(py0) };
+
+    // Foot of perpendicular from P to line 4x - y - 6 = 0
+    // Line: A = 4, B = -1, C = -6
+    var A = 4, B = -1, C = -6;
+    var denom = A * A + B * B;
+    var t = (A * px0 + B * py0 + C) / denom;
+    var fx = px0 - A * t;
+    var fy = py0 - B * t;
+    var fPix = { x: xPx(fx), y: yPx(fy) };
+
+    var dist = Math.abs(A * px0 + B * py0 + C) / Math.sqrt(denom);
+
+    // Draw perpendicular segment from P to foot
+    ctx.strokeStyle = cvAlpha('--sol-canvas-accent', 0.85);
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(pPix.x, pPix.y);
+    ctx.lineTo(fPix.x, fPix.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Foot point
+    ctx.beginPath();
+    ctx.arc(fPix.x, fPix.y, 5, 0, Math.PI * 2);
+    ctx.fillStyle = cv('--sol-canvas-accent');
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Draw tangent segment at P (length about 2 units in math)
+    var tangLen = 1.6;
+    var nrm = Math.sqrt(1 + slope * slope);
+    var dx = tangLen / nrm;
+    var dy = (slope * tangLen) / nrm;
+    var t1x = px0 - dx, t1y = py0 - dy;
+    var t2x = px0 + dx, t2y = py0 + dy;
+    ctx.strokeStyle = cv('--sol-canvas-warning');
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(xPx(t1x), yPx(t1y));
+    ctx.lineTo(xPx(t2x), yPx(t2y));
+    ctx.stroke();
+
+    // Draggable point P with glow ring
+    ctx.beginPath();
+    ctx.arc(pPix.x, pPix.y, 14, 0, Math.PI * 2);
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.25);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(pPix.x, pPix.y, 7, 0, Math.PI * 2);
+    ctx.fillStyle = primary;
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // P label
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('P', pPix.x + 14, pPix.y - 8);
+    ctx.fillStyle = muted;
+    ctx.font = '11px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('prevuci', pPix.x + 16, pPix.y + 12);
+
+    // Highlight optimum location P0(1,3) when dragX is far from 1
+    if (Math.abs(dragX - 1) > 0.15) {
+      var optPix = { x: xPx(1), y: yPx(3) };
+      ctx.beginPath();
+      ctx.arc(optPix.x, optPix.y, 6, 0, Math.PI * 2);
+      ctx.strokeStyle = cv('--sol-canvas-highlight');
+      ctx.lineWidth = 2;
+      ctx.setLineDash([3, 3]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = cv('--sol-canvas-highlight');
+      ctx.font = 'italic 11px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('M(1, 3) — optimum', optPix.x + 10, optPix.y + 14);
+    } else {
+      // When close to optimum, label as solution
+      ctx.fillStyle = cv('--sol-canvas-highlight');
+      ctx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('  ≈ M(1, 3) — minimum!', pPix.x + 16, pPix.y - 22);
+    }
+
+    // Info panel — bottom
+    var panelY = H - 48;
+    ctx.fillStyle = cvAlpha('--sol-canvas-grid', 0.5);
+    ctx.fillRect(plotL, panelY, plotR - plotL, 38);
+    ctx.strokeStyle = cv('--sol-canvas-axis');
+    ctx.lineWidth = 1;
+    ctx.strokeRect(plotL, panelY, plotR - plotL, 38);
+
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = text;
+    ctx.font = '13px Segoe UI, system-ui, sans-serif';
+
+    var col1 = plotL + 14;
+    var col2 = plotL + 230;
+    var col3 = plotL + 430;
+
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('P = (' + px0.toFixed(2) + ',  ' + py0.toFixed(2) + ')', col1, panelY + 19);
+
+    ctx.fillStyle = cv('--sol-canvas-warning');
+    ctx.fillText('nagib tangente: ' + slope.toFixed(2), col2, panelY + 19);
+
+    var distMatch = Math.abs(slope - 4) < 0.05;
+    ctx.fillStyle = distMatch ? cv('--sol-canvas-highlight') : text;
+    ctx.fillText('rastojanje d ≈ ' + dist.toFixed(3), col3, panelY + 19);
+
+    // Status hint
+    ctx.font = 'italic 11px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'right';
+    var status = distMatch ? 'tangenta ≈ 4 → paralelna pravoj!' : 'cilj: nagib tangente = 4 (nagib prave)';
+    ctx.fillText(status, plotR - 14, panelY - 6);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Najbliža tačka parabole datoj pravoj — tangenta paralelna pravoj",
+  "subject": "math",
+  "unit": "calculus",
+  "topic_tags": ["parabola", "optimizacija", "tangenta", "rastojanje tačke od prave"]
+}
+BRAINSPARK_META-->

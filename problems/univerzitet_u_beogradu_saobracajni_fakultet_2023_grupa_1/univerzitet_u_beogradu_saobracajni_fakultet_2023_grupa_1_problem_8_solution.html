@@ -1,0 +1,381 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Petocifreni prirodni broj d5 d4 d3 d2 d1, cifra desetica = d2 = 7,
+sve OSTALE cifre (d5, d4, d3, d1) su neparne. Koliko ima takvih brojeva?
+
+Pozicije i njihova imena:
+  d5 — desetihiljade (vodeca cifra, ne sme 0)
+  d4 — hiljade
+  d3 — stotine
+  d2 — desetice ← fiksno = 7
+  d1 — jedinice
+
+Skup neparnih cifara: U = {1, 3, 5, 7, 9}, |U| = 5.
+
+Ogranicenja:
+  d5 mora biti neparna ⇒ 5 izbora; svih 5 su ne-nule, dakle vodeca cifra
+        je automatski u redu (broj ostaje petocifren).
+  d4 ∈ U ⇒ 5 izbora.
+  d3 ∈ U ⇒ 5 izbora.
+  d2 = 7 ⇒ 1 izbor (fiksno).
+  d1 ∈ U ⇒ 5 izbora.
+
+Princip prebrojavanja (princip mnozenja):
+  N = 5 * 5 * 5 * 1 * 5 = 625.
+
+Odgovor: (D) 625.
+
+Sanity provera: ukupno petocifrenih sa svim 5 cifara neparnih je 5^5 = 3125.
+Od toga onih sa d2 = 7: tacno jedna petina (jer je d2 ravnopravno bilo koja
+od 5 neparnih cifara), 3125 / 5 = 625. ✓
+
+Vizualizacija (jedan canvas):
+  - Pet kutija/poljaa za cifre, naslovljenih (10000, 1000, 100, 10, 1).
+  - Iznad cetiri „neparne" pozicije: skup {1,3,5,7,9} sa „5 izbora".
+  - U kutiji desetica: fiksno „7".
+  - Dole: 5 · 5 · 5 · 1 · 5 = 625.
+</script>
+
+<h1 data-card="problem-title">Petocifreni brojevi sa fiksnom cifrom desetica i ostalim neparnim ciframa</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika — pravilo mnozenja, prebrojavanje brojeva po pozicijama cifara</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Koliko ima petocifrenih prirodnih brojeva čija je cifra desetica \( 7 \), a sve ostale cifre su neparne?</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">Broj cifara</span>
+      <span class="given-value">\( 5 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Cifra desetica</span>
+      <span class="given-value">\( 7 \) (fiksno)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Ostale cifre</span>
+      <span class="given-value">neparne: \( \{1,3,5,7,9\} \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 125 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 250 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 750 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 625 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 375 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Posmatramo broj kao pet pozicija cifara. Cifra desetica je fiksna (\( 7 \)), pa za nju imamo \( 1 \) izbor. Za četiri preostale pozicije (vodeća cifra, hiljade, stotine i jedinice) cifre moraju biti iz skupa \( \{1,3,5,7,9\} \), dakle po \( 5 \) izbora svaka. Po pravilu množenja množimo izbore.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Pravilo množenja (princip prebrojavanja):</strong> Ako se izbor sastoji od \( k \) nezavisnih koraka, a u koraku \( i \) imamo \( n_i \) mogućnosti, ukupan broj izbora je \( n_1 \cdot n_2 \cdots n_k \).</li>
+        <li><strong>Skup neparnih cifara:</strong> \( \{1, 3, 5, 7, 9\} \) — pet elemenata.</li>
+        <li><strong>Petocifreni broj:</strong> Vodeća cifra (desetihiljade) ne sme biti \( 0 \), ostale mogu.</li>
+        <li><strong>Pozicioni zapis:</strong> \( \overline{d_5 d_4 d_3 d_2 d_1} \), gde je \( d_2 \) cifra desetica, \( d_1 \) cifra jedinica.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz pozicija">
+  <h2>📐 Vizuelni prikaz pozicija</h2>
+  <div class="canvas-wrapper">
+    <canvas id="digitsCanvas" width="700" height="460"></canvas>
+  </div>
+  <p class="canvas-caption">Pet pozicija cifara sa odgovarajućim brojem izbora. Cifra desetica je fiksirana na \( 7 \); ostale cifre se biraju iz skupa neparnih cifara \( \{1,3,5,7,9\} \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Označimo cifre po pozicijama</h3>
+      <p>Petocifren broj zapišimo kao \( \overline{d_5 d_4 d_3 d_2 d_1} \), gde je:</p>
+      <ul>
+        <li>\( d_5 \) — cifra desetihiljada (vodeća),</li>
+        <li>\( d_4 \) — hiljade,</li>
+        <li>\( d_3 \) — stotine,</li>
+        <li>\( d_2 \) — <strong>desetice</strong>,</li>
+        <li>\( d_1 \) — jedinice.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavimo uslove</h3>
+      <p>Iz teksta zadatka:</p>
+      <div class="math-block">\[ d_2 = 7, \qquad d_5,\, d_4,\, d_3,\, d_1 \in \{1,3,5,7,9\}. \]</div>
+      <p>Skup neparnih cifara ima \( 5 \) elemenata: \( |\{1,3,5,7,9\}| = 5 \).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( 0 \) ovde nebitan slučaj?</summary>
+          <div class="detail-content"><p>Inače bi vodeća cifra \( d_5 \) zahtevala posebnu pažnju (ne sme \( 0 \)). Ovde je \( d_5 \) ionako neparna, a nula nije neparna — pa je restrikcija „\( d_5 \ne 0 \)" automatski ispunjena.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Prebrojimo izbore na svakoj poziciji</h3>
+      <p>Pozicija po pozicija:</p>
+      <ul>
+        <li>\( d_5 \): neparna cifra različita od \( 0 \) ⇒ <span class="result">\( 5 \) izbora</span> (svih pet neparnih cifara su nenule).</li>
+        <li>\( d_4 \): neparna ⇒ <span class="result">\( 5 \) izbora</span>.</li>
+        <li>\( d_3 \): neparna ⇒ <span class="result">\( 5 \) izbora</span>.</li>
+        <li>\( d_2 = 7 \): fiksna ⇒ <span class="result">\( 1 \) izbor</span>.</li>
+        <li>\( d_1 \): neparna ⇒ <span class="result">\( 5 \) izbora</span>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Pravilo množenja</h3>
+      <p>Pošto su izbori na različitim pozicijama nezavisni, ukupan broj traženih brojeva je proizvod:</p>
+      <div class="math-block">\[ N = 5 \cdot 5 \cdot 5 \cdot 1 \cdot 5 = 5^4 = 625. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Sanity provera (drugi pogled)</h3>
+      <p>Petocifreni brojevi sa <em>svim</em> ciframa neparnim ima \( 5^5 = 3125 \). Među njima je cifra \( d_2 \) ravnopravno svaka od pet neparnih cifara, pa onih kod kojih je \( d_2 = 7 \) ima:</p>
+      <div class="math-block">\[ \frac{3125}{5} = 625. \quad \checkmark \]</div>
+      <p>Slažu se — odgovor je \( 625 \).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto smo sigurni da ne brojimo isti broj dvaput?</summary>
+          <div class="detail-content"><p>Svaki broj jednoznačno određuje petorku cifara \( (d_5, d_4, d_3, d_2, d_1) \), pa različite petorke daju različite brojeve. Pravilo množenja broji baš sve takve petorke i to po jednom.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kada je svako ograničenje vezano za <em>jednu</em> poziciju u broju i ne pravi vezu između pozicija, problem se raspada na nezavisne izbore i pravilo množenja daje rešenje u jednom redu. Trik nije računski — trik je prepoznati nezavisnost.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ N = 5 \cdot 5 \cdot 5 \cdot 1 \cdot 5 = 625 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 125 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 250 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 750 \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 625 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 375 \)</span>
+  </div>
+  <p class="verification">Provera drugim putem: \( 5^5 / 5 = 3125 / 5 = 625 \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Misliti da vodeća cifra \( d_5 \) ima \( 4 \) izbora (kao da treba isključiti \( 0 \)). Pošto je \( 0 \) parno, automatski je već van skupa neparnih cifara — i dalje \( 5 \) izbora.</li>
+    <li>Pomešati cifru desetica (\( d_2 \)) sa cifrom <em>desetihiljada</em> (\( d_5 \)). Tekst eksplicitno kaže <strong>desetice</strong>, dakle pretposlednja s desna.</li>
+    <li>Zaboraviti da je \( 7 \) neparna pa „dvaput računati" — uslov \( d_2 = 7 \) već uključuje neparnost.</li>
+    <li>Sabirati umesto množiti: \( 5 + 5 + 5 + 1 + 5 = 21 \) — to bi bilo dodavanje, što ovde nema smisla. Koristimo pravilo množenja.</li>
+    <li>Računati \( 5^5 = 3125 \) i zaboraviti da je \( d_2 \) fiksirana — pa zato delimo sa \( 5 \), ili još bolje: sa samog početka stavimo „1 izbor" za \( d_2 \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koliko ima petocifrenih prirodnih brojeva čija je cifra desetica \( 7 \), a sve ostale cifre su <em>parne</em>? (Pazi na vodeću cifru.)</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Skup parnih cifara je \( \{0, 2, 4, 6, 8\} \), \( 5 \) elemenata. Ali vodeća \( d_5 \ne 0 \), pa za nju \( 4 \) izbora. Za \( d_4, d_3, d_1 \) po \( 5 \) izbora; za \( d_2 = 7 \) jedan. Ukupno \( 4 \cdot 5 \cdot 5 \cdot 1 \cdot 5 = 500 \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('digitsCanvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var W = canvas.width, H = canvas.height;
+
+    // Naslov
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'left';
+    ctx.fillText('Pozicije cifara petocifrenog broja', 20, 28);
+
+    // 5 polja, sirine 100, razmaka 20
+    var boxW = 100, boxH = 100;
+    var gap = 20;
+    var totalW = 5 * boxW + 4 * gap;
+    var startX = (W - totalW) / 2;
+    var topY = 90;
+
+    var labels = ['d₅', 'd₄', 'd₃', 'd₂', 'd₁'];
+    var places = ['10000', '1000', '100', '10', '1'];
+    var subnames = ['desetihiljade', 'hiljade', 'stotine', 'desetice', 'jedinice'];
+    var choices = ['5 izbora', '5 izbora', '5 izbora', '1 izbor', '5 izbora'];
+    var content = ['?', '?', '?', '7', '?'];
+
+    for (var i = 0; i < 5; i++) {
+      var x = startX + i * (boxW + gap);
+
+      // Polozaj-titl iznad
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.fillStyle = muted;
+      ctx.textAlign = 'center';
+      ctx.fillText(places[i], x + boxW / 2, topY - 38);
+      ctx.fillText(subnames[i], x + boxW / 2, topY - 22);
+
+      // Boja kutije: zuto za fiksno, plavo za promenljivo
+      var isFixed = (i === 3);
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = isFixed ? warning : primary;
+      ctx.fillStyle = isFixed
+        ? cvAlpha('--sol-canvas-warning', 0.18)
+        : cvAlpha('--sol-canvas-primary', 0.10);
+      ctx.beginPath();
+      ctx.rect(x, topY, boxW, boxH);
+      ctx.fill();
+      ctx.stroke();
+
+      // Sadrzaj kutije (cifra ili „?")
+      ctx.font = 'bold 56px Inter, system-ui, sans-serif';
+      ctx.fillStyle = isFixed ? warning : primary;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(content[i], x + boxW / 2, topY + boxH / 2 + 4);
+      ctx.textBaseline = 'alphabetic';
+
+      // Indeks (d5, d4, ...)
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.fillStyle = text;
+      ctx.fillText(labels[i], x + boxW / 2, topY + boxH + 22);
+
+      // Skup ili broj izbora
+      ctx.font = '13px Inter, system-ui, sans-serif';
+      ctx.fillStyle = isFixed ? warning : accent;
+      ctx.fillText(choices[i], x + boxW / 2, topY + boxH + 44);
+
+      // Iznad neparnih: skup {1,3,5,7,9}
+      if (!isFixed) {
+        ctx.font = '12px ui-monospace, Menlo, monospace';
+        ctx.fillStyle = secondary;
+        ctx.fillText('{1,3,5,7,9}', x + boxW / 2, topY - 6);
+      } else {
+        ctx.font = '12px Inter, system-ui, sans-serif';
+        ctx.fillStyle = warning;
+        ctx.fillText('fiksno', x + boxW / 2, topY - 6);
+      }
+    }
+
+    // Separator linija ispod kutija
+    var sepY = topY + boxH + 70;
+    ctx.strokeStyle = cvAlpha('--sol-canvas-axis', 0.5);
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(startX, sepY);
+    ctx.lineTo(startX + totalW, sepY);
+    ctx.stroke();
+
+    // Donji deo: jednacina prebrojavanja
+    ctx.font = 'bold 22px ui-monospace, Menlo, monospace';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.fillText('5  ·  5  ·  5  ·  1  ·  5', W / 2, sepY + 36);
+
+    ctx.font = 'bold 24px Inter, system-ui, sans-serif';
+    ctx.fillStyle = accent;
+    ctx.fillText('=  625', W / 2, sepY + 70);
+
+    // Mala napomena
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Pravilo množenja: nezavisni izbori po pozicijama', W / 2, H - 14);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Petocifreni brojevi sa fiksnom cifrom desetica i ostalim neparnim ciframa",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["pravilo množenja", "prebrojavanje", "cifre broja", "neparne cifre", "petocifreni brojevi"]
+}
+BRAINSPARK_META-->

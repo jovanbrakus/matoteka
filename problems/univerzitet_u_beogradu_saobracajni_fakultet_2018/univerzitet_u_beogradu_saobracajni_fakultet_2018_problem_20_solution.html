@@ -1,0 +1,519 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Problem: Compare four functions (and their domains):
+  f1(x) = 1
+  f2(x) = tg(x/2) · ctg(x/2)
+  f3(x) = |sin(x)| / sqrt(1 - cos^2(x))
+  f4(x) = sqrt(1 + cos(2x)) / |sqrt(2) cos(x)|
+
+Two functions are EQUAL only when both VALUES and DOMAINS coincide.
+
+f1: defined for all real x. Value = 1. Domain = R.
+
+f2: tg(x/2) requires cos(x/2) != 0  ⇒  x/2 != π/2 + kπ  ⇒  x != π + 2kπ.
+    ctg(x/2) requires sin(x/2) != 0  ⇒  x/2 != kπ  ⇒  x != 2kπ.
+    Combined: x != kπ (every multiple of π).
+    Value: tg(x/2) · ctg(x/2) = 1 wherever defined.
+    Domain = R \ {kπ : k ∈ Z}.
+
+f3: requires 1 - cos^2(x) > 0  ⇒  sin^2(x) > 0  ⇒  sin(x) != 0  ⇒  x != kπ.
+    Value: |sin(x)| / sqrt(sin^2(x)) = |sin(x)| / |sin(x)| = 1.
+    Domain = R \ {kπ}.
+    SAME DOMAIN AS f2! And same value 1. So f2 ≡ f3.
+
+f4: requires |sqrt(2) cos(x)| != 0  ⇒  cos(x) != 0  ⇒  x != π/2 + kπ.
+    Value: sqrt(1 + cos(2x)) / (sqrt(2)|cos(x)|).
+    1 + cos(2x) = 2cos^2(x), so sqrt(2cos^2(x)) = sqrt(2) · |cos(x)|.
+    Numerator/denominator = sqrt(2)|cos(x)| / (sqrt(2)|cos(x)|) = 1.
+    Domain = R \ {π/2 + kπ}. DIFFERENT FROM f2, f3.
+
+Comparisons:
+- f1 vs f2: domains differ (R vs R\{kπ}) → not equal
+- f1 vs f3: domains differ → not equal
+- f1 vs f4: domains differ → not equal
+- f2 vs f3: same domain R\{kπ}, same value 1 → EQUAL ✓
+- f2 vs f4: f2 excludes kπ, f4 excludes π/2+kπ — different
+- f3 vs f4: same as above — different
+
+Correct answer: (C) f2 = f3.
+
+Visual idea: number-line / x-axis showing the four domains.
+- Highlight forbidden points for each function.
+- f1: no holes anywhere
+- f2 and f3: holes at x = ..., -π, 0, π, 2π, ... (multiples of π)
+- f4: holes at x = ..., -π/2, π/2, 3π/2, ... (odd multiples of π/2)
+- Same color for f2 and f3 (overlap) — visually shows they coincide.
+- Distinct color for f4.
+- Above the axis, plot all four function values (all = 1) on horizontal line, with the domain holes shown as small open circles.
+</script>
+
+<h1 data-card="problem-title">Jednake funkcije — uloga domena</h1>
+<p data-card="problem-subtitle" class="subtitle">Trigonometrijske identičnosti, oblast definisanosti, kriterijum jednakosti funkcija</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Date su funkcije</p>
+  <div class="math-block">\[ f_{1}(x) = 1, \qquad f_{2}(x) = \operatorname{tg}\!\left(\dfrac{x}{2}\right) \cdot \operatorname{ctg}\!\left(\dfrac{x}{2}\right), \]</div>
+  <div class="math-block">\[ f_{3}(x) = \dfrac{|\sin(x)|}{\sqrt{1 - \cos^{2}(x)}}, \qquad f_{4}(x) = \dfrac{\sqrt{1 + \cos(2x)}}{\left|\sqrt{2}\cos(x)\right|}. \]</div>
+  <p>Tada važi:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( f_{1} = f_{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">Nema jednakih</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( f_{2} = f_{3} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( f_{3} = f_{4} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( f_{2} = f_{4} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Koristimo strogi kriterijum jednakosti funkcija: \( f = g \) važi akko se podudaraju i <em>vrednosti</em> i <em>domeni</em>. Sve četiri funkcije svedemo na konstantu \( 1 \) gde su definisane, ali im se domeni razlikuju. Zato za svaku odredimo skup tačaka koje moraju biti isključene (gde je deljenje nulom ili tg/ctg nedefinisan), a zatim uparimo one čiji se domeni poklapaju.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Identičnosti i pravila domena koja koristimo</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Definicija jednakosti</span> Funkcije \( f \) i \( g \) su jednake akko \( D_{f} = D_{g} \) i \( f(x) = g(x) \) za svako \( x \) iz zajedničkog domena.</li>
+        <li><span class="formula-label">Tangens i kotangens</span> \( \operatorname{tg}(u) \) zahteva \( \cos u \neq 0 \), a \( \operatorname{ctg}(u) \) zahteva \( \sin u \neq 0 \). Proizvod \( \operatorname{tg}(u)\operatorname{ctg}(u) = 1 \) gde su oba definisana.</li>
+        <li><span class="formula-label">Pitagorin identitet</span> \( \sin^{2} x + \cos^{2} x = 1 \), pa je \( 1 - \cos^{2} x = \sin^{2} x \).</li>
+        <li><span class="formula-label">Dvostruki ugao</span> \( \cos(2x) = 2\cos^{2} x - 1 \), pa \( 1 + \cos(2x) = 2\cos^{2} x \).</li>
+        <li><span class="formula-label">Koren kvadrata</span> \( \sqrt{a^{2}} = |a| \). Tako je \( \sqrt{\sin^{2} x} = |\sin x| \) i \( \sqrt{2\cos^{2} x} = \sqrt{2}\,|\cos x| \).</li>
+        <li><span class="formula-label">Domen razlomka</span> Imenilac mora biti različit od nule; pod kvadratnim korenom u imeniocu izraz mora biti strogo pozitivan.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="780" height="620"></canvas>
+  </div>
+  <p class="canvas-caption">Sve četiri funkcije imaju vrednost \( 1 \) gde su definisane, ali se razlikuju po skupu „rupa“ na \( x \)-osi. Funkcije \( f_{2} \) i \( f_{3} \) imaju iste rupe (na \( x = k\pi \)), pa su jednake. Funkcija \( f_{4} \) ima rupe na drugim mestima (\( x = \pi/2 + k\pi \)), a \( f_{1} \) je definisana svuda — ti domeni se ne poklapaju.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Kriterijum jednakosti funkcija</h3>
+      <p>Dve funkcije \( f \) i \( g \) su jednake samo ako imaju <strong>isti domen</strong> i u tom domenu uzimaju iste vrednosti. Pošto ćemo videti da sve četiri funkcije „vrede 1“ tamo gde su definisane, ključno je odrediti njihove domene i uporediti ih.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Analiza \( f_{1}(x) = 1 \)</h3>
+      <p>Ovo je konstantna funkcija definisana za svako realno \( x \).</p>
+      <div class="math-block">\[ D_{f_{1}} = \mathbb{R}, \qquad f_{1}(x) = 1. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Analiza \( f_{2}(x) = \operatorname{tg}\!\tfrac{x}{2} \cdot \operatorname{ctg}\!\tfrac{x}{2} \)</h3>
+      <p>Vrednost je \( 1 \) gde god su oba činioca definisana, jer je \( \operatorname{tg}(u) \cdot \operatorname{ctg}(u) = 1 \).</p>
+      <p>Uslovi:</p>
+      <ul>
+        <li>\( \operatorname{tg}\!\tfrac{x}{2} \) postoji \( \iff \cos\!\tfrac{x}{2} \neq 0 \iff \tfrac{x}{2} \neq \tfrac{\pi}{2} + k\pi \iff x \neq \pi + 2k\pi \).</li>
+        <li>\( \operatorname{ctg}\!\tfrac{x}{2} \) postoji \( \iff \sin\!\tfrac{x}{2} \neq 0 \iff \tfrac{x}{2} \neq k\pi \iff x \neq 2k\pi \).</li>
+      </ul>
+      <p>Ujedinjeni isključeni skup: \( \{x = \pi + 2k\pi\} \cup \{x = 2k\pi\} = \{x = k\pi : k \in \mathbb{Z}\} \).</p>
+      <div class="math-block">\[ D_{f_{2}} = \mathbb{R} \setminus \{k\pi : k \in \mathbb{Z}\}, \qquad f_{2}(x) = 1. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto ujedinjenje daje sve umnoške \( \pi \)?</summary>
+          <div class="detail-content"><p>Skup \( \{2k\pi\} \) sadrži sve parne umnoške \( \pi \) (uključujući \( 0 \)), a skup \( \{\pi + 2k\pi\} \) sve neparne. Njihova unija obuhvata baš sve umnoške, tj. \( \{k\pi : k \in \mathbb{Z}\} \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Analiza \( f_{3}(x) = \dfrac{|\sin x|}{\sqrt{1 - \cos^{2} x}} \)</h3>
+      <p>Po Pitagorinom identitetu \( 1 - \cos^{2} x = \sin^{2} x \), pa je \( \sqrt{1 - \cos^{2} x} = \sqrt{\sin^{2} x} = |\sin x| \). Funkcija je definisana akko je imenilac različit od nule, tj. \( |\sin x| \neq 0 \iff \sin x \neq 0 \iff x \neq k\pi \).</p>
+      <div class="math-block">\[ f_{3}(x) = \dfrac{|\sin x|}{|\sin x|} = 1, \qquad D_{f_{3}} = \mathbb{R} \setminus \{k\pi : k \in \mathbb{Z}\}. \]</div>
+      <p><strong>Domen \( f_{3} \) je isti kao domen \( f_{2} \)!</strong> A vrednosti se i jedna i druga svode na \( 1 \). Dakle \( f_{2} = f_{3} \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Analiza \( f_{4}(x) = \dfrac{\sqrt{1 + \cos(2x)}}{|\sqrt{2}\cos x|} \)</h3>
+      <p>Iz formule dvostrukog ugla: \( 1 + \cos(2x) = 2\cos^{2} x \), pa \( \sqrt{1 + \cos(2x)} = \sqrt{2\cos^{2} x} = \sqrt{2}\,|\cos x| \). Sledi:</p>
+      <div class="math-block">\[ f_{4}(x) = \dfrac{\sqrt{2}\,|\cos x|}{\sqrt{2}\,|\cos x|} = 1. \]</div>
+      <p>Funkcija je definisana akko je imenilac različit od nule, tj. \( \cos x \neq 0 \iff x \neq \tfrac{\pi}{2} + k\pi \).</p>
+      <div class="math-block">\[ D_{f_{4}} = \mathbb{R} \setminus \!\left\{\tfrac{\pi}{2} + k\pi : k \in \mathbb{Z}\right\}. \]</div>
+      <p>Ovaj skup isključenih tačaka je <em>različit</em> od \( \{k\pi\} \) (razlikuju se za pola periode), pa je \( D_{f_{4}} \neq D_{f_{2}} = D_{f_{3}} \). Takođe \( D_{f_{4}} \neq D_{f_{1}} = \mathbb{R} \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Sumarno poređenje domena</h3>
+      <p>Skup zabranjenih tačaka za svaku funkciju:</p>
+      <ul>
+        <li>\( f_{1} \): nijedna (\( D_{f_{1}} = \mathbb{R} \))</li>
+        <li>\( f_{2} \): \( \{k\pi\} = \{\ldots, -2\pi, -\pi, 0, \pi, 2\pi, \ldots\} \)</li>
+        <li>\( f_{3} \): \( \{k\pi\} \) — <strong>isto kao \( f_{2} \)</strong></li>
+        <li>\( f_{4} \): \( \{\pi/2 + k\pi\} = \{\ldots, -\pi/2, \pi/2, 3\pi/2, \ldots\} \) — različito</li>
+      </ul>
+      <p>Jednake su samo \( f_{2} \) i \( f_{3} \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: da li \( f_{1} \) može biti jednaka nekoj drugoj?</summary>
+          <div class="detail-content"><p>\( f_{1} \) je definisana svuda, dok ostale tri imaju rupe; domen \( \mathbb{R} \) ne poklapa se ni sa \( \mathbb{R}\setminus\{k\pi\} \) ni sa \( \mathbb{R}\setminus\{\pi/2+k\pi\} \). Zato \( f_{1} \) nije jednaka nijednoj od preostalih.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>„Iste formule“ ne znače „iste funkcije“. Iako se sve četiri izraza algebarski svode na konstantu \( 1 \), domeni im se razlikuju zbog pojavljivanja \( \operatorname{tg}, \operatorname{ctg} \), kvadratnog korena u imeniocu i apsolutnih vrednosti. Pri poređenju funkcija prvo proveri <strong>oblast definisanosti</strong>, pa tek onda vrednost — domen je ravnopravan deo identiteta funkcije.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ f_{2} = f_{3}, \quad \text{jer je } D_{f_{2}} = D_{f_{3}} = \mathbb{R} \setminus \{k\pi\} \text{ i } f_{2}(x) = f_{3}(x) = 1. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( f_{1} = f_{2} \)</span>
+    <span class="answer-option" data-option="B">(B) Nema jednakih</span>
+    <span class="answer-option correct" data-option="C">(C) \( f_{2} = f_{3} \)</span>
+    <span class="answer-option" data-option="D">(D) \( f_{3} = f_{4} \)</span>
+    <span class="answer-option" data-option="E">(E) \( f_{2} = f_{4} \)</span>
+  </div>
+  <p class="verification">Provera za \( x = \pi/2 \): \( f_{2}(\pi/2) = \operatorname{tg}(\pi/4)\operatorname{ctg}(\pi/4) = 1 \cdot 1 = 1 \), \( f_{3}(\pi/2) = 1/1 = 1 \), \( f_{4}(\pi/2) \) nedefinisana (\( \cos(\pi/2) = 0 \)). Provera za \( x = \pi \): \( f_{2}, f_{3} \) nedefinisane (\( \sin\pi = 0 \)), dok je \( f_{4}(\pi) = \sqrt{2}/\sqrt{2} = 1 \). Razlike u domenima su jasno vidljive.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Zaključak da su sve četiri funkcije jednake jer se svode na \( 1 \) — zaboravljen domen.</li>
+    <li>Pisanje \( \sqrt{\sin^{2} x} = \sin x \) (ispušten apsolutni znak); tačno je \( \sqrt{\sin^{2} x} = |\sin x| \).</li>
+    <li>Mešanje uslova za \( \operatorname{tg} \) i \( \operatorname{ctg} \): \( \operatorname{tg} \) zahteva \( \cos \neq 0 \), \( \operatorname{ctg} \) zahteva \( \sin \neq 0 \).</li>
+    <li>Pogrešno tvrđenje \( f_{2} = f_{4} \) — domeni \( \{k\pi\} \) i \( \{\pi/2 + k\pi\} \) su disjunktni; nijedna isključena tačka jedne nije isključena tačka druge.</li>
+    <li>Tvrdnja \( f_{1} = f_{2} \) — domen \( \mathbb{R} \) sadrži \( 0, \pi, \ldots \), gde \( f_{2} \) <em>nije</em> definisana, pa se domeni razlikuju.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Ispitaj da li su funkcije \( g_{1}(x) = \dfrac{\sin(2x)}{2\sin x} \) i \( g_{2}(x) = \cos x \) jednake. Ako nisu, koje tačke pripadaju razlici njihovih domena?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Iz \( \sin(2x) = 2\sin x \cos x \) sledi \( g_{1}(x) = \cos x \) kad god \( \sin x \neq 0 \), tj. \( x \neq k\pi \). Ali \( g_{2}(x) = \cos x \) je definisana svuda, pa se domeni razlikuju u tačkama \( \{k\pi : k \in \mathbb{Z}\} \). Funkcije nisu jednake (iako se njihove vrednosti poklapaju gde su obe definisane).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger') || accent;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var W = canvas.width, H = canvas.height;
+    var marginLeft = 60, marginRight = 30, marginTop = 60, marginBottom = 90;
+    var plotW = W - marginLeft - marginRight;
+    var plotH = H - marginTop - marginBottom;
+
+    // x range in units of π: from -2.5π to 2.5π
+    var xMin = -2.5 * Math.PI, xMax = 2.5 * Math.PI;
+    function X(x) { return marginLeft + (x - xMin) / (xMax - xMin) * plotW; }
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Domeni četiri funkcije — gde je svaka definisana?', W / 2, 26);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillText('Sve daju vrednost 1 gde su definisane; razlika je u skupu „rupa“', W / 2, 46);
+
+    // Four horizontal lanes for f1, f2, f3, f4
+    var laneNames = [
+      { label: 'f₁(x) = 1', color: secondary, holes: [] }, // no holes
+      { label: 'f₂(x) = tg(x/2)·ctg(x/2)', color: primary, holes: 'kpi' },
+      { label: 'f₃(x) = |sin x|/√(1−cos²x)', color: primary, holes: 'kpi' },
+      { label: 'f₄(x) = √(1+cos 2x)/|√2 cos x|', color: accent, holes: 'halfpi' }
+    ];
+
+    var laneCount = laneNames.length;
+    var laneSpacing = plotH / (laneCount + 1);
+    var lanes = [];
+    for (var i = 0; i < laneCount; i++) {
+      lanes.push(marginTop + laneSpacing * (i + 1));
+    }
+
+    // Common x-axis at bottom of plot
+    var axisY = marginTop + plotH + 14;
+
+    // Draw light reference grid lines at multiples of π/2
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 4]);
+    for (var k = -5; k <= 5; k++) {
+      var xv = k * Math.PI / 2;
+      if (xv < xMin || xv > xMax) continue;
+      ctx.beginPath();
+      ctx.moveTo(X(xv), marginTop);
+      ctx.lineTo(X(xv), axisY);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Draw x-axis at bottom
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(marginLeft, axisY);
+    ctx.lineTo(marginLeft + plotW, axisY);
+    ctx.stroke();
+
+    // Tick labels on x-axis (multiples of π/2)
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui';
+    ctx.textAlign = 'center';
+    var tickLabels = [
+      { val: -2 * Math.PI, lab: '−2π' },
+      { val: -1.5 * Math.PI, lab: '−3π/2' },
+      { val: -Math.PI, lab: '−π' },
+      { val: -Math.PI / 2, lab: '−π/2' },
+      { val: 0, lab: '0' },
+      { val: Math.PI / 2, lab: 'π/2' },
+      { val: Math.PI, lab: 'π' },
+      { val: 1.5 * Math.PI, lab: '3π/2' },
+      { val: 2 * Math.PI, lab: '2π' }
+    ];
+    for (var t = 0; t < tickLabels.length; t++) {
+      var tk = tickLabels[t];
+      // tick mark
+      ctx.strokeStyle = axis;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(X(tk.val), axisY);
+      ctx.lineTo(X(tk.val), axisY + 4);
+      ctx.stroke();
+      ctx.fillStyle = muted;
+      ctx.fillText(tk.lab, X(tk.val), axisY + 18);
+    }
+
+    // For each lane: draw the y = 1 line with holes at forbidden points
+    for (var li = 0; li < lanes.length; li++) {
+      var lane = laneNames[li];
+      var y = lanes[li];
+
+      // Lane label on left
+      ctx.fillStyle = text;
+      ctx.font = 'bold 12px Inter, system-ui';
+      ctx.textAlign = 'right';
+      ctx.fillText(lane.label, marginLeft - 8, y + 4);
+
+      // Compute holes for this lane
+      var holes = [];
+      if (lane.holes === 'kpi') {
+        for (var k2 = -2; k2 <= 2; k2++) {
+          holes.push(k2 * Math.PI);
+        }
+      } else if (lane.holes === 'halfpi') {
+        for (var k3 = -2; k3 <= 2; k3++) {
+          holes.push(Math.PI / 2 + k3 * Math.PI);
+        }
+      }
+
+      // Build sorted boundary list
+      var boundaries = [xMin].concat(holes.slice().sort(function(a,b){return a-b;})).concat([xMax]);
+
+      // Draw segments between consecutive holes (skipping the holes themselves)
+      ctx.strokeStyle = lane.color;
+      ctx.lineWidth = 4;
+      var holeRadius = 5;
+      // For each hole, leave a small gap
+      // We'll draw line in pieces: from prev (or xMin, exclusive of hole on right side) to next hole
+      // Use a small gap epsilon in pixels
+      var epsPx = 6;
+      // Build list of cut points in pixel space
+      var points = [{ px: X(xMin), kind: 'edge' }];
+      for (var h = 0; h < holes.length; h++) {
+        points.push({ px: X(holes[h]), kind: 'hole' });
+      }
+      points.push({ px: X(xMax), kind: 'edge' });
+
+      // Sort by px
+      points.sort(function(a, b) { return a.px - b.px; });
+
+      for (var p = 0; p < points.length - 1; p++) {
+        var leftP = points[p], rightP = points[p + 1];
+        var lx = leftP.px + (leftP.kind === 'hole' ? epsPx : 0);
+        var rx = rightP.px - (rightP.kind === 'hole' ? epsPx : 0);
+        if (rx > lx) {
+          ctx.beginPath();
+          ctx.moveTo(lx, y);
+          ctx.lineTo(rx, y);
+          ctx.stroke();
+        }
+      }
+
+      // Draw open circles at holes
+      for (var h2 = 0; h2 < holes.length; h2++) {
+        var hx = X(holes[h2]);
+        ctx.fillStyle = bg;
+        ctx.beginPath();
+        ctx.arc(hx, y, holeRadius, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.strokeStyle = lane.color;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(hx, y, holeRadius, 0, 2 * Math.PI);
+        ctx.stroke();
+      }
+
+      // Right-edge label "= 1"
+      ctx.fillStyle = lane.color;
+      ctx.font = 'bold 12px Inter, system-ui';
+      ctx.textAlign = 'left';
+      ctx.fillText('= 1', marginLeft + plotW + 4, y + 4);
+    }
+
+    // Highlight band that connects f2 and f3 (same domain)
+    var f2y = lanes[1], f3y = lanes[2];
+    ctx.strokeStyle = cvAlpha('--sol-canvas-highlight', 0.55) || highlight;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 4]);
+    var bracketX = marginLeft + plotW + 38;
+    ctx.beginPath();
+    ctx.moveTo(bracketX, f2y);
+    ctx.lineTo(bracketX + 8, f2y);
+    ctx.lineTo(bracketX + 8, f3y);
+    ctx.lineTo(bracketX, f3y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 12px Inter, system-ui';
+    ctx.textAlign = 'left';
+    // Draw label rotated would be complex; place small text
+    // (canvas right margin is small; rely on caption instead)
+
+    // Footer summary
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('f₂ i f₃ imaju iste „rupe“ (na x = kπ) → f₂ = f₃', W / 2, H - 50);
+
+    // Legend
+    var legendY = H - 22;
+    ctx.font = '11px Inter, system-ui';
+    ctx.textAlign = 'left';
+    var lx2 = marginLeft + 6;
+
+    ctx.fillStyle = secondary;
+    ctx.fillRect(lx2, legendY - 7, 14, 4);
+    ctx.fillStyle = text;
+    ctx.fillText('f₁: bez rupa (D = ℝ)', lx2 + 18, legendY - 3);
+
+    ctx.fillStyle = primary;
+    ctx.fillRect(lx2 + 170, legendY - 7, 14, 4);
+    ctx.fillStyle = text;
+    ctx.fillText('f₂ = f₃: rupe na x = kπ', lx2 + 188, legendY - 3);
+
+    ctx.fillStyle = accent;
+    ctx.fillRect(lx2 + 360, legendY - 7, 14, 4);
+    ctx.fillStyle = text;
+    ctx.fillText('f₄: rupe na x = π/2 + kπ', lx2 + 378, legendY - 3);
+
+    // Open circle legend
+    ctx.fillStyle = bg;
+    ctx.beginPath();
+    ctx.arc(lx2 + 560, legendY - 5, 5, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(lx2 + 560, legendY - 5, 5, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.fillText('= isključena tačka', lx2 + 570, legendY - 3);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Jednake funkcije: f₂ = tg(x/2)·ctg(x/2) i f₃ = |sin x|/√(1−cos²x)",
+  "subject": "math",
+  "unit": "trigonometrija",
+  "topic_tags": ["trigonometrijski identiteti", "oblast definisanosti", "jednakost funkcija", "domen", "tangens i kotangens"]
+}
+BRAINSPARK_META-->

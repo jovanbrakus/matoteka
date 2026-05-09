@@ -1,0 +1,745 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Skup svih resenja nejednacine log_{1/4}(x^2 + (3/4)x) >= 1.
+
+Korak 1: Domen logaritma. Argument mora biti > 0.
+  x^2 + (3/4)x > 0
+  x(x + 3/4) > 0
+  Proizvod dva linearna izraza je > 0 kad oba imaju isti znak:
+    x > 0 i x + 3/4 > 0 -> x > 0;
+    ili x < 0 i x + 3/4 < 0 -> x < -3/4.
+  Domen: x < -3/4 ili x > 0.
+
+Korak 2: Resavanje nejednacine sa logaritmom.
+  log_{1/4}(A) >= 1, gde je A = x^2 + (3/4)x i baza b = 1/4.
+  Pošto je 0 < b < 1, log_b je opadajuca funkcija.
+  Zato se znak nejednacine OKRECE kada se "uklanja" logaritam:
+    A <= b^1
+    x^2 + (3/4)x <= 1/4.
+
+Korak 3: Resavanje kvadratne nejednacine.
+  x^2 + (3/4)x - 1/4 <= 0.
+  Pomnozim sa 4 (4 > 0, ne menja smer):
+    4x^2 + 3x - 1 <= 0.
+  Diskriminanta: D = 9 + 16 = 25, sqrt(D) = 5.
+  Koreni: x = (-3 +/- 5)/8.
+    x = 2/8 = 1/4;
+    x = -8/8 = -1.
+  4x^2 + 3x - 1 = 4(x + 1)(x - 1/4) — koeficijent uz x^2 je pozitivan,
+  pa je izraz <= 0 izmedju korena (ukljucujuci):
+    -1 <= x <= 1/4.
+
+Korak 4: Presek sa domenom.
+  Domen: (-inf, -3/4) U (0, +inf).
+  Interval: [-1, 1/4].
+  Presek: [-1, -3/4) U (0, 1/4].
+
+  Provera: -3/4 = -0.75 je u intervalu [-1, 1/4], i NIJE u domenu.
+  Tako da granicna tacka -3/4 se iskljucuje (pa ona postaje otvoren kraj).
+  Slicno 0 nije u domenu, pa se i ona iskljucuje.
+
+Konacno: x ∈ [-1, -3/4) ∪ (0, 1/4].
+Tacan odgovor: opcija (D) — [-1, -3/4) U (0, 1/4].
+
+Eliminacija ostalih:
+  (A) (-1, 4]: pogresno, koren 4 je nemoguc.
+  (B) [-1, 1/4]: bez preseka sa domenom — naivni odgovor.
+  (C) (0, 1/4]: samo desni komad domena.
+  (E) [-1, 0): samo levi komad, ali pogresan kraj.
+
+Provera: x = -1: A = 1 - 3/4 = 1/4 > 0 ✓ domen, log_{1/4}(1/4) = 1,
+  pa je 1 >= 1 ✓.
+x = 1/4: A = 1/16 + 3/16 = 4/16 = 1/4 > 0 ✓ domen, log_{1/4}(1/4) = 1 ✓.
+x = -3/4: A = 9/16 - 9/16 = 0, log nije definisan ✗.
+x = 0: A = 0, log nije definisan ✗.
+x = -0.8: A = 0.64 - 0.6 = 0.04, log_{1/4}(0.04) = ln(0.04)/ln(0.25) =
+  log(0.04)/log(0.25). 0.25^k = 0.04 -> k = log(0.04)/log(0.25) = 2.32 > 1 ✓.
+  -0.8 ∈ [-1, -3/4) ✓.
+x = -0.5: -0.5 nije u domenu (u (-3/4, 0)), pa nije resenje. ✓.
+
+Vizualno (2 kanvasa, statika):
+  1) Brojevna prava sa:
+     - sivom bojom: oblast definisanosti (x < -3/4 i x > 0);
+     - zutom: interval [-1, 1/4] dobijen iz kvadratne;
+     - zelenom: presek [-1, -3/4) ∪ (0, 1/4] — finalno resenje.
+  2) Graf y = log_{1/4}(x^2 + (3/4)x) sa horizontalnom y = 1.
+     Funkcija definisana na x < -3/4 i x > 0 (dve grane).
+     Resenje: gde je grafik IZNAD ili NA pravi y = 1.
+
+Pitfalls:
+  - Zaboraviti okrenuti znak (jer je baza < 1) — najveca greska.
+  - Zaboraviti domen, pa ukljuciti i interval (-3/4, 0) gde log nije definisan.
+  - Uzeti pogresnu granicnu tacku otvoreno/zatvoreno: -1 i 1/4 su zatvorene
+    (jer >= u nejednakosti), ali -3/4 i 0 su otvorene (jer su iskljucene iz domena).
+</script>
+
+<h1 data-card="problem-title">Logaritamska nejednačina sa bazom \( 1/4 \)</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — domen, okretanje znaka kod opadajuće logaritamske funkcije, presek skupova</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Skup svih rešenja nejednačine</p>
+  <div class="math-block">\[ \log_{1/4}\!\left( x^2 + \tfrac{3}{4}\,x \right) \;\ge\; 1 \]</div>
+  <p>je:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">baza</span>
+      <span class="given-value">\( \tfrac{1}{4} \) (pa je \( 0 &lt; b &lt; 1 \))</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">argument</span>
+      <span class="given-value">\( x^2 + \tfrac{3}{4}\,x \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">tražimo</span>
+      <span class="given-value">skup svih realnih \( x \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( (-1,\, 4] \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( [-1,\, 1/4] \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( (0,\, 1/4] \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( [-1,\, -3/4) \cup (0,\, 1/4] \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( [-1,\, 0) \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Tri koraka. (1) Postavi <em>domen</em>: argument logaritma mora biti pozitivan, što daje skup tačaka gde je funkcija uopšte definisana. (2) Reši nejednačinu — pošto je baza \( \tfrac{1}{4} &lt; 1 \), pri "skidanju" logaritma znak se <strong>okreće</strong>. (3) Napravi presek dobijenog skupa sa domenom — to je konačno rešenje.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Logaritamska funkcija i nejednačine</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Domen logaritma</span> \( \log_b A \) je definisan samo kada je \( A &gt; 0 \) (i \( b &gt; 0 \), \( b \neq 1 \)). <em>Domen je obavezan korak</em> — bez njega se uvode "lažna" rešenja.</li>
+        <li><span class="formula-label">Monotonost</span> Funkcija \( y = \log_b x \) je <em>rastuća</em> ako je \( b &gt; 1 \), a <em>opadajuća</em> ako je \( 0 &lt; b &lt; 1 \).</li>
+        <li><span class="formula-label">Skidanje logaritma — baza \( &gt; 1 \)</span> \( \log_b f(x) \ge c \;\Longleftrightarrow\; f(x) \ge b^c \) (znak <em>ostaje</em>).</li>
+        <li><span class="formula-label">Skidanje logaritma — baza \( &lt; 1 \)</span> \( \log_b f(x) \ge c \;\Longleftrightarrow\; 0 &lt; f(x) \le b^c \) (znak se <em>okreće</em>; uvek treba i \( f(x) &gt; 0 \) iz domena).</li>
+        <li><span class="formula-label">Kvadratna nejednačina</span> \( ax^2 + bx + c \le 0 \) sa \( a &gt; 0 \) i realnim korenima \( x_1 \le x_2 \) zadovoljena je za \( x \in [x_1, x_2] \) (između korena, uključno).</li>
+        <li><span class="formula-label">Proizvod ima znak</span> \( u \cdot v &gt; 0 \) kada \( u, v \) imaju <em>isti</em> znak; \( u \cdot v &lt; 0 \) kada imaju <em>suprotne</em> znake.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — domen, kvadratna i presek">
+  <h2>📐 Brojevna prava: domen, kvadratna, presek</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diag-line" width="700" height="540"></canvas>
+  </div>
+  <p class="canvas-caption">Tri reda na brojevnoj pravoj: gore — oblast definisanosti logaritma (\( x &lt; -\tfrac{3}{4} \) ili \( x &gt; 0 \)); sredina — interval iz kvadratne nejednačine \( [-1,\, 1/4] \); dole — presek tih skupova, što je konačno rešenje \( [-1,\, -\tfrac{3}{4}) \cup (0,\, 1/4] \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — graf logaritma">
+  <h2>📐 Graf \( y = \log_{1/4}\!\bigl(x^2 + \tfrac{3}{4}\,x\bigr) \) i prava \( y = 1 \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diag-graph" width="700" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Funkcija je definisana samo na \( x &lt; -\tfrac{3}{4} \) i \( x &gt; 0 \) (dve grane). Rešenje nejednačine je tamo gde je grafik <em>iznad ili na</em> horizontalnoj pravoj \( y = 1 \). Vidljivo: \( x \in [-1, -\tfrac{3}{4}) \cup (0, 1/4] \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Domen — argument logaritma mora biti pozitivan</h3>
+      <p>Logaritam je definisan kada je njegov argument strogo veći od nule:</p>
+      <div class="math-block">\[ x^2 + \tfrac{3}{4}\,x \;&gt;\; 0 \;\Longleftrightarrow\; x\!\left(x + \tfrac{3}{4}\right) \;&gt;\; 0. \]</div>
+      <p>Proizvod dva izraza je pozitivan kada oba imaju isti znak:</p>
+      <ul>
+        <li>oba pozitivna: \( x &gt; 0 \) i \( x + \tfrac{3}{4} &gt; 0 \) — sažeto \( x &gt; 0 \);</li>
+        <li>oba negativna: \( x &lt; 0 \) i \( x + \tfrac{3}{4} &lt; 0 \) — sažeto \( x &lt; -\tfrac{3}{4} \).</li>
+      </ul>
+      <p>Dakle domen je</p>
+      <div class="math-block">\[ \mathcal{D} \;=\; \bigl(-\infty,\, -\tfrac{3}{4}\bigr) \;\cup\; (0,\, +\infty). \]</div>
+      <p>Naročito: tačke \( x = -\tfrac{3}{4} \) i \( x = 0 \) <strong>nisu</strong> u domenu (tu je argument \( = 0 \)).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto \( x = -\tfrac{1}{2} \) nije u domenu?</summary>
+          <div class="detail-content"><p>Uvrsti: \( \tfrac{1}{4} + \tfrac{3}{4} \cdot (-\tfrac{1}{2}) = \tfrac{1}{4} - \tfrac{3}{8} = -\tfrac{1}{8} &lt; 0 \). Argument je negativan, pa logaritam nije definisan. \( -\tfrac{1}{2} \) leži u intervalu \( (-\tfrac{3}{4},\, 0) \) koji je <em>između</em> nula proizvoda — tu je proizvod negativan.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Skidanje logaritma — pažnja, baza je \( &lt; 1 \)</h3>
+      <p>Funkcija \( y = \log_{1/4} x \) je <em>opadajuća</em> (jer je \( 0 &lt; \tfrac{1}{4} &lt; 1 \)). Posledica: kad "uklanjamo" logaritam u nejednačini, znak se <strong>okreće</strong>. Iz</p>
+      <div class="math-block">\[ \log_{1/4}\!\left(x^2 + \tfrac{3}{4}\,x\right) \;\ge\; 1 \]</div>
+      <p>(uz već važeći uslov \( \mathcal{D} \), tj. argument \( &gt; 0 \)) sledi</p>
+      <div class="math-block">\[ x^2 + \tfrac{3}{4}\,x \;\le\; \left(\tfrac{1}{4}\right)^{\!1} \;=\; \tfrac{1}{4}. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto se znak <em>okreće</em> kad je baza manja od jedan?</summary>
+          <div class="detail-content"><p>Logaritam sa bazom \( &lt; 1 \) je opadajuća funkcija — što je \( x \) <em>veće</em>, to je \( \log_{1/4} x \) <em>manje</em>. Zato uslov "logaritam je velik" (\( \ge 1 \)) odgovara uslovu "argument je mali" (\( \le \tfrac{1}{4} \)) — ali uvek pozitivan, jer se nikako ne sme izaći iz domena. Provera u brojevima: \( \log_{1/4}(1/16) = 2 \), \( \log_{1/4}(1/4) = 1 \), \( \log_{1/4}(1) = 0 \) — što veći argument, to manji logaritam.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Rešavanje kvadratne nejednačine</h3>
+      <p>Nejednačinu prebacimo na jednu stranu i pomnožimo sa \( 4 &gt; 0 \) (smer ostaje):</p>
+      <div class="math-block">\[ x^2 + \tfrac{3}{4}\,x - \tfrac{1}{4} \;\le\; 0 \;\;\Big| \cdot 4 \;\;\Longleftrightarrow\;\; 4x^2 + 3x - 1 \;\le\; 0. \]</div>
+      <p>Koreni odgovarajuće jednačine \( 4x^2 + 3x - 1 = 0 \): diskriminanta je \( D = 9 + 16 = 25 \), pa</p>
+      <div class="math-block">\[ x \;=\; \frac{-3 \pm 5}{8} \;\;\Longrightarrow\;\; x_1 = -1, \quad x_2 = \tfrac{1}{4}. \]</div>
+      <p>Pošto je koeficijent uz \( x^2 \) pozitivan (\( 4 &gt; 0 \)), parabola \( 4x^2 + 3x - 1 \) je otvorena nagore, pa je \( \le 0 \) <em>između</em> korena (uključno):</p>
+      <div class="math-block">\[ x \;\in\; \bigl[-1,\; \tfrac{1}{4}\bigr]. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Presek sa domenom — konačno rešenje</h3>
+      <p>Sada presecamo dva skupa:</p>
+      <div class="math-block">\[ \mathcal{D} \;\cap\; \bigl[-1,\, \tfrac{1}{4}\bigr] \;=\; \Bigl( (-\infty, -\tfrac{3}{4}) \cup (0, +\infty) \Bigr) \;\cap\; \bigl[-1,\, \tfrac{1}{4}\bigr]. \]</div>
+      <p>Razložimo presek deo po deo:</p>
+      <ul>
+        <li>\( \bigl[-1,\, \tfrac{1}{4}\bigr] \cap (-\infty, -\tfrac{3}{4}) = [-1,\, -\tfrac{3}{4}) \) — kraj \( -1 \) je <em>uključen</em> (jer je \( -1 &lt; -\tfrac{3}{4} \)), a \( -\tfrac{3}{4} \) <em>isključen</em> (nije u domenu).</li>
+        <li>\( \bigl[-1,\, \tfrac{1}{4}\bigr] \cap (0, +\infty) = (0,\, \tfrac{1}{4}] \) — kraj \( 0 \) je <em>isključen</em> (nije u domenu), a \( \tfrac{1}{4} \) <em>uključen</em>.</li>
+      </ul>
+      <p>Konačno:</p>
+      <div class="math-block">\[ \boxed{\,x \;\in\; \bigl[-1,\, -\tfrac{3}{4}\bigr) \;\cup\; \bigl(0,\, \tfrac{1}{4}\bigr]\,}. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( -1 \) uključen, a \( -\tfrac{3}{4} \) isključen?</summary>
+          <div class="detail-content"><p>U \( x = -1 \): argument je \( 1 - \tfrac{3}{4} = \tfrac{1}{4} &gt; 0 \), pa je u domenu, i \( \log_{1/4}(1/4) = 1 \), pa je nejednakost \( \ge 1 \) zadovoljena (sa jednakošću). Uključujemo.<br>U \( x = -\tfrac{3}{4} \): argument je \( \tfrac{9}{16} - \tfrac{9}{16} = 0 \), pa logaritam <em>nije definisan</em>. Isključujemo. Slično za \( x = 0 \) (argument \( = 0 \)) — isključujemo. Tačka \( x = \tfrac{1}{4} \): argument \( = \tfrac{1}{16} + \tfrac{3}{16} = \tfrac{1}{4} &gt; 0 \), \( \log_{1/4}(1/4) = 1 \) ✓, uključujemo.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera nasumičnih tačaka</h3>
+      <p>Brza provera u nekoliko tačaka:</p>
+      <ul>
+        <li>\( x = -1 \): argument \( = \tfrac{1}{4} \), \( \log_{1/4}(1/4) = 1 \ge 1 \) ✓.</li>
+        <li>\( x = -0{,}8 \in [-1, -\tfrac{3}{4}) \): argument \( = 0{,}64 - 0{,}6 = 0{,}04 \), \( \log_{1/4}(0{,}04) \approx 2{,}32 \ge 1 \) ✓.</li>
+        <li>\( x = -\tfrac{1}{2} \) (van domena): argument \( = \tfrac{1}{4} - \tfrac{3}{8} = -\tfrac{1}{8} &lt; 0 \) — log nije definisan ✗.</li>
+        <li>\( x = \tfrac{1}{4} \): argument \( = \tfrac{1}{4} \), \( \log_{1/4}(1/4) = 1 \ge 1 \) ✓.</li>
+        <li>\( x = 1 \): argument \( = 1 + \tfrac{3}{4} = \tfrac{7}{4} \), \( \log_{1/4}(7/4) \approx -0{,}404 \not\ge 1 \) ✗ (van rešenja).</li>
+      </ul>
+      <p>Sve provere se slažu sa konačnim skupom.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Logaritamske nejednačine sa bazom \( &lt; 1 \) imaju <em>tri</em> opasne tačke gde se najčešće greši: (1) <strong>domen</strong> — bez njega ulaze nemoguće tačke; (2) <strong>okretanje znaka</strong> — funkcija \( \log_{1/4} \) je opadajuća, pa "veliki logaritam" znači "mali argument"; (3) <strong>presek sa domenom</strong> — granične tačke domena (gde je argument \( = 0 \)) su <em>uvek isključene</em>, pa se naizgled "lep" zatvoreni interval \( [-1, 1/4] \) raspolovi rupama u \( -\tfrac{3}{4} \) i \( 0 \). Tačno zato je odgovor unija dva komada, a ne jedan ceo interval.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ x \in \bigl[-1,\, -\tfrac{3}{4}\bigr) \cup \bigl(0,\, \tfrac{1}{4}\bigr]. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( (-1,\, 4] \)</span>
+    <span class="answer-option" data-option="B">(B) \( [-1,\, 1/4] \)</span>
+    <span class="answer-option" data-option="C">(C) \( (0,\, 1/4] \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( [-1,\, -3/4) \cup (0,\, 1/4] \)</span>
+    <span class="answer-option" data-option="E">(E) \( [-1,\, 0) \)</span>
+  </div>
+  <p class="verification">Verifikacija: u \( x = -1 \) i \( x = \tfrac{1}{4} \) argument je tačno \( \tfrac{1}{4} \) i \( \log_{1/4}(1/4) = 1 \) (jednakost) ✓. U graničnim tačkama \( -\tfrac{3}{4} \) i \( 0 \) argument je \( 0 \), pa logaritam nije definisan i te tačke <em>moraju</em> biti isključene. Distraktor (B) ignoriše domen; (C) i (E) uzimaju samo jedan komad.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zaboraviti okrenuti znak (jer je baza \( &lt; 1 \)):</strong> najveća greška. Ako se piše \( x^2 + \tfrac{3}{4}x \ge \tfrac{1}{4} \), dobija se "obrnuta" kvadratna sa rešenjem \( (-\infty, -1] \cup [\tfrac{1}{4}, +\infty) \) — pogrešno. Pravilo: \( 0 &lt; b &lt; 1 \) → znak se okreće.</li>
+    <li><strong>Zaboraviti domen:</strong> ako se uzme čitav interval \( [-1, 1/4] \) (opcija B), uključuje se i podinterval \( (-\tfrac{3}{4}, 0) \) gde logaritam <em>nije definisan</em>. Tu nejednakost ne može da važi — ne može se ni postaviti.</li>
+    <li><strong>Pogrešno tumačenje znaka proizvoda:</strong> \( x(x + \tfrac{3}{4}) &gt; 0 \) važi kad oba imaju <em>isti</em> znak — ne kada su oba pozitivna. To uključuje i slučaj "oba negativna" (\( x &lt; -\tfrac{3}{4} \)).</li>
+    <li><strong>Granične tačke otvoreno/zatvoreno:</strong> \( -1 \) i \( \tfrac{1}{4} \) zadovoljavaju (jednakost \( \log_{1/4}(\cdot) = 1 \)), pa <em>jesu</em> u rešenju (zatvorene); \( -\tfrac{3}{4} \) i \( 0 \) <em>nisu</em> (argument \( = 0 \), log nedefinisan; otvorene).</li>
+    <li><strong>Zameniti \( (1/4)^1 \) sa \( 4^1 \):</strong> \( (1/4)^1 = \tfrac{1}{4} \), nije \( 4 \). Distraktor (A) sa \( x \in (-1, 4] \) je verovatno proizvod te greške.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Reši nejednačinu \( \log_{1/4}\!\bigl(x^2 + \tfrac{3}{4}x\bigr) \le 1 \) (sa <em>obrnutim</em> znakom u odnosu na originalni zadatak). Da li je to "komplement" originalnog rešenja (u domenu)? Odakle dolazi razlika ako jeste/nije?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Sa istim domenom \( \mathcal{D} = (-\infty, -\tfrac{3}{4}) \cup (0, +\infty) \), iz \( \log_{1/4}(A) \le 1 \) (i \( A &gt; 0 \)) sledi (znak se okreće):</p>
+      <div class="math-block">\[ A \ge \tfrac{1}{4}, \quad \text{tj.} \quad x^2 + \tfrac{3}{4}x \ge \tfrac{1}{4}, \quad \text{tj.} \quad 4x^2 + 3x - 1 \ge 0. \]</div>
+      <p>Parabola otvorena nagore je \( \ge 0 \) van korena (uključno): \( x \le -1 \) ili \( x \ge \tfrac{1}{4} \). Presek sa domenom:</p>
+      <div class="math-block">\[ x \in \bigl(-\infty, -1\bigr] \cup \bigl[\tfrac{1}{4}, +\infty\bigr). \]</div>
+      <p>(Tu se intervali \( (-1, -\tfrac{3}{4}) \) i \( (0, \tfrac{1}{4}) \) <em>ne</em> javljaju jer su unutar zone \( A &lt; \tfrac{1}{4} \), pa važi suprotna nejednakost.)</p>
+      <p>Da, ovo je tačan komplement originalnog rešenja u domenu (uz preklapanje u graničnim tačkama \( -1, \tfrac{1}{4} \) gde važi jednakost \( = 1 \) — pa zadovoljavaju <em>obe</em> nejednakosti). Razlika je upravo u tim graničnim tačkama: ako se uzme stroga nejednakost (\( &gt; 1 \) i \( &lt; 1 \)), dobijaju se zaista disjunktni skupovi koji u uniji daju ceo domen.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  // ── Number line: domain, quadratic interval, intersection ──
+  var canvas = document.getElementById('diag-line');
+  if (canvas) {
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, H = canvas.height;
+
+    function drawLine() {
+      var bg = cv('--sol-canvas-bg');
+      var axis = cv('--sol-canvas-axis');
+      var primary = cv('--sol-canvas-primary');
+      var accent = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var warning = cv('--sol-canvas-warning');
+      var danger = cv('--sol-canvas-danger');
+      var text = cv('--sol-canvas-text');
+      var muted = cv('--sol-canvas-muted');
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      // Title
+      ctx.fillStyle = text;
+      ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Domen ∩ kvadratni interval = konačno rešenje', W/2, 28);
+
+      // x-range for the number lines
+      var xMin = -1.6, xMax = 1.0;
+      var leftPad = 70, rightPad = 60;
+      var unit = (W - leftPad - rightPad) / (xMax - xMin);
+      function tx(v) { return leftPad + (v - xMin) * unit; }
+
+      var rows = [
+        {
+          y: 110,
+          label: 'Domen logaritma',
+          formula: 'x² + (3/4)x > 0',
+          intervals: [
+            { from: xMin, to: -3/4, fromOpen: false, toOpen: true, edgeFromArrow: true },
+            { from: 0, to: xMax, fromOpen: true, toOpen: false, edgeToArrow: true }
+          ],
+          color: 'warning'
+        },
+        {
+          y: 250,
+          label: 'Iz nejednačine',
+          formula: '4x² + 3x − 1 ≤ 0',
+          intervals: [
+            { from: -1, to: 1/4, fromOpen: false, toOpen: false }
+          ],
+          color: 'primary'
+        },
+        {
+          y: 390,
+          label: 'Presek = rešenje',
+          formula: '[−1, −3/4) ∪ (0, 1/4]',
+          intervals: [
+            { from: -1, to: -3/4, fromOpen: false, toOpen: true },
+            { from: 0, to: 1/4, fromOpen: true, toOpen: false }
+          ],
+          color: 'accent'
+        }
+      ];
+
+      rows.forEach(function(row) {
+        // Row label (left)
+        ctx.fillStyle = text;
+        ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText(row.label, leftPad - 10, row.y - 22);
+        ctx.fillStyle = muted;
+        ctx.font = '11px Inter, system-ui, sans-serif';
+        ctx.fillText(row.formula, leftPad - 10, row.y - 6);
+
+        // Base line
+        ctx.strokeStyle = axis;
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.moveTo(leftPad - 10, row.y);
+        ctx.lineTo(W - rightPad + 10, row.y);
+        ctx.stroke();
+        // Arrow caps
+        ctx.beginPath();
+        ctx.moveTo(W - rightPad + 10, row.y);
+        ctx.lineTo(W - rightPad + 2, row.y - 5);
+        ctx.moveTo(W - rightPad + 10, row.y);
+        ctx.lineTo(W - rightPad + 2, row.y + 5);
+        ctx.moveTo(leftPad - 10, row.y);
+        ctx.lineTo(leftPad - 2, row.y - 5);
+        ctx.moveTo(leftPad - 10, row.y);
+        ctx.lineTo(leftPad - 2, row.y + 5);
+        ctx.stroke();
+
+        // Tick marks at -1, -3/4, 0, 1/4
+        var ticks = [-1, -3/4, 0, 1/4];
+        var tickLabels = ['−1', '−3/4', '0', '1/4'];
+        for (var i = 0; i < ticks.length; i++) {
+          var px = tx(ticks[i]);
+          ctx.strokeStyle = axis;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(px, row.y - 4);
+          ctx.lineTo(px, row.y + 4);
+          ctx.stroke();
+          ctx.fillStyle = muted;
+          ctx.font = '11px Inter, system-ui, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(tickLabels[i], px, row.y + 22);
+        }
+
+        // Intervals
+        var color = cv('--sol-canvas-' + row.color);
+        var fillCol = cvAlpha('--sol-canvas-' + row.color, 0.30);
+
+        row.intervals.forEach(function(iv) {
+          var x1 = tx(iv.from), x2 = tx(iv.to);
+          // thick band
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 6;
+          ctx.beginPath();
+          ctx.moveTo(x1, row.y);
+          ctx.lineTo(x2, row.y);
+          ctx.stroke();
+
+          // Endpoint markers
+          // From
+          if (!iv.edgeFromArrow) {
+            ctx.beginPath();
+            ctx.arc(x1, row.y, 7, 0, Math.PI*2);
+            if (iv.fromOpen) {
+              ctx.fillStyle = bg;
+              ctx.fill();
+              ctx.strokeStyle = color;
+              ctx.lineWidth = 2.5;
+              ctx.stroke();
+            } else {
+              ctx.fillStyle = color;
+              ctx.fill();
+            }
+          }
+          // To
+          if (!iv.edgeToArrow) {
+            ctx.beginPath();
+            ctx.arc(x2, row.y, 7, 0, Math.PI*2);
+            if (iv.toOpen) {
+              ctx.fillStyle = bg;
+              ctx.fill();
+              ctx.strokeStyle = color;
+              ctx.lineWidth = 2.5;
+              ctx.stroke();
+            } else {
+              ctx.fillStyle = color;
+              ctx.fill();
+            }
+          }
+        });
+      });
+
+      // Connect lines between rows (vertical dashed)
+      ctx.strokeStyle = muted;
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 3]);
+      [-1, -3/4, 0, 1/4].forEach(function(v) {
+        var px = tx(v);
+        ctx.beginPath();
+        ctx.moveTo(px, 110 + 10);
+        ctx.lineTo(px, 390 - 10);
+        ctx.stroke();
+      });
+      ctx.setLineDash([]);
+
+      // Final answer line (bottom)
+      ctx.fillStyle = text;
+      ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('x ∈ [−1, −3/4) ∪ (0, 1/4]', W/2, H - 60);
+
+      // Legend
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.fillStyle = muted;
+      ctx.fillText('Pun krug = uključen kraj; prazan krug = isključen kraj.', W/2, H - 38);
+      ctx.fillText('Strelica na kraju trake = interval ide u beskonačno.', W/2, H - 22);
+    }
+
+    drawLine();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() { styles = getComputedStyle(root); drawLine(); }, 50);
+      }
+    });
+  }
+
+  // ── Graph of y = log_{1/4}(x^2 + (3/4)x) ──
+  var canvas2 = document.getElementById('diag-graph');
+  if (canvas2) {
+    var ctx2 = canvas2.getContext('2d');
+    var W2 = canvas2.width, H2 = canvas2.height;
+
+    var xMin = -2, xMax = 1.5, yMin = -3, yMax = 5;
+    var marginL = 60, marginR = 40, marginT = 60, marginB = 80;
+    var plotW = W2 - marginL - marginR;
+    var plotH = H2 - marginT - marginB;
+    var sx = plotW / (xMax - xMin);
+    var sy = plotH / (yMax - yMin);
+
+    function toC(x, y) {
+      return { x: marginL + (x - xMin) * sx, y: marginT + (yMax - y) * sy };
+    }
+
+    // Custom log base 1/4
+    function logBase(b, x) { return Math.log(x) / Math.log(b); }
+    function f(x) {
+      var arg = x * x + 0.75 * x;
+      if (arg <= 0) return null;
+      return logBase(0.25, arg);
+    }
+
+    function drawGraph() {
+      var bg = cv('--sol-canvas-bg');
+      var grid = cv('--sol-canvas-grid');
+      var axis = cv('--sol-canvas-axis');
+      var primary = cv('--sol-canvas-primary');
+      var accent = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var warning = cv('--sol-canvas-warning');
+      var text = cv('--sol-canvas-text');
+      var muted = cv('--sol-canvas-muted');
+
+      ctx2.clearRect(0, 0, W2, H2);
+      ctx2.fillStyle = bg;
+      ctx2.fillRect(0, 0, W2, H2);
+
+      // Title
+      ctx2.fillStyle = text;
+      ctx2.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx2.textAlign = 'center';
+      ctx2.fillText('y = log_{1/4}(x² + 3x/4)  i  prava y = 1', W2/2, 28);
+
+      // Highlight solution region (y >= 1) on x-axis
+      // Shade vertical strips above the x ranges where solution lives
+      var sol = [
+        { from: -1, to: -0.75 },
+        { from: 0, to: 0.25 }
+      ];
+      sol.forEach(function(iv) {
+        var p1 = toC(iv.from, yMax);
+        var p2 = toC(iv.to, yMin);
+        ctx2.fillStyle = cvAlpha('--sol-canvas-accent', 0.12);
+        ctx2.fillRect(p1.x, p1.y, p2.x - p1.x, p2.y - p1.y);
+      });
+
+      // Grid
+      ctx2.strokeStyle = grid;
+      ctx2.lineWidth = 1;
+      ctx2.beginPath();
+      for (var gx = Math.ceil(xMin); gx <= Math.floor(xMax); gx++) {
+        var p1 = toC(gx, yMin); var p2 = toC(gx, yMax);
+        ctx2.moveTo(p1.x, p1.y); ctx2.lineTo(p2.x, p2.y);
+      }
+      for (var gy = Math.ceil(yMin); gy <= Math.floor(yMax); gy++) {
+        var q1 = toC(xMin, gy); var q2 = toC(xMax, gy);
+        ctx2.moveTo(q1.x, q1.y); ctx2.lineTo(q2.x, q2.y);
+      }
+      ctx2.stroke();
+
+      // Axes
+      ctx2.strokeStyle = axis;
+      ctx2.lineWidth = 1.6;
+      ctx2.beginPath();
+      var ax1 = toC(xMin, 0); var ax2 = toC(xMax, 0);
+      ctx2.moveTo(ax1.x, ax1.y); ctx2.lineTo(ax2.x, ax2.y);
+      var ay1 = toC(0, yMin); var ay2 = toC(0, yMax);
+      ctx2.moveTo(ay1.x, ay1.y); ctx2.lineTo(ay2.x, ay2.y);
+      ctx2.stroke();
+
+      // Tick labels
+      ctx2.fillStyle = text;
+      ctx2.font = '12px Inter, system-ui, sans-serif';
+      ctx2.textAlign = 'center';
+      for (var lx = Math.ceil(xMin); lx <= Math.floor(xMax); lx++) {
+        if (lx === 0) continue;
+        var pl = toC(lx, 0);
+        ctx2.fillText(String(lx), pl.x, pl.y + 16);
+      }
+      ctx2.textAlign = 'right';
+      for (var ly = Math.ceil(yMin); ly <= Math.floor(yMax); ly++) {
+        if (ly === 0) continue;
+        var ql = toC(0, ly);
+        ctx2.fillText(String(ly), ql.x - 6, ql.y + 4);
+      }
+      ctx2.textAlign = 'left';
+      var O = toC(0, 0);
+      ctx2.fillText('O', O.x + 5, O.y + 14);
+      ctx2.fillText('x', toC(xMax, 0).x + 6, toC(xMax, 0).y + 4);
+      ctx2.textAlign = 'center';
+      ctx2.fillText('y', toC(0, yMax).x, toC(0, yMax).y - 8);
+
+      // Vertical dashed lines at -3/4 and 0 (domain boundaries)
+      ctx2.strokeStyle = warning;
+      ctx2.lineWidth = 1.4;
+      ctx2.setLineDash([4, 4]);
+      [-0.75, 0].forEach(function(v) {
+        var p1 = toC(v, yMin); var p2 = toC(v, yMax);
+        ctx2.beginPath();
+        ctx2.moveTo(p1.x, p1.y);
+        ctx2.lineTo(p2.x, p2.y);
+        ctx2.stroke();
+      });
+      ctx2.setLineDash([]);
+      ctx2.fillStyle = warning;
+      ctx2.font = 'bold 11px Inter, system-ui, sans-serif';
+      ctx2.textAlign = 'left';
+      ctx2.fillText('x = −3/4', toC(-0.75, yMax).x + 4, toC(-0.75, yMax).y + 14);
+      ctx2.fillText('x = 0', toC(0, yMax).x + 4, toC(0, yMax).y + 28);
+
+      // Plot left branch: x in (-inf, -3/4)
+      ctx2.strokeStyle = primary;
+      ctx2.lineWidth = 2.5;
+      ctx2.beginPath();
+      var first = true;
+      for (var x = xMin; x < -0.751; x += 0.005) {
+        var y = f(x);
+        if (y === null || y < yMin || y > yMax) { first = true; continue; }
+        var p = toC(x, y);
+        if (first) { ctx2.moveTo(p.x, p.y); first = false; }
+        else ctx2.lineTo(p.x, p.y);
+      }
+      ctx2.stroke();
+
+      // Plot right branch: x in (0, +inf)
+      ctx2.beginPath();
+      first = true;
+      for (var x = 0.005; x <= xMax; x += 0.005) {
+        var y = f(x);
+        if (y === null || y < yMin || y > yMax) { first = true; continue; }
+        var p = toC(x, y);
+        if (first) { ctx2.moveTo(p.x, p.y); first = false; }
+        else ctx2.lineTo(p.x, p.y);
+      }
+      ctx2.stroke();
+
+      // Horizontal line y = 1
+      ctx2.strokeStyle = highlight;
+      ctx2.lineWidth = 2;
+      ctx2.setLineDash([6, 4]);
+      ctx2.beginPath();
+      var h1 = toC(xMin, 1); var h2 = toC(xMax, 1);
+      ctx2.moveTo(h1.x, h1.y);
+      ctx2.lineTo(h2.x, h2.y);
+      ctx2.stroke();
+      ctx2.setLineDash([]);
+      ctx2.fillStyle = highlight;
+      ctx2.font = 'bold 12px Inter, system-ui, sans-serif';
+      ctx2.textAlign = 'left';
+      ctx2.fillText('y = 1', toC(xMax, 1).x - 80, toC(xMax, 1).y - 6);
+
+      // Mark intersection points: x = -1 and x = 1/4 (y = 1 each)
+      var pts = [{ x: -1, label: 'x = −1' }, { x: 0.25, label: 'x = 1/4' }];
+      pts.forEach(function(pt) {
+        var pc = toC(pt.x, 1);
+        ctx2.fillStyle = cvAlpha('--sol-canvas-accent', 0.30);
+        ctx2.beginPath(); ctx2.arc(pc.x, pc.y, 11, 0, Math.PI*2); ctx2.fill();
+        ctx2.fillStyle = accent;
+        ctx2.beginPath(); ctx2.arc(pc.x, pc.y, 6, 0, Math.PI*2); ctx2.fill();
+        ctx2.fillStyle = text;
+        ctx2.font = 'bold 12px Inter, system-ui, sans-serif';
+        ctx2.textAlign = 'center';
+        ctx2.fillText(pt.label, pc.x, pc.y - 12);
+      });
+
+      // Legend
+      var lyy = H2 - 50;
+      ctx2.font = '12px Inter, system-ui, sans-serif';
+      ctx2.textAlign = 'left';
+      ctx2.strokeStyle = primary;
+      ctx2.lineWidth = 3;
+      ctx2.beginPath();
+      ctx2.moveTo(40, lyy); ctx2.lineTo(75, lyy);
+      ctx2.stroke();
+      ctx2.fillStyle = text;
+      ctx2.fillText('y = log_{1/4}(x² + 3x/4)', 82, lyy + 4);
+
+      ctx2.strokeStyle = highlight;
+      ctx2.lineWidth = 3;
+      ctx2.setLineDash([6, 4]);
+      ctx2.beginPath();
+      ctx2.moveTo(330, lyy); ctx2.lineTo(365, lyy);
+      ctx2.stroke();
+      ctx2.setLineDash([]);
+      ctx2.fillText('y = 1', 372, lyy + 4);
+
+      ctx2.fillStyle = cvAlpha('--sol-canvas-accent', 0.30);
+      ctx2.fillRect(440, lyy - 8, 30, 16);
+      ctx2.fillStyle = text;
+      ctx2.fillText('rešenje (y ≥ 1)', 478, lyy + 4);
+
+      ctx2.fillStyle = muted;
+      ctx2.font = '11px Inter, system-ui, sans-serif';
+      ctx2.textAlign = 'center';
+      ctx2.fillText('Funkcija je definisana samo za x < −3/4 i x > 0 (zona izmedju nije u domenu).', W2/2, H2 - 22);
+    }
+
+    drawGraph();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() { styles = getComputedStyle(root); drawGraph(); }, 50);
+      }
+    });
+  }
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Logaritamska nejednačina sa bazom 1/4",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["logaritamska nejednačina", "domen", "kvadratna nejednačina", "presek skupova"]
+}
+BRAINSPARK_META-->

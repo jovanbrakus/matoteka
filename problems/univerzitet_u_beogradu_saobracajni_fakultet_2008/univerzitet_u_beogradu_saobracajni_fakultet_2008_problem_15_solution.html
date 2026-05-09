@@ -1,0 +1,514 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: koliko prirodnih brojeva m postoji za koje su resenja jednacine
+  (m - 1) x^2 + 4x + (m - 7) = 0
+realna i razlicitog znaka?
+
+Strategija:
+1) Zahtev "kvadratna jednacina" — vodeci koeficijent a = m - 1 ne sme biti 0.
+   Dakle m != 1.
+
+2) Zahtev "resenja realna i razlicitog znaka" — neka su x1, x2 koreni.
+   Vietove formule: x1 * x2 = c/a = (m - 7) / (m - 1).
+   Da bi koreni bili razlicitog znaka, mora biti x1 * x2 < 0:
+     (m - 7) / (m - 1) < 0.
+
+3) Provera realnosti: ako je a != 0 i x1 * x2 < 0, to znaci da imamo dva razlicita
+   realna korena. Diskriminanta automatski D > 0 (ako bi koreni bili kompleksni
+   konjugovani, njihov proizvod bi bio |z|^2 > 0, sto je u suprotnosti sa < 0).
+   Dakle, D > 0 sledi iz x1*x2 < 0; nije potrebno odvojeno proveravati.
+
+4) Resimo nejednacinu (m - 7)/(m - 1) < 0:
+   - Razlomak je negativan kada brojilac i imenilac imaju suprotne znake.
+   - Slucaj A: m - 7 > 0 i m - 1 < 0  ⇒  m > 7 i m < 1  ⇒  prazan skup.
+   - Slucaj B: m - 7 < 0 i m - 1 > 0  ⇒  m < 7 i m > 1  ⇒  1 < m < 7.
+
+   Tako je skup resenja: m ∈ (1, 7).
+
+5) Prirodni brojevi (u srpskoj/balkanskoj konvenciji ℕ = {1, 2, 3, ...}):
+   1 < m < 7 daje m ∈ {2, 3, 4, 5, 6}, dakle 5 brojeva.
+
+   Napomena: m = 1 bi se ionako morao iskljuciti (a = 0 — onda nemamo kvadratnu
+   jednacinu). Cak i ako bismo definisali ℕ = {0, 1, 2, ...}, opet bi 0 i 1 bili
+   van intervala (1, 7).
+
+6) Provera za m = 4 (sredina intervala):
+   3 x^2 + 4x - 3 = 0
+   x1 * x2 = -3/3 = -1 < 0 ✓
+   D = 16 - 4*3*(-3) = 16 + 36 = 52 > 0 ✓
+   Koreni: x = (-4 ± √52) / 6 — jedan pozitivan, drugi negativan.
+
+7) Provera granica:
+   - m = 1: a = 0, jednacina nije kvadratna (postaje 4x - 6 = 0 → x = 3/2, jedan koren). Iskljuceno.
+   - m = 7: produkt = (7-7)/(7-1) = 0, dakle jedan koren je 0. Nije "razlicit znak" (0 nije ni pozitivan ni negativan).
+   - m = 0: ako bismo dozvolili m=0, a = -1, c = -7, produkt = -7/-1 = 7 > 0, dakle isti znak. Nije OK.
+   - m = 8: produkt = 1/7 > 0, isti znak. Nije OK.
+
+Tacan odgovor: (D) 5.
+
+Eliminacija ostalih:
+  (A) 4 — moguca greska: zaboraviti m = 6 ili neku granicu (npr. ne ukljucujuci 6).
+  (B) 2 — moguca greska: pogresno pomesati brojilac/imenilac.
+  (C) 1 — drasticno pogresno.
+  (D) 5 — TACAN.
+  (E) 3 — moguca greska sa isto pogresnim intervalom.
+
+Vizuelni prikaz: brojeva linija od 0 do 8, sa intervalom (1, 7) prikazanim
+osencenim, otvorenim krugovima na 1 i 7, i punim crnim tackama na 2, 3, 4, 5, 6
+(prirodni brojevi koji zadovoljavaju). Ispod tablica znakova razlomka (m-7)/(m-1).
+
+Statican — algebra je u centru paznje; brojeva linija je samo ilustracija.
+
+Pitfalls:
+ - Zaboraviti uslov a = m - 1 != 0 (iako je u ovom problemu nevazno jer 1 nije u intervalu).
+ - Pogresno tumaciti m = 7 — taj broj daje produkt 0, sto znaci da je jedan koren 0,
+   a 0 nije ni pozitivan ni negativan, pa NIJE "razlicit znak".
+ - Tumaciti "razlicit znak" kao samo "razlicit", a ne suprotnih znakova.
+ - Posebno proveravati D > 0 i mozda izgubiti vrednosti gde D = 0 ali produkt < 0
+   (sto je u stvari nemoguca kombinacija — D > 0 sledi automatski).
+</script>
+
+<h1 data-card="problem-title">Broj parametara za kvadratnu jednačinu sa korenima različitog znaka</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — Vietove formule, znak korena, racionalna nejednačina sa parametrom</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Prirodnih brojeva \( m \), za koje su rešenja jednačine</p>
+  <div class="math-block">\[ (m - 1)\,x^{2} + 4x + m - 7 = 0 \]</div>
+  <p>realna i različitog znaka, ima:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">jednačina</span>
+      <span class="given-value">\( (m-1)x^2 + 4x + (m-7) = 0 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">parametar</span>
+      <span class="given-value">\( m \in \mathbb{N} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">uslov na korene</span>
+      <span class="given-value">realni i različitog znaka</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 4 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 5 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Da koreni budu suprotnog znaka, dovoljno je (i potrebno) da je proizvod korena negativan: \( x_1 x_2 = \dfrac{c}{a} < 0 \). Postavljamo nejednačinu \( \dfrac{m-7}{m-1} < 0 \), uz uslov \( m \ne 1 \) (kvadratna jednačina). Rešenje je interval \( 1 < m < 7 \); brojimo prirodne brojeve unutar njega.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Vietove formule i znak korena</summary>
+    <div class="detail-content">
+      <ul>
+        <li>Za \( ax^2 + bx + c = 0 \) sa \( a \ne 0 \), Vietove formule: \( x_1 + x_2 = -\dfrac{b}{a} \), \( x_1 x_2 = \dfrac{c}{a} \).</li>
+        <li>Koreni su <strong>različitog znaka</strong> akko \( x_1 x_2 < 0 \), tj. \( \dfrac{c}{a} < 0 \).</li>
+        <li>Iz \( x_1 x_2 < 0 \) automatski sledi da su koreni realni i različiti: ako bi bili kompleksno konjugovani \( \alpha \pm \beta i \), proizvod bi bio \( \alpha^2 + \beta^2 \ge 0 \), pa ne može biti negativan.</li>
+        <li>Razlomak \( \dfrac{P}{Q} < 0 \) važi kada \( P \) i \( Q \) imaju <em>suprotne</em> znake.</li>
+        <li>U srpskoj konvenciji \( \mathbb{N} = \{1, 2, 3, \dots\} \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="720" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Brojevna prava sa otvorenim krugovima u \( 1 \) i \( 7 \) (granice nisu uključene) i istaknutim prirodnim brojevima \( 2,3,4,5,6 \) unutar intervala. Ispod je tablica znakova razlomka \( \dfrac{m-7}{m-1} \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Uslov da je jednačina kvadratna</h3>
+      <p>Vodeći koeficijent je \( a = m - 1 \). Jednačina je kvadratna ako i samo ako je \( a \ne 0 \), tj. \( m \ne 1 \).</p>
+      <p>(Za \( m = 1 \) jednačina prelazi u \( 4x - 6 = 0 \) — linearna sa jednim korenom; nema dva korena različitog znaka.)</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Uslov različitog znaka — proizvod korena negativan</h3>
+      <p>Po Vietovoj formuli, proizvod korena je \( x_1 x_2 = \dfrac{c}{a} = \dfrac{m - 7}{m - 1} \). Koreni su suprotnog znaka akko:</p>
+      <div class="math-block">\[ \dfrac{m - 7}{m - 1} < 0. \]</div>
+      <p>Realnost korena ne treba dodatno proveravati: iz \( x_1 x_2 < 0 \) sledi da su \( x_1 \) i \( x_2 \) realni i različiti (par konjugovanih kompleksnih brojeva ima nenegativan proizvod).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je dovoljno postaviti samo \( x_1 x_2 < 0 \) — ne i \( D > 0 \)?</summary>
+          <div class="detail-content"><p>Zato što \( x_1 x_2 = \dfrac{c}{a} \). Ako su koreni kompleksni konjugovani \( \alpha \pm \beta i \), njihov proizvod je \( \alpha^2 + \beta^2 \ge 0 \). Negativan proizvod je nemoguć u kompleksnom slučaju, pa odmah znamo da su koreni realni — i, štaviše, različiti (jer su suprotnih znakova).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Rešavanje nejednačine \( \dfrac{m-7}{m-1} < 0 \)</h3>
+      <p>Razlomak je negativan kada brojilac i imenilac imaju suprotne znake. Razmotrimo dva slučaja:</p>
+      <ul>
+        <li><strong>\( m - 7 > 0 \) i \( m - 1 < 0 \):</strong> \( m > 7 \) i \( m < 1 \) — nemoguće, prazan skup.</li>
+        <li><strong>\( m - 7 < 0 \) i \( m - 1 > 0 \):</strong> \( m < 7 \) i \( m > 1 \) — interval \( 1 < m < 7 \).</li>
+      </ul>
+      <p>Dakle, skup parametara je otvoreni interval \( m \in (1,\, 7) \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Brojanje prirodnih brojeva u intervalu</h3>
+      <p>Prirodni brojevi koji zadovoljavaju \( 1 < m < 7 \) su:</p>
+      <div class="math-block">\[ m \in \{2,\; 3,\; 4,\; 5,\; 6\}. \]</div>
+      <p>To je <strong>5</strong> vrednosti. Granice \( m = 1 \) i \( m = 7 \) nisu uključene: \( m = 1 \) nije kvadratna jednačina, a \( m = 7 \) daje proizvod korena \( = 0 \) — jedan koren je nula, što nije „različitog znaka“.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: za \( m = 4 \), kakvi su koreni jednačine?</summary>
+          <div class="detail-content"><p>\( 3x^2 + 4x - 3 = 0 \). Diskriminanta \( D = 16 + 36 = 52 > 0 \), pa \( x = \dfrac{-4 \pm \sqrt{52}}{6} \). Pošto je \( \sqrt{52} \approx 7{,}21 > 4 \), jedan koren je pozitivan, drugi negativan — tačno suprotnih znakova.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Za pitanja o znacima korena kvadratne jednačine, Vietove formule su brže od diskriminante. Proizvod korena \( c/a \) sam priča: ako je negativan, koreni su suprotnog znaka <em>i automatski realni i različiti</em>. Ovaj uslov nam štedi posao — ne moramo posebno tražiti \( D > 0 \).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ m \in \{2,\,3,\,4,\,5,\,6\} \quad\Longrightarrow\quad \text{5 prirodnih brojeva} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 4 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 2 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 1 \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 5 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 3 \)</span>
+  </div>
+  <p class="verification">Provera za sve granice: \( m=2 \): proizvod \( -5/1 = -5 < 0 \) ✓; \( m=6 \): proizvod \( -1/5 < 0 \) ✓; \( m=1 \): nije kvadratna; \( m=7 \): proizvod \( 0 \) (jedan koren je nula). Tačno 5 vrednosti.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Zaboraviti uslov \( a \ne 0 \), tj. \( m \ne 1 \) — bez ovoga jednačina nije kvadratna.</li>
+    <li>Posebno postavljati \( D > 0 \) i pomešati uslove. Iz \( x_1 x_2 < 0 \) realnost korena <em>sledi</em>; dvostruki uslov ne škodi, ali je suvišan.</li>
+    <li>Uključiti granicu \( m = 7 \) — tu je proizvod nula, jedan koren je 0, što nije „različitog znaka“.</li>
+    <li>Tumačiti „različitog znaka“ kao samo „različite vrednosti“ (npr. dva pozitivna ili dva negativna). Različit znak znači jedan pozitivan, drugi negativan.</li>
+    <li>Loše rešavanje racionalne nejednačine: množenje sa \( (m-1) \) bez vodjenja računa o znaku.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Za koliko prirodnih brojeva \( m \) su oba korena iste jednačine \( (m-1)x^2 + 4x + m - 7 = 0 \) <em>oba pozitivna</em>?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Sad treba istovremeno: (1) \( a = m-1 \ne 0 \); (2) \( x_1 x_2 = \dfrac{m-7}{m-1} > 0 \) (isti znak); (3) \( x_1 + x_2 = -\dfrac{4}{m-1} > 0 \) ⇒ \( m - 1 < 0 \) ⇒ \( m < 1 \); (4) \( D = 16 - 4(m-1)(m-7) \ge 0 \). Iz (3) je \( m < 1 \), a u prirodnim brojevima nema takvih vrednosti — odgovor: 0.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var W = canvas.width, H = canvas.height;
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Brojevna prava: rešenja nejednačine (m−7)/(m−1) < 0', W / 2, 28);
+
+    // ── Number line ──
+    var nlY = 130;
+    var nlX0 = 80, nlX1 = W - 80;
+    var mMin = -1, mMax = 9;
+    function tx(m) { return nlX0 + (m - mMin) / (mMax - mMin) * (nlX1 - nlX0); }
+
+    // Highlight band for solution interval (1, 7)
+    ctx.fillStyle = (function () {
+      var c = accent;
+      if (c.startsWith('#')) {
+        var r = parseInt(c.slice(1, 3), 16);
+        var g = parseInt(c.slice(3, 5), 16);
+        var b = parseInt(c.slice(5, 7), 16);
+        return 'rgba(' + r + ',' + g + ',' + b + ',0.18)';
+      }
+      return c;
+    })();
+    ctx.fillRect(tx(1), nlY - 18, tx(7) - tx(1), 36);
+
+    // Main number line
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(nlX0 - 10, nlY);
+    ctx.lineTo(nlX1 + 10, nlY);
+    ctx.stroke();
+    // Arrow ends
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(nlX1 + 18, nlY);
+    ctx.lineTo(nlX1 + 8, nlY - 5);
+    ctx.lineTo(nlX1 + 8, nlY + 5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(nlX0 - 18, nlY);
+    ctx.lineTo(nlX0 - 8, nlY - 5);
+    ctx.lineTo(nlX0 - 8, nlY + 5);
+    ctx.closePath();
+    ctx.fill();
+
+    // Tick marks for integers
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.font = '13px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = text;
+    for (var k = mMin; k <= mMax; k++) {
+      ctx.beginPath();
+      ctx.moveTo(tx(k), nlY - 5);
+      ctx.lineTo(tx(k), nlY + 5);
+      ctx.stroke();
+      ctx.fillText(String(k), tx(k), nlY + 22);
+    }
+
+    // m label
+    ctx.font = 'italic 14px Inter, system-ui';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'left';
+    ctx.fillText('m', nlX1 + 26, nlY + 5);
+
+    // Open circles at m=1 and m=7 (excluded)
+    function openCircle(m, color, label) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2.5;
+      ctx.fillStyle = bg;
+      ctx.beginPath();
+      ctx.arc(tx(m), nlY, 7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = color;
+      ctx.font = 'bold 12px Inter, system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, tx(m), nlY - 18);
+    }
+    openCircle(1, danger, 'm ≠ 1');
+    openCircle(7, danger, 'isključeno');
+
+    // Solid dots for natural numbers in solution: 2,3,4,5,6
+    var sols = [2, 3, 4, 5, 6];
+    for (var i = 0; i < sols.length; i++) {
+      ctx.fillStyle = accent;
+      ctx.beginPath();
+      ctx.arc(tx(sols[i]), nlY, 8, 0, Math.PI * 2);
+      ctx.fill();
+      // halo
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(tx(sols[i]), nlY, 12, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    // Label "5 prirodnih brojeva"
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('5 prirodnih brojeva', (tx(2) + tx(6)) / 2, nlY + 50);
+
+    // Bracket showing the open interval
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(tx(1), nlY - 40);
+    ctx.lineTo(tx(7), nlY - 40);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 12px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('interval (1, 7)', (tx(1) + tx(7)) / 2, nlY - 48);
+
+    // ── Sign chart for (m-7)/(m-1) ──
+    var scY = 280;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Tablica znakova razlomka  (m − 7) / (m − 1)', W / 2, scY);
+
+    // 4 columns: m<1 | 1<m<7 | m=7 | m>7  (but show m=1 and m=7 as critical points)
+    var cols = [
+      { left: 0.0, right: 1.0, label: 'm < 1', sgnNum: '−', sgnDen: '−', sgnFrac: '+', highlight: false },
+      { left: 1.0, right: 7.0, label: '1 < m < 7', sgnNum: '−', sgnDen: '+', sgnFrac: '−', highlight: true },
+      { left: 7.0, right: 9.0, label: 'm > 7', sgnNum: '+', sgnDen: '+', sgnFrac: '+', highlight: false }
+    ];
+    var tableY = scY + 25;
+    var rowH = 32;
+    var headers = ['interval', 'znak (m−7)', 'znak (m−1)', 'znak razlomka'];
+    var headerX = nlX0 - 30;
+    var labelW = 150;
+
+    // Row labels (left column)
+    ctx.font = '13px Inter, system-ui';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'left';
+    for (var h = 0; h < headers.length; h++) {
+      ctx.fillText(headers[h], headerX, tableY + h * rowH + 4);
+    }
+
+    // Columns
+    var colsX0 = headerX + labelW;
+    var colsX1 = nlX1 + 20;
+    var colWidth = (colsX1 - colsX0) / cols.length;
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.textAlign = 'center';
+    for (var c = 0; c < cols.length; c++) {
+      var cx = colsX0 + c * colWidth + colWidth / 2;
+      // highlight winning column
+      if (cols[c].highlight) {
+        ctx.fillStyle = (function () {
+          var col = accent;
+          if (col.startsWith('#')) {
+            var r = parseInt(col.slice(1, 3), 16);
+            var g = parseInt(col.slice(3, 5), 16);
+            var b = parseInt(col.slice(5, 7), 16);
+            return 'rgba(' + r + ',' + g + ',' + b + ',0.15)';
+          }
+          return col;
+        })();
+        ctx.fillRect(colsX0 + c * colWidth, tableY - 18, colWidth, rowH * 4);
+      }
+      ctx.fillStyle = text;
+      ctx.fillText(cols[c].label, cx, tableY + 4);
+      ctx.fillText(cols[c].sgnNum, cx, tableY + rowH + 4);
+      ctx.fillText(cols[c].sgnDen, cx, tableY + 2 * rowH + 4);
+      // Color the fraction sign
+      ctx.fillStyle = cols[c].sgnFrac === '−' ? accent : muted;
+      ctx.font = 'bold 16px Inter, system-ui';
+      ctx.fillText(cols[c].sgnFrac, cx, tableY + 3 * rowH + 4);
+      ctx.font = 'bold 13px Inter, system-ui';
+    }
+
+    // Vertical separators
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var s = 1; s < cols.length; s++) {
+      var sxV = colsX0 + s * colWidth;
+      ctx.beginPath();
+      ctx.moveTo(sxV, tableY - 18);
+      ctx.lineTo(sxV, tableY - 18 + rowH * 4);
+      ctx.stroke();
+    }
+    // Horizontal separators
+    for (var r = 0; r < 4; r++) {
+      var ryV = tableY - 18 + r * rowH;
+      ctx.beginPath();
+      ctx.moveTo(colsX0, ryV);
+      ctx.lineTo(colsX1, ryV);
+      ctx.stroke();
+    }
+    var ryEnd = tableY - 18 + 4 * rowH;
+    ctx.beginPath();
+    ctx.moveTo(colsX0, ryEnd);
+    ctx.lineTo(colsX1, ryEnd);
+    ctx.stroke();
+
+    // Critical points note below
+    ctx.fillStyle = warning;
+    ctx.font = 'italic 12px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Kritične tačke:  m = 1 (imenilac = 0, isključeno)   i   m = 7 (brojilac = 0, granica nije < 0).', W / 2, ryEnd + 22);
+
+    // Footer note
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 12px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Razlomak je negativan samo u srednjoj koloni — interval (1, 7).  ℕ ∩ (1,7) = {2,3,4,5,6}.', W / 2, H - 14);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Broj prirodnih m za korene kvadratne jednačine različitog znaka",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["kvadratna jednačina", "Vietove formule", "racionalna nejednačina", "parametar", "znak korena"]
+}
+BRAINSPARK_META-->

@@ -1,0 +1,691 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem (prema v1): vrednost izraza
+  E = (1 + log_{∜⁵81}(1/3)) * (5^{-2 log_{1/5} 5} + 4^{1/log_{25} 16} - 2)
+gde je ∜⁵81 = 5-ti koren iz 81 = 81^{1/5}.
+
+[Napomena: PDF OCR je ovde mutan; v1 resenje je koristilo 5-ti koren i dobilo -7,
+sto je opcija (B). Nastavljamo sa tom interpretacijom.]
+
+Korak 1 — prvi faktor:
+  Osnova: 81^{1/5} = (3^4)^{1/5} = 3^{4/5}.
+  Argument: 1/3 = 3^{-1}.
+  Pravilo: log_{a^k}(a^m) = m/k, pa
+    log_{3^{4/5}}(3^{-1}) = (-1) / (4/5) = -5/4.
+  Prvi faktor: 1 + (-5/4) = -1/4.
+
+Korak 2 — član 5^{-2 log_{1/5} 5}:
+  log_{1/5}(5): treba x t.d. (1/5)^x = 5, tj. 5^{-x} = 5^1, pa -x = 1, x = -1.
+  Eksponent: -2 * (-1) = 2.
+  Vrednost: 5^2 = 25.
+
+Korak 3 — član 4^{1/log_{25} 16}:
+  Recipročna formula: 1/log_a(b) = log_b(a).
+  Pa 1/log_{25}(16) = log_{16}(25).
+  Razvoj: 16 = 2^4, 25 = 5^2.
+    log_{16}(25) = log_{2^4}(5^2) = (2/4) log_2(5) = (1/2) log_2(5).
+  Vrednost: 4^{(1/2) log_2(5)} = (2^2)^{(1/2) log_2(5)} = 2^{log_2(5)} = 5.
+
+Korak 4 — drugi faktor:
+  25 + 5 - 2 = 28.
+
+Korak 5 — proizvod:
+  (-1/4) * 28 = -7.
+
+Provera (numericki):
+  log_{3^{4/5}}(1/3) = ln(1/3) / ln(3^{4/5}) = (-ln 3) / ((4/5) ln 3) = -5/4. ✓
+  log_{1/5}(5) = ln 5 / ln(1/5) = ln 5 / (-ln 5) = -1. ✓
+  log_{25}(16) = ln 16 / ln 25 = (4 ln 2)/(2 ln 5) = 2 ln 2 / ln 5 ≈ 0.8614.
+    1/0.8614 ≈ 1.1610.
+    4^{1.1610} ≈ 5.0000. ✓
+  Drugi faktor: 25 + 5 - 2 = 28. ✓
+  Proizvod: -1/4 * 28 = -7. ✓
+
+Opcije:
+  (A) -63
+  (B) -7  — TACAN
+  (C) 28/5  — bio bi rezultat ako neko prevari prvi faktor sa 1/5 umesto -1/4
+  (D) 63
+  (E) -4
+
+Odgovor: (B) -7.
+
+Vizuelni prikaz: dva kanvasa.
+  1) Putanja izračunavanja — graf protok od levog faktora i tri sabirka u desnom faktoru.
+  2) Tabela tri kljucna log identiteta sa primerima iz zadatka.
+
+Staticki — ovo je cisto algebarski/log racun; kanvas pomaze pregledom strukture izraza.
+</script>
+
+<h1 data-card="problem-title">Vrednost logaritamsko-eksponencijalnog izraza</h1>
+<p data-card="problem-subtitle" class="subtitle">Logaritmi — promena osnove, recipročna osnova, identitet \( a^{\log_a b}=b \)</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Vrednost izraza</p>
+  <div class="math-block">
+    \[ \left(1 + \log_{\sqrt[5]{81}} \frac{1}{3}\right) \cdot \left(5^{-2\log_{\frac{1}{5}} 5} \;+\; 4^{\,\frac{1}{\log_{25} 16}} \;-\; 2\right) \]
+  </div>
+  <p>jednaka je:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( -63 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( -7 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \dfrac{28}{5} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 63 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( -4 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Izraz se sastoji od dva faktora — računamo ih nezavisno. Prvi sredimo svodeći osnovu i argument logaritma na stepene trojke, pa primenjujemo identitet \( \log_{a^k}(a^m) = m/k \). U drugom faktoru tri člana sređujemo redom: \( \log_{1/5}5 \) je očigledno \( -1 \), a poslednji član se rešava preko \( 1/\log_a b = \log_b a \) i identiteta \( a^{\log_a b} = b \). Na kraju pomnožimo dva broja.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Tri ključna identiteta logaritma</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Stepen u osnovi</span> \( \log_{a^k} a^m \;=\; \dfrac{m}{k} \). Dokaz: ako je \( x = \log_{a^k} a^m \), onda \( (a^k)^x = a^m \), tj. \( a^{kx} = a^m \), pa \( kx = m \).</li>
+        <li><span class="formula-label">Recipročna osnova</span> \( \log_{1/a} b \;=\; -\log_{a} b \). Posledica: \( \log_{1/5} 5 = -\log_5 5 = -1 \).</li>
+        <li><span class="formula-label">Recipročni log</span> \( \dfrac{1}{\log_{a} b} \;=\; \log_{b} a \). Posledica formule za promenu osnove.</li>
+        <li><span class="formula-label">Inverzni identitet</span> \( a^{\log_{a} b} \;=\; b \) — eksponencijalna i logaritamska funkcija sa istom osnovom su međusobno inverzne.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Tok izračunavanja izraza">
+  <h2>📐 Tok izračunavanja izraza</h2>
+  <div class="canvas-wrapper">
+    <canvas id="flow-canvas" width="700" height="540"></canvas>
+  </div>
+  <p class="canvas-caption">Prvi faktor svodimo na \( -\tfrac{1}{4} \), a drugi na \( 25 + 5 - 2 = 28 \). Konačno množenje \( -\tfrac{1}{4}\cdot 28 \) daje \( -7 \). Tri člana drugog faktora prikazani su odvojeno sa svojim međurezultatima.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Sredimo osnovu prvog logaritma</h3>
+      <p>\( 81 = 3^4 \), pa je peti koren:</p>
+      <div class="math-block">
+        \[ \sqrt[5]{81} \;=\; 81^{1/5} \;=\; (3^4)^{1/5} \;=\; 3^{4/5}. \]
+      </div>
+      <p>Argument svodimo na isti broj: \( \dfrac{1}{3} = 3^{-1} \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo \( \log_{\sqrt[5]{81}} \dfrac{1}{3} \)</h3>
+      <p>Sa pravilom \( \log_{a^k} a^m = \tfrac{m}{k} \), gde je \( a = 3,\ k = \tfrac{4}{5},\ m = -1 \):</p>
+      <div class="math-block">
+        \[ \log_{3^{4/5}} 3^{-1} \;=\; \frac{-1}{4/5} \;=\; -1 \cdot \frac{5}{4} \;=\; -\frac{5}{4}. \]
+      </div>
+      <p>Pa je <strong>prvi faktor</strong>:</p>
+      <div class="math-block">
+        \[ 1 + \log_{\sqrt[5]{81}} \frac{1}{3} \;=\; 1 - \frac{5}{4} \;=\; -\frac{1}{4}. \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( \log_{a^k} a^m = m/k \)?</summary>
+          <div class="detail-content"><p>Stavimo \( x = \log_{a^k}(a^m) \). Po definiciji, \( (a^k)^x = a^m \), tj. \( a^{kx} = a^m \). Iz jednakosti baza sledi \( kx = m \), odakle \( x = m/k \). U našem slučaju \( m = -1,\ k = 4/5 \), pa \( x = -5/4 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Drugi faktor — prvi sabirak \( 5^{-2\log_{1/5} 5} \)</h3>
+      <p>Najpre \( \log_{1/5} 5 \): tražimo \( x \) tako da \( (1/5)^x = 5 \). Kako je \( (1/5)^x = 5^{-x} \), imamo \( 5^{-x} = 5^1 \), tj. \( -x = 1 \), pa \( x = -1 \).</p>
+      <div class="math-block">
+        \[ \log_{1/5} 5 \;=\; -1. \]
+      </div>
+      <p>Eksponent broja \( 5 \) postaje \( -2\cdot(-1) = 2 \), pa:</p>
+      <div class="math-block">
+        \[ 5^{-2\log_{1/5} 5} \;=\; 5^{\,2} \;=\; 25. \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: alternativni put preko identiteta recipročne osnove</summary>
+          <div class="detail-content"><p>\( \log_{1/a} b = -\log_a b \), pa direktno \( \log_{1/5} 5 = -\log_5 5 = -1 \). Isti rezultat, kraći put.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Drugi faktor — drugi sabirak \( 4^{1/\log_{25} 16} \)</h3>
+      <p>Identitet \( \dfrac{1}{\log_{a} b} = \log_{b} a \) <em>preokrene</em> osnovu i argument:</p>
+      <div class="math-block">
+        \[ \frac{1}{\log_{25} 16} \;=\; \log_{16} 25. \]
+      </div>
+      <p>Sada zapišimo \( 16 = 2^4 \) i \( 25 = 5^2 \) i koristimo \( \log_{a^k}(b^m) = \tfrac{m}{k} \log_a b \):</p>
+      <div class="math-block">
+        \[ \log_{16} 25 \;=\; \log_{2^4} 5^2 \;=\; \frac{2}{4}\,\log_2 5 \;=\; \frac{1}{2}\,\log_2 5. \]
+      </div>
+      <p>Onda</p>
+      <div class="math-block">
+        \[ 4^{\,\log_{16} 25} \;=\; 4^{\,\tfrac{1}{2}\log_2 5} \;=\; (2^2)^{\tfrac{1}{2}\log_2 5} \;=\; 2^{\,\log_2 5} \;=\; 5, \]
+      </div>
+      <p>gde poslednji znak jednakosti koristi <span class="formula-label">a^{log_a b} = b</span>.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: numerička provera</summary>
+          <div class="detail-content"><p>\( \log_{25} 16 = \dfrac{\ln 16}{\ln 25} = \dfrac{4\ln 2}{2\ln 5} \approx \dfrac{2{,}7726}{3{,}2189} \approx 0{,}8614 \). Tada \( \dfrac{1}{0{,}8614} \approx 1{,}1610 \) i \( 4^{1{,}1610} \approx 5{,}000 \). ✓</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Saberemo drugi faktor</h3>
+      <div class="math-block">
+        \[ 5^{-2\log_{1/5} 5} + 4^{\,1/\log_{25} 16} - 2 \;=\; 25 + 5 - 2 \;=\; 28. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Pomnožimo dva faktora</h3>
+      <div class="math-block">
+        \[ E \;=\; \left(-\frac{1}{4}\right) \cdot 28 \;=\; -\frac{28}{4} \;=\; -7. \]
+      </div>
+      <p>Dakle <span class="result">\( E = -7 \)</span>.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: rekapitulacija</summary>
+          <div class="detail-content">
+            <p>Prvi faktor: \( 1 + \log_{3^{4/5}}(3^{-1}) = 1 - \tfrac{5}{4} = -\tfrac{1}{4} \).</p>
+            <p>Drugi faktor: \( 5^{2} + 4^{\log_{16}25} - 2 = 25 + 5 - 2 = 28 \).</p>
+            <p>Proizvod: \( -\tfrac{1}{4}\cdot 28 = -7 \). ✓</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Cele tri „komplikovane" komponente izraza se tope čim sve svedemo na stepene <em>jedne te iste osnove</em> (najčešće 2, 3 ili 5). Ključ su tri male formule: \( \log_{a^k} a^m = \tfrac{m}{k} \), \( \log_{1/a}b = -\log_a b \) i \( \tfrac{1}{\log_a b} = \log_b a \). Druga dva člana drugog faktora — \( 25 \) i \( 5 \) — su čisti celi brojevi, pa zbir \( 25 + 5 - 2 = 28 \) zajedno sa „malim" prvim faktorom \( -\tfrac{1}{4} \) daje upravo lep ceo broj \( -7 \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Tri identiteta logaritma — pregled">
+  <h2>📐 Tri identiteta logaritma — pregled</h2>
+  <div class="canvas-wrapper">
+    <canvas id="identities-canvas" width="700" height="460"></canvas>
+  </div>
+  <p class="canvas-caption">Pregled tri identiteta korišćena u zadatku, sa konkretnim primerom iz svakog koraka. Sve operacije se svode na izvlačenje stepena iz osnove i argumenta logaritma.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešno tumačenje korena u osnovi.</strong> \( \sqrt[5]{81} \) je peti koren, što daje \( 3^{4/5} \), a ne \( 9 \) (kvadratni koren). Ako bi neko uzeo \( \sqrt{81}=9 \), prvi faktor bi postao \( 1 + \log_9 \tfrac{1}{3} = 1 - \tfrac{1}{2} = \tfrac{1}{2} \) — pogrešno.</li>
+    <li><strong>Zaboravljen znak kod \( \log_{1/5} 5 \).</strong> Logaritam sa recipročnom osnovom <em>menja znak</em>: \( \log_{1/5} 5 = -1 \), nije \( 1 \). Onda dvostruka negacija \( -2\cdot(-1) = +2 \), ne \( -2 \).</li>
+    <li><strong>Mešanje \( \dfrac{1}{\log_a b} \) sa \( \log_a \dfrac{1}{b} \).</strong> Prvi je \( \log_b a \) (preokreće osnovu i argument), drugi je \( -\log_a b \) (samo menja znak). Različite stvari.</li>
+    <li><strong>Računanje stepena bez svođenja na zajedničku osnovu.</strong> Direktno računanje \( 4^{1{,}161} \) je nepouzdano — pretvaranjem u \( 2^{\log_2 5} = 5 \) dobijamo tačan rezultat bez kalkulatora.</li>
+    <li><strong>Pomnoženo pre nego što je sređeno.</strong> Razvijanje cele zagrade pre nego što se sredi prvi faktor stvara haotične izraze. Faktore računati nezavisno.</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ E \;=\; \left(-\frac{1}{4}\right)\cdot 28 \;=\; -7. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( -63 \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( -7 \)</span>
+    <span class="answer-option" data-option="C">(C) \( \dfrac{28}{5} \)</span>
+    <span class="answer-option" data-option="D">(D) \( 63 \)</span>
+    <span class="answer-option" data-option="E">(E) \( -4 \)</span>
+  </div>
+  <p class="verification">Numerička provera (kalkulatorom): \( \log_{3^{4/5}}(1/3) \approx -1{,}25 \), pa prvi faktor \( \approx -0{,}25 \). Drugi faktor: \( 5^2 + 4^{1/0{,}8614} - 2 \approx 25 + 5{,}00 - 2 = 28 \). Proizvod: \( -0{,}25 \cdot 28 = -7 \). ✓</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Izračunaj sličan izraz:</p>
+  <div class="math-block">
+    \[ \left(2 + \log_{\sqrt[3]{27}} \tfrac{1}{9}\right) \cdot \left(3^{-\log_{1/3} 9} \;+\; 8^{\,1/\log_{4} 2}\right). \]
+  </div>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>\( \sqrt[3]{27} = 3 \), pa \( \log_3 \tfrac{1}{9} = \log_3 3^{-2} = -2 \). Prvi faktor postaje \( 2 + (-2) = 0 \).</p>
+      <p>Pošto je prvi faktor nula, ceo proizvod je nula — bez obzira koliko je drugi faktor komplikovan! Lekcija: pre nego što kreneš da grebeš drugi faktor, proveri da li je prvi slučajno nula.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('flow-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function roundRect(x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+    var tertiary  = cv('--sol-canvas-tertiary');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var W = canvas.width;
+    var H = canvas.height;
+
+    // Title
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Tok izračunavanja: dva faktora i njihova konvergencija', W / 2, 14);
+
+    // Helper to draw a labeled box
+    function box(x, y, w, h, color, title, value, valueColor) {
+      // Background (semi-transparent fill)
+      ctx.fillStyle = cvAlpha(color === primary ? '--sol-canvas-primary'
+                            : color === secondary ? '--sol-canvas-secondary'
+                            : color === accent ? '--sol-canvas-accent'
+                            : color === highlight ? '--sol-canvas-highlight'
+                            : color === warning ? '--sol-canvas-warning'
+                            : color === tertiary ? '--sol-canvas-tertiary'
+                            : '--sol-canvas-primary', 0.15);
+      roundRect(x, y, w, h, 10);
+      ctx.fill();
+      // Border
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      roundRect(x, y, w, h, 10);
+      ctx.stroke();
+      // Title text
+      ctx.fillStyle = text;
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText(title, x + w / 2, y + 8);
+      // Value
+      ctx.fillStyle = valueColor || color;
+      ctx.font = 'bold 17px Inter, system-ui, sans-serif';
+      ctx.fillText(value, x + w / 2, y + 28);
+    }
+
+    function arrow(x1, y1, x2, y2, color) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+      // Arrowhead
+      var ang = Math.atan2(y2 - y1, x2 - x1);
+      var ah = 8;
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.moveTo(x2, y2);
+      ctx.lineTo(x2 - ah * Math.cos(ang - 0.4), y2 - ah * Math.sin(ang - 0.4));
+      ctx.lineTo(x2 - ah * Math.cos(ang + 0.4), y2 - ah * Math.sin(ang + 0.4));
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    // Layout columns
+    var leftX = 60;
+    var rightX = W - 280;
+    var rowH = 70;
+    var topY = 60;
+
+    // LEFT: First factor breakdown
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = primary;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Prvi faktor', leftX, topY - 30);
+
+    box(leftX, topY,           220, 50, primary, 'Osnova: ⁵√81 = 3^(4/5)', 'k = 4/5');
+    box(leftX, topY + rowH,    220, 50, primary, 'Argument: 1/3 = 3^(-1)', 'm = -1');
+    box(leftX, topY + 2*rowH,  220, 50, primary, 'log_{3^(4/5)}(3^(-1)) = m/k', '-5/4');
+    box(leftX, topY + 3*rowH,  220, 50, primary, '1 + log = 1 - 5/4', '-1/4', highlight);
+
+    arrow(leftX + 110, topY + 50,         leftX + 110, topY + rowH - 4, primary);
+    arrow(leftX + 110, topY + rowH + 50,  leftX + 110, topY + 2*rowH - 4, primary);
+    arrow(leftX + 110, topY + 2*rowH + 50, leftX + 110, topY + 3*rowH - 4, primary);
+
+    // RIGHT: Second factor breakdown (3 sub-blocks)
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = secondary;
+    ctx.textAlign = 'left';
+    ctx.fillText('Drugi faktor (3 člana)', rightX, topY - 30);
+
+    box(rightX, topY,         220, 50, accent,  '5^(-2·log_(1/5) 5)', '5^2 = 25');
+    box(rightX, topY + rowH,  220, 50, warning, '4^(1/log_25 16)',    '4^{log_16 25} = 5');
+    box(rightX, topY + 2*rowH,220, 50, muted ? tertiary : muted,  'konstanta',          '-2');
+    box(rightX, topY + 3*rowH,220, 50, secondary,'25 + 5 - 2',         '28', highlight);
+
+    arrow(rightX + 110, topY + 50,         rightX + 110, topY + rowH - 4, secondary);
+    arrow(rightX + 110, topY + rowH + 50,  rightX + 110, topY + 2*rowH - 4, secondary);
+    arrow(rightX + 110, topY + 2*rowH + 50, rightX + 110, topY + 3*rowH - 4, secondary);
+
+    // Final result box at bottom center
+    var finalY = topY + 3 * rowH + 90;
+    var finalX = W / 2 - 130;
+    var finalW = 260;
+
+    // Lines from -1/4 and 28 to final
+    var leftDotX = leftX + 110;
+    var leftDotY = topY + 3 * rowH + 50;
+    var rightDotX = rightX + 110;
+    var rightDotY = topY + 3 * rowH + 50;
+
+    arrow(leftDotX, leftDotY, finalX + finalW / 2 - 30, finalY - 4, highlight);
+    arrow(rightDotX, rightDotY, finalX + finalW / 2 + 30, finalY - 4, highlight);
+
+    // Final glow
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.20);
+    roundRect(finalX - 4, finalY - 4, finalW + 8, 68, 14);
+    ctx.fill();
+
+    box(finalX, finalY, finalW, 60, accent, '(-1/4) × 28 =', '-7', accent);
+
+    // Multiply symbol between left/right above final
+    ctx.font = 'bold 24px Inter, system-ui, sans-serif';
+    ctx.fillStyle = highlight;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('×', W / 2, finalY - 28);
+
+    // Footer note
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Sve tri operacije svode log/exp izraze na stepene jedne osnove (3, 5 ili 2).', W / 2, H - 18);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('identities-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function roundRect(x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var W = canvas.width;
+    var H = canvas.height;
+
+    // Title
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Tri identiteta — formula, primer iz zadatka, rezultat', W / 2, 14);
+
+    var entries = [
+      {
+        title: 'Stepen u osnovi',
+        formula: 'log_{a^k}(a^m) = m/k',
+        example: 'log_{3^(4/5)}(3^(-1))',
+        result: '= -5/4',
+        step: 'Korak 2',
+        col: primary
+      },
+      {
+        title: 'Recipročna osnova',
+        formula: 'log_{1/a}(b) = -log_a(b)',
+        example: 'log_{1/5}(5) = -log_5(5)',
+        result: '= -1',
+        step: 'Korak 3',
+        col: accent
+      },
+      {
+        title: 'Recipročni log',
+        formula: '1 / log_a(b) = log_b(a)',
+        example: '1 / log_{25}(16) = log_{16}(25)',
+        result: '= (1/2) log_2(5)',
+        step: 'Korak 4',
+        col: highlight
+      }
+    ];
+
+    var boxW = (W - 80) / 3;
+    var boxH = 320;
+    var topY = 50;
+
+    entries.forEach(function(e, i) {
+      var x = 20 + i * (boxW + 10);
+      var y = topY;
+
+      // Background
+      ctx.fillStyle = cvAlpha(e.col === primary ? '--sol-canvas-primary'
+                            : e.col === accent ? '--sol-canvas-accent'
+                            : '--sol-canvas-highlight', 0.10);
+      roundRect(x, y, boxW, boxH, 12);
+      ctx.fill();
+      ctx.strokeStyle = e.col;
+      ctx.lineWidth = 2;
+      roundRect(x, y, boxW, boxH, 12);
+      ctx.stroke();
+
+      // Title
+      ctx.fillStyle = e.col;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText(e.title, x + boxW / 2, y + 14);
+
+      // Formula
+      ctx.fillStyle = text;
+      ctx.font = 'bold 13px ui-monospace, monospace';
+      ctx.fillText(e.formula, x + boxW / 2, y + 50);
+
+      // Separator line
+      ctx.strokeStyle = muted;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x + 20, y + 90);
+      ctx.lineTo(x + boxW - 20, y + 90);
+      ctx.stroke();
+
+      // Example label
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.fillStyle = muted;
+      ctx.fillText('Iz zadatka:', x + boxW / 2, y + 105);
+
+      // Example expression
+      ctx.font = '12px ui-monospace, monospace';
+      ctx.fillStyle = text;
+      ctx.fillText(e.example, x + boxW / 2, y + 130);
+
+      // Down arrow
+      var ay1 = y + 165;
+      var ay2 = y + 195;
+      ctx.strokeStyle = e.col;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x + boxW / 2, ay1);
+      ctx.lineTo(x + boxW / 2, ay2);
+      ctx.stroke();
+      ctx.fillStyle = e.col;
+      ctx.beginPath();
+      ctx.moveTo(x + boxW / 2 - 5, ay2 - 6);
+      ctx.lineTo(x + boxW / 2 + 5, ay2 - 6);
+      ctx.lineTo(x + boxW / 2,     ay2 + 2);
+      ctx.closePath();
+      ctx.fill();
+
+      // Result
+      ctx.font = 'bold 16px ui-monospace, monospace';
+      ctx.fillStyle = e.col;
+      ctx.fillText(e.result, x + boxW / 2, y + 215);
+
+      // Step label
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.fillStyle = muted;
+      ctx.fillText('koristi se u: ' + e.step, x + boxW / 2, y + 250);
+
+      // Bottom usage badge
+      ctx.fillStyle = cvAlpha(e.col === primary ? '--sol-canvas-primary'
+                            : e.col === accent ? '--sol-canvas-accent'
+                            : '--sol-canvas-highlight', 0.25);
+      roundRect(x + boxW / 2 - 50, y + 275, 100, 26, 6);
+      ctx.fill();
+      ctx.fillStyle = e.col;
+      ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(e.step, x + boxW / 2, y + 288);
+    });
+
+    // Footer
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Sve tri jednakosti slede iz osnovne definicije: log_a(b) = x  ⇔  a^x = b.', W / 2, H - 22);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Vrednost logaritamsko-eksponencijalnog izraza (= -7)",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["logaritmi", "promena osnove", "recipročni logaritam", "stepenovanje", "svojstva logaritama"]
+}
+BRAINSPARK_META-->

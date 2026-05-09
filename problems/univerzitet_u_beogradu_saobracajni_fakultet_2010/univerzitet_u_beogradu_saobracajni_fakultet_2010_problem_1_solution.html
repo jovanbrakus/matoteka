@@ -1,0 +1,431 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Izracunati vrednost izraza
+  E = { 3^(-1) - (1/3) * [ (1/2)^(-2) + (-1/3)^(-3) ] }^(1/3)
+
+Strategija: izraz radimo "iznutra ka spolja". Prvo izvrednjujemo svaki negativan stepen, zatim uglastu zagradu, pa veliku viticu, na kraju kubni koren (eksponent 1/3).
+
+Korak 1 — negativni stepeni:
+  3^(-1) = 1/3.
+  (1/2)^(-2) = (2/1)^2 = 4.
+  (-1/3)^(-3) = (-3/1)^3 = (-3)^3 = -27.
+  (Pravilo: a^(-n) = 1/a^n; ekvivalentno (p/q)^(-n) = (q/p)^n.)
+
+Korak 2 — uglasta zagrada [ ... ]:
+  4 + (-27) = -23.
+
+Korak 3 — vitica { ... }:
+  3^(-1) - (1/3) * [-23]
+  = 1/3 - (1/3)(-23)
+  = 1/3 + 23/3
+  = 24/3
+  = 8.
+
+Korak 4 — eksponent 1/3 (kubni koren):
+  8^(1/3) = 2 (jer je 2^3 = 8).
+
+Konacan rezultat: 2.
+
+Mapiranje opcija:
+  (A) 1     -> A
+  (B) -2    -> B
+  (C) -1    -> C
+  (D) 0     -> D
+  (E) 2     -> E   ← TACAN
+
+Tipicne greske (pitfalls):
+  - (-1/3)^(-3) = +27 (zaboravljen znak; minus na neparan stepen ostaje minus)
+  - (1/2)^(-2) = 1/4 (pogresno tumacenje negativnog eksponenta, zaboravljeno reciprocno)
+  - 3^(-1) = -3 (mesa se "minus eksponent" sa "minus broj")
+  - (1/3) * (-23) = -23/3, pa onda 1/3 - (-23/3) = -22/3 (greska u znaku ispred 23/3)
+  - eksponent 1/3 protumaci kao deljenje 8/3 umesto kubnog korena
+
+Vizuelni prikaz: STATICKI, jer je zadatak cisto numericki — interaktivnost ne donosi insight. Prikazacemo "scenu obracuna" — vertikalna kolona kartica koja prati vrednosti dok napreduju izvan ka spolja:
+  [3^(-1) = 1/3]   [(1/2)^(-2) = 4]   [(-1/3)^(-3) = -27]
+                   --- spojeno: 4 + (-23) = -23 ---
+  vitica: 1/3 - (1/3)(-23) = 1/3 + 23/3 = 24/3 = 8
+  kubni koren: 8^(1/3) = 2
+Prikaz je kao "akcioni dijagram" — bar/scena koja vodi oko od slozenog ka prostom rezultatu.
+
+Kljucni uvid: negativan eksponent znaci RECIPROCAN broj (zameni razlomak sa njegovim obrnutim), a NE menjanje znaka. Kubni koren u izrazu skrivenom kao "1/3 stepen" treba prepoznati: x^(1/3) = treci koren iz x.
+</script>
+
+<h1 data-card="problem-title">Vrednost izraza sa negativnim eksponentima i kubnim korenom</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — stepeni sa negativnim eksponentima, racionalni eksponenti, kubni koren</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Vrednost izraza</p>
+  <div class="math-block">
+    \[ E = \left\{\, 3^{-1} - \dfrac{1}{3}\cdot\left[\left(\dfrac{1}{2}\right)^{-2} + \left(-\dfrac{1}{3}\right)^{-3}\right] \,\right\}^{1/3} \]
+  </div>
+  <p>je:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( -2 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( -1 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 0 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Izraz računamo <em>iznutra ka spolja</em>: prvo svaki negativni stepen po pravilu \( a^{-n} = \tfrac{1}{a^n} \), zatim uglastu zagradu, pa veliku vitičastu zagradu, i na kraju primenjujemo eksponent \( 1/3 \) — što je kubni koren.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Pravila za stepene i korene</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Negativan eksponent</span> \( a^{-n} = \dfrac{1}{a^n} \) za \( a \neq 0 \). Specijalno, \( \left(\dfrac{p}{q}\right)^{-n} = \left(\dfrac{q}{p}\right)^{n} \) — razlomak se „prevrne".</li>
+        <li><span class="formula-label">Stepen razlomka</span> \( \left(\dfrac{p}{q}\right)^{n} = \dfrac{p^{n}}{q^{n}} \).</li>
+        <li><span class="formula-label">Znak negativne osnove</span> \( (-a)^{n} \) je pozitivno za parno \( n \), negativno za neparno \( n \). Zato je \( (-3)^{3} = -27 \), a \( (-3)^{2} = 9 \).</li>
+        <li><span class="formula-label">Racionalni eksponent</span> \( a^{1/n} = \sqrt[n]{a} \). Posebno \( a^{1/3} = \sqrt[3]{a} \) je kubni koren.</li>
+        <li><span class="formula-label">Pravilo prioriteta</span> Najpre stepenovanje, zatim množenje/deljenje, na kraju sabiranje/oduzimanje. Zagrade su iznad svega.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni tok izračunavanja">
+  <h2>📐 Vizuelni tok izračunavanja</h2>
+  <div class="canvas-wrapper">
+    <canvas id="flow-canvas" width="760" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Sve tri „atomske" vrednosti (gornji red) udružuju se u uglastu zagradu, koja zatim ulazi u vitičastu, i na kraju se primenjuje kubni koren. Dijagram prati hijerarhiju zagrada: <em>izvana je sabranje, iznutra množenje, najviše stepeni.</em></p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunamo svaki negativni stepen</h3>
+      <p>Prema pravilu \( a^{-n} = \dfrac{1}{a^n} \), redom dobijamo:</p>
+      <div class="math-block">
+        \[ 3^{-1} = \frac{1}{3}, \qquad \left(\frac{1}{2}\right)^{-2} = \left(\frac{2}{1}\right)^{2} = 4, \qquad \left(-\frac{1}{3}\right)^{-3} = \left(-\frac{3}{1}\right)^{3} = (-3)^{3} = -27. \]
+      </div>
+      <p>Pazimo na znak: \( (-3)^{3} = (-3)\cdot(-3)\cdot(-3) = 9\cdot(-3) = -27 \). Neparan stepen <em>čuva</em> znak osnove.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( \left(\frac{1}{2}\right)^{-2} = 4 \), a ne \( \frac{1}{4} \)?</summary>
+          <div class="detail-content"><p>Negativan eksponent prvo „prevrne" razlomak: \( \left(\tfrac{1}{2}\right)^{-2} = \left(\tfrac{2}{1}\right)^{2} \). Zatim se eksponent \( 2 \) primenjuje na već prevrnut razlomak: \( 2^{2} = 4 \). Vrednost \( \tfrac{1}{4} \) bismo dobili da je eksponent bio \( +2 \), tj. \( \left(\tfrac{1}{2}\right)^{2} = \tfrac{1}{4} \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Sabiramo unutar uglastih zagrada</h3>
+      <p>Sad ulazimo u sledeći nivo zagrada:</p>
+      <div class="math-block">
+        \[ \left[\left(\frac{1}{2}\right)^{-2} + \left(-\frac{1}{3}\right)^{-3}\right] = 4 + (-27) = -23. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo izraz unutar vitičastih zagrada</h3>
+      <p>Vraćamo se na ceo izraz unutar vitica:</p>
+      <div class="math-block">
+        \[ 3^{-1} - \frac{1}{3}\cdot\bigl[-23\bigr] = \frac{1}{3} - \frac{1}{3}\cdot(-23). \]
+      </div>
+      <p>Množimo: \( \tfrac{1}{3}\cdot(-23) = -\tfrac{23}{3} \). Oduzimanje negativne vrednosti postaje sabiranje:</p>
+      <div class="math-block">
+        \[ \frac{1}{3} - \left(-\frac{23}{3}\right) = \frac{1}{3} + \frac{23}{3} = \frac{1 + 23}{3} = \frac{24}{3} = 8. \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto „minus puta minus" ovde daje plus?</summary>
+          <div class="detail-content"><p>U izrazu stoji <em>oduzimanje</em> proizvoda \( \tfrac{1}{3}\cdot(-23) \), tj. \( -\bigl(\tfrac{1}{3}\cdot(-23)\bigr) \). Proizvod je \( -\tfrac{23}{3} \), a oduzimanje toga je \( -(-\tfrac{23}{3}) = +\tfrac{23}{3} \). Dvostruki minus se poništava.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Primenjujemo eksponent \( 1/3 \) — kubni koren</h3>
+      <p>Spoljni eksponent je \( 1/3 \), što je upravo kubni koren:</p>
+      <div class="math-block">
+        \[ E = 8^{1/3} = \sqrt[3]{8} = 2, \]
+      </div>
+      <p>jer je \( 2^{3} = 8 \). Dakle <span class="result">\( E = 2 \)</span>.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koja je razlika između \( 8^{1/3} \) i \( 8 \cdot \tfrac{1}{3} \)?</summary>
+          <div class="detail-content"><p>To su dve sasvim različite operacije. \( 8^{1/3} \) je <em>treći koren</em> iz 8 — broj koji na treći stepen daje 8, dakle \( 2 \). Sa druge strane, \( 8\cdot\tfrac{1}{3} = \tfrac{8}{3} \approx 2{,}67 \) je obično deljenje. Eksponent „1/3" znači koren, a ne deljenje sa 3.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Negativan eksponent <strong>nikad ne menja znak</strong> rezultata — on samo „prevrne" razlomak (uzme reciprocnu vrednost). Znak je određen znakom <em>osnove</em> i parnošću eksponenta. Kad iznutra dobijete „lep" broj poput \( 8 \), \( 27 \), \( 64 \), \( 125 \) — to je signal da je sledeći korak baš kubni koren, a ne brojčano komplikovanje.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešno tumačenje \( 3^{-1} \) kao \( -3 \).</strong> Negativan eksponent ne pravi negativan broj — daje reciprocnu vrednost: \( 3^{-1} = \tfrac{1}{3} \).</li>
+    <li><strong>\( (-1/3)^{-3} = +27 \).</strong> Posle „prevrtanja" razlomka dobija se \( (-3)^{3} \), što je <em>negativno</em> jer je 3 neparno: rezultat je \( -27 \).</li>
+    <li><strong>\( (1/2)^{-2} = 1/4 \).</strong> Zaboravljeno reciprocno: tačno je \( (1/2)^{-2} = 2^{2} = 4 \).</li>
+    <li><strong>Greška u znaku trećeg koraka:</strong> \( \tfrac{1}{3} - (-\tfrac{23}{3}) = -\tfrac{22}{3} \). Tačno je \( \tfrac{1}{3} + \tfrac{23}{3} = \tfrac{24}{3} = 8 \) — dva minusa se poništavaju.</li>
+    <li><strong>Tumačenje \( 8^{1/3} \) kao deljenja \( 8/3 \).</strong> Eksponent \( 1/3 \) je <em>kubni koren</em>: \( 8^{1/3} = \sqrt[3]{8} = 2 \), nije \( 2{,}67 \).</li>
+    <li><strong>Mešanje redosleda zagrada:</strong> množenje sa \( \tfrac{1}{3} \) primenjeno samo na \( 4 \), a ne na ceo izraz \( [4 + (-27)] \). Cela uglasta zagrada je faktor.</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ E = \left\{\tfrac{1}{3} - \tfrac{1}{3}\cdot[4 + (-27)]\right\}^{1/3} = 8^{1/3} = 2. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 1 \)</span>
+    <span class="answer-option" data-option="B">(B) \( -2 \)</span>
+    <span class="answer-option" data-option="C">(C) \( -1 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 0 \)</span>
+    <span class="answer-option correct" data-option="E">(E) \( 2 \)</span>
+  </div>
+  <p class="verification">Provera: \( 2^{3} = 8 \), a \( \tfrac{1}{3} - \tfrac{1}{3}\cdot(-23) = \tfrac{1}{3} + \tfrac{23}{3} = 8 \). Oba pravca vode do iste vrednosti — \( E = 2 \). ✓</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta bi bilo ako bismo poslednji eksponent zamenili sa \( -1/3 \) umesto \( 1/3 \)? Drugim rečima, izračunaj</p>
+  <div class="math-block">
+    \[ E' = \left\{\, 3^{-1} - \dfrac{1}{3}\cdot\left[\left(\dfrac{1}{2}\right)^{-2} + \left(-\dfrac{1}{3}\right)^{-3}\right] \,\right\}^{-1/3}. \]
+  </div>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Izraz unutar vitica i dalje iznosi \( 8 \). Sada je spoljni eksponent \( -\tfrac{1}{3} \), pa je \( E' = 8^{-1/3} = \dfrac{1}{8^{1/3}} = \dfrac{1}{2} \). Negativan eksponent znači reciprocnu vrednost kubnog korena.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('flow-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function pillBox(x, y, w, h, fill, stroke) {
+    ctx.fillStyle = fill;
+    ctx.strokeStyle = stroke;
+    ctx.lineWidth = 1.6;
+    if (ctx.roundRect) {
+      ctx.beginPath();
+      ctx.roundRect(x, y, w, h, 12);
+      ctx.fill();
+      ctx.stroke();
+    } else {
+      ctx.fillRect(x, y, w, h);
+      ctx.strokeRect(x, y, w, h);
+    }
+  }
+
+  function drawArrow(x1, y1, x2, y2, color) {
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    // arrow head
+    var ang = Math.atan2(y2 - y1, x2 - x1);
+    var ah = 9;
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - ah * Math.cos(ang - Math.PI / 7), y2 - ah * Math.sin(ang - Math.PI / 7));
+    ctx.lineTo(x2 - ah * Math.cos(ang + Math.PI / 7), y2 - ah * Math.sin(ang + Math.PI / 7));
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.font = 'bold 17px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Izračunavanje iznutra ka spolja', canvas.width / 2, 16);
+
+    // Three "atom" cards (top row)
+    var atoms = [
+      { label: '3⁻¹', value: '= 1/3', x: 60 },
+      { label: '(½)⁻²', value: '= 4', x: 305 },
+      { label: '(−⅓)⁻³', value: '= −27', x: 550 }
+    ];
+    var atomY = 60, atomW = 150, atomH = 80;
+
+    for (var i = 0; i < atoms.length; i++) {
+      var a = atoms[i];
+      pillBox(a.x, atomY, atomW, atomH, cvAlpha('--sol-canvas-primary', 0.10), primary);
+      ctx.fillStyle = text;
+      ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(a.label, a.x + atomW / 2, atomY + 26);
+      ctx.fillStyle = primary;
+      ctx.font = 'bold 20px Inter, system-ui, sans-serif';
+      ctx.fillText(a.value, a.x + atomW / 2, atomY + 56);
+    }
+
+    // Atomic-row caption
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Korak 1: negativni stepeni  →  a⁻ⁿ = 1/aⁿ  (znak prati osnovu i parnost)', canvas.width / 2, atomY + atomH + 8);
+
+    // Arrows from atoms 2 & 3 down to bracket box
+    var brY = 200, brH = 70;
+    var brX = 230, brW = 300;
+    drawArrow(atoms[1].x + atomW / 2, atomY + atomH, brX + 90, brY, secondary);
+    drawArrow(atoms[2].x + atomW / 2, atomY + atomH, brX + brW - 90, brY, secondary);
+
+    // Square bracket box
+    pillBox(brX, brY, brW, brH, cvAlpha('--sol-canvas-secondary', 0.10), secondary);
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('[ 4 + (−27) ]', brX + brW / 2, brY + 24);
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 22px Inter, system-ui, sans-serif';
+    ctx.fillText('= −23', brX + brW / 2, brY + 48);
+
+    // Caption for bracket level
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 13px Inter, system-ui, sans-serif';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Korak 2: sabranje unutar uglastih zagrada', canvas.width / 2, brY + brH + 6);
+
+    // Arrow from atom 1 (3^-1) and bracket result down to brace box
+    var bcY = 330, bcH = 90;
+    var bcX = 145, bcW = 470;
+    drawArrow(atoms[0].x + atomW / 2, atomY + atomH, bcX + 70, bcY, accent);
+    drawArrow(brX + brW / 2, brY + brH, bcX + bcW - 70, bcY, accent);
+
+    // Brace box
+    pillBox(bcX, bcY, bcW, bcH, cvAlpha('--sol-canvas-accent', 0.10), accent);
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('{ 1/3 − (1/3)·(−23) }', bcX + bcW / 2, bcY + 22);
+    ctx.fillStyle = muted;
+    ctx.font = '14px Inter, system-ui, sans-serif';
+    ctx.fillText('= 1/3 + 23/3 = 24/3', bcX + bcW / 2, bcY + 46);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 24px Inter, system-ui, sans-serif';
+    ctx.fillText('= 8', bcX + bcW / 2, bcY + 72);
+
+    // Caption brace level
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 13px Inter, system-ui, sans-serif';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Korak 3: vitičasta zagrada  —  dvostruki minus daje plus', canvas.width / 2, bcY + bcH + 6);
+
+    // Final arrow into cube root box
+    var fY = 460, fH = 70, fX = 240, fW = 280;
+    drawArrow(bcX + bcW / 2, bcY + bcH + 22, fX + fW / 2, fY, highlight);
+
+    pillBox(fX, fY, fW, fH, cvAlpha('--sol-canvas-highlight', 0.12), highlight);
+    ctx.fillStyle = text;
+    ctx.font = 'bold 17px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('8^(1/3) = ∛8', fX + fW / 2, fY + 22);
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 28px Inter, system-ui, sans-serif';
+    ctx.fillText('= 2', fX + fW / 2, fY + 50);
+
+    // Footer note
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Korak 4: eksponent 1/3 znači kubni koren — ne deljenje sa 3.', canvas.width / 2, fY + fH + 8);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Negativni eksponenti i kubni koren — vrednost izraza je 2",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["negativni eksponenti", "stepeni", "kubni koren", "racionalni eksponenti", "redosled operacija", "razlomci"]
+}
+BRAINSPARK_META-->

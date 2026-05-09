@@ -1,0 +1,822 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Skup S je rešenje nejednačine log_(1/2)( log_2( x^2 - x + 19/16 ) ) >= -1.
+Naći oblik skupa S i proveriti zbir granica.
+
+Strategija: rasčlanjujemo postavku redom — od domena do raspakivanja oba logaritma.
+
+Korak 1 — domen.
+  Spoljašnji log: argument log_2( x^2 - x + 19/16 ) mora biti > 0,
+    tj. x^2 - x + 19/16 > 1.
+  Unutrašnji log_2: njegov argument x^2 - x + 19/16 mora biti > 0
+    (automatski jer je x^2 - x + 19/16 = (x - 1/2)^2 + 15/16 > 0 uvek).
+
+Korak 2 — spoljašnji log u bazi 1/2 < 1 (opadajući!).
+  log_(1/2)( A ) >= -1
+  <=> A <= (1/2)^(-1) = 2     (NEjednakost se OBRĆE jer je baza < 1)
+  i istovremeno A > 0 (domen).
+  Dakle 0 < log_2( x^2 - x + 19/16 ) <= 2.
+
+Korak 3 — unutrašnji log_2 (rastući, baza 2 > 1).
+  0 < log_2( B ) <= 2  (gde je B = x^2 - x + 19/16)
+  <=> 2^0 < B <= 2^2
+  <=> 1 < B <= 4.
+
+Korak 4 — donja stroga: B > 1.
+  x^2 - x + 19/16 > 1
+  x^2 - x + 3/16 > 0
+  Diskriminanta: 1 - 4·(3/16) = 1 - 3/4 = 1/4. sqrt = 1/2.
+  Koreni: x = (1 ± 1/2) / 2 = 3/4 ili 1/4.
+  Faktorizacija: (x - 1/4)(x - 3/4) > 0.
+  Rešenje: x < 1/4  ILI  x > 3/4. (Stroge nejednakosti.)
+
+Korak 5 — gornja: B <= 4.
+  x^2 - x + 19/16 <= 4
+  x^2 - x - 45/16 <= 0
+  Diskriminanta: 1 + 4·(45/16) = 1 + 45/4 = 49/4. sqrt = 7/2.
+  Koreni: x = (1 ± 7/2) / 2 = (2 ± 7)/4 = 9/4 ili −5/4.
+  Provera: x = (1 + 7/2)/2 = (9/2)/2 = 9/4. x = (1 - 7/2)/2 = (-5/2)/2 = -5/4. ✓
+  Rešenje: -5/4 <= x <= 9/4. (NEstroge nejednakosti.)
+
+Korak 6 — presek.
+  Iz koraka 4: ( -∞, 1/4 ) ∪ ( 3/4, +∞ )  (otvoreni intervali).
+  Iz koraka 5: [ -5/4, 9/4 ]  (zatvoren).
+  Presek:
+    Levi deo: [ -5/4, 1/4 )    (donja granica iz [, gornja iz < pa ostaje strogo).
+    Desni deo: ( 3/4, 9/4 ]    (donja iz > pa ostaje strogo, gornja iz <= pa zatvoren).
+  Dakle S = [ -5/4, 1/4 ) ∪ ( 3/4, 9/4 ].
+
+Korak 7 — provera krajeva.
+  x = -5/4: B = 25/16 + 5/4 + 19/16 = 25/16 + 20/16 + 19/16 = 64/16 = 4.
+            log_2(4) = 2.
+            log_(1/2)(2) = -1.  Nejednakost >= -1: tačno (jednakost). ✓ ULAZI.
+  x = 1/4:  B = 1/16 - 1/4 + 19/16 = 1/16 - 4/16 + 19/16 = 16/16 = 1.
+            log_2(1) = 0.
+            log_(1/2)(0) = nedefinisano!  ✗ NE ulazi (otvoreno).
+  x = 3/4:  B = 9/16 - 3/4 + 19/16 = 9/16 - 12/16 + 19/16 = 16/16 = 1.
+            Isto kao 1/4: log_2(1) = 0, spoljašnji nedefinisan. ✗ NE ulazi.
+  x = 9/4:  B = 81/16 - 9/4 + 19/16 = 81/16 - 36/16 + 19/16 = 64/16 = 4.
+            log_2(4) = 2, log_(1/2)(2) = -1. ✓ ULAZI.
+  Potvrđuje S = [ -5/4, 1/4 ) ∪ ( 3/4, 9/4 ].
+
+Korak 8 — opcija i zbir.
+  a = -5/4, b = 1/4, c = 3/4, d = 9/4.
+  a + b + c + d = (-5 + 1 + 3 + 9)/4 = 8/4 = 2.
+  Tačna opcija: A) S = [a,b) ∪ (c,d] i a+b+c+d = 2.
+
+  Mapiranje opcija A=A, C=B, E=C, G=D, I=E. Tačan odgovor je (A) u oba slučaja.
+
+Ključni uvidi:
+- Baza u (0,1) → log opada → nejednakost se obrće.
+- Domen log: argument > 0, zato je gornja "granica" 1/4 i 3/4 OTVORENA.
+- Dva uslova → presek dvaju skupova.
+
+Zamke:
+- Ne obrnuti znak nejednakosti pri bazi 1/2 (klasična greška).
+- Zaboraviti da je argument log uvek > 0.
+- Pomešati strogo/nestrogo na granicama.
+
+Vizuelizacija:
+- Canvas 1 (parabola): y = x^2 - x + 19/16, dva nivoa y=1 (otvoren) i y=4 (zatvoren), preseci na x-osi.
+- Canvas 2 (brojna prava): tačke -5/4, 1/4, 3/4, 9/4 sa pravim zagradama, sa istaknutim skupom S.
+Statičko (cela algebra određuje skup; nema parametra).
+</script>
+
+<h1 data-card="problem-title">Logaritamska nejednačina sa unutrašnjim i spoljašnjim logaritmom</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — logaritamske nejednačine, baza u (0,1), domen logaritma, presek skupova</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Neka je skup \( S \) rešenje nejednačine</p>
+  <div class="math-block">
+    \[ \log_{1/2}\!\Bigl(\,\log_{2}\!\bigl(x^2 - x + \tfrac{19}{16}\bigr)\Bigr) \;\ge\; -1. \]
+  </div>
+  <p>Tačan je iskaz:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( S = [a,b) \cup (c,d] \) i \( a+b+c+d = 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( S = [a,b] \) i \( a+b = 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( S = (-\infty, a] \cup [b, +\infty) \) i \( a+b = 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( S = [a,b) \cup (c,d] \) i \( a+b+c+d = 4 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( S = (-\infty, a] \cup (b, c) \) i \( a+b+c = 13 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Rastavićemo nejednačinu <strong>od spolja ka unutra</strong>. Spoljašnji \( \log_{1/2} \) ima bazu manju od 1, pa nejednakost <em>menja smer</em> kad se podiže na stepen. Tako dobijamo dvostruku nejednakost \( 0 < \log_2(\ldots) \le 2 \), a iz nje \( 1 < x^2 - x + \tfrac{19}{16} \le 4 \). Rešavamo dve kvadratne nejednakosti i uzimamo njihov presek; pažljivo razlikujemo strogo (\( < \), \( > \)) od nestrogo (\( \le \), \( \ge \)) na granicama.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Logaritamske nejednačine i njihov domen</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Domen \( \log_a \)</span> Argument logaritma mora biti strogo veći od nule. Svaki put kad zapišeš \( \log_a(M) \), implicitno tražiš \( M > 0 \).</li>
+        <li><span class="formula-label">Baza \( a > 1 \)</span> Funkcija \( \log_a \) je <strong>rastuća</strong>: \( \log_a M \le N \;\Leftrightarrow\; M \le a^N \). Smer nejednakosti se <em>čuva</em>.</li>
+        <li><span class="formula-label">Baza \( 0 < a < 1 \)</span> Funkcija \( \log_a \) je <strong>opadajuća</strong>: \( \log_a M \le N \;\Leftrightarrow\; M \ge a^N \). Smer nejednakosti se <em>obrće</em>.</li>
+        <li><span class="formula-label">Specijalno</span> \( \log_{1/2} M \ge -1 \;\Leftrightarrow\; M \le (1/2)^{-1} = 2 \).</li>
+        <li><span class="formula-label">Kvadratna nejednačina</span> \( ax^2 + bx + c > 0 \) za \( a > 0 \) važi <em>van</em> intervala između korena; \( \le 0 \) važi <em>na</em> intervalu zatvorenom korenima.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Parabola y = x² − x + 19/16 i dva nivoa">
+  <h2>📐 Parabola \( y = x^2 - x + \tfrac{19}{16} \) i dva nivoa</h2>
+  <div class="canvas-wrapper">
+    <canvas id="parabola-canvas" width="700" height="600"></canvas>
+  </div>
+  <p class="canvas-caption">Strogi nivo \( y = 1 \) (isprekidana linija) odsekuje tačke \( x = \tfrac{1}{4} \) i \( x = \tfrac{3}{4} \) — one su <em>isključene</em> iz skupa \( S \) jer bi argument unutrašnjeg logaritma postao \( \log_2 1 = 0 \), što spoljašnji \( \log_{1/2} \) ne dozvoljava. Nestrogi nivo \( y = 4 \) (puna obojena linija) odsekuje tačke \( x = -\tfrac{5}{4} \) i \( x = \tfrac{9}{4} \) — one su <em>uključene</em> jer daju jednakost \( \log_{1/2}(2) = -1 \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Skup S na brojnoj pravoj">
+  <h2>📐 Skup \( S \) na brojnoj pravoj</h2>
+  <div class="canvas-wrapper">
+    <canvas id="numline-canvas" width="700" height="380"></canvas>
+  </div>
+  <p class="canvas-caption">Skup \( S = \bigl[-\tfrac{5}{4},\ \tfrac{1}{4}\bigr) \cup \bigl(\tfrac{3}{4},\ \tfrac{9}{4}\bigr] \). Zatvorene granice (puni krug) na \( -\tfrac{5}{4} \) i \( \tfrac{9}{4} \), otvorene granice (prazan krug) na \( \tfrac{1}{4} \) i \( \tfrac{3}{4} \). Zbir svih granica: \( -\tfrac{5}{4} + \tfrac{1}{4} + \tfrac{3}{4} + \tfrac{9}{4} = \tfrac{8}{4} = 2 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Otpakujemo spoljašnji logaritam (baza \( \tfrac{1}{2} \))</h3>
+      <p>Označimo \( A = \log_2\!\bigl(x^2 - x + \tfrac{19}{16}\bigr) \). Polazna nejednačina je</p>
+      <div class="math-block">
+        \[ \log_{1/2}(A) \ge -1. \]
+      </div>
+      <p>Baza \( \tfrac{1}{2} \in (0,1) \) — funkcija \( \log_{1/2} \) je <strong>opadajuća</strong>, pa pri uklanjanju logaritma nejednakost <span class="result">menja smer</span>:</p>
+      <div class="math-block">
+        \[ A \le \left(\tfrac{1}{2}\right)^{-1} = 2. \]
+      </div>
+      <p>Uz to, domen spoljašnjeg log-a zahteva \( A > 0 \). Spojeno:</p>
+      <div class="math-block">
+        \[ 0 < A \le 2, \qquad \text{tj.} \qquad 0 < \log_2\!\bigl(x^2 - x + \tfrac{19}{16}\bigr) \le 2. \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto se baš pri bazi \( \tfrac{1}{2} \) okreće smer nejednakosti?</summary>
+          <div class="detail-content"><p>Jer je \( \log_{1/2} \) strogo opadajuća. Ako je \( u_1 < u_2 \), onda je \( \log_{1/2}(u_1) > \log_{1/2}(u_2) \). Drugim rečima: veći ulaz daje manji izlaz. Pri uklanjanju takve funkcije iz nejednakosti, znak nužno menja smer.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Otpakujemo unutrašnji logaritam (baza \( 2 \))</h3>
+      <p>Označimo \( B = x^2 - x + \tfrac{19}{16} \). Iz koraka 1 imamo \( 0 < \log_2 B \le 2 \). Baza \( 2 > 1 \) — funkcija \( \log_2 \) je <strong>rastuća</strong>, pa se smer <em>čuva</em>:</p>
+      <div class="math-block">
+        \[ 2^0 < B \le 2^2, \qquad \text{tj.} \qquad 1 < B \le 4. \]
+      </div>
+      <p>Razložimo na dve nezavisne nejednačine:</p>
+      <div class="math-block">
+        \[ \text{(I) }\ x^2 - x + \tfrac{19}{16} > 1 \qquad \text{i} \qquad \text{(II) }\ x^2 - x + \tfrac{19}{16} \le 4. \]
+      </div>
+      <p>Napomena o domenu unutrašnjeg log-a: \( B = (x - \tfrac{1}{2})^2 + \tfrac{15}{16} \ge \tfrac{15}{16} > 0 \) za svaki realan \( x \), pa je domen automatski zadovoljen.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Rešavamo nejednačinu (I): \( x^2 - x + \tfrac{3}{16} > 0 \)</h3>
+      <p>Sredimo nakon prebacivanja \( 1 \) sleva:</p>
+      <div class="math-block">
+        \[ x^2 - x + \tfrac{19}{16} - 1 > 0 \;\Longleftrightarrow\; x^2 - x + \tfrac{3}{16} > 0. \]
+      </div>
+      <p>Diskriminanta:</p>
+      <div class="math-block">
+        \[ D_1 = 1 - 4\cdot\tfrac{3}{16} = 1 - \tfrac{3}{4} = \tfrac{1}{4}, \qquad \sqrt{D_1} = \tfrac{1}{2}. \]
+      </div>
+      <p>Koreni:</p>
+      <div class="math-block">
+        \[ x = \frac{1 \pm \tfrac{1}{2}}{2} \;\Longrightarrow\; x = \tfrac{3}{4} \;\text{ili}\; x = \tfrac{1}{4}. \]
+      </div>
+      <p>Pošto je vodeći koeficijent pozitivan, kvadratna je <strong>strogo veća od nule</strong> <em>van</em> intervala korena:</p>
+      <div class="math-block">
+        \[ \text{(I): } x < \tfrac{1}{4} \;\text{ili}\; x > \tfrac{3}{4}. \]
+      </div>
+      <p>Granice \( \tfrac{1}{4} \) i \( \tfrac{3}{4} \) su <strong>otvorene</strong> (znak \( > \), ne \( \ge \)).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Rešavamo nejednačinu (II): \( x^2 - x - \tfrac{45}{16} \le 0 \)</h3>
+      <p>Sredimo nakon prebacivanja \( 4 \) sleva:</p>
+      <div class="math-block">
+        \[ x^2 - x + \tfrac{19}{16} - 4 \le 0 \;\Longleftrightarrow\; x^2 - x - \tfrac{45}{16} \le 0. \]
+      </div>
+      <p>Diskriminanta:</p>
+      <div class="math-block">
+        \[ D_2 = 1 + 4\cdot\tfrac{45}{16} = 1 + \tfrac{45}{4} = \tfrac{49}{4}, \qquad \sqrt{D_2} = \tfrac{7}{2}. \]
+      </div>
+      <p>Koreni:</p>
+      <div class="math-block">
+        \[ x = \frac{1 \pm \tfrac{7}{2}}{2} \;\Longrightarrow\; x = \tfrac{9}{4} \;\text{ili}\; x = -\tfrac{5}{4}. \]
+      </div>
+      <p>Vodeći koeficijent je pozitivan, pa je kvadratna \( \le 0 \) <em>na</em> intervalu zatvorenom korenima:</p>
+      <div class="math-block">
+        \[ \text{(II): } -\tfrac{5}{4} \le x \le \tfrac{9}{4}. \]
+      </div>
+      <p>Granice \( -\tfrac{5}{4} \) i \( \tfrac{9}{4} \) su <strong>zatvorene</strong> (znak \( \le \), ne \( < \)).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kratka mentalna provera koliko su koreni „udaljeni&rdquo; od centra parabole.</summary>
+          <div class="detail-content"><p>Centar parabole \( x^2 - x + \ldots \) je \( x = \tfrac{1}{2} \). Koreni iz (I) su simetrični: \( \tfrac{1}{2} \pm \tfrac{1}{4} \). Koreni iz (II) su, takođe simetrični: \( \tfrac{1}{2} \pm \tfrac{7}{4} \). Razlika polovinâ rastojanja \( \tfrac{1}{4} \) (uži) i \( \tfrac{7}{4} \) (širi) odgovara razlici nivoa: \( y=1 \) seče bliže temenu, \( y=4 \) seče dalje.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Sečemo (I) i (II)</h3>
+      <p>Postavimo oba uslova na istu brojnu pravu:</p>
+      <div class="math-block">
+        \[ \begin{aligned} \text{(I): }& \;(-\infty,\ \tfrac{1}{4}) \cup (\tfrac{3}{4},\ +\infty), \\ \text{(II): }& \;[-\tfrac{5}{4},\ \tfrac{9}{4}]. \end{aligned} \]
+      </div>
+      <p>Presek deli pravu na dva komada:</p>
+      <ul>
+        <li><strong>Levi komad:</strong> donja granica iz (II) je \( -\tfrac{5}{4} \) (zatvorena, \( \le \)), gornja iz (I) je \( \tfrac{1}{4} \) (otvorena, \( < \)). Dakle \( \bigl[-\tfrac{5}{4},\ \tfrac{1}{4}\bigr) \).</li>
+        <li><strong>Desni komad:</strong> donja granica iz (I) je \( \tfrac{3}{4} \) (otvorena, \( > \)), gornja iz (II) je \( \tfrac{9}{4} \) (zatvorena, \( \le \)). Dakle \( \bigl(\tfrac{3}{4},\ \tfrac{9}{4}\bigr] \).</li>
+      </ul>
+      <p>Konačno:</p>
+      <div class="math-block">
+        \[ S = \left[-\tfrac{5}{4},\ \tfrac{1}{4}\right) \cup \left(\tfrac{3}{4},\ \tfrac{9}{4}\right]. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera krajeva (zašto baš te zagrade?)</h3>
+      <p>Uvrstimo svaku graničnu vrednost u polaznu nejednakost:</p>
+
+      <div class="substep" data-substep="a)">
+        <p><strong>\( x = -\tfrac{5}{4} \):</strong></p>
+        <div class="math-block">
+          \[ B = \tfrac{25}{16} + \tfrac{20}{16} + \tfrac{19}{16} = \tfrac{64}{16} = 4, \;\; \log_2 4 = 2, \;\; \log_{1/2} 2 = -1. \]
+        </div>
+        <p>Tačno \( -1 \ge -1 \) ✓ — granica <strong>ulazi</strong> (zatvoreno).</p>
+      </div>
+
+      <div class="substep" data-substep="b)">
+        <p><strong>\( x = \tfrac{1}{4} \):</strong></p>
+        <div class="math-block">
+          \[ B = \tfrac{1}{16} - \tfrac{4}{16} + \tfrac{19}{16} = \tfrac{16}{16} = 1, \;\; \log_2 1 = 0, \;\; \log_{1/2} 0 = ?\ \text{(nedefinisano)}. \]
+        </div>
+        <p>Spoljašnji logaritam nije definisan u nuli — granica <strong>ne ulazi</strong> (otvoreno). ✗</p>
+      </div>
+
+      <div class="substep" data-substep="c)">
+        <p><strong>\( x = \tfrac{3}{4} \):</strong> isto kao za \( \tfrac{1}{4} \) — \( B = 1 \), \( \log_2 1 = 0 \), spoljašnji nedefinisan. <strong>Ne ulazi</strong> (otvoreno). ✗</p>
+      </div>
+
+      <div class="substep" data-substep="d)">
+        <p><strong>\( x = \tfrac{9}{4} \):</strong> kao za \( -\tfrac{5}{4} \) — \( B = 4 \), \( \log_2 4 = 2 \), \( \log_{1/2} 2 = -1 \). <strong>Ulazi</strong> (zatvoreno). ✓</p>
+      </div>
+
+      <p>Sve potvrđuje:</p>
+      <div class="math-block">
+        \[ S = \left[\,-\tfrac{5}{4},\ \tfrac{1}{4}\right) \cup \left(\tfrac{3}{4},\ \tfrac{9}{4}\,\right]. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="7">
+    <div class="step-badge">7</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo zbir granica</h3>
+      <p>Sa \( a = -\tfrac{5}{4} \), \( b = \tfrac{1}{4} \), \( c = \tfrac{3}{4} \), \( d = \tfrac{9}{4} \):</p>
+      <div class="math-block">
+        \[ a + b + c + d = \frac{-5 + 1 + 3 + 9}{4} = \frac{8}{4} = 2. \]
+      </div>
+      <p>Skup je oblika \( [a,b) \cup (c,d] \), zbir granica je \( 2 \) — to je tačno opcija (A).</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Tri stvari nose ovaj zadatak. <strong>Prvo:</strong> baza spoljašnjeg logaritma je \( \tfrac{1}{2} < 1 \), pa nejednakost <em>okreće smer</em> kad se logaritam ukloni — bez tog koraka odgovor bi bio dijametralno suprotan. <strong>Drugo:</strong> implicitni domen \( \log_2(\ldots) > 0 \) ne sme se zaboraviti — upravo on čini gornje granice \( \tfrac{1}{4} \) i \( \tfrac{3}{4} \) <em>otvorenim</em>. <strong>Treće:</strong> dve nejednačine (jedna stroga, druga nestroga) presecaju se „suvo geometrijski” — stroga granica ostaje stroga, nestroga ostaje nestroga, što je razlog asimetrije zagrada \( [a,b) \) i \( (c,d] \). Iz iste te asimetrije već se može pogoditi koja opcija je tačna.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Ne menjati znak nejednakosti pri bazi \( \tfrac{1}{2} \).</strong> Ako učenik napiše \( \log_{1/2}(A) \ge -1 \Leftrightarrow A \ge 2 \), dobija pogrešan skup. Pravilno je \( A \le 2 \) jer je baza u \( (0,1) \).</li>
+    <li><strong>Zaboraviti uslov \( A > 0 \) (domen spoljašnjeg log-a).</strong> Bez njega bi rešenje bilo samo „\( B \le 4 \)” — tj. čitav segment \( [-\tfrac{5}{4},\ \tfrac{9}{4}] \), uz pogrešno uključene tačke \( x = \tfrac{1}{4} \) i \( x = \tfrac{3}{4} \) gde je spoljašnji log nedefinisan.</li>
+    <li><strong>Mešanje strogo i nestrogo.</strong> Kad je u sistemu jedna nejednakost stroga (\( B > 1 \)) a druga nestroga (\( B \le 4 \)), nije prirodno da rezultat bude \( [a,b] \) ili \( (a,b) \) — mora biti mešavina, što vidimo kao \( [a,b) \cup (c,d] \).</li>
+    <li><strong>Pisanje \( \log_2(0) = 0 \) ili \( \log_{1/2}(0) = 0 \).</strong> Logaritam nule je <em>nedefinisan</em>, ne nula. Upravo zato granice gde je \( B = 1 \) (a \( \log_2 1 = 0 \)) ne ulaze u skup.</li>
+    <li><strong>Razlomci u koeficijentima 19/16, 3/16.</strong> Greške se često javljaju pri sabiranju — pomaže pomnožiti čitavu jednačinu sa 16 (ili 4) da se otarasiš razlomaka.</li>
+    <li><strong>Pogrešno tumačenje znaka kvadratne nejednakosti.</strong> Za \( a > 0 \): \( ax^2 + bx + c > 0 \) važi <em>van</em> intervala korena, a \( \le 0 \) <em>na</em> tom intervalu. Lako je obrnuti smerove.</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ S = \left[-\tfrac{5}{4},\ \tfrac{1}{4}\right) \cup \left(\tfrac{3}{4},\ \tfrac{9}{4}\right], \qquad a+b+c+d = -\tfrac{5}{4} + \tfrac{1}{4} + \tfrac{3}{4} + \tfrac{9}{4} = 2. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( S = [a,b) \cup (c,d] \) i \( a+b+c+d = 2 \)</span>
+    <span class="answer-option" data-option="B">(B) \( S = [a,b] \) i \( a+b = 1 \)</span>
+    <span class="answer-option" data-option="C">(C) \( S = (-\infty, a] \cup [b, +\infty) \) i \( a+b = 1 \)</span>
+    <span class="answer-option" data-option="D">(D) \( S = [a,b) \cup (c,d] \) i \( a+b+c+d = 4 \)</span>
+    <span class="answer-option" data-option="E">(E) \( S = (-\infty, a] \cup (b, c) \) i \( a+b+c = 13 \)</span>
+  </div>
+  <p class="verification">Provera krajeva: u \( x = -\tfrac{5}{4} \) i \( x = \tfrac{9}{4} \) imamo \( B = 4 \), \( \log_2 4 = 2 \), \( \log_{1/2} 2 = -1 \) (jednakost važi); u \( x = \tfrac{1}{4} \) i \( x = \tfrac{3}{4} \) imamo \( B = 1 \), pa \( \log_2 1 = 0 \) — spoljašnji \( \log_{1/2} \) nije definisan, te ove tačke ispadaju. Time je oblik skupa \( [a,b) \cup (c,d] \) potvrđen. ✓</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta ako se znak nejednakosti zameni? Reši nejednačinu</p>
+  <div class="math-block">
+    \[ \log_{1/2}\!\Bigl(\,\log_{2}\!\bigl(x^2 - x + \tfrac{19}{16}\bigr)\Bigr) \;\le\; -1. \]
+  </div>
+  <p>Kakav oblik dobija novi skup \( S' \)? Da li su granice strogo ili nestrogo, i koliko je njihov zbir?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Sa istom logikom: \( \log_{1/2}(A) \le -1 \Leftrightarrow A \ge 2 \) (baza \( < 1 \), znak se obrće). Domen \( A > 0 \) je sad automatski (jer iz \( A \ge 2 \) sledi \( A > 0 \)). Dakle \( \log_2 B \ge 2 \), tj. \( B \ge 4 \), tj. \( x^2 - x - \tfrac{45}{16} \ge 0 \). To daje \( S' = (-\infty,\ -\tfrac{5}{4}] \cup [\tfrac{9}{4},\ +\infty) \) — beskonačni „komplement” intervala, sa zatvorenim granicama (zbir tih granica je \( -\tfrac{5}{4} + \tfrac{9}{4} = 1 \)). Primeti da su uslovi \( S \) i \( S' \) skoro komplementarni — zajedno pokrivaju gotovo celu pravu, izuzev tačaka \( x = \tfrac{1}{4} \) i \( x = \tfrac{3}{4} \), gde čitav izraz nije ni definisan.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('parabola-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+    var danger    = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.font = 'bold 17px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('y = x² − x + 19/16   (teme u (1/2,  15/16))', canvas.width / 2, 14);
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Uslov: 1 < y ≤ 4   (strogo dole, nestrogo gore)', canvas.width / 2, 38);
+
+    // Plot area
+    var L = 70, R = canvas.width - 30, T = 80, B = canvas.height - 90;
+    var xMin = -2, xMax = 3;
+    var yMin = -0.5, yMax = 6;
+    function X(x) { return L + (x - xMin) / (xMax - xMin) * (R - L); }
+    function Y(y) { return B - (y - yMin) / (yMax - yMin) * (B - T); }
+
+    // Shade the band 1 < y <= 4 (excluded inside that band the parabola fragment forms valid x)
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.07);
+    ctx.fillRect(L, Y(4), R - L, Y(1) - Y(4));
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 3]);
+    for (var gx = -2; gx <= 3; gx += 1) {
+      ctx.beginPath();
+      ctx.moveTo(X(gx), T);
+      ctx.lineTo(X(gx), B);
+      ctx.stroke();
+    }
+    for (var gy = 0; gy <= 6; gy += 1) {
+      ctx.beginPath();
+      ctx.moveTo(L, Y(gy));
+      ctx.lineTo(R, Y(gy));
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(L, Y(0)); ctx.lineTo(R, Y(0)); ctx.stroke();
+    // y-axis at x=0
+    ctx.beginPath(); ctx.moveTo(X(0), T); ctx.lineTo(X(0), B); ctx.stroke();
+
+    // Axis labels
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (var lx = -1; lx <= 3; lx += 1) {
+      if (lx === 0) continue;
+      ctx.fillText(String(lx), X(lx), Y(0) + 6);
+    }
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (var ly = 1; ly <= 6; ly += 1) {
+      ctx.fillText(String(ly), L - 6, Y(ly));
+    }
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'left';
+    ctx.fillText('x', R - 14, Y(0) - 16);
+    ctx.textAlign = 'right';
+    ctx.fillText('y', X(0) + 14, T + 4);
+
+    // Plot parabola y = x^2 - x + 19/16
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    var first = true;
+    for (var x = xMin; x <= xMax; x += 0.02) {
+      var y = x * x - x + 19/16;
+      var sx = X(x), sy = Y(y);
+      if (sy < T || sy > B) { first = true; continue; }
+      if (first) { ctx.moveTo(sx, sy); first = false; }
+      else ctx.lineTo(sx, sy);
+    }
+    ctx.stroke();
+
+    // Vertex
+    var vx = 0.5, vy = 15/16;
+    var v = { x: X(vx), y: Y(vy) };
+    ctx.beginPath();
+    ctx.arc(v.x, v.y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = primary;
+    ctx.fill();
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillStyle = primary;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('teme (1/2, 15/16)', v.x, v.y + 8);
+
+    // Level y = 1 (strict, dashed -- excluded)
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2.5;
+    ctx.setLineDash([6, 5]);
+    ctx.beginPath();
+    ctx.moveTo(L, Y(1));
+    ctx.lineTo(R, Y(1));
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = warning;
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('y = 1   (strogo, isključeno)', R - 6, Y(1) - 4);
+
+    // Level y = 4 (non-strict, solid -- included)
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(L, Y(4));
+    ctx.lineTo(R, Y(4));
+    ctx.stroke();
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = accent;
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'top';
+    ctx.fillText('y = 4   (nestrogo, uključeno)', R - 6, Y(4) + 4);
+
+    // Mark intersections on parabola for y=1: x = 1/4 and 3/4 (open circles)
+    var openPts = [
+      { x: 0.25, label: 'x = 1/4',  align: 'right' },
+      { x: 0.75, label: 'x = 3/4',  align: 'left'  }
+    ];
+    openPts.forEach(function(p) {
+      var px = X(p.x), py = Y(1);
+      // open circle
+      ctx.beginPath();
+      ctx.arc(px, py, 7, 0, Math.PI * 2);
+      ctx.fillStyle = bg;
+      ctx.fill();
+      ctx.strokeStyle = warning;
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+      // drop line to x-axis
+      ctx.strokeStyle = warning;
+      ctx.lineWidth = 1.2;
+      ctx.setLineDash([3, 4]);
+      ctx.beginPath();
+      ctx.moveTo(px, py);
+      ctx.lineTo(px, Y(0));
+      ctx.stroke();
+      ctx.setLineDash([]);
+      // open marker on x-axis
+      ctx.beginPath();
+      ctx.arc(px, Y(0), 5, 0, Math.PI * 2);
+      ctx.fillStyle = bg;
+      ctx.fill();
+      ctx.strokeStyle = warning;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      // label
+      ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+      ctx.fillStyle = warning;
+      ctx.textAlign = p.align;
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(p.label, px + (p.align === 'right' ? -10 : 10), py - 10);
+    });
+
+    // Mark intersections for y=4: x = -5/4 and 9/4 (closed circles)
+    var closedPts = [
+      { x: -1.25, label: 'x = −5/4', align: 'right' },
+      { x:  2.25, label: 'x = 9/4',  align: 'left'  }
+    ];
+    closedPts.forEach(function(p) {
+      var px = X(p.x), py = Y(4);
+      // closed circle
+      ctx.beginPath();
+      ctx.arc(px, py, 6, 0, Math.PI * 2);
+      ctx.fillStyle = accent;
+      ctx.fill();
+      // drop line to x-axis
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 1.2;
+      ctx.setLineDash([3, 4]);
+      ctx.beginPath();
+      ctx.moveTo(px, py);
+      ctx.lineTo(px, Y(0));
+      ctx.stroke();
+      ctx.setLineDash([]);
+      // closed marker on x-axis
+      ctx.beginPath();
+      ctx.arc(px, Y(0), 5, 0, Math.PI * 2);
+      ctx.fillStyle = accent;
+      ctx.fill();
+      // label
+      ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+      ctx.fillStyle = accent;
+      ctx.textAlign = p.align;
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(p.label, px + (p.align === 'right' ? -10 : 10), py - 10);
+    });
+
+    // Highlight valid x-band on x-axis: [-5/4, 1/4) U (3/4, 9/4]
+    var bandY = Y(0);
+    ctx.lineWidth = 5;
+    ctx.strokeStyle = cvAlpha('--sol-canvas-highlight', 0.85);
+    ctx.beginPath();
+    ctx.moveTo(X(-1.25), bandY);
+    ctx.lineTo(X(0.25),  bandY);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(X(0.75), bandY);
+    ctx.lineTo(X(2.25), bandY);
+    ctx.stroke();
+
+    // Bottom strip: explanation
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Skup S na x-osi (ružičasto):  [−5/4, 1/4)  ∪  (3/4, 9/4].', canvas.width / 2, canvas.height - 50);
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Otvoreni krug = granica isključena;  pun krug = granica uključena.', canvas.width / 2, canvas.height - 28);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('numline-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var axis      = cv('--sol-canvas-axis');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var warning   = cv('--sol-canvas-warning');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.font = 'bold 17px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Skup S na brojnoj pravoj', canvas.width / 2, 16);
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('S = [−5/4, 1/4) ∪ (3/4, 9/4]', canvas.width / 2, 40);
+
+    var L = 70, R = canvas.width - 70;
+    var xMin = -2, xMax = 3;
+    var axisY = 200;
+    function X(x) { return L + (x - xMin) / (xMax - xMin) * (R - L); }
+
+    // Highlight band for S (two segments)
+    ctx.lineWidth = 14;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = cvAlpha('--sol-canvas-highlight', 0.32);
+    ctx.beginPath();
+    ctx.moveTo(X(-1.25), axisY);
+    ctx.lineTo(X(0.25),  axisY);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(X(0.75), axisY);
+    ctx.lineTo(X(2.25), axisY);
+    ctx.stroke();
+    ctx.lineCap = 'butt';
+
+    // Number line
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(L - 20, axisY);
+    ctx.lineTo(R + 20, axisY);
+    ctx.stroke();
+    // arrows
+    ctx.beginPath();
+    ctx.moveTo(R + 20, axisY);
+    ctx.lineTo(R + 12, axisY - 6);
+    ctx.lineTo(R + 12, axisY + 6);
+    ctx.closePath();
+    ctx.fillStyle = axis;
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(L - 20, axisY);
+    ctx.lineTo(L - 12, axisY - 6);
+    ctx.lineTo(L - 12, axisY + 6);
+    ctx.closePath();
+    ctx.fill();
+
+    // Tick marks at integers
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (var i = -1; i <= 3; i++) {
+      var tx = X(i);
+      ctx.strokeStyle = axis;
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(tx, axisY - 5);
+      ctx.lineTo(tx, axisY + 5);
+      ctx.stroke();
+      ctx.fillStyle = muted;
+      ctx.fillText(String(i), tx, axisY + 9);
+    }
+
+    // Boundary points
+    var boundaries = [
+      { x: -1.25, closed: true,  label: '−5/4', color: accent,    yOffsetLabel: 38 },
+      { x:  0.25, closed: false, label: '1/4',  color: warning,   yOffsetLabel: 38 },
+      { x:  0.75, closed: false, label: '3/4',  color: warning,   yOffsetLabel: 65 },
+      { x:  2.25, closed: true,  label: '9/4',  color: accent,    yOffsetLabel: 38 }
+    ];
+
+    boundaries.forEach(function(b) {
+      var bx = X(b.x);
+      // Tick mark
+      ctx.strokeStyle = b.color;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(bx, axisY - 14);
+      ctx.lineTo(bx, axisY + 14);
+      ctx.stroke();
+      // Circle
+      ctx.beginPath();
+      ctx.arc(bx, axisY, 9, 0, Math.PI * 2);
+      if (b.closed) {
+        ctx.fillStyle = b.color;
+        ctx.fill();
+      } else {
+        ctx.fillStyle = bg;
+        ctx.fill();
+        ctx.strokeStyle = b.color;
+        ctx.lineWidth = 3;
+        ctx.stroke();
+      }
+      // Label below
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.fillStyle = b.color;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText(b.label, bx, axisY + b.yOffsetLabel);
+      // Bracket type
+      ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+      ctx.fillStyle = muted;
+      ctx.fillText(b.closed ? '(uključeno)' : '(isključeno)', bx, axisY + b.yOffsetLabel + 18);
+    });
+
+    // Labels for the two intervals (above the line)
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.fillStyle = highlight;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('[−5/4,  1/4)', (X(-1.25) + X(0.25)) / 2, axisY - 22);
+    ctx.fillText('(3/4,  9/4]',  (X(0.75)  + X(2.25)) / 2, axisY - 22);
+
+    // Bottom: sum of boundaries
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('a + b + c + d  =  (−5/4) + (1/4) + (3/4) + (9/4)  =  8/4  =  2', canvas.width / 2, canvas.height - 22);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Logaritamska nejednačina log_(1/2)(log_2(x²−x+19/16)) ≥ −1",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["logaritamske nejednačine", "baza u (0,1)", "domen logaritma", "kvadratna nejednačina", "presek skupova"]
+}
+BRAINSPARK_META-->

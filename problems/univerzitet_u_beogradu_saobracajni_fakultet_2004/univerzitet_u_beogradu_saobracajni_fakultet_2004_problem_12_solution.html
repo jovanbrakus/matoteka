@@ -1,0 +1,441 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem 12: Koliko ima parnih četvorocifrenih brojeva čije su sve cifre
+  međusobno različite.
+
+  Plan: pošto poslednja cifra određuje parnost (broj je paran ⇔ poslednja
+  cifra je 0, 2, 4, 6, 8), idemo „od poslednje cifre“ unazad i razdvojimo
+  slučajeve po tome da li je poslednja cifra nula ili nije, jer prva cifra
+  ne sme biti 0 — a to je suptilna razlika.
+
+  Označimo četvorocifreni broj sa  D₁ D₂ D₃ D₄,  gde je D₁ ∈ {1..9} (vodeća
+  cifra ne 0) i sve cifre su različite. D₄ paran (0,2,4,6,8).
+
+  Slučaj 1) D₄ = 0.
+    Tada D₁ ne može biti 0 — ali nismo u opasnosti jer je 0 već iskorišćena.
+    D₁ ∈ {1..9} → 9 izbora.
+    D₂ ≠ D₁, D₂ ≠ 0 → ostaje 10 - 2 = 8 izbora.
+    D₃ ≠ D₁, D₂, 0 → 10 - 3 = 7 izbora.
+    Ukupno: 9 · 8 · 7 = 504.
+
+  Slučaj 2) D₄ ∈ {2, 4, 6, 8}, dakle 4 izbora.
+    D₁ ne sme biti 0 i ne sme biti = D₄ → 8 izbora (iz {1..9} bez D₄).
+    D₂ ≠ D₁, D₄ → 10 - 2 = 8 izbora (uključuje 0).
+    D₃ ≠ D₁, D₂, D₄ → 10 - 3 = 7 izbora.
+    Ukupno: 4 · 8 · 8 · 7 = 1792.
+
+  Sveukupno: 504 + 1792 = 2296.
+  Faktorisanje: 2296 = 8 · 287 = 8 · 7 · 41 (proverimo: 287 = 7·41 = 287 ✔).
+
+  Tačan odgovor: (D) 8 · 7 · 41.
+
+  Provera količnika: 504 = 8·63 = 8·7·9; 1792 = 8·224 = 8·7·32; zbir
+  = 8·7·(9+32) = 8·7·41 = 56·41 = 2296. ✔
+
+  Visual aid: stablo odluka (statički canvas 700×460):
+   - koren: „Paran 4-cifr. različite cifre“
+   - dve grane: „D₄ = 0“  i  „D₄ ∈ {2,4,6,8}“
+   - na svakoj grani malim kvadratima upisati broj izbora po pozicijama
+     i izračunati zbir 504 + 1792 = 2296 = 8·7·41.
+
+  Pitfalls:
+  - Pokušati prebrojati u jednom potezu, sa D₄ ∈ {0,2,4,6,8} (5 izbora) i
+    D₁ ∈ {1..9} bez D₄: 9 · ? — problem je što ako D₄=0 tada „D₁ bez D₄“
+    znači bez 0, a ako D₄≠0 tada „D₁ bez D₄“ znači ne D₄ i ne 0, što su
+    različita ograničenja. Razdvajanje je neophodno.
+  - Zaboraviti da D₁ ne sme biti 0 (čest previd kod brojeva sa cifrom 0).
+  - Brojati sa ponavljanjem.
+</script>
+
+<h1 data-card="problem-title">Parni četvorocifreni brojevi sa različitim ciframa</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika &mdash; prebrojavanje, princip množenja, razdvajanje slučajeva</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Parnih četvorocifrenih brojeva čije su sve cifre međusobno različite ima:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 8 \cdot 7 \cdot 39 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 8 \cdot 7 \cdot 57 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 8 \cdot 7 \cdot 54 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 8 \cdot 7 \cdot 41 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 8 \cdot 7 \cdot 61 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Krećemo od poslednje cifre (jer ona određuje parnost). Razdvajamo dva slučaja: poslednja cifra je \( 0 \) ili je iz \( \{2,4,6,8\} \) — jer ograničenje „prva cifra različita od \( 0 \)“ različito utiče u svakom slučaju. Brojimo svaki slučaj principom množenja i sabiramo.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Princip množenja</span> Ako se izbor sastoji od \( k \) nezavisnih koraka sa \( n_1, n_2,\dots, n_k \) mogućnosti, ukupan broj izbora je \( n_1\cdot n_2\cdots n_k \).</li>
+        <li><span class="formula-label">Princip sabiranja</span> Ako problem prirodno deli na disjunktne slučajeve, ukupan broj je zbir broja u svakom slučaju.</li>
+        <li>Broj je <em>paran</em> akko mu poslednja cifra (jedinica) pripada \( \{0,2,4,6,8\} \).</li>
+        <li>Vodeća cifra \( k \)-cifrenog broja ne sme biti \( 0 \) — to je dodatno ograničenje za prvu poziciju.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="700" height="460"></canvas>
+  </div>
+  <p class="canvas-caption">Stablo odluka: razdvajanjem na granu „poslednja cifra je \( 0 \)“ i „poslednja cifra je \( 2,4,6 \) ili \( 8 \)“ izbegavamo sukob između dva ograničenja na prvoj poziciji.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavi model i ograničenja</h3>
+      <p>Označimo cifre kao \( D_{1}D_{2}D_{3}D_{4} \). Imamo dva ograničenja:</p>
+      <ul>
+        <li>(P1) \( D_{1}\neq 0 \) — vodeća cifra nije nula.</li>
+        <li>(P2) Sve cifre \( D_{1},D_{2},D_{3},D_{4} \) su međusobno različite.</li>
+        <li>(P3) \( D_{4}\in\{0,2,4,6,8\} \) — broj je paran.</li>
+      </ul>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto krenuti od poslednje cifre?</summary>
+          <div class="detail-content"><p>Ograničenje parnosti je „lokalno“ za poziciju \( D_{4} \). Ako prvo fiksiramo \( D_{4} \), preostale tri pozicije imaju jasna pravila. Ako bismo počeli od \( D_{1} \), morali bismo pratiti i koliko parnih cifara je već iskorišćeno — komplikovanije.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj 1: \( D_{4} = 0 \)</h3>
+      <p>Pošto je \( 0 \) već iskorišćena za \( D_{4} \), za prvu cifru ne postoji konflikt sa pravilom (P1) — ona automatski neće biti \( 0 \). Ostale pozicije:</p>
+      <ul>
+        <li>\( D_{1}\in\{1,2,\ldots,9\} \): \( 9 \) izbora.</li>
+        <li>\( D_{2} \): različita od \( D_{1} \) i od \( 0 \) — ostaje \( 10-2 = 8 \) izbora.</li>
+        <li>\( D_{3} \): različita od \( D_{1}, D_{2}, 0 \) — ostaje \( 10-3 = 7 \) izbora.</li>
+      </ul>
+      <div class="math-block">\[ N_{1} \;=\; 9 \cdot 8 \cdot 7 \;=\; 504. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj 2: \( D_{4}\in\{2,4,6,8\} \)</h3>
+      <p>Sada poslednja cifra ima \( 4 \) mogućnosti, a nula <em>nije</em> iskorišćena, pa moramo paziti i na (P1).</p>
+      <ul>
+        <li>\( D_{4} \): \( 4 \) izbora (parna, različita od \( 0 \)).</li>
+        <li>\( D_{1} \): različita od \( 0 \) i različita od \( D_{4} \) — iz skupa \( \{1,\ldots,9\}\setminus\{D_{4}\} \) → \( 8 \) izbora.</li>
+        <li>\( D_{2} \): različita od \( D_{1} \) i \( D_{4} \) — \( 10-2 = 8 \) izbora (ovde \( 0 \) sme).</li>
+        <li>\( D_{3} \): različita od \( D_{1}, D_{2}, D_{4} \) — \( 10-3 = 7 \) izbora.</li>
+      </ul>
+      <div class="math-block">\[ N_{2} \;=\; 4 \cdot 8 \cdot 8 \cdot 7 \;=\; 1792. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto \( D_{2} \) ima \( 8 \) izbora a ne \( 7 \)?</summary>
+          <div class="detail-content"><p>Kod \( D_{2} \) jedino ograničenje je da bude različita od dve već fiksirane cifre (\( D_{1} \) i \( D_{4} \)). Cifra \( 0 \) ovde nije zabranjena — \( 0 \) ne sme biti samo na poziciji \( D_{1} \). Dakle \( 10-2 = 8 \) izbora.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Saberi i prepoznaj traženi oblik</h3>
+      <div class="math-block">\[ N \;=\; N_{1} + N_{2} \;=\; 504 + 1792 \;=\; 2296. \]</div>
+      <p>Ponuđeni odgovori su u obliku \( 8\cdot 7\cdot k \), pa izvučemo \( 56 \) iz oba sabirka:</p>
+      <div class="math-block">\[ 504 \;=\; 8\cdot 7\cdot 9, \qquad 1792 \;=\; 8\cdot 7\cdot 32. \]</div>
+      <div class="math-block">\[ N \;=\; 8\cdot 7\cdot 9 + 8\cdot 7\cdot 32 \;=\; 8\cdot 7\cdot (9+32) \;=\; 8\cdot 7\cdot 41. \]</div>
+      <p>Konačno: \( N = 8\cdot 7\cdot 41 = 56\cdot 41 = 2296 \). ✔</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kada se dva ograničenja međusobno „pomeraju“ u zavisnosti od izbora (vodeća cifra \( \neq 0 \) i poslednja cifra parna), najlakši put je da se razdvoje slučajevi po onoj cifri koja izaziva sukob. Ovde to znači: posebno tretirati \( D_{4}=0 \) (gde sukoba nema) i \( D_{4}\neq 0 \) (gde sukob postoji).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ N \;=\; 9\cdot 8\cdot 7 + 4\cdot 8\cdot 8\cdot 7 \;=\; 504 + 1792 \;=\; 2296 \;=\; 8\cdot 7\cdot 41. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 8 \cdot 7 \cdot 39 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 8 \cdot 7 \cdot 57 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 8 \cdot 7 \cdot 54 \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 8 \cdot 7 \cdot 41 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 8 \cdot 7 \cdot 61 \)</span>
+  </div>
+  <p class="verification">Provera: \( 56\cdot 41 = 56\cdot 40 + 56 = 2240 + 56 = 2296 \). Slučaj \( D_{4}=0 \) daje \( 504 \), slučaj \( D_{4}\in\{2,4,6,8\} \) daje \( 1792 \), zbir \( 2296 \). Sve se slaže.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Brojati u jednom potezu: \( D_{4}\in\{0,2,4,6,8\} \) (5 izbora), \( D_{1} \) iz \( \{1..9\}\setminus\{D_{4}\} \) — ne radi, jer kada je \( D_{4}=0 \) treba 9, a kada \( D_{4}\neq 0 \) treba 8 izbora za \( D_{1} \). Slučajevi se moraju razdvojiti.</li>
+    <li>Zaboraviti da prva cifra ne sme biti \( 0 \) — daje rezultat \( 5\cdot 9\cdot 8\cdot 7 = 2520 \) (uključuje brojeve poput \( 0234 \)).</li>
+    <li>Računati kao da cifre mogu da se ponavljaju — \( 9\cdot 10\cdot 10\cdot 5 = 4500 \).</li>
+    <li>Pomešati ulogu \( 0 \): u slučaju \( D_{4}\neq 0 \), za \( D_{2} \) je dozvoljeno koristiti \( 0 \), pa je \( 8 \) (a ne \( 7 \)) izbora.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koliko ima petocifrenih brojeva sa svim različitim ciframa koji su deljivi sa \( 5 \)? Razmisli koliko su poslednje cifre dozvoljene i kako one utiču na izbor prve cifre.</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Deljivost sa \( 5 \) zahteva \( D_{5}\in\{0,5\} \). Slučaj \( D_{5}=0 \): \( D_{1} \) iz \( \{1..9\} \to 9 \), \( D_{2}\to 8 \), \( D_{3}\to 7 \), \( D_{4}\to 6 \) → \( 9\cdot 8\cdot 7\cdot 6 = 3024 \). Slučaj \( D_{5}=5 \): \( D_{1} \) iz \( \{1..9\}\setminus\{5\}\to 8 \), zatim \( 8,7,6 \) → \( 8\cdot 8\cdot 7\cdot 6 = 2688 \). Ukupno \( 5712 \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function roundedRect(x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+  }
+
+  function arrow(x1, y1, x2, y2, color) {
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    var ang = Math.atan2(y2 - y1, x2 - x1);
+    var head = 8;
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - head * Math.cos(ang - Math.PI / 7), y2 - head * Math.sin(ang - Math.PI / 7));
+    ctx.lineTo(x2 - head * Math.cos(ang + Math.PI / 7), y2 - head * Math.sin(ang + Math.PI / 7));
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function digitBox(x, y, label, count, color) {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var text = cv('--sol-canvas-text');
+    var w = 56, h = 50;
+    ctx.fillStyle = bg;
+    roundedRect(x, y, w, h, 8);
+    ctx.fill();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.fillStyle = color;
+    ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, x + w / 2, y + 12);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+    ctx.fillText(String(count), x + w / 2, y + 32);
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Stablo odluka — paran 4-cifreni broj sa različitim ciframa', W / 2, 14);
+
+    // root box
+    var rootX = W / 2 - 130, rootY = 44, rootW = 260, rootH = 38;
+    ctx.fillStyle = bg;
+    roundedRect(rootX, rootY, rootW, rootH, 10);
+    ctx.fill();
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Po čemu je broj paran? → poslednja cifra D₄', W / 2, rootY + rootH / 2);
+
+    // arrows down to two cases
+    var caseY = 110;
+    var leftCx = W / 4 + 10;
+    var rightCx = 3 * W / 4 - 10;
+    arrow(W / 2 - 60, rootY + rootH, leftCx, caseY - 4, muted);
+    arrow(W / 2 + 60, rootY + rootH, rightCx, caseY - 4, muted);
+
+    // Case headers
+    var caseW = 290, caseH = 30;
+    // Left
+    ctx.fillStyle = bg;
+    roundedRect(leftCx - caseW / 2, caseY, caseW, caseH, 8);
+    ctx.fill();
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Slučaj 1:  D₄ = 0', leftCx, caseY + caseH / 2);
+
+    // Right
+    ctx.fillStyle = bg;
+    roundedRect(rightCx - caseW / 2, caseY, caseW, caseH, 8);
+    ctx.fill();
+    ctx.strokeStyle = secondary;
+    ctx.stroke();
+    ctx.fillStyle = secondary;
+    ctx.fillText('Slučaj 2:  D₄ ∈ {2, 4, 6, 8}', rightCx, caseY + caseH / 2);
+
+    // Digit boxes — Case 1: D1 D2 D3 D4 with counts 9, 8, 7, 1
+    var rowY = caseY + 60;
+    var boxW = 56, gap = 12, totalRow = 4 * boxW + 3 * gap;
+    var leftStart = leftCx - totalRow / 2;
+    digitBox(leftStart + 0 * (boxW + gap), rowY, 'D₁', 9, primary);
+    digitBox(leftStart + 1 * (boxW + gap), rowY, 'D₂', 8, primary);
+    digitBox(leftStart + 2 * (boxW + gap), rowY, 'D₃', 7, primary);
+    digitBox(leftStart + 3 * (boxW + gap), rowY, 'D₄', 1, primary);
+
+    // multiplication caption
+    ctx.fillStyle = text;
+    ctx.font = '14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('9 · 8 · 7 · 1', leftCx, rowY + 60);
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillText('= 504', leftCx, rowY + 80);
+
+    // Case 2: counts 8, 8, 7, 4
+    var rightStart = rightCx - totalRow / 2;
+    digitBox(rightStart + 0 * (boxW + gap), rowY, 'D₁', 8, secondary);
+    digitBox(rightStart + 1 * (boxW + gap), rowY, 'D₂', 8, secondary);
+    digitBox(rightStart + 2 * (boxW + gap), rowY, 'D₃', 7, secondary);
+    digitBox(rightStart + 3 * (boxW + gap), rowY, 'D₄', 4, secondary);
+
+    ctx.fillStyle = text;
+    ctx.font = '14px Inter, system-ui, sans-serif';
+    ctx.fillText('8 · 8 · 7 · 4', rightCx, rowY + 60);
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillText('= 1792', rightCx, rowY + 80);
+
+    // sum at bottom
+    var sumY = rowY + 130;
+    var sumW = 460, sumH = 60;
+    var sumX = W / 2 - sumW / 2;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.15);
+    roundedRect(sumX, sumY, sumW, sumH, 12);
+    ctx.fill();
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('504 + 1792 = 2296 = 8 · 7 · 41', W / 2, sumY + 10);
+    ctx.fillStyle = text;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillText('odgovor (D)', W / 2, sumY + 36);
+
+    // arrows from each case to sum
+    arrow(leftCx, rowY + 105, sumX + 60, sumY - 4, muted);
+    arrow(rightCx, rowY + 105, sumX + sumW - 60, sumY - 4, muted);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Parni četvorocifreni brojevi sa različitim ciframa",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["kombinatorika", "prebrojavanje", "princip množenja", "razdvajanje slučajeva"]
+}
+BRAINSPARK_META-->

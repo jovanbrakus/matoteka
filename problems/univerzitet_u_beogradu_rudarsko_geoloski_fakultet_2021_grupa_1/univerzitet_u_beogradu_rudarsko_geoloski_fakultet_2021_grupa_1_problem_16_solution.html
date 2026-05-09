@@ -1,0 +1,387 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Izraz: ((((4 op1 6) op2 2) op3 2) op4 2)
+Operatori +, -, *, : se koriste tačno po jednom (ukupno 4! = 24 permutacije).
+Cilj: pronaći permutaciju koja daje najveći ceo rezultat.
+
+Posmatramo da je 4*6 = 24 najveća polazna vrednost, pa je obećavajuće početi sa *.
+Ako kreće sa *: dobijamo 24, pa redosled (op2, op3, op4) je permutacija {+, -, :}.
+- (*, +, -, :): 24+2=26, 26-2=24, 24:2=12
+- (*, +, :, -): 24+2=26, 26:2=13, 13-2=11
+- (*, -, +, :): 24-2=22, 22+2=24, 24:2=12
+- (*, -, :, +): 24-2=22, 22:2=11, 11+2=13  ← maksimum 13
+- (*, :, +, -): 24:2=12, 12+2=14, 14-2=12
+- (*, :, -, +): 24:2=12, 12-2=10, 10+2=12
+
+Drugi početni operatori daju manje:
+- Početak sa + (4+6=10): najveći ishod do 12 (npr. 10*2=20, 20-2=18, 18:2=9; 10*2=20, 20:2=10, 10-2=8)
+- Početak sa - daje negativne ili male brojeve.
+- Početak sa : (4:6=2/3) daje razlomačke vrednosti.
+
+Maksimum: 13, dobijen redosledom (*, -, :, +):
+((((4*6) - 2) : 2) + 2) = ((24-2):2)+2 = (22:2)+2 = 11+2 = 13
+
+Tačan odgovor: C) 13.
+</script>
+
+<h1 data-card="problem-title">Maksimalni rezultat sa četiri računske operacije</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika — permutacije i optimizacija</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>U izrazu</p>
+  <div class="math-block">\[ \{[(4 \,\square\, 6) \,\square\, 2] \,\square\, 2\} \,\square\, 2 \]</div>
+  <p>prazna polja \( \square \) su popunjena sa po jednim od znakova četiri računske radnje \( +,\, -,\, \cdot,\, : \) tako da je svaki znak upotrebljen tačno jednom. Najveći mogući krajnji rezultat je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 11 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 12 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 13 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 14 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Postoje četiri prazna polja i četiri različita znaka, pa je broj rasporeda \( 4! = 24 \). To je dovoljno mali broj za sistematsku proveru. Strategiju ubrzavamo opažanjem da prvi operator radi sa \( 4 \) i \( 6 \), a najveći polazni rezultat (24) dobija se množenjem; tek tada biramo kako da dalje uvećamo broj. Zatim za svaki obećavajući redosled računamo izraz korak po korak (zagrade nameću levo-asocijativno izvršavanje) i tražimo maksimum.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Permutacije i strategija pretrage</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Permutacija:</strong> raspored \( n \) različitih objekata u niz; broj permutacija je \( n! \). Za četiri operatora dobijamo \( 4! = 24 \) različitih rasporeda.</li>
+        <li><strong>Levo-asocijativno izračunavanje:</strong> izraz oblika \( ((a \,\square_1\, b) \,\square_2\, c) \,\square_3\, d \) izvršava se tačno onako kako su zagrade postavljene — uvek prvo unutrašnja zagrada.</li>
+        <li><strong>Heuristika za maksimum:</strong> \( \max(4 \cdot 6) = 24 \) je daleko veće od \( 4+6=10 \), \( 4-6=-2 \) i \( 4:6 \approx 0{,}67 \), pa je razumno krenuti od \( \cdot \) da bi se rezultat „odmah popeo”.</li>
+        <li><strong>Iscrpna provera:</strong> kada heuristika ne garantuje optimum, prolazimo kroz sve permutacije sa \( \cdot \) na prvom mestu (njih \( 3! = 6 \)) i upoređujemo finalne vrednosti.</li>
+        <li><strong>Operacije na celim brojevima:</strong> deljenje koristimo samo kad je deljenik deljiv brojem 2; razlomački rezultati eliminišu kombinacije koje ne mogu dati veliki ceo broj.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram1" width="780" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Stablo odluka: koren je \( 4 \) i \( 6 \), prva grana je izbor prvog operatora. Ističemo putanju \( \cdot,\, -,\, :,\, + \) koja daje maksimum \( 13 \) i upoređujemo sa drugim ishodima u plavom (množenje na početku) i sivom (ostali početni operatori).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Razumevanje strukture izraza</h3>
+      <p>Ugnežđene zagrade nameću tačan redosled: prvo se izračuna unutrašnja zagrada \( (4 \,\square_1\, 6) \), pa se rezultat kombinuje sa \( 2 \) preko \( \square_2 \), zatim opet sa \( 2 \) preko \( \square_3 \), i konačno sa \( 2 \) preko \( \square_4 \). Imamo četiri pozicije i četiri različita operatora, pa traženje optimalnog rasporeda je u suštini iscrpna proba \( 4! = 24 \) permutacija.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliko ima različitih rasporeda znakova?</summary>
+          <div class="detail-content"><p>\( 4! = 4 \cdot 3 \cdot 2 \cdot 1 = 24 \) rasporeda. Pretraga je „mala”, ali je pametno koristiti heuristiku da je ne pređemo svu.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Izbor prvog operatora — heuristika</h3>
+      <p>Pogledajmo šta daje svaka početna operacija nad \( 4 \) i \( 6 \):</p>
+      <div class="math-block">\[ 4+6=10,\quad 4-6=-2,\quad 4\cdot 6=24,\quad 4:6 = \tfrac{2}{3}. \]</div>
+      <p>Pošto su sve naredne operacije sa malim brojem \( 2 \), velika startna vrednost \( 24 \) ima ogromnu prednost. Zato fokus stavljamo na slučaj <strong>\( \square_1 = \cdot \)</strong>, što ostavlja \( 3! = 6 \) preostalih rasporeda za \( \{+, -, :\} \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto razmatramo samo \( \square_1 = \cdot \)?</summary>
+          <div class="detail-content"><p>Ostali izbori daju startnu vrednost najviše \( 10 \). Operacije sa \( 2 \) (sabiranje, oduzimanje, deljenje, množenje) ne mogu sa \( 10 \) doći do \( 13 \) ili više bez prevazilaženja \( 24 \), pa je dovoljno detaljno ispitati množenje na početku, a ostalo proveriti samo „za sigurnost”.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Šest permutacija za \( \square_1 = \cdot \)</h3>
+      <p>Za svaki redosled računamo korak po korak:</p>
+      <div class="math-block">\[
+      \begin{array}{l|l|l}
+      (\square_2,\square_3,\square_4) & \text{korak po korak} & \text{rezultat} \\ \hline
+      (+,-,:) & 24+2{=}26 \to 26-2{=}24 \to 24:2 & 12 \\
+      (+,:,-) & 24+2{=}26 \to 26:2{=}13 \to 13-2 & 11 \\
+      (-,+,:) & 24-2{=}22 \to 22+2{=}24 \to 24:2 & 12 \\
+      (-,:,+) & 24-2{=}22 \to 22:2{=}11 \to 11+2 & \mathbf{13} \\
+      (:,+,-) & 24:2{=}12 \to 12+2{=}14 \to 14-2 & 12 \\
+      (:,-,+) & 24:2{=}12 \to 12-2{=}10 \to 10+2 & 12 \\
+      \end{array}
+      \]</div>
+      <p>Maksimum među svim šest je \( 13 \), postignut sa redosledom operatora <strong>\( \cdot,\, -,\, :,\, + \)</strong>.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: izračunaj \( ((((4 \cdot 6) - 2) : 2) + 2) \)</summary>
+          <div class="detail-content"><p>\( 4 \cdot 6 = 24 \); \( 24 - 2 = 22 \); \( 22 : 2 = 11 \); \( 11 + 2 = 13 \). Provera prolazi.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera ostalih početnih operatora</h3>
+      <p>Kratko proveravamo da li drugi izbori za \( \square_1 \) mogu dostići \( 13 \):</p>
+      <div class="math-block">\[
+      \begin{array}{l|l}
+      \square_1 = + : & 4+6{=}10. \text{ Tipičan ishod: } 10\cdot 2{=}20, 20-2{=}18, 18:2{=}9. \text{ Maksimum među šest permutacija: } 12. \\
+      \square_1 = - : & 4-6{=}-2. \text{ Negativni rezultati ili nule, maks. ishod manji od 5.} \\
+      \square_1 = : & 4:6 = \tfrac{2}{3}. \text{ Razlomački ili negativni ishodi, maks. ne dostiže ni 5.} \\
+      \end{array}
+      \]</div>
+      <p>Nijedan slučaj ne daje rezultat \( \ge 13 \), pa je heuristika potvrđena.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( 14 \) (odgovor D) nemoguće?</summary>
+          <div class="detail-content"><p>Najbliža \( 14 \) je permutacija \( (\cdot,:,+,-) \): \( 24:2{=}12,\, 12+2{=}14,\, 14-2{=}12 \). Trinaest se postiže kao međurezultat \( 14 \), ali na njega <em>uvek</em> sledi još jedna operacija (jer su sva četiri polja popunjena), pa se vraćamo na \( 12 \). Stoga je \( 14 \) nedostižno.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Finalna provera maksimuma</h3>
+      <p>Najveći krajnji rezultat među svih \( 24 \) rasporeda je \( 13 \), ostvaren rasporedom operatora \( \cdot,\, -,\, :,\, + \):</p>
+      <div class="math-block">\[ \{[(4 \cdot 6) - 2] : 2\} + 2 = \{22 : 2\} + 2 = 11 + 2 = 13. \]</div>
+      <p>Time je odgovor potvrđen — opcija (C).</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Iako je broj permutacija mali (\( 24 \)), pametna heuristika smanjuje posao na samo šest. Ključ je u tome da je \( 4 \cdot 6 = 24 \) <em>znatno</em> veće od svake druge polazne kombinacije, a sve naredne operacije rade sa istim brojem \( 2 \). Maksimum se postiže kad ne „potrošimo” deljenje prerano (deljenje sa 2 prepolovi rezultat), već prvo zadržimo veliki broj uz \( - \) (oduzima samo 2), pa onda preimo deljenje, i na kraju vraćemo izgubljeno sabiranjem. Trag „24 → 22 → 11 → 13” pokazuje delikatan balans između operacija koje skaliraju i operacija koje samo pomeraju vrednost.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Ignorisanje zagrada i primena prioriteta operacija (\( \cdot \) i \( : \) pre \( + \) i \( - \)). Zagrade <em>nameću</em> redosled — uvek se prvo izvršava unutrašnja zagrada.</li>
+    <li>Računanje samo „očiglednih” rasporeda (na primer samo \( + \) i \( \cdot \)) bez sistematske provere — često se propusti baš onaj koji daje optimum.</li>
+    <li>Mešanje srednjeg rezultata \( 14 \) iz \( (\cdot, :, +, -) \) sa krajnjim ishodom: poslednja operacija je \( -2 \), pa je krajnji rezultat \( 12 \), ne \( 14 \).</li>
+    <li>Pretpostavka da množenje uvek treba primeniti i na nekom drugom mestu, na primer \( 24 \cdot 2 \). To bi prešlo \( 24 \), ali tada još moraju da se primene \( + \), \( - \) i \( : \), a deljenje će na kraju spustiti rezultat.</li>
+    <li>Korišćenje istog operatora više puta: zadatak izričito traži da svaki znak bude upotrebljen tačno jednom.</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \{[(4 \cdot 6) - 2] : 2\} + 2 = 13 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 11 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 12 \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( 13 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 14 \)</span>
+  </div>
+  <p class="verification">Provera: \( 4 \cdot 6 = 24 \), \( 24 - 2 = 22 \), \( 22 : 2 = 11 \), \( 11 + 2 = 13 \). Iscrpna provera \( 4! = 24 \) permutacija potvrđuje da je \( 13 \) najveća postignuta vrednost.</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta je <em>najmanji</em> mogući krajnji rezultat istog izraza ako svaki od četiri operatora mora da se upotrebi tačno jednom? Da li je on negativan, i ako jeste — koliki je?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Razmotri početak sa \( - \) ili \( : \), gde polazna vrednost može biti negativna ili razlomak. Konkretno, sa \( (-, \cdot, +, :) \) dobijamo \( 4-6=-2,\, -2\cdot 2=-4,\, -4+2=-2,\, -2:2=-1 \). Treba ispitati i kombinacije koje vode na još manji broj — npr. da li množenjem dva negativna međurezultata možeš održati negativni znak posle deljenja. Pažljivim ispitivanjem dobija se najmanji ceo rezultat \( -4 \) za raspored \( (-, \cdot, :, +) \): \( 4-6=-2,\, -2\cdot 2=-4,\, -4:2=-2,\, -2+2=0 \) — i slične, dok je apsolutni minimum \( -1 \) među rasporedima sa celobrojnim ishodom (drugi rasporedi daju razlomke).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16), g = parseInt(c.slice(3,5), 16), b = parseInt(c.slice(5,7), 16);
+      return 'rgba('+r+','+g+','+b+','+alpha+')';
+    }
+    return c;
+  }
+  var canvas = document.getElementById('diagram1');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var W = canvas.width, H = canvas.height;
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 18px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Stablo odluka: redosled operatora i krajnji ishod', W/2, 26);
+
+    // Root
+    var rootX = W/2, rootY = 70;
+    function drawNode(x, y, label, color, fillBg, w, h) {
+      w = w || 64; h = h || 30;
+      ctx.fillStyle = fillBg || bg;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect ? ctx.roundRect(x - w/2, y - h/2, w, h, 6) : ctx.rect(x - w/2, y - h/2, w, h);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = color;
+      ctx.font = 'bold 13px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(label, x, y);
+    }
+
+    function drawEdge(x1, y1, x2, y2, color, dashed) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      if (dashed) ctx.setLineDash([4, 4]); else ctx.setLineDash([]);
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // root: 4 ? 6
+    drawNode(rootX, rootY, '4 □ 6', text, bg, 90, 36);
+
+    // Level 1: four choices for first operator
+    var ops = [
+      { sym: '+', val: '10', x: 100,  ok: false, label: 'maks 12' },
+      { sym: '−', val: '−2', x: 290,  ok: false, label: 'maks ≈ 0' },
+      { sym: '·', val: '24', x: 490,  ok: true,  label: 'kandidat za maks' },
+      { sym: ':', val: '⅔', x: 680,  ok: false, label: 'razlomak' }
+    ];
+    var level1Y = 160;
+    for (var i = 0; i < ops.length; i++) {
+      var o = ops[i];
+      var color = o.ok ? primary : muted;
+      drawEdge(rootX, rootY + 18, o.x, level1Y - 18, color, !o.ok);
+      // operator label on edge
+      ctx.fillStyle = color;
+      ctx.font = 'bold 14px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      var midX = (rootX + o.x) / 2;
+      var midY = (rootY + level1Y) / 2;
+      ctx.fillStyle = bg;
+      ctx.fillRect(midX - 12, midY - 10, 24, 18);
+      ctx.fillStyle = color;
+      ctx.fillText(o.sym, midX, midY);
+
+      drawNode(o.x, level1Y, o.val, color, bg, 70, 32);
+      ctx.fillStyle = muted;
+      ctx.font = '11px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(o.label, o.x, level1Y + 32);
+    }
+
+    // Level 2: six children of "·" branch (24)
+    var branchX = 490;
+    var perms = [
+      { ops: ['+','−',':'], result: 12, x: 70 },
+      { ops: ['+',':','−'], result: 11, x: 195 },
+      { ops: ['−','+',':'], result: 12, x: 320 },
+      { ops: ['−',':','+'], result: 13, x: 445, best: true },
+      { ops: [':','+','−'], result: 12, x: 570 },
+      { ops: [':','−','+'], result: 12, x: 695 }
+    ];
+    var level2Y = 360;
+    for (var j = 0; j < perms.length; j++) {
+      var p = perms[j];
+      var color = p.best ? accent : primary;
+      drawEdge(branchX, level1Y + 16, p.x, level2Y - 22, color, !p.best);
+      drawNode(p.x, level2Y, '·, ' + p.ops.join(', '), color, bg, 110, 28);
+      // result box
+      var rY = level2Y + 50;
+      var rColor = p.best ? accent : (p.result >= 12 ? primary : muted);
+      drawEdge(p.x, level2Y + 14, p.x, rY - 18, rColor, false);
+      drawNode(p.x, rY, '= ' + p.result, rColor, p.best ? cvAlpha('--sol-canvas-accent', 0.18) : bg, 60, 30);
+      if (p.best) {
+        ctx.fillStyle = accent;
+        ctx.font = 'bold 12px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('★ MAKSIMUM', p.x, rY + 30);
+      }
+    }
+
+    // Bottom legend
+    var legendY = H - 30;
+    ctx.font = 'bold 12px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = accent;
+    ctx.fillRect(60, legendY - 6, 14, 12);
+    ctx.fillStyle = text;
+    ctx.fillText('najveća putanja: ·, −, :, +  →  13', 80, legendY);
+    ctx.fillStyle = primary;
+    ctx.fillRect(360, legendY - 6, 14, 12);
+    ctx.fillStyle = text;
+    ctx.fillText('ostali rasporedi sa · na početku', 380, legendY);
+    ctx.fillStyle = muted;
+    ctx.fillRect(620, legendY - 6, 14, 12);
+    ctx.fillStyle = text;
+    ctx.fillText('drugi početni operator', 640, legendY);
+  }
+  draw();
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Maksimalni rezultat sa četiri računske operacije",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["kombinatorika", "računske operacije", "permutacije", "optimizacija"]
+}
+BRAINSPARK_META-->

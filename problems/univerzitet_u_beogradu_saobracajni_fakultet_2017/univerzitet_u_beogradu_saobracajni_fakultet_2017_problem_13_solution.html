@@ -1,0 +1,463 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: |x+1| + |x+2| = 4. Naci broj realnih resenja.
+
+Pristup 1 — algebarski (case-by-case po znaku izraza pod apsolutnim vrednostima):
+  Kriticne tacke: x = -1 (gde se menja znak x+1) i x = -2 (gde se menja znak x+2).
+  Tri intervala:
+
+  (a) x >= -1: oba izraza nenegativna => |x+1| = x+1, |x+2| = x+2
+      Jednacina: (x+1) + (x+2) = 2x + 3 = 4 => 2x = 1 => x = 1/2.
+      Provera: 1/2 >= -1? Da. Validno.
+
+  (b) -2 <= x < -1: x+1 < 0, x+2 >= 0 => |x+1| = -(x+1), |x+2| = x+2
+      Jednacina: -(x+1) + (x+2) = 1 = 4. Kontradikcija. Nema resenja.
+      (Suma je konstanta jednaka rastojanju izmedju -2 i -1.)
+
+  (c) x < -2: oba negativna => |x+1| = -(x+1), |x+2| = -(x+2)
+      Jednacina: -(x+1) - (x+2) = -2x - 3 = 4 => -2x = 7 => x = -7/2.
+      Provera: -7/2 = -3,5 < -2? Da. Validno.
+
+  Ukupno 2 resenja: x = 1/2 i x = -7/2.
+
+Pristup 2 — geometrijski (rastojanja na brojevnoj pravoj):
+  |x - a| = rastojanje od x do tacke a.
+  |x+1| = |x - (-1)|, |x+2| = |x - (-2)|.
+  Jednacina kaze: zbir rastojanja od x do -1 i od x do -2 je 4.
+  Razmak izmedju tacaka -2 i -1 je 1. Za x izmedju njih (na segmentu [-2,-1]),
+  zbir rastojanja je tacno 1 (konstanta, jer ide od jedne tacke do druge unutra).
+  Zato resenje mora biti VAN segmenta [-2, -1].
+
+  Ako je x desno od -1 (x > -1): zbir = (x-(-1)) + (x-(-2)) = 2x+3 = 4 => x = 1/2.
+  Ako je x levo od -2 (x < -2): zbir = (-1-x) + (-2-x) = -2x-3 = 4 => x = -7/2.
+
+  Geometrijska intuicija: visak iznad razmaka 1 jeste 4 - 1 = 3. Taj visak se
+  ravnomerno deli sa obe strane segmenta: po 3/2 = 1,5 sa svake strane.
+  Resenja: -2 - 1,5 = -3,5 i -1 + 1,5 = 0,5. Tacno se slaze.
+
+Tacan odgovor: D) 2.
+
+Vizuelizacija: brojevna prava, segment [-2, -1] istaknut, dva resenja x = -3,5
+i x = 0,5 su simetricna oko sredine -1,5 (sredine segmenta). Pokazujemo da je
+zbir rastojanja od svakog resenja do oba kraja jednak 4.
+  Provera za x = 0,5: |0,5 + 1| + |0,5 + 2| = 1,5 + 2,5 = 4. ✓
+  Provera za x = -3,5: |-3,5 + 1| + |-3,5 + 2| = 2,5 + 1,5 = 4. ✓
+
+Pitfalls:
+  - Zaboraviti slucaj x < -2 i naci samo x = 1/2.
+  - U slucaju (b) zakljuciti "nema resenja" pa pomesati i samo prebrojati 1 resenje.
+  - Pogresno postaviti znakove: -(x+1) = -x-1, lako napraviti gresku.
+  - Kvadrirati obe strane bez analize znaka i dobiti laznu jednacinu (lose ovde).
+
+Mapiranje opcija (sa _problems.md): A=А=3, B=Ц=4, C=Е=1, D=Г=2, E=И=0.
+Tacno: D) 2.
+</script>
+
+<h1 data-card="problem-title">Jednačina sa apsolutnim vrednostima — broj realnih rešenja</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — apsolutna vrednost, geometrijska interpretacija rastojanja</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Broj različitih realnih rešenja jednačine</p>
+  <div class="math-block">\[ |x+1| + |x+2| = 4 \]</div>
+  <p>je:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 4 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 0 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Koristimo geometrijsku ideju: \( |x+1| + |x+2| \) je zbir rastojanja od tačke \( x \) do tačaka \( -1 \) i \( -2 \). Rešenja moraju ležati van segmenta \( [-2, -1] \). Algebarski dobijamo isto razlaganjem po slučajevima u tri intervala razdvojena kritičnim tačkama \( x = -1 \) i \( x = -2 \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i geometrijska interpretacija</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Definicija</span> \( |y| = y \) ako \( y \ge 0 \), a \( |y| = -y \) ako \( y < 0 \).</li>
+        <li><span class="formula-label">Rastojanje</span> \( |x - a| \) je rastojanje između \( x \) i \( a \) na brojevnoj pravoj.</li>
+        <li><span class="formula-label">Zbir rastojanja</span> \( |x - a| + |x - b| \) (uz \( a < b \)) je tačno \( b - a \) za \( x \in [a, b] \), a strogo veće od \( b - a \) van tog segmenta.</li>
+        <li><span class="formula-label">Strategija „kritičnih tačaka”</span> Tačke u kojima izraz pod modulom menja znak dele realnu osu na intervale; u svakom intervalu jednačina postaje linearna.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz na brojevnoj pravoj">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="number-line" width="760" height="420"></canvas>
+  </div>
+  <p class="canvas-caption">Brojevna prava sa istaknutim segmentom \( [-2, -1] \) (gde je zbir rastojanja konstantan i jednak \( 1 \)) i dva rešenja \( x_1 = -\tfrac{7}{2} \) i \( x_2 = \tfrac{1}{2} \). Crveni i ljubičasti lukovi predstavljaju rastojanja do \( -1 \) i \( -2 \). Njihov zbir je tačno \( 4 \) za oba rešenja.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Identifikuj kritične tačke</h3>
+      <p>Izraz \( |x+1| \) menja znak u \( x = -1 \), a \( |x+2| \) u \( x = -2 \). Te dve tačke dele realnu osu na <strong>tri intervala</strong>:</p>
+      <div class="math-block">\[ (-\infty,\, -2),\quad [-2,\, -1),\quad [-1,\, +\infty). \]</div>
+      <p>U svakom od njih moduli imaju jednoznačan znak, pa jednačina postaje linearna.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš \( x = -1 \) i \( x = -2 \)?</summary>
+          <div class="detail-content"><p>To su rešenja unutrašnjih jednačina \( x + 1 = 0 \) i \( x + 2 = 0 \). Levo od svake od njih izraz pod modulom je negativan, desno pozitivan, pa apsolutna vrednost menja formulu.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj \( x \ge -1 \) — oba modula su pozitivna</h3>
+      <p>Tu je \( x + 1 \ge 0 \) i \( x + 2 > 0 \), pa direktno \( |x+1| = x+1 \) i \( |x+2| = x+2 \). Jednačina:</p>
+      <div class="math-block">\[ (x+1) + (x+2) = 4 \;\Longrightarrow\; 2x + 3 = 4 \;\Longrightarrow\; x = \tfrac{1}{2}. \]</div>
+      <p>Provera intervala: \( \tfrac{1}{2} \ge -1 \) ✓ — rešenje je <strong>prihvatljivo</strong>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj \( -2 \le x < -1 \) — moduli imaju različite znake</h3>
+      <p>Sad je \( x + 1 < 0 \), pa \( |x+1| = -(x+1) \); ali \( x + 2 \ge 0 \), pa \( |x+2| = x+2 \). Jednačina postaje:</p>
+      <div class="math-block">\[ -(x+1) + (x+2) = 4 \;\Longrightarrow\; 1 = 4. \]</div>
+      <p>To je <span class="crossed">kontradikcija</span>: leva strana je <strong>konstantna</strong> i jednaka \( 1 \) (jer je tu \( x \) između \( -2 \) i \( -1 \), pa zbir rastojanja jednaki rastojanje između tih tačaka). Nema rešenja u ovom intervalu.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: šta nam ovo govori geometrijski?</summary>
+          <div class="detail-content"><p>Za bilo koje \( x \in [-2, -1] \), \( |x+1| + |x+2| = 1 \). Zato traženi zbir \( 4 \) ne može da se postigne dok je \( x \) <em>između</em> tih tačaka — moramo izaći iz tog segmenta.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj \( x < -2 \) — oba modula se „obrću”</h3>
+      <p>Tu je \( x + 1 < 0 \) i \( x + 2 < 0 \), pa \( |x+1| = -(x+1) \) i \( |x+2| = -(x+2) \). Jednačina:</p>
+      <div class="math-block">\[ -(x+1) - (x+2) = 4 \;\Longrightarrow\; -2x - 3 = 4 \;\Longrightarrow\; x = -\tfrac{7}{2}. \]</div>
+      <p>Provera intervala: \( -\tfrac{7}{2} = -3{,}5 < -2 \) ✓ — rešenje je <strong>prihvatljivo</strong>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Skupi rešenja i potvrdi numerički</h3>
+      <p>Dva rešenja: \( x_1 = -\tfrac{7}{2} \) i \( x_2 = \tfrac{1}{2} \). Provera direktnom zamenom:</p>
+      <div class="math-block">\[ \begin{aligned} x_1 = -\tfrac{7}{2}:\;& \left|-\tfrac{7}{2}+1\right| + \left|-\tfrac{7}{2}+2\right| = \tfrac{5}{2} + \tfrac{3}{2} = 4 \;\checkmark \\ x_2 = \tfrac{1}{2}:\;& \left|\tfrac{1}{2}+1\right| + \left|\tfrac{1}{2}+2\right| = \tfrac{3}{2} + \tfrac{5}{2} = 4 \;\checkmark \end{aligned} \]</div>
+      <p>Broj različitih realnih rešenja je <span class="result">\( 2 \)</span>.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Geometrijski, \( |x+1| + |x+2| \) je <em>zbir rastojanja</em> od \( x \) do tačaka \( -1 \) i \( -2 \). Pošto je razmak između njih \( 1 \), zbir nikad nije manji od \( 1 \), a vrednost \( 1 \) postiže se za sve \( x \) iz segmenta \( [-2,-1] \). Da bi zbir bio \( 4 \), \( x \) mora biti van segmenta, na rastojanju \( \tfrac{4-1}{2} = 1{,}5 \) od bližeg kraja — odatle simetrično \( x = -3{,}5 \) i \( x = 0{,}5 \). Tačno <strong>dva</strong> rešenja.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \text{Rešenja: } x_1 = -\tfrac{7}{2},\;\; x_2 = \tfrac{1}{2}\;\;\Longrightarrow\;\;\text{ukupno } 2. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 3 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 4 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 1 \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 2 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 0 \)</span>
+  </div>
+  <p class="verification">Provera: za \( x = -\tfrac{7}{2} \) zbir je \( \tfrac{5}{2} + \tfrac{3}{2} = 4 \); za \( x = \tfrac{1}{2} \) zbir je \( \tfrac{3}{2} + \tfrac{5}{2} = 4 \). Geometrijski, oba rešenja leže na rastojanju \( 1{,}5 \) od najbližeg kraja segmenta \( [-2, -1] \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zaboraviti slučaj \( x < -2 \):</strong> mnogi reše samo \( x \ge -1 \) i nađu \( x = \tfrac{1}{2} \), pa pogrešno odgovore „1 rešenje” (opcija C).</li>
+    <li><strong>Pogrešno postaviti znakove:</strong> npr. napisati \( -(x+1) = -x + 1 \) (zaboraviti distribuciju minusa). Tačno je \( -(x+1) = -x - 1 \).</li>
+    <li><strong>Kvadriranje obe strane:</strong> daje višestruke lažne korene jer \( |x+1| + |x+2| \) <em>nije</em> jednostavna razlika koja bi se „očistila” nakon kvadriranja. Bolje je razlaganje po slučajevima.</li>
+    <li><strong>Pogrešno proveriti interval:</strong> dobiti formalno rešenje koje ne pripada ispitivanom intervalu i pogrešno ga prihvatiti. Uvek proveri da li nađeno \( x \) zaista zadovoljava nejednakosti tog slučaja.</li>
+    <li><strong>Pomešati rastojanje i razliku:</strong> \( |x + 1| \) je \( |x - (-1)| \), tj. rastojanje do \( -1 \), a ne do \( 1 \). Lak previd.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Kako se broj rešenja jednačine \( |x+1| + |x+2| = c \) menja u zavisnosti od realnog parametra \( c \)? Za koje vrednosti \( c \) dobijaš \( 0, 1, \) beskonačno mnogo, ili \( 2 \) rešenja?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Funkcija \( f(x) = |x+1| + |x+2| \) ima minimum \( 1 \) (i to za svako \( x \in [-2, -1] \)). Za \( c < 1 \): nema rešenja. Za \( c = 1 \): beskonačno mnogo (čitav segment \( [-2, -1] \)). Za \( c > 1 \): tačno dva rešenja (po jedno levo od \( -2 \) i jedno desno od \( -1 \)). Probaj da skiciraš grafik funkcije \( f \) i potvrdi presekom sa horizontalnom pravom \( y = c \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('number-line');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var W = canvas.width, H = canvas.height;
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Brojevna prava: zbir rastojanja od x do −1 i do −2 jednak je 4', W / 2, 28);
+
+    // Axis layout
+    var xMin = -5, xMax = 2;
+    var leftPad = 50, rightPad = 50;
+    var axisY = 220;
+    var unit = (W - leftPad - rightPad) / (xMax - xMin);
+    function tx(v) { return leftPad + (v - xMin) * unit; }
+
+    // Critical points
+    var pA = -2, pB = -1; // segment [-2, -1]
+    var sol1 = -3.5, sol2 = 0.5;
+
+    // Highlight segment [-2, -1] in muted color
+    ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.22);
+    ctx.fillRect(tx(pA), axisY - 22, tx(pB) - tx(pA), 44);
+
+    // Grid: vertical light lines at integers
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var k = xMin; k <= xMax; k++) {
+      ctx.beginPath();
+      ctx.moveTo(tx(k), 60);
+      ctx.lineTo(tx(k), axisY + 30);
+      ctx.stroke();
+    }
+
+    // Axis line
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(leftPad - 10, axisY);
+    ctx.lineTo(W - rightPad + 10, axisY);
+    ctx.stroke();
+    // Arrow tips
+    ctx.beginPath();
+    ctx.moveTo(W - rightPad + 10, axisY);
+    ctx.lineTo(W - rightPad + 2, axisY - 5);
+    ctx.lineTo(W - rightPad + 2, axisY + 5);
+    ctx.closePath();
+    ctx.fillStyle = axis;
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(leftPad - 10, axisY);
+    ctx.lineTo(leftPad - 2, axisY - 5);
+    ctx.lineTo(leftPad - 2, axisY + 5);
+    ctx.closePath();
+    ctx.fill();
+
+    // Tick marks and integer labels
+    ctx.fillStyle = text;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var i = xMin; i <= xMax; i++) {
+      ctx.strokeStyle = axis;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(tx(i), axisY - 5);
+      ctx.lineTo(tx(i), axisY + 5);
+      ctx.stroke();
+      ctx.fillText(String(i), tx(i), axisY + 22);
+    }
+
+    // Mark special anchor points -2 and -1 (filled circles)
+    function dot(xv, color, label, labelY) {
+      var px = tx(xv);
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(px, axisY, 7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = bg;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = color;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, px, labelY);
+    }
+
+    dot(pA, primary, '−2', axisY + 50);
+    dot(pB, secondary, '−1', axisY + 50);
+
+    // Mark solutions x1 = -3.5 and x2 = 0.5 with accent dots and labels
+    function solDot(xv, label) {
+      var px = tx(xv);
+      // glow ring
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.3);
+      ctx.beginPath();
+      ctx.arc(px, axisY, 12, 0, Math.PI * 2);
+      ctx.fill();
+      // solid
+      ctx.fillStyle = accent;
+      ctx.beginPath();
+      ctx.arc(px, axisY, 7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = bg;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      // label below
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, px, axisY + 50);
+    }
+    solDot(sol1, 'x₁ = −7/2');
+    solDot(sol2, 'x₂ = 1/2');
+
+    // Draw arcs (semicircles above the axis) showing the two distances
+    // For solution x1 = -3.5: distance to -2 is 1.5; distance to -1 is 2.5
+    // For solution x2 = 0.5: distance to -1 is 1.5; distance to -2 is 2.5
+
+    function drawArc(xStart, xEnd, color, height, label, labelOffset) {
+      var px1 = tx(xStart), px2 = tx(xEnd);
+      var midX = (px1 + px2) / 2;
+      var radiusX = Math.abs(px2 - px1) / 2;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.ellipse(midX, axisY, radiusX, height, 0, Math.PI, 0, false);
+      ctx.stroke();
+      // dotted helpers from axis up at endpoints
+      ctx.strokeStyle = color;
+      ctx.setLineDash([3, 3]);
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(px1, axisY); ctx.lineTo(px1, axisY - height);
+      ctx.moveTo(px2, axisY); ctx.lineTo(px2, axisY - height);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      // Label centered above arc top
+      ctx.fillStyle = color;
+      ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, midX, axisY - height - 6 + labelOffset);
+    }
+
+    // Arcs for x1 = -3.5
+    drawArc(sol1, pA, danger, 40, '|x₁+2| = 1,5', 0);   // distance to -2
+    drawArc(sol1, pB, secondary, 80, '|x₁+1| = 2,5', 0); // distance to -1
+
+    // Arcs for x2 = 0.5
+    drawArc(pB, sol2, danger, 40, '|x₂+1| = 1,5', 0);    // distance to -1
+    drawArc(pA, sol2, secondary, 80, '|x₂+2| = 2,5', 0); // distance to -2
+
+    // Sum readouts
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('zbir = 1,5 + 2,5 = 4', tx(sol1) + 60, axisY + 80);
+    ctx.fillText('zbir = 1,5 + 2,5 = 4', tx(sol2) - 60, axisY + 80);
+
+    // Segment-info caption (warning area)
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('na segmentu [−2, −1] zbir je konstanta = 1', (tx(pA) + tx(pB)) / 2, axisY - 36);
+
+    // Distance breakdown box on the right (summary)
+    var bx = 30, by = 340, bw = W - 60, bh = 60;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.10);
+    ctx.fillRect(bx, by, bw, bh);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(bx, by, bw, bh);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Geometrijski: višak 4 − 1 = 3 deli se simetrično, po 1,5 sa svake strane segmenta. Rešenja: −2 − 1,5 = −3,5  i  −1 + 1,5 = 0,5.', bx + bw / 2, by + 25);
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.fillText('Tačno dva rešenja.', bx + bw / 2, by + 45);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Broj rešenja jednačine |x+1| + |x+2| = 4 — apsolutne vrednosti i rastojanja",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["apsolutna vrednost", "jednačina sa modulima", "brojevna prava", "rastojanje", "kritične tačke"]
+}
+BRAINSPARK_META-->

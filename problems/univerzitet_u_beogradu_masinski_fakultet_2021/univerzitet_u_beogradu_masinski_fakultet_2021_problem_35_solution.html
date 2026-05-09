@@ -1,0 +1,1037 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Problem: Paralelne stranice trapeza su 10 i 5, a neparalelne 7 i 8. Naći visinu trapeza.
+
+Strategija (sintetička, sa pomoćnom konstrukcijom):
+
+Označimo trapez ABCD: AB = 10 (donja, duža paralelna), DC = 5 (gornja, kraća paralelna),
+AD = 7 (leva neparalelna), BC = 8 (desna neparalelna). Visina h.
+
+Spustimo iz D i C upravne na AB:
+  - podnožje iz D je tačka E na AB, sa AE = x (nepoznato).
+  - podnožje iz C je tačka F na AB, sa BF = ?
+Pošto je DC || AB i DC = 5, dužina segmenta EF = 5 (jer DECF je pravougaonik —
+DEFC ima pravougaone uglove i dve paralelne stranice DC = EF = 5).
+Tada: AB = AE + EF + FB = x + 5 + FB = 10, pa FB = 5 − x.
+
+Pravougli trougli:
+  - AED: AE = x, DE = h, AD = 7. Pitagora: x² + h² = 49.       (i)
+  - BFC: BF = 5 − x, CF = h, BC = 8. Pitagora: (5−x)² + h² = 64. (ii)
+
+Oduzimanjem (i) od (ii):
+  (5−x)² − x² = 64 − 49 = 15
+  (25 − 10x + x²) − x² = 15
+  25 − 10x = 15
+  10x = 10
+  x = 1.
+
+Zameni u (i):
+  1 + h² = 49
+  h² = 48
+  h = √48 = 4√3   (h > 0).
+
+Provera: BF = 5 − 1 = 4. Trougao BFC: 4² + (4√3)² = 16 + 48 = 64 = 8². ✓
+
+Provera "trougao": ako u trapezu translacijom DC pomerimo D dole tako da se poklopi
+sa nekom tačkom na AB? Trougao sa stranicama 7, 8 i 5 (= AB − DC)? Provera:
+trougao 7, 8, 5: poluobim s = 10, P (Heron) = √(10·3·2·5) = √300 = 10√3. Visina iz vrha
+naspram stranice 5 je h_5 = 2P/5 = 20√3/5 = 4√3. ✓ Ovo je drugi (kraći) sintetički put!
+
+ALTERNATIVNA STRATEGIJA (jednostavnija sintetička):
+Translatuj kraću paralelu DC paralelno tako da se poklopi sa segmentom na AB.
+Konkretno: povuci kroz D pravu paralelnu sa BC (ili kroz C pravu paralelnu sa AD)
+da bi se dobio trougao sa stranicama AD = 7, BC = 8 i AB − DC = 10 − 5 = 5.
+Visina ovog trougla na osnovu od 5 je tačno visina trapeza.
+
+Heronova formula:
+  s = (7 + 8 + 5)/2 = 10
+  P = √(s(s−a)(s−b)(s−c)) = √(10 · 3 · 2 · 5) = √300 = 10√3.
+  h = 2P / 5 = 20√3 / 5 = 4√3. ✓
+
+Odgovor: h = 4√3, opcija (D).
+
+Plan vizuelnog prikaza (4 canvas-a):
+1) Trapez ABCD sa svim stranicama označenim (10, 5, 7, 8).
+2) Spuštene visine iz D i C, formiraju pravougaonik DECF i dva pravougla trougla.
+   Označiti x i 5 − x.
+3) Dva izolovana pravougla trougla AED i BFC sa svojim stranicama.
+4) Konačna slika sa h = 4√3 (i opciono drugi sintetički pristup — trougao 7-8-5).
+
+Tip: STATIČAN (geometrija sa fiksnim stranicama, ne menja se).
+</script>
+
+<h1 data-card="problem-title">Visina trapeza iz dužine paralelnih i bočnih stranica</h1>
+<p data-card="problem-subtitle" class="subtitle">Sintetička geometrija — pomoćne visine i Pitagorina teorema</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Paralelne stranice trapeza su \( 10 \) i \( 5 \), a neparalelne \( 7 \) i \( 8 \). Kolika je visina tog trapeza?</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">\( a \) (donja osnovica)</span>
+      <span class="given-value">\( 10 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">\( b \) (gornja osnovica)</span>
+      <span class="given-value">\( 5 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">\( c \) (leva noga)</span>
+      <span class="given-value">\( 7 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">\( d \) (desna noga)</span>
+      <span class="given-value">\( 8 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">\( h \) (visina)</span>
+      <span class="given-value">\( = ? \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 6 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 4\sqrt{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 2\sqrt{6} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 4\sqrt{3} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 2\sqrt{3} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Spustimo upravne (visine) iz krajeva kraće osnovice na dužu osnovicu — time razdvojimo trapez na pravougaonik (sa kraćom osnovicom kao stranicom) i dva pravougla trougla na bokovima. Označimo nepoznatu dužinu \( AE = x \) na donjoj osnovici (od \( A \) do podnožja prve visine) i primenimo Pitagorinu teoremu na svaki bočni trougao. Dobijemo dve jednačine sa nepoznatima \( x \) i \( h \); oduzimanjem se \( x^{2} \) skraćuje, pa se \( x \) lako izračuna. Vraćanjem u prvu jednačinu nađemo \( h \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Trapez, visine, pomoćni pravougaonik i Pitagora</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Visina trapeza</span> Rastojanje između paralelnih stranica trapeza (osnovica). Visine iz krajeva jedne osnovice na drugu su <em>jednake</em> dužine — to je upravo \( h \).</li>
+        <li><span class="formula-label">Pomoćna konstrukcija</span> Spuštanjem upravnih iz krajeva kraće osnovice na dužu osnovicu, trapez se razdvaja na <em>pravougaonik</em> (čije su naspramne stranice obe paralelne osnovice — ovde dužine \( b \) i deo \( a \)) i dva <em>pravougla trougla</em> na bokovima.</li>
+        <li><span class="formula-label">Pitagorina teorema</span> Za pravougli trougao sa katetama \( p, q \) i hipotenuzom \( r \) važi \( r^{2} = p^{2} + q^{2} \). Hipotenuze bočnih trouglova su upravo neparalelne stranice trapeza.</li>
+        <li><span class="formula-label">Trougao iz „prebačene” stranice</span> Alternativni put: kroz jedno teme kraće osnovice povučemo paralelu jednoj nogi. Dobijamo trougao sa stranicama \( c \), \( d \) i \( a - b \) (razlika osnovica). Visina ovog trougla na osnovicu \( a - b \) jednaka je visini trapeza.</li>
+        <li><span class="formula-label">Heronova formula</span> Površina trougla sa stranicama \( c, d, e \): \( P = \sqrt{s(s - c)(s - d)(s - e)} \), gde je \( s = (c + d + e)/2 \) poluobim. Visina na stranicu \( e \) je \( h_{e} = \dfrac{2P}{e} \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Trapez ABCD sa zadatim stranicama">
+  <h2>📐 Vizuelni prikaz — postavka</h2>
+  <div class="canvas-wrapper">
+    <canvas id="trapezoid-canvas" width="780" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Trapez \( ABCD \) sa donjom osnovicom \( AB = 10 \), gornjom osnovicom \( DC = 5 \) i bočnim stranicama \( AD = 7 \), \( BC = 8 \). Tražimo visinu \( h \) — rastojanje između paralelnih osnovica. Trapez je <em>nesimetričan</em> (\( AD \neq BC \)), pa nećemo moći jednostavno da prepolovimo \( AB - DC \) na dva jednaka dela: pojaviće se asimetrični „prevesi” \( x \) i \( 5 - x \) ispod \( D \) i \( C \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Spuštene visine — pravougaonik i dva trougla">
+  <h2>📐 Pomoćna konstrukcija</h2>
+  <div class="canvas-wrapper">
+    <canvas id="construction-canvas" width="780" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Iz tačaka \( D \) i \( C \) spuštamo upravne na \( AB \); podnožja zovemo \( E \) i \( F \). Pošto su \( DE \) i \( CF \) obe upravne na \( AB \), \( DC \parallel EF \) (oba su paralelna sa \( AB \)) i \( DE = CF = h \) — figura \( DEFC \) je pravougaonik, pa je \( EF = DC = 5 \). Označimo \( AE = x \). Tada je \( FB = AB - AE - EF = 10 - x - 5 = 5 - x \). Bočni trouglovi \( AED \) i \( BFC \) su pravougli sa pravim uglom u \( E \) odnosno \( F \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Dva pravougla trougla — Pitagora">
+  <h2>📐 Izolovani pravougli trouglovi</h2>
+  <div class="canvas-wrapper">
+    <canvas id="triangles-canvas" width="780" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Trougao \( AED \) je pravougli u \( E \) sa katetama \( AE = x \), \( DE = h \) i hipotenuzom \( AD = 7 \). Trougao \( BFC \) je pravougli u \( F \) sa katetama \( FB = 5 - x \), \( CF = h \) i hipotenuzom \( BC = 8 \). Dve Pitagorine jednačine: \( x^{2} + h^{2} = 49 \) i \( (5 - x)^{2} + h^{2} = 64 \). Oduzimanjem \( h^{2} \) se eliminiše, a kvadrati \( x^{2} \) se skrate — ostaje linearna jednačina za \( x \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Označavanje i pomoćna konstrukcija</h3>
+      <p>Postavimo trapez tako da je \( AB = 10 \) donja (duža) osnovica i \( DC = 5 \) gornja (kraća). Bočne stranice su \( AD = 7 \) (leva) i \( BC = 8 \) (desna). Iz \( D \) i \( C \) spustimo visine na \( AB \); neka je \( E \) podnožje iz \( D \) i \( F \) podnožje iz \( C \). Tada je \( DE = CF = h \) (obe su udaljenost između paralelnih pravih).</p>
+      <div class="math-block">\[ DE \perp AB, \quad CF \perp AB, \quad DE = CF = h. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Pravougaonik DEFC daje EF = 5</h3>
+      <p>U figuri \( DEFC \): stranice \( DE \) i \( CF \) su obe upravne na \( AB \), pa su <em>međusobno paralelne</em>; stranice \( DC \) i \( EF \) leže na paralelnim pravama (gornja osnovica i \( AB \)). Kombinujući ove dve paralelnosti, \( DEFC \) je pravougaonik. Naspramne stranice pravougaonika su jednake:</p>
+      <div class="math-block">\[ EF = DC = 5. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( DEFC \) baš pravougaonik, a ne samo paralelogram?</summary>
+          <div class="detail-content"><p>Paralelogram (\( DC \parallel EF \) i \( DE \parallel CF \)) postaje pravougaonik kada je <em>jedan</em> ugao prav. Ovde je ugao u \( E \) prav (jer je \( DE \perp AB \)). Posledica: svi uglovi su pravi, što je definicija pravougaonika.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Označavanje x i 5 − x</h3>
+      <p>Označimo \( AE = x \). Onda je</p>
+      <div class="math-block">\[ FB = AB - AE - EF = 10 - x - 5 = 5 - x. \]</div>
+      <p>Na bokovima trapeza imamo dva pravougla trougla:</p>
+      <ul>
+        <li><strong>Trougao \( AED \)</strong> — pravougli u \( E \), katete \( AE = x \) i \( DE = h \), hipotenuza \( AD = 7 \).</li>
+        <li><strong>Trougao \( BFC \)</strong> — pravougli u \( F \), katete \( FB = 5 - x \) i \( CF = h \), hipotenuza \( BC = 8 \).</li>
+      </ul>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: a šta ako bi se ispostavilo da je \( x &gt; 5 \) ili \( x &lt; 0 \)?</summary>
+          <div class="detail-content"><p>Tada bi tačka \( D \) ili \( C \) bila izvan vertikalne projekcije \( AB \), tj. trapez bi bio toliko „nakrivljen” da kraća osnovica izlazi van duže. To je geometrijski moguće za neke trapeze, ali u takvim slučajevima jedna od neparalelnih stranica izlazi van „normalnog” oblika i teme bi vidno štrčalo. Za naš zadatak, sa \( a - b = 5 \) i \( c, d \) reda \( 7, 8 \), oblik je „lep” — kao što ćemo videti, \( x = 1 \) je u intervalu \( (0, 5) \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Dve Pitagorine jednačine</h3>
+      <p>U trouglu \( AED \):</p>
+      <div class="math-block">\[ AD^{2} = AE^{2} + DE^{2} \quad \Longrightarrow \quad x^{2} + h^{2} = 49. \tag{I} \]</div>
+      <p>U trouglu \( BFC \):</p>
+      <div class="math-block">\[ BC^{2} = FB^{2} + CF^{2} \quad \Longrightarrow \quad (5 - x)^{2} + h^{2} = 64. \tag{II} \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Eliminacija h² — oduzimanje (II) − (I)</h3>
+      <p>Oduzimanjem (I) od (II) eliminiše se \( h^{2} \):</p>
+      <div class="math-block">\[ (5 - x)^{2} - x^{2} = 64 - 49 = 15. \]</div>
+      <p>Razvijemo \( (5 - x)^{2} = 25 - 10x + x^{2} \):</p>
+      <div class="math-block">\[ 25 - 10x + x^{2} - x^{2} = 15 \quad \Longleftrightarrow \quad 25 - 10x = 15. \]</div>
+      <p>Skratili su se kvadrati \( x^{2} \) — sjajna stvar, jer ostaje linearna jednačina:</p>
+      <div class="math-block">\[ 10x = 10 \quad \Longrightarrow \quad \boxed{\, x = 1. \,} \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto se baš \( x^{2} \) skratio?</summary>
+          <div class="detail-content"><p>Razlika kvadrata po formuli: \( (5 - x)^{2} - x^{2} = (5 - x - x)(5 - x + x) = (5 - 2x) \cdot 5 = 25 - 10x \). Kvadratni član je „ispao” pri faktorisanju razlike kvadrata — ovo je standardni trik kod „dva pravougla trougla sa istom visinom”.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Vraćanje u (I) — visina h</h3>
+      <p>Sa \( x = 1 \) u jednačinu (I):</p>
+      <div class="math-block">\[ 1^{2} + h^{2} = 49 \quad \Longleftrightarrow \quad h^{2} = 48. \]</div>
+      <p>Pošto je \( h &gt; 0 \) (visina je dužina, dakle pozitivna):</p>
+      <div class="math-block">\[ h = \sqrt{48} = \sqrt{16 \cdot 3} = 4\sqrt{3}. \]</div>
+      <p>Dakle <span class="result">\( h = 4\sqrt{3} \)</span>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="7">
+    <div class="step-badge">7</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera u (II) i Heronov pristup</h3>
+      <p>Sa \( x = 1 \) i \( h = 4\sqrt{3} \): \( FB = 5 - 1 = 4 \). Trougao \( BFC \): \( FB^{2} + CF^{2} = 4^{2} + (4\sqrt{3})^{2} = 16 + 48 = 64 = BC^{2} \). ✓</p>
+      <p><em>Drugi (kraći) sintetički put:</em> kroz tačku \( C \) povučemo pravu paralelnu sa \( AD \) — neka seče \( AB \) u tački \( G \). Tada je \( ADCG \) paralelogram, pa \( AG = DC = 5 \) i \( CG = AD = 7 \). Trougao \( BCG \) ima stranice \( CG = 7 \), \( CB = 8 \) i \( GB = AB - AG = 10 - 5 = 5 \). Visina ovog trougla na stranicu \( GB = 5 \) je upravo visina trapeza \( h \). Heronova formula:</p>
+      <div class="math-block">\[ s = \frac{7 + 8 + 5}{2} = 10, \qquad P = \sqrt{10 \cdot 3 \cdot 2 \cdot 5} = \sqrt{300} = 10\sqrt{3}. \]</div>
+      <div class="math-block">\[ h = \frac{2P}{GB} = \frac{2 \cdot 10\sqrt{3}}{5} = 4\sqrt{3}. \quad \text{✓} \]</div>
+      <p>Obe nezavisne metode daju isti rezultat — sigurnost u odgovoru.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Ovaj zadatak je školski primer „elegantne eliminacije”. Kada se na <em>dva</em> pravougla trougla primeni Pitagora, <em>obe</em> jednačine imaju istu nepoznatu \( h^{2} \). Oduzimanjem \( h^{2} \) <em>nestaje</em>, a istovremeno se kvadrat \( x^{2} \) skrati zbog razlike kvadrata: \( (5 - x)^{2} - x^{2} = 5 \cdot (5 - 2x) \). Ono što je krenulo kao „dve kvadratne jednačine sa dve nepoznate” odjednom postaje jedna <em>linearna</em>. Trik je opšti: kad god imamo dve hipotenuze sa zajedničkom katetom, oduzimanje Pitagora ubija upravo tu zajedničku katetu i ostavlja čistu linearnu vezu među projekcijama.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Konačna slika sa h = 4√3">
+  <h2>📐 Završna konfiguracija</h2>
+  <div class="canvas-wrapper">
+    <canvas id="final-canvas" width="780" height="540"></canvas>
+  </div>
+  <p class="canvas-caption">Konkretna realizacija: \( AE = 1 \), \( EF = 5 \), \( FB = 4 \), \( h = 4\sqrt{3} \approx 6{,}928 \). Provera: \( 1^{2} + 48 = 49 = 7^{2} \) ✓ i \( 4^{2} + 48 = 64 = 8^{2} \) ✓. Drugi pristup (Heron na trouglu sa stranicama \( 7, 8, 5 \)) daje istu vrednost \( h = 4\sqrt{3} \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pretpostavka da je trapez simetričan (jednakokraki).</strong> Pošto su \( AD = 7 \) i \( BC = 8 \) različite, trapez nije simetričan. Mnogi automatski podele \( a - b = 5 \) na dva jednaka dela od po \( 2{,}5 \) ispod \( D \) i \( C \), što je <strong>pogrešno</strong>. Pravi raspored je \( x = 1 \) levo i \( 5 - x = 4 \) desno.</li>
+    <li><strong>Zaboravljanje da je \( EF = DC = 5 \).</strong> Studenti ponekad pišu \( AE + FB = AB = 10 \), tj. zanemaruju srednji deo. Tačno je \( AE + EF + FB = AB \), tj. \( x + 5 + (5 - x) = 10 \). ✓</li>
+    <li><strong>Pogrešan razvoj \( (5 - x)^{2} \).</strong> Tipična greška: \( (5 - x)^{2} = 25 - x^{2} \) (zaboravljen unakrsni član) ili \( 25 + x^{2} \) (pogrešan znak). Tačno: \( (5 - x)^{2} = 25 - 10x + x^{2} \).</li>
+    <li><strong>Negativan \( x \) ili \( x &gt; 5 \) ne preispituju.</strong> U ovom zadatku ispada \( x = 1 \in (0, 5) \), što potvrđuje da je trapez „regularno nakrivljen”. Ako bi neka greška dala \( x = -2 \) ili \( x = 7 \), to bi bio crveni signal — neka tačka izlazi van pravougaonika i geometrijski je nemoguća za standardan trapez.</li>
+    <li><strong>Zaboravljanje \( h &gt; 0 \) pri vađenju korena.</strong> Iz \( h^{2} = 48 \) sledi \( h = \pm 4\sqrt{3} \), ali kao dužina visine, mora biti \( h &gt; 0 \). Negativni koren se odbacuje.</li>
+    <li><strong>Greška u uprošćavanju korena.</strong> \( \sqrt{48} = \sqrt{16 \cdot 3} = 4\sqrt{3} \), a ne \( 8\sqrt{3} \) (\( = \sqrt{192} \)) ili \( 4\sqrt{12} \) (nepotpuno uprošćeno).</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ h = 4\sqrt{3} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 6 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 4\sqrt{2} \)</span>
+    <span class="answer-option" data-option="C">(C) \( 2\sqrt{6} \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 4\sqrt{3} \)</span>
+    <span class="answer-option" data-option="E">(E) \( 2\sqrt{3} \)</span>
+  </div>
+  <p class="verification">Dvostruka provera: (1) Pitagora na \( BFC \) sa \( FB = 4 \): \( 4^{2} + (4\sqrt{3})^{2} = 16 + 48 = 64 = 8^{2} \) ✓. (2) Heron na pomoćnom trouglu \( BCG \) sa stranicama \( 7, 8, 5 \): \( s = 10 \), \( P = \sqrt{10 \cdot 3 \cdot 2 \cdot 5} = 10\sqrt{3} \), pa \( h = 2P/5 = 4\sqrt{3} \) ✓. Numerički: \( h \approx 6{,}928 \), što je između opcija \( 4\sqrt{2} \approx 5{,}66 \) i \( 6 \) — opcija \( 4\sqrt{3} \) je jedina prava.</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Pod kojim uslovom za stranice trapeza \( a, b, c, d \) (gde su \( a, b \) paralelne, \( a &gt; b \), a \( c, d \) bočne) takav trapez <em>uopšte postoji</em>? Izvedi opšti izraz za visinu \( h \) preko \( a, b, c, d \).</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Istom konstrukcijom: pomeranjem stranice \( c \) dobijamo trougao sa stranicama \( c, d, a - b \). Trapez postoji ako i samo ako ovaj trougao postoji — tj. ako važi nejednakost trougla: \( |c - d| &lt; a - b &lt; c + d \). U našem slučaju: \( |7 - 8| = 1 &lt; 5 &lt; 7 + 8 = 15 \) ✓. Visina trapeza = visina trougla na stranicu \( a - b \). Heronovom formulom: \( s = (c + d + a - b)/2 \), \( P = \sqrt{s(s-c)(s-d)(s-(a-b))} \), pa je \( h = \dfrac{2P}{a - b} \). Konkretno za \( a = 10, b = 5, c = 7, d = 8 \): \( s = 10 \), \( P = 10\sqrt{3} \), \( h = 4\sqrt{3} \). Granični slučajevi: \( a - b = c + d \) → trougao se „izravnava” u duž (\( h = 0 \), trapez se urušava); \( a - b = |c - d| \) → trapez postaje pravougli (jedna noga upravna na osnovice).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+  function setupTheme(redrawFn) {
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() {
+          styles = getComputedStyle(root);
+          redrawFn();
+        }, 50);
+      }
+    });
+  }
+
+  // Konstantne pozicije temena (zajedničke za canvase 1, 2, 4)
+  // Skala: 1 jedinica = 50 px
+  // AB = 10 → 500 px širina osnovice
+  // x = 1 → AE = 50 px
+  // h = 4√3 ≈ 6.928 → ~346 px visine
+  var SCALE = 50;
+  var H_VAL = 4 * Math.sqrt(3); // 6.9282
+  var X_VAL = 1; // AE
+  var FB_VAL = 4; // 5 - x = 4
+
+  function makeGeometry(canvasW, canvasH, marginBottom) {
+    marginBottom = marginBottom || 90;
+    var Ax = (canvasW - 10 * SCALE) / 2;
+    var Ay = canvasH - marginBottom;
+    var Bx = Ax + 10 * SCALE;
+    var By = Ay;
+    var Ex = Ax + X_VAL * SCALE;
+    var Ey = Ay;
+    var Fx = Ex + 5 * SCALE;
+    var Fy = Ay;
+    var Dx = Ex;
+    var Dy = Ay - H_VAL * SCALE;
+    var Cx = Fx;
+    var Cy = Ay - H_VAL * SCALE;
+    return {
+      Ax: Ax, Ay: Ay, Bx: Bx, By: By,
+      Cx: Cx, Cy: Cy, Dx: Dx, Dy: Dy,
+      Ex: Ex, Ey: Ey, Fx: Fx, Fy: Fy
+    };
+  }
+
+  // ==========================================================
+  // CANVAS 1: Trapez ABCD sa stranicama
+  // ==========================================================
+  (function() {
+    var canvas = document.getElementById('trapezoid-canvas');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, H = canvas.height;
+
+    function draw() {
+      var bg        = cv('--sol-canvas-bg');
+      var primary   = cv('--sol-canvas-primary');
+      var accent    = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text      = cv('--sol-canvas-text');
+      var muted     = cv('--sol-canvas-muted');
+      var tertiary  = cv('--sol-canvas-tertiary');
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      ctx.fillStyle = text;
+      ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Trapez ABCD: AB = 10, DC = 5, AD = 7, BC = 8', W / 2, 32);
+      ctx.font = '13px Inter, system-ui, sans-serif';
+      ctx.fillStyle = muted;
+      ctx.fillText('AB ∥ DC, ali AD ≠ BC — trapez nije simetričan', W / 2, 54);
+
+      var g = makeGeometry(W, H, 100);
+
+      // Trapez (A, B, C, D)
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(g.Ax, g.Ay);
+      ctx.lineTo(g.Bx, g.By);
+      ctx.lineTo(g.Cx, g.Cy);
+      ctx.lineTo(g.Dx, g.Dy);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.07);
+      ctx.fill();
+
+      // Tačke
+      function point(px, py, lbl, dxL, dyL) {
+        ctx.fillStyle = primary;
+        ctx.beginPath();
+        ctx.arc(px, py, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = bg;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.fillStyle = text;
+        ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(lbl, px + dxL, py + dyL);
+      }
+      point(g.Ax, g.Ay, 'A', -16, 24);
+      point(g.Bx, g.By, 'B', 16, 24);
+      point(g.Cx, g.Cy, 'C', 16, -10);
+      point(g.Dx, g.Dy, 'D', -16, -10);
+
+      // Oznake stranica
+      ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx.fillStyle = primary;
+      ctx.textAlign = 'center';
+      ctx.fillText('AB = 10', (g.Ax + g.Bx) / 2, g.Ay + 38);
+      ctx.fillText('DC = 5', (g.Dx + g.Cx) / 2, g.Dy - 18);
+
+      // Bočne stranice
+      ctx.fillStyle = highlight;
+      ctx.textAlign = 'right';
+      ctx.fillText('AD = 7', (g.Ax + g.Dx) / 2 - 12, (g.Ay + g.Dy) / 2);
+      ctx.textAlign = 'left';
+      ctx.fillStyle = tertiary;
+      ctx.fillText('BC = 8', (g.Bx + g.Cx) / 2 + 12, (g.By + g.Cy) / 2);
+
+      // Pitanje
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('h = ?', (g.Ex + g.Fx) / 2, (g.Ey + g.Dy) / 2 + 8);
+      // Tankoplava strelica koja označava visinu (samo informativno)
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([5, 5]);
+      ctx.beginPath();
+      ctx.moveTo((g.Ax + g.Bx) / 2, g.Ay);
+      ctx.lineTo((g.Dx + g.Cx) / 2, g.Dy);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Donja informativna linija
+      ctx.fillStyle = muted;
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Razlika osnovica AB − DC = 10 − 5 = 5 — biće raspoređena nesimetrično ispod D i C.', W / 2, H - 24);
+    }
+
+    draw();
+    setupTheme(draw);
+  })();
+
+  // ==========================================================
+  // CANVAS 2: Spuštene visine — pravougaonik DEFC i bočni trouglovi
+  // ==========================================================
+  (function() {
+    var canvas = document.getElementById('construction-canvas');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, H = canvas.height;
+
+    function draw() {
+      var bg        = cv('--sol-canvas-bg');
+      var primary   = cv('--sol-canvas-primary');
+      var accent    = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text      = cv('--sol-canvas-text');
+      var muted     = cv('--sol-canvas-muted');
+      var tertiary  = cv('--sol-canvas-tertiary');
+      var warning   = cv('--sol-canvas-warning');
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      ctx.fillStyle = text;
+      ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Spuštene visine: DE ⟂ AB i CF ⟂ AB → pravougaonik DEFC + dva pravougla trougla', W / 2, 30);
+      ctx.font = '13px Inter, system-ui, sans-serif';
+      ctx.fillStyle = muted;
+      ctx.fillText('AE = x (nepoznato),  EF = DC = 5,  FB = 5 − x', W / 2, 52);
+
+      var g = makeGeometry(W, H, 100);
+
+      // Pravougaonik DEFC — popunjen blagom plavom
+      ctx.fillStyle = cvAlpha('--sol-canvas-tertiary', 0.15);
+      ctx.beginPath();
+      ctx.moveTo(g.Ex, g.Ey);
+      ctx.lineTo(g.Fx, g.Fy);
+      ctx.lineTo(g.Cx, g.Cy);
+      ctx.lineTo(g.Dx, g.Dy);
+      ctx.closePath();
+      ctx.fill();
+
+      // Trougao AED — popunjen ljubičasto
+      ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.18);
+      ctx.beginPath();
+      ctx.moveTo(g.Ax, g.Ay);
+      ctx.lineTo(g.Ex, g.Ey);
+      ctx.lineTo(g.Dx, g.Dy);
+      ctx.closePath();
+      ctx.fill();
+
+      // Trougao BFC — popunjen zeleno (drugi nijansa)
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.18);
+      ctx.beginPath();
+      ctx.moveTo(g.Bx, g.By);
+      ctx.lineTo(g.Fx, g.Fy);
+      ctx.lineTo(g.Cx, g.Cy);
+      ctx.closePath();
+      ctx.fill();
+
+      // Trapez ABCD (kontura)
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(g.Ax, g.Ay);
+      ctx.lineTo(g.Bx, g.By);
+      ctx.lineTo(g.Cx, g.Cy);
+      ctx.lineTo(g.Dx, g.Dy);
+      ctx.closePath();
+      ctx.stroke();
+
+      // Visine DE, CF — istaknute zeleno
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 2.5;
+      ctx.setLineDash([7, 5]);
+      ctx.beginPath();
+      ctx.moveTo(g.Dx, g.Dy);
+      ctx.lineTo(g.Ex, g.Ey);
+      ctx.moveTo(g.Cx, g.Cy);
+      ctx.lineTo(g.Fx, g.Fy);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Pravougli markeri u E i F
+      var sq = 11;
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 1.6;
+      // E (donji-levi)
+      ctx.beginPath();
+      ctx.moveTo(g.Ex, g.Ey - sq);
+      ctx.lineTo(g.Ex + sq, g.Ey - sq);
+      ctx.lineTo(g.Ex + sq, g.Ey);
+      ctx.stroke();
+      // F (donji-desni)
+      ctx.beginPath();
+      ctx.moveTo(g.Fx, g.Fy - sq);
+      ctx.lineTo(g.Fx - sq, g.Fy - sq);
+      ctx.lineTo(g.Fx - sq, g.Fy);
+      ctx.stroke();
+
+      // Tačke
+      function point(px, py, lbl, dxL, dyL, color) {
+        ctx.fillStyle = color || primary;
+        ctx.beginPath();
+        ctx.arc(px, py, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = bg;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.fillStyle = text;
+        ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(lbl, px + dxL, py + dyL);
+      }
+      point(g.Ax, g.Ay, 'A', -16, 24);
+      point(g.Bx, g.By, 'B', 16, 24);
+      point(g.Cx, g.Cy, 'C', 16, -10);
+      point(g.Dx, g.Dy, 'D', -16, -10);
+      point(g.Ex, g.Ey, 'E', -3, 22, accent);
+      point(g.Fx, g.Fy, 'F', 3, 22, accent);
+
+      // Oznake stranica i segmenata
+      ctx.font = '14px Inter, system-ui, sans-serif';
+      ctx.fillStyle = highlight;
+      ctx.textAlign = 'center';
+      ctx.fillText('x', (g.Ax + g.Ex) / 2, g.Ay + 22);
+      ctx.fillStyle = accent;
+      ctx.fillText('5', (g.Ex + g.Fx) / 2, g.Ay + 22);
+      ctx.fillStyle = tertiary;
+      ctx.fillText('5 − x', (g.Fx + g.Bx) / 2, g.Ay + 22);
+
+      // Visine
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.fillStyle = accent;
+      ctx.textAlign = 'right';
+      ctx.fillText('h', g.Ex - 8, (g.Ey + g.Dy) / 2);
+      ctx.textAlign = 'left';
+      ctx.fillText('h', g.Fx + 8, (g.Fy + g.Cy) / 2);
+
+      // Bočne stranice
+      ctx.fillStyle = highlight;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText('7', (g.Ax + g.Dx) / 2 - 4, (g.Ay + g.Dy) / 2 + 4);
+      ctx.fillStyle = tertiary;
+      ctx.textAlign = 'left';
+      ctx.fillText('8', (g.Bx + g.Cx) / 2 + 4, (g.By + g.Cy) / 2 + 4);
+
+      // DC oznaka
+      ctx.fillStyle = primary;
+      ctx.font = '13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('DC = EF = 5', (g.Dx + g.Cx) / 2, g.Dy - 12);
+
+      // Legenda
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      var lx = 50, ly = H - 26;
+      ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.4);
+      ctx.fillRect(lx, ly - 9, 16, 12);
+      ctx.fillStyle = text;
+      ctx.fillText('trougao AED (kateta x, h, hipotenuza 7)', lx + 22, ly);
+      ctx.fillStyle = cvAlpha('--sol-canvas-tertiary', 0.4);
+      ctx.fillRect(lx + 320, ly - 9, 16, 12);
+      ctx.fillStyle = text;
+      ctx.fillText('pravougaonik DEFC (širina 5, visina h)', lx + 342, ly);
+    }
+
+    draw();
+    setupTheme(draw);
+  })();
+
+  // ==========================================================
+  // CANVAS 3: Dva izolovana pravougla trougla — Pitagora
+  // ==========================================================
+  (function() {
+    var canvas = document.getElementById('triangles-canvas');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, H = canvas.height;
+
+    function draw() {
+      var bg        = cv('--sol-canvas-bg');
+      var primary   = cv('--sol-canvas-primary');
+      var accent    = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text      = cv('--sol-canvas-text');
+      var muted     = cv('--sol-canvas-muted');
+      var tertiary  = cv('--sol-canvas-tertiary');
+      var warning   = cv('--sol-canvas-warning');
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      ctx.fillStyle = text;
+      ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Dva pravougla trougla — dve Pitagorine jednačine sa istom h', W / 2, 30);
+      ctx.font = '13px Inter, system-ui, sans-serif';
+      ctx.fillStyle = muted;
+      ctx.fillText('Oduzimanjem se h² eliminiše, a x² se skrati zbog razlike kvadrata', W / 2, 52);
+
+      // Levi trougao AED — postavljen levo, sa proporcijama
+      // Skala: prilično velika da bude jasno
+      var unitL = 36;
+      // Trougao AED: kateta x = 1, h = 4√3 ≈ 6.93. Stavimo veću skalu da bude vidljiv.
+      // Da budu vizuelno reprezentativni, pojačaćemo x dimenziju radi prikaza
+      var Acx = 90, Acy = H - 130;
+      var Aex = Acx + 1 * unitL; // x = 1 unit
+      var Aey = Acy;
+      var Adx = Aex;
+      var Ady = Acy - H_VAL * unitL; // h
+      // Trougao AED
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(Acx, Acy);
+      ctx.lineTo(Aex, Aey);
+      ctx.lineTo(Adx, Ady);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.12);
+      ctx.fill();
+
+      // Pravi ugao u E
+      var sq = 11;
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(Aex, Aey - sq);
+      ctx.lineTo(Aex - sq, Aey - sq);
+      ctx.lineTo(Aex - sq, Aey);
+      ctx.stroke();
+
+      // Hipotenuza istaknuta
+      ctx.strokeStyle = highlight;
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(Acx, Acy);
+      ctx.lineTo(Adx, Ady);
+      ctx.stroke();
+
+      // Tačke
+      function lp(px, py, lbl, dxL, dyL) {
+        ctx.fillStyle = primary;
+        ctx.beginPath();
+        ctx.arc(px, py, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = bg;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.fillStyle = text;
+        ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(lbl, px + dxL, py + dyL);
+      }
+      lp(Acx, Acy, 'A', -14, 22);
+      lp(Aex, Aey, 'E', 14, 22);
+      lp(Adx, Ady, 'D', 14, -10);
+
+      // Oznake
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.fillStyle = primary;
+      ctx.textAlign = 'center';
+      ctx.fillText('x', (Acx + Aex) / 2, Acy + 22);
+      ctx.fillStyle = accent;
+      ctx.textAlign = 'left';
+      ctx.fillText('h', Adx + 8, (Ady + Aey) / 2);
+      ctx.fillStyle = highlight;
+      ctx.textAlign = 'right';
+      ctx.fillText('AD = 7', (Acx + Adx) / 2 - 8, (Acy + Ady) / 2 + 4);
+
+      // Pitagora pod trouglom
+      ctx.fillStyle = text;
+      ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('x² + h² = 49', Acx + 60, H - 70);
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.fillStyle = muted;
+      ctx.fillText('(I)', Acx + 60, H - 50);
+
+      // Desni trougao BFC
+      var Bcx = W - 90, Bcy = H - 130;
+      var Bex = Bcx - 4 * unitL; // FB = 4 units
+      var Bey = Bcy;
+      var Bdx = Bex;
+      var Bdy = Bcy - H_VAL * unitL;
+      // Trougao BFC
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(Bcx, Bcy);
+      ctx.lineTo(Bex, Bey);
+      ctx.lineTo(Bdx, Bdy);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.fillStyle = cvAlpha('--sol-canvas-tertiary', 0.12);
+      ctx.fill();
+
+      // Pravi ugao u F
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(Bex, Bey - sq);
+      ctx.lineTo(Bex + sq, Bey - sq);
+      ctx.lineTo(Bex + sq, Bey);
+      ctx.stroke();
+
+      // Hipotenuza
+      ctx.strokeStyle = tertiary;
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(Bcx, Bcy);
+      ctx.lineTo(Bdx, Bdy);
+      ctx.stroke();
+
+      lp(Bcx, Bcy, 'B', 14, 22);
+      lp(Bex, Bey, 'F', -14, 22);
+      lp(Bdx, Bdy, 'C', -14, -10);
+
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.fillStyle = primary;
+      ctx.textAlign = 'center';
+      ctx.fillText('5 − x', (Bcx + Bex) / 2, Bcy + 22);
+      ctx.fillStyle = accent;
+      ctx.textAlign = 'right';
+      ctx.fillText('h', Bdx - 8, (Bdy + Bey) / 2);
+      ctx.fillStyle = tertiary;
+      ctx.textAlign = 'left';
+      ctx.fillText('BC = 8', (Bcx + Bdx) / 2 + 8, (Bcy + Bdy) / 2 + 4);
+
+      ctx.fillStyle = text;
+      ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('(5 − x)² + h² = 64', Bcx - 60, H - 70);
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.fillStyle = muted;
+      ctx.fillText('(II)', Bcx - 60, H - 50);
+
+      // Centralni „minus” — eliminacija
+      ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.12);
+      var bxX = W / 2 - 110, bxY = H / 2 - 50, bxW = 220, bxH = 100;
+      ctx.fillRect(bxX, bxY, bxW, bxH);
+      ctx.strokeStyle = warning;
+      ctx.lineWidth = 1.6;
+      ctx.strokeRect(bxX, bxY, bxW, bxH);
+      ctx.fillStyle = warning;
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('(II) − (I) :', W / 2, bxY + 22);
+      ctx.fillStyle = text;
+      ctx.font = '13px ui-monospace, Menlo, monospace';
+      ctx.fillText('(5 − x)² − x² = 15', W / 2, bxY + 44);
+      ctx.fillText('25 − 10x = 15', W / 2, bxY + 64);
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 13px ui-monospace, Menlo, monospace';
+      ctx.fillText('x = 1', W / 2, bxY + 84);
+    }
+
+    draw();
+    setupTheme(draw);
+  })();
+
+  // ==========================================================
+  // CANVAS 4: Konačna konfiguracija sa h = 4√3
+  // ==========================================================
+  (function() {
+    var canvas = document.getElementById('final-canvas');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, H = canvas.height;
+
+    function draw() {
+      var bg        = cv('--sol-canvas-bg');
+      var primary   = cv('--sol-canvas-primary');
+      var accent    = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text      = cv('--sol-canvas-text');
+      var muted     = cv('--sol-canvas-muted');
+      var tertiary  = cv('--sol-canvas-tertiary');
+      var warning   = cv('--sol-canvas-warning');
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      ctx.fillStyle = text;
+      ctx.font = 'bold 17px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Završna slika: x = 1,  h = 4√3 ≈ 6,928', W / 2, 32);
+      ctx.font = '13px Inter, system-ui, sans-serif';
+      ctx.fillStyle = muted;
+      ctx.fillText('Sve dužine sa konkretnim vrednostima — provera u oba trougla', W / 2, 54);
+
+      var g = makeGeometry(W, H, 110);
+
+      // Pozadinski pravougaonik DEFC
+      ctx.fillStyle = cvAlpha('--sol-canvas-tertiary', 0.10);
+      ctx.beginPath();
+      ctx.moveTo(g.Ex, g.Ey);
+      ctx.lineTo(g.Fx, g.Fy);
+      ctx.lineTo(g.Cx, g.Cy);
+      ctx.lineTo(g.Dx, g.Dy);
+      ctx.closePath();
+      ctx.fill();
+
+      // Bočni trouglovi popunjeni
+      ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.12);
+      ctx.beginPath();
+      ctx.moveTo(g.Ax, g.Ay);
+      ctx.lineTo(g.Ex, g.Ey);
+      ctx.lineTo(g.Dx, g.Dy);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.12);
+      ctx.beginPath();
+      ctx.moveTo(g.Bx, g.By);
+      ctx.lineTo(g.Fx, g.Fy);
+      ctx.lineTo(g.Cx, g.Cy);
+      ctx.closePath();
+      ctx.fill();
+
+      // Trapez (kontura)
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(g.Ax, g.Ay);
+      ctx.lineTo(g.Bx, g.By);
+      ctx.lineTo(g.Cx, g.Cy);
+      ctx.lineTo(g.Dx, g.Dy);
+      ctx.closePath();
+      ctx.stroke();
+
+      // Visine DE i CF
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 2.5;
+      ctx.setLineDash([6, 5]);
+      ctx.beginPath();
+      ctx.moveTo(g.Dx, g.Dy);
+      ctx.lineTo(g.Ex, g.Ey);
+      ctx.moveTo(g.Cx, g.Cy);
+      ctx.lineTo(g.Fx, g.Fy);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Pravougli markeri
+      var sq = 10;
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(g.Ex, g.Ey - sq);
+      ctx.lineTo(g.Ex + sq, g.Ey - sq);
+      ctx.lineTo(g.Ex + sq, g.Ey);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(g.Fx, g.Fy - sq);
+      ctx.lineTo(g.Fx - sq, g.Fy - sq);
+      ctx.lineTo(g.Fx - sq, g.Fy);
+      ctx.stroke();
+
+      // Tačke
+      function point(px, py, lbl, dxL, dyL, color) {
+        ctx.fillStyle = color || primary;
+        ctx.beginPath();
+        ctx.arc(px, py, 5.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = bg;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.fillStyle = text;
+        ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(lbl, px + dxL, py + dyL);
+      }
+      point(g.Ax, g.Ay, 'A', -14, 24);
+      point(g.Bx, g.By, 'B', 14, 24);
+      point(g.Cx, g.Cy, 'C', 14, -10);
+      point(g.Dx, g.Dy, 'D', -14, -10);
+      point(g.Ex, g.Ey, 'E', -3, 22, accent);
+      point(g.Fx, g.Fy, 'F', 3, 22, accent);
+
+      // Oznake sa konkretnim vrednostima
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.fillStyle = highlight;
+      ctx.textAlign = 'center';
+      ctx.fillText('AE = 1', (g.Ax + g.Ex) / 2, g.Ay + 22);
+      ctx.fillStyle = primary;
+      ctx.fillText('EF = 5', (g.Ex + g.Fx) / 2, g.Ay + 22);
+      ctx.fillStyle = tertiary;
+      ctx.fillText('FB = 4', (g.Fx + g.Bx) / 2, g.Ay + 22);
+
+      // Visina
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText('h = 4√3', g.Ex - 10, (g.Ey + g.Dy) / 2);
+      ctx.textAlign = 'left';
+      ctx.fillText('h = 4√3', g.Fx + 10, (g.Fy + g.Cy) / 2);
+
+      // Bočne stranice
+      ctx.fillStyle = highlight;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText('7', (g.Ax + g.Dx) / 2 - 6, (g.Ay + g.Dy) / 2 + 4);
+      ctx.fillStyle = tertiary;
+      ctx.textAlign = 'left';
+      ctx.fillText('8', (g.Bx + g.Cx) / 2 + 6, (g.By + g.Cy) / 2 + 4);
+
+      ctx.fillStyle = primary;
+      ctx.font = '13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('AB = 10', (g.Ax + g.Bx) / 2, g.Ay + 44);
+      ctx.fillText('DC = 5', (g.Dx + g.Cx) / 2, g.Dy - 14);
+
+      // Provera-blok dole
+      var pbX = 60, pbY = H - 78, pbW = W - 120, pbH = 56;
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.10);
+      ctx.fillRect(pbX, pbY, pbW, pbH);
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 1.6;
+      ctx.strokeRect(pbX, pbY, pbW, pbH);
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('PROVERA', pbX + 14, pbY + 20);
+      ctx.fillStyle = text;
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.fillText('Trougao AED:  1² + (4√3)² = 1 + 48 = 49 = 7²  ✓', pbX + 14, pbY + 38);
+      ctx.fillText('Trougao BFC:  4² + (4√3)² = 16 + 48 = 64 = 8²  ✓', pbX + 14, pbY + 52);
+
+      // Završni odgovor — desno gore
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.18);
+      ctx.fillRect(W - 200, 90, 160, 50);
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(W - 200, 90, 160, 50);
+      ctx.fillStyle = text;
+      ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('h = 4√3', W - 120, 122);
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.fillStyle = muted;
+      ctx.fillText('odgovor (D)', W - 120, 137);
+    }
+
+    draw();
+    setupTheme(draw);
+  })();
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Visina trapeza iz dužine paralelnih i bočnih stranica",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["trapez", "visina trapeza", "Pitagorina teorema", "pomoćna konstrukcija", "Heronova formula", "sintetička geometrija"]
+}
+BRAINSPARK_META-->

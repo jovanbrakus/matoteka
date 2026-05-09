@@ -1,0 +1,537 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Naći zbir S = 1 + i + i^2 + ... + i^2022, gde je i^2 = -1.
+
+  Pristup 1 — formula za zbir geometrijske progresije.
+    Q = i (količnik). Broj članova: 2023 (od i^0 do i^2022 uključno).
+    S = (i^{2023} - 1) / (i - 1).
+    Pošto i^4 = 1, redukujemo eksponent po modulu 4:  2023 = 4·505 + 3,  pa  i^{2023} = i^3 = -i.
+    S = (-i - 1)/(i - 1) = -(i+1)/(i-1).
+    Racionalizujemo množenjem (i+1)/(i+1):
+      S = -(i+1)^2 / ((i-1)(i+1)) = -(i^2 + 2i + 1) / (i^2 - 1) = -(-1 + 2i + 1)/(-1 - 1) = -(2i)/(-2) = i.
+
+  Pristup 2 — grupisanje po četiri.
+    Period reda i^n je 4: i^0 = 1, i^1 = i, i^2 = -1, i^3 = -i. Zbir bilo koje četiri uzastopne
+    vrednosti: 1 + i - 1 - i = 0. Imamo 2023 člana = 505·4 + 3, pa 505 grupa po 4 daju 0,
+    a ostaje 3 člana sa početka: 1 + i + i^2 = 1 + i - 1 = i.
+
+  Tačan odgovor: A) i.
+
+  Vizuelni prikaz (1 statički kanvas — kompleksni brojevi su čisto računanje, dragable nije od pomoći).
+  Predlog: kompleksna ravan sa 4 stepena i (1, i, -1, -i) na jediničnoj kružnici i strelica
+  ciklusa. Plus tabela / lenta sa eksponentima 0..7 i vrednostima, ističući period 4 i ostatak 3
+  za 2023.
+
+  Zapravo idem sa dva manja prikaza u jednom canvasu: levo jedinična kružnica sa 4 stepena,
+  desno traka eksponenata sa grupisanjem 4-po-4 i ostatkom 3.
+
+  Geometrija/algebra: kompleksni brojevi (algebra). Kategorija: kompleksni brojevi.
+
+  Pitfalls:
+  - Brojanje članova: 2023 = 2022 - 0 + 1 (uključujući oba kraja), ne 2022.
+  - Pogrešan ostatak pri deljenju: 2023 / 4 = 505.75 → ostatak = 2023 - 4·505 = 3, ne 2.
+  - Mešanje i^3 = -i sa i^3 = i.
+  - Računanje po formuli i zaboravljen znak minus pri (i^{2023} - 1) sa i^{2023} = -i.
+  - Greška u racionalizaciji (i-1)(i+1) = i^2 - 1 = -2, ne 0 niti 2.
+</script>
+
+<h1 data-card="problem-title">Zbir stepena imaginarne jedinice — period četiri</h1>
+<p data-card="problem-subtitle" class="subtitle">Kompleksni brojevi &mdash; ciklični stepeni \( i \), geometrijska progresija, deljenje sa ostatkom</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Zbir \( 1 + i + i^2 + \dots + i^{2022} \), gde je \( i^2 = -1 \), jednak je:</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">Prvi član</span>
+      <span class="given-value">\( i^0 = 1 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Količnik</span>
+      <span class="given-value">\( q = i \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Broj članova</span>
+      <span class="given-value">\( 2023 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Definicija</span>
+      <span class="given-value">\( i^2 = -1 \)</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( i \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( -i \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( -1 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Iskoristićemo da je niz stepena \( i^n \) <em>periodičan</em> sa periodom \( 4 \): zbir bilo koje četiri uzastopne vrednosti je nula. Podelimo broj članova \( 2023 \) sa \( 4 \) i posmatramo samo ostatak — preostali članovi (njih najviše tri) daju ceo zbir. Na kraju ćemo isti rezultat dobiti i klasičnom formulom za zbir geometrijske progresije.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Stepeni imaginarne jedinice i geometrijska progresija</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Stepeni broja \( i \) su periodični sa periodom 4:</strong>
+          \[ i^0 = 1,\quad i^1 = i,\quad i^2 = -1,\quad i^3 = -i,\quad i^4 = 1,\;\ldots \]
+          U opštem slučaju: \( i^n = i^{\,n \bmod 4} \).</li>
+        <li><strong>Zbir punog perioda</strong> (četiri uzastopne vrednosti): \[ 1 + i + i^2 + i^3 \;=\; 1 + i - 1 - i \;=\; 0. \] Zato dugačak zbir „zaboravlja“ sve cele periode i pamti samo kraj.</li>
+        <li><strong>Broj članova zbira \( a_0 + a_1 + \dots + a_{N} \)</strong> je \( N + 1 \) (uključuju se i prvi i poslednji).</li>
+        <li><strong>Geometrijska progresija</strong> sa prvim članom \( a \), količnikom \( q \neq 1 \) i \( n \) članova: \[ S_n \;=\; a \cdot \dfrac{q^n - 1}{q - 1}. \]</li>
+        <li><strong>Racionalizacija</strong> imenioca oblika \( i - 1 \): pomnožiti sa \( i + 1 \). Tada je \( (i-1)(i+1) = i^2 - 1 = -2 \) — realan broj.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — period 4">
+  <h2>📐 Vizuelni prikaz — ciklus stepena \( i \) i grupisanje po 4</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram15" width="700" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Levo: jedinična kružnica u kompleksnoj ravni sa četiri vrednosti \( i^0 = 1,\ i^1 = i,\ i^2 = -1,\ i^3 = -i \) i strelicom ciklusa. Desno: traka prvih nekoliko eksponenata, podeljena u grupe po četiri (svaka daje zbir \( 0 \)) i tri preostala člana koja daju ukupan zbir \( i \). Ispod: deljenje \( 2023 = 4\cdot 505 + 3 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Koliko ima članova?</h3>
+      <p>Zbir ide od \( i^0 \) do \( i^{2022} \), uključujući oba kraja:</p>
+      <div class="math-block">\[ \text{broj članova} \;=\; 2022 - 0 + 1 \;=\; 2023. \]</div>
+      <p>Ovo „\( +1 \)“ je čest izvor greške — ne zaboravi i nulti član!</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Period 4 i puna grupa</h3>
+      <p>Računajmo prvih nekoliko stepena:</p>
+      <div class="math-block">\[ i^0 = 1,\quad i^1 = i,\quad i^2 = -1,\quad i^3 = -i,\quad i^4 = i^3\cdot i = (-i)\cdot i = -i^2 = 1. \]</div>
+      <p>Niz se vraća na početak na svaka 4 stepena. Zbir bilo koje četiri uzastopne vrednosti je:</p>
+      <div class="math-block">\[ 1 + i + (-1) + (-i) \;=\; 0. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto se zbir poništava?</summary>
+          <div class="detail-content"><p>Realni delovi se gase: \( 1 + (-1) = 0 \). Imaginarni se gase: \( i + (-i) = 0 \). Geometrijski: četiri vektora dužine \( 1 \) na \( 0^\circ, 90^\circ, 180^\circ, 270^\circ \) su u ravnoteži (težište je u koordinatnom početku).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Deljenje sa ostatkom: \( 2023 = 4\cdot 505 + 3 \)</h3>
+      <p>Podelimo broj članova \( 2023 \) sa periodom \( 4 \):</p>
+      <div class="math-block">\[ 2023 \;=\; 4\cdot 505 + 3, \qquad \text{tj.}\quad 2023 : 4 = 505,\ \text{ostatak } 3. \]</div>
+      <p>Dakle, \( 2023 \) članova se može razbiti na <strong>505 punih grupa</strong> po četiri (zbir svake grupe je \( 0 \)) plus <strong>tri preostala</strong> člana sa početka novog ciklusa: \( i^0,\ i^1,\ i^2 \), tj. \( 1,\ i,\ -1 \).</p>
+      <div class="math-block">\[ S \;=\; \underbrace{(1 + i + i^2 + i^3)}_{=\,0} + \dots + \underbrace{(i^{2016} + i^{2017} + i^{2018} + i^{2019})}_{=\,0} + \underbrace{(i^{2020} + i^{2021} + i^{2022})}_{\text{ostatak}}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Sumiranje ostatka</h3>
+      <p>Tri preostala stepena svode se na cikluskim eksponentima \( 0, 1, 2 \) (jer \( 2020 \equiv 0,\ 2021 \equiv 1,\ 2022 \equiv 2 \pmod{4} \)):</p>
+      <div class="math-block">\[ i^{2020} + i^{2021} + i^{2022} \;=\; 1 + i + (-1) \;=\; i. \]</div>
+      <p>Zato je traženi zbir:</p>
+      <div class="math-block">\[ \boxed{\,S \;=\; i\,}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koji su tačno eksponenti u poslednjoj grupi?</summary>
+          <div class="detail-content"><p>Poslednja puna grupa završava sa \( i^{2019} \) (jer \( 2019 = 4\cdot 504 + 3 \)). Naredni članovi su \( i^{2020},\ i^{2021},\ i^{2022} \) — tačno tri, koji se po modulu \( 4 \) svode na \( i^0,\ i^1,\ i^2 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera kroz formulu zbira geometrijske progresije</h3>
+      <p>Alternativni put: niz \( 1, i, i^2, \dots, i^{2022} \) je geometrijski sa \( a = 1 \), količnikom \( q = i \) i \( n = 2023 \) članova:</p>
+      <div class="math-block">\[ S \;=\; \dfrac{q^n - 1}{q - 1} \;=\; \dfrac{i^{2023} - 1}{i - 1}. \]</div>
+      <p>Eksponent: \( 2023 = 4\cdot 505 + 3 \), pa je \( i^{2023} = i^3 = -i \). Zato:</p>
+      <div class="math-block">\[ S \;=\; \dfrac{-i - 1}{i - 1} \;=\; \dfrac{-(i + 1)}{i - 1}. \]</div>
+      <p>Racionalizujemo množenjem brojioca i imenioca sa \( i + 1 \) (konjugovani korak: imenilac postaje realan):</p>
+      <div class="math-block">\[ S \;=\; \dfrac{-(i + 1)(i + 1)}{(i - 1)(i + 1)} \;=\; \dfrac{-(i + 1)^2}{i^2 - 1} \;=\; \dfrac{-(i^2 + 2i + 1)}{-1 - 1} \;=\; \dfrac{-(2i)}{-2} \;=\; i. \]</div>
+      <p>Isti rezultat \( S = i \) — provera prolazi.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( (i+1)^2 = 2i \)?</summary>
+          <div class="detail-content"><p>\( (i+1)^2 = i^2 + 2i + 1 = -1 + 2i + 1 = 2i \). Ovo je vrlo korisna identitet — pojavljuje se uvek kad se racionalizuje izraz oblika \( \frac{1}{i-1} \) ili \( \frac{1}{1-i} \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Beskonačno (ili ogromno) sumiranje stepena \( i \) nikad nije <em>numerički</em> izazov — uvek je <strong>kombinatorni</strong>: pitanje koliko punih perioda \( 4 \) staje u broj članova i šta ostaje. To je iste vrste argument kao kod „kog dana u nedelji pada datum X“ ili „koja boja je \( 137 \)-a kuglica u perli koja se ponavlja \( 5\)-bojama“. Naučiš da koristiš <strong>deljenje sa ostatkom (modulo)</strong> i ovakvi zadaci postaju zagrejavanje.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ 1 + i + i^2 + \dots + i^{2022} \;=\; i \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( i \)</span>
+    <span class="answer-option" data-option="B">(B) \( -i \)</span>
+    <span class="answer-option" data-option="C">(C) \( 1 \)</span>
+    <span class="answer-option" data-option="D">(D) \( -1 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 2 \)</span>
+  </div>
+  <p class="verification">Dvojna provera: (1) grupisanje 4-po-4 sa ostatkom \( 1 + i - 1 = i \) ✓; (2) formula geometrijske progresije sa racionalizacijom: \( \dfrac{-i - 1}{i - 1} = i \) ✓. Mali test: za zbir \( 1 + i + i^2 \) (3 člana, isto što i ostatak) direktno je \( 1 + i - 1 = i \) ✓.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešan broj članova.</strong> Eksponenti idu od \( 0 \) do \( 2022 \), pa ima \( 2023 \) članova, ne \( 2022 \). Ako se uzme \( 2022 = 4\cdot 505 + 2 \), ostatak je \( 2 \) i pogrešan zbir \( 1 + i = 1 + i \) — ne među opcijama, ali blizu zabune.</li>
+    <li><strong>Pogrešan ostatak.</strong> \( 2023 / 4 = 505{,}75 \), pa neki đaci „zaokruže“ na 506 i zaključe da je ostatak \( 0 \). Korektno: ostatak je \( 2023 - 4\cdot 505 = 3 \).</li>
+    <li><strong>\( i^3 = +i \) umesto \( -i \).</strong> \( i^3 = i^2 \cdot i = (-1)\cdot i = -i \). Kontrolna vežba: \( i^3 \cdot i = i^4 = 1 \), pa \( i^3 = 1/i = -i \) (jer \( 1/i = -i \) — još jedan koristan trik).</li>
+    <li><strong>Greška u racionalizaciji.</strong> \( (i - 1)(i + 1) = i^2 - 1 = -2 \), nije \( 0 \) niti \( 2 \). Imenilac je realan i <em>negativan</em> — znak je deo odgovora.</li>
+    <li><strong>Mešanje sa zbirom modula.</strong> \( |1 + i + i^2 + \dots| \neq |1| + |i| + \dots = 2023 \). Modul zbira nije zbir modula — kompleksni brojevi imaju i smer, ne samo veličinu.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Generalizuj: izračunaj \( S(N) = 1 + i + i^2 + \dots + i^N \) za proizvoljno \( N \in \mathbb{N}_0 \) u zatvorenom obliku, izraženo preko ostatka \( N \bmod 4 \). Pri kojim vrednostima \( N \) je zbir realan, a pri kojim čisto imaginaran?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Označimo \( r = (N + 1) \bmod 4 \) (broj „preostalih“ članova nakon punih grupa od po 4). Po grupisanju: \( S(N) = \) zbir prvih \( r \) članova ciklusa. Tabela:
+    <ul>
+      <li>\( r = 0 \): \( S = 0 \) (realan i imaginaran istovremeno).</li>
+      <li>\( r = 1 \): \( S = 1 \) (realan).</li>
+      <li>\( r = 2 \): \( S = 1 + i \) (mešovit).</li>
+      <li>\( r = 3 \): \( S = 1 + i - 1 = i \) (čisto imaginaran).</li>
+    </ul>
+    Realan zbir za \( r \in \{0, 1\} \), tj. \( N \equiv -1, 0 \pmod 4 \), tj. \( N \in \{ 0, 3, 4, 7, 8, 11, \dots \} \). Čisto imaginaran za \( r = 3 \), tj. \( N \equiv 2 \pmod 4 \), tj. \( N \in \{ 2, 6, 10, 14, \dots, 2022, \dots \} \). Naš \( N = 2022 \) je upravo u toj klasi — odgovor mora biti čisto imaginaran broj, što sužava izbore i pre nego što se sabere!</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram15');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Stepeni broja i imaju period 4 — sve „pune“ grupe se gase, ostaje samo ostatak', W / 2, 28);
+
+    // ----- Left: unit circle -----
+    var lcx = 180, lcy = 220, R = 130;
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(lcx - R - 30, lcy);
+    ctx.lineTo(lcx + R + 30, lcy);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(lcx, lcy - R - 30);
+    ctx.lineTo(lcx, lcy + R + 30);
+    ctx.stroke();
+    // Axis labels
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Re', lcx + R + 18, lcy - 6);
+    ctx.fillText('Im', lcx + 8, lcy - R - 18);
+
+    // Unit circle
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([3, 4]);
+    ctx.beginPath();
+    ctx.arc(lcx, lcy, R, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // 4 vectors with arrowheads
+    var pts = [
+      { ang: 0,           label: 'i⁰ = 1',  col: primary },
+      { ang: -Math.PI/2,  label: 'i¹ = i',  col: accent },
+      { ang: Math.PI,     label: 'i² = -1', col: secondary },
+      { ang: Math.PI/2,   label: 'i³ = -i', col: highlight }
+    ];
+    // Note: y-axis on canvas is flipped; we use ang with negative for "up".
+    // i^1 should be at +i which is "up" in math coords. Math up = negative y in canvas.
+    // So angle 0 → right, angle -PI/2 → up, angle PI → left, angle PI/2 → down. Good.
+
+    pts.forEach(function(p) {
+      var x = lcx + R * Math.cos(p.ang);
+      var y = lcy + R * Math.sin(p.ang);
+      ctx.strokeStyle = p.col;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(lcx, lcy);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+      // Arrowhead
+      var ah = 8;
+      var aa = Math.atan2(y - lcy, x - lcx);
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x - ah * Math.cos(aa - 0.5), y - ah * Math.sin(aa - 0.5));
+      ctx.lineTo(x - ah * Math.cos(aa + 0.5), y - ah * Math.sin(aa + 0.5));
+      ctx.closePath();
+      ctx.fillStyle = p.col;
+      ctx.fill();
+      // Dot
+      ctx.beginPath();
+      ctx.arc(x, y, 4.5, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    // Cycle arrow (curved) — show direction of multiplication by i: 1 → i → -1 → -i → 1
+    ctx.strokeStyle = cvAlpha('--sol-canvas-warning', 0.7);
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4, 4]);
+    var cycR = R + 22;
+    ctx.beginPath();
+    ctx.arc(lcx, lcy, cycR, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // Small arrow on cycle
+    var ang0 = -Math.PI / 4;
+    var ax0 = lcx + cycR * Math.cos(ang0);
+    var ay0 = lcy + cycR * Math.sin(ang0);
+    var t1 = ang0 - 0.08, t2 = ang0 + 0.08;
+    var ah1x = lcx + cycR * Math.cos(t1);
+    var ah1y = lcy + cycR * Math.sin(t1);
+    var ah2x = lcx + cycR * Math.cos(t2);
+    var ah2y = lcy + cycR * Math.sin(t2);
+    var dirA = Math.atan2(ah2y - ah1y, ah2x - ah1x);
+    var arrowSize = 9;
+    ctx.beginPath();
+    ctx.moveTo(ax0, ay0);
+    ctx.lineTo(ax0 - arrowSize * Math.cos(dirA - 0.5), ay0 - arrowSize * Math.sin(dirA - 0.5));
+    ctx.lineTo(ax0 - arrowSize * Math.cos(dirA + 0.5), ay0 - arrowSize * Math.sin(dirA + 0.5));
+    ctx.closePath();
+    ctx.fillStyle = warning;
+    ctx.fill();
+
+    // Labels for points
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = primary;
+    ctx.textAlign = 'left';
+    ctx.fillText('i⁰ = 1', lcx + R + 6, lcy + 4);
+    ctx.fillStyle = accent;
+    ctx.textAlign = 'center';
+    ctx.fillText('i¹ = i', lcx, lcy - R - 8);
+    ctx.fillStyle = secondary;
+    ctx.textAlign = 'right';
+    ctx.fillText('i² = -1', lcx - R - 6, lcy + 4);
+    ctx.fillStyle = highlight;
+    ctx.textAlign = 'center';
+    ctx.fillText('i³ = -i', lcx, lcy + R + 18);
+
+    // Center label
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('množenje sa i', lcx, lcy + R + 50);
+    ctx.fillText('= rotacija za 90°', lcx, lcy + R + 66);
+
+    // Below the circle: sum of all four
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('1 + i + (-1) + (-i) = 0', lcx, lcy + R + 96);
+
+    // ----- Right: timeline of exponents grouped by 4 -----
+    var rxL = 380, rxR = W - 30;
+    var ry0 = 70;
+    var cellW = (rxR - rxL) / 8; // show 8 cells: indices 0..7 then ellipsis
+    var cellH = 44;
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Eksponenti i grupisanje:', rxL, ry0 - 14);
+
+    var labels = ['i⁰', 'i¹', 'i²', 'i³', 'i⁴', 'i⁵', 'i⁶', 'i⁷'];
+    var values = ['1', 'i', '-1', '-i', '1', 'i', '-1', '-i'];
+    var groupColors = [
+      cvAlpha('--sol-canvas-primary', 0.16),
+      cvAlpha('--sol-canvas-primary', 0.16),
+      cvAlpha('--sol-canvas-primary', 0.16),
+      cvAlpha('--sol-canvas-primary', 0.16),
+      cvAlpha('--sol-canvas-secondary', 0.16),
+      cvAlpha('--sol-canvas-secondary', 0.16),
+      cvAlpha('--sol-canvas-secondary', 0.16),
+      cvAlpha('--sol-canvas-secondary', 0.16)
+    ];
+    var groupBorders = [primary, primary, primary, primary, secondary, secondary, secondary, secondary];
+
+    for (var k = 0; k < 8; k++) {
+      var x = rxL + k * cellW;
+      ctx.fillStyle = groupColors[k];
+      ctx.fillRect(x, ry0, cellW - 4, cellH);
+      ctx.strokeStyle = groupBorders[k];
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(x, ry0, cellW - 4, cellH);
+
+      ctx.fillStyle = text;
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(labels[k], x + (cellW - 4) / 2, ry0 + 18);
+      ctx.fillStyle = groupBorders[k];
+      ctx.font = '13px Inter, system-ui, sans-serif';
+      ctx.fillText(values[k], x + (cellW - 4) / 2, ry0 + 36);
+    }
+
+    // Group labels under each block
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('zbir = 0', rxL + 2 * cellW, ry0 + cellH + 18);
+    ctx.fillStyle = secondary;
+    ctx.fillText('zbir = 0', rxL + 6 * cellW, ry0 + cellH + 18);
+
+    // Bracket arc above each group
+    function bracket(xL, xR, yT) {
+      ctx.strokeStyle = muted;
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      ctx.moveTo(xL, yT + 6);
+      ctx.lineTo(xL, yT);
+      ctx.lineTo(xR, yT);
+      ctx.lineTo(xR, yT + 6);
+      ctx.stroke();
+    }
+    bracket(rxL + 2, rxL + 4 * cellW - 4, ry0 - 6);
+    bracket(rxL + 4 * cellW + 2, rxL + 8 * cellW - 4, ry0 - 6);
+
+    // Ellipsis and remainder section
+    ctx.fillStyle = muted;
+    ctx.font = '20px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('. . .', (rxL + rxR) / 2, ry0 + cellH + 70);
+
+    // Remainder block: 3 cells for i^2020, i^2021, i^2022
+    var ry2 = ry0 + cellH + 100;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Ostatak (3 člana, ekvivalentni i⁰, i¹, i²):', rxL, ry2 - 14);
+
+    var remLabels = ['i²⁰²⁰', 'i²⁰²¹', 'i²⁰²²'];
+    var remValues = ['1', 'i', '-1'];
+    var rcellW = 76;
+    for (var j = 0; j < 3; j++) {
+      var rx = rxL + j * (rcellW + 8);
+      ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.18);
+      ctx.fillRect(rx, ry2, rcellW, cellH);
+      ctx.strokeStyle = highlight;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(rx, ry2, rcellW, cellH);
+      ctx.fillStyle = text;
+      ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(remLabels[j], rx + rcellW / 2, ry2 + 18);
+      ctx.fillStyle = highlight;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.fillText(remValues[j], rx + rcellW / 2, ry2 + 36);
+    }
+    // Sum of remainder
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('zbir = 1 + i + (-1) = i', rxL + 3 * (rcellW + 8) + 12, ry2 + 28);
+
+    // Bottom: division equation
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('2023 = 4 · 505 + 3      →      505 grupa po 0  +  ostatak  i', W / 2, H - 60);
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+    ctx.fillText('Ukupan zbir  S = i', W / 2, H - 28);
+  }
+
+  draw();
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Zbir 1 + i + i² + ... + i^2022 — period stepena imaginarne jedinice",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["kompleksni brojevi", "imaginarna jedinica", "geometrijska progresija", "periodičnost", "deljenje sa ostatkom"]
+}
+BRAINSPARK_META-->

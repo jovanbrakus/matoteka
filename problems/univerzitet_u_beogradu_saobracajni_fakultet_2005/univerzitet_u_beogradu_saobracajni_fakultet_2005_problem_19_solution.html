@@ -1,0 +1,512 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Prirodnih brojeva m, za koje kvadratna jednacina mx^2 + 5x + m - 7 = 0 ima dva realna resenja x1 i x2 takva da je x1*x2 <= -1, ima:
+A) 0  B) 1  C) 3  D) 5  E) 6
+
+Resenje:
+1) Da bi jednacina bila kvadratna, potrebno je m != 0. Posto je m prirodan broj, m >= 1.
+
+2) USLOV 1: dva realna resenja, sto znaci D >= 0.
+   D = b^2 - 4ac = 25 - 4m(m-7) = 25 - 4m^2 + 28m
+   D >= 0  <=>  -4m^2 + 28m + 25 >= 0  <=>  4m^2 - 28m - 25 <= 0
+   Koreni: m = (28 +/- sqrt(784 + 400)) / 8 = (28 +/- sqrt(1184)) / 8
+   sqrt(1184) ≈ 34,4093
+   m1 ≈ (28 - 34,41) / 8 ≈ -0,80
+   m2 ≈ (28 + 34,41) / 8 ≈ 7,80
+   Pa za prirodne m: m ∈ {1, 2, 3, 4, 5, 6, 7}.
+
+   Provera za m = 7: D = 25 - 4*7*0 = 25 >= 0 ✓
+   Provera za m = 8: D = 25 - 4*8*1 = 25 - 32 = -7 < 0 ✗
+
+3) USLOV 2: x1 * x2 <= -1.
+   Po Vietovim formulama: x1 * x2 = c/a = (m-7)/m.
+   Treba: (m-7)/m <= -1
+   Posto je m > 0, mozemo prebaciti:
+     m - 7 <= -m
+     2m <= 7
+     m <= 3,5
+   Tj. m ∈ {1, 2, 3}.
+
+4) PRESEK: {1,2,3,4,5,6,7} ∩ {1,2,3} = {1, 2, 3}. Dakle 3 prirodna broja.
+
+PROVERA pojedinacno:
+m = 1: x^2 + 5x - 6 = 0. D = 25 + 24 = 49 ≥ 0 ✓. x1*x2 = -6 ≤ -1 ✓
+m = 2: 2x^2 + 5x - 5 = 0. D = 25 + 40 = 65 ≥ 0 ✓. x1*x2 = -5/2 = -2,5 ≤ -1 ✓
+m = 3: 3x^2 + 5x - 4 = 0. D = 25 + 48 = 73 ≥ 0 ✓. x1*x2 = -4/3 ≈ -1,33 ≤ -1 ✓
+m = 4: 4x^2 + 5x - 3 = 0. D = 25 + 48 = 73 ≥ 0 ✓. x1*x2 = -3/4 = -0,75. -0,75 ≤ -1? NE ✗
+m = 5: x1*x2 = -2/5 = -0,4 ≤ -1? NE ✗
+m = 6: x1*x2 = -1/6 ≈ -0,17 ≤ -1? NE ✗
+m = 7: x1*x2 = 0/7 = 0 ≤ -1? NE ✗
+
+ZAKLJUCAK: tacno 3 prirodna broja zadovoljavaju oba uslova. Odgovor C.
+
+VAZNA PRIMETBA: kod uslova (m-7)/m ≤ -1 NE smemo "skratiti" ili samo "okrenuti znak" — moramo paziti na predznak m. Ovde je m > 0 (prirodan broj), pa mnozenje sa m cuva smer nejednakosti.
+
+Visual aid: za m ∈ {1,...,7} crtamo tacke (m, (m-7)/m). Crtamo horizontalnu liniju y = -1. Tacke ISPOD ili NA toj liniji su validne (m=1,2,3) — ucrtati zelenom bojom. Tacke iznad linije nisu validne (m=4,5,6,7) — sive/crvene.
+</script>
+
+<h1 data-card="problem-title">Kvadratna jednačina sa parametrom — Vietove formule i diskriminanta</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — kvadratne jednačine, presek dva uslova nad parametrom</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Prirodnih brojeva \( m \), za koje kvadratna jednačina \( mx^2 + 5x + m - 7 = 0 \) ima dva realna rešenja \( x_1 \) i \( x_2 \) takva da je \( x_1 \cdot x_2 \leq -1 \), ima:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 0 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 5 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 6 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Postavljamo <strong>dva uslova</strong>: (1) jednačina je kvadratna i ima dva realna rešenja \( \Rightarrow D \geq 0 \); (2) \( x_1 \cdot x_2 \leq -1 \) preko Vietove formule \( \dfrac{m-7}{m} \leq -1 \). Za prirodne \( m \) tražimo presek dobijenih skupova.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Diskriminanta i Vietove formule</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Kvadratna jednačina</span> Oblik \( ax^2 + bx + c = 0 \) je kvadratan akko \( a \neq 0 \). Ako je \( a = 0 \), to je linearna jednačina, što ovde nije dozvoljeno.</li>
+        <li><span class="formula-label">Diskriminanta</span> \( D = b^2 - 4ac \). Dva realna rešenja postoje \( \Leftrightarrow D \geq 0 \). (Ako je \( D = 0 \), to je dvostruko rešenje — i dalje „dva“ realna.)</li>
+        <li><span class="formula-label">Vietove formule</span> Za \( ax^2+bx+c=0 \) sa rešenjima \( x_1, x_2 \): \( x_1 + x_2 = -\dfrac{b}{a} \), \( x_1 \cdot x_2 = \dfrac{c}{a} \).</li>
+        <li><span class="formula-label">Nejednakost sa razlomkom</span> Za \( \dfrac{P(m)}{m} \leq -1 \) sa \( m > 0 \), množenje sa \( m \) <em>čuva</em> smer nejednakosti. Ako je \( m < 0 \), smer se obrće — zato uvek proveravamo znak imenioca.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz uslova x₁·x₂ ≤ −1">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="720" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Za svako \( m \in \{1, 2, \dots, 7\} \) (kandidate iz uslova diskriminante) prikazana je vrednost proizvoda korena \( x_1 x_2 = \dfrac{m-7}{m} \). Tačke <strong>ispod ili na</strong> horizontalnoj liniji \( y = -1 \) zadovoljavaju traženi uslov — to su \( m = 1, 2, 3 \) (zelene), dok \( m = 4, 5, 6, 7 \) (sive) ne zadovoljavaju.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavljamo polazne uslove</h3>
+      <p>Da bi jednačina \( mx^2 + 5x + m - 7 = 0 \) bila <strong>kvadratna</strong>, mora biti \( m \neq 0 \). Pošto je \( m \) prirodan broj, automatski \( m \geq 1 \), pa je ovaj uslov ispunjen.</p>
+      <p>Pored toga, treba da budu zadovoljena <em>dva</em> uslova istovremeno:</p>
+      <div class="math-block">
+        \[ \text{(I)}\;\; D \geq 0 \quad\text{i}\quad \text{(II)}\;\; x_1 \cdot x_2 \leq -1. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Uslov (I) — diskriminanta</h3>
+      <p>Sa \( a = m \), \( b = 5 \), \( c = m - 7 \) imamo:</p>
+      <div class="math-block">
+        \[ D = b^2 - 4ac = 25 - 4m(m-7) = -4m^2 + 28m + 25. \]
+      </div>
+      <p>Tražimo \( D \geq 0 \), odnosno \( 4m^2 - 28m - 25 \leq 0 \). Rešavamo kvadratnu (po \( m \)):</p>
+      <div class="math-block">
+        \[ m = \dfrac{28 \pm \sqrt{784 + 400}}{8} = \dfrac{28 \pm \sqrt{1184}}{8} \approx \dfrac{28 \pm 34{,}41}{8}. \]
+      </div>
+      <p>Dakle \( m \in \left[\,\dfrac{28-\sqrt{1184}}{8},\; \dfrac{28+\sqrt{1184}}{8}\,\right] \approx [-0{,}80;\; 7{,}80] \). Za prirodne \( m \): <span class="result">\( m \in \{1, 2, 3, 4, 5, 6, 7\} \)</span>.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš \( m = 7 \) još uvek prolazi?</summary>
+          <div class="detail-content"><p>Za \( m = 7 \): \( D = 25 - 4 \cdot 7 \cdot 0 = 25 \geq 0 \) ✓. Za \( m = 8 \): \( D = 25 - 4 \cdot 8 \cdot 1 = -7 < 0 \) ✗ — granica \( 7{,}80 \) leži između 7 i 8.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Uslov (II) — Vietove formule</h3>
+      <p>Po Vietovoj formuli za proizvod korena:</p>
+      <div class="math-block">
+        \[ x_1 \cdot x_2 = \dfrac{c}{a} = \dfrac{m-7}{m}. \]
+      </div>
+      <p>Treba dakle: \( \dfrac{m-7}{m} \leq -1 \). Prebacimo sve na jednu stranu:</p>
+      <div class="math-block">
+        \[ \dfrac{m-7}{m} + 1 \leq 0 \;\Longleftrightarrow\; \dfrac{m-7+m}{m} \leq 0 \;\Longleftrightarrow\; \dfrac{2m-7}{m} \leq 0. \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto se ne sme jednostavno „pomnožiti sa \( m \)“ bez razmišljanja?</summary>
+          <div class="detail-content"><p>Smer nejednakosti zavisi od znaka \( m \). Ovde znamo da je \( m \) prirodan broj, pa je \( m > 0 \) i smer se <em>čuva</em>. U opštem slučaju (kad \( m \) može biti i negativno) razlomak se rešava ispitivanjem znaka brojioca i imenioca odvojeno.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Rešavanje uslova (II) za \( m > 0 \)</h3>
+      <p>Pošto je \( m > 0 \), imenilac je pozitivan; razlomak je \( \leq 0 \) tačno kad je brojilac \( \leq 0 \):</p>
+      <div class="math-block">
+        \[ 2m - 7 \leq 0 \;\Longleftrightarrow\; m \leq \dfrac{7}{2} = 3{,}5. \]
+      </div>
+      <p>Za prirodne \( m \): <span class="result">\( m \in \{1, 2, 3\} \)</span>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Presek oba uslova</h3>
+      <p>Tražimo \( m \) koji zadovoljava <em>oba</em> uslova istovremeno:</p>
+      <div class="math-block">
+        \[ \{1,2,3,4,5,6,7\} \;\cap\; \{1,2,3\} \;=\; \{1, 2, 3\}. \]
+      </div>
+      <p>Dakle, postoje tačno <span class="result">\( 3 \)</span> prirodna broja \( m \) sa traženim svojstvom.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera za sva tri kandidata</h3>
+      <p>Direktno računamo \( x_1 \cdot x_2 = \dfrac{m-7}{m} \):</p>
+      <div class="math-block">
+        \[ \begin{aligned}
+        m=1: &\; x^2 + 5x - 6 = 0,\quad D = 49 \geq 0,\quad x_1 x_2 = -6 \leq -1 \;\checkmark \\
+        m=2: &\; 2x^2 + 5x - 5 = 0,\quad D = 65 \geq 0,\quad x_1 x_2 = -\tfrac{5}{2} = -2{,}5 \leq -1 \;\checkmark \\
+        m=3: &\; 3x^2 + 5x - 4 = 0,\quad D = 73 \geq 0,\quad x_1 x_2 = -\tfrac{4}{3} \approx -1{,}33 \leq -1 \;\checkmark
+        \end{aligned} \]
+      </div>
+      <p>Za uporedbu, \( m = 4 \) ne prolazi: \( x_1 x_2 = -\tfrac{3}{4} = -0{,}75 \), a \( -0{,}75 > -1 \).</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Zadatak sa „parametrom u kvadratnoj“ skoro uvek se rešava <strong>ukrštanjem dva uslova</strong>: prvo egzistencija (\( D \geq 0 \)), zatim svojstvo korena (Vietove formule ili znak izraza u funkciji \( f(x_0) \)). Vietove formule su moćne jer izbegavaju eksplicitno računanje korena — dovoljan je <em>odnos</em> koeficijenata. Ovde uslov \( x_1 x_2 \leq -1 \) elegantno postaje obična racionalna nejednakost \( \dfrac{2m-7}{m} \leq 0 \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zaboravljanje uslova diskriminante.</strong> Ako se traže <em>realna</em> rešenja, \( D \geq 0 \) je obavezno. Bez njega bi „rešenje“ \( m \leq 3{,}5 \) dalo \( \{1, 2, 3\} \) slučajno tačno, ali pristup nije korektan i u drugim primerima može davati pogrešne rezultate.</li>
+    <li><strong>Nepravilno množenje nejednakosti sa \( m \).</strong> Smer nejednakosti se obrće ako je \( m < 0 \). Ovde znamo da je \( m \in \mathbb{N} \), pa je \( m > 0 \) i smer se čuva — ali u opštim zadacima parametar može biti negativan.</li>
+    <li><strong>Granični slučaj \( m = 0 \).</strong> Ako se ne pazi, mogli bismo „rešiti“ uslov i dobiti \( m \leq 3{,}5 \) i tu uključiti \( m = 0 \). Međutim, za \( m = 0 \) jednačina \( 5x - 7 = 0 \) je linearna i ima samo <em>jedno</em> rešenje, pa otpada (a i nije prirodan broj).</li>
+    <li><strong>Brkanje stroge i nestroge nejednakosti.</strong> Uslov je \( x_1 x_2 \leq -1 \) (može i jednako \( -1 \)). Da je strogo \( < -1 \), \( m = 3{,}5 \) bi i dalje bio van skupa, pa za prirodne brojeve odgovor ostaje isti — ali u opštem slučaju to može promeniti rezultat.</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ m \in \{1, 2, 3\} \;\Rightarrow\; \text{ukupno } 3 \text{ prirodna broja}. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 0 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 1 \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( 3 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 5 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 6 \)</span>
+  </div>
+  <p class="verification">Provera: za svaki od \( m = 1, 2, 3 \) imamo \( D > 0 \) (dva realna korena) i \( x_1 x_2 \in \{-6;\;-2{,}5;\;-\tfrac{4}{3}\} \), sve \( \leq -1 \). ✓</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Za koje prirodne brojeve \( m \) jednačina \( mx^2 + 5x + m - 7 = 0 \) ima dva realna rešenja \( x_1, x_2 \) takva da je <strong>zbir</strong> \( x_1 + x_2 \geq -1 \)? Da li se preklapa sa današnjim odgovorom?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Po Vietovoj formuli \( x_1 + x_2 = -\dfrac{5}{m} \). Uslov \( -\dfrac{5}{m} \geq -1 \) za \( m > 0 \) daje \( -5 \geq -m \), tj. \( m \geq 5 \). U preseku sa \( m \in \{1, \dots, 7\} \) dobijaš \( m \in \{5, 6, 7\} \) — opet 3 broja, ali <em>drugačiji</em> skup. Uslovi na zbir i na proizvod biraju različite delove dozvoljenog opsega.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var warning   = cv('--sol-canvas-warning');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.font = 'bold 17px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Vrednost x₁·x₂ = (m−7)/m za m ∈ {1, ..., 7}', canvas.width / 2, 14);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Tražimo m za koje je x₁·x₂ ≤ −1 (ispod ili na isprekidanoj liniji)', canvas.width / 2, 38);
+
+    // Plot area
+    var marginL = 70;
+    var marginR = 40;
+    var marginTop = 80;
+    var marginBottom = 110;
+    var plotW = canvas.width - marginL - marginR;
+    var plotH = canvas.height - marginTop - marginBottom;
+
+    // Math range: x in [0.5, 7.5], y in [-7, 1]
+    var xMin = 0.5, xMax = 7.5;
+    var yMin = -7,  yMax = 1;
+
+    function tx(mx) { return marginL + (mx - xMin) / (xMax - xMin) * plotW; }
+    function ty(my) { return marginTop + (yMax - my) / (yMax - yMin) * plotH; }
+
+    // Grid: vertical at integer m, horizontal at integer y
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 4]);
+    for (var gm = 1; gm <= 7; gm++) {
+      ctx.beginPath();
+      ctx.moveTo(tx(gm), marginTop);
+      ctx.lineTo(tx(gm), marginTop + plotH);
+      ctx.stroke();
+    }
+    for (var gy = -6; gy <= 1; gy++) {
+      ctx.beginPath();
+      ctx.moveTo(marginL, ty(gy));
+      ctx.lineTo(marginL + plotW, ty(gy));
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    // x-axis (y = 0) if visible
+    if (0 >= yMin && 0 <= yMax) {
+      ctx.beginPath();
+      ctx.moveTo(marginL, ty(0));
+      ctx.lineTo(marginL + plotW, ty(0));
+      ctx.stroke();
+    }
+    // y-axis box (left edge)
+    ctx.beginPath();
+    ctx.moveTo(marginL, marginTop);
+    ctx.lineTo(marginL, marginTop + plotH);
+    ctx.stroke();
+
+    // Y axis labels
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (var yl = -6; yl <= 1; yl++) {
+      ctx.fillText(String(yl), marginL - 8, ty(yl));
+    }
+
+    // X axis labels
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (var xl = 1; xl <= 7; xl++) {
+      ctx.fillText(String(xl), tx(xl), marginTop + plotH + 6);
+    }
+
+    // Axis name labels
+    ctx.font = 'italic 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.fillText('m', marginL + plotW / 2, marginTop + plotH + 28);
+    ctx.save();
+    ctx.translate(marginL - 44, marginTop + plotH / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center';
+    ctx.fillText('x₁ · x₂', 0, 0);
+    ctx.restore();
+
+    // Highlighted region y <= -1 (below threshold) — light green band
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.10);
+    ctx.fillRect(marginL, ty(-1), plotW, ty(yMin) - ty(-1));
+
+    // Threshold line y = -1 (dashed)
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([8, 5]);
+    ctx.beginPath();
+    ctx.moveTo(marginL, ty(-1));
+    ctx.lineTo(marginL + plotW, ty(-1));
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // Threshold label
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = highlight;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('y = −1  (granica)', marginL + plotW - 130, ty(-1) - 12);
+
+    // Smooth curve y = (m-7)/m for m in [0.5, 7.5]
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    var first = true;
+    for (var mm = xMin; mm <= xMax + 0.001; mm += 0.05) {
+      var yy = (mm - 7) / mm;
+      if (yy < yMin) continue;
+      if (yy > yMax) continue;
+      var px = tx(mm);
+      var py = ty(yy);
+      if (first) { ctx.moveTo(px, py); first = false; }
+      else { ctx.lineTo(px, py); }
+    }
+    ctx.stroke();
+
+    // Curve label
+    ctx.font = 'italic 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = primary;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('y = (m − 7)/m', tx(5.5), ty((5.5 - 7) / 5.5) - 18);
+
+    // Markers for each integer m
+    var data = [
+      {m: 1, y: -6,        ok: true},
+      {m: 2, y: -2.5,      ok: true},
+      {m: 3, y: -4/3,      ok: true},
+      {m: 4, y: -0.75,     ok: false},
+      {m: 5, y: -0.4,      ok: false},
+      {m: 6, y: -1/6,      ok: false},
+      {m: 7, y: 0,         ok: false}
+    ];
+
+    for (var i = 0; i < data.length; i++) {
+      var d = data[i];
+      var px = tx(d.m);
+      var py = ty(d.y);
+      var color = d.ok ? accent : muted;
+
+      // Glow
+      ctx.fillStyle = cvAlpha(d.ok ? '--sol-canvas-accent' : '--sol-canvas-muted', 0.25);
+      ctx.beginPath();
+      ctx.arc(px, py, 11, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Solid dot
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(px, py, 6, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Label with value
+      ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+      ctx.fillStyle = color;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      var ylabel = (d.y === Math.round(d.y))
+        ? String(d.y)
+        : (d.m === 3 ? '−4/3' : (d.m === 6 ? '−1/6' : d.y.toFixed(2).replace('.', ',')));
+      var off = d.ok ? 12 : -14;
+      if (d.ok) {
+        ctx.textBaseline = 'top';
+        ctx.fillText(ylabel, px, py + 12);
+      } else {
+        ctx.textBaseline = 'bottom';
+        ctx.fillText(ylabel, px, py - 10);
+      }
+    }
+
+    // Legend at bottom
+    var legY = marginTop + plotH + 50;
+    var legX1 = marginL + 10;
+    var legX2 = marginL + 200;
+
+    ctx.beginPath();
+    ctx.fillStyle = accent;
+    ctx.arc(legX1, legY, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('zadovoljava: m = 1, 2, 3', legX1 + 14, legY);
+
+    ctx.beginPath();
+    ctx.fillStyle = muted;
+    ctx.arc(legX2, legY, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.fillText('ne zadovoljava: m = 4, 5, 6, 7', legX2 + 14, legY);
+
+    // Bottom conclusion
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.fillStyle = accent;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Tačno 3 prirodna broja zadovoljavaju oba uslova.', canvas.width / 2, legY + 28);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Kvadratna jednačina sa parametrom — uslov D ≥ 0 i Vietove formule",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["kvadratna jednačina", "parametar", "diskriminanta", "Vietove formule", "racionalna nejednakost", "presek uslova"]
+}
+BRAINSPARK_META-->

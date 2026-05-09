@@ -1,0 +1,556 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+PROBLEM: Recnik sadrzi sve reci od 5 slova koje se mogu obrazovati od TRI RAZLICITA slova skupa {A,B,C,D,E,F}. n = broj reci. Naci interval u kome je n.
+
+KLJUC: "od tri razlicita slova" znaci da rec koristi TACNO 3 razlicita slova iz skupa od 6, i svako od njih bar jednom u 5-slovnoj reci.
+
+KORAK 1: Izbor podskupa od 3 slova iz 6.
+   C(6,3) = 6!/(3!*3!) = 20.
+
+KORAK 2: Za fiksan podskup {x,y,z}, koliko ima reci duzine 5 koje koriste sva tri slova bar jednom.
+   Ovo je broj surjekcija sa skupa od 5 pozicija u skupa od 3 slova.
+   Inkluzija-iskljucenje:
+     |sve reci sa slovima iz {x,y,z}| = 3^5 = 243
+     oduzmemo one koje koriste najvise 2 slova: C(3,2) * 2^5 = 3 * 32 = 96 (preracunavamo)
+     dodajmo nazad one koje koriste najvise 1 slovo: C(3,1) * 1^5 = 3 * 1 = 3
+   Surjekcije = 3^5 - C(3,1)*2^5 + C(3,2)*1^5
+              = 243 - 3*32 + 3*1
+              = 243 - 96 + 3
+              = 150.
+
+   Provera Stirling: S(5,3) = 25 (Stirlingovi brojevi druge vrste). Surjekcije = 3! * S(5,3) = 6*25 = 150. ✓
+
+KORAK 3: Ukupno
+   n = 20 * 150 = 3000.
+
+Provera intervala: 3000 <= 3000 < 3500 → odgovor (D).
+
+VIZUEL: tabela / bar chart raspodele po broju razlicitih slova:
+  - Tacno 1 slovo: C(6,1)*1 = 6 reci
+  - Tacno 2 slova: C(6,2) * (2^5 - 2) = 15 * 30 = 450 reci
+  - Tacno 3 slova: C(6,3) * 150 = 20 * 150 = 3000 reci  ← TRAZIMO OVO
+  - Tacno 4 slova: C(6,4) * S(5,4)*4! = 15 * 10*24 = 15*240 = 3600 ... cek S(5,4)=10. Surjekcije = 4!*10 = 240. Ukupno 15*240 = 3600.
+  - Tacno 5 slova: C(6,5)*5! = 6*120 = 720.
+
+Ukupno reci od 5 slova iz skupa od 6 (svako koliko hoces puta) = 6^5 = 7776.
+Provera: 6 + 450 + 3000 + 3600 + 720 = 7776. ✓ Odlicno se slaze.
+
+ZAMKE:
+- Pogresno: misliti da "tri razlicita slova" znaci tacno 3 razlicite pozicije razlicite — NE. Znaci 3 razlicita slova u celoj reci.
+- Pogresno: V(6,3) = 6*5*4 = 120 — to bi bio broj UREDJENIH izbora od 3 slova; ali nas zanima kombinacija (skup), pa C(6,3)=20.
+- Pogresno: 20 * 3^5 = 4860 — to broji i reci sa manje od 3 razlicita slova, pa precenjuje.
+- Pogresno: 20 * 5! = 2400 — to bi bilo da svako slovo dolazi tacno jednom, ali rec ima 5 slova a izabrana 3, pa neka se ponavljaju.
+
+CHALLENGE: Generalizacija — koliko reci od n slova od tacno k razlicitih iz alfabeta velicine N?
+   N_k = C(N,k) * sum_{j=0..k} (-1)^j C(k,j) (k-j)^n  =  C(N,k) * k! * S(n,k).
+</script>
+
+<h1 data-card="problem-title">Reči od tačno tri različita slova — inkluzija i isključenje</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika — surjekcije, formula uključenja-isključenja, Stirlingovi brojevi druge vrste</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Rečnik sadrži sve reči od 5 slova, koje se mogu obrazovati od tri različita slova skupa \( \{A, B, C, D, E, F\} \). Ako je \( n \) broj reči u tom rečniku, onda je:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 1500 \leq n < 2000 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 2000 \leq n < 2500 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 2500 \leq n < 3000 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 3000 \leq n < 3500 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 3500 \leq n < 4000 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Razdvajamo brojanje na <strong>dva nezavisna koraka</strong>: (1) iz \( 6 \) slova izaberemo skup od \( 3 \) različita slova — \( \binom{6}{3} \) načina; (2) za fiksiran skup od \( 3 \) slova brojimo reči dužine \( 5 \) u kojima se <em>svako</em> od ta tri slova javlja bar jednom — koristimo formulu uključenja-isključenja. Krajnji broj je proizvod ova dva broja.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Kombinacije, varijacije sa ponavljanjem i formula uključenja-isključenja</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Kombinacije</span> Broj neuređenih izbora \( k \) iz \( n \) elemenata: \( \binom{n}{k} = \dfrac{n!}{k!\,(n-k)!} \).</li>
+        <li><span class="formula-label">Varijacije sa ponavljanjem</span> Broj uređenih nizova dužine \( m \) iz alfabeta veličine \( k \) jeste \( k^m \) (svaka pozicija nezavisno).</li>
+        <li><span class="formula-label">Surjekcije (sve vrednosti pogođene)</span> Broj funkcija \( f \colon \{1,\dots,m\}\to\{1,\dots,k\} \) koje uzimaju <em>sve</em> vrednosti je \( \displaystyle \sum_{j=0}^{k}(-1)^j\binom{k}{j}(k-j)^m \).</li>
+        <li><span class="formula-label">Uključenje-isključenje</span> Za skupove \( A_1,\dots,A_k \): \( \left|\bigcup A_i\right| = \sum |A_i| - \sum |A_i\cap A_j| + \sum |A_i\cap A_j\cap A_l| - \dots \) Koristi se da od svih nizova izbacimo one u kojima neko slovo nedostaje.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Raspodela reči po broju različitih slova">
+  <h2>📐 Raspodela svih reči dužine 5 po broju različitih slova</h2>
+  <div class="canvas-wrapper">
+    <canvas id="distribution" width="760" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Stubići pokazuju koliko reči dužine \( 5 \) (iz alfabeta od \( 6 \) slova) koristi tačno \( k \) različitih slova, za \( k = 1,2,3,4,5 \). Zbir je \( 6^5 = 7776 \). Naš zadatak traži stubić \( k = 3 \), označen zelenom bojom.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Šema uključenja-isključenja">
+  <h2>📐 Uključenje-isključenje za reči koje koriste sva 3 izabrana slova</h2>
+  <div class="canvas-wrapper">
+    <canvas id="inclusion" width="760" height="460"></canvas>
+  </div>
+  <p class="canvas-caption">Iz \( 3^5 \) svih reči nad fiksnim skupom \( \{x,y,z\} \) oduzmemo reči kojima nedostaje bar jedno od ta tri slova, a zatim po formuli uključenja-isključenja vratimo dvostruko brojane: \( 243 - 96 + 3 = 150 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Pažljivo pročitamo uslov</h3>
+      <p>Rečnik sadrži <strong>sve</strong> reči dužine \( 5 \) koje se mogu napraviti od <strong>tačno tri različita</strong> slova skupa \( \{A,B,C,D,E,F\} \). Reč je uređen niz \( 5 \) slova; uzimamo sve takve nizove kod kojih se javlja tačno \( 3 \) različitih slova (svako bar jednom — inače ih ne bismo „obrazovali od tri različita slova“).</p>
+      <div class="callout callout-info">
+        <p>Brojanje delimo na <strong>izbor</strong> tri slova i <strong>raspored</strong> u reč dužine \( 5 \). Ova dva koraka su nezavisna, pa se rezultati množe.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Koliko ima načina da se izaberu \( 3 \) slova iz \( 6 \)?</h3>
+      <p>Redosled izbora nije bitan (skup slova je važan, ne ko je „prvi“ izabran). Dakle, broj kombinacija je</p>
+      <div class="math-block">\[ \binom{6}{3} = \frac{6!}{3!\cdot 3!} = \frac{6\cdot 5\cdot 4}{3\cdot 2\cdot 1} = 20. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš kombinacije, a ne varijacije?</summary>
+          <div class="detail-content"><p>Skup slova \( \{A,B,C\} \) i \( \{C,A,B\} \) je <em>isti</em> skup — od njega ćemo praviti iste reči. Da smo brojali uređene trojke, dvostruko bismo brojali svaki skup \( 3! = 6 \) puta.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Fiksirajmo skup od \( 3 \) slova i prebrojmo reči</h3>
+      <p>Bez umanjenja opštosti, neka su izabrana slova \( x, y, z \). Tražimo broj nizova dužine \( 5 \) nad alfabetom \( \{x,y,z\} \) takvih da <strong>svako</strong> slovo se javlja <strong>bar jednom</strong>. To je broj surjekcija sa skupa od \( 5 \) pozicija u skup od \( 3 \) slova.</p>
+
+      <div class="substep" data-substep="a)">
+        <p><strong>(a)</strong> Bez ograničenja, ukupno reči nad \( \{x,y,z\} \) je \( 3^5 = 243 \) (svaka od \( 5 \) pozicija nezavisno bira jedno od \( 3 \) slova).</p>
+      </div>
+
+      <div class="substep" data-substep="b)">
+        <p><strong>(b)</strong> Označimo sa \( N_x \) skup reči u kojima se <em>ne javlja</em> slovo \( x \) (analogno \( N_y \) i \( N_z \)). Treba nam dopuna od \( N_x \cup N_y \cup N_z \) u svih \( 243 \) reči.</p>
+      </div>
+
+      <div class="substep" data-substep="c)">
+        <p><strong>(c)</strong> Po formuli uključenja-isključenja:</p>
+        <div class="math-block">\[ |N_x \cup N_y \cup N_z| = \sum |N_i| - \sum |N_i \cap N_j| + |N_x \cap N_y \cap N_z|. \]</div>
+        <ul>
+          <li>\( |N_x| = 2^5 = 32 \) (svako mesto bira između \( y \) i \( z \)). Isto važi za \( N_y \) i \( N_z \), pa je \( \sum|N_i| = 3\cdot 32 = 96 \).</li>
+          <li>\( |N_x \cap N_y| = 1^5 = 1 \) (sva mesta su \( z \)). Isto za ostale parove, pa \( \sum |N_i\cap N_j| = 3\cdot 1 = 3 \).</li>
+          <li>\( |N_x\cap N_y\cap N_z| = 0 \) (nema slova).</li>
+        </ul>
+        <p>Dakle \( |N_x\cup N_y\cup N_z| = 96 - 3 + 0 = 93 \).</p>
+      </div>
+
+      <div class="substep" data-substep="d)">
+        <p><strong>(d)</strong> Broj reči u kojima se <em>svako</em> od slova \( x,y,z \) pojavljuje bar jednom je</p>
+        <div class="math-block">\[ 3^5 - |N_x \cup N_y \cup N_z| = 243 - 93 = 150. \]</div>
+        <p>Ekvivalentno, direktno preko formule za surjekcije:</p>
+        <div class="math-block">\[ \sum_{j=0}^{3}(-1)^j\binom{3}{j}(3-j)^5 = 3^5 - 3\cdot 2^5 + 3\cdot 1^5 - 0 = 243 - 96 + 3 = 150. \]</div>
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koja je veza sa Stirlingovim brojem \( S(5,3) \)?</summary>
+          <div class="detail-content"><p>Stirlingov broj druge vrste \( S(5,3) = 25 \) broji particije \( 5 \)-člana skupa u \( 3 \) neprazna podskupa. Surjekcije iz \( 5 \)-člana u \( 3 \)-člani skup je \( 3!\cdot S(5,3) = 6\cdot 25 = 150 \). Sve se slaže. ✓</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Sastavljamo konačan broj</h3>
+      <p>Pomnožimo broj načina za izbor slova i broj reči po skupu:</p>
+      <div class="math-block">\[ n = \binom{6}{3} \cdot 150 = 20 \cdot 150 = 3000. \]</div>
+      <p>Pošto je \( 3000 \leq 3000 < 3500 \), \( n \) leži u intervalu \( [3000, 3500) \). <span class="result">n = 3000</span></p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Globalna provera (raspodela svih reči)</h3>
+      <p>Sve reči dužine \( 5 \) iz alfabeta od \( 6 \) slova ima \( 6^5 = 7776 \). Razložimo ih po broju različitih slova \( k \):</p>
+      <div class="math-block">\[ \begin{aligned}
+        k=1 &: \binom{6}{1}\cdot 1 = 6, \\
+        k=2 &: \binom{6}{2}\cdot(2^5-2) = 15\cdot 30 = 450, \\
+        k=3 &: \binom{6}{3}\cdot 150 = 20\cdot 150 = 3000, \\
+        k=4 &: \binom{6}{4}\cdot 4!\cdot S(5,4) = 15 \cdot 240 = 3600, \\
+        k=5 &: \binom{6}{5}\cdot 5! = 6\cdot 120 = 720.
+      \end{aligned} \]</div>
+      <p>Zbir: \( 6 + 450 + 3000 + 3600 + 720 = 7776 \). Slaže se sa \( 6^5 \), pa je naša cifra \( 3000 \) sigurno tačna. ✓</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>„Tri različita slova“ znači <em>tačno</em> tri — svako mora biti upotrebljeno. To pretvara naizgled jednostavan zadatak \( \binom{6}{3}\cdot 3^5 \) (što bi bilo \( 4860 \), pogrešno!) u problem brojanja <strong>surjekcija</strong>, gde formula uključenja-isključenja zauzima centralno mesto.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ n = \binom{6}{3}\cdot\bigl(3^5 - 3\cdot 2^5 + 3\bigr) = 20\cdot 150 = 3000. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 1500 \leq n < 2000 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 2000 \leq n < 2500 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 2500 \leq n < 3000 \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 3000 \leq n < 3500 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 3500 \leq n < 4000 \)</span>
+  </div>
+  <p class="verification">Provera: zbir reči po svim \( k \) je \( 6+450+3000+3600+720 = 7776 = 6^5 \), pa se naša cifra \( 3000 \) uklapa u potpunu raspodelu.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Brojanje \( \binom{6}{3}\cdot 3^5 = 4860 \).</strong> Pogrešno — uključuje reči koje koriste samo \( 1 \) ili \( 2 \) od izabrana \( 3 \) slova.</li>
+    <li><strong>Korišćenje varijacija \( V(6,3) = 6\cdot 5\cdot 4 = 120 \) umesto \( \binom{6}{3} = 20 \).</strong> Skup od \( 3 \) slova ne zavisi od redosleda izbora.</li>
+    <li><strong>Pretpostavka da svako slovo dolazi tačno jednom.</strong> Reč ima \( 5 \) mesta a slova \( 3 \) — neka se nužno ponavljaju.</li>
+    <li><strong>Zaboraviti dodavanje (treći član) u formuli uključenja-isključenja.</strong> \( 243 - 96 = 147 \) (pogrešno) umesto \( 243 - 96 + 3 = 150 \).</li>
+    <li><strong>Tumačenje „tri različita“ kao da bar tri od pet pozicija imaju različita slova.</strong> Standardno značenje: u celoj reči se javlja tačno \( 3 \) različita slova.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Generalizuj: koliko reči dužine \( n \) iz alfabeta veličine \( N \) koristi tačno \( k \) različitih slova? Posebno, koliko reči dužine \( 7 \) iz alfabeta od \( 6 \) slova koristi tačno \( 4 \) različita slova?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Po istoj logici: izaberi \( k \) slova \( \binom{N}{k} \) načina, pa prebroj surjekcije iz \( n \)-člana u \( k \)-člani skup, što je \( \displaystyle\sum_{j=0}^{k}(-1)^j\binom{k}{j}(k-j)^n = k!\,S(n,k) \). Ukupno:</p>
+      <div class="math-block">\[ \binom{N}{k}\cdot \sum_{j=0}^{k}(-1)^j\binom{k}{j}(k-j)^n. \]</div>
+      <p>Za \( N=6,\; n=7,\; k=4 \): \( \binom{6}{4} = 15 \), surjekcije \( = 4^7 - 4\cdot 3^7 + 6\cdot 2^7 - 4\cdot 1^7 = 16384 - 8748 + 768 - 4 = 8400 \). Ukupno \( 15 \cdot 8400 = 126\,000 \).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, a) {
+    var c = cv(name);
+    if (c.charAt(0) === '#') {
+      var r = parseInt(c.slice(1,3),16), g = parseInt(c.slice(3,5),16), b = parseInt(c.slice(5,7),16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('distribution');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  // Data: words of length 5 from alphabet of 6 using exactly k distinct letters.
+  var data = [
+    { k: 1, count: 6,    label: 'tačno 1 slovo' },
+    { k: 2, count: 450,  label: 'tačno 2 slova' },
+    { k: 3, count: 3000, label: 'tačno 3 slova',  highlight: true },
+    { k: 4, count: 3600, label: 'tačno 4 slova' },
+    { k: 5, count: 720,  label: 'tačno 5 slova' }
+  ];
+
+  function draw() {
+    styles = getComputedStyle(root);
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Reči dužine 5 nad alfabetom od 6 slova: razbijanje po broju različitih slova', canvas.width/2, 28);
+
+    // Plot area
+    var padL = 80, padR = 40, padT = 60, padB = 130;
+    var plotW = canvas.width - padL - padR;
+    var plotH = canvas.height - padT - padB;
+    var maxV = 4000;
+    var n = data.length;
+    var slotW = plotW / n;
+    var barW = slotW * 0.55;
+
+    // Y gridlines
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'right';
+    for (var v = 0; v <= maxV; v += 1000) {
+      var y = padT + plotH - (v / maxV) * plotH;
+      ctx.beginPath();
+      ctx.moveTo(padL, y);
+      ctx.lineTo(padL + plotW, y);
+      ctx.stroke();
+      ctx.fillText(String(v), padL - 8, y + 4);
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(padL, padT);
+    ctx.lineTo(padL, padT + plotH);
+    ctx.lineTo(padL + plotW, padT + plotH);
+    ctx.stroke();
+
+    // Bars
+    for (var i = 0; i < n; i++) {
+      var d = data[i];
+      var cx = padL + (i + 0.5) * slotW;
+      var bh = (d.count / maxV) * plotH;
+      var by = padT + plotH - bh;
+      var col = d.highlight ? accent : primary;
+      ctx.fillStyle = cvAlpha(d.highlight ? '--sol-canvas-accent' : '--sol-canvas-primary', 0.85);
+      ctx.fillRect(cx - barW/2, by, barW, bh);
+      ctx.strokeStyle = col;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(cx - barW/2, by, barW, bh);
+
+      // Count label above bar
+      ctx.fillStyle = d.highlight ? accent : text;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(String(d.count), cx, by - 8);
+
+      // X-axis k label
+      ctx.fillStyle = text;
+      ctx.font = '13px Inter, system-ui, sans-serif';
+      ctx.fillText('k = ' + d.k, cx, padT + plotH + 22);
+      ctx.fillStyle = muted;
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.fillText(d.label, cx, padT + plotH + 40);
+    }
+
+    // X-axis title
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('broj različitih slova u reči', canvas.width/2, padT + plotH + 64);
+
+    // Y-axis title
+    ctx.save();
+    ctx.translate(20, padT + plotH/2);
+    ctx.rotate(-Math.PI/2);
+    ctx.textAlign = 'center';
+    ctx.fillText('broj reči', 0, 0);
+    ctx.restore();
+
+    // Legend / total
+    ctx.fillStyle = text;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Zbir svih stubića = 6 + 450 + 3000 + 3600 + 720 = 7776 = 6⁵', canvas.width/2, canvas.height - 38);
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillText('Traženi odgovor: stubić k = 3, n = 3000', canvas.width/2, canvas.height - 16);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, a) {
+    var c = cv(name);
+    if (c.charAt(0) === '#') {
+      var r = parseInt(c.slice(1,3),16), g = parseInt(c.slice(3,5),16), b = parseInt(c.slice(5,7),16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('inclusion');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    styles = getComputedStyle(root);
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var danger    = cv('--sol-canvas-danger');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Reči nad fiksiranim {x, y, z}, dužina 5: 3⁵ − 3·2⁵ + 3·1⁵ = 150', canvas.width/2, 28);
+
+    // Layout: three Venn circles for N_x, N_y, N_z (sets of words MISSING that letter)
+    var cx = canvas.width / 2;
+    var cy = 230;
+    var R = 105;
+    var d = 75; // offset
+
+    // Three circle centers (equilateral)
+    var c1 = { x: cx - d, y: cy - d/2 };       // x
+    var c2 = { x: cx + d, y: cy - d/2 };       // y
+    var c3 = { x: cx,     y: cy + d };         // z
+
+    // Box (universe)
+    var bx = cx - 200, by = cy - 150, bw = 400, bh = 320;
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(bx, by, bw, bh);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Univerzum: sve reči nad {x,y,z}, |U| = 3⁵ = 243', bx + 6, by + 16);
+
+    // Fill circles with translucent colors
+    ctx.globalAlpha = 0.35;
+    ctx.fillStyle = primary;
+    ctx.beginPath(); ctx.arc(c1.x, c1.y, R, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = secondary;
+    ctx.beginPath(); ctx.arc(c2.x, c2.y, R, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = danger;
+    ctx.beginPath(); ctx.arc(c3.x, c3.y, R, 0, Math.PI*2); ctx.fill();
+    ctx.globalAlpha = 1;
+
+    // Circle outlines
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = primary;
+    ctx.beginPath(); ctx.arc(c1.x, c1.y, R, 0, Math.PI*2); ctx.stroke();
+    ctx.strokeStyle = secondary;
+    ctx.beginPath(); ctx.arc(c2.x, c2.y, R, 0, Math.PI*2); ctx.stroke();
+    ctx.strokeStyle = danger;
+    ctx.beginPath(); ctx.arc(c3.x, c3.y, R, 0, Math.PI*2); ctx.stroke();
+
+    // Labels for each set
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('Nₓ: nema x  (|·|=2⁵=32)', c1.x - R + 30, c1.y - R + 18);
+    ctx.fillStyle = secondary;
+    ctx.textAlign = 'left';
+    ctx.fillText('Nᵧ: nema y  (|·|=32)', c2.x + R - 30, c2.y - R + 18);
+    ctx.fillStyle = danger;
+    ctx.textAlign = 'center';
+    ctx.fillText('N_z: nema z  (|·|=32)', c3.x, c3.y + R + 22);
+
+    // Mark the SOLUTION region: complement of union (words using ALL three letters)
+    // Approximate by hatching the box minus a generous union region
+    // Instead, just label it textually
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Tražimo: U \\ (Nₓ ∪ Nᵧ ∪ N_z) — reči koje koriste i x, i y, i z.', cx, by + bh - 8);
+
+    // Right-side computation block
+    var rx = canvas.width - 230, ry = 60;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Uključenje-isključenje:', rx, ry);
+
+    ctx.font = '12px ui-monospace, SFMono-Regular, monospace';
+    ctx.fillStyle = text;
+    var lines = [
+      '|U|        = 3⁵     = 243',
+      '−Σ|Nᵢ|     = 3·2⁵   =  96',
+      '+Σ|Nᵢ∩Nⱼ| = 3·1⁵   =   3',
+      '−|Nₓ∩Nᵧ∩N_z| = 0    =   0',
+      '────────────────────────',
+      'Surjekcije =       = 150'
+    ];
+    for (var i = 0; i < lines.length; i++) {
+      ctx.fillText(lines[i], rx, ry + 22 + i*18);
+    }
+
+    // Final boxed value
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.18);
+    ctx.fillRect(rx - 6, ry + 22 + 5*18 - 14, 200, 22);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(rx - 6, ry + 22 + 5*18 - 14, 200, 22);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px ui-monospace, SFMono-Regular, monospace';
+    ctx.fillText('= 150 reči po skupu', rx, ry + 22 + 5*18);
+
+    // Final caption
+    ctx.fillStyle = text;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Ukupno: C(6,3) · 150 = 20 · 150 = 3000.', canvas.width/2, canvas.height - 18);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Reči od tačno 3 različita slova — uključenje-isključenje",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["kombinatorika", "uključenje-isključenje", "surjekcije", "Stirlingovi brojevi", "prebrojavanje reči"]
+}
+BRAINSPARK_META-->

@@ -1,0 +1,472 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+PROBLEM: Ako je f(2x/(x+2)) = x^2 + 2x - 4, onda je f(5) = ?
+
+PRISTUP 1 (preporučeno — kratak put):
+  Funkcija f je definisana indirektno: pravilo "f od g(x) = neki izraz po x".
+  Da bismo izračunali f u tački t0 = 5, NE smemo zameniti x = 5 u izrazu — time
+  bismo dobili f(g(5)), a ne f(5).
+  Umesto toga: rešimo g(x) = t0, tj. 2x/(x+2) = 5.
+    2x = 5(x+2)
+    2x = 5x + 10
+    -3x = 10
+    x = -10/3.
+  Sada uvrstimo x = -10/3 u f(g(x)) = x^2 + 2x - 4:
+    x^2 = 100/9
+    2x = -20/3 = -60/9
+    -4 = -36/9
+    f(5) = 100/9 - 60/9 - 36/9 = (100 - 60 - 36)/9 = 4/9. ✓
+
+PRISTUP 2 (eksplicitna formula za f):
+  Smena t = 2x/(x+2). Reši po x:
+    t(x+2) = 2x
+    tx + 2t = 2x
+    2t = 2x - tx = x(2 - t)
+    x = 2t / (2 - t),  za t != 2.
+  Tada f(t) = x^2 + 2x - 4 = (2t/(2-t))^2 + 2·(2t/(2-t)) - 4.
+  Za t = 5:
+    2 - 5 = -3
+    x = 2·5 / (-3) = -10/3 (poklapa se).
+    (2t/(2-t))^2 = (-10/3)^2 = 100/9
+    2·(2t/(2-t)) = -20/3
+    f(5) = 100/9 - 20/3 - 4 = 4/9.
+
+PROVERA (još jedan ulaz, da se ne potkrade greška):
+  Uzmi x = 1: g(1) = 2/3, pa f(2/3) treba biti 1 + 2 - 4 = -1.
+  Iz eksplicitne formule, t = 2/3, x = (2·2/3)/(2 - 2/3) = (4/3)/(4/3) = 1.
+  f(2/3) = 1^2 + 2 - 4 = -1. ✓ Formule se slažu.
+
+ODGOVOR: (B) 4/9.
+
+KEY INSIGHT: Kada je f(g(x)) zadata, da bi izračunao f(t0), reši g(x) = t0
+i to x uvrsti u izraz f(g(x)). Nije neophodno naći eksplicitno f(t).
+
+PITFALLS:
+  - Postaviti x = 5 i izračunati 25 + 10 - 4 = 31 → to je f(g(5)) = f(10/7), ne f(5).
+  - U preuređivanju 2x/(x+2) = 5 zaboraviti pomnožiti i desnu stranu sa (x+2).
+  - Aritmetička greška u zajedničkom imeniocu (sve sa imeniocem 9).
+
+VIZUELNI PRIKAZ: dijagram toka funkcije — strelica x → kutija g(x) = 2x/(x+2)
+→ izlaz t → kutija f(t) → izlaz x^2 + 2x - 4. Označiti put: ulaz x = -10/3
+→ g daje t = 5 → f daje 4/9. Statično.
+</script>
+
+<h1 data-card="problem-title">Posredno definisana funkcija: izračunavanje \( f(5) \) iz \( f\!\left(\tfrac{2x}{x+2}\right) = x^2 + 2x - 4 \)</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra &mdash; funkcije, kompozicija, smena promenljive, indirektno zadate funkcije</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Ako je</p>
+  <div class="math-block">
+    \[ f\!\left(\dfrac{2x}{x + 2}\right) = x^2 + 2x - 4, \]
+  </div>
+  <p>onda je \( f(5) \) jednako:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \tfrac{3}{4} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \tfrac{4}{9} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 5 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 6 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 0 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">
+    Funkcija \( f \) nije zadata eksplicitno &mdash; znamo samo njenu vrednost u tački \( g(x) = \tfrac{2x}{x+2} \).
+    Da bismo dobili \( f(5) \), rešićemo jednačinu \( g(x) = 5 \) po \( x \), pa onda to \( x \) uvrstiti u izraz
+    \( x^2 + 2x - 4 \). Time zaobilazimo potrebu da eksplicitno izvedemo formulu za \( f(t) \), ali ćemo i taj
+    drugi pristup pokazati kao proveru.
+  </p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Posredno zadate funkcije i smena promenljive</summary>
+    <div class="detail-content">
+      <ul>
+        <li>
+          <strong>Indirektna definicija:</strong> Ako je dato \( f(g(x)) = h(x) \), onda za svaku tačku \( t_0 \)
+          iz slike funkcije \( g \), vrednost \( f(t_0) \) možemo dobiti tako što rešimo \( g(x) = t_0 \) i
+          uvrstimo to \( x \) u \( h(x) \).
+        </li>
+        <li>
+          <strong>Eksplicitno preko smene:</strong> Ako iz \( t = g(x) \) možemo izraziti \( x \) kao funkciju \( x = \varphi(t) \),
+          onda je \( f(t) = h(\varphi(t)) \).
+        </li>
+        <li>
+          <strong>Razlomačka linearna inverzija:</strong> Iz \( t = \tfrac{2x}{x+2} \) sledi \( t(x+2) = 2x \),
+          pa \( x(2-t) = 2t \), tj. \( x = \tfrac{2t}{2-t} \) (za \( t \ne 2 \)).
+        </li>
+        <li>
+          <strong>Oprez:</strong> \( f(g(5)) \ne f(5) \) (osim ako je \( g(5) = 5 \)). Ovde je \( g(5) = \tfrac{10}{7} \ne 5 \).
+        </li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz: tok funkcije">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="flow-diagram" width="780" height="460"></canvas>
+  </div>
+  <p class="canvas-caption">Tok računa: ulaz \( x = -\tfrac{10}{3} \) prolazi kroz \( g(x) = \tfrac{2x}{x+2} \), daje \( t = 5 \), a paralelno isti \( x \) ulazi u izraz \( x^2 + 2x - 4 \) i daje \( f(5) = \tfrac{4}{9} \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Šta zapravo znači &bdquo;\( f(5) \)&rdquo;?</h3>
+      <p>
+        Imamo pravilo: kada u \( f \) ubacimo broj koji ima oblik \( \tfrac{2x}{x+2} \), izlazi \( x^2 + 2x - 4 \).
+        Da bi izlaz iz \( g \) bio baš \( 5 \), treba pronaći onaj \( x \) za koji važi \( g(x) = 5 \).
+      </p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto ne valja postaviti \( x = 5 \)?</summary>
+          <div class="detail-content">
+            <p>Tada bi rezultat bio \( f(g(5)) = f\!\left(\tfrac{10}{7}\right) \), a ne \( f(5) \). Treba nam \( x \) koji daje \( g(x) = 5 \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Reši \( \tfrac{2x}{x+2} = 5 \)</h3>
+      <p>Pomnožimo obe strane sa \( x + 2 \) (uz uslov \( x \ne -2 \)):</p>
+      <div class="math-block">
+        \[ 2x = 5(x + 2) = 5x + 10 \]
+      </div>
+      <div class="math-block">
+        \[ 2x - 5x = 10 \;\Longrightarrow\; -3x = 10 \;\Longrightarrow\; x = -\dfrac{10}{3}. \]
+      </div>
+      <p>Taj \( x \) je &bdquo;ključ&rdquo;: kad njega ubacimo u \( g \), izlazi tačno \( 5 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Uvrsti \( x = -\tfrac{10}{3} \) u \( x^2 + 2x - 4 \)</h3>
+      <p>Računamo svaki sabirak posebno:</p>
+      <div class="math-block">
+        \[ x^2 = \left(-\dfrac{10}{3}\right)^{\!2} = \dfrac{100}{9}, \qquad 2x = -\dfrac{20}{3}, \qquad -4 = -4. \]
+      </div>
+      <p>Svedemo sve na zajednički imenilac \( 9 \):</p>
+      <div class="math-block">
+        \[ \dfrac{100}{9} \;-\; \dfrac{20}{3} \;-\; 4 \;=\; \dfrac{100}{9} \;-\; \dfrac{60}{9} \;-\; \dfrac{36}{9} \;=\; \dfrac{100 - 60 - 36}{9} \;=\; \dfrac{4}{9}. \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliko je \( -\tfrac{20}{3} \) sa imeniocem \( 9 \)?</summary>
+          <div class="detail-content">
+            <p>\( -\tfrac{20}{3} = -\tfrac{20 \cdot 3}{3 \cdot 3} = -\tfrac{60}{9} \). A \( -4 = -\tfrac{36}{9} \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera preko eksplicitne formule za \( f \)</h3>
+      <p>Smena \( t = \tfrac{2x}{x+2} \) daje \( x = \tfrac{2t}{2-t} \) (za \( t \ne 2 \)). Zato je</p>
+      <div class="math-block">
+        \[ f(t) \;=\; \left(\dfrac{2t}{2-t}\right)^{\!2} + 2 \cdot \dfrac{2t}{2-t} - 4. \]
+      </div>
+      <p>Za \( t = 5 \) je \( 2 - t = -3 \), pa \( \tfrac{2t}{2-t} = \tfrac{10}{-3} = -\tfrac{10}{3} \) (isti broj kao u koraku 2). Konačno:</p>
+      <div class="math-block">
+        \[ f(5) \;=\; \left(-\dfrac{10}{3}\right)^{\!2} + 2 \cdot \left(-\dfrac{10}{3}\right) - 4 \;=\; \dfrac{4}{9}. \;\checkmark \]
+      </div>
+      <p class="note">Oba pristupa daju istu vrednost &mdash; rezultat je pouzdan.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>
+    Kada je funkcija \( f \) zadata posredno, formulom oblika \( f(g(x)) = h(x) \), za izračunavanje \( f(t_0) \)
+    treba <strong>obrnuti smer</strong>: ne biraš \( x \), nego biraš željenu izlaznu vrednost \( t_0 \) i nalaziš \( x \) takav
+    da \( g(x) = t_0 \). To je &bdquo;rad unazad&rdquo; po unutrašnjoj funkciji \( g \). Eksplicitna formula za \( f \) je tada
+    samo opcionalna provera &mdash; ne mora se izvoditi.
+  </p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ f(5) = \dfrac{4}{9} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( \tfrac{3}{4} \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( \tfrac{4}{9} \)</span>
+    <span class="answer-option" data-option="C">(C) \( 5 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 6 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 0 \)</span>
+  </div>
+  <p class="verification">Provera: \( g(-\tfrac{10}{3}) = \tfrac{2 \cdot (-10/3)}{-10/3 + 2} = \tfrac{-20/3}{-4/3} = 5 \) \(\checkmark\). I \( x^2 + 2x - 4 = \tfrac{100}{9} - \tfrac{60}{9} - \tfrac{36}{9} = \tfrac{4}{9} \) \(\checkmark\).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Direktno upisivanje \( x = 5 \)</strong> u \( x^2 + 2x - 4 \) i dobijanje \( 31 \). To zapravo daje \( f(g(5)) = f\!\left(\tfrac{10}{7}\right) \), a ne \( f(5) \).</li>
+    <li><strong>Zaboravljeno množenje desne strane sa \( (x+2) \)</strong>: pisati \( 2x = 5 \) umesto \( 2x = 5(x+2) \). Posledica: pogrešno \( x \).</li>
+    <li><strong>Greška u zajedničkom imeniocu</strong>: \( -\tfrac{20}{3} \) prevesti u \( -\tfrac{20}{9} \) umesto \( -\tfrac{60}{9} \).</li>
+    <li><strong>Pretpostavka da je \( f(t) = t^2 + 2t - 4 \)</strong>: izraz je \( x^2 + 2x - 4 \), ali \( x \) se odnosi na ulaz u \( g \), ne na ulaz u \( f \). Funkcija \( f \) ima drugačiji oblik (\( \left(\tfrac{2t}{2-t}\right)^2 + 2 \cdot \tfrac{2t}{2-t} - 4 \)).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>
+    Iskoristi eksplicitnu formulu za \( f \) i izračunaj \( f(1) \) i \( f(0) \). Šta se dešava kada pokušaš
+    izračunati \( f(2) \)? Zašto je tačka \( t = 2 \) &bdquo;rupa&rdquo; u domenu? Geometrijski: skiciraj graf
+    funkcije \( g(x) = \tfrac{2x}{x+2} \) i argumentuj zašto \( g \) nikada ne dostiže vrednost \( 2 \).
+  </p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>
+        \( g(x) = \tfrac{2x}{x+2} = \tfrac{2(x+2) - 4}{x+2} = 2 - \tfrac{4}{x+2} \). Razlomak \( \tfrac{4}{x+2} \)
+        ne može biti \( 0 \) ni za jedno realno \( x \), pa \( g(x) \ne 2 \) za sve \( x \) iz domena.
+        To je horizontalna asimptota grafika \( g \). Stoga \( f(2) \) nije ni definisano polaznim pravilom.
+      </p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('flow-diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function roundedRect(x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+  }
+
+  function arrow(x1, y1, x2, y2, color) {
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    var ang = Math.atan2(y2 - y1, x2 - x1);
+    var ah = 10;
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - ah * Math.cos(ang - Math.PI/6), y2 - ah * Math.sin(ang - Math.PI/6));
+    ctx.lineTo(x2 - ah * Math.cos(ang + Math.PI/6), y2 - ah * Math.sin(ang + Math.PI/6));
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 17px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Tok kompozicije: x → g(x) = 2x/(x+2) → t → f(t)', canvas.width / 2, 30);
+
+    // Top row: forward chain x -> g -> t -> f -> output
+    var rowY = 90;
+    var boxH = 70;
+
+    // Input box (x value)
+    var inX = 40, inW = 130;
+    ctx.strokeStyle = primary;
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.10);
+    ctx.lineWidth = 2;
+    roundedRect(inX, rowY, inW, boxH, 10);
+    ctx.fill(); ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillText('Ulaz', inX + inW/2, rowY + 22);
+    ctx.font = 'bold 18px Cambria, "Times New Roman", serif';
+    ctx.fillStyle = primary;
+    ctx.fillText('x = −10/3', inX + inW/2, rowY + 50);
+
+    // Arrow 1
+    arrow(inX + inW + 5, rowY + boxH/2, inX + inW + 60, rowY + boxH/2, muted);
+
+    // g(x) box
+    var gX = inX + inW + 65, gW = 180;
+    ctx.strokeStyle = secondary;
+    ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.10);
+    roundedRect(gX, rowY, gW, boxH, 10);
+    ctx.fill(); ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillText('Unutrašnja funkcija', gX + gW/2, rowY + 22);
+    ctx.font = 'bold 18px Cambria, "Times New Roman", serif';
+    ctx.fillStyle = secondary;
+    ctx.fillText('g(x) = 2x / (x+2)', gX + gW/2, rowY + 50);
+
+    // Arrow 2
+    arrow(gX + gW + 5, rowY + boxH/2, gX + gW + 60, rowY + boxH/2, muted);
+
+    // t = 5 box
+    var tX = gX + gW + 65, tW = 100;
+    ctx.strokeStyle = accent;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.15);
+    roundedRect(tX, rowY, tW, boxH, 10);
+    ctx.fill(); ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillText('Međurezultat', tX + tW/2, rowY + 22);
+    ctx.font = 'bold 22px Cambria, "Times New Roman", serif';
+    ctx.fillStyle = accent;
+    ctx.fillText('t = 5', tX + tW/2, rowY + 52);
+
+    // Arrow 3
+    arrow(tX + tW + 5, rowY + boxH/2, tX + tW + 60, rowY + boxH/2, muted);
+
+    // f(t) box
+    var fX = tX + tW + 65, fW = 130;
+    ctx.strokeStyle = highlight;
+    ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.10);
+    roundedRect(fX, rowY, fW, boxH, 10);
+    ctx.fill(); ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillText('Spoljna funkcija', fX + fW/2, rowY + 22);
+    ctx.font = 'bold 22px Cambria, "Times New Roman", serif';
+    ctx.fillStyle = highlight;
+    ctx.fillText('f(t)', fX + fW/2, rowY + 52);
+
+    // Bottom: x ulazi paralelno u izraz x^2 + 2x - 4 → izlaz f(5)
+    var midY = 240;
+    ctx.fillStyle = text;
+    ctx.font = '14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Pravilo: f(g(x)) = x² + 2x − 4   (isti x se istovremeno koristi za izračunavanje izlaza)', canvas.width/2, midY - 10);
+
+    // Dashed connector from x box down to expression box
+    ctx.strokeStyle = muted;
+    ctx.setLineDash([5, 4]);
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(inX + inW/2, rowY + boxH);
+    ctx.lineTo(inX + inW/2, midY + 30);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Expression box (computation)
+    var exX = 80, exY = midY + 30, exW = canvas.width - 160, exH = 130;
+    ctx.strokeStyle = warning;
+    ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.08);
+    ctx.lineWidth = 2;
+    roundedRect(exX, exY, exW, exH, 12);
+    ctx.fill(); ctx.stroke();
+
+    ctx.fillStyle = text;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Uvrštavanje x = −10/3 u x² + 2x − 4', exX + exW/2, exY + 22);
+
+    ctx.font = '17px Cambria, "Times New Roman", serif';
+    ctx.fillStyle = text;
+    ctx.fillText('(−10/3)²  +  2·(−10/3)  −  4   =   100/9  −  60/9  −  36/9   =   4/9', exX + exW/2, exY + 60);
+
+    // Highlighted answer
+    ctx.font = 'bold 26px Cambria, "Times New Roman", serif';
+    ctx.fillStyle = accent;
+    ctx.fillText('f(5) = 4 / 9', exX + exW/2, exY + 105);
+
+    // Side note: how we got x = -10/3
+    var noteY = midY + exH + 60;
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Ulaz x = −10/3 dobijamo iz uslova g(x) = 5:   2x = 5(x+2) ⇒ x = −10/3', canvas.width/2, noteY);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Posredno definisana funkcija: f(2x/(x+2)) = x² + 2x − 4, f(5) = ?",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["funkcije", "kompozicija funkcija", "smena promenljive", "indirektno zadata funkcija"]
+}
+BRAINSPARK_META-->

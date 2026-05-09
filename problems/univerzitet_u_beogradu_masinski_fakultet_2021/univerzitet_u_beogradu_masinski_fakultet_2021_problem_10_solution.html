@@ -1,0 +1,727 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Problem: Naći imaginarni deo broja (1 - i)^10 - (1 + i)^10.
+
+Strategija A — kvadrat kao prečica:
+(1 - i)^2 = 1 - 2i + i^2 = 1 - 2i - 1 = -2i.
+(1 + i)^2 = 1 + 2i + i^2 = 1 + 2i - 1 = 2i.
+Stoga: (1 - i)^10 = ((1 - i)^2)^5 = (-2i)^5 = (-2)^5 · i^5 = -32 · i = -32 i.
+(jer i^5 = i^4 · i = 1 · i = i)
+Slično: (1 + i)^10 = (2i)^5 = 32 · i^5 = 32 i.
+Razlika: (1 - i)^10 - (1 + i)^10 = -32 i - 32 i = -64 i.
+Im((-64) i) = -64.
+
+Strategija B — Moivreova formula:
+|1 + i| = sqrt(1^2 + 1^2) = sqrt(2). arg(1 + i) = π/4.
+|1 - i| = sqrt(2). arg(1 - i) = -π/4.
+Po Moivreu:
+(1 + i)^10 = (sqrt(2))^10 · (cos(10·π/4) + i·sin(10·π/4))
+           = 2^5 · (cos(5π/2) + i·sin(5π/2))
+           = 32 · (cos(π/2) + i·sin(π/2))    (5π/2 = 2π + π/2)
+           = 32 · (0 + i·1) = 32 i.
+(1 - i)^10 = 32 · (cos(-5π/2) + i·sin(-5π/2))
+           = 32 · (cos(-π/2) + i·sin(-π/2))
+           = 32 · (0 + i·(-1)) = -32 i.
+Razlika: -32 i - 32 i = -64 i.
+Im = -64. ✓
+
+Provera druge alternative — binomna teorema (skica):
+(1+i)^10 = sum_{k=0}^{10} C(10,k) i^k.
+Realni deo: parno k. Imaginarni: neparno k.
+Im((1+i)^10) = C(10,1) - C(10,3) + C(10,5) - C(10,7) + C(10,9)
+            = 10 - 120 + 252 - 120 + 10 = 32. ✓
+Im((1-i)^10) = -10 + 120 - 252 + 120 - 10 = -32. (znaci se invertuju)
+Razlika Im delova: -32 - 32 = -64. ✓
+
+Sve metode daju isto: Im = -64. Tačan odgovor (E).
+
+Obrazloženje izbora vizuelnog prikaza:
+- Argand dijagram: 1+i i 1-i kao tačke u kompleksnoj ravni; krug poluprečnika sqrt(2) pokazuje |z|; uglovi π/4 i -π/4. Pa onda 32 i i -32 i kao tačke na imaginarnoj osi (skalirano). To pokazuje obe perspektive: položaj polaznih tačaka i krajnjih tačaka.
+- Drugi grafik: spirala koja prati (1+i)^k za k = 0,1,2,...,10 — dijagonalna polilinija. Lepa pedagoška slika kako se argumenti sabiraju (množe-rotiraju).
+
+Dva canvas-a: oba statična. Interaktivnost ovde nije od pedagoške koristi (algebra dominira).
+
+Pitfalls:
+- Greška sa i^5: i^5 = i (ne -i, ne 1). Period od i^k je 4: i, -1, -i, 1, i, ...
+- Mešanje znakova: (-2)^5 = -32 (nije -32 nego -32 da, ali pažnja kod neparnog stepena).
+- Pogrešno: (1 + i)^10 = 1 + i^10 (NIJE — binomna teorema!).
+- Zaboravljanje da 5π/2 = 2π + π/2 (redukcija po 2π).
+- Im(a + bi) = b, NE bi (vraća se realan broj).
+
+Challenge: Koliko je (1+i)^2024? Dobro za testiranje veštine — i^k periodičnost, redukcija po 4.
+</script>
+
+<h1 data-card="problem-title">Imaginarni deo razlike \( (1-i)^{10} - (1+i)^{10} \)</h1>
+<p data-card="problem-subtitle" class="subtitle">Kompleksni brojevi — stepenovanje preko kvadrata i Moivreove formule, rad sa \( i^k \).</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Imaginarni deo kompleksnog broja</p>
+  <div class="math-block">\[ (1-i)^{10} - (1+i)^{10} \]</div>
+  <p>jednak je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 0 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 64 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( -32 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 32 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( -64 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Iskoristićemo da je \( (1\pm i)^2 = \pm 2i \) — to drastično pojednostavljuje stepen \( 10 \), jer ga prevodimo u peti stepen broja \( \pm 2i \). Rezultate sabiramo (sa znakom) i čitamo imaginarni deo. Zatim kratko proveravamo isto preko Moivreove (trigonometrijske) forme.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Stepeni imaginarne jedinice:</strong> niz \( i^k \) je periodičan sa periodom \( 4 \):
+          <div class="math-block">\[ i^0 = 1,\quad i^1 = i,\quad i^2 = -1,\quad i^3 = -i,\quad i^4 = 1,\quad i^5 = i,\ \ldots \]</div>
+          Praktično: \( i^k = i^{k \bmod 4} \).</li>
+        <li><strong>Kvadrat „čistih” \( 1 \pm i \):</strong> formulu pamtimo napamet —
+          <div class="math-block">\[ (1+i)^2 = 2i, \qquad (1-i)^2 = -2i. \]</div>
+          (Provera: \( (1+i)^2 = 1 + 2i + i^2 = 1 + 2i - 1 = 2i \).)</li>
+        <li><strong>Trigonometrijski (polarni) zapis:</strong> ako je \( z = r(\cos\varphi + i\sin\varphi) \), tada Moivreova formula daje
+          <div class="math-block">\[ z^n = r^n\big(\cos(n\varphi) + i\sin(n\varphi)\big). \]</div>
+          Specijalno, \( |1\pm i| = \sqrt{2} \), \( \arg(1+i) = \tfrac{\pi}{4} \), \( \arg(1-i) = -\tfrac{\pi}{4} \).</li>
+        <li><strong>Realni i imaginarni deo:</strong> ako je \( w = a + b\,i \) sa \( a, b \in \mathbb{R} \), onda \( \mathrm{Re}(w) = a \), \( \mathrm{Im}(w) = b \) (broj — bez \( i \)!).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — Argandov dijagram">
+  <h2>📐 Vizuelni prikaz — Argandov dijagram</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-argand" width="760" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Tačke \( 1+i \) i \( 1-i \) leže na krugu poluprečnika \( \sqrt{2} \), pod uglovima \( \pm\tfrac{\pi}{4} \). Stepenovanjem na \( 10 \) moduo postaje \( (\sqrt{2})^{10} = 32 \), a ugao se množi sa \( 10 \): \( \pm\tfrac{10\pi}{4} = \pm\tfrac{5\pi}{2} \equiv \pm\tfrac{\pi}{2} \pmod{2\pi} \). Tako rezultat „skoči” na imaginarnu osu — \( (1+i)^{10} = 32i \), a \( (1-i)^{10} = -32i \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — spirala stepena">
+  <h2>📐 Vizuelni prikaz — spirala stepena</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-spiral" width="760" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Niz \( (1+i)^k \) za \( k = 0, 1, 2, \ldots, 10 \) tvori „rastuću spiralu”: svaka nova tačka rotira za \( \tfrac{\pi}{4} \) u smeru suprotnom od kretanja kazaljke i razdvaja se od prethodne za faktor \( \sqrt{2} \). Posle 8 koraka pravi pun krug \( (8 \cdot \tfrac{\pi}{4} = 2\pi) \), pa nakon 10 koraka završava na pozitivnoj imaginarnoj osi u tački \( 32i \). Niz \( (1-i)^k \) ide simetrično, ka negativnoj imaginarnoj osi (\( -32 i \)).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Kvadrat brojeva \( 1 \pm i \) — naša glavna prečica</h3>
+      <p>Računamo „pažljivo, ali jednom” jer ćemo rezultat koristiti više puta. Pamtimo \( i^2 = -1 \):</p>
+      <div class="math-block">\[ (1+i)^2 = 1 + 2i + i^2 = 1 + 2i - 1 = 2i, \]</div>
+      <div class="math-block">\[ (1-i)^2 = 1 - 2i + i^2 = 1 - 2i - 1 = -2i. \]</div>
+      <p>Dakle \( (1+i)^2 = 2i \) i \( (1-i)^2 = -2i \). To je <em>ključ</em> celog zadatka — stepen \( 10 \) sada postaje peti stepen broja \( \pm 2i \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš peti stepen, a ne deseti?</summary>
+          <div class="detail-content"><p>Zato što je \( 10 = 2 \cdot 5 \), pa \( (1+i)^{10} = \big((1+i)^2\big)^5 = (2i)^5 \). Tačno tako i za minus varijantu.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Stepenuj na \( 10 \) preko kvadrata</h3>
+      <p>Razdvajamo realnu i imaginarnu komponentu broja \( (\pm 2i)^5 \):</p>
+      <div class="math-block">\[ (1+i)^{10} = (2i)^5 = 2^5 \cdot i^5 = 32 \cdot i^5. \]</div>
+      <div class="math-block">\[ (1-i)^{10} = (-2i)^5 = (-2)^5 \cdot i^5 = -32 \cdot i^5. \]</div>
+      <p>Treba nam \( i^5 \). Pošto je niz \( i^k \) periodičan sa periodom \( 4 \), važi \( i^5 = i^{5 \bmod 4} = i^1 = i \). Dakle:</p>
+      <div class="math-block">\[ (1+i)^{10} = 32\,i, \qquad (1-i)^{10} = -32\,i. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliko je \( i^5 \), \( i^{17} \), \( i^{100} \)?</summary>
+          <div class="detail-content"><p>Delimo eksponent sa \( 4 \) i čitamo ostatak: \( 5 = 4\cdot 1 + 1 \), pa \( i^5 = i \). \( 17 = 4\cdot 4 + 1 \), pa \( i^{17} = i \). \( 100 = 4\cdot 25 + 0 \), pa \( i^{100} = i^0 = 1 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Oduzmi i pročitaj imaginarni deo</h3>
+      <p>Sada je razlika trivijalna:</p>
+      <div class="math-block">\[ (1-i)^{10} - (1+i)^{10} = (-32\,i) - (32\,i) = -64\,i. \]</div>
+      <p>Imaginarni deo broja \( a + b\,i \) (gde su \( a, b \) realni) je <em>broj</em> \( b \), bez \( i \). Ovde je \( a = 0 \), \( b = -64 \), pa</p>
+      <div class="math-block">\[ \mathrm{Im}\big((1-i)^{10} - (1+i)^{10}\big) = -64. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto Im daje broj, a ne \( -64\,i \)?</summary>
+          <div class="detail-content"><p>Po definiciji: za \( w = a + b\,i \), funkcija \( \mathrm{Im}(w) = b \) vraća <em>realan koeficijent</em> uz \( i \), ne ceo proizvod \( b\,i \). Slično kao \( \mathrm{Re}(w) = a \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Kontrolna provera — Moivreova formula</h3>
+      <p>Brojeve \( 1 \pm i \) zapišimo u trigonometrijskom obliku. Modul je \( |1 \pm i| = \sqrt{1^2 + 1^2} = \sqrt{2} \), a argumenti</p>
+      <div class="math-block">\[ \arg(1+i) = \dfrac{\pi}{4}, \qquad \arg(1-i) = -\dfrac{\pi}{4}. \]</div>
+      <p>Po Moivreovoj formuli \( z^n = |z|^n\big(\cos n\varphi + i \sin n\varphi\big) \):</p>
+      <div class="math-block">\[ (1+i)^{10} = (\sqrt{2})^{10}\!\left(\cos\dfrac{10\pi}{4} + i\sin\dfrac{10\pi}{4}\right) = 32\!\left(\cos\dfrac{5\pi}{2} + i\sin\dfrac{5\pi}{2}\right). \]</div>
+      <p>Pošto je \( \tfrac{5\pi}{2} = 2\pi + \tfrac{\pi}{2} \), to je isti ugao kao \( \tfrac{\pi}{2} \) (rotacije po \( 2\pi \)):</p>
+      <div class="math-block">\[ (1+i)^{10} = 32\big(\cos\tfrac{\pi}{2} + i\sin\tfrac{\pi}{2}\big) = 32\,(0 + i\cdot 1) = 32\,i. \]</div>
+      <p>Analogno, \( (1-i)^{10} = 32\big(\cos(-\tfrac{\pi}{2}) + i\sin(-\tfrac{\pi}{2})\big) = -32\,i \). Razlika je opet \( -64\,i \). \( \checkmark \)</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Svaki put kada vidite \( (1 \pm i)^n \) za parno \( n \), <strong>prebacite preko kvadrata</strong>: \( (1+i)^2 = 2i \), \( (1-i)^2 = -2i \). Time se „neuredan” binom svodi na čisti stepen broja \( i \) — a \( i^k \) je samo periodični niz dužine \( 4 \). Trik štedi mnogo računa i izbegava greške sa znakovima.</p>
+  <p>Geometrijski razlog je da brojevi \( 1 \pm i \) leže pod uglom \( \pm\tfrac{\pi}{4} \). Kvadriranjem ugao postaje \( \pm\tfrac{\pi}{2} \) (čista imaginarna osa) — i stepenovanje dalje samo „rotira po 90°”, što je lako pratiti.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Mešanje stepena \( i \).</strong> Često se piše \( i^5 = -i \) (greška). Ispravno: \( i^5 = i^4\cdot i = 1\cdot i = i \). Niz \( i, -1, -i, 1 \) se ponavlja sa periodom \( 4 \).</li>
+    <li><strong>Zaboravljanje znaka kod \( (-2)^5 \).</strong> \( (-2)^5 = -32 \) (neparan stepen čuva minus), dok \( (-2)^4 = 16 \) (paran briše minus).</li>
+    <li><strong>Mešanje „Im” i imaginarne komponente.</strong> Imaginarni deo broja \( -64 i \) je <em>broj</em> \( -64 \), nije \( -64 i \). Tako i \( \mathrm{Im}(3 + 5i) = 5 \), ne \( 5i \).</li>
+    <li><strong>Naivno pisanje \( (1+i)^{10} = 1 + i^{10} \).</strong> Binom se ne deli po sabircima — treba binomna teorema ili prečica preko kvadrata.</li>
+    <li><strong>Greška sa redukcijom ugla.</strong> \( \tfrac{5\pi}{2} \) NE smemo ostaviti kao zaseban ugao — moramo ga svesti modulo \( 2\pi \): \( \tfrac{5\pi}{2} - 2\pi = \tfrac{\pi}{2} \). Tek tada se lako čita \( \cos \) i \( \sin \).</li>
+    <li><strong>Pogrešan znak argumenta.</strong> \( \arg(1-i) = -\tfrac{\pi}{4} \) (ispod realne ose), ne \( +\tfrac{\pi}{4} \). Argument \( 1+i \) je u prvom kvadrantu, \( 1-i \) u četvrtom.</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \mathrm{Im}\!\left((1-i)^{10} - (1+i)^{10}\right) = -64. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 0 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 64 \)</span>
+    <span class="answer-option" data-option="C">(C) \( -32 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 32 \)</span>
+    <span class="answer-option correct" data-option="E">(E) \( -64 \)</span>
+  </div>
+  <p class="verification">Provera dvema metodama: prečica preko kvadrata daje \( (1+i)^{10} = 32 i \), \( (1-i)^{10} = -32 i \), razlika \( -64 i \). Moivreova formula sa \( |1\pm i| = \sqrt{2} \), \( \arg = \pm\tfrac{\pi}{4} \) i \( \tfrac{10\pi}{4} = \tfrac{5\pi}{2} \equiv \tfrac{\pi}{2} \) daje isto. Imaginarni deo je \( -64 \). Tačan odgovor je (E).</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Izračunaj <strong>realni</strong> deo i <strong>imaginarni</strong> deo broja \( (1+i)^{2024} \). Koristi prečicu preko kvadrata. Šta je opštija formula za \( (1+i)^{4k} \), \( (1+i)^{4k+1} \), \( (1+i)^{4k+2} \), \( (1+i)^{4k+3} \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Polazimo od \( (1+i)^2 = 2i \), pa \( (1+i)^{2024} = \big((1+i)^2\big)^{1012} = (2i)^{1012} = 2^{1012} \cdot i^{1012} \). Pošto je \( 1012 = 4\cdot 253 \), važi \( i^{1012} = (i^4)^{253} = 1 \). Dakle:</p>
+      <div class="math-block">\[ (1+i)^{2024} = 2^{1012}, \quad \mathrm{Re} = 2^{1012},\ \mathrm{Im} = 0. \]</div>
+      <p>Opšte: ako stavimo \( n = 2m \), onda \( (1+i)^{2m} = (2i)^m = 2^m\,i^m \), pa zavisi od \( m \bmod 4 \):</p>
+      <ul>
+        <li>\( m = 4k \): \( (1+i)^{8k} = 2^{4k} \) (čisto realno, pozitivno).</li>
+        <li>\( m = 4k+1 \): \( (1+i)^{8k+2} = 2^{4k+1}\,i \) (čisto imaginarno, pozitivno).</li>
+        <li>\( m = 4k+2 \): \( (1+i)^{8k+4} = -2^{4k+2} \) (čisto realno, negativno).</li>
+        <li>\( m = 4k+3 \): \( (1+i)^{8k+6} = -2^{4k+3}\,i \) (čisto imaginarno, negativno).</li>
+      </ul>
+      <p>Za neparne \( n \) prosto pomnožimo dobijeno sa \( (1+i) \): npr. \( (1+i)^{2025} = (1+i)\cdot 2^{1012} = 2^{1012} + 2^{1012}\,i \).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16), g = parseInt(c.slice(3,5), 16), b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-argand');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function arrow(x1, y1, x2, y2, color, width, dash) {
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = width || 2;
+    ctx.setLineDash(dash || []);
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    var ang = Math.atan2(y2 - y1, x2 - x1);
+    var ah = 11;
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - ah * Math.cos(ang - Math.PI / 7), y2 - ah * Math.sin(ang - Math.PI / 7));
+    ctx.lineTo(x2 - ah * Math.cos(ang + Math.PI / 7), y2 - ah * Math.sin(ang + Math.PI / 7));
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Argandov dijagram: 1 ± i i njihovi 10. stepeni', W / 2, 30);
+
+    // Coordinate system: small range left for 1±i, but also show large 32i ±
+    // Use logarithmic-ish? Simpler: draw two coordinate views or use compressed scale.
+    // We'll use a single coord with scale that fits both [-2,2] for 1±i and ±32i compressed.
+    // Approach: use a non-linear scale (sqrt). Or simply show 1±i with a small inset.
+    // Better: keep linear, axis from -2 to 2 for 1±i, then mark 32i and -32i at edges with annotation.
+
+    // Actually, cleaner: split into two halves. Left: small region [-2,2]^2 showing 1±i and circle r=√2.
+    // Right: y-axis spanning -36..36 showing 32i, -32i.
+
+    var leftCx = 200, leftCy = H / 2 + 10;
+    var leftScale = 60; // 1 unit
+    var rightCx = 540, rightCy = H / 2 + 10;
+    var rightScaleX = 60; // 1 unit on real axis
+    var rightScaleY = 6; // 1 unit on imag axis (compressed for ±32)
+
+    // Left coord helpers
+    function LX(x) { return leftCx + x * leftScale; }
+    function LY(y) { return leftCy - y * leftScale; }
+    function RX(x) { return rightCx + x * rightScaleX; }
+    function RY(y) { return rightCy - y * rightScaleY; }
+
+    // ---- LEFT: small region, 1±i ----
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 4]);
+    for (var gi = -2; gi <= 2; gi++) {
+      ctx.beginPath();
+      ctx.moveTo(LX(gi), LY(2.2));
+      ctx.lineTo(LX(gi), LY(-2.2));
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(LX(-2.2), LY(gi));
+      ctx.lineTo(LX(2.2), LY(gi));
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(LX(-2.3), LY(0)); ctx.lineTo(LX(2.3), LY(0)); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(LX(0), LY(-2.3)); ctx.lineTo(LX(0), LY(2.3)); ctx.stroke();
+
+    // Tick labels
+    ctx.fillStyle = text;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var tl = -2; tl <= 2; tl++) {
+      if (tl === 0) continue;
+      ctx.fillText(String(tl), LX(tl), LY(0) + 14);
+      ctx.textAlign = 'right';
+      ctx.fillText(String(tl), LX(0) - 5, LY(tl) + 4);
+      ctx.textAlign = 'center';
+    }
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'left';
+    ctx.fillText('Re', LX(2.3) + 6, LY(0) + 4);
+    ctx.textAlign = 'center';
+    ctx.fillText('Im', LX(0), LY(2.3) - 6);
+
+    // Circle of radius √2
+    ctx.strokeStyle = cvAlpha('--sol-canvas-secondary', 0.6);
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.arc(LX(0), LY(0), Math.SQRT2 * leftScale, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Label circle
+    ctx.fillStyle = secondary;
+    ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('|z| = √2', LX(1.0), LY(1.65));
+
+    // Vectors to 1+i and 1-i
+    arrow(LX(0), LY(0), LX(1), LY(1), primary, 3);
+    arrow(LX(0), LY(0), LX(1), LY(-1), accent, 3);
+
+    // Dots at 1+i and 1-i
+    ctx.fillStyle = primary;
+    ctx.beginPath(); ctx.arc(LX(1), LY(1), 6, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = accent;
+    ctx.beginPath(); ctx.arc(LX(1), LY(-1), 6, 0, Math.PI * 2); ctx.fill();
+
+    // Labels
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('1 + i', LX(1) + 10, LY(1) - 6);
+    ctx.fillStyle = accent;
+    ctx.fillText('1 − i', LX(1) + 10, LY(-1) + 16);
+
+    // Angle arcs at origin (π/4 and -π/4)
+    ctx.strokeStyle = cvAlpha('--sol-canvas-highlight', 0.85);
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(LX(0), LY(0), 30, -Math.PI / 4, 0);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(LX(0), LY(0), 24, 0, Math.PI / 4);
+    ctx.stroke();
+    ctx.fillStyle = highlight;
+    ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('π/4', LX(0) + 36, LY(0) - 6);
+    ctx.fillText('−π/4', LX(0) + 36, LY(0) + 18);
+
+    // Subtitle for left half
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('polazne tačke 1 ± i', leftCx, 65);
+
+    // ---- RIGHT: large scale, ±32i ----
+    // Vertical separator
+    ctx.strokeStyle = cvAlpha('--sol-canvas-muted', 0.4);
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 5]);
+    ctx.beginPath();
+    ctx.moveTo(370, 80);
+    ctx.lineTo(370, H - 50);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Right axes — narrow real range, wide imag range
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(rightCx - 70, rightCy); ctx.lineTo(rightCx + 70, rightCy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(rightCx, rightCy - 38 * rightScaleY); ctx.lineTo(rightCx, rightCy + 38 * rightScaleY); ctx.stroke();
+
+    // Tick at ±32 on imag axis
+    ctx.fillStyle = text;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    var tickList = [-32, -16, 16, 32];
+    for (var i = 0; i < tickList.length; i++) {
+      var v = tickList[i];
+      ctx.beginPath();
+      ctx.moveTo(rightCx - 4, RY(v));
+      ctx.lineTo(rightCx + 4, RY(v));
+      ctx.strokeStyle = axis;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.fillText(String(v), rightCx - 6, RY(v) + 4);
+    }
+    ctx.textAlign = 'left';
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Re', rightCx + 76, rightCy + 4);
+    ctx.textAlign = 'center';
+    ctx.fillText('Im', rightCx, rightCy - 38 * rightScaleY - 8);
+
+    // Mark 32i and -32i
+    arrow(rightCx, rightCy, rightCx, RY(32), primary, 3);
+    arrow(rightCx, rightCy, rightCx, RY(-32), accent, 3);
+
+    ctx.fillStyle = primary;
+    ctx.beginPath(); ctx.arc(rightCx, RY(32), 7, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = accent;
+    ctx.beginPath(); ctx.arc(rightCx, RY(-32), 7, 0, Math.PI * 2); ctx.fill();
+
+    // Labels
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('(1 + i)¹⁰ = 32 i', rightCx + 14, RY(32) + 4);
+    ctx.fillStyle = accent;
+    ctx.fillText('(1 − i)¹⁰ = −32 i', rightCx + 14, RY(-32) + 4);
+
+    // Right title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('rezultati posle stepenovanja', rightCx, 65);
+
+    // Difference annotation
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('razlika: −32i − 32i = −64i', rightCx, H - 75);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('Im( · ) = −64', rightCx, H - 55);
+
+    // Bottom caption (overall)
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Levo: polazne tačke pod uglovima ±π/4 na krugu poluprečnika √2.   Desno: 10. stepen pravi rotaciju za 10·π/4 = 5π/2 ≡ π/2.', W / 2, H - 18);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16), g = parseInt(c.slice(3,5), 16), b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-spiral');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Spirala stepena: (1 + i)^k za k = 0, 1, …, 10', W / 2, 30);
+
+    var cx = W / 2, cy = H / 2 + 10;
+    // Maximum |z| at k=10 is (√2)^10 = 32. Fit it inside half height.
+    var maxR = 32;
+    var maxPx = Math.min(W / 2 - 80, H / 2 - 70);
+    var scale = maxPx / maxR; // pixels per unit
+
+    function MX(x) { return cx + x * scale; }
+    function MY(y) { return cy - y * scale; }
+
+    // Light background grid (concentric circles for r = √2, 2, 4, 8, 16, 32)
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 5]);
+    var rings = [Math.SQRT2, 2, 4, 8, 16, 32];
+    for (var r = 0; r < rings.length; r++) {
+      ctx.beginPath();
+      ctx.arc(cx, cy, rings[r] * scale, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cx - maxPx - 12, cy); ctx.lineTo(cx + maxPx + 12, cy); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - maxPx - 12); ctx.lineTo(cx, cy + maxPx + 12); ctx.stroke();
+
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'left';
+    ctx.fillText('Re', cx + maxPx + 18, cy + 4);
+    ctx.textAlign = 'center';
+    ctx.fillText('Im', cx, cy - maxPx - 18);
+
+    // Compute (1+i)^k and (1-i)^k for k = 0..10
+    function power(re, im, k) {
+      var ar = 1, ai = 0;
+      for (var i = 0; i < k; i++) {
+        var nr = ar * re - ai * im;
+        var ni = ar * im + ai * re;
+        ar = nr; ai = ni;
+      }
+      return { re: ar, im: ai };
+    }
+
+    var ptsP = []; // (1+i)^k
+    var ptsN = []; // (1-i)^k
+    for (var k = 0; k <= 10; k++) {
+      ptsP.push(power(1, 1, k));
+      ptsN.push(power(1, -1, k));
+    }
+
+    // Draw polyline for (1+i)^k
+    ctx.strokeStyle = cvAlpha('--sol-canvas-primary', 0.7);
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(MX(ptsP[0].re), MY(ptsP[0].im));
+    for (var i = 1; i <= 10; i++) {
+      ctx.lineTo(MX(ptsP[i].re), MY(ptsP[i].im));
+    }
+    ctx.stroke();
+
+    // Polyline for (1-i)^k
+    ctx.strokeStyle = cvAlpha('--sol-canvas-accent', 0.7);
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(MX(ptsN[0].re), MY(ptsN[0].im));
+    for (var i = 1; i <= 10; i++) {
+      ctx.lineTo(MX(ptsN[i].re), MY(ptsN[i].im));
+    }
+    ctx.stroke();
+
+    // Draw points and labels for k = 0..10
+    for (var k = 0; k <= 10; k++) {
+      var p = ptsP[k], n = ptsN[k];
+      var px = MX(p.re), py = MY(p.im);
+      var nx = MX(n.re), ny = MY(n.im);
+
+      // (1+i)^k
+      ctx.fillStyle = primary;
+      ctx.beginPath();
+      ctx.arc(px, py, k === 10 ? 6 : 3.2, 0, Math.PI * 2);
+      ctx.fill();
+
+      // (1-i)^k
+      ctx.fillStyle = accent;
+      ctx.beginPath();
+      ctx.arc(nx, ny, k === 10 ? 6 : 3.2, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Labels for k = 0, 1, 2, 4, 8, 10
+      if (k === 0 || k === 1 || k === 2 || k === 4 || k === 8 || k === 10) {
+        ctx.fillStyle = primary;
+        ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'left';
+        var labOffsetX = 8, labOffsetY = -6;
+        if (k === 8) { labOffsetX = -34; labOffsetY = 4; }
+        if (k === 10) { labOffsetX = 12; labOffsetY = 4; }
+        ctx.fillText('k=' + k, px + labOffsetX, py + labOffsetY);
+      }
+    }
+
+    // Highlight starting points
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('1', MX(1) + 8, MY(0) + 16);
+
+    // Highlight final endpoints (32i and -32i)
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('(1+i)¹⁰ = 32 i', MX(0) + 12, MY(32) - 4);
+    ctx.fillStyle = accent;
+    ctx.fillText('(1−i)¹⁰ = −32 i', MX(0) + 12, MY(-32) + 14);
+
+    // Indicate that each step rotates by π/4 and scales by √2
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    var legX = 28, legY = H - 80;
+    ctx.fillText('Svaki korak (množenje sa 1+i):', legX, legY);
+    ctx.fillText(' • rotira tačku za +π/4 (suprotno od kazaljke)', legX, legY + 16);
+    ctx.fillText(' • množi |z| sa √2', legX, legY + 32);
+
+    // Legend
+    ctx.fillStyle = primary;
+    ctx.beginPath();
+    ctx.arc(W - 170, legY - 4, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('(1 + i)^k', W - 158, legY);
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(W - 170, legY + 16, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.fillText('(1 − i)^k', W - 158, legY + 20);
+
+    // Bottom caption
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Posle 8 koraka tačka napravi pun krug (8·π/4 = 2π); posle 10 koraka „skoči” još 2·π/4 = π/2 — na imaginarnu osu.', W / 2, H - 14);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Imaginarni deo razlike (1−i)^10 − (1+i)^10",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["kompleksni brojevi", "stepenovanje", "Moivreova formula", "argand dijagram", "imaginarni deo"]
+}
+BRAINSPARK_META-->

@@ -1,0 +1,744 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Tangente iz tačke A(2, 4) na kružnicu x² + y² = 2 (centar O(0,0),
+poluprečnik R = √2) seku osu Oy u tačkama B i C. Naci površinu trougla ABC.
+
+Korak 1 — provera da je A spolja od kružnice.
+|OA|² = 2² + 4² = 4 + 16 = 20.  R² = 2.  |OA|² > R² ✓ (20 > 2).
+Pa iz A postoje DVE tangente na kružnicu.
+
+Korak 2 — jednacina tangente kroz A(2,4) sa nepoznatim koeficijentom k.
+y - 4 = k(x - 2)  →  y = kx + (4 - 2k).
+Forma:  kx - y + (4 - 2k) = 0.
+Koeficijenti: a=k, b=-1, c=(4-2k). Distance from O(0,0) = |c|/sqrt(a²+b²)
+  = |4 - 2k| / sqrt(k² + 1).
+Uslov tangente: distance = R = √2.
+  |4 - 2k| / sqrt(k² + 1) = √2.
+Kvadriranje: (4 - 2k)² / (k² + 1) = 2  →  (4 - 2k)² = 2(k² + 1).
+  16 - 16k + 4k² = 2k² + 2.
+  2k² - 16k + 14 = 0.
+  k² - 8k + 7 = 0.
+  (k - 1)(k - 7) = 0.
+  k = 1  ili  k = 7.
+
+Korak 3 — nadji preseke sa Oy (x = 0).
+Tangenta 1: k = 1: y = x + 2. Pri x = 0: y = 2. → B(0, 2).
+Tangenta 2: k = 7: y = 7x - 10. Pri x = 0: y = -10. → C(0, -10).
+(Nije bitno koja se zove B a koja C — ime je proizvoljno.)
+
+Korak 4 — provera da su to zaista tangente.
+Tangenta 1 dist od O: |1·0 - 0 + 2|/sqrt(1+1) = 2/sqrt(2) = sqrt(2) ✓ = R.
+Tangenta 2 dist od O: |7·0 - 0 - 10|/sqrt(49+1) = 10/sqrt(50) = 10/(5√2) = 2/√2 = √2 ✓.
+
+Tačke dodira (T1 i T2) su na zatvorenim formulama:
+  Za pravu kx - y + (4 - 2k) = 0, podnožje normale iz O je
+    T = O - ((k·0 - 0 + 4 - 2k) / (k² + 1)) · (k, -1)
+      = -((4-2k)/(k²+1)) · (k, -1)
+  Za k=1: faktor = (4-2)/(1+1) = 2/2 = 1. T1 = -1·(1,-1) = (-1, 1). |OT1|² = 1+1 = 2 ✓.
+  Za k=7: faktor = (4-14)/(49+1) = -10/50 = -1/5. T2 = -(-1/5)·(7,-1) = (7/5, -1/5).
+    |OT2|² = 49/25 + 1/25 = 50/25 = 2 ✓.
+
+Korak 5 — povrsina trougla A(2,4), B(0,2), C(0,-10).
+B i C oba leže na osi Oy (x = 0). Pa je BC stranica na Oy.
+|BC| = |2 - (-10)| = 12.
+Visina iz A na osu Oy = |x_A| = 2.
+Površina = (1/2) · |BC| · h = (1/2) · 12 · 2 = 12.
+
+Provera koordinatnom formulom:
+S = (1/2) |x_A(y_B - y_C) + x_B(y_C - y_A) + x_C(y_A - y_B)|
+  = (1/2) |2·(2 - (-10)) + 0·(-10 - 4) + 0·(4 - 2)|
+  = (1/2) |2·12 + 0 + 0|
+  = (1/2) · 24 = 12. ✓
+
+Tačan odgovor: (D) 12.
+
+Razmišljanje o INTERAKTIVNOSTI:
+Mogli bismo uraditi draggable A. Ali analitičko rešenje (kvadratna po k) je
+fokus zadatka — interaktivnost ne pomaze previše tu. Ostavimo statiku.
+Možda 3 statična canvasa:
+  1. Krug + tačka A van kruga + obe tangente (sa tačkama dodira T1, T2).
+  2. Trougao ABC sa istaknutom osnovom BC na Oy i visinom iz A.
+  3. (Opciono) Konačni odgovor sa formulama.
+
+Drzimo dva canvasa: dovoljno za dobar prikaz.
+
+Pitfalls:
+  - Pokušati direktno reševati sistem y = kx + ... i x² + y² = 2 traganjem za tackom dodira
+    bez korišćenja uslova "diskriminanta = 0". Daleko duže.
+  - Pomesati tangentu iz A sa secicom — secica seče u 2 tacke, tangenta dodir samo u 1.
+  - Greska u formuli za udaljenost tačke od prave (zaboraviti deliti sa sqrt(a²+b²)).
+  - Za kvadratnu k² - 8k + 7 = 0, pogresna faktorizacija (k - 7)(k - 1) → produkt = 7,
+    suma = 8 ✓.
+  - Računati površinu preko |OA|·|...| umesto direktno bazom BC.
+  - Pomesati znak: B = (0, 2) i C = (0, -10), pa |BC| = |2 - (-10)| = 12 (NE 8 niti -8).
+  - Vertikalna tangenta (x = 2): dist od O = |2| = 2. R = √2 ≈ 1.414. 2 > √2 → NIJE
+    tangenta (x = 2 ne dodiruje kružnicu poluprečnika √2 jer je rastojanje 2 ≠ √2).
+    Tangente nisu vertikalne, pa pretpostavka y = kx + n bez gubitka.
+</script>
+
+<h1 data-card="problem-title">Tangente iz spoljne tačke — površina trougla na y-osi</h1>
+<p data-card="problem-subtitle" class="subtitle">Analitička geometrija — kružnica, tangenta, presek sa osom, površina trougla</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Tangente postavljene iz tačke \( A(2, 4) \) na kružnicu \( x^2 + y^2 = 2 \) seku osu \( Oy \) u tačkama \( B \) i \( C \). Površina trougla \( ABC \) jednaka je:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">spoljna tačka</span>
+      <span class="given-value">\( A(2, 4) \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">kružnica</span>
+      <span class="given-value">\( x^2 + y^2 = 2 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">centar / poluprečnik</span>
+      <span class="given-value">\( O(0, 0),\;\; R = \sqrt{2} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">tražimo</span>
+      <span class="given-value">\( P(\triangle ABC) = ? \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 6 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 8 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 10 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 12 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 16 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Tangenta kroz \( A \) ima oblik \( y = kx + (4 - 2k) \). Uslov da je tangenta na kružnicu \( x^2 + y^2 = 2 \) je: udaljenost centra \( O \) od prave jednaka poluprečniku \( \sqrt{2} \). To daje kvadratnu po \( k \): \( k^2 - 8k + 7 = 0 \), pa \( k = 1 \) ili \( k = 7 \). Preseci sa \( Oy \) daju \( B(0, 2) \) i \( C(0, -10) \). \( BC \) leži na \( y \)-osi, dužina je \( 12 \), a visina iz \( A \) na \( y \)-osu je \( 2 \). Površina = \( \tfrac{1}{2} \cdot 12 \cdot 2 = 12 \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Tangenta na kružnicu i površina trougla</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Kružnica</span> \( x^2 + y^2 = R^2 \) — centar \( O(0,0) \), poluprečnik \( R \).</li>
+        <li><span class="formula-label">Tačka spolja</span> Tačka \( A \) je <em>van</em> kružnice ako \( |OA| > R \), tj. \( x_A^2 + y_A^2 > R^2 \). Iz spoljne tačke postoje tačno DVE tangente.</li>
+        <li><span class="formula-label">Uslov tangencije</span> Prava \( ax + by + c = 0 \) je tangenta na kružnicu sa centrom \( O \) i poluprečnikom \( R \) ako: \( \dfrac{|aO_x + bO_y + c|}{\sqrt{a^2 + b^2}} = R \). Za \( O = (0,0) \): \( \dfrac{|c|}{\sqrt{a^2 + b^2}} = R \).</li>
+        <li><span class="formula-label">Prava kroz tačku sa nagibom k</span> \( y - y_0 = k(x - x_0) \), tj. \( y = kx + (y_0 - kx_0) \).</li>
+        <li><span class="formula-label">Površina trougla — osnova × visina</span> \( P = \tfrac{1}{2} \cdot a \cdot h_a \). Posebno, ako trougao ima dva temena na \( y \)-osi, onda je \( BC \) na \( y \)-osi, dužina je \( |y_B - y_C| \), a visina iz \( A \) je \( |x_A| \).</li>
+        <li><span class="formula-label">Površina trougla — koordinate</span> \( P = \tfrac{1}{2} \big| x_A(y_B - y_C) + x_B(y_C - y_A) + x_C(y_A - y_B) \big| \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — tangente iz A">
+  <h2>📐 Vizuelni prikaz — tangente iz spoljne tačke \( A \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diag-tangents" width="720" height="640"></canvas>
+  </div>
+  <p class="canvas-caption">Kružnica \( x^2 + y^2 = 2 \) sa centrom \( O \) i poluprečnikom \( \sqrt{2} \). Tačka \( A(2, 4) \) je van kružnice (\( |OA|^2 = 20 > 2 \)), pa iz nje postoje DVE tangente — sa nagibima \( k = 1 \) i \( k = 7 \). Tačke dodira su \( T_1(-1, 1) \) i \( T_2(7/5, -1/5) \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — trougao ABC i površina">
+  <h2>📐 Vizuelni prikaz — trougao \( ABC \) i površina</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diag-triangle" width="720" height="640"></canvas>
+  </div>
+  <p class="canvas-caption">Tangente seku \( y \)-osu u \( B(0, 2) \) i \( C(0, -10) \). Trougao \( ABC \) ima osnovu \( BC \) na \( y \)-osi (dužina \( 12 \)) i visinu iz \( A \) jednaku \( |x_A| = 2 \). Površina = \( \tfrac{1}{2} \cdot 12 \cdot 2 = 12 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera: \( A \) je van kružnice</h3>
+      <p>Kružnica \( x^2 + y^2 = 2 \) ima centar \( O(0, 0) \) i poluprečnik \( R = \sqrt{2} \). Računamo:</p>
+      <div class="math-block">\[ |OA|^2 = 2^2 + 4^2 = 4 + 16 = 20 > 2 = R^2. \]</div>
+      <p>Pa je \( A \) <em>van</em> kružnice — postoje tačno dve tangente kroz \( A \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Pretpostavi tangentu kroz \( A \) u obliku \( y = kx + n \)</h3>
+      <p>Prava kroz \( A(2, 4) \) sa koeficijentom pravca \( k \):</p>
+      <div class="math-block">\[ y - 4 = k(x - 2) \;\;\Longleftrightarrow\;\; y = kx + (4 - 2k). \]</div>
+      <p>U opštem obliku: \( kx - y + (4 - 2k) = 0 \). (Vertikalna prava \( x = 2 \) nije tangenta — udaljenost \( O \) od nje je \( 2 \neq \sqrt{2} \), pa je sigurno možemo zanemariti.)</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Uslov tangencije: distanca \( O \) od prave = \( R \)</h3>
+      <p>Udaljenost \( O(0,0) \) od prave \( kx - y + (4 - 2k) = 0 \):</p>
+      <div class="math-block">\[ d(O, \ell) = \frac{|k \cdot 0 - 0 + (4 - 2k)|}{\sqrt{k^2 + 1}} = \frac{|4 - 2k|}{\sqrt{k^2 + 1}}. \]</div>
+      <p>Postavimo \( d = R = \sqrt{2} \) i kvadriramo (obe strane su nenegativne):</p>
+      <div class="math-block">\[ \frac{(4 - 2k)^2}{k^2 + 1} = 2 \;\;\Longleftrightarrow\;\; (4 - 2k)^2 = 2(k^2 + 1). \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je dovoljan uslov \( d = R \) za tangenciju?</summary>
+          <div class="detail-content"><p>Ako je \( d > R \), prava ne dodiruje kružnicu (nema preseka). Ako \( d < R \), prava je sečica i preseka su DVA. Tangentu definišemo kao pravu koja sa kružnicom ima TAČNO JEDAN zajednički element — to je granični slučaj, \( d = R \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Reši kvadratnu jednačinu po \( k \)</h3>
+      <p>Razvijamo:</p>
+      <div class="math-block">\[ \begin{aligned}
+(4 - 2k)^2 &amp;= 2(k^2 + 1) \\
+16 - 16k + 4k^2 &amp;= 2k^2 + 2 \\
+2k^2 - 16k + 14 &amp;= 0 \\
+k^2 - 8k + 7 &amp;= 0.
+\end{aligned} \]</div>
+      <p>Faktorizacija (tražimo brojeve sa proizvodom \( 7 \) i zbirom \( 8 \), to su \( 1 \) i \( 7 \)):</p>
+      <div class="math-block">\[ (k - 1)(k - 7) = 0 \;\;\Longrightarrow\;\; k_1 = 1,\quad k_2 = 7. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koje su jednačine dve tangente?</summary>
+          <div class="detail-content">
+            <p>Za \( k = 1 \): \( y = x + (4 - 2) = x + 2 \), tj. \( \ell_1: y = x + 2 \).</p>
+            <p>Za \( k = 7 \): \( y = 7x + (4 - 14) = 7x - 10 \), tj. \( \ell_2: y = 7x - 10 \).</p>
+            <p>Provera: \( d(O, \ell_1) = \tfrac{|2|}{\sqrt{2}} = \sqrt{2} \) ✓; \( d(O, \ell_2) = \tfrac{|-10|}{\sqrt{50}} = \tfrac{10}{5\sqrt{2}} = \tfrac{2}{\sqrt{2}} = \sqrt{2} \) ✓.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Nađi preseke tangenti sa \( y \)-osom</h3>
+      <p>Na osi \( Oy \) važi \( x = 0 \). Iz dve tangente:</p>
+      <div class="math-block">\[ \ell_1:\; y = 0 + 2 = 2 \;\;\Longrightarrow\;\; B(0, 2). \]</div>
+      <div class="math-block">\[ \ell_2:\; y = 7 \cdot 0 - 10 = -10 \;\;\Longrightarrow\;\; C(0, -10). \]</div>
+      <p>Imenovanje \( B \) ili \( C \) je proizvoljno — bitno je da imamo dve tačke na \( y \)-osi.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Površina trougla \( A(2,4),\;B(0,2),\;C(0,-10) \)</h3>
+      <p>Tačke \( B \) i \( C \) leže na \( y \)-osi (\( x = 0 \)), pa je stranica \( BC \) deo \( y \)-ose. Onda je <em>visina iz \( A \) na \( BC \)</em> jednaka \( |x_A| = 2 \), a osnova:</p>
+      <div class="math-block">\[ |BC| = |y_B - y_C| = |2 - (-10)| = 12. \]</div>
+      <p>Površina:</p>
+      <div class="math-block">\[ P(\triangle ABC) = \tfrac{1}{2} \cdot |BC| \cdot |x_A| = \tfrac{1}{2} \cdot 12 \cdot 2 = 12. \]</div>
+      <p>Dakle <span class="result">\( P = 12 \)</span>.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: provera koordinatnom formulom za površinu.</summary>
+          <div class="detail-content">
+            <p>\( P = \tfrac{1}{2} \big| x_A(y_B - y_C) + x_B(y_C - y_A) + x_C(y_A - y_B) \big| \)</p>
+            <p>\( = \tfrac{1}{2} \big| 2 \cdot (2 - (-10)) + 0 \cdot ((-10) - 4) + 0 \cdot (4 - 2) \big| = \tfrac{1}{2} \cdot |2 \cdot 12| = \tfrac{1}{2} \cdot 24 = 12 \) ✓.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Najmoćniji alat za tangente kružnice iz spoljne tačke je <em>uslov \( d(O, \ell) = R \)</em>. Pretpostavi pravu kroz \( A \) sa nepoznatim nagibom \( k \), upiši uslov, i dobiješ <em>kvadratnu po \( k \)</em>. Diskriminanta te kvadratne je nenegativna baš kada je \( A \) van ili na kružnici — slučaj sa dve tangente. Lepota ovog zadatka: posle nalaženja tangenti, geometrija postaje banalna jer su \( B, C \) na \( y \)-osi (samim tim osnova trougla leži na osi, a visina iz \( A \) je samo \( |x_A| \)).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ P(\triangle ABC) = \tfrac{1}{2} \cdot |BC| \cdot |x_A| = \tfrac{1}{2} \cdot 12 \cdot 2 = 12. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 6 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 8 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 10 \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 12 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 16 \)</span>
+  </div>
+  <p class="verification">Verifikacija: tangente \( y = x + 2 \) i \( y = 7x - 10 \) imaju udaljenost od centra \( O \) tačno \( \sqrt{2} = R \) ✓; preseci sa \( y \)-osom su \( B(0, 2) \) i \( C(0, -10) \). Koordinatna formula površine daje \( \tfrac{1}{2}|2 \cdot 12 + 0 + 0| = 12 \) ✓.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pretpostaviti da je \( A \) na kružnici:</strong> tada bi tačka \( A \) bila tačka dodira (jedna tangenta), a ne spoljna. Zadatak traži DVE tangente, što odgovara \( |OA|^2 = 20 > 2 = R^2 \).</li>
+    <li><strong>Zaboraviti deliti sa \( \sqrt{a^2 + b^2} \):</strong> u formuli udaljenosti tačke od prave. Tačno: \( d = |aP_x + bP_y + c| / \sqrt{a^2 + b^2} \).</li>
+    <li><strong>Pogrešna faktorizacija \( k^2 - 8k + 7 \):</strong> traže se brojevi \( a, b \) sa \( a + b = 8 \) i \( ab = 7 \). To su \( 1, 7 \), pa \( (k - 1)(k - 7) \). NE \( (k - 2)(k - 4) \) (proizvod 8) ni \( (k - 7)(k + 1) \) (proizvod \( -7 \)).</li>
+    <li><strong>Pomešati \( |y_B - y_C| \) sa \( y_B + y_C \):</strong> \( y_B - y_C = 2 - (-10) = 12 \); \( y_B + y_C = -8 \). Površina koristi razliku (dužinu duži), ne zbir.</li>
+    <li><strong>Računati visinu kao \( |OA| \):</strong> visina iz \( A \) na \( BC \) je <em>okomita</em> udaljenost od \( A \) do prave kroz \( B \) i \( C \). Pošto su \( B, C \) na \( y \)-osi, ta prava je sama \( y \)-osa, pa je udaljenost \( |x_A| = 2 \) (NE \( |OA| = \sqrt{20} \)).</li>
+    <li><strong>Pomešati tangentu sa polarom:</strong> jednačina polare tačke \( A \) za kružnicu \( x^2 + y^2 = R^2 \) je \( x_A x + y_A y = R^2 \), tj. \( 2x + 4y = 2 \) ili \( x + 2y = 1 \). To je drugačija prava koja prolazi kroz <em>obe</em> tačke dodira \( T_1, T_2 \) (a ne kroz \( A \)). Korisno za drugi pristup, ali ne treba pomešati.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Nađi tačke dodira \( T_1 \) i \( T_2 \) tangenti iz \( A(2, 4) \) na kružnicu \( x^2 + y^2 = 2 \). Provera: prava \( T_1 T_2 \) (polara tačke \( A \)) treba da ima jednačinu \( x + 2y = 1 \).</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Tačka dodira tangente iz \( A \) je podnožje normale iz \( O \) na tu tangentu. Za \( \ell_1: x - y + 2 = 0 \), faktor \( t = (0 - 0 + 2)/(1 + 1) = 1 \), pa \( T_1 = O - 1 \cdot (1, -1) = (-1, 1) \).</p>
+      <p>Za \( \ell_2: 7x - y - 10 = 0 \), faktor \( t = (0 - 0 - 10)/(49 + 1) = -1/5 \), pa \( T_2 = O - (-\tfrac{1}{5}) \cdot (7, -1) = (7/5, -1/5) \).</p>
+      <p>Provera: \( |OT_1|^2 = 1 + 1 = 2 \) ✓; \( |OT_2|^2 = 49/25 + 1/25 = 50/25 = 2 \) ✓.</p>
+      <p>Polara: \( x_A x + y_A y = R^2 \), tj. \( 2x + 4y = 2 \), tj. \( x + 2y = 1 \). Provera: za \( T_1(-1, 1) \): \( -1 + 2 = 1 \) ✓. Za \( T_2(7/5, -1/5) \): \( 7/5 - 2/5 = 5/5 = 1 \) ✓. Obe tačke dodira leže na polari, kao što je teorija predviđala.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  function buildCS(canvas, xMin, xMax, yMin, yMax, marginL, marginR, marginT, marginB) {
+    var W = canvas.width, H = canvas.height;
+    var plotW = W - marginL - marginR;
+    var plotH = H - marginT - marginB;
+    var scaleX = plotW / (xMax - xMin);
+    var scaleY = plotH / (yMax - yMin);
+    function tx(x) { return marginL + (x - xMin) * scaleX; }
+    function ty(y) { return marginT + (yMax - y) * scaleY; }
+    return {
+      W: W, H: H,
+      xMin: xMin, xMax: xMax, yMin: yMin, yMax: yMax,
+      marginL: marginL, marginR: marginR, marginT: marginT, marginB: marginB,
+      tx: tx, ty: ty
+    };
+  }
+
+  function drawAxes(ctx, cs, colors, opts) {
+    opts = opts || {};
+    var grid = colors.grid, axis = colors.axis, text = colors.text, muted = colors.muted;
+    var stepX = opts.stepX || 1, stepY = opts.stepY || 1;
+    var labelStepX = opts.labelStepX || stepX, labelStepY = opts.labelStepY || stepY;
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (var x = Math.ceil(cs.xMin / stepX) * stepX; x <= cs.xMax; x += stepX) {
+      ctx.moveTo(cs.tx(x), cs.ty(cs.yMax));
+      ctx.lineTo(cs.tx(x), cs.ty(cs.yMin));
+    }
+    for (var y = Math.ceil(cs.yMin / stepY) * stepY; y <= cs.yMax; y += stepY) {
+      ctx.moveTo(cs.tx(cs.xMin), cs.ty(y));
+      ctx.lineTo(cs.tx(cs.xMax), cs.ty(y));
+    }
+    ctx.stroke();
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(cs.tx(cs.xMin), cs.ty(0));
+    ctx.lineTo(cs.tx(cs.xMax), cs.ty(0));
+    ctx.moveTo(cs.tx(0), cs.ty(cs.yMin));
+    ctx.lineTo(cs.tx(0), cs.ty(cs.yMax));
+    ctx.stroke();
+
+    // Arrowheads
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(cs.tx(cs.xMax), cs.ty(0));
+    ctx.lineTo(cs.tx(cs.xMax) - 8, cs.ty(0) - 4);
+    ctx.lineTo(cs.tx(cs.xMax) - 8, cs.ty(0) + 4);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(cs.tx(0), cs.ty(cs.yMax));
+    ctx.lineTo(cs.tx(0) - 4, cs.ty(cs.yMax) + 8);
+    ctx.lineTo(cs.tx(0) + 4, cs.ty(cs.yMax) + 8);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = text;
+    ctx.font = 'italic 13px "Latin Modern Math", Cambria Math, serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('x', cs.tx(cs.xMax) + 4, cs.ty(0) + 4);
+    ctx.textAlign = 'right';
+    ctx.fillText('y', cs.tx(0) - 6, cs.ty(cs.yMax) + 4);
+
+    // Tick labels
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var x2 = Math.ceil(cs.xMin / labelStepX) * labelStepX; x2 <= cs.xMax; x2 += labelStepX) {
+      if (x2 === 0) continue;
+      ctx.fillText(String(x2), cs.tx(x2), cs.ty(0) + 14);
+    }
+    ctx.textAlign = 'right';
+    for (var y2 = Math.ceil(cs.yMin / labelStepY) * labelStepY; y2 <= cs.yMax; y2 += labelStepY) {
+      if (y2 === 0) continue;
+      ctx.fillText(String(y2), cs.tx(0) - 5, cs.ty(y2) + 4);
+    }
+    ctx.textAlign = 'right';
+    ctx.fillText('O', cs.tx(0) - 5, cs.ty(0) + 14);
+  }
+
+  function drawPoint(ctx, cs, x, y, color, label, labelOffset) {
+    var px = cs.tx(x), py = cs.ty(y);
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(px, py, 5.5, 0, Math.PI * 2);
+    ctx.fill();
+    if (label) {
+      ctx.font = 'bold 14px "Latin Modern Math", Cambria Math, serif';
+      ctx.textAlign = labelOffset && labelOffset.align ? labelOffset.align : 'left';
+      var dx = labelOffset && labelOffset.dx !== undefined ? labelOffset.dx : 8;
+      var dy = labelOffset && labelOffset.dy !== undefined ? labelOffset.dy : -8;
+      ctx.fillText(label, px + dx, py + dy);
+    }
+  }
+
+  // ============ DIAGRAM 1: tangents from A ============
+  (function() {
+    var canvas = document.getElementById('diag-tangents');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+
+    function draw() {
+      var bg = cv('--sol-canvas-bg');
+      var grid = cv('--sol-canvas-grid');
+      var axis = cv('--sol-canvas-axis');
+      var primary = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text = cv('--sol-canvas-text');
+      var muted = cv('--sol-canvas-muted');
+      var tertiary = cv('--sol-canvas-tertiary');
+      var warning = cv('--sol-canvas-warning');
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Title
+      ctx.fillStyle = text;
+      ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Kružnica x² + y² = 2 i tangente iz A(2, 4)', canvas.width / 2, 28);
+
+      // Use range x in [-3, 4], y in [-3, 5]
+      var cs = buildCS(canvas, -3, 4, -3, 5, 60, 40, 50, 90);
+      drawAxes(ctx, cs, { grid: grid, axis: axis, text: text, muted: muted });
+
+      // Circle x² + y² = 2, R = sqrt(2)
+      var Opx = cs.tx(0), Opy = cs.ty(0);
+      var rPxX = cs.tx(Math.sqrt(2)) - cs.tx(0);
+      var rPxY = cs.ty(0) - cs.ty(Math.sqrt(2));
+      ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.10);
+      ctx.beginPath();
+      ctx.ellipse(Opx, Opy, rPxX, rPxY, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = secondary;
+      ctx.lineWidth = 2.4;
+      ctx.beginPath();
+      ctx.ellipse(Opx, Opy, rPxX, rPxY, 0, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Radius indicator: from O to (sqrt(2), 0)
+      ctx.strokeStyle = cvAlpha('--sol-canvas-secondary', 0.7);
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      ctx.moveTo(Opx, Opy);
+      ctx.lineTo(cs.tx(Math.sqrt(2)), cs.ty(0));
+      ctx.stroke();
+      ctx.fillStyle = secondary;
+      ctx.font = 'italic 12px "Latin Modern Math", Cambria Math, serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('R = √2', cs.tx(Math.sqrt(2)/2), cs.ty(0) - 6);
+
+      // Tangent 1: y = x + 2  (k=1)
+      // Range: x from xMin..xMax → y from xMin+2..xMax+2
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 2.4;
+      ctx.beginPath();
+      var xL1 = cs.xMin, yL1 = xL1 + 2;
+      var xR1 = cs.xMax, yR1 = xR1 + 2;
+      // Clip to range
+      if (yL1 < cs.yMin) { yL1 = cs.yMin; xL1 = yL1 - 2; }
+      if (yR1 > cs.yMax) { yR1 = cs.yMax; xR1 = yR1 - 2; }
+      ctx.moveTo(cs.tx(xL1), cs.ty(yL1));
+      ctx.lineTo(cs.tx(xR1), cs.ty(yR1));
+      ctx.stroke();
+
+      // Tangent 2: y = 7x - 10  (k=7)
+      ctx.strokeStyle = highlight;
+      ctx.lineWidth = 2.4;
+      ctx.beginPath();
+      // y from xMin to xMax: at x=cs.xMin → y=7·xMin-10 (very small), at x=cs.xMax → y=7·xMax-10 (very big)
+      // Clip on y
+      var yT2_at_xMin = 7 * cs.xMin - 10;
+      var yT2_at_xMax = 7 * cs.xMax - 10;
+      var xA1, yA1, xA2, yA2;
+      if (yT2_at_xMin < cs.yMin) { yA1 = cs.yMin; xA1 = (yA1 + 10) / 7; }
+      else if (yT2_at_xMin > cs.yMax) { yA1 = cs.yMax; xA1 = (yA1 + 10) / 7; }
+      else { xA1 = cs.xMin; yA1 = yT2_at_xMin; }
+      if (yT2_at_xMax > cs.yMax) { yA2 = cs.yMax; xA2 = (yA2 + 10) / 7; }
+      else if (yT2_at_xMax < cs.yMin) { yA2 = cs.yMin; xA2 = (yA2 + 10) / 7; }
+      else { xA2 = cs.xMax; yA2 = yT2_at_xMax; }
+      ctx.moveTo(cs.tx(xA1), cs.ty(yA1));
+      ctx.lineTo(cs.tx(xA2), cs.ty(yA2));
+      ctx.stroke();
+
+      // Tangent labels
+      ctx.fillStyle = primary;
+      ctx.font = 'italic 13px "Latin Modern Math", Cambria Math, serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('ℓ₁:  y = x + 2', cs.tx(-2.5), cs.ty(-0.5));
+      ctx.fillStyle = highlight;
+      ctx.fillText('ℓ₂:  y = 7x − 10', cs.tx(2.05), cs.ty(2.5) + 6);
+
+      // Touch points
+      drawPoint(ctx, cs, -1, 1, primary, 'T₁(−1, 1)', { dx: -78, dy: -10, align: 'left' });
+      drawPoint(ctx, cs, 1.4, -0.2, highlight, 'T₂(7/5, −1/5)', { dx: 10, dy: 18, align: 'left' });
+
+      // O and A
+      drawPoint(ctx, cs, 0, 0, muted, '', null);
+      drawPoint(ctx, cs, 2, 4, accent, 'A(2, 4)', { dx: 10, dy: 4, align: 'left' });
+
+      // |OA| sketch (faint dashed)
+      ctx.strokeStyle = cvAlpha('--sol-canvas-muted', 0.5);
+      ctx.setLineDash([4, 4]);
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(cs.tx(0), cs.ty(0));
+      ctx.lineTo(cs.tx(2), cs.ty(4));
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = muted;
+      ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('|OA| = √20', cs.tx(1.0), cs.ty(2.3));
+
+      // Bottom info
+      ctx.fillStyle = text;
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Uslov tangencije:  d(O, ℓ) = R = √2  →  k² − 8k + 7 = 0  →  k ∈ {1, 7}', canvas.width / 2, canvas.height - 50);
+      ctx.fillStyle = muted;
+      ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+      ctx.fillText('Iz spoljne tačke A postoje TAČNO dve tangente; tačke dodira T₁, T₂ leže na polari x + 2y = 1.', canvas.width / 2, canvas.height - 28);
+    }
+
+    draw();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() {
+          styles = getComputedStyle(root);
+          draw();
+        }, 50);
+      }
+    });
+  })();
+
+  // ============ DIAGRAM 2: triangle ABC and area ============
+  (function() {
+    var canvas = document.getElementById('diag-triangle');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+
+    function draw() {
+      var bg = cv('--sol-canvas-bg');
+      var grid = cv('--sol-canvas-grid');
+      var axis = cv('--sol-canvas-axis');
+      var primary = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text = cv('--sol-canvas-text');
+      var muted = cv('--sol-canvas-muted');
+      var warning = cv('--sol-canvas-warning');
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Title
+      ctx.fillStyle = text;
+      ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Trougao ABC: A(2, 4), B(0, 2), C(0, −10)', canvas.width / 2, 28);
+
+      // Range x in [-2, 4], y in [-12, 5]
+      var cs = buildCS(canvas, -2, 4, -12, 5, 60, 40, 50, 90);
+      drawAxes(ctx, cs, { grid: grid, axis: axis, text: text, muted: muted }, { stepY: 1, labelStepY: 2 });
+
+      // Triangle fill
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.16);
+      ctx.beginPath();
+      ctx.moveTo(cs.tx(2), cs.ty(4));
+      ctx.lineTo(cs.tx(0), cs.ty(2));
+      ctx.lineTo(cs.tx(0), cs.ty(-10));
+      ctx.closePath();
+      ctx.fill();
+
+      // Triangle edges
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 2.4;
+      ctx.beginPath();
+      ctx.moveTo(cs.tx(2), cs.ty(4));
+      ctx.lineTo(cs.tx(0), cs.ty(2));
+      ctx.lineTo(cs.tx(0), cs.ty(-10));
+      ctx.closePath();
+      ctx.stroke();
+
+      // Highlight BC on y-axis with thick line
+      ctx.strokeStyle = highlight;
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.moveTo(cs.tx(0), cs.ty(2));
+      ctx.lineTo(cs.tx(0), cs.ty(-10));
+      ctx.stroke();
+
+      // Height from A to y-axis (horizontal segment)
+      ctx.strokeStyle = warning;
+      ctx.setLineDash([6, 4]);
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(cs.tx(2), cs.ty(4));
+      ctx.lineTo(cs.tx(0), cs.ty(4));
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Right-angle marker at foot of height (0, 4)
+      ctx.strokeStyle = warning;
+      ctx.lineWidth = 1.4;
+      var fpx = cs.tx(0), fpy = cs.ty(4);
+      var sz = 10;
+      ctx.beginPath();
+      ctx.moveTo(fpx + sz, fpy);
+      ctx.lineTo(fpx + sz, fpy + sz);
+      ctx.lineTo(fpx, fpy + sz);
+      ctx.stroke();
+
+      // Labels: |BC| = 12, height = 2
+      ctx.fillStyle = highlight;
+      ctx.font = 'bold 14px "Latin Modern Math", Cambria Math, serif';
+      ctx.textAlign = 'right';
+      ctx.fillText('|BC| = 12', cs.tx(0) - 10, cs.ty(-4) + 6);
+
+      ctx.fillStyle = warning;
+      ctx.font = 'bold 13px "Latin Modern Math", Cambria Math, serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('h = |x_A| = 2', cs.tx(1), cs.ty(4) - 10);
+
+      // Tangents (faint, for context)
+      ctx.strokeStyle = cvAlpha('--sol-canvas-primary', 0.45);
+      ctx.lineWidth = 1.4;
+      ctx.setLineDash([4, 4]);
+      // ℓ₁: y = x + 2, from (-2, 0) to (4, 6) clipped
+      ctx.beginPath();
+      ctx.moveTo(cs.tx(-2), cs.ty(0));
+      ctx.lineTo(cs.tx(3), cs.ty(5));
+      ctx.stroke();
+      // ℓ₂: y = 7x - 10, from x=0 (y=-10) to x=2 (y=4)
+      ctx.beginPath();
+      ctx.moveTo(cs.tx(0), cs.ty(-10));
+      ctx.lineTo(cs.tx(2.14), cs.ty(5));
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.7);
+      ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('ℓ₁', cs.tx(2.6), cs.ty(4.8) + 4);
+      ctx.fillText('ℓ₂', cs.tx(2.0), cs.ty(3.5) + 12);
+
+      // Points
+      drawPoint(ctx, cs, 2, 4, accent, 'A(2, 4)', { dx: 10, dy: 4, align: 'left' });
+      drawPoint(ctx, cs, 0, 2, secondary, 'B(0, 2)', { dx: -68, dy: 2, align: 'left' });
+      drawPoint(ctx, cs, 0, -10, secondary, 'C(0, −10)', { dx: -82, dy: 4, align: 'left' });
+
+      // Bottom: area pill
+      var pillW = 380, pillH = 38;
+      var pillX = (canvas.width - pillW) / 2, pillY = canvas.height - 60;
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.22);
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 2.5;
+      var pr = 18;
+      ctx.beginPath();
+      ctx.moveTo(pillX + pr, pillY);
+      ctx.lineTo(pillX + pillW - pr, pillY);
+      ctx.quadraticCurveTo(pillX + pillW, pillY, pillX + pillW, pillY + pr);
+      ctx.lineTo(pillX + pillW, pillY + pillH - pr);
+      ctx.quadraticCurveTo(pillX + pillW, pillY + pillH, pillX + pillW - pr, pillY + pillH);
+      ctx.lineTo(pillX + pr, pillY + pillH);
+      ctx.quadraticCurveTo(pillX, pillY + pillH, pillX, pillY + pillH - pr);
+      ctx.lineTo(pillX, pillY + pr);
+      ctx.quadraticCurveTo(pillX, pillY, pillX + pr, pillY);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 16px "Latin Modern Math", Cambria Math, serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('P = ½ · |BC| · h = ½ · 12 · 2 = 12', pillX + pillW / 2, pillY + 24);
+
+      ctx.fillStyle = muted;
+      ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+      ctx.fillText('Pošto su B i C na y-osi, osnova trougla leži na osi, a visina iz A je |x_A|.', canvas.width / 2, canvas.height - 12);
+    }
+
+    draw();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() {
+          styles = getComputedStyle(root);
+          draw();
+        }, 50);
+      }
+    });
+  })();
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Tangente iz A(2,4) na kružnicu x² + y² = 2 — površina trougla ABC",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["analitička geometrija", "kružnica", "tangenta", "spoljna tačka", "površina trougla"]
+}
+BRAINSPARK_META-->

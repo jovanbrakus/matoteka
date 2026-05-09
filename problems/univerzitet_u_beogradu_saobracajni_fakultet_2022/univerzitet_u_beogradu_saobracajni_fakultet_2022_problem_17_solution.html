@@ -1,0 +1,515 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Sistem
+   log_x(y) + 4·log_y(x) = 4
+   4y − x = 3
+Naći broj uređenih parova realnih (x, y) rešenja.
+
+Korak 1 — domen logaritama: x > 0, x ≠ 1, y > 0, y ≠ 1.
+   (Baze logaritma moraju biti pozitivne i različite od 1.)
+
+Korak 2 — smena.
+   Stavimo t = log_x(y). Tada log_y(x) = 1/log_x(y) = 1/t (formula za promenu baze).
+   Da bi smena bila legitimna, t ≠ 0, što ekvivalentno znači y ≠ 1 — već je u domenu.
+   Jednačina postaje: t + 4/t = 4. Pomnožimo sa t (t ≠ 0):
+   t² − 4t + 4 = 0  ⇒  (t − 2)² = 0  ⇒  t = 2 (dvostruki koren).
+
+Korak 3 — vraćanje smene.
+   log_x(y) = 2  ⇒  y = x².
+
+Korak 4 — substitucija u drugu jednačinu.
+   4y − x = 3  ⇒  4x² − x − 3 = 0.
+   Diskriminanta: D = 1 + 48 = 49, √D = 7.
+   x = (1 ± 7) / 8.
+   x₁ = 8/8 = 1, x₂ = −6/8 = −3/4.
+
+Korak 5 — provera u domenu.
+   x₁ = 1: nije dozvoljeno jer baza ne sme biti 1. Odbacuje se.
+   x₂ = −3/4: nije dozvoljeno jer baza mora biti pozitivna. Odbacuje se.
+
+   (Sanity check: za x₂ = −3/4 izraz log_x(y) uopšte nije definisan u realnim
+    brojevima, dakle ovo nije rešenje sistema.)
+
+Zaključak: nijedan od kandidata ne pripada domenu. Sistem nema rešenja.
+Tačan odgovor: (D) 0.
+
+Pitfalls:
+- Zaboraviti uslov x ≠ 1 i prebrojiti x = 1 kao rešenje (vodi do (E) 1).
+- Zaboraviti i uslov x > 0, pa prebrojiti x = −3/4 (vodi do (C) 2 ili (E) 1).
+- Pogrešno protumačiti dvostruki koren t = 2 i dobiti dva slučaja log_x(y)=2 i =−2,
+  što daje dodatne kandidate.
+
+Vizuelni prikaz: jedan kanvas u xy-ravni:
+- parabola y = x² (iz prve jednačine sa t = 2)
+- prava 4y − x = 3 (tj. y = (x+3)/4)
+- presečne tačke (1, 1) i (−3/4, 9/16) — obe označene crveno (odbačene)
+- vertikalne linije x = 0 i x = 1 osenčene (zabranjeni domen)
+- prikazana dozvoljena oblast x > 0, x ≠ 1
+</script>
+
+<h1 data-card="problem-title">Sistem sa logaritmima različitih baza</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — logaritamske jednačine, smena promenljive i provera domena</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Koliko ima uređenih parova realnih brojeva \( (x, y) \) koji su rešenja sistema jednačina</p>
+  <div class="math-block">
+    \[ \log_x y + 4\log_y x = 4, \qquad 4y - x = 3 \,? \]
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 4 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 0 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Najpre ispišemo domen — baze \( x \) i \( y \) moraju biti pozitivne i različite od \( 1 \). Zatim smenom \( t = \log_x y \) prvu jednačinu pretvaramo u kvadratnu po \( t \) i dobijamo \( t = 2 \), tj. \( y = x^2 \). Ubacujemo u drugu jednačinu i rešavamo kvadratnu po \( x \). Na kraju — i ovo je <em>ključ</em> zadatka — proveravamo da li dobijena rešenja zadovoljavaju domen.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Logaritamske formule i zahtevi za bazu</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Domen logaritma \( \log_a b \):</strong> baza \( a > 0, a \ne 1 \) i argument \( b > 0 \). Ako bilo koji uslov nije ispunjen, izraz nije definisan u realnom skupu.</li>
+        <li><strong>Recipročnost zamenom baza:</strong> za važeće \( a, b \) iz domena \( \log_a b = \dfrac{1}{\log_b a} \). To je posledica formule \( \log_a b = \dfrac{\ln b}{\ln a} \).</li>
+        <li><strong>Definicija logaritma:</strong> \( \log_x y = 2 \;\Longleftrightarrow\; y = x^2 \) (uz \( x > 0, x \ne 1 \)).</li>
+        <li><strong>Kvadratna jednačina:</strong> \( ax^2 + bx + c = 0 \) ima rešenja \( x = \dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a} \).</li>
+        <li><strong>Pravilo „domen prvi, rešenja posle":</strong> kandidate dobijene algebarskim manipulacijama uvek vraćamo u <em>originalni</em> domen. Što algebra dopusti, mora i domen da odobri.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — parabola, prava i domen">
+  <h2>📐 Geometrijska slika sistema u \( xy \)-ravni</h2>
+  <p>Posle smene \( t = 2 \) prva jednačina daje krivu \( y = x^2 \), a druga jednačina je prava \( y = (x+3)/4 \). Presek krive i prave su algebarski kandidati. Domen logaritma izbacuje regione \( x \le 0 \) i pravu \( x = 1 \).</p>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-system" width="720" height="600"></canvas>
+  </div>
+  <p class="canvas-caption">Plava kriva: \( y = x^2 \). Narandžasta prava: \( y = (x+3)/4 \). Crvene tačke \( (1, 1) \) i \( (-\tfrac{3}{4},\, \tfrac{9}{16}) \) su algebarski kandidati — obe leže u zabranjenoj zoni (osenčeno crveno). Zelena vertikalna linija \( x = 0 \) i pojas oko \( x = 1 \) označavaju gde \( x \) ne sme biti.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Domen sistema</h3>
+      <p>U izrazu \( \log_x y \) baza je \( x \), a argument \( y \). U \( \log_y x \) je obrnuto. Da bi oba logaritma bila definisana u realnim brojevima, mora:</p>
+      <div class="math-block">
+        \[ x > 0, \; x \ne 1, \qquad y > 0, \; y \ne 1. \]
+      </div>
+      <p>Ovaj uslov ćemo aktivno koristiti tek na kraju — ali ga sada zapisujemo da ga ne zaboravimo.</p>
+      <div class="callout callout-info">
+        <p>U logaritamskim jednačinama domen je često „nevidljiva" peta jednačina sistema. Učenici je propuste i dobiju netačan broj rešenja.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Smena \( t = \log_x y \)</h3>
+      <p>Iz formule promene baze (ili direktno iz definicije) važi \( \log_y x = \dfrac{1}{\log_x y} = \dfrac{1}{t} \). Smena se sme izvršiti jer je \( t \ne 0 \) (drugačije bi \( y = 1 \), suprotno domenu).</p>
+      <p>Prva jednačina postaje:</p>
+      <div class="math-block">
+        \[ t + \frac{4}{t} = 4 \quad \Big| \cdot t \quad \Longrightarrow \quad t^2 - 4t + 4 = 0. \]
+      </div>
+      <p>To je potpun kvadrat:</p>
+      <div class="math-block">
+        \[ (t - 2)^2 = 0 \quad \Longrightarrow \quad t = 2 \;\;\text{(dvostruki koren)}. \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( \log_y x = 1/\log_x y \)?</summary>
+          <div class="detail-content">
+            <p>Po formuli promene baze \( \log_a b = \dfrac{\ln b}{\ln a} \). Tada \( \log_x y \cdot \log_y x = \dfrac{\ln y}{\ln x} \cdot \dfrac{\ln x}{\ln y} = 1 \). Iz tog proizvoda direktno sledi recipročnost.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Vraćanje smene: \( y = x^2 \)</h3>
+      <p>Iz \( \log_x y = 2 \) (po definiciji logaritma) sledi:</p>
+      <div class="math-block">
+        \[ y = x^2. \]
+      </div>
+      <p>Ovo je relacija koju \( (x, y) \) mora da zadovolji uz domen \( x > 0, x \ne 1 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Substitucija u drugu jednačinu</h3>
+      <p>Zamenimo \( y = x^2 \) u \( 4y - x = 3 \):</p>
+      <div class="math-block">
+        \[ 4x^2 - x - 3 = 0. \]
+      </div>
+      <p>Diskriminanta:</p>
+      <div class="math-block">
+        \[ D = (-1)^2 - 4 \cdot 4 \cdot (-3) = 1 + 48 = 49, \quad \sqrt{D} = 7. \]
+      </div>
+      <p>Rešenja:</p>
+      <div class="math-block">
+        \[ x = \frac{1 \pm 7}{8} \quad\Longrightarrow\quad x_1 = 1, \;\; x_2 = -\frac{3}{4}. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera u domenu — eliminacija oba kandidata</h3>
+      <p>Sada vraćamo kandidate u <em>originalni</em> domen i tu se sve „dešava":</p>
+      <div class="compare-grid">
+        <div class="compare-left">
+          <p><strong>Kandidat \( x_1 = 1 \):</strong></p>
+          <p>\( y = x_1^2 = 1 \). Ali domen zahteva <span class="crossed">\( x \ne 1 \)</span> (i \( y \ne 1 \)). Baza logaritma ne sme biti \( 1 \), inače \( \log_1(\cdot) \) nije funkcija.</p>
+          <p><strong>Odbacuje se.</strong></p>
+        </div>
+        <div class="compare-right">
+          <p><strong>Kandidat \( x_2 = -\tfrac{3}{4} \):</strong></p>
+          <p>\( y = x_2^2 = \tfrac{9}{16} > 0 \) — \( y \) je u redu. Ali domen zahteva <span class="crossed">\( x &gt; 0 \)</span>, a \( -\tfrac{3}{4} &lt; 0 \). Negativna baza nije dozvoljena.</p>
+          <p><strong>Odbacuje se.</strong></p>
+        </div>
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto se za negativne baze logaritam ne definiše u realnim brojevima?</summary>
+          <div class="detail-content">
+            <p>Logaritamska funkcija \( \log_a x \) je inverzna eksponencijalnoj \( a^x \). Da bi \( a^x \) bila definisana za sve realne \( x \) i bila monotona, treba \( a > 0 \) i \( a \ne 1 \). Za \( a < 0 \) već \( a^{1/2} = \sqrt{a} \) izlazi van realnog skupa, pa nema smisla govoriti o inverznoj funkciji.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Zaključak</h3>
+      <p>Algebra je dala dva kandidata, ali domen oba odbacuje. Sistem nema rešenja u realnom skupu:</p>
+      <div class="math-block">
+        \[ \text{broj uređenih parova} = \mathbf{0}. \]
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kvadratna jednačina koja ima dvostruki koren \( t = 2 \) izgleda kao „srećan slučaj" — samo jedna podjednačina umesto dve. Ali u logaritamskim sistemima takav slučaj često znači da nas zadatak <em>tera</em> da dobijene kandidate čvrsto provučemo kroz domen. I baš zato može da se desi nula rešenja: svi kandidati su matematički korektni, ali nisu legalni za izraz \( \log_x y \). Pravilo: <strong>algebra prvo, domen poslednji — ali domen ima poslednju reč.</strong></p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \text{broj uređenih parova } (x, y) = 0 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 4 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 3 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 2 \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 0 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 1 \)</span>
+  </div>
+  <p class="verification">Provera: kvadrat \( 4x^2 - x - 3 = 0 \) ima tačno dva realna rešenja \( x = 1 \) i \( x = -3/4 \). Za prvog \( x = 1 \) baza logaritma postaje \( 1 \), za drugog \( x \) postaje negativan — oba slučaja izlaze iz domena. Ne postoji ni jedna druga grana rešenja jer \( (t-2)^2 = 0 \) ima samo \( t = 2 \). Zato je broj rešenja sistema \( 0 \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zaboravljeno \( x \ne 1 \):</strong> kandidat \( x = 1 \), \( y = 1 \) prolazi kao validan, pa se prebroji \( 1 \) rešenje (zamka E). Ali \( \log_1 \) nije funkcija — niti je definisana, niti je injektivna.</li>
+    <li><strong>Zaboravljen uslov \( x &gt; 0 \):</strong> kandidat \( x = -3/4 \) se „kvadrira u \( y = 9/16 \)" pa izgleda u redu — ali baza \( -3/4 \) je negativna. Bez ovog uslova bi se prebrojilo i drugo „rešenje".</li>
+    <li><strong>Pogrešno tumačenje smene:</strong> ako se \( t = \log_x y \) zameni u \( t + 4t = 4 \) (umesto \( t + 4/t \)), dobija se \( 5t = 4 \), \( t = 4/5 \) — sasvim drugačiji put i drugačiji odgovor.</li>
+    <li><strong>Nedostatak provere u <em>originalnoj</em> jednačini:</strong> ponekad se kandidat zameni samo u \( 4y - x = 3 \), zaboravljajući da treba i logaritamska jednačina da ima smisla.</li>
+    <li><strong>Pogrešno čitanje „dvostrukog korena":</strong> \( (t-2)^2 = 0 \) ima samo \( t = 2 \) (jedan koren, sa višestrukošću \( 2 \)). Ne postoji „drugi" \( t = -2 \) — to bi bilo u \( t^2 - 4 = 0 \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Zameni drugu jednačinu u sistemu sa \( 2y - x = 1 \) (uz istu prvu \( \log_x y + 4\log_y x = 4 \)). Koliko je tada rešenja?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Postupak je isti do tačke \( y = x^2 \). Zatim \( 2x^2 - x - 1 = 0 \), \( D = 1 + 8 = 9 \), \( x = (1 \pm 3)/4 \), pa \( x \in \{1, -1/2\} \).</p>
+      <p>Provera domena: \( x = 1 \) je zabranjeno (baza ne sme biti \( 1 \)). \( x = -1/2 \) je negativno — zabranjeno.</p>
+      <p>Opet \( 0 \) rešenja. Pouka: čim algebra forsira \( x = 1 \) ili negativan \( x \), problem se često „prazni".</p>
+      <p>(Probaj dalje: koja prava \( ay + bx = c \) bi zaista dala rešenje? Treba \( y = x^2 \) sa \( x &gt; 0, x \ne 1 \) — tada \( y &gt; 0, y \ne 1 \) automatski.)</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-system');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var secondary = cv('--sol-canvas-secondary');
+    var danger = cv('--sol-canvas-danger');
+    var warning = cv('--sol-canvas-warning');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('y = x²  i  4y − x = 3 — algebarski preseci protiv domena', W / 2, 28);
+
+    // Coordinate system: x ∈ [-2, 2.5], y ∈ [-1.2, 4.5]
+    var xMin = -2, xMax = 2.5;
+    var yMin = -1.2, yMax = 4.5;
+    var marginL = 70, marginR = 30, marginT = 60, marginB = 110;
+    var plotW = W - marginL - marginR;
+    var plotH = H - marginT - marginB;
+    var sx = plotW / (xMax - xMin);
+    var sy = plotH / (yMax - yMin);
+    function px(x) { return marginL + (x - xMin) * sx; }
+    function py(y) { return marginT + (yMax - y) * sy; }
+
+    // Forbidden region 1: x <= 0 (left of y-axis)
+    ctx.fillStyle = cvAlpha('--sol-canvas-danger', 0.10);
+    ctx.fillRect(px(xMin), py(yMax), px(0) - px(xMin), py(yMin) - py(yMax));
+
+    // Forbidden region 2: vertical strip near x = 1
+    var stripHalf = 0.045;
+    ctx.fillStyle = cvAlpha('--sol-canvas-danger', 0.18);
+    ctx.fillRect(px(1 - stripHalf), py(yMax), px(1 + stripHalf) - px(1 - stripHalf), py(yMin) - py(yMax));
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (var gx = Math.ceil(xMin); gx <= Math.floor(xMax); gx++) {
+      ctx.moveTo(px(gx), py(yMax)); ctx.lineTo(px(gx), py(yMin));
+    }
+    for (var gy = Math.ceil(yMin); gy <= Math.floor(yMax); gy++) {
+      ctx.moveTo(px(xMin), py(gy)); ctx.lineTo(px(xMax), py(gy));
+    }
+    ctx.stroke();
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(px(xMin), py(0)); ctx.lineTo(px(xMax), py(0));
+    ctx.moveTo(px(0), py(yMin)); ctx.lineTo(px(0), py(yMax));
+    ctx.stroke();
+    // Axis arrows
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(px(xMax), py(0)); ctx.lineTo(px(xMax) - 8, py(0) - 5); ctx.lineTo(px(xMax) - 8, py(0) + 5); ctx.closePath(); ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(px(0), py(yMax)); ctx.lineTo(px(0) - 5, py(yMax) + 8); ctx.lineTo(px(0) + 5, py(yMax) + 8); ctx.closePath(); ctx.fill();
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = 'italic 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('x', px(xMax) - 4, py(0) + 18);
+    ctx.textAlign = 'right';
+    ctx.fillText('y', px(0) - 8, py(yMax) + 12);
+
+    // Tick labels
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var gx = Math.ceil(xMin); gx <= Math.floor(xMax); gx++) {
+      if (gx === 0) continue;
+      ctx.fillText(String(gx), px(gx), py(0) + 15);
+    }
+    ctx.textAlign = 'right';
+    for (var gy = Math.ceil(yMin); gy <= Math.floor(yMax); gy++) {
+      if (gy === 0) continue;
+      ctx.fillText(String(gy), px(0) - 6, py(gy) + 4);
+    }
+    // Origin
+    ctx.textAlign = 'right';
+    ctx.fillText('0', px(0) - 6, py(0) + 14);
+
+    // Forbidden line x = 1
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 1.6;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(px(1), py(yMin)); ctx.lineTo(px(1), py(yMax));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Forbidden line x = 0 (already on y-axis); we mark with a thick red overlay
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 3;
+    ctx.setLineDash([6, 5]);
+    ctx.beginPath();
+    ctx.moveTo(px(0), py(yMin)); ctx.lineTo(px(0), py(yMax));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Curve y = x²
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    var first = true;
+    for (var i = 0; i <= 200; i++) {
+      var x = xMin + (xMax - xMin) * i / 200;
+      var y = x * x;
+      if (y < yMin || y > yMax) { first = true; continue; }
+      if (first) { ctx.moveTo(px(x), py(y)); first = false; }
+      else ctx.lineTo(px(x), py(y));
+    }
+    ctx.stroke();
+
+    // Line 4y - x = 3, i.e. y = (x + 3) / 4
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.moveTo(px(xMin), py((xMin + 3) / 4));
+    ctx.lineTo(px(xMax), py((xMax + 3) / 4));
+    ctx.stroke();
+
+    // Intersection points
+    var points = [
+      { x: 1, y: 1, label: '(1, 1)', sublabel: 'odbačeno: x = 1' },
+      { x: -3/4, y: 9/16, label: '(−3/4, 9/16)', sublabel: 'odbačeno: x < 0' }
+    ];
+    points.forEach(function(p) {
+      // Outer red ring
+      ctx.fillStyle = cvAlpha('--sol-canvas-danger', 0.25);
+      ctx.beginPath();
+      ctx.arc(px(p.x), py(p.y), 12, 0, Math.PI * 2);
+      ctx.fill();
+      // X mark
+      ctx.strokeStyle = danger;
+      ctx.lineWidth = 2.2;
+      ctx.beginPath();
+      ctx.moveTo(px(p.x) - 6, py(p.y) - 6); ctx.lineTo(px(p.x) + 6, py(p.y) + 6);
+      ctx.moveTo(px(p.x) + 6, py(p.y) - 6); ctx.lineTo(px(p.x) - 6, py(p.y) + 6);
+      ctx.stroke();
+    });
+    // Labels for intersection points
+    ctx.fillStyle = danger;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('(1, 1)', px(1) + 16, py(1) - 6);
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillText('odbačeno: x = 1', px(1) + 16, py(1) + 8);
+
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('(−3/4, 9/16)', px(-3/4) + 14, py(9/16) - 6);
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillText('odbačeno: x < 0', px(-3/4) + 14, py(9/16) + 8);
+
+    // Legend
+    var legY = H - 78;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'left';
+    ctx.fillText('Legenda:', 30, legY);
+
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(110, legY - 4); ctx.lineTo(140, legY - 4); ctx.stroke();
+    ctx.fillStyle = primary;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('y = x² (iz log_x y = 2)', 148, legY);
+
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(330, legY - 4); ctx.lineTo(360, legY - 4); ctx.stroke();
+    ctx.fillStyle = warning;
+    ctx.fillText('4y − x = 3', 368, legY);
+
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath(); ctx.moveTo(470, legY - 4); ctx.lineTo(500, legY - 4); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = danger;
+    ctx.fillText('zabranjene linije x = 0, x = 1', 508, legY);
+
+    // Annotation strip below legend
+    ctx.fillStyle = text;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Domen: x > 0, x ≠ 1, y > 0, y ≠ 1 — oba algebarska preseka su izvan domena.', 30, legY + 22);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('Crvene zone: leva poluravan (x ≤ 0) i pojas oko x = 1 — tu sistem nema smisla.', 30, legY + 40);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Sistem sa logaritmima različitih baza",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["logaritamske jednačine", "smena promenljive", "domen", "kvadratna jednačina", "sistem jednačina"]
+}
+BRAINSPARK_META-->

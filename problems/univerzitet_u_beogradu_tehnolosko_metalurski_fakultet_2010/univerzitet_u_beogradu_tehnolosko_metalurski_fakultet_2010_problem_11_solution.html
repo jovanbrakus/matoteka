@@ -1,0 +1,715 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem 11 (TMF Beograd 2010): Koliko resenja u intervalu (0, 2*pi) ima
+  jednacina sin^2(x) + cos(x) + 1 = 0?
+    (A) nijedno  (B) jedno  (C) dva  (D) tri  (E) beskonacno mnogo.
+
+  Strategija: smena sin^2(x) = 1 - cos^2(x) svodi jednacinu na
+  kvadratnu po cos(x). Trazimo cos(x) iz dobijene kvadratne, pa
+  za dozvoljene vrednosti gledamo koja x u (0, 2*pi) im odgovaraju.
+
+  Korak 1 — primeni Pitagorin identitet:
+    sin^2(x) + cos^2(x) = 1, pa sin^2(x) = 1 - cos^2(x).
+    Zamena u jednacinu:
+      1 - cos^2(x) + cos(x) + 1 = 0
+      -cos^2(x) + cos(x) + 2 = 0
+      cos^2(x) - cos(x) - 2 = 0   (pomnozeno sa -1)
+
+  Korak 2 — smena u = cos(x), gde je u u [-1, 1]:
+    u^2 - u - 2 = 0
+    Faktorisanje: trazimo brojeve sa zbirom -(-1) = 1, proizvodom -2 -> -1 i 2.
+    (u - 2)(u + 1) = 0
+    u = 2 ili u = -1.
+
+  Korak 3 — vrati u domen kosinusa:
+    u = 2: kosinus uvek u [-1, 1], pa nema resenja.
+    u = -1: cos(x) = -1.
+
+  Korak 4 — resi cos(x) = -1 na intervalu (0, 2*pi):
+    Opste resenje: x = pi + 2*pi*k, k iz Z.
+    U (0, 2*pi): jedino x = pi.
+    Provera: sin^2(pi) + cos(pi) + 1 = 0 + (-1) + 1 = 0. ✓
+
+  Resenje: jedno. Odgovor: (B).
+
+  Pitfalls:
+   - Ne primetiti da je u = 2 nemoguce (jer cos uvek u [-1, 1]).
+   - Pogresno postaviti smenu (ostaviti znak +/- i preskociti uslov).
+   - Pomesati interval (0, 2*pi) sa [0, 2*pi] (krajne tacke nisu u intervalu;
+     ali pi nije krajnja tacka pa je svejedno).
+   - Greska u faktorisanju kvadratne (znaci).
+   - Pisati pi/2 kao resenje cos(x) = -1 (umesto x = pi).
+
+  Visual: interaktivni jedinicni krug. Korisnik prevlaci tacku po krugu;
+  ugao x se cita kao polozaj. Komponenta cos(x) je horizontalna projekcija;
+  sin(x) vertikalna. Pored kruga prikazujemo "trenutnu vrednost":
+    sin^2(x) + cos(x) + 1
+  (koja je nula samo za x = pi). Dva indikatora: ugao i izraz.
+  Kad se priblizi x = pi, ugao indikator postaje zelen i vrednost izraza je 0.
+
+  Canvas: visina >= 600px. Touch support obavezan. cv() za boje. IIFE.
+</script>
+
+<h1 data-card="problem-title">Trigonometrijska jednačina sa kvadratom sinusa</h1>
+<p data-card="problem-subtitle" class="subtitle">Trigonometrija &mdash; Pitagorin identitet, smena, jedinični krug</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Koliko rešenja u intervalu \( (0, 2\pi) \) ima jednačina</p>
+  <div class="math-block">\[ \sin^2 x + \cos x + 1 = 0\, ? \]</div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">nijedno</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">jedno</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">dva</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">tri</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">beskonačno mnogo</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Pitagorinim identitetom \( \sin^2 x = 1 - \cos^2 x \) svedimo izraz na kvadratnu jednačinu po \( \cos x \). Smenom \( u = \cos x \) (gde je \( u \in [-1, 1] \)) dobijamo \( u^2 - u - 2 = 0 \), zatim odbacimo nedopušteni koren i prebrojimo rešenja \( \cos x = -1 \) u traženom intervalu.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Pitagorin identitet i ograničenja kosinusa</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Pitagorin identitet:</strong> \( \sin^2 x + \cos^2 x = 1 \) za svako \( x \in \mathbb{R} \). Iz toga \( \sin^2 x = 1 - \cos^2 x \).</li>
+        <li><strong>Opseg sinusa i kosinusa:</strong> \( -1 \le \sin x \le 1 \) i \( -1 \le \cos x \le 1 \) za svako \( x \). Vrednosti izvan ovog opsega su <em>nedostižne</em>.</li>
+        <li><strong>Specijalne vrednosti:</strong> \( \cos 0 = 1 \), \( \cos\tfrac{\pi}{2} = 0 \), \( \cos\pi = -1 \), \( \cos\tfrac{3\pi}{2} = 0 \), \( \cos 2\pi = 1 \).</li>
+        <li><strong>Opšte rešenje \( \cos x = a \):</strong> ako \( |a| \le 1 \) i \( \alpha = \arccos a \in [0, \pi] \), onda \( x = \pm\alpha + 2k\pi \), \( k \in \mathbb{Z} \). Posebno, \( \cos x = -1 \Leftrightarrow x = \pi + 2k\pi \).</li>
+        <li><strong>Faktorisanje kvadratne:</strong> za \( u^2 + pu + q = 0 \) tražimo brojeve sa zbirom \( -p \) i proizvodom \( q \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-p11" width="760" height="640"></canvas>
+  </div>
+  <p class="canvas-caption">Prevuci tačku po jediničnom krugu i posmatraj kako se menjaju \( \cos x \) (horizontalna projekcija) i \( \sin x \) (vertikalna projekcija). Vrednost izraza \( \sin^2 x + \cos x + 1 \) ispisana je u panelu desno; ona je <strong>nula samo kada je \( x = \pi \)</strong>, što odgovara levom kraju kruga gde je \( \cos x = -1 \) i \( \sin x = 0 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Primeni Pitagorin identitet</h3>
+      <p>Iz \( \sin^2 x + \cos^2 x = 1 \) sledi \( \sin^2 x = 1 - \cos^2 x \). Zamenimo to u polaznu jednačinu:</p>
+      <div class="math-block">\[ \underbrace{(1 - \cos^2 x)}_{\sin^2 x} + \cos x + 1 = 0. \]</div>
+      <p>Sredimo:</p>
+      <div class="math-block">\[ -\cos^2 x + \cos x + 2 = 0. \]</div>
+      <p>Pomnožimo sa \( -1 \) da bi vodeći koeficijent bio pozitivan:</p>
+      <div class="math-block">\[ \cos^2 x - \cos x - 2 = 0. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je smena \( \sin^2 x = 1 - \cos^2 x \) korisna?</summary>
+          <div class="detail-content"><p>Polazna jednačina ima i sinus i kosinus. Identitet ih svodi na <em>jednu</em> trigonometrijsku funkciju (\( \cos x \)), pa dobijamo <strong>algebarsku</strong> kvadratnu jednačinu &mdash; mnogo lakšu za rešavanje. Ovaj &bdquo;trik&ldquo; je standardna alatka kad u jednačini imamo \( \sin^2 \) ili \( \cos^2 \) zajedno sa linijskim \( \sin \) ili \( \cos \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Uvedi smenu \( u = \cos x \)</h3>
+      <p>Označimo \( u = \cos x \). <strong>Bitno:</strong> uslov \( -1 \le u \le 1 \), jer kosinus uvek leži u tom intervalu. Naša jednačina postaje obična kvadratna:</p>
+      <div class="math-block">\[ u^2 - u - 2 = 0. \]</div>
+      <p>Faktorišemo: tražimo brojeve čiji je <em>zbir</em> \( 1 \), a <em>proizvod</em> \( -2 \). To su \( 2 \) i \( -1 \):</p>
+      <div class="math-block">\[ u^2 - u - 2 = (u - 2)(u + 1) = 0. \]</div>
+      <p>Otuda \( u = 2 \) ili \( u = -1 \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto faktorišemo a ne odmah primenimo formulu?</summary>
+          <div class="detail-content"><p>Faktorisanje je brže kad se rešenja &bdquo;vide&ldquo;. Diskriminantna formula bi takođe radila: \( D = 1 + 8 = 9 \), \( u = \tfrac{1 \pm 3}{2} \), tj. \( u = 2 \) ili \( u = -1 \) &mdash; isti rezultat. Faktorisanje je samo elegantniji put kad su koeficijenti mali.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Vrati u domen kosinusa</h3>
+      <p>Sada se vraćamo u trigonometriju. Kosinus mora biti u intervalu \( [-1, 1] \).</p>
+
+      <div class="compare-grid">
+        <div class="compare-left">
+          <p><strong>Slučaj \( u = 2 \):</strong></p>
+          <p>Tražimo \( \cos x = 2 \). Ali \( \cos x \le 1 \) za svako \( x \in \mathbb{R} \).</p>
+          <p>Nema rešenja &mdash; <span class="crossed">odbacujemo</span>.</p>
+        </div>
+        <div class="compare-right">
+          <p><strong>Slučaj \( u = -1 \):</strong></p>
+          <p>Tražimo \( \cos x = -1 \). Ovo je dostižno: kosinus dostiže \( -1 \) tačno kad je tačka na jediničnom krugu na levom kraju.</p>
+          <p>Dopustivo &mdash; <span class="result">prihvatamo</span>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Pronađi sve \( x \in (0, 2\pi) \) sa \( \cos x = -1 \)</h3>
+      <p>Opšte rešenje jednačine \( \cos x = -1 \) je:</p>
+      <div class="math-block">\[ x = \pi + 2k\pi, \quad k \in \mathbb{Z}. \]</div>
+      <p>Za različite \( k \) dobijamo: \( \ldots, -\pi, \pi, 3\pi, \ldots \). Tražimo one koji leže u otvorenom intervalu \( (0, 2\pi) \), tj. strogo između \( 0 \) i \( 2\pi \approx 6{,}28 \):</p>
+      <ul>
+        <li>\( k = 0 \): \( x = \pi \approx 3{,}14 \). Pošto je \( 0 < \pi < 2\pi \), <span class="result">\( x = \pi \) prolazi</span>.</li>
+        <li>\( k = -1 \): \( x = -\pi < 0 \). Ne ulazi u interval.</li>
+        <li>\( k = 1 \): \( x = 3\pi > 2\pi \). Ne ulazi u interval.</li>
+      </ul>
+      <p>Dakle u traženom intervalu postoji <strong>tačno jedno rešenje</strong>: \( x = \pi \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je period rešenja \( 2\pi \), a ne \( \pi \)?</summary>
+          <div class="detail-content"><p>Funkcija \( \cos x \) je periodična sa periodom \( 2\pi \), tj. \( \cos(x + 2\pi) = \cos x \). Vrednost \( -1 \) se dostiže <strong>jednom</strong> u svakom periodu (za razliku od recimo \( \cos x = 0 \), koje se dostiže <em>dvaput</em> po periodu). Zato je period rešenja \( 2\pi \), ne \( \pi \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera direktnim računom</h3>
+      <p>Ubacimo \( x = \pi \) u polaznu jednačinu:</p>
+      <div class="math-block">\[ \sin^2 \pi + \cos \pi + 1 = 0^2 + (-1) + 1 = 0. \;\checkmark \]</div>
+      <p>Jednakost važi, dakle \( x = \pi \) je rešenje. Skup svih rešenja u \( (0, 2\pi) \) je \( \{\pi\} \) &mdash; jedan element.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Trigonometrijska jednačina sa \( \sin^2 \) i linijskim \( \cos \) skoro uvek se rešava istim &bdquo;trikom&ldquo;: zameni \( \sin^2 x = 1 - \cos^2 x \) i smenom \( u = \cos x \) dobiješ kvadratnu jednačinu. Ali pri vraćanju moraš proveriti uslov \( |u| \le 1 \): koreni \( u \) izvan intervala \( [-1, 1] \) su <strong>nedostižni</strong> i odbacuju se. Tek tada prebrojavaš ugaona rešenja u datom intervalu.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ x = \pi \in (0, 2\pi) \quad\text{(tačno jedno rešenje)} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) nijedno</span>
+    <span class="answer-option correct" data-option="B">(B) jedno</span>
+    <span class="answer-option" data-option="C">(C) dva</span>
+    <span class="answer-option" data-option="D">(D) tri</span>
+    <span class="answer-option" data-option="E">(E) beskonačno mnogo</span>
+  </div>
+  <p class="verification">Provera: \( \sin^2 \pi + \cos \pi + 1 = 0 + (-1) + 1 = 0 \). \(\checkmark\)</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zaboraviti uslov \( |\cos x| \le 1 \):</strong> Naivno se može pomisliti da kandidat \( u = 2 \) daje neku vrednost \( x = \arccos 2 \). Ne &mdash; \( \arccos \) je definisan samo za argumente iz \( [-1, 1] \). \( \cos x = 2 \) je <em>nemoguće</em>.</li>
+    <li><strong>Pogrešno faktorisanje:</strong> \( u^2 - u - 2 \) se faktoriše kao \( (u - 2)(u + 1) \). Greška je pisati \( (u + 2)(u - 1) \), što daje \( u^2 + u - 2 \) (pogrešan znak srednjeg člana).</li>
+    <li><strong>Pomešati \( \cos x = -1 \) i \( \sin x = -1 \):</strong> \( \cos x = -1 \) važi za \( x = \pi \), a \( \sin x = -1 \) za \( x = \tfrac{3\pi}{2} \). Različite tačke!</li>
+    <li><strong>Računati u zatvorenom intervalu \( [0, 2\pi] \) umesto u otvorenom \( (0, 2\pi) \):</strong> srećom, \( \pi \) nije krajnja tačka, pa razlika u tipu intervala ovde ne utiče &mdash; ali u drugim zadacima može biti odlučujuća.</li>
+    <li><strong>Ne zaboravi periodičnost pri prebrajanju:</strong> u širem intervalu kao \( (0, 4\pi) \) rešenja bi bila dva (\( \pi \) i \( 3\pi \)). Period je \( 2\pi \), pa po jedno rešenje na svaki period.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koliko rešenja u intervalu \( (0, 2\pi) \) ima jednačina \( \cos^2 x + \sin x - 1 = 0 \)? Da li je odgovor opet jedan, ili nešto drugo? Razmisli pre nego što kreneš da računaš.</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Smenom \( \cos^2 x = 1 - \sin^2 x \) dobijaš \( -\sin^2 x + \sin x = 0 \), tj. \( \sin x \cdot (1 - \sin x) = 0 \). Otuda \( \sin x = 0 \) ili \( \sin x = 1 \). U \( (0, 2\pi) \): \( \sin x = 0 \) daje \( x = \pi \) (jedno; \( 0 \) i \( 2\pi \) nisu u otvorenom intervalu); \( \sin x = 1 \) daje \( x = \tfrac{\pi}{2} \). <strong>Ukupno dva rešenja.</strong> Vidiš kako mala promena u znacima i strukturi jednačine menja broj rešenja!</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var rr = parseInt(c.slice(1, 3), 16);
+      var gg = parseInt(c.slice(3, 5), 16);
+      var bb = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + rr + ',' + gg + ',' + bb + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-p11');
+  if (!canvas) return;
+  canvas.style.touchAction = 'none';
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  // Geometry: unit circle on the left, info panel on the right
+  var cxC = 220;
+  var cyC = 290;
+  var rC = 160;
+
+  // State: angle in radians (0 .. 2*pi)
+  var angle = Math.PI * 0.4; // initial (~72 deg)
+  var dragging = false;
+  var GRAB_RADIUS = 22;
+
+  function fmt(n, digits) {
+    if (digits === undefined) digits = 2;
+    var rounded = Math.round(n * Math.pow(10, digits)) / Math.pow(10, digits);
+    return String(rounded).replace('.', ',');
+  }
+
+  function piLabel(a) {
+    // approximate angle as fraction of pi
+    var k = a / Math.PI;
+    if (Math.abs(k - 1) < 0.01) return 'π';
+    if (Math.abs(k - 0.5) < 0.01) return 'π/2';
+    if (Math.abs(k - 1.5) < 0.01) return '3π/2';
+    if (Math.abs(k - 0.25) < 0.01) return 'π/4';
+    if (Math.abs(k - 0.75) < 0.01) return '3π/4';
+    if (Math.abs(k - 1.25) < 0.01) return '5π/4';
+    if (Math.abs(k - 1.75) < 0.01) return '7π/4';
+    if (Math.abs(k - 2/3) < 0.01) return '2π/3';
+    if (Math.abs(k - 1/3) < 0.01) return 'π/3';
+    if (Math.abs(k - 1/6) < 0.01) return 'π/6';
+    if (Math.abs(k - 5/6) < 0.01) return '5π/6';
+    if (Math.abs(k - 4/3) < 0.01) return '4π/3';
+    if (Math.abs(k - 5/3) < 0.01) return '5π/3';
+    if (Math.abs(k - 7/6) < 0.01) return '7π/6';
+    if (Math.abs(k - 11/6) < 0.01) return '11π/6';
+    return fmt(k, 2) + '·π';
+  }
+
+  function pointPos() {
+    return { x: cxC + rC * Math.cos(angle), y: cyC - rC * Math.sin(angle) };
+  }
+
+  function getPos(e) {
+    var r = canvas.getBoundingClientRect();
+    var evt = e.touches ? e.touches[0] : e;
+    return { x: evt.clientX - r.left, y: evt.clientY - r.top };
+  }
+
+  function isNear(pos) {
+    var p = pointPos();
+    return Math.hypot(pos.x - p.x, pos.y - p.y) < GRAB_RADIUS;
+  }
+
+  function angleFromPos(pos) {
+    var dx = pos.x - cxC;
+    var dy = -(pos.y - cyC); // canvas y inverted
+    var a = Math.atan2(dy, dx);
+    if (a < 0) a += 2 * Math.PI;
+    if (a >= 2 * Math.PI) a -= 2 * Math.PI;
+    return a;
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var warning   = cv('--sol-canvas-warning');
+    var tertiary  = cv('--sol-canvas-tertiary');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Jedinični krug — prevuci tačku P', W / 2, 28);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Ugao  x  ide od 0 do 2π. Kosinus = horizontalna projekcija, sinus = vertikalna.', W / 2, 48);
+
+    // Coordinate axes through circle center
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(cxC - rC - 30, cyC);
+    ctx.lineTo(cxC + rC + 30, cyC);
+    ctx.moveTo(cxC, cyC - rC - 30);
+    ctx.lineTo(cxC, cyC + rC + 30);
+    ctx.stroke();
+
+    // Axis arrows
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(cxC + rC + 30, cyC);
+    ctx.lineTo(cxC + rC + 22, cyC - 5);
+    ctx.lineTo(cxC + rC + 22, cyC + 5);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(cxC, cyC - rC - 30);
+    ctx.lineTo(cxC - 5, cyC - rC - 22);
+    ctx.lineTo(cxC + 5, cyC - rC - 22);
+    ctx.fill();
+
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('cos x', cxC + rC + 16, cyC - 8);
+    ctx.textAlign = 'center';
+    ctx.fillText('sin x', cxC + 18, cyC - rC - 18);
+
+    // tick labels at -1 and 1
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    ctx.fillText('1', cxC + rC, cyC + 14);
+    ctx.fillText('−1', cxC - rC, cyC + 14);
+    ctx.textAlign = 'right';
+    ctx.fillText('1', cxC - 6, cyC - rC + 4);
+    ctx.fillText('−1', cxC - 6, cyC + rC + 4);
+
+    // Unit circle
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.arc(cxC, cyC, rC, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Mark special angles (small dots)
+    var specials = [
+      { a: 0, l: '0' },
+      { a: Math.PI / 2, l: 'π/2' },
+      { a: Math.PI, l: 'π' },
+      { a: 3 * Math.PI / 2, l: '3π/2' }
+    ];
+    for (var si = 0; si < specials.length; si++) {
+      var sa = specials[si].a;
+      var sx0 = cxC + rC * Math.cos(sa);
+      var sy0 = cyC - rC * Math.sin(sa);
+      var isPi = Math.abs(sa - Math.PI) < 0.001;
+      ctx.fillStyle = isPi ? warning : muted;
+      ctx.beginPath();
+      ctx.arc(sx0, sy0, isPi ? 6 : 3, 0, Math.PI * 2);
+      ctx.fill();
+      if (isPi) {
+        // outline halo
+        ctx.strokeStyle = warning;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(sx0, sy0, 12, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.fillStyle = isPi ? warning : muted;
+      ctx.font = isPi ? 'bold 13px Inter, system-ui, sans-serif' : '11px Inter, system-ui, sans-serif';
+      // place label outside
+      var lx = cxC + (rC + 22) * Math.cos(sa);
+      var ly = cyC - (rC + 22) * Math.sin(sa);
+      ctx.textAlign = 'center';
+      ctx.fillText(specials[si].l, lx, ly + 4);
+    }
+
+    // Current point
+    var p = pointPos();
+
+    // Angle arc from 0 to angle
+    ctx.strokeStyle = cvAlpha('--sol-canvas-secondary', 0.7);
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(cxC, cyC, 28, 0, -angle, true);
+    ctx.stroke();
+    // angle label
+    var midA = -angle / 2;
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('x = ' + piLabel(angle), cxC + 50 * Math.cos(midA), cyC + 50 * Math.sin(midA) + 4);
+
+    // Radius line to P
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cxC, cyC);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+
+    // Cos projection (vertical drop from P to x-axis)
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+    ctx.lineTo(p.x, cyC);
+    ctx.stroke();
+
+    // Sin projection (horizontal from P to y-axis)
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+    ctx.lineTo(cxC, p.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // cos x segment along x-axis (thick)
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(cxC, cyC);
+    ctx.lineTo(p.x, cyC);
+    ctx.stroke();
+
+    // sin x segment along y-axis (thick)
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(cxC, cyC);
+    ctx.lineTo(cxC, p.y);
+    ctx.stroke();
+
+    // Draw P with glow
+    var atSolution = Math.abs(angle - Math.PI) < 0.03;
+    ctx.fillStyle = cvAlpha(atSolution ? '--sol-canvas-warning' : '--sol-canvas-primary', 0.25);
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 14, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = atSolution ? warning : primary;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 7, 0, Math.PI * 2);
+    ctx.fill();
+    // P label
+    ctx.fillStyle = atSolution ? warning : primary;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('P', p.x + 12, p.y - 8);
+
+    // Hint near P
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    if (!dragging) {
+      ctx.fillText('prevuci', p.x + 12, p.y + 18);
+    }
+
+    // Right-side info panel
+    var panelX = 440;
+    var panelY = 80;
+    var panelW = W - panelX - 30;
+    var panelH = 460;
+
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.04);
+    ctx.fillRect(panelX, panelY, panelW, panelH);
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(panelX, panelY, panelW, panelH);
+
+    var cx = Math.cos(angle);
+    var sx = Math.sin(angle);
+    var sx2 = sx * sx;
+    var expr = sx2 + cx + 1;
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Trenutne vrednosti', panelX + 14, panelY + 26);
+
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = secondary;
+    ctx.fillText('Ugao  x = ' + piLabel(angle) + '   (≈ ' + fmt(angle, 3) + ' rad)', panelX + 14, panelY + 56);
+
+    ctx.fillStyle = accent;
+    ctx.fillText('cos x = ' + fmt(cx, 3), panelX + 14, panelY + 84);
+
+    ctx.fillStyle = highlight;
+    ctx.fillText('sin x = ' + fmt(sx, 3), panelX + 14, panelY + 108);
+
+    ctx.fillStyle = muted;
+    ctx.fillText('sin² x = ' + fmt(sx2, 3), panelX + 14, panelY + 132);
+
+    // Big expression display
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(panelX + 14, panelY + 156);
+    ctx.lineTo(panelX + panelW - 14, panelY + 156);
+    ctx.stroke();
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillText('Izraz iz zadatka:', panelX + 14, panelY + 184);
+
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('sin² x + cos x + 1', panelX + 14, panelY + 206);
+
+    ctx.fillText('= ' + fmt(sx2, 2) + ' + (' + fmt(cx, 2) + ') + 1', panelX + 14, panelY + 226);
+
+    var matchZero = Math.abs(expr) < 0.005;
+    ctx.font = matchZero ? 'bold 22px Inter, system-ui, sans-serif' : 'bold 18px Inter, system-ui, sans-serif';
+    ctx.fillStyle = matchZero ? accent : (Math.abs(expr) < 0.5 ? warning : text);
+    ctx.fillText('= ' + fmt(expr, 3) + (matchZero ? '   ✓ NULA!' : ''), panelX + 14, panelY + 264);
+
+    // Status box
+    var sbY = panelY + 290;
+    ctx.fillStyle = cvAlpha(matchZero ? '--sol-canvas-accent' : '--sol-canvas-warning', 0.15);
+    ctx.fillRect(panelX + 14, sbY, panelW - 28, 90);
+    ctx.strokeStyle = matchZero ? accent : warning;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(panelX + 14, sbY, panelW - 28, 90);
+
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = matchZero ? accent : warning;
+    ctx.fillText(matchZero ? 'Pronađeno rešenje!' : 'Nije rešenje', panelX + 24, sbY + 22);
+
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    if (matchZero) {
+      ctx.fillText('Ovde je x = π. cos x = −1, sin x = 0,', panelX + 24, sbY + 42);
+      ctx.fillText('pa  0 + (−1) + 1 = 0.', panelX + 24, sbY + 58);
+      ctx.fillText('Jedino rešenje u (0, 2π).', panelX + 24, sbY + 76);
+    } else {
+      ctx.fillText('Pomeri tačku ka levom kraju kruga.', panelX + 24, sbY + 42);
+      ctx.fillText('Cilj: cos x = −1 (tj. x = π).', panelX + 24, sbY + 58);
+      ctx.fillText('Tek tamo izraz pada na 0.', panelX + 24, sbY + 76);
+    }
+
+    // Bottom legend
+    var legY = H - 70;
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.04);
+    ctx.fillRect(20, legY, W - 40, 50);
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(20, legY, W - 40, 50);
+
+    ctx.fillStyle = primary;
+    ctx.beginPath();
+    ctx.arc(40, legY + 20, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('jedinični krug', 54, legY + 24);
+
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(170, legY + 20);
+    ctx.lineTo(206, legY + 20);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.fillText('cos x  (horizontalno)', 214, legY + 24);
+
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(370, legY + 20);
+    ctx.lineTo(406, legY + 20);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.fillText('sin x  (vertikalno)', 414, legY + 24);
+
+    ctx.fillStyle = warning;
+    ctx.beginPath();
+    ctx.arc(560, legY + 20, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.fillText('rešenje  x = π', 574, legY + 24);
+  }
+
+  draw();
+
+  // Mouse events
+  canvas.addEventListener('mousedown', function(e) {
+    var pos = getPos(e);
+    if (isNear(pos)) {
+      dragging = true;
+      canvas.style.cursor = 'grabbing';
+      e.preventDefault();
+    }
+  });
+  canvas.addEventListener('mousemove', function(e) {
+    var pos = getPos(e);
+    if (dragging) {
+      angle = angleFromPos(pos);
+      draw();
+    } else {
+      canvas.style.cursor = isNear(pos) ? 'grab' : 'default';
+    }
+  });
+  canvas.addEventListener('mouseup', function() {
+    dragging = false;
+    canvas.style.cursor = 'default';
+  });
+  canvas.addEventListener('mouseleave', function() {
+    dragging = false;
+    canvas.style.cursor = 'default';
+  });
+
+  // Touch events
+  canvas.addEventListener('touchstart', function(e) {
+    var pos = getPos(e);
+    if (isNear(pos)) {
+      dragging = true;
+      e.preventDefault();
+    }
+  }, { passive: false });
+  canvas.addEventListener('touchmove', function(e) {
+    if (!dragging) return;
+    e.preventDefault();
+    var pos = getPos(e);
+    angle = angleFromPos(pos);
+    draw();
+  }, { passive: false });
+  canvas.addEventListener('touchend', function() {
+    dragging = false;
+  });
+
+  // Re-draw on theme change
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Trigonometrijska jednačina sin²x + cos x + 1 = 0 na intervalu (0, 2π)",
+  "subject": "math",
+  "unit": "trigonometry",
+  "topic_tags": ["trigonometrijske jednačine", "Pitagorin identitet", "kosinus", "jedinični krug", "smena promenljive"]
+}
+BRAINSPARK_META-->

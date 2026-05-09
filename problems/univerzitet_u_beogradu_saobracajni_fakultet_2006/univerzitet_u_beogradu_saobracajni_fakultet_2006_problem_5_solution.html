@@ -1,0 +1,586 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Ako je a = -2,5, naci vrednost izraza  E(a) = (a^3 - 8)/(a^2 - 4)  -  a*(a-1)*(a+1)/(a^2 - 1).
+
+Strategija: NE uvrstavati direktno (delovi su 0/0 trikovi nisu — proveriti da li su izrazi definisani u a = -2,5).
+  - a^2 - 4 = 0 kad je a = +-2. Pri a = -2,5 imamo a^2 - 4 = 6,25 - 4 = 2,25 != 0. OK.
+  - a^2 - 1 = 0 kad je a = +-1. Pri a = -2,5 imamo a^2 - 1 = 6,25 - 1 = 5,25 != 0. OK.
+  Ali smo svejedno u oblasti gde algebarsko skracivanje radi za sve dozvoljene vrednosti.
+
+Faktorizacija prvog clana:
+  Brojilac: a^3 - 8 = a^3 - 2^3 = (a - 2)(a^2 + 2a + 4) — formula za razliku kubova.
+  Imenilac: a^2 - 4 = (a - 2)(a + 2) — razlika kvadrata.
+  Skracujem zajednicki faktor (a - 2) (vazi za a != 2):
+    (a^3 - 8)/(a^2 - 4) = (a^2 + 2a + 4)/(a + 2).
+
+Faktorizacija drugog clana:
+  Brojilac: a*(a-1)*(a+1) = a*(a^2 - 1).
+  Imenilac: a^2 - 1.
+  Skracujem (a^2 - 1) (vazi za a != +-1):
+    a*(a-1)*(a+1)/(a^2 - 1) = a.
+
+Sada izraz postaje:
+  E(a) = (a^2 + 2a + 4)/(a + 2)  -  a.
+
+Sredjivanje (zajednicki imenilac (a + 2)):
+  E(a) = [a^2 + 2a + 4 - a*(a + 2)]/(a + 2)
+       = [a^2 + 2a + 4 - a^2 - 2a]/(a + 2)
+       = 4/(a + 2).
+
+Vrednost u a = -2,5:
+  E(-2,5) = 4/(-2,5 + 2) = 4/(-0,5) = -8.
+
+Tacan odgovor: (E) -8.
+
+Mapiranje opcija PDF (A,C,E,G,I) -> data-option (A,B,C,D,E):
+  (A) 32   -> A
+  (C) 2    -> B
+  (E) -4   -> C
+  (G) -1   -> D
+  (I) -8   -> E  ← TACAN
+
+Verifikacija direktnim uvrstavanjem (bez faktorizacije):
+  a = -5/2.
+  a^3 = -125/8.    a^3 - 8 = -125/8 - 64/8 = -189/8.
+  a^2 = 25/4.      a^2 - 4 = 25/4 - 16/4 = 9/4.
+  Prvi clan: (-189/8)/(9/4) = -189/8 * 4/9 = -189*4/(8*9) = -756/72 = -10,5 (= -21/2).
+  a*(a-1)*(a+1) = a*(a^2 - 1) = (-5/2)*(25/4 - 1) = (-5/2)*(21/4) = -105/8.
+  a^2 - 1 = 21/4.
+  Drugi clan: (-105/8)/(21/4) = -105/8 * 4/21 = -420/168 = -2,5 (= -5/2 = a). ✓ (potvrda da se drugi clan svodi na a)
+  Razlika: -10,5 - (-2,5) = -10,5 + 2,5 = -8. ✓
+
+Pitfalls:
+  - Direktno uvrstavanje bez prepoznavanja faktorizacija — radi, ali je dugo i sklono greskama.
+  - Pogresan zapis razlike kubova: a^3 - 8 = (a-2)(a^2 - 2a + 4) — gresno! Tacno je (a-2)(a^2 + 2a + 4).
+  - Skracivanje nedozvoljenim faktorom (kad je faktor 0).
+  - Zaboravljanje da je oduzimanje a (drugi clan) ekvivalentno sa a*(a^2-1)/(a^2-1).
+
+Visual aid: jedan kanvas (>=550 px) koji prikazuje tok pojednostavljenja: levi panel "pre" sa originalnim izrazom, desni panel "posle" sa skracenim izrazom 4/(a+2). U sredini "tabla faktorizacije" sa formulama razlike kubova i razlike kvadrata. Ispod, brojevna linija i evaluacija u tacki a = -2,5 sa istaknutom vrednoscu -8.
+
+Kljucni uvid: mehanizam "faktorisi i skrati" pretvara naizgled brutalnu kombinaciju u jednostavnu funkciju 4/(a+2). Nakon toga, racunanje za bilo koju a postaje deljenje. Vredi uvek prvo faktorisati pre uvrstavanja.
+</script>
+
+<h1 data-card="problem-title">Vrednost racionalnog izraza nakon faktorizacije</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — racionalni izrazi, razlika kubova, razlika kvadrata, skraćivanje</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Ako je \( a = -2{,}5 \), onda izraz</p>
+  <div class="math-block">
+    \[ \frac{a^3 - 8}{a^2 - 4} \;-\; \frac{a\,(a-1)(a+1)}{a^2 - 1} \]
+  </div>
+  <p>ima vrednost:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">\( a \)</span>
+      <span class="given-value">\( -2{,}5 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">\( a^2 - 4 \)</span>
+      <span class="given-value">\( 2{,}25 \) (≠ 0)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">\( a^2 - 1 \)</span>
+      <span class="given-value">\( 5{,}25 \) (≠ 0)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">vrednost</span>
+      <span class="given-value">\( ? \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 32 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( -4 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(G)</span>
+      <span class="answer-value">\( -1 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(I)</span>
+      <span class="answer-value">\( -8 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Umesto da brojeve odmah uvrstimo (što vodi u glomazne razlomke), prvo ćemo <strong>faktorisati i skratiti</strong> oba člana: prvi koristi razliku kubova \( a^3 - 8 \) i razliku kvadrata \( a^2 - 4 \), a drugi koristi \( a^2 - 1 = (a-1)(a+1) \). Posle skraćivanja izraz se dramatično pojednostavi i tek onda uvrštavamo \( a = -2{,}5 \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Formule koje koristimo</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Razlika kubova</span> \( a^3 - b^3 = (a - b)(a^2 + ab + b^2) \). Specijalno za \( b = 2 \): \( a^3 - 8 = (a-2)(a^2 + 2a + 4) \).</li>
+        <li><span class="formula-label">Razlika kvadrata</span> \( a^2 - b^2 = (a - b)(a + b) \). Specijalno: \( a^2 - 4 = (a-2)(a+2) \) i \( a^2 - 1 = (a-1)(a+1) \).</li>
+        <li><span class="formula-label">Skraćivanje razlomka</span> \( \dfrac{P\cdot Q}{P\cdot R} = \dfrac{Q}{R} \) za \( P \neq 0 \). Uvek proveriti da skraćeni faktor nije nula u datoj tački.</li>
+        <li><span class="formula-label">Oduzimanje razlomaka</span> \( \dfrac{X}{Y} - Z = \dfrac{X - Z\cdot Y}{Y} \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Pojednostavljenje izraza i evaluacija">
+  <h2>📐 Pojednostavljenje izraza i evaluacija</h2>
+  <div class="canvas-wrapper">
+    <canvas id="simplify-canvas" width="720" height="600"></canvas>
+  </div>
+  <p class="canvas-caption">Tri faze računanja: (1) original sa dva razlomka, (2) faktorisana forma sa istaknutim faktorima koji se skraćuju, (3) finalni svedeni izraz \( \dfrac{4}{a+2} \). Na dnu se na brojevnoj liniji vidi evaluacija u tački \( a = -2{,}5 \), gde je \( a + 2 = -0{,}5 \) i \( 4/(-0{,}5) = -8 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Faktorišemo prvi član</h3>
+      <p>Brojilac je razlika kubova \( a^3 - 2^3 \), a imenilac razlika kvadrata \( a^2 - 2^2 \):</p>
+      <div class="math-block">
+        \[ a^3 - 8 = (a - 2)(a^2 + 2a + 4),\qquad a^2 - 4 = (a - 2)(a + 2). \]
+      </div>
+      <p>Zajednički faktor \( (a - 2) \) skraćujemo (sme se, jer kod nas \( a = -2{,}5 \neq 2 \)):</p>
+      <div class="math-block">
+        \[ \frac{a^3 - 8}{a^2 - 4} \;=\; \frac{(a-2)(a^2+2a+4)}{(a-2)(a+2)} \;=\; \frac{a^2 + 2a + 4}{a + 2}. \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto u razlici kubova ide \( +ab \), a ne \( -ab \)?</summary>
+          <div class="detail-content"><p>Kontrola se radi množenjem unazad: \( (a-b)(a^2 + ab + b^2) = a^3 + a^2b + ab^2 - a^2b - ab^2 - b^3 = a^3 - b^3 \). Srednji parovi se „pojedu“ samo ako je sredina \( +ab \). Kod razlike <em>kvadrata</em> umesto trinoma stoji binom \( (a+b) \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Faktorišemo drugi član</h3>
+      <p>Imenilac je opet razlika kvadrata, a brojilac već sadrži upravo te faktore:</p>
+      <div class="math-block">
+        \[ a^2 - 1 = (a - 1)(a + 1),\qquad a\,(a-1)(a+1). \]
+      </div>
+      <p>Skraćujemo zajedničke faktore \( (a-1) \) i \( (a+1) \) (smemo, jer \( a = -2{,}5 \neq \pm 1 \)):</p>
+      <div class="math-block">
+        \[ \frac{a\,(a-1)(a+1)}{a^2 - 1} \;=\; \frac{a\,(a-1)(a+1)}{(a-1)(a+1)} \;=\; a. \]
+      </div>
+      <p>Drugi član se dakle svodi na samo <strong>\( a \)</strong>. To je iznenađujuće elegantno.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Sastavljamo razliku i svodimo na zajednički imenilac</h3>
+      <p>Sada imamo:</p>
+      <div class="math-block">
+        \[ \frac{a^2 + 2a + 4}{a + 2} \;-\; a. \]
+      </div>
+      <p>Da bismo oduzeli \( a \), zapišemo ga kao \( \dfrac{a\,(a+2)}{a+2} \) i objedinimo razlomke:</p>
+      <div class="math-block">
+        \[ \frac{a^2 + 2a + 4}{a + 2} - \frac{a(a+2)}{a + 2} \;=\; \frac{a^2 + 2a + 4 - a(a+2)}{a + 2}. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Sređujemo brojilac</h3>
+      <p>Razvijemo \( a(a+2) = a^2 + 2a \) i pažljivo oduzmemo:</p>
+      <div class="math-block">
+        \[ a^2 + 2a + 4 - (a^2 + 2a) \;=\; a^2 + 2a + 4 - a^2 - 2a \;=\; 4. \]
+      </div>
+      <p>Članovi \( a^2 \) i \( 2a \) se međusobno potiru, pa ostaje samo konstanta. Time je izraz sveden na</p>
+      <div class="math-block">
+        \[ \boxed{\;\frac{a^3 - 8}{a^2 - 4} - \frac{a(a-1)(a+1)}{a^2-1} = \frac{4}{a + 2}.\;} \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je dobro što su \( a^2 \) i \( 2a \) nestali?</summary>
+          <div class="detail-content"><p>To je znak da je faktorizacija „pala u savršen kalup“ — original je zapravo bio prosta racionalna funkcija prerušena u komplikovan oblik. Kad svaki brojilac/imenilac sadrži zajedničke faktore koji se uglavljuju, krajnji rezultat često bude vrlo jednostavan.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Uvrštavamo \( a = -2{,}5 \)</h3>
+      <p>Sada je sve trivijalno:</p>
+      <div class="math-block">
+        \[ a + 2 = -2{,}5 + 2 = -0{,}5,\qquad \frac{4}{a+2} = \frac{4}{-0{,}5} = -8. \]
+      </div>
+      <p>Dakle <span class="result">vrednost izraza je \( -8 \)</span>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera direktnim uvrštavanjem</h3>
+      <p>Računajmo svaki član originala bez faktorizacije, sa \( a = -\dfrac{5}{2} \):</p>
+      <div class="math-block">
+        \[ a^3 - 8 = -\frac{125}{8} - \frac{64}{8} = -\frac{189}{8},\qquad a^2 - 4 = \frac{25}{4} - 4 = \frac{9}{4}. \]
+      </div>
+      <div class="math-block">
+        \[ \frac{a^3 - 8}{a^2 - 4} = -\frac{189}{8}\cdot\frac{4}{9} = -\frac{756}{72} = -\frac{21}{2} = -10{,}5. \]
+      </div>
+      <p>Drugi član se svodi na \( a \), pa je jednak \( -2{,}5 \). Razlika:</p>
+      <div class="math-block">
+        \[ -10{,}5 - (-2{,}5) = -10{,}5 + 2{,}5 = -8.\quad\checkmark \]
+      </div>
+      <p>Iste vrednosti — rezultat je potvrđen.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Ovaj zadatak je „dimna zavesa“: kompleksan izraz koji se nakon faktorizacije sveo na elementarno \( \dfrac{4}{a+2} \). Zlatno pravilo za racionalne izraze: <strong>najpre faktoriši svaki brojilac i svaki imenilac, pa skrati šta se može; tek onda uvrštavaj brojeve</strong>. To štedi vreme, smanjuje šanse za grešku i često otkriva neočekivanu jednostavnost.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešna razlika kubova:</strong> \( a^3 - 8 = (a-2)(a^2 - 2a + 4) \) — ne! Ispravno je \( + 2a \). Predznak unutar trinoma je suprotan od onog u binomu \( (a - b) \) samo kod razlike <em>kvadrata</em>.</li>
+    <li><strong>Direktno uvrštavanje pre faktorizacije.</strong> Tehnički se može, ali se mora računati \( a^3 \), \( a^2 \), razlomci sa imeniocima 8 i 4, pa je velika šansa za aritmetičku grešku.</li>
+    <li><strong>Zaboravljanje zajedničkog imenioca</strong> u koraku „minus \( a \)“: zapis \( \dfrac{a^2 + 2a + 4 - a}{a + 2} \) je netačan jer \( a \) nema imenilac \( a+2 \).</li>
+    <li><strong>Skraćivanje nedozvoljenim faktorom.</strong> Skratiti \( (a+2) \) bilo gde u izrazu sme se samo ako je \( a \neq -2 \). Kod nas je \( a = -2{,}5 \), pa je \( a+2 = -0{,}5 \neq 0 \) i sve je u redu.</li>
+    <li><strong>Greška u znaku</strong> kod \( 4/(-0{,}5) \): rezultat je \( -8 \), a ne \( +8 \).</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \frac{a^3 - 8}{a^2 - 4} - \frac{a(a-1)(a+1)}{a^2 - 1} = \frac{4}{a + 2}\quad\Big|_{a=-2{,}5} = \frac{4}{-0{,}5} = -8. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 32 \)</span>
+    <span class="answer-option" data-option="B">(C) \( 2 \)</span>
+    <span class="answer-option" data-option="C">(E) \( -4 \)</span>
+    <span class="answer-option" data-option="D">(G) \( -1 \)</span>
+    <span class="answer-option correct" data-option="E">(I) \( -8 \)</span>
+  </div>
+  <p class="verification">Direktno uvrštavanje: prvi član je \( -10{,}5 \), drugi je \( -2{,}5 \), razlika \( -10{,}5 - (-2{,}5) = -8 \). ✓</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Bez ponovne faktorizacije, koliko bi bila vrednost istog izraza za \( a = -3 \)? A za \( a = 0 \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Pojednostavljen oblik je \( \dfrac{4}{a+2} \). Za \( a = -3 \): \( \dfrac{4}{-1} = -4 \). Za \( a = 0 \): \( \dfrac{4}{2} = 2 \). Primeti i da je za \( a = -2 \) izraz <em>nedefinisan</em> (deljenje nulom u izvornom \( a^2 - 4 \), što se vidi i u svedenom obliku).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('simplify-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function roundedRect(x, y, w, h, r) {
+    ctx.beginPath();
+    if (ctx.roundRect) {
+      ctx.roundRect(x, y, w, h, r);
+    } else {
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
+    }
+  }
+
+  function drawArrow(x1, y1, x2, y2, color) {
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    var ang = Math.atan2(y2 - y1, x2 - x1);
+    var ah = 9;
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - ah * Math.cos(ang - 0.4), y2 - ah * Math.sin(ang - 0.4));
+    ctx.lineTo(x2 - ah * Math.cos(ang + 0.4), y2 - ah * Math.sin(ang + 0.4));
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.font = 'bold 17px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Faktorizuj → skrati → uvrsti', canvas.width / 2, 12);
+
+    // Phase 1: Original
+    var ph1x = 30, ph1y = 50, ph1w = canvas.width - 60, ph1h = 80;
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.08);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1.8;
+    roundedRect(ph1x, ph1y, ph1w, ph1h, 10);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('1) Original', ph1x + 14, ph1y + 8);
+
+    ctx.font = 'bold 22px "Cambria Math", Georgia, serif';
+    ctx.fillStyle = primary;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('(a³ − 8)/(a² − 4)  −  a(a−1)(a+1)/(a² − 1)', canvas.width / 2, ph1y + 50);
+
+    // Down arrow + label
+    drawArrow(canvas.width / 2, ph1y + ph1h + 4, canvas.width / 2, ph1y + ph1h + 28, muted);
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('faktorizuj brojioce i imenioce', canvas.width / 2 + 14, ph1y + ph1h + 16);
+
+    // Phase 2: Factored
+    var ph2x = 30, ph2y = ph1y + ph1h + 36, ph2w = canvas.width - 60, ph2h = 110;
+    ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.08);
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 1.8;
+    roundedRect(ph2x, ph2y, ph2w, ph2h, 10);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('2) Faktorisana forma — zajednički faktori se skraćuju', ph2x + 14, ph2y + 8);
+
+    ctx.font = '17px "Cambria Math", Georgia, serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('(a−2)(a²+2a+4) / [(a−2)(a+2)]   −   a(a−1)(a+1) / [(a−1)(a+1)]', canvas.width / 2, ph2y + 50);
+
+    ctx.font = 'italic 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = highlight;
+    ctx.fillText('skrati (a−2)                                              skrati (a−1)(a+1)', canvas.width / 2, ph2y + 80);
+
+    // Down arrow + label
+    drawArrow(canvas.width / 2, ph2y + ph2h + 4, canvas.width / 2, ph2y + ph2h + 28, muted);
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('zajednički imenilac (a+2), sredi brojilac', canvas.width / 2 + 14, ph2y + ph2h + 16);
+
+    // Phase 3: Final reduced
+    var ph3x = 30, ph3y = ph2y + ph2h + 36, ph3w = canvas.width - 60, ph3h = 90;
+    ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.12);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    roundedRect(ph3x, ph3y, ph3w, ph3h, 10);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('3) Sveden izraz', ph3x + 14, ph3y + 8);
+
+    ctx.font = 'bold 28px "Cambria Math", Georgia, serif';
+    ctx.fillStyle = highlight;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('4 / (a + 2)', canvas.width / 2, ph3y + 52);
+
+    // Number line at the bottom showing evaluation at a = -2.5
+    var nlY = ph3y + ph3h + 60;
+    var nlLeft = 80, nlRight = canvas.width - 80;
+    var aMin = -5, aMax = 1;
+    function aToX(a) {
+      return nlLeft + (a - aMin) / (aMax - aMin) * (nlRight - nlLeft);
+    }
+
+    // Axis
+    ctx.strokeStyle = cv('--sol-canvas-axis');
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(nlLeft, nlY);
+    ctx.lineTo(nlRight, nlY);
+    ctx.stroke();
+    // arrow tips
+    ctx.fillStyle = cv('--sol-canvas-axis');
+    ctx.beginPath();
+    ctx.moveTo(nlRight, nlY);
+    ctx.lineTo(nlRight - 9, nlY - 5);
+    ctx.lineTo(nlRight - 9, nlY + 5);
+    ctx.closePath();
+    ctx.fill();
+
+    // Ticks
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (var k = aMin; k <= aMax; k++) {
+      var tx = aToX(k);
+      ctx.strokeStyle = cv('--sol-canvas-axis');
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(tx, nlY - 5);
+      ctx.lineTo(tx, nlY + 5);
+      ctx.stroke();
+      ctx.fillText(String(k), tx, nlY + 10);
+    }
+    // axis label
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'left';
+    ctx.fillText('a', nlRight + 8, nlY - 6);
+
+    // Mark a = -2.5
+    var ax = aToX(-2.5);
+    // dashed vertical
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(ax, nlY - 50);
+    ctx.lineTo(ax, nlY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // dot
+    ctx.fillStyle = highlight;
+    ctx.beginPath();
+    ctx.arc(ax, nlY, 6, 0, Math.PI * 2);
+    ctx.fill();
+    // label
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = highlight;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('a = −2,5', ax, nlY - 56);
+
+    // Mark "danger" point a = -2 (vertical asymptote)
+    var dx = aToX(-2);
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([3, 4]);
+    ctx.beginPath();
+    ctx.moveTo(dx, nlY - 35);
+    ctx.lineTo(dx, nlY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = danger;
+    ctx.beginPath();
+    ctx.arc(dx, nlY, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('a = −2 (zabranjeno)', dx, nlY - 38);
+
+    // Evaluation result box
+    var rbX = canvas.width - 230, rbY = nlY - 45, rbW = 200, rbH = 38;
+    ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.15);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 1.6;
+    roundedRect(rbX, rbY, rbW, rbH, 8);
+    ctx.fill();
+    ctx.stroke();
+    ctx.font = 'bold 15px "Cambria Math", Georgia, serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('4 / (−0,5) = −8', rbX + rbW / 2, rbY + rbH / 2);
+
+    // Conclusion bottom
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('Vrednost izraza pri a = −2,5  je  −8.', canvas.width / 2, canvas.height - 12);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Vrednost racionalnog izraza nakon faktorizacije i skracivanja (a = -2,5)",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["racionalni izrazi", "razlika kubova", "razlika kvadrata", "skracivanje", "faktorizacija", "evaluacija izraza"]
+}
+BRAINSPARK_META-->

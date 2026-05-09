@@ -1,0 +1,409 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem 10 (TMF Beograd 2015): Naci clan razvoja (x^3 + 1/x)^12 koji ne sadrzi x.
+  Ponuden odgovor: (A) 212; (B) 220; (C) 210; (D) 240; (E) 250.
+
+  Binomni razvoj: (a + b)^n = sum_{k=0}^{n} C(n,k) a^(n-k) b^k.
+  Ovde je a = x^3, b = 1/x = x^(-1), n = 12.
+
+  Opsti clan T_{k+1} = C(12, k) (x^3)^(12-k) (x^(-1))^k
+                     = C(12, k) x^(3(12-k)) x^(-k)
+                     = C(12, k) x^(36 - 3k - k)
+                     = C(12, k) x^(36 - 4k).
+
+  Trazimo clan koji ne sadrzi x => stepen iznad x je 0:
+    36 - 4k = 0  =>  k = 9.
+
+  Vrednost: C(12, 9) = C(12, 3) = (12 * 11 * 10) / (3 * 2 * 1) = 1320 / 6 = 220.
+
+  Odgovor: (B) 220.
+
+  Provera: T_{10} = C(12, 9) (x^3)^3 (1/x)^9 = 220 * x^9 * x^(-9) = 220 * x^0 = 220. Tacno.
+
+  Pitfalls:
+   - Studenti pisu T_k umesto T_{k+1}; tada bi za k = 9 dobili pogresan eksponent.
+   - Mesanje (x^3)^(12-k) sa (x^3 (12-k)) ili (x^(3+12-k)).
+   - Ne primecuju C(12, 9) = C(12, 3) i muce se sa velikim brojevima.
+   - Misle da nema clana bez x (neki razvoji nemaju), iako je 36 = 4*9 ceo broj.
+
+  Vizuelni prikaz (STATIC):
+   Pascalov red 12: 1, 12, 66, 220, 495, 792, 924, 792, 495, 220, 66, 12, 1.
+   Naglasi C(12, 9) = 220 i C(12, 3) = 220 (simetrija).
+   Iznad svakog binomnog koeficijenta C(12, k) ispisi i odgovarajuci eksponent uz x:
+     36 - 4k -> 36, 32, 28, 24, 20, 16, 12, 8, 4, 0, -4, -8, -12.
+   Naglasi onaj sa eksponentom 0 (k = 9).
+</script>
+
+<h1 data-card="problem-title">Clan razvoja koji ne sadrži \( x \)</h1>
+<p data-card="problem-subtitle" class="subtitle">Binomni obrazac &mdash; opšti član, eksponent uz \( x \), simetrija binomnih koeficijenata</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>Tekst zadatka</h2>
+  <p>Član razvoja \( \left(x^3 + \dfrac{1}{x}\right)^{12} \) koji ne sadrži \( x \) je jednak:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">izraz</span>
+      <span class="given-value">\( \left(x^3 + \tfrac{1}{x}\right)^{12} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">stepen</span>
+      <span class="given-value">\( n = 12 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">traži se</span>
+      <span class="given-value">član bez \( x \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 212 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 220 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 210 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 240 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 250 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>Plan rešavanja</h2>
+  <p class="plan-text">Napišemo opšti član binomnog razvoja \( T_{k+1} \), saberemo eksponente uz \( x \) i izjednačimo zbir s nulom (jer tražimo član <em>bez</em> \( x \)). Iz toga čitamo indeks \( k \), a vrednost člana je tada čisti binomni koeficijent \( \binom{12}{k} \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i činjenice</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Binomni obrazac (Njutnov):</strong> \( (a + b)^n = \displaystyle\sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^{k} \). Razvoj ima tačno \( n+1 \) članova.</li>
+        <li><strong>Opšti član:</strong> \( T_{k+1} = \binom{n}{k} a^{n-k} b^{k} \) za \( k = 0, 1, 2, \ldots, n \). Pažljivo: indeks ide od \( T_1 \) (kad je \( k = 0 \)).</li>
+        <li><strong>Pravila stepena:</strong> \( (x^p)^q = x^{pq} \), \( x^p \cdot x^q = x^{p+q} \), \( \dfrac{1}{x} = x^{-1} \).</li>
+        <li><strong>Simetrija binomnih koeficijenata:</strong> \( \binom{n}{k} = \binom{n}{n-k} \). Korisno: \( \binom{12}{9} = \binom{12}{3} \) &mdash; mnogo lakše za računanje.</li>
+        <li><strong>Mali binomni koeficijent:</strong> \( \binom{n}{3} = \dfrac{n(n-1)(n-2)}{6} \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>Vizuelni prikaz: koeficijenti i eksponenti uz \( x \) u razvoju</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-p10" width="780" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Razvoj \( \left(x^3 + \tfrac{1}{x}\right)^{12} \) ima \( 13 \) članova. Za svaki indeks \( k = 0, 1, \ldots, 12 \) prikazani su binomni koeficijent \( \binom{12}{k} \) i eksponent uz \( x \), koji iznosi \( 36 - 4k \). Eksponent \( 0 \) se javlja tačno kad je \( k = 9 \), i tada je koeficijent \( \binom{12}{9} = \binom{12}{3} = 220 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavimo opšti član razvoja</h3>
+      <p>Označimo \( a = x^3 \) i \( b = \dfrac{1}{x} = x^{-1} \), a stepen je \( n = 12 \). Po binomnom obrascu opšti član glasi:</p>
+      <div class="math-block">\[ T_{k+1} = \binom{12}{k}\, (x^3)^{12-k}\, (x^{-1})^{k}, \qquad k = 0, 1, 2, \ldots, 12. \]</div>
+      <p>Kombinujemo stepene uz \( x \) primenom pravila \( (x^p)^q = x^{pq} \) i \( x^p \cdot x^q = x^{p+q} \):</p>
+      <div class="math-block">\[ T_{k+1} = \binom{12}{k}\, x^{3(12-k)} \cdot x^{-k} = \binom{12}{k}\, x^{36 - 3k - k} = \binom{12}{k}\, x^{36 - 4k}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Uslov &bdquo;ne sadrži \( x \)&rdquo;</h3>
+      <p>Član ne sadrži \( x \) tačno onda kad je eksponent uz \( x \) jednak \( 0 \). Iz \( x^{36 - 4k} \) postavljamo:</p>
+      <div class="math-block">\[ 36 - 4k = 0 \quad\Longleftrightarrow\quad 4k = 36 \quad\Longleftrightarrow\quad k = 9. \]</div>
+      <p>Pošto je \( 9 \) ceo broj iz skupa \( \{0, 1, \ldots, 12\} \), takav član postoji.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš \( x^0 \) znači &bdquo;bez \( x \)&rdquo;?</summary>
+          <div class="detail-content"><p>Po definiciji \( x^0 = 1 \) za svaki \( x \neq 0 \). Dakle član oblika \( c \cdot x^0 \) je zapravo konstanta \( c \), bez ikakve zavisnosti od \( x \). To je &bdquo;slobodan&rdquo; ili konstantni član razvoja.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunamo binomni koeficijent</h3>
+      <p>Tražena vrednost je \( \binom{12}{9} \). Mnogo je lakše koristiti simetriju \( \binom{n}{k} = \binom{n}{n-k} \):</p>
+      <div class="math-block">\[ \binom{12}{9} = \binom{12}{12 - 9} = \binom{12}{3}. \]</div>
+      <p>Računamo \( \binom{12}{3} \) po definiciji:</p>
+      <div class="math-block">\[ \binom{12}{3} = \frac{12 \cdot 11 \cdot 10}{3!} = \frac{12 \cdot 11 \cdot 10}{6} = \frac{1320}{6} = 220. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( \binom{12}{9} = \binom{12}{3} \)?</summary>
+          <div class="detail-content"><p>Birati \( 9 \) elemenata od \( 12 \) je isto što i biti odlučiti kojih \( 3 \) <em>nećeš</em> da uzmeš. Otuda jednakost. Generalno, \( \binom{n}{k} = \binom{n}{n-k} \) &mdash; uvek ide ka manjem od dva broja, jer je tada manje množenja.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Konačna vrednost člana</h3>
+      <p>Pošto je \( x^{36 - 4 \cdot 9} = x^0 = 1 \), traženi član je</p>
+      <div class="math-block">\[ T_{10} = \binom{12}{9} \cdot x^{0} = 220. \]</div>
+      <p>Indeks člana je <span class="result">\( T_{10} \)</span> (jer je \( T_{k+1} \) sa \( k = 9 \)) i njegova vrednost je <span class="result">\( 220 \)</span>.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>Ključni uvid</h2>
+  <p>Kad u binomnom razvoju jedan sabirak ima &bdquo;rastući&rdquo;, a drugi &bdquo;opadajući&rdquo; eksponent uz \( x \), eksponent opšteg člana je <strong>linearna funkcija</strong> indeksa \( k \). Ovde je to \( 36 - 4k \). Postavi traženi uslov (\( = 0 \) za član bez \( x \), \( = m \) za član s \( x^m \)) i dobiješ jednu jednačinu po \( k \). Ako \( k \) ispadne ceo broj iz \( \{0, \ldots, n\} \), takav član postoji; inače ne.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ T_{10} = \binom{12}{9} = \binom{12}{3} = 220 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 212 \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( 220 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 210 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 240 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 250 \)</span>
+  </div>
+  <p class="verification">Provera: \( T_{10} = \binom{12}{9}(x^3)^{3}(x^{-1})^{9} = 220 \cdot x^{9} \cdot x^{-9} = 220 \cdot x^{0} = 220 \). Eksponenti se zaista poništavaju, pa član ne sadrži \( x \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešan indeks člana.</strong> Često se piše \( T_k = \binom{n}{k} \ldots \) umesto \( T_{k+1} = \binom{n}{k} \ldots \). Razvoj ima \( n+1 \) članova, a sumiranje ide od \( k = 0 \). Konačan rezultat 220 je isti, ali u zadacima koji traže <em>redni broj</em> člana razlika je suštinska.</li>
+    <li><strong>Greška u sabiranju eksponenata.</strong> Tipična greška je \( (x^3)^{12-k} = x^{3 + 12 - k} \). Tačno: \( (x^3)^{12-k} = x^{3(12-k)} = x^{36-3k} \). Stepen <em>množi</em>, ne sabira.</li>
+    <li><strong>Zaboravljen znak minus u \( x^{-1} \).</strong> \( (x^{-1})^k = x^{-k} \), tako da je ukupni eksponent \( 36 - 3k - k = 36 - 4k \), a ne \( 36 - 3k + k \).</li>
+    <li><strong>Forsiranje \( \binom{12}{9} \) bez simetrije.</strong> Računati \( \dfrac{12!}{9!\,3!} \) direktno daje isto, ali je dvostruko više rada. Uvek prebaci na manji indeks: \( \binom{12}{9} = \binom{12}{3} \).</li>
+    <li><strong>Brkanje &bdquo;bez \( x \)&rdquo; sa &bdquo;sa \( x^1 \)&rdquo;.</strong> Slobodni član znači \( x^0 \), tj. konstanta. Član s \( x \) je \( x^1 \) (drugačiji uslov: \( 36 - 4k = 1 \), što ovde nema celobrojnog rešenja).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>Dodatni izazov</h2>
+  <p>Razmotri razvoj \( \left(x^3 + \dfrac{1}{x}\right)^{12} \) i pronađi koeficijent uz \( x^4 \). Postoji li uopšte takav član? A za \( x^5 \)? Generalno, koje sve eksponente može uzeti opšti član?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Eksponent uz \( x \) je \( 36 - 4k \) za \( k \in \{0, 1, \ldots, 12\} \). Za \( x^4 \) treba \( 36 - 4k = 4 \), pa \( k = 8 \) i koeficijent je \( \binom{12}{8} = \binom{12}{4} = 495 \). Za \( x^5 \) treba \( 36 - 4k = 5 \), tj. \( 4k = 31 \) &mdash; nije ceo broj, dakle <em>ne postoji</em> član s \( x^5 \). Generalno, mogući eksponenti su \( \{36, 32, 28, \ldots, 0, -4, -8, -12\} \), tj. brojevi oblika \( 36 - 4k \) &mdash; samo razlike umnožaka od 4 od 36.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-p10');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  // Binomial coefficients C(12, k) for k = 0..12
+  var coeffs = [1, 12, 66, 220, 495, 792, 924, 792, 495, 220, 66, 12, 1];
+  // Exponent of x in the k-th term: 36 - 4k
+  var exps = [];
+  for (var i = 0; i < 13; i++) exps.push(36 - 4 * i);
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.fillText('Razvoj  (x³ + 1/x)¹² :  binomni koeficijenti i eksponenti uz x', W / 2, 30);
+
+    // Subtitle / formula
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('opšti član:  T(k+1) = C(12, k) · x^(36 − 4k)', W / 2, 52);
+
+    // Layout: 13 cells across
+    var n = 13;
+    var leftPad = 30;
+    var rightPad = 30;
+    var cellW = (W - leftPad - rightPad) / n;
+    var rowExpY = 100;
+    var rowKY = 130;
+    var rowCoeffY = 230;
+    var rowExponentY = 320;
+
+    // Header labels (left side)
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'left';
+    ctx.fillText('indeks k:', 4, rowKY);
+    ctx.fillText('C(12, k):', 4, rowCoeffY);
+    ctx.fillText('eksponent uz x:', 4, rowExponentY);
+
+    // Tick row at top with k indices
+    for (var k = 0; k < 13; k++) {
+      var cx = leftPad + cellW * (k + 0.5);
+      var isHit = (k === 9);
+
+      // Index k
+      ctx.font = isHit ? 'bold 14px Inter, system-ui, sans-serif' : '13px Inter, system-ui, sans-serif';
+      ctx.fillStyle = isHit ? highlight : muted;
+      ctx.textAlign = 'center';
+      ctx.fillText(String(k), cx, rowKY);
+
+      // Coefficient cell — circle
+      var radius = 22;
+      ctx.beginPath();
+      ctx.arc(cx, rowCoeffY - 5, radius, 0, Math.PI * 2);
+      if (isHit) {
+        ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.25);
+        ctx.fill();
+        ctx.lineWidth = 2.5;
+        ctx.strokeStyle = accent;
+        ctx.stroke();
+      } else if (k === 3) {
+        // Symmetric counterpart C(12, 3) = 220
+        ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.18);
+        ctx.fill();
+        ctx.lineWidth = 1.8;
+        ctx.strokeStyle = secondary;
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.10);
+        ctx.fill();
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = cvAlpha('--sol-canvas-primary', 0.45);
+        ctx.stroke();
+      }
+
+      // Coefficient number
+      ctx.font = isHit ? 'bold 12px Inter, system-ui, sans-serif' : '11px Inter, system-ui, sans-serif';
+      ctx.fillStyle = isHit ? accent : (k === 3 ? secondary : text);
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(String(coeffs[k]), cx, rowCoeffY - 5);
+      ctx.textBaseline = 'alphabetic';
+
+      // Exponent below
+      var exp = exps[k];
+      ctx.font = isHit ? 'bold 13px Inter, system-ui, sans-serif' : '12px Inter, system-ui, sans-serif';
+      ctx.fillStyle = isHit ? accent : (exp === 0 ? accent : muted);
+      ctx.textAlign = 'center';
+      ctx.fillText(String(exp), cx, rowExponentY);
+    }
+
+    // Highlight column for k = 9 (vertical band)
+    var hitX = leftPad + cellW * (9 + 0.5);
+    ctx.strokeStyle = cvAlpha('--sol-canvas-accent', 0.55);
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(hitX, rowKY + 8);
+    ctx.lineTo(hitX, rowExponentY - 22);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Symmetry connector: arc from k=3 to k=9
+    var x3 = leftPad + cellW * (3 + 0.5);
+    var x9 = leftPad + cellW * (9 + 0.5);
+    var arcY = rowCoeffY - 5 - 35;
+    ctx.beginPath();
+    ctx.moveTo(x3, rowCoeffY - 30);
+    ctx.bezierCurveTo(x3, arcY - 30, x9, arcY - 30, x9, rowCoeffY - 30);
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([6, 4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+    ctx.fillStyle = secondary;
+    ctx.textAlign = 'center';
+    ctx.fillText('simetrija:  C(12, 3) = C(12, 9) = 220', (x3 + x9) / 2, arcY - 36);
+
+    // Bottom highlight box
+    var boxY = 380;
+    var boxH = 110;
+    var boxX = 60;
+    var boxW = W - 120;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.10);
+    ctx.fillRect(boxX, boxY, boxW, boxH);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.8;
+    ctx.strokeRect(boxX, boxY, boxW, boxH);
+
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.fillStyle = accent;
+    ctx.textAlign = 'center';
+    ctx.fillText('Tačka pogotka:  k = 9   ⇒   eksponent uz x  =  36 − 4·9  =  0', W / 2, boxY + 32);
+
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.fillText('član bez x  je  T(10) = C(12, 9) · x⁰ = 220 · 1 = 220', W / 2, boxY + 60);
+
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('zelena ćelija = traženi član,  ljubičasta = simetrični par C(12, 3)', W / 2, boxY + 88);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Binomni razvoj — član bez x u (x^3 + 1/x)^12",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["binomni obrazac", "binomni koeficijenti", "opšti član razvoja", "stepen sa celim brojem"]
+}
+BRAINSPARK_META-->

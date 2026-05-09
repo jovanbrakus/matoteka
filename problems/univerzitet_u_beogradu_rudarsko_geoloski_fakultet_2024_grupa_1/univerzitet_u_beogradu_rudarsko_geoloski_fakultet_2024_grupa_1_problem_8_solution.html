@@ -1,0 +1,456 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Zbir svih rešenja jednačine sqrt(53 - x^2) = 9 - x je.
+
+Strategija:
+1. Domen radikanda: 53 - x^2 >= 0 <=> x^2 <= 53 <=> -sqrt(53) <= x <= sqrt(53). (sqrt(53) ≈ 7,28).
+2. Desna strana mora biti nenegativna (jer leva strana — kvadratni koren — uvek je nenegativna): 9 - x >= 0 <=> x <= 9.
+3. Kvadriranje obeju strana (kad su obe nenegativne): 53 - x^2 = (9 - x)^2 = 81 - 18x + x^2.
+4. 53 - x^2 = 81 - 18x + x^2 <=> 0 = 28 - 18x + 2x^2 <=> 2x^2 - 18x + 28 = 0 <=> x^2 - 9x + 14 = 0.
+5. Diskriminanta D = 81 - 56 = 25. Rešenja: x = (9 ± 5)/2 = 7 ili 2.
+6. Provera u domenu i u uslovu x <= 9: x = 2: 2^2 = 4 <= 53 ✓, 2 <= 9 ✓. x = 7: 7^2 = 49 <= 53 ✓, 7 <= 9 ✓.
+7. Provera u originalnoj jednačini:
+   - x = 2: sqrt(53 - 4) = sqrt(49) = 7. 9 - 2 = 7. ✓
+   - x = 7: sqrt(53 - 49) = sqrt(4) = 2. 9 - 7 = 2. ✓
+8. Zbir rešenja: 2 + 7 = 9.
+
+Geometrijska interpretacija — KRUG ∩ PRAVA:
+- y = sqrt(53 - x^2) je gornja polovina kruga sa centrom u (0, 0) i poluprečnikom r = sqrt(53) ≈ 7,28.
+- y = 9 - x je prava sa nagibom -1 i y-presekom 9.
+- Tačke preseka odgovaraju rešenjima jednačine. Ima dva preseka: (2, 7) i (7, 2).
+- Lepota: zbir x-koordinata je 9, što je upravo y-presek prave (zato se često zove "Vietova osa" za par preseka).
+
+Vieta direktno: za jednačinu x^2 - 9x + 14 = 0, zbir korena je -(-9)/1 = 9. (Bez izračunavanja korena!)
+
+Tačan odgovor: (A) 9.
+
+Glavne greške:
+- Zaboravljanje uslova 9 - x >= 0; kvadriranje uvodi "lažne" korene.
+- Loše kvadriranje: (9 - x)^2 ≠ 81 - x^2; dvostruki proizvod -2*9*x = -18x mora biti tu.
+- Greška u znaku 53 - 81 = -28; treba 53 - 81 = -28, dakle -2x^2 + 18x - 28 = 0, što daje pravu jednačinu x^2 - 9x + 14 = 0.
+- Provera samo u izvedenoj jednačini (svedenoj kvadratnoj), umesto u originalnoj.
+- Zaboraviti drugo rešenje (samo jedno se zameni i sabere).
+</script>
+
+<h1 data-card="problem-title">Iracionalna jednačina sa kvadratnim korenom</h1>
+<p data-card="problem-subtitle" class="subtitle">Domen, kvadriranje i provera korena — geometrijski presek polukruga i prave</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Zbir svih rešenja jednačine</p>
+  <div class="math-block">\[ \sqrt{53 - x^2} = 9 - x \]</div>
+  <p>je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 9 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( -6 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 8 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( -7 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Pre kvadriranja postavimo dva nužna uslova: radikand \( 53 - x^2 \geq 0 \) i nenegativnost desne strane \( 9 - x \geq 0 \) (jer leva strana je kvadratni koren, koji je uvek nenegativan). Zatim kvadriramo obe strane, dobijemo kvadratnu jednačinu, nađemo njena dva korena, i obavezno proverimo svaki koren u <em>originalnoj</em> jednačini i u prethodno postavljenim uslovima. Konačno saberemo rešenja koja su prošla proveru.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Iracionalne jednačine, uslovi i Vietove formule</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Definicija</span> Za realan kvadratni koren mora važiti \( \sqrt{A} \geq 0 \) i \( A \geq 0 \). Zato u jednačini \( \sqrt{A(x)} = B(x) \) <strong>oba</strong> uslova: \( A(x) \geq 0 \) i \( B(x) \geq 0 \).</li>
+        <li><span class="formula-label">Kvadriranje</span> Ako su obe strane nenegativne, ekvivalentno je: \( \sqrt{A(x)} = B(x) \;\Longleftrightarrow\; A(x) = B(x)^2 \). Bez uslova \( B(x) \geq 0 \), kvadriranje uvodi <em>lažne</em> korene.</li>
+        <li><span class="formula-label">Razvoj kvadrata</span> \( (a - b)^2 = a^2 - 2ab + b^2 \). Konkretno, \( (9 - x)^2 = 81 - 18x + x^2 \).</li>
+        <li><span class="formula-label">Vietove formule</span> Za \( x^2 + px + q = 0 \) važi \( x_1 + x_2 = -p \) i \( x_1 \cdot x_2 = q \). Korisno za pitanja o zbiru/proizvodu rešenja bez eksplicitnog rešavanja.</li>
+        <li><span class="formula-label">Geometrija</span> \( y = \sqrt{r^2 - x^2} \) je gornja polovina kružnice sa centrom u \( (0, 0) \) i poluprečnikom \( r \). Rešenja jednačine \( \sqrt{r^2 - x^2} = mx + n \) su \( x \)-koordinate preseka tog polukruga sa pravom.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="circleLine" width="720" height="640"></canvas>
+  </div>
+  <p class="canvas-caption">Geometrijski, jednačina \( \sqrt{53 - x^2} = 9 - x \) traži preseke gornje polovine kruga \( x^2 + y^2 = 53 \) (poluprečnik \( \sqrt{53} \approx 7{,}28 \)) sa pravom \( y = 9 - x \). Prava se spušta sa nagibom \( -1 \) i seče polukrug u dve tačke: \( (2,\; 7) \) i \( (7,\; 2) \). Zbir njihovih \( x \)-koordinata je \( 2 + 7 = 9 \) — tačno \( y \)-presek prave, što je <em>simetrija</em> ovog problema.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavi uslov za radikand</h3>
+      <p>Kvadratni koren je definisan samo nad nenegativnim brojevima, pa mora biti:</p>
+      <div class="math-block">\[ 53 - x^2 \geq 0 \;\Longleftrightarrow\; x^2 \leq 53 \;\Longleftrightarrow\; -\sqrt{53} \leq x \leq \sqrt{53}. \]</div>
+      <p>Pošto je \( \sqrt{53} \approx 7{,}28 \), dobijamo \( x \in [-7{,}28,\; 7{,}28] \) (približno).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavi uslov nenegativnosti desne strane (KLJUČNO!)</h3>
+      <p>Leva strana, \( \sqrt{53 - x^2} \), uvek je nenegativna. Da bi jednakost mogla da važi, i desna strana mora biti nenegativna:</p>
+      <div class="math-block">\[ 9 - x \geq 0 \;\Longleftrightarrow\; x \leq 9. \]</div>
+      <div class="callout callout-warning">
+        <p>Ovaj uslov je <strong>kritičan</strong>! Ako ga preskočimo, kvadriranjem ćemo možda dobiti i tzv. „lažne korene“ — vrednosti koje zadovoljavaju kvadriranu jednačinu, ali u originalnoj daju \( \sqrt{...} = \text{negativan broj} \), što je nemoguće.</p>
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je u ovom konkretnom zadatku uslov \( x \leq 9 \) <em>automatski</em> obezbeđen domenom?</summary>
+          <div class="detail-content"><p>Jer je \( \sqrt{53} \approx 7{,}28 < 9 \). Domen radikanda već nameće \( x \leq 7{,}28 \), pa je svaki dopušteni \( x \) i manji od \( 9 \). Ovde je uslov sa desne strane „besplatan“, ali u nekim drugim zadacima zna biti ono što odbacuje lažan koren.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Kvadriraj obe strane</h3>
+      <p>Pošto su obe strane nenegativne, kvadriranje je ekvivalentno:</p>
+      <div class="math-block">\[ 53 - x^2 = (9 - x)^2. \]</div>
+      <p>Razvij kvadrat na desnoj strani po formuli \( (a - b)^2 = a^2 - 2ab + b^2 \):</p>
+      <div class="math-block">\[ 53 - x^2 = 81 - 18x + x^2. \]</div>
+      <p>Prebaci sve na jednu stranu i sredi:</p>
+      <div class="math-block">\[ 0 = 81 - 18x + x^2 - 53 + x^2 \;\Longleftrightarrow\; 2x^2 - 18x + 28 = 0 \;\Longleftrightarrow\; x^2 - 9x + 14 = 0. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Reši kvadratnu jednačinu</h3>
+      <p>Primenimo kvadratnu formulu na \( x^2 - 9x + 14 = 0 \) (\( a = 1,\; b = -9,\; c = 14 \)):</p>
+      <div class="math-block">\[ D = b^2 - 4ac = 81 - 56 = 25, \quad x_{1,2} = \frac{9 \pm \sqrt{25}}{2} = \frac{9 \pm 5}{2}. \]</div>
+      <div class="math-block">\[ x_1 = \frac{9 + 5}{2} = 7, \qquad x_2 = \frac{9 - 5}{2} = 2. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kako bi <em>odmah</em> znao zbir korena bez rešavanja?</summary>
+          <div class="detail-content"><p>Vietove formule! Za \( x^2 - 9x + 14 = 0 \) (oblik \( x^2 + px + q = 0 \) sa \( p = -9 \)) važi \( x_1 + x_2 = -p = 9 \). To je upravo traženi zbir — pod uslovom da oba korena prolaze proveru, što ćemo sad uraditi.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Proveri oba kandidata u originalnoj jednačini</h3>
+      <p>Kvadriranje može da uvede lažne korene, pa <em>moramo</em> svakoga zameniti u <strong>originalnu</strong> jednačinu \( \sqrt{53 - x^2} = 9 - x \):</p>
+      <div class="math-block">\[ \begin{aligned} x = 2 \;:\;\; \text{LS} &amp;= \sqrt{53 - 4} = \sqrt{49} = 7, \quad \text{DS} = 9 - 2 = 7. \;\;\checkmark \\ x = 7 \;:\;\; \text{LS} &amp;= \sqrt{53 - 49} = \sqrt{4} = 2, \quad \text{DS} = 9 - 7 = 2. \;\;\checkmark \end{aligned} \]</div>
+      <p>Oba korena prolaze. Skup rešenja je \( \{ 2,\; 7 \} \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Saberi rešenja</h3>
+      <div class="math-block">\[ x_1 + x_2 = 2 + 7 = 9. \]</div>
+      <p>Što se poklapa sa zaključkom Vietove formule iz Koraka 4. Tražen zbir je <span class="result">\( 9 \)</span>.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Geometrijski, ovo je problem <strong>preseka kruga i prave</strong>: gornja polovina kruga \( x^2 + y^2 = 53 \) (poluprečnik \( \sqrt{53} \)) i prava \( y = 9 - x \). Dva preseka su \( (2,\; 7) \) i \( (7,\; 2) \) — primetimo simetriju \( (a, b) \leftrightarrow (b, a) \), koja proizilazi iz koeficijenta \( -1 \) u pravoj. Posledica te simetrije je da je <em>zbir</em> \( x \)-koordinata jednak \( y \)-preseku prave (koji je \( 9 \)). Dakle ne moramo uopšte rešavati kvadratnu jednačinu — Vietova formula nam direktno daje zbir \( -p = -(-9) = 9 \), pod uslovom da oba korena prolaze proveru (što i jeste slučaj).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ x_1 + x_2 = 2 + 7 = 9 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 9 \)</span>
+    <span class="answer-option" data-option="B">(B) \( -6 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 8 \)</span>
+    <span class="answer-option" data-option="D">(D) \( -7 \)</span>
+  </div>
+  <p class="verification">Provera oba korena u originalnoj jednačini: \( \sqrt{53 - 4} = 7 = 9 - 2 \) ✓ i \( \sqrt{53 - 49} = 2 = 9 - 7 \) ✓. Vietova formula nezavisno potvrđuje: \( x_1 + x_2 = -(-9)/1 = 9 \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zaboravljanje uslova \( 9 - x \geq 0 \):</strong> kvadriranje bez ovog uslova može uvesti lažne korene. U ovom zadatku smo imali sreću jer domen radikanda \( |x| \leq \sqrt{53} \approx 7{,}28 \) automatski daje \( x \leq 9 \), ali u opštem slučaju TO TREBA PROVERITI.</li>
+    <li><strong>Loše razvijanje kvadrata:</strong> pisanje \( (9 - x)^2 = 81 - x^2 \) (zaboravljanje srednjeg člana \( -2 \cdot 9 \cdot x = -18x \)). Time se dobija pogrešna jednačina i pogrešan odgovor.</li>
+    <li><strong>Greška u predznacima pri prebacivanju:</strong> \( 53 - x^2 = 81 - 18x + x^2 \) prebacuje se na \( 0 = 28 - 18x + 2x^2 \) (jer \( 81 - 53 = 28 \), ne \( 28 \) sa pogrešnim znakom).</li>
+    <li><strong>Provera samo u kvadriranoj jednačini:</strong> dobijeni \( x^2 - 9x + 14 = 0 \) je posledica kvadriranja, ne ekvivalent. Lažni koreni zadovoljavaju kvadriranu, ali ne i originalnu — zato je obavezno vratiti se na originalni izraz \( \sqrt{53 - x^2} = 9 - x \).</li>
+    <li><strong>Saberi samo jedno rešenje:</strong> ako učenik nađe samo \( x = 7 \) i prijavi „odgovor je \( 7 \)“, dobija opciju (D) sa pogrešnim predznakom — pažljivo, traži se zbir <em>svih</em> rešenja.</li>
+    <li><strong>Brkanje Vietovih formula:</strong> za \( x^2 - 9x + 14 \), Vietova suma je \( -(-9)/1 = 9 \), a Vietov proizvod je \( 14/1 = 14 \). Lako se zbune predznaci kod \( -p \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Razmotri sličnu jednačinu \( \sqrt{r^2 - x^2} = 9 - x \), gde je \( r > 0 \) parametar. Za koje vrednosti \( r \) jednačina ima:</p>
+  <ul>
+    <li>tačno dva rešenja (kao u našem zadatku),</li>
+    <li>tačno jedno rešenje,</li>
+    <li>nema rešenja?</li>
+  </ul>
+  <p>Geometrijski objasni odgovor preko interakcije polukruga sa pravom \( y = 9 - x \).</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Posmatraj rastojanje od centra polukruga \( (0, 0) \) do prave \( y = 9 - x \), tj. \( x + y - 9 = 0 \). To rastojanje je \( d = \dfrac{|0 + 0 - 9|}{\sqrt{1^2 + 1^2}} = \dfrac{9}{\sqrt{2}} \approx 6{,}36 \). Ako je \( r > d \), prava seče polukrug u dve tačke (dva rešenja). Ako je \( r = d \), prava ga dotiče u jednoj tački (tangenta — jedno rešenje). Ako je \( r < d \), prava ne seče polukrug (nema rešenja). Dodatno proveri da li su preseci na <em>gornjoj</em> polovini kruga (tj. \( y \geq 0 \), što za pravu \( y = 9 - x \) znači \( x \leq 9 \), uvek ispunjeno za \( x \in [-r, r] \) jer je \( r < 9 \) inače prava ne bi sekla). U našem zadatku \( r = \sqrt{53} \approx 7{,}28 > 6{,}36 \), pa su dva rešenja, što potvrđuje rezultat.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('circleLine');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var tertiary  = cv('--sol-canvas-tertiary');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var W = canvas.width, H = canvas.height;
+    var marginL = 70, marginR = 50, marginT = 50, marginB = 130;
+    var plotW = W - marginL - marginR;
+    var plotH = H - marginT - marginB;
+
+    // Use equal scaling x and y so circle looks circular
+    var xMin = -9, xMax = 11;
+    var yMin = -1, yMax = 11;
+    var sUnit = Math.min(plotW / (xMax - xMin), plotH / (yMax - yMin));
+    var actualPlotW = sUnit * (xMax - xMin);
+    var actualPlotH = sUnit * (yMax - yMin);
+    var offsetX = marginL + (plotW - actualPlotW) / 2;
+    var offsetY = marginT + (plotH - actualPlotH) / 2;
+
+    function X(mx) { return offsetX + (mx - xMin) * sUnit; }
+    function Y(my) { return offsetY + actualPlotH - (my - yMin) * sUnit; }
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText('Polukrug y = √(53 − x²) i prava y = 9 − x', W / 2, 24);
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var gx = Math.ceil(xMin); gx <= Math.floor(xMax); gx++) {
+      ctx.beginPath();
+      ctx.moveTo(X(gx), Y(yMin));
+      ctx.lineTo(X(gx), Y(yMax));
+      ctx.stroke();
+    }
+    for (var gy = Math.ceil(yMin); gy <= Math.floor(yMax); gy++) {
+      ctx.beginPath();
+      ctx.moveTo(X(xMin), Y(gy));
+      ctx.lineTo(X(xMax), Y(gy));
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(X(xMin), Y(0));
+    ctx.lineTo(X(xMax), Y(0));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(X(0), Y(yMin));
+    ctx.lineTo(X(0), Y(yMax));
+    ctx.stroke();
+
+    // Tick labels
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (var lx = Math.ceil(xMin); lx <= Math.floor(xMax); lx++) {
+      if (lx === 0) continue;
+      ctx.fillText(lx.toString(), X(lx), Y(0) + 6);
+    }
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (var ly = Math.ceil(yMin); ly <= Math.floor(yMax); ly++) {
+      if (ly === 0) continue;
+      ctx.fillText(ly.toString(), X(0) - 6, Y(ly));
+    }
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('x', X(xMax) - 4, Y(0) + 18);
+    ctx.fillText('y', X(0) + 8, Y(yMax) + 14);
+
+    // Draw the upper semicircle y = sqrt(53 - x^2)
+    var r = Math.sqrt(53);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    var first = true;
+    var steps = 200;
+    for (var i = 0; i <= steps; i++) {
+      var x = -r + (2 * r) * (i / steps);
+      var y = Math.sqrt(53 - x * x);
+      if (first) { ctx.moveTo(X(x), Y(y)); first = false; }
+      else ctx.lineTo(X(x), Y(y));
+    }
+    ctx.stroke();
+
+    // Draw the line y = 9 - x (within plot range)
+    ctx.strokeStyle = tertiary;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(X(xMin), Y(9 - xMin));
+    ctx.lineTo(X(xMax), Y(9 - xMax));
+    ctx.stroke();
+
+    // Mark the circle's center and radius (light dashed)
+    ctx.strokeStyle = cvAlpha('--sol-canvas-secondary', 0.4);
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.arc(X(0), Y(0), sUnit * r, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Draw a very small label for "y = sqrt(53 - x^2)" near the top of the semicircle
+    ctx.fillStyle = primary;
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('y = √(53 − x²)', X(-3), Y(Math.sqrt(53 - 9)) - 6);
+
+    // Label for the line
+    ctx.fillStyle = tertiary;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('y = 9 − x', X(8.7), Y(0.3) - 6);
+
+    // Mark intersection points (2, 7) and (7, 2)
+    var ints = [{x: 2, y: 7}, {x: 7, y: 2}];
+    for (var k = 0; k < ints.length; k++) {
+      var p = ints[k];
+      var px = X(p.x), py = Y(p.y);
+      // Glow ring
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.3);
+      ctx.beginPath();
+      ctx.arc(px, py, 13, 0, Math.PI * 2);
+      ctx.fill();
+      // Solid dot
+      ctx.fillStyle = accent;
+      ctx.beginPath();
+      ctx.arc(px, py, 6, 0, Math.PI * 2);
+      ctx.fill();
+      // Label
+      ctx.fillStyle = text;
+      ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText('(' + p.x + ', ' + p.y + ')', px + 12, py - 6);
+    }
+
+    // Drop dashed verticals from intersection points to x-axis
+    ctx.strokeStyle = cvAlpha('--sol-canvas-accent', 0.55);
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    for (var k2 = 0; k2 < ints.length; k2++) {
+      var pp = ints[k2];
+      ctx.beginPath();
+      ctx.moveTo(X(pp.x), Y(pp.y));
+      ctx.lineTo(X(pp.x), Y(0));
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Highlight x-coordinates 2 and 7 on x-axis
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(X(2), Y(0), 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(X(7), Y(0), 5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Bottom legend area
+    var ly1 = marginT + plotH + 50;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Rešenja: x = 2 i x = 7', W / 2, ly1);
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillText('Zbir rešenja:  2 + 7 = 9', W / 2, ly1 + 22);
+
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('rešenja jednačine = x-koordinate preseka polukruga i prave', W / 2, ly1 + 44);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Iracionalna jednačina √(53 − x²) = 9 − x",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["iracionalna jednačina", "kvadratni koren", "kvadriranje", "kvadratna jednačina", "Vietove formule", "presek kruga i prave"]
+}
+BRAINSPARK_META-->

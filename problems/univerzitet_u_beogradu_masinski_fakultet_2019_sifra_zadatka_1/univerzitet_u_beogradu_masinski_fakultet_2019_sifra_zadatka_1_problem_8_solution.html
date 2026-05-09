@@ -1,0 +1,520 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Problem: Vrednost izraza (log_3(4) + log_2(3))^2 - (log_3(4) - log_2(3))^2.
+
+Strategija 1 — razlika kvadrata.
+  Označimo u = log_3(4), v = log_2(3). Tada je
+  (u+v)^2 - (u-v)^2 = [(u+v) - (u-v)][(u+v) + (u-v)] = (2v)(2u) = 4uv.
+  Alternativno, razvij: (u+v)^2 = u^2 + 2uv + v^2; (u-v)^2 = u^2 - 2uv + v^2; razlika = 4uv. Identično.
+
+  Računamo uv = log_3(4) · log_2(3).
+  log_3(4) = log_3(2^2) = 2 log_3(2).   (svojstvo log a^k = k log a)
+  Pa je uv = 2 log_3(2) · log_2(3).
+
+  Identitet promene baze: log_a(b) · log_b(a) = 1. Konkretno log_3(2) · log_2(3) = 1.
+  Pa uv = 2 · 1 = 2.
+
+  Konačno 4uv = 4 · 2 = 8. ✓ Odgovor (E).
+
+Strategija 2 — direktna numerika kao sanity provera.
+  log_3(4) ≈ ln(4)/ln(3) ≈ 1.3863/1.0986 ≈ 1.2619.
+  log_2(3) ≈ ln(3)/ln(2) ≈ 1.0986/0.6931 ≈ 1.5850.
+  u + v ≈ 2.8469, (u+v)^2 ≈ 8.1051.
+  u - v ≈ -0.3231, (u-v)^2 ≈ 0.1044.
+  Razlika ≈ 8.1051 - 0.1044 ≈ 8.0007. ✓ ≈ 8.
+
+  Provera: 4uv = 4 · 1.2619 · 1.5850 ≈ 4 · 2.0001 ≈ 8.0004. ✓
+
+Strategija 3 — kombinovana zamena baza (pomalo dužim putem).
+  Sve u istu bazu, npr. baza 10:
+  log_3(4) = log(4)/log(3), log_2(3) = log(3)/log(2).
+  Proizvod = log(4) · log(3) / [log(3) · log(2)] = log(4)/log(2) = log_2(4) = 2.
+  Pa uv = 2, 4uv = 8. ✓
+
+Vizuelni plan: dijagram „četiri ugla” razlike kvadrata — najlepše je nacrtati veliki kvadrat stranice (u+v) podeljen na četiri dela: u^2 (gornji-levo), uv (gornji-desno), uv (donji-levo), v^2 (donji-desno). Manji kvadrat (u-v) "uzima" deo u^2 + v^2, a 2 uv parče se ostavlja. Razlika (u+v)^2 - (u-v)^2 = 4uv jasno se vidi kao zbir 4 (jednakih) pravougaonika dimenzija u × v.
+
+Brojevi za canvas: u ~1.26, v ~1.59. Skala da staje. Boje: u^2 plavičast, v^2 zelenkast, dva uv pravougaonika ima istu boju (highlight) — naglasiti da su to ti „4uv”.
+
+Kanvas: 720x600 ili sličan. Prvi crtež: kvadrat (u+v)x(u+v) podeljen na 4 dela. Drugi crtež (ili u istom): kvadrat (u-v)x(u-v) iznutra naglašen pa razlika = 4 paralelna pravougaonika uv.
+
+Statika ili interaktivnost? Mogli bismo imati slider za u/v (apstraktni parametri). Ali zadatak je čvrst — uv su konkretni log brojevi, suština je da prepoznati identitet razlike kvadrata. Statika sa lepim dijagramom 2×2 grida i strelicama je pedagoški jača. ODLUKA: STATIC.
+</script>
+
+<h1 data-card="problem-title">Razlika kvadrata sa logaritmima — \( (u+v)^2 - (u-v)^2 = 4uv \)</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebarski identitet, promena baze logaritma, recipročnost \( \log_a b \cdot \log_b a = 1 \)</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Vrednost izraza</p>
+  <div class="math-block">\[ \big(\log_3 4 + \log_2 3\big)^2 - \big(\log_3 4 - \log_2 3\big)^2 \]</div>
+  <p>je:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 16 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 2(\log_3^2 4 + \log_2^2 3) \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \log_3 16 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \log_2 9 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 8 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Označimo \( u = \log_3 4 \) i \( v = \log_2 3 \). Primenom identiteta \( (u+v)^2 - (u-v)^2 = 4uv \) (klasična „razlika kvadrata zbira i razlike”) sve se svodi na proizvod \( 4uv \). Zatim koristimo \( \log_3 4 = 2\log_3 2 \) i recipročnost \( \log_3 2 \cdot \log_2 3 = 1 \) da bismo proizvod sveli na konkretan broj.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Algebarski identitet i pravila logaritma</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Razlika kvadrata zbira i razlike</span> \( (u+v)^2 - (u-v)^2 = 4uv \). Razvojem: \( u^2 + 2uv + v^2 - (u^2 - 2uv + v^2) = 4uv \).</li>
+        <li><span class="formula-label">Stepen u logaritmu</span> \( \log_a (b^k) = k \log_a b \). Posebno: \( \log_3 4 = \log_3(2^2) = 2\log_3 2 \).</li>
+        <li><span class="formula-label">Promena baze</span> \( \log_a b = \dfrac{\ln b}{\ln a} \), pa \( \log_a b \cdot \log_b a = \dfrac{\ln b}{\ln a} \cdot \dfrac{\ln a}{\ln b} = 1 \).</li>
+        <li><span class="formula-label">Recipročnost (kratko)</span> \( \log_3 2 \cdot \log_2 3 = 1 \). Logaritmi sa „zamenjenim” bazom i argumentom su uzajamno recipročni.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — geometrijski dokaz identiteta">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="dq-canvas" width="760" height="640"></canvas>
+  </div>
+  <p class="canvas-caption">Levi kvadrat ima stranicu \( u + v \) i površinu \( (u+v)^2 \) — vidi se da je on sastavljen od četiri komada: \( u^2 \), \( v^2 \) i dva pravougaonika \( u \cdot v \). Desni kvadrat sa stranicom \( u - v \) ima površinu \( (u-v)^2 \). Razlika njihovih površina daje upravo četiri pravougaonika dimenzija \( u \times v \), tj. \( 4uv \). Za naše \( u = \log_3 4 \) i \( v = \log_2 3 \), proizvod \( uv = 2 \), pa \( 4uv = 8 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Uvodimo skraćenice i prepoznajemo identitet</h3>
+      <p>Označimo \( u = \log_3 4 \) i \( v = \log_2 3 \). Tražena vrednost ima oblik:</p>
+      <div class="math-block">\[ E = (u + v)^2 - (u - v)^2. \]</div>
+      <p>Ovo je klasičan algebarski oblik, koji se najbrže razlaže preko razlike kvadrata <em>ili</em> direktnim razvojem:</p>
+      <div class="math-block">\[ \begin{aligned} (u+v)^2 - (u-v)^2 &= [(u+v) - (u-v)] \cdot [(u+v) + (u-v)] \\ &= (2v)(2u) = 4uv. \end{aligned} \]</div>
+      <p>Ekvivalentno, razvojem: \( (u^2 + 2uv + v^2) - (u^2 - 2uv + v^2) = 4uv \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto su odgovori (B) i (A) „zamke”?</summary>
+          <div class="detail-content"><p>Odgovor (B) je <em>zbir</em> kvadrata, što odgovara \( (u+v)^2 + (u-v)^2 = 2(u^2 + v^2) \), a ne razlika. Odgovor (A) \( 16 \) može biti zbunjujuć ako neko skupi pogrešne brojeve, ali bez identiteta razlike kvadrata teško je doći do njega namerno. Korektan put vodi pravo do (E).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Sređujemo \( \log_3 4 \) preko stepena</h3>
+      <p>Argument \( 4 = 2^2 \), pa po pravilu \( \log_a (b^k) = k \log_a b \):</p>
+      <div class="math-block">\[ \log_3 4 = \log_3 (2^2) = 2 \log_3 2. \]</div>
+      <p>Time se proizvod \( uv \) lepo pretvara u oblik koji ima recipročnu strukturu \( \log_3 2 \cdot \log_2 3 \):</p>
+      <div class="math-block">\[ uv = \log_3 4 \cdot \log_2 3 = 2 \log_3 2 \cdot \log_2 3. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Recipročnost: \( \log_3 2 \cdot \log_2 3 = 1 \)</h3>
+      <p>Po formuli promene baze (npr. preko prirodnog logaritma):</p>
+      <div class="math-block">\[ \log_3 2 = \frac{\ln 2}{\ln 3}, \qquad \log_2 3 = \frac{\ln 3}{\ln 2}. \]</div>
+      <p>Pa je njihov proizvod recipročan i jednak \( 1 \):</p>
+      <div class="math-block">\[ \log_3 2 \cdot \log_2 3 = \frac{\ln 2}{\ln 3} \cdot \frac{\ln 3}{\ln 2} = 1. \]</div>
+      <p>Ovo je opšte pravilo: <em>logaritam i njegov „obrnuti” logaritam (sa zamenjenom bazom i argumentom) su uzajamno recipročni</em>.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koja je veza ovog identiteta sa eksponencijalnom funkcijom?</summary>
+          <div class="detail-content"><p>Ako je \( c = \log_3 2 \), to znači \( 3^c = 2 \). Logaritmovanjem po bazi \( 2 \): \( c \log_2 3 = \log_2 2 = 1 \), pa \( c \log_2 3 = 1 \), tj. \( \log_3 2 \cdot \log_2 3 = 1 \). Drugim rečima, „inverzna eksponentna” relacija prirodno daje recipročan logaritmički par.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Sklapamo proizvod \( uv \)</h3>
+      <p>Iz koraka 2 i 3:</p>
+      <div class="math-block">\[ uv = 2 \log_3 2 \cdot \log_2 3 = 2 \cdot 1 = 2. \]</div>
+      <p>Preglednije rečeno, \( uv = \log_3 4 \cdot \log_2 3 = \log_2 4 = 2 \) (po promeni baze za \( \log_2 4 \)). Bilo da gledamo „u jednom” ili „korak po korak”, dobija se isti broj \( 2 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Konačan rezultat</h3>
+      <p>Iz koraka 1: \( E = 4uv \). Iz koraka 4: \( uv = 2 \). Spajamo:</p>
+      <div class="math-block">\[ E = 4 uv = 4 \cdot 2 = 8. \]</div>
+      <p>Numerička provera: \( \log_3 4 \approx 1{,}262 \), \( \log_2 3 \approx 1{,}585 \). Tada \( u + v \approx 2{,}847 \) i \( (u+v)^2 \approx 8{,}105 \); \( u - v \approx -0{,}323 \) i \( (u-v)^2 \approx 0{,}104 \). Razlika \( \approx 8{,}001 \). ✓</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Dva alata se susreću u ovom zadatku. Prvi je <strong>algebarski</strong>: identitet \( (u+v)^2 - (u-v)^2 = 4uv \) kompletno eliminiše zbirove i razlike — preostaje samo proizvod. Drugi je <strong>logaritamski</strong>: kada vidiš proizvod tipa \( \log_a b \cdot \log_b a \), instinkt mora biti „ovo je \( 1 \)”. Kombinacija „izvedi \( 4uv \), pa upotrebi recipročnost” pretvara izgleda strašnu logaritamsku jednačinu u puko množenje. Bez identiteta razlike kvadrata, čovek bi se mučio sa kvadriranjem zbirova i razlika; bez recipročnosti, ne bi znao šta sa \( \log_3 2 \cdot \log_2 3 \). Zajedno daju odgovor u par redova.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pomešati sa zbirom kvadrata.</strong> \( (u+v)^2 + (u-v)^2 = 2(u^2 + v^2) \) je odgovor (B), ali to <em>nije</em> ono što tražimo — tražimo razliku, koja daje \( 4uv \).</li>
+    <li><strong>Mehaničko kvadriranje.</strong> Razvijati \( (u+v)^2 \) i \( (u-v)^2 \) odvojeno, pa oduzimati, je tehnički ispravno ali troši vreme. Identitet \( 4uv \) ide u jednoj liniji.</li>
+    <li><strong>Pogrešna primena pravila stepena.</strong> \( \log_3 4 = 2\log_3 2 \), <em>ne</em> \( \log_3 2 \cdot 2 \) sa nekom drugom bazom. Koeficijent \( 2 \) izlazi <em>kao množilac</em>, ne kao stepen logaritma.</li>
+    <li><strong>Zaboraviti recipročnost.</strong> \( \log_3 2 \cdot \log_2 3 = 1 \) je „jednoredna” činjenica koja se često previdi. Ako probaš da numerički množiš \( 0{,}631 \cdot 1{,}585 \), dobićeš \( \approx 1 \) — što je tačan signal.</li>
+    <li><strong>Mešanje sa odgovorom (C) \( \log_3 16 \).</strong> Imamo \( \log_3 16 = \log_3 2^4 = 4 \log_3 2 \approx 2{,}52 \) — nije \( 8 \). Ovaj odgovor odgovara nekom drugom (pogrešnom) putu, npr. „\( 4 \log_3 4 \)” (koji ne odgovara \( 4uv \)).</li>
+    <li><strong>Mešanje sa odgovorom (D) \( \log_2 9 = 2\log_2 3 \approx 3{,}17 \).</strong> Slično, ovo je još jedna „blizu, ali ne” formula bez razloga da se pojavi iz \( 4uv \).</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \big(\log_3 4 + \log_2 3\big)^2 - \big(\log_3 4 - \log_2 3\big)^2 = 8 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 16 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 2(\log_3^2 4 + \log_2^2 3) \)</span>
+    <span class="answer-option" data-option="C">(C) \( \log_3 16 \)</span>
+    <span class="answer-option" data-option="D">(D) \( \log_2 9 \)</span>
+    <span class="answer-option correct" data-option="E">(E) \( 8 \)</span>
+  </div>
+  <p class="verification">Identitet: \( (u+v)^2 - (u-v)^2 = 4uv \) gde \( u = \log_3 4 \), \( v = \log_2 3 \). Proizvod: \( uv = 2\log_3 2 \cdot \log_2 3 = 2 \cdot 1 = 2 \) (recipročnost). Dakle \( 4uv = 8 \). Numerička provera: \( 8{,}105 - 0{,}104 \approx 8{,}001 \). ✓</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Generalizuj: za proizvoljne pozitivne realne brojeve \( a, b \) (\( a \ne 1 \), \( b \ne 1 \)), izračunaj</p>
+  <div class="math-block">\[ \big(\log_a b^2 + \log_b a\big)^2 - \big(\log_a b^2 - \log_b a\big)^2. \]</div>
+  <p>Za koje vrednosti \( a, b \) je rezultat ceo broj?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Po identitetu razlike kvadrata, izraz \( = 4 \cdot \log_a b^2 \cdot \log_b a = 4 \cdot 2 \log_a b \cdot \log_b a = 8 \cdot 1 = 8 \). Zaključak: <em>uvek</em> je \( 8 \), bez obzira na \( a, b \) (dokle god su validne baze)! Naš zadatak je samo specijalan slučaj sa \( a = 3 \), \( b = 2 \), gde je \( \log_3 4 = \log_3 2^2 = 2\log_3 2 = \log_3 b^2 \) i \( \log_2 3 = \log_b a \). Lekcija: ova razlika kvadrata ne zavisi od konkretnih brojeva — zavisi samo od strukture \( \log_a b^2 \) i \( \log_b a \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('dq-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  var W = canvas.width, H = canvas.height;
+
+  // Geometrijske dimenzije: u i v, normalizovane za prikaz
+  // Stvarne vrednosti: u ≈ 1.262 (log_3 4), v ≈ 1.585 (log_2 3)
+  var uVal = Math.log(4) / Math.log(3);    // log_3(4) ≈ 1.2619
+  var vVal = Math.log(3) / Math.log(2);    // log_2(3) ≈ 1.5850
+  var unitPx = 80; // pikseli po jedinici
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var warning   = cv('--sol-canvas-warning');
+    var tertiary  = cv('--sol-canvas-tertiary');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Naslov
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText('Geometrijski dokaz:  (u + v)² − (u − v)² = 4uv', W / 2, 28);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('u = log₃ 4 ≈ 1,262    v = log₂ 3 ≈ 1,585', W / 2, 50);
+
+    // ----- LEVI KVADRAT (u + v)² -----
+    var leftBase = 90;       // x-koord. donjeg-levog ćoška
+    var leftBottom = 470;    // y-koord. donjeg ćoška
+    var sideLeft = (uVal + vVal) * unitPx; // ≈ 227.5
+
+    // Pozadina
+    ctx.fillStyle = cvAlpha('--sol-canvas-grid', 0.2);
+    ctx.fillRect(leftBase, leftBottom - sideLeft, sideLeft, sideLeft);
+
+    // Podela: gornji deo visine u, donji deo visine v.
+    // Levi deo širine u, desni deo širine v.
+    var uPx = uVal * unitPx;
+    var vPx = vVal * unitPx;
+
+    // Gornji-levo: u × u  (kvadrat u^2)
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.30);
+    ctx.fillRect(leftBase, leftBottom - sideLeft, uPx, uPx);
+    // Gornji-desno: v × u  (uv pravougaonik)  --- highlight (jedan od 4uv)
+    ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.45);
+    ctx.fillRect(leftBase + uPx, leftBottom - sideLeft, vPx, uPx);
+    // Donji-levo: u × v  (uv pravougaonik)  --- highlight (drugi od 4uv)
+    ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.45);
+    ctx.fillRect(leftBase, leftBottom - vPx, uPx, vPx);
+    // Donji-desno: v × v  (kvadrat v^2)
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.30);
+    ctx.fillRect(leftBase + uPx, leftBottom - vPx, vPx, vPx);
+
+    // Ivice ćelija
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(leftBase, leftBottom - sideLeft, uPx, uPx);
+    ctx.strokeRect(leftBase + uPx, leftBottom - sideLeft, vPx, uPx);
+    ctx.strokeRect(leftBase, leftBottom - vPx, uPx, vPx);
+    ctx.strokeRect(leftBase + uPx, leftBottom - vPx, vPx, vPx);
+
+    // Glavni okvir
+    ctx.strokeStyle = text;
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(leftBase, leftBottom - sideLeft, sideLeft, sideLeft);
+
+    // Oznake stranica gornje (u i v iznad)
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('u', leftBase + uPx / 2, leftBottom - sideLeft - 8);
+    ctx.fillStyle = accent;
+    ctx.fillText('v', leftBase + uPx + vPx / 2, leftBottom - sideLeft - 8);
+
+    // Oznake stranica leve strane (u i v levo)
+    ctx.fillStyle = primary;
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('u', leftBase - 8, leftBottom - sideLeft + uPx / 2);
+    ctx.fillStyle = accent;
+    ctx.fillText('v', leftBase - 8, leftBottom - vPx / 2);
+
+    // Tekst u ćelijama
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = primary;
+    ctx.fillText('u²', leftBase + uPx / 2, leftBottom - sideLeft + uPx / 2);
+    ctx.fillStyle = highlight;
+    ctx.fillText('uv', leftBase + uPx + vPx / 2, leftBottom - sideLeft + uPx / 2);
+    ctx.fillText('uv', leftBase + uPx / 2, leftBottom - vPx / 2);
+    ctx.fillStyle = accent;
+    ctx.fillText('v²', leftBase + uPx + vPx / 2, leftBottom - vPx / 2);
+
+    // Naslov ispod levog kvadrata
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('(u + v)²', leftBase + sideLeft / 2, leftBottom + 12);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('= u² + 2uv + v²', leftBase + sideLeft / 2, leftBottom + 32);
+
+    // ----- DESNI KVADRAT (u - v)² (na ovom se vidi šta „ostane” unutra) -----
+    // Ali ovde radimo lepu ilustraciju: prikazujemo iste 4 ćelije,
+    // ali zatamnjujemo (u^2 + v^2) — preostaje 2uv „dvojako”
+    // Bolja varijanta: u zaseban panel desno crtamo „mali” kvadrat (u-v)^2,
+    // pa ga uporedimo
+    var rightBase = leftBase + sideLeft + 140;
+    var rightBottom = leftBottom;
+    var diff = uVal - vVal; // negativan, ≈ -0.323
+    var absDiff = Math.abs(diff);
+    var sideRight = absDiff * unitPx; // ≈ 25.85 (ali to je sasvim mali kvadrat)
+
+    // Da bi bio vidljiv, dimenzionišemo posebno
+    var smallSide = 200; // pikseli — crtamo vizuelno koristan kvadrat
+    var smallScale = smallSide / sideLeft; // skala u odnosu na velikI
+
+    // Glavna ideja desnog panela: crtamo veliki kvadrat (u+v)^2 sa unutar
+    // upisanim kvadratom (u-v)^2 koji se NALAZI u uglu, a koridor preostalih
+    // delova je 4 jednaka pravougaonika u × v gledana na drugaćiji način.
+    // Ali za jasnoću, koristimo „klasičnu” razgradnju: nacrtaj veliki kvadrat
+    // (u+v)^2 i UNUTAR njega označi (u-v)^2 oblast; razlika su 4 pravougaonika
+    // dimenzija u × v. To je možda najlepši geometrijski dokaz.
+
+    // Ovde ćemo zato „otključati” pravu lepotu: pokažemo 4 pravougaonika u×v
+    // koji čine razliku.
+
+    var sideShow = sideLeft;  // koristimo istu skalu kao za levi kvadrat
+    var rightLeft = rightBase;
+    var rightTop = rightBottom - sideShow;
+
+    // Pozadina
+    ctx.fillStyle = cvAlpha('--sol-canvas-grid', 0.10);
+    ctx.fillRect(rightLeft, rightTop, sideShow, sideShow);
+
+    // Centralni mali kvadrat (u-v)^2 — postavimo ga u centru, sa stranom
+    // |u-v| · unitPx (≈ 25.85 px). Da bi bio prepoznatljiv, naglasimo border.
+    var centralSide = absDiff * unitPx;
+    var cLeft = rightLeft + (sideShow - centralSide) / 2;
+    var cTop = rightTop + (sideShow - centralSide) / 2;
+    ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.35);
+    ctx.fillRect(cLeft, cTop, centralSide, centralSide);
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(cLeft, cTop, centralSide, centralSide);
+
+    // Oko centralnog kvadrata, 4 pravougaonika u × v koji čine „korisni” deo
+    // Razgradnja: ako je u > v, struktura je drugačija. Naša vrednost: u < v.
+    // Standardna razgradnja velikog kvadrata (u+v)^2 = (u-v)^2 + 4uv
+    // (to je „klasični” identitet (u+v)^2 - (u-v)^2 = 4uv)
+    // Geometrijski: 4 pravougaonika u × v se mogu rasporediti oko centralnog (u-v)^2.
+    // Crtaj: gornji pravougaonik širine (u+v) i visine v (samo ne celom...).
+
+    // Najjednostavnije i pedagoški jasno: 4 jednaka pravougaonika u × v
+    // postavi paralelno (4 vertikalne ili horizontalne trake) PORED levog kvadrata.
+
+    // Crtanje 4 vertikalna pravougaonika u × v — lepo se poklapaju u tablu 2×2
+    var rectW = uPx * 0.6, rectH = vPx * 0.6; // skalirano na 60% za lepši izgled
+    var startX = rightLeft + 30;
+    var startY = rightTop + 60;
+    for (var i = 0; i < 2; i++) {
+      for (var j = 0; j < 2; j++) {
+        var rx = startX + j * (rectW + 24);
+        var ry = startY + i * (rectH + 24);
+        ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.45);
+        ctx.fillRect(rx, ry, rectW, rectH);
+        ctx.strokeStyle = highlight;
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(rx, ry, rectW, rectH);
+        ctx.fillStyle = highlight;
+        ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('uv', rx + rectW / 2, ry + rectH / 2);
+      }
+    }
+    // Veliki znak +
+    ctx.fillStyle = text;
+    ctx.font = 'bold 22px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('+', startX + rectW + 12, startY + rectH / 2);
+    ctx.fillText('+', startX + rectW / 2 + (rectW + 24) / 2 - 12, startY + rectH + 12);
+    ctx.fillText('+', startX + rectW + 12, startY + rectH + 24 + rectH / 2);
+
+    // Naslov ispod desnog
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('4 · (uv) = 4uv', rightLeft + sideShow / 2, leftBottom + 12);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('= (u + v)² − (u − v)²', rightLeft + sideShow / 2, leftBottom + 32);
+
+    // Strelica „minus” između velikog kvadrata i 4 mala
+    var arrY = leftBottom - sideLeft / 2;
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(leftBase + sideLeft + 20, arrY);
+    ctx.lineTo(rightLeft - 20, arrY);
+    ctx.stroke();
+    // arrow head
+    ctx.fillStyle = secondary;
+    ctx.beginPath();
+    ctx.moveTo(rightLeft - 20, arrY);
+    ctx.lineTo(rightLeft - 30, arrY - 6);
+    ctx.lineTo(rightLeft - 30, arrY + 6);
+    ctx.closePath();
+    ctx.fill();
+    // tekst „− (u-v)²”
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('− (u − v)²', (leftBase + sideLeft + rightLeft) / 2, arrY - 8);
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textBaseline = 'top';
+    ctx.fillText('uklonimo (u − v)² komad', (leftBase + sideLeft + rightLeft) / 2, arrY + 8);
+
+    // ----- DONJI PANEL: numerička evaluacija -----
+    var nY = 530;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.10);
+    ctx.fillRect(60, nY, W - 120, 90);
+    ctx.strokeStyle = cvAlpha('--sol-canvas-accent', 0.40);
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(60, nY, W - 120, 90);
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Numerički sa  u = log₃ 4,  v = log₂ 3:', 80, nY + 14);
+
+    ctx.fillStyle = text;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillText('uv = log₃ 4 · log₂ 3 = 2 log₃ 2 · log₂ 3 = 2 · 1 = 2', 80, nY + 38);
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.fillStyle = highlight;
+    ctx.fillText('4uv = 4 · 2 = 8', 80, nY + 64);
+
+    // Završni red
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText('Odgovor: (E) — vrednost izraza je  8', W / 2, H - 16);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "(log₃ 4 + log₂ 3)² − (log₃ 4 − log₂ 3)² preko razlike kvadrata",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["logaritmi", "razlika kvadrata", "promena baze logaritma", "recipročnost logaritama", "algebarski identitet"]
+}
+BRAINSPARK_META-->

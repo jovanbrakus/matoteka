@@ -1,0 +1,662 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: In parallelogram ABCD, AD = BD = BC = 1 and AC = 2. Find the area.
+
+  Setup:
+  In a parallelogram ABCD, opposite sides are equal: AB = CD, AD = BC.
+  Given: AD = 1, so BC = 1 (consistent).
+  BD is one diagonal (length 1), AC is the other diagonal (length 2).
+  Unknown: side AB = CD = a.
+
+  Method 1 — Parallelogram identity (sum of squared diagonals):
+  In any parallelogram, |AC|² + |BD|² = 2(|AB|² + |AD|²).
+  4 + 1 = 2(a² + 1)
+  5 = 2a² + 2
+  2a² = 3
+  a² = 3/2 → a = √(3/2) = √6 / 2.
+
+  Method 2 — Find area using triangle ABD:
+  Triangle ABD has AB = √6/2, AD = 1, BD = 1.
+  This is half the parallelogram (diagonal BD divides parallelogram into two congruent triangles).
+  Wait — area of parallelogram = 2 · area(ABD).
+
+  Use cosine rule for angle DAB at vertex A in triangle ABD:
+    BD² = AB² + AD² − 2·AB·AD·cos(∠DAB)
+    1 = 3/2 + 1 − 2·(√6/2)·1·cos(∠DAB)
+    1 = 5/2 − √6·cos(∠DAB)
+    √6·cos(∠DAB) = 5/2 − 1 = 3/2
+    cos(∠DAB) = (3/2) / √6 = 3 / (2√6) = 3√6 / 12 = √6/4.
+
+  sin(∠DAB) = √(1 − cos²) = √(1 − 6/16) = √(10/16) = √10/4.
+
+  Area(parallelogram) = AB · AD · sin(∠DAB) = (√6/2)·1·(√10/4) = √60/8 = 2√15/8 = √15/4.
+
+  Method 3 — Sanity via Heron on triangle ABD:
+  Sides: a = √6/2, b = 1, c = 1.  s = (√6/2 + 2)/2 = √6/4 + 1.
+  Area² = s(s−a)(s−b)(s−c) by Heron.
+  Easier: triangle ABD is isoceles (AD = BD = 1), so altitude from B to AD bisects AD.
+  Wait — it's isoceles with AD = BD = 1, base AB = √6/2.
+  Half-base = √6/4. Altitude from D (apex of isoceles): h² = 1² − (√6/4)² = 1 − 6/16 = 10/16, h = √10/4.
+  Area(ABD) = (1/2)·base·height = (1/2)·(√6/2)·(√10/4) = √60/16 = 2√15/16 = √15/8.
+  Area(parallelogram) = 2·Area(ABD) = √15/4. ✓
+
+  Answer: (D) √15/4.
+
+  Quick check: √15/4 ≈ 3.873/4 ≈ 0.968. Plausible for a unit-sided figure.
+</script>
+
+<h1 data-card="problem-title">Površina paralelograma sa zadatim stranicama i dijagonalama</h1>
+<p data-card="problem-subtitle" class="subtitle">Geometrija — paralelogramska identičnost i osobine jednakokrakog trougla</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>U paralelogramu \( ABCD \) je \( AD = BD = BC = 1 \) i \( AC = 2 \). Kolika je njegova površina?</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">\( AD \)</span>
+      <span class="given-value">\( 1 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">\( BC \)</span>
+      <span class="given-value">\( 1 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">\( BD \)</span>
+      <span class="given-value">\( 1 \) (dijagonala)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">\( AC \)</span>
+      <span class="given-value">\( 2 \) (dijagonala)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \dfrac{\sqrt{13}}{4} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \dfrac{\sqrt{2}}{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \dfrac{\sqrt{3}}{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \dfrac{\sqrt{15}}{4} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Iskoristićemo paralelogramsku identičnost (zbir kvadrata dijagonala = zbir kvadrata svih stranica) da nađemo nepoznatu stranicu \( AB \). Zatim koristimo trougao \( ABD \) — koji je polovina paralelograma — da izračunamo površinu preko visine.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Paralelogramska identičnost:</strong> u svakom paralelogramu zbir kvadrata dijagonala jednak je zbiru kvadrata svih četiri stranica: \( |AC|^2 + |BD|^2 = 2(|AB|^2 + |AD|^2) \).</li>
+        <li><strong>Dijagonala deli paralelogram:</strong> jedna dijagonala deli paralelogram na dva podudarna trougla, pa je \( P_{\text{paralelogram}} = 2 \cdot P_{\triangle} \).</li>
+        <li><strong>Visina jednakokrakog trougla:</strong> u trouglu sa dva jednaka kraka, visina iz vrha (između jednakih kraka) deli osnovicu na dva jednaka dela. Po Pitagori: \( h^2 = \text{krak}^2 - (\text{poluosnovica})^2 \).</li>
+        <li><strong>Površina trougla:</strong> \( P = \dfrac{1}{2} \cdot \text{osnovica} \cdot \text{visina} \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Paralelogram ABCD">
+  <h2>📐 Paralelogram \( ABCD \) sa obeleženim podacima</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-pgram" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Stranice \( AD = BC = 1 \) i obe dijagonale su poznate: \( BD = 1 \) (kratka) i \( AC = 2 \) (duga). Stranicu \( AB = CD \) tek treba odrediti.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Trougao ABD — polovina paralelograma">
+  <h2>📐 Jednakokraki trougao \( ABD \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-tri" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Dijagonala \( BD \) deli paralelogram na dva podudarna trougla. Trougao \( ABD \) je <em>jednakokrak</em> jer \( AD = BD = 1 \). Visina \( h \) iz \( D \) (između jednakih kraka) deli osnovicu \( AB \) na dva jednaka dela.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Iskoristimo definiciju paralelograma</h3>
+      <p>Naspramne stranice paralelograma su jednake: \( AD = BC \) i \( AB = CD \). Kako je dato \( AD = BC = 1 \), to je u skladu. Označimo nepoznatu stranicu sa \( a \):</p>
+      <div class="math-block">\[ |AB| = |CD| = a \]</div>
+      <p>Imamo dve dijagonale: \( BD = 1 \) (kratka) i \( AC = 2 \) (duga).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto \( AD \) i \( BC \) moraju biti naspramne stranice?</summary>
+          <div class="detail-content"><p>U oznaci \( ABCD \) idemo redom oko paralelograma: stranice su \( AB,\; BC,\; CD,\; DA \). Naspramne stranice su one bez zajedničkog temena: \( AB \leftrightarrow CD \) i \( BC \leftrightarrow AD \). Pošto je \( AD = BC = 1 \), to su upravo naspramne stranice.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Primenimo paralelogramsku identičnost</h3>
+      <p>Za bilo koji paralelogram važi:</p>
+      <div class="math-block">\[ |AC|^2 + |BD|^2 = 2\left(|AB|^2 + |AD|^2\right) \]</div>
+      <p>Uvrstimo poznate vrednosti:</p>
+      <div class="math-block">\[ 2^2 + 1^2 = 2\bigl(a^2 + 1^2\bigr) \;\;\Longrightarrow\;\; 5 = 2a^2 + 2 \]</div>
+      <p>Odatle:</p>
+      <div class="math-block">\[ a^2 = \frac{3}{2}, \qquad a = \frac{\sqrt{6}}{2} \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: odakle dolazi paralelogramska identičnost?</summary>
+          <div class="detail-content"><p>Iz teoreme kosinusa primenjene na dva trougla \( ABD \) i \( ABC \). U trouglu \( ABD \): \( BD^2 = AB^2 + AD^2 - 2\,AB\,AD\,\cos\alpha \). U trouglu \( ABC \): \( AC^2 = AB^2 + BC^2 - 2\,AB\,BC\,\cos(\pi - \alpha) = AB^2 + BC^2 + 2\,AB\,BC\,\cos\alpha \). Sabiranjem (uz \( BC = AD \)) članovi sa \( \cos\alpha \) se ponište: \( BD^2 + AC^2 = 2(AB^2 + AD^2) \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Razdvojimo paralelogram na dva trougla</h3>
+      <p>Dijagonala \( BD \) deli paralelogram na dva podudarna trougla \( \triangle ABD \) i \( \triangle CDB \). Otuda:</p>
+      <div class="math-block">\[ P_{ABCD} = 2 \cdot P_{\triangle ABD} \]</div>
+      <p>U trouglu \( ABD \) imamo:</p>
+      <div class="math-block">\[ AD = BD = 1, \qquad AB = a = \frac{\sqrt{6}}{2} \]</div>
+      <p>Jednakost \( AD = BD \) znači da je trougao <strong>jednakokrak</strong>, pri čemu su \( AD \) i \( BD \) kraci, a \( AB \) osnovica.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Visina jednakokrakog trougla</h3>
+      <p>Spustimo visinu \( h \) iz vrha \( D \) na osnovicu \( AB \). Pošto je trougao jednakokrak, podnožje visine je tačno na sredini osnovice. Polovina osnovice iznosi:</p>
+      <div class="math-block">\[ \frac{a}{2} = \frac{\sqrt{6}}{4} \]</div>
+      <p>Po Pitagorinoj teoremi (na pola trougla — pravougli sa hipotenuzom \( AD = 1 \) i katetom \( a/2 \)):</p>
+      <div class="math-block">\[ h^2 = 1^2 - \left(\frac{\sqrt{6}}{4}\right)^2 = 1 - \frac{6}{16} = \frac{10}{16} \]</div>
+      <div class="math-block">\[ h = \frac{\sqrt{10}}{4} \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je polovina osnovice \( \sqrt{6}/4 \)?</summary>
+          <div class="detail-content"><p>Osnovica \( AB = a = \dfrac{\sqrt{6}}{2} \), pa pola toga je \( \dfrac{\sqrt{6}}{4} \). Lako se proverava: \( 2 \cdot \dfrac{\sqrt{6}}{4} = \dfrac{\sqrt{6}}{2} \). ✓</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Površina trougla i paralelograma</h3>
+      <p>Površina trougla \( ABD \):</p>
+      <div class="math-block">\[ P_{\triangle ABD} = \frac{1}{2} \cdot AB \cdot h = \frac{1}{2} \cdot \frac{\sqrt{6}}{2} \cdot \frac{\sqrt{10}}{4} = \frac{\sqrt{60}}{16} = \frac{2\sqrt{15}}{16} = \frac{\sqrt{15}}{8} \]</div>
+      <p>Konačno:</p>
+      <div class="math-block">\[ P_{ABCD} = 2 \cdot \frac{\sqrt{15}}{8} = \frac{\sqrt{15}}{4} \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Iako problem deluje preopterećeno podacima, ključni uslov \( AD = BD = 1 \) <em>spaja</em> stranicu i dijagonalu — što čini trougao \( ABD \) jednakokrakim. Tu se računi za visinu drastično pojednostavljuju: nema potrebe za kosinusnom teoremom, dovoljna je Pitagora na pola trougla. Paralelogramska identičnost (\( |AC|^2 + |BD|^2 = 2|AB|^2 + 2|AD|^2 \)) je „čarobna" formula za baš ovakve probleme — kad znaš obe dijagonale i jednu stranicu, druga sledi mehanički.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ P_{ABCD} = \frac{\sqrt{15}}{4} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( \dfrac{\sqrt{13}}{4} \)</span>
+    <span class="answer-option" data-option="B">(B) \( \dfrac{\sqrt{2}}{2} \)</span>
+    <span class="answer-option" data-option="C">(C) \( \dfrac{\sqrt{3}}{2} \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( \dfrac{\sqrt{15}}{4} \)</span>
+    <span class="answer-option" data-option="E">(E) \( 1 \)</span>
+  </div>
+  <p class="verification">Numerička provera: \( \dfrac{\sqrt{15}}{4} \approx \dfrac{3{,}873}{4} \approx 0{,}968 \) — razumna vrednost za paralelogram sa stranicama oko \( 1 \). Provera nezavisnim putem (kosinusna teorema): \( \cos(\angle DAB) = \dfrac{\sqrt{6}}{4} \), \( \sin(\angle DAB) = \dfrac{\sqrt{10}}{4} \), \( P = AB\cdot AD\cdot\sin(\angle DAB) = \dfrac{\sqrt{6}}{2}\cdot 1\cdot\dfrac{\sqrt{10}}{4} = \dfrac{\sqrt{60}}{8} = \dfrac{\sqrt{15}}{4} \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Mešanje dijagonale sa stranicom:</strong> \( AD \) je stranica, a \( BD \) je dijagonala — iako su obe jednake \( 1 \), igraju različite uloge. Konfuzija vodi na pogrešnu primenu paralelogramske identičnosti.</li>
+    <li><strong>Pogrešno tumačenje „naspramnih" stranica:</strong> u oznaci \( ABCD \) naspramne su \( AB \leftrightarrow CD \) i \( AD \leftrightarrow BC \). Lako se napravi greška ako se uzme da je \( AD \leftrightarrow CD \).</li>
+    <li><strong>Pretpostavka da je paralelogram romb:</strong> nije, jer \( AB \neq AD \) (\( \dfrac{\sqrt{6}}{2} \neq 1 \)). Romb bi imao sve stranice jednake.</li>
+    <li><strong>Korišćenje \( P = d_1 \cdot d_2 / 2 \):</strong> ova formula važi <em>samo</em> za romb (gde su dijagonale normalne), ne za opšti paralelogram. Ovde bi davala pogrešno \( 2\cdot 1/2 = 1 \) — što je pogrešan odgovor (E).</li>
+    <li><strong>Zaboraviti pomnožiti sa 2:</strong> trougao \( ABD \) ima površinu \( \dfrac{\sqrt{15}}{8} \), a paralelogram je <em>dva</em> takva trougla. Ko se zaustavi na trouglu, dobija \( \dfrac{\sqrt{15}}{8} \) (nema u opcijama, ali greška je laka).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Za isti paralelogram, izračunaj ugao između dijagonala \( AC \) i \( BD \). Da li je veći ili manji od \( 90° \)? Pokušaj i ovo: ako fiksiramo \( AD = BD = BC = 1 \) i menjamo dužinu \( AC \), za koju vrednost \( AC \) bi paralelogram postao romb? A za koju \( AC \) bi „degenerisao" (postao odsečak prave)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Ugao između dijagonala se može naći iz formule \( P = \dfrac{1}{2} d_1 d_2 \sin\varphi \), pa \( \sin\varphi = \dfrac{2P}{d_1 d_2} = \dfrac{2 \cdot \sqrt{15}/4}{2 \cdot 1} = \dfrac{\sqrt{15}}{4} \approx 0{,}968 \), tj. \( \varphi \approx 75{,}5° \) — manje od \( 90° \). Romb: dobio bi se kad bi sve stranice bile jednake, dakle \( a = 1 \). Iz paralelogramske identičnosti: \( |AC|^2 + 1 = 2(1+1) = 4 \), pa \( |AC| = \sqrt{3} \). Degeneracija: paralelogram „spljošten" znači \( |AC| \) maksimalan, što je \( |AC| = AB + BC \) ili slično — limitne vrednosti zahtevaju nejednakost trougla.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-pgram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var textC = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var warning = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = textC;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Paralelogram ABCD: AD = BC = 1, BD = 1, AC = 2', W / 2, 28);
+
+    // Compute coordinates from given data.
+    // a = AB = √6/2; cos(∠DAB) = √6/4; sin(∠DAB) = √10/4.
+    var a = Math.sqrt(6) / 2;
+    var cosA = Math.sqrt(6) / 4;
+    var sinA = Math.sqrt(10) / 4;
+
+    // Place A at origin, AB along positive x-axis.
+    var Ax = 0, Ay = 0;
+    var Bx = a, By = 0;
+    var Dx = 1 * cosA, Dy = 1 * sinA;
+    var Cx = Bx + Dx, Cy = By + Dy;
+
+    // Compute bounding box and pick scale.
+    var allX = [Ax, Bx, Cx, Dx];
+    var allY = [Ay, By, Cy, Dy];
+    var minX = Math.min.apply(null, allX);
+    var maxX = Math.max.apply(null, allX);
+    var minY = Math.min.apply(null, allY);
+    var maxY = Math.max.apply(null, allY);
+
+    var padL = 80, padR = 80, padT = 60, padB = 80;
+    var availW = W - padL - padR;
+    var availH = H - padT - padB;
+    var scale = Math.min(availW / (maxX - minX), availH / (maxY - minY)) * 0.85;
+
+    // Centering
+    var cxM = (minX + maxX) / 2;
+    var cyM = (minY + maxY) / 2;
+    function toX(x) { return W / 2 + (x - cxM) * scale; }
+    function toY(y) { return H / 2 + 10 - (y - cyM) * scale; }
+
+    // Draw filled parallelogram
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.08);
+    ctx.beginPath();
+    ctx.moveTo(toX(Ax), toY(Ay));
+    ctx.lineTo(toX(Bx), toY(By));
+    ctx.lineTo(toX(Cx), toY(Cy));
+    ctx.lineTo(toX(Dx), toY(Dy));
+    ctx.closePath();
+    ctx.fill();
+
+    // Draw diagonals (dashed)
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 1.8;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(toX(Ax), toY(Ay));
+    ctx.lineTo(toX(Cx), toY(Cy));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(toX(Bx), toY(By));
+    ctx.lineTo(toX(Dx), toY(Dy));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Sides — bold
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(toX(Ax), toY(Ay));
+    ctx.lineTo(toX(Bx), toY(By));
+    ctx.lineTo(toX(Cx), toY(Cy));
+    ctx.lineTo(toX(Dx), toY(Dy));
+    ctx.closePath();
+    ctx.stroke();
+
+    // Tick marks for equal sides AD and BC (one tick each)
+    function midpoint(x1, y1, x2, y2) { return { x: (x1+x2)/2, y: (y1+y2)/2 }; }
+    function perpendicular(x1, y1, x2, y2, len) {
+      var dx = x2 - x1, dy = y2 - y1;
+      var L = Math.hypot(dx, dy);
+      return { px: -dy/L*len, py: dx/L*len };
+    }
+    function drawTick(x1, y1, x2, y2) {
+      var m = midpoint(toX(x1), toY(y1), toX(x2), toY(y2));
+      var p = perpendicular(toX(x1), toY(y1), toX(x2), toY(y2), 6);
+      ctx.beginPath();
+      ctx.moveTo(m.x - p.px, m.y - p.py);
+      ctx.lineTo(m.x + p.px, m.y + p.py);
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+    drawTick(Ax, Ay, Dx, Dy);
+    drawTick(Bx, By, Cx, Cy);
+
+    // Tick mark for diagonal BD (single - same length 1 as sides AD, BC)
+    drawTick(Bx, By, Dx, Dy);
+
+    // Vertices
+    ctx.fillStyle = textC;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    function dot(x, y, label, dx, dy) {
+      ctx.fillStyle = textC;
+      ctx.beginPath();
+      ctx.arc(toX(x), toY(y), 5, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.fillStyle = textC;
+      ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx.fillText(label, toX(x) + dx, toY(y) + dy);
+    }
+    dot(Ax, Ay, 'A', -18, 8);
+    dot(Bx, By, 'B', 8, 18);
+    dot(Cx, Cy, 'C', 8, -8);
+    dot(Dx, Dy, 'D', -18, -8);
+
+    // Side labels
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = primary;
+    ctx.textAlign = 'center';
+
+    // AD label (left side)
+    var mAD = midpoint(toX(Ax), toY(Ay), toX(Dx), toY(Dy));
+    ctx.fillText('AD = 1', mAD.x - 30, mAD.y);
+
+    // BC label (right side)
+    var mBC = midpoint(toX(Bx), toY(By), toX(Cx), toY(Cy));
+    ctx.fillText('BC = 1', mBC.x + 32, mBC.y);
+
+    // AB label (bottom)
+    var mAB = midpoint(toX(Ax), toY(Ay), toX(Bx), toY(By));
+    ctx.fillStyle = warning;
+    ctx.fillText('AB = a = √6/2', mAB.x, mAB.y + 22);
+
+    // CD label (top)
+    var mCD = midpoint(toX(Cx), toY(Cy), toX(Dx), toY(Dy));
+    ctx.fillStyle = warning;
+    ctx.fillText('CD = a', mCD.x, mCD.y - 10);
+
+    // Diagonal labels
+    ctx.fillStyle = secondary;
+    var mAC = midpoint(toX(Ax), toY(Ay), toX(Cx), toY(Cy));
+    ctx.fillText('AC = 2', mAC.x + 30, mAC.y - 4);
+
+    var mBD = midpoint(toX(Bx), toY(By), toX(Dx), toY(Dy));
+    ctx.fillText('BD = 1', mBD.x - 30, mBD.y - 4);
+
+    // Bottom legend
+    var legY = H - 32;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+
+    ctx.strokeStyle = primary; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(60, legY); ctx.lineTo(82, legY); ctx.stroke();
+    ctx.fillStyle = muted;
+    ctx.fillText('stranice (AD=BC=1, AB=CD=a)', 88, legY + 4);
+
+    ctx.strokeStyle = secondary; ctx.lineWidth = 1.8; ctx.setLineDash([5, 4]);
+    ctx.beginPath(); ctx.moveTo(330, legY); ctx.lineTo(352, legY); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = muted;
+    ctx.fillText('dijagonale (AC=2, BD=1)', 358, legY + 4);
+
+    // Subscript hint about parallelogram identity below legend
+    ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    ctx.fillText('AC² + BD² = 2(AB² + AD²)   →   4 + 1 = 2(a² + 1)   →   a = √6/2', W / 2, H - 12);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-tri');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var textC = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var warning = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = textC;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Trougao ABD: jednakokrak (AD = BD = 1), osnovica AB = √6/2', W / 2, 28);
+
+    // Triangle ABD coords (after computing a and angle)
+    // Use isoceles construction:  A and B on horizontal,  D above midpoint.
+    // AB = a = √6/2; halfBase = √6/4; h = √10/4.
+    var a = Math.sqrt(6) / 2;
+    var halfBase = Math.sqrt(6) / 4;
+    var h = Math.sqrt(10) / 4;
+
+    // Layout: center triangle. Use scale such that h fits.
+    var padL = 80, padR = 80, padT = 60, padB = 90;
+    var availW = W - padL - padR;
+    var availH = H - padT - padB;
+    var scale = Math.min(availW / a, availH / h) * 0.78;
+
+    var Mx = W / 2;        // midpoint of AB on canvas
+    var bottom = padT + availH * 0.85; // y of AB
+
+    function toCx(localX) { return Mx + localX * scale; }
+    function toCy(localY) { return bottom - localY * scale; }
+
+    // A = (-halfBase, 0), B = (halfBase, 0), D = (0, h), midpoint M = (0,0)
+    var Apx = toCx(-halfBase), Apy = toCy(0);
+    var Bpx = toCx(halfBase), Bpy = toCy(0);
+    var Dpx = toCx(0), Dpy = toCy(h);
+    var Mpx = toCx(0), Mpy = toCy(0);
+
+    // Filled triangle
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.1);
+    ctx.beginPath();
+    ctx.moveTo(Apx, Apy);
+    ctx.lineTo(Bpx, Bpy);
+    ctx.lineTo(Dpx, Dpy);
+    ctx.closePath();
+    ctx.fill();
+
+    // Triangle sides
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(Apx, Apy);
+    ctx.lineTo(Bpx, Bpy);
+    ctx.lineTo(Dpx, Dpy);
+    ctx.closePath();
+    ctx.stroke();
+
+    // Equal-side ticks on AD and BD
+    function tick(x1, y1, x2, y2) {
+      var mx = (x1+x2)/2, my = (y1+y2)/2;
+      var dx = x2 - x1, dy = y2 - y1;
+      var L = Math.hypot(dx, dy);
+      var px = -dy/L*7, py = dx/L*7;
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(mx - px, my - py);
+      ctx.lineTo(mx + px, my + py);
+      ctx.stroke();
+    }
+    tick(Apx, Apy, Dpx, Dpy);
+    tick(Bpx, Bpy, Dpx, Dpy);
+
+    // Height (altitude) from D to M (mid AB) - dashed accent
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(Dpx, Dpy);
+    ctx.lineTo(Mpx, Mpy);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Right-angle marker at M
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.5;
+    var sq = 10;
+    ctx.beginPath();
+    ctx.moveTo(Mpx, Mpy - sq);
+    ctx.lineTo(Mpx + sq, Mpy - sq);
+    ctx.lineTo(Mpx + sq, Mpy);
+    ctx.stroke();
+
+    // Vertices
+    function dot(x, y, label, dx, dy, color) {
+      ctx.fillStyle = color || textC;
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.fillStyle = textC;
+      ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx.fillText(label, x + dx, y + dy);
+    }
+    dot(Apx, Apy, 'A', -18, 14);
+    dot(Bpx, Bpy, 'B', 8, 14);
+    dot(Dpx, Dpy, 'D', -6, -14);
+    dot(Mpx, Mpy, 'M', -18, 18, accent);
+
+    // Side labels
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+
+    ctx.fillStyle = primary;
+    var mAD_x = (Apx + Dpx)/2, mAD_y = (Apy + Dpy)/2;
+    ctx.fillText('AD = 1', mAD_x - 32, mAD_y);
+
+    var mBD_x = (Bpx + Dpx)/2, mBD_y = (Bpy + Dpy)/2;
+    ctx.fillText('BD = 1', mBD_x + 32, mBD_y);
+
+    ctx.fillStyle = warning;
+    var mAB_x = (Apx + Bpx)/2;
+    ctx.fillText('AB = √6/2', mAB_x, Apy + 32);
+
+    // Half-base labels
+    ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('√6/4', (Apx + Mpx)/2, Apy + 18);
+    ctx.fillText('√6/4', (Bpx + Mpx)/2, Bpy + 18);
+
+    // Height label
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = accent;
+    ctx.textAlign = 'left';
+    ctx.fillText('h = √10/4', Mpx + 12, (Dpy + Mpy)/2);
+
+    // Bottom annotation: Pythagoras and area
+    ctx.fillStyle = textC;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Pitagora:  h² = 1² − (√6/4)² = 10/16   →   h = √10/4', W / 2, H - 50);
+
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+    ctx.fillText('Površina △ABD = ½ · AB · h = √15/8;   paralelogram = 2 · √15/8 = √15/4', W / 2, H - 30);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Površina paralelograma sa zadatim stranicama i obe dijagonale",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["paralelogram", "paralelogramska identičnost", "jednakokraki trougao", "Pitagorina teorema", "površina paralelograma", "dijagonale"]
+}
+BRAINSPARK_META-->

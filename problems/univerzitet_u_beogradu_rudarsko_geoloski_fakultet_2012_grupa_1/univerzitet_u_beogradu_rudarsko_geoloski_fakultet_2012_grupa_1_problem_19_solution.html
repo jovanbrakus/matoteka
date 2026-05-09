@@ -1,0 +1,399 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Zbir prvih 11 clanova GP je S_11 = 6141, kolicnik q = 2. Naci prvi clan a_1.
+
+Formula za zbir prvih n clanova GP (q != 1):
+  S_n = a_1 * (q^n - 1) / (q - 1)
+
+Za n = 11, q = 2:
+  q^11 = 2^11 = 2048
+  S_11 = a_1 * (2048 - 1) / (2 - 1) = a_1 * 2047 / 1 = 2047 * a_1
+
+Iz uslova: 2047 * a_1 = 6141
+  a_1 = 6141 / 2047 = 3
+
+Provera: prvi clanovi su 3, 6, 12, 24, 48, 96, 192, 384, 768, 1536, 3072.
+Zbir = 3 * (2048 - 1) = 3 * 2047 = 6141. ✓
+
+Tacan odgovor: (V) 3.
+
+Vizuelizacija: stubasti dijagram (bar chart) prvih 11 clanova GP koji udvostrucuju visinu, sa anotacijom da je njihov zbir 6141. Ali posto vrednost a_11 = 3072 zatupa skalu, koristimo logaritamsku skalu ili ce niski clanovi biti nevidljivi. Bolji prikaz: stubici sa logaritamskom skalom Y-ose, ili horizontalna duzinska reprezentacija sa "kumulativnim" zbirom. Najbolje: pokazati kako svaki clan duplo veci od prethodnog uz akumulirani zbir koji raste do 6141.
+
+Plan: napraviti dva grafika ili samo jedan koji prikazuje a_n (log skala) i kumulativni zbir kao crta odozgo. Ili: cumulative chart pokazuje progresiju zbira sve do 6141 sa pojedinacnim doprinosima. Posto je dovoljno samo statican, iskoristicu pristup gde su clanovi prikazani kao stubici (linearna skala), a kumulativni zbir je prikazan kao crta sa labelama 3, 9, 21, 45, 93, 189, 381, 765, 1533, 3069, 6141.
+</script>
+
+<h1 data-card="problem-title">Prvi član geometrijske progresije iz zbira</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — geometrijska progresija, zbir prvih \( n \) članova</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Ako je zbir prvih jedanaest članova geometrijske progresije \( S_{11} = 6141 \), a količnik \( q = 2 \), prvi član \( a_1 \) je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 7 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 5 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(V)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(G)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Primenićemo formulu za zbir prvih \( n \) članova geometrijske progresije, uvrstiti \( n = 11 \) i \( q = 2 \), izračunati \( 2^{11} - 1 = 2047 \), pa iz jednačine \( 2047 \cdot a_1 = 6141 \) naći \( a_1 \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule o geometrijskoj progresiji</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Opšti član</span> \( a_n = a_1 \cdot q^{\,n-1} \).</li>
+        <li><span class="formula-label">Zbir, \( q \neq 1 \)</span> \( S_n = a_1 \cdot \dfrac{q^n - 1}{q - 1} \).</li>
+        <li><span class="formula-label">Zbir, \( q = 1 \)</span> \( S_n = n \cdot a_1 \) (svi članovi jednaki).</li>
+        <li><span class="formula-label">Stepeni dvojke</span> \( 2^{10} = 1024,\ 2^{11} = 2048,\ 2^{11} - 1 = 2047 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="gp-sum" width="760" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Stubići pokazuju vrednosti članova \( a_n = 3 \cdot 2^{n-1} \), a narandžasta linija predstavlja kumulativni zbir koji se penje od \( 3 \) do \( 6141 = S_{11} \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Zapiši formulu za zbir geometrijske progresije</h3>
+      <p>Za količnik \( q \neq 1 \), zbir prvih \( n \) članova je:</p>
+      <div class="math-block">\[ S_n = a_1 \cdot \frac{q^n - 1}{q - 1}. \]</div>
+      <p>Pošto je dato \( q = 2 \neq 1 \), ova formula se primenjuje.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Uvrsti \( n = 11 \) i \( q = 2 \)</h3>
+      <p>Imenilac postaje \( q - 1 = 1 \), pa se izraz znatno pojednostavljuje:</p>
+      <div class="math-block">\[ S_{11} = a_1 \cdot \frac{2^{11} - 1}{2 - 1} = a_1 \cdot \bigl(2^{11} - 1\bigr). \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliko je \( 2^{11} \)?</summary>
+          <div class="detail-content"><p>Dvostruke vrednosti: \( 2^{10} = 1024 \), pa \( 2^{11} = 2 \cdot 1024 = 2048 \). Dakle, \( 2^{11} - 1 = 2047 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavi jednačinu po \( a_1 \)</h3>
+      <p>Zamenom \( S_{11} = 6141 \) i \( 2^{11} - 1 = 2047 \) dobijamo linearnu jednačinu:</p>
+      <div class="math-block">\[ 2047 \cdot a_1 = 6141. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunaj \( a_1 \)</h3>
+      <p>Delenjem obe strane sa \( 2047 \):</p>
+      <div class="math-block">\[ a_1 = \frac{6141}{2047} = 3. \]</div>
+      <p>Količnik se može i lako proceniti: \( 6141 \approx 3 \cdot 2047 = 6141 \), tačno.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: provera direktnim sabiranjem</summary>
+          <div class="detail-content"><p>Za \( a_1 = 3 \) i \( q = 2 \), prvih jedanaest članova je \( 3, 6, 12, 24, 48, 96, 192, 384, 768, 1536, 3072 \). Njihov zbir: \( 3 + 6 + 12 + \dots + 3072 = 6141 \). ✓</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kada je \( q = 2 \), formula \( S_n = a_1 (q^n - 1)/(q-1) \) se svodi na \( S_n = a_1 (2^n - 1) \), jer je \( q - 1 = 1 \). Zbir je tada jednostavno proizvod prvog člana i Mersenovog broja \( 2^n - 1 \). Ovaj trik vredi pamtiti — često se javlja u zadacima sa udvostručavanjem.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ a_1 = \frac{6141}{2047} = 3 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 7 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 5 \)</span>
+    <span class="answer-option correct" data-option="C">(V) \( 3 \)</span>
+    <span class="answer-option" data-option="D">(G) \( 1 \)</span>
+  </div>
+  <p class="verification">Provera: \( 3 + 6 + 12 + 24 + 48 + 96 + 192 + 384 + 768 + 1536 + 3072 = 6141 \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Korišćenje formule za <em>aritmetičku</em> progresiju \( S_n = \tfrac{n}{2}(2a_1 + (n-1)d) \) umesto geometrijske — daje pogrešan rezultat.</li>
+    <li>Računanje \( 2^{11} = 1024 \) (to je \( 2^{10} \)) — uvek je dobro pamtiti par stepena: \( 2^{10}=1024,\ 2^{11}=2048,\ 2^{12}=4096 \).</li>
+    <li>Zaboravljanje da se oduzme \( 1 \) u brojiocu: pisanje \( S_{11} = a_1 \cdot 2^{11} \) umesto \( a_1 \cdot (2^{11}-1) \).</li>
+    <li>Pogrešno tumačenje \( q = 2 \) kao da je \( q - 1 \) različito od \( 1 \) (zaboravljanje da se imenilac potpuno gubi).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Pretpostavi da je zbir <em>beskonačnog</em> broja članova GP sa istim \( a_1 = 3 \) i nekim \( |q| < 1 \) jednak istom broju \( 6141 \). Koliki bi tada bio količnik \( q \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Za beskonačnu GP sa \( |q| < 1 \) važi \( S_\infty = \dfrac{a_1}{1 - q} \). Iz \( \dfrac{3}{1-q} = 6141 \) sledi \( 1 - q = \dfrac{3}{6141} = \dfrac{1}{2047} \), pa \( q = 1 - \dfrac{1}{2047} = \dfrac{2046}{2047} \). To je broj veoma blizak jedinici, ali striktno manji, pa konvergencija postoji.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('gp-sum');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  // Members and partial sums
+  var terms = [3, 6, 12, 24, 48, 96, 192, 384, 768, 1536, 3072];
+  var sums = [];
+  var s = 0;
+  for (var i = 0; i < terms.length; i++) { s += terms[i]; sums.push(s); }
+  // sums = [3, 9, 21, 45, 93, 189, 381, 765, 1533, 3069, 6141]
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var warning   = cv('--sol-canvas-warning');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('GP: a_n = 3 · 2^(n-1),  S_11 = 6141', canvas.width / 2, 28);
+
+    // Plot dimensions
+    var marginLeft = 70;
+    var marginRight = 70;
+    var topY = 70;
+    var bottomY = 410;
+    var plotW = canvas.width - marginLeft - marginRight;
+    var plotH = bottomY - topY;
+    var n = terms.length;
+    var maxVal = 6500; // y cap covers cumulative sum 6141
+
+    // Grid lines + y ticks
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'right';
+    var yTicks = [0, 1000, 2000, 3000, 4000, 5000, 6000];
+    for (var k = 0; k < yTicks.length; k++) {
+      var v = yTicks[k];
+      var y = bottomY - (v / maxVal) * plotH;
+      ctx.beginPath();
+      ctx.moveTo(marginLeft, y);
+      ctx.lineTo(canvas.width - marginRight, y);
+      ctx.stroke();
+      ctx.fillText(String(v), marginLeft - 8, y + 4);
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(marginLeft, topY - 10);
+    ctx.lineTo(marginLeft, bottomY);
+    ctx.lineTo(canvas.width - marginRight, bottomY);
+    ctx.stroke();
+
+    // Y axis label
+    ctx.fillStyle = text;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('vrednost', marginLeft - 50, topY - 18);
+
+    // Bars: each member
+    var slot = plotW / n;
+    var barW = slot * 0.45;
+
+    for (var i = 0; i < n; i++) {
+      var cx = marginLeft + slot * i + slot / 2;
+      var bx = cx - barW / 2;
+      var bh = (terms[i] / maxVal) * plotH;
+      var by = bottomY - bh;
+
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.35);
+      ctx.fillRect(bx, by, barW, bh);
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(bx, by, barW, bh);
+
+      // Bar value (only show for larger bars to avoid clutter)
+      if (terms[i] >= 384) {
+        ctx.fillStyle = text;
+        ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(String(terms[i]), cx, by - 6);
+      }
+
+      // x-axis index label
+      ctx.fillStyle = muted;
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('a' + (i + 1), cx, bottomY + 16);
+    }
+
+    // Cumulative sum line in accent color
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    for (var j = 0; j < n; j++) {
+      var px = marginLeft + slot * j + slot / 2;
+      var py = bottomY - (sums[j] / maxVal) * plotH;
+      if (j === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+
+    // Sum dots and labels
+    ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+    for (var j2 = 0; j2 < n; j2++) {
+      var px2 = marginLeft + slot * j2 + slot / 2;
+      var py2 = bottomY - (sums[j2] / maxVal) * plotH;
+      ctx.fillStyle = highlight;
+      ctx.beginPath();
+      ctx.arc(px2, py2, 4, 0, Math.PI * 2);
+      ctx.fill();
+      // Label only the last sum
+      if (j2 === n - 1) {
+        ctx.fillStyle = highlight;
+        ctx.textAlign = 'right';
+        ctx.fillText('S₁₁ = 6141', px2 - 8, py2 - 8);
+      }
+    }
+
+    // Mark final sum with horizontal line
+    var ySum = bottomY - (6141 / maxVal) * plotH;
+    ctx.strokeStyle = cvAlpha('--sol-canvas-highlight', 0.5);
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(marginLeft, ySum);
+    ctx.lineTo(canvas.width - marginRight, ySum);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Legend
+    var legendY = bottomY + 40;
+    var legendX = marginLeft + 8;
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.35);
+    ctx.fillRect(legendX, legendY, 18, 12);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(legendX, legendY, 18, 12);
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('član a_n = 3 · 2^(n-1)', legendX + 26, legendY + 10);
+
+    var legendX2 = legendX + 220;
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(legendX2, legendY + 6);
+    ctx.lineTo(legendX2 + 18, legendY + 6);
+    ctx.stroke();
+    ctx.fillStyle = highlight;
+    ctx.beginPath();
+    ctx.arc(legendX2 + 9, legendY + 6, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.fillText('kumulativni zbir S_n', legendX2 + 26, legendY + 10);
+
+    // Formula box
+    var boxY = bottomY + 70;
+    var boxH = 70;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.15);
+    ctx.fillRect(marginLeft, boxY, plotW, boxH);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(marginLeft, boxY, plotW, boxH);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('S_11 = a_1 · (2^11 − 1) = a_1 · 2047 = 6141', marginLeft + 14, boxY + 26);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.fillText('a_1 = 6141 / 2047 = 3', marginLeft + 14, boxY + 52);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Geometrijska progresija — prvi član iz zbira (S_11 = 6141, q = 2, a_1 = 3)",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["geometrijska progresija", "zbir prvih n članova", "stepeni dvojke", "Mersenov broj"]
+}
+BRAINSPARK_META-->

@@ -1,0 +1,512 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: U aritmetickom nizu vazi a1 + a2 + ... + a6 = 30 i a1 + a5 = 12. Naci a1.
+
+Notacija: a_n = a1 + (n-1)d, gde je d razlika.
+
+Iz sume S6 = 30:
+  S6 = (n/2)(a1 + an) = (6/2)(a1 + a6) = 3(a1 + a6) = 30
+  => a1 + a6 = 10
+  => a1 + (a1 + 5d) = 10
+  => 2a1 + 5d = 10  ... (I)
+
+Iz a1 + a5 = 12:
+  a1 + (a1 + 4d) = 12
+  => 2a1 + 4d = 12  ... (II)
+
+Oduzimanje (I) - (II):
+  (2a1 + 5d) - (2a1 + 4d) = 10 - 12
+  d = -2
+
+Zamena u (II):
+  2a1 + 4(-2) = 12
+  2a1 - 8 = 12
+  2a1 = 20
+  a1 = 10
+
+Provera: niz je 10, 8, 6, 4, 2, 0.
+  Suma: 10+8+6+4+2+0 = 30. ✓
+  a1 + a5 = 10 + 2 = 12. ✓
+
+Tacan odgovor: B) 10.
+
+Vizuelizacija (staticki canvas): tacke (n, a_n) za n = 1..6 leze na pravoj
+sa nagibom d = -2. Pocinju u (1, 10) i zavrsavaju u (6, 0). Treba istaci:
+  - Aritmeticki niz = niz tacaka na pravoj.
+  - Suma S6 = povrsina trapeza visine 6 i osnovica a1=10, a6=0. (Vizuelno
+    pokazi a1 + a6 = 10 kao zbir prve i poslednje vrednosti.)
+  - a1 + a5 = 10 + 2 = 12 (par sa simetrijom oko sredine niza).
+
+Pitfalls:
+  - Pomesati formulu sume: (n/2)(a1 + an) NIJE n(a1 + an).
+  - Pretpostaviti d > 0 i dobiti pogresan a1.
+  - Brkati indekse: a5 = a1 + 4d (NIJE a1 + 5d).
+  - Resiti samo jednu jednacinu i naci samo d ili samo a1, ali ne i drugog.
+
+Mapiranje opcija: A=А=-2, B=Ц=10, C=Е=0, D=Г=2, E=И=-10. Tacno B.
+</script>
+
+<h1 data-card="problem-title">Aritmetički niz — odrediti prvi član iz date sume i para</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — aritmetički niz, suma prvih \( n \) članova, sistem dve linearne jednačine</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Ako za aritmetički niz važi \( a_1 + a_2 + a_3 + a_4 + a_5 + a_6 = 30 \) i \( a_1 + a_5 = 12 \), onda je \( a_1 \) jednako:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">suma prvih 6 članova</span>
+      <span class="given-value">\( S_6 = 30 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">zbir 1. i 5. člana</span>
+      <span class="given-value">\( a_1 + a_5 = 12 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">tip niza</span>
+      <span class="given-value">aritmetički \( a_n = a_1 + (n-1)d \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">tražimo</span>
+      <span class="given-value">\( a_1 = ? \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( -2 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 10 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 0 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( -10 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Postavićemo dve linearne jednačine po nepoznatim \( a_1 \) i \( d \): jedna iz formule za sumu \( S_6 \), druga iz uslova \( a_1 + a_5 = 12 \). Oduzimanjem dobijamo \( d \), pa zatim \( a_1 \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule za aritmetički niz</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Opšti član</span> \( a_n = a_1 + (n-1)d \), gde je \( d \) razlika.</li>
+        <li><span class="formula-label">Suma prvih \( n \)</span> \( S_n = \dfrac{n}{2}(a_1 + a_n) \) ili ekvivalentno \( S_n = \dfrac{n}{2}\bigl(2a_1 + (n-1)d\bigr) \).</li>
+        <li><span class="formula-label">Simetrija oko sredine</span> \( a_k + a_{n-k+1} \) je konstanta jednaka \( a_1 + a_n \) za bilo koje \( k \).</li>
+        <li><span class="formula-label">Geometrijski</span> Tačke \( (n, a_n) \) leže na pravoj nagiba \( d \) sa odsečkom \( a_1 - d \) na \( y \)-osi.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="seq-plot" width="760" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Tačke \( (n, a_n) \) niza \( 10, 8, 6, 4, 2, 0 \) leže na pravoj nagiba \( d = -2 \) sa odsečkom \( 12 \) (jer je \( a_n = 12 - 2n \)). Plavi „štapovi” pokazuju vrednosti članova; zlatni segment prikazuje \( a_1 + a_5 = 12 \), a zeleni \( a_1 + a_6 = 10 \) — direktno iz simetrije aritmetičkog niza.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavi sistem koristeći formulu za sumu</h3>
+      <p>Za aritmetički niz suma prvih \( n \) članova je \( S_n = \dfrac{n}{2}(a_1 + a_n) \). Za \( n = 6 \):</p>
+      <div class="math-block">\[ S_6 = \frac{6}{2}(a_1 + a_6) = 3(a_1 + a_6) = 30 \;\Longrightarrow\; a_1 + a_6 = 10. \]</div>
+      <p>Pošto je \( a_6 = a_1 + 5d \), dobijamo prvu jednačinu:</p>
+      <div class="math-block">\[ 2a_1 + 5d = 10 \quad (\text{I}) \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( S_6 = 3(a_1 + a_6) \), a ne \( 6(a_1 + a_6) \)?</summary>
+          <div class="detail-content"><p>Formula \( S_n = \tfrac{n}{2}(a_1 + a_n) \) sadrži <em>polovinu</em> broja članova. Intuicija: sparujemo \( a_1 \) sa \( a_n \), \( a_2 \) sa \( a_{n-1} \), itd.; svaki par ima isti zbir \( a_1 + a_n \), a parova ima \( n/2 \). Za \( n = 6 \) to je \( 3 \) para, otud koeficijent \( 3 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Iskoristi uslov \( a_1 + a_5 = 12 \)</h3>
+      <p>Pošto je \( a_5 = a_1 + 4d \):</p>
+      <div class="math-block">\[ a_1 + a_5 = a_1 + (a_1 + 4d) = 2a_1 + 4d = 12 \quad (\text{II}) \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliko je tačno \( a_5 \) u funkciji \( a_1 \) i \( d \)?</summary>
+          <div class="detail-content"><p>\( a_5 = a_1 + (5-1)d = a_1 + 4d \). Ne \( a_1 + 5d \) — to je \( a_6 \). Pravilo: indeks minus jedan množi \( d \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Oduzmi jednačine i nađi \( d \)</h3>
+      <p>Oduzimanjem (II) od (I) eliminišemo \( a_1 \):</p>
+      <div class="math-block">\[ (2a_1 + 5d) - (2a_1 + 4d) = 10 - 12 \;\Longrightarrow\; d = -2. \]</div>
+      <p>Niz je <em>opadajući</em> sa korakom \( -2 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Zameni \( d = -2 \) i izračunaj \( a_1 \)</h3>
+      <p>Iz (II):</p>
+      <div class="math-block">\[ 2a_1 + 4(-2) = 12 \;\Longrightarrow\; 2a_1 - 8 = 12 \;\Longrightarrow\; 2a_1 = 20 \;\Longrightarrow\; a_1 = 10. \]</div>
+      <p>Dakle <span class="result">\( a_1 = 10 \)</span>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera celog niza</h3>
+      <p>Sa \( a_1 = 10 \) i \( d = -2 \), niz je:</p>
+      <div class="math-block">\[ 10,\; 8,\; 6,\; 4,\; 2,\; 0. \]</div>
+      <p>Suma:</p>
+      <div class="math-block">\[ 10 + 8 + 6 + 4 + 2 + 0 = 30 \;\checkmark \]</div>
+      <p>Provera para:</p>
+      <div class="math-block">\[ a_1 + a_5 = 10 + 2 = 12 \;\checkmark \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Dva uslova daju dve jednačine sa istim brojem nepoznatih (\( a_1, d \)). Trik je u tome da su <em>obe</em> linearne sa istim koeficijentom uz \( a_1 \) (\( 2a_1 \)), pa jedno oduzimanje odmah <strong>poništi</strong> \( a_1 \) i otkrije \( d \). Geometrijski: nagib niza je \( d = -2 \), niz počinje u \( (1, 10) \) i pada do \( (6, 0) \).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ a_1 = 10,\;\; d = -2 \;\Longrightarrow\; \text{niz: } 10,\,8,\,6,\,4,\,2,\,0. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( -2 \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( 10 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 0 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 2 \)</span>
+    <span class="answer-option" data-option="E">(E) \( -10 \)</span>
+  </div>
+  <p class="verification">Provera: zbir \( 10+8+6+4+2+0 = 30 \) ✓; \( a_1 + a_5 = 10 + 2 = 12 \) ✓.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešna formula za sumu:</strong> pisati \( S_n = n(a_1 + a_n) \) bez polovine — daje vrednosti dvostruko veće. Tačno: \( S_n = \tfrac{n}{2}(a_1 + a_n) \).</li>
+    <li><strong>Pomeren indeks:</strong> staviti \( a_5 = a_1 + 5d \). Pravilno je \( a_5 = a_1 + 4d \) (jer je \( n - 1 = 4 \)).</li>
+    <li><strong>Pretpostavljanje znaka razlike:</strong> ako pretpostaviš \( d > 0 \), dobićeš da je \( a_5 > a_1 \), pa \( a_1 + a_5 > 2a_1 \), što suprotno onome šta je dato (zbir 12, a sredina 6 — pa \( a_3 = 6 \) je sredina niza, a niz mora opadati od 10 do 0). Ne pretpostavljaj — reši sistem.</li>
+    <li><strong>Rešavanje samo jedne jednačine:</strong> jedna jednačina sa dve nepoznate ima beskonačno rešenja. Treba <em>obe</em>.</li>
+    <li><strong>Brkanje \( S_6 \) i prosečne vrednosti:</strong> prosek je \( 30/6 = 5 \), što je \( (a_1 + a_6)/2 \). Iz toga lako: \( a_1 + a_6 = 10 \), a već smo to dobili formulom — ali nije \( a_1 \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Kada bi umesto \( a_1 + a_5 = 12 \) bilo dato samo \( a_3 = 6 \) (pored \( S_6 = 30 \)), da li bi mogao jednoznačno odrediti \( a_1 \)? Ako ne, šta nedostaje? A šta ako se zna i \( a_4 = 4 \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Iz \( S_6 = 30 \) imamo \( 2a_1 + 5d = 10 \). Iz \( a_3 = 6 \): \( a_1 + 2d = 6 \), tj. \( 2a_1 + 4d = 12 \). Oduzimanjem \( d = -2 \), pa \( a_1 = 10 \). Dakle <em>jeste</em> jednoznačno (podatak \( a_3 \) nije <em>previše</em> redundantan). Ako se uz to doda \( a_4 = 4 \), to je <em>treća</em> linearna jednačina; mora biti konzistentna (\( a_1 + 3d = 10 - 6 = 4 \) ✓), inače nema niza.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('seq-plot');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var W = canvas.width, H = canvas.height;
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Aritmetički niz: a_n = 12 − 2n  →  10, 8, 6, 4, 2, 0', W / 2, 28);
+
+    // Axes — math y-up
+    var leftPad = 70, rightPad = 30, topPad = 60, bottomPad = 130;
+    var plotW = W - leftPad - rightPad;
+    var plotH = H - topPad - bottomPad;
+
+    var nMin = 0, nMax = 7;
+    var yMin = -2, yMax = 12;
+
+    function tx(n) { return leftPad + (n - nMin) / (nMax - nMin) * plotW; }
+    function ty(y) { return topPad + (yMax - y) / (yMax - yMin) * plotH; }
+
+    // Grid lines (vertical, integer n)
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var n = nMin; n <= nMax; n++) {
+      ctx.beginPath();
+      ctx.moveTo(tx(n), topPad);
+      ctx.lineTo(tx(n), topPad + plotH);
+      ctx.stroke();
+    }
+    // Horizontal grid (every 2)
+    for (var y = yMin; y <= yMax; y += 2) {
+      ctx.beginPath();
+      ctx.moveTo(leftPad, ty(y));
+      ctx.lineTo(leftPad + plotW, ty(y));
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    // x-axis at y = 0
+    ctx.beginPath();
+    ctx.moveTo(leftPad, ty(0));
+    ctx.lineTo(leftPad + plotW, ty(0));
+    ctx.stroke();
+    // y-axis at n = 0
+    ctx.beginPath();
+    ctx.moveTo(tx(0), topPad);
+    ctx.lineTo(tx(0), topPad + plotH);
+    ctx.stroke();
+
+    // Tick labels: n = 1..6
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var ni = 1; ni <= 6; ni++) {
+      ctx.fillText(String(ni), tx(ni), ty(0) + 16);
+    }
+    // axis labels
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillText('n', tx(nMax) - 6, ty(0) - 8);
+    ctx.save();
+    ctx.translate(tx(0) - 36, ty((yMin + yMax) / 2));
+    ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center';
+    ctx.fillText('a_n', 0, 0);
+    ctx.restore();
+
+    // y tick labels
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    for (var yt = yMin; yt <= yMax; yt += 2) {
+      ctx.fillText(String(yt), tx(0) - 6, ty(yt) + 4);
+    }
+
+    // Sequence values
+    var vals = [10, 8, 6, 4, 2, 0];
+
+    // Underlying line a_n = 12 - 2n
+    ctx.strokeStyle = cvAlpha('--sol-canvas-primary', 0.6);
+    ctx.setLineDash([6, 4]);
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(tx(0.5), ty(12 - 2 * 0.5));
+    ctx.lineTo(tx(6.5), ty(12 - 2 * 6.5));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Vertical sticks from x-axis to each point + dots
+    for (var i = 0; i < 6; i++) {
+      var n2 = i + 1;
+      var v = vals[i];
+      // stick
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(tx(n2), ty(0));
+      ctx.lineTo(tx(n2), ty(v));
+      ctx.stroke();
+      // dot with glow
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.25);
+      ctx.beginPath();
+      ctx.arc(tx(n2), ty(v), 9, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = primary;
+      ctx.beginPath();
+      ctx.arc(tx(n2), ty(v), 5, 0, Math.PI * 2);
+      ctx.fill();
+      // value label
+      ctx.fillStyle = text;
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('a_' + n2 + ' = ' + v, tx(n2), ty(v) - 14);
+    }
+
+    // Highlight slope d = -2 between (1,10) and (2,8)
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4, 3]);
+    // step right
+    ctx.beginPath();
+    ctx.moveTo(tx(1), ty(10));
+    ctx.lineTo(tx(2), ty(10));
+    ctx.stroke();
+    // step down
+    ctx.beginPath();
+    ctx.moveTo(tx(2), ty(10));
+    ctx.lineTo(tx(2), ty(8));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Δn = 1', tx(1.5) - 16, ty(10) - 6);
+    ctx.fillText('d = −2', tx(2) + 8, ty(9));
+
+    // Highlight a1 + a5 = 12 with a yellow "linking" arc
+    // Draw arc above plot connecting (1, 10) and (5, 2), label at apex
+    var x1 = tx(1), y1 = ty(10);
+    var x5 = tx(5), y5 = ty(2);
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2.5;
+    ctx.setLineDash([5, 3]);
+    ctx.beginPath();
+    var apexY = topPad + 20;
+    ctx.moveTo(x1, y1);
+    ctx.bezierCurveTo(x1, apexY, x5, apexY, x5, y5);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('a₁ + a₅ = 10 + 2 = 12', (x1 + x5) / 2, apexY - 6);
+
+    // Highlight a1 + a6 = 10 with a green arc (slightly higher curve)
+    var x6 = tx(6), y6 = ty(0);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.5;
+    ctx.setLineDash([5, 3]);
+    ctx.beginPath();
+    var apexY2 = topPad + 50;
+    ctx.moveTo(x1, y1);
+    ctx.bezierCurveTo(x1, apexY2, x6, apexY2, x6, y6);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('a₁ + a₆ = 10 + 0 = 10', (x1 + x6) / 2, apexY2 + 18);
+
+    // Bottom info bar with computation summary
+    var bx = 30, by = H - 110, bw = W - 60, bh = 88;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.10);
+    ctx.fillRect(bx, by, bw, bh);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(bx, by, bw, bh);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Sistem dve linearne jednačine:', bx + 18, by + 22);
+
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillText('(I)  S₆ = 3(a₁ + a₆) = 30  →  2a₁ + 5d = 10', bx + 30, by + 42);
+    ctx.fillText('(II) a₁ + a₅ = 12              →  2a₁ + 4d = 12', bx + 30, by + 60);
+
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillText('(I) − (II):  d = −2  →  a₁ = 10', bx + 30, by + 78);
+
+    // legend (right side of bottom bar)
+    var lx = bx + bw - 200;
+    ctx.fillStyle = primary;
+    ctx.beginPath(); ctx.arc(lx, by + 28, 5, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('a_n = 12 − 2n', lx + 12, by + 32);
+
+    ctx.strokeStyle = warning;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath(); ctx.moveTo(lx - 4, by + 50); ctx.lineTo(lx + 8, by + 50); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = text;
+    ctx.fillText('a₁ + a₅ = 12', lx + 12, by + 54);
+
+    ctx.strokeStyle = accent;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath(); ctx.moveTo(lx - 4, by + 70); ctx.lineTo(lx + 8, by + 70); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = text;
+    ctx.fillText('a₁ + a₆ = 10', lx + 12, by + 74);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Aritmetički niz — naći a₁ iz S₆ = 30 i a₁ + a₅ = 12",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["aritmetički niz", "suma niza", "razlika niza", "sistem jednačina", "linearni niz"]
+}
+BRAINSPARK_META-->

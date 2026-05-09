@@ -1,0 +1,430 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Zadatak: Koliko ima trocifrenih prirodnih brojeva ciji su sve cifre razlicite i pripadaju skupu {0, 2, 4, 6, 8}?
+
+Skup ima 5 cifara: 0, 2, 4, 6, 8.
+
+Trocifren broj ima oblik abc gde:
+- a (cifra stotica) ne sme biti 0 (inace nije trocifren).
+- a, b, c su MEDJUSOBNO razliciti.
+
+Pristup 1 — direktno prebrojavanje po pozicijama:
+- Pozicija stotica (a): bira se iz {2, 4, 6, 8} (bez 0). Broj izbora: 4.
+- Pozicija desetica (b): bira se iz preostalih cifara (4 jos slobodne, jer smo iskoristili jednu od ne-nula, pa je ostalo 3 ne-nula + nula = 4). Broj izbora: 4.
+- Pozicija jedinica (c): preostale 3 cifre. Broj izbora: 3.
+Ukupno: 4 * 4 * 3 = 48.
+
+Pristup 2 — komplement:
+Broj svih razlicitih trocifrenih nizova (ukljucujuci one sto pocinju nulom) = permutacije 3 od 5 = P(5,3) = 5 * 4 * 3 = 60.
+Oduzmi one koji pocinju nulom: prva cifra fiksirana 0, sledece dve birane iz preostalih 4 razlicitih: 1 * 4 * 3 = 12.
+Broj trocifrenih = 60 - 12 = 48.
+
+Provera primera:
+- 246 (cifre 2,4,6 — sve razlicite, sve iz skupa, ne pocinje 0) — broji se.
+- 802 (cifre 8,0,2 — sve razlicite, ne pocinje 0) — broji se.
+- 480 (cifre 4,8,0 — sve razlicite, ne pocinje 0) — broji se.
+- 024 — pocinje sa 0, NIJE trocifren.
+- 244 — cifre nisu razlicite.
+
+Tacan odgovor: (E) 48.
+
+Vizualizacija: tri "kutije" za pozicije stotica, desetica, jedinica sa brojem izbora 4, 4, 3, ispod toga jednacina 4*4*3=48. Nekoliko primera ispravnih (246, 802, 480) i pogresnih (024 precrtano, 224 precrtano).
+
+Pitfalls:
+- Brojati 5*4*3 = 60 (zaboraviti uslov "ne pocinje 0").
+- Pomesati permutacije sa kombinacijama (kombinacije C(5,3) = 10, sasvim drugo).
+- Smatrati pozicije nezavisnim (5*5*5 = 125 — ali to ne postuje "razlicite cifre").
+- Greska "preostalo 4 nakon prve cifre i jos uvek 4 nakon druge" — preostale su zapravo 3 za trecu poziciju.
+</script>
+
+<h1 data-card="problem-title">Trocifreni brojevi sa različitim parnim ciframa</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika — varijacije bez ponavljanja, broj izbora po poziciji</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Trocifrenih prirodnih brojeva, čije su sve cifre različite i pripadaju skupu \( \{0, 2, 4, 6, 8\} \), ima:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 60 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 86 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 28 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 64 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 48 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Posmatramo broj kao tri pozicije: stotice, desetice, jedinice. Brojimo izbore za svaku poziciju redom, pazeći da prva cifra ne sme biti \( 0 \) (inače broj ne bi bio trocifren) i da se cifre ne ponavljaju. Pomnožimo broj mogućnosti i dobijamo odgovor; alternativno proveravamo komplementom (sve permutacije minus one koje počinju nulom).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključna pravila prebrojavanja</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Princip množenja</span> Ako se izbor pravi u \( k \) nezavisnih koraka i u \( i \)-tom koraku ima \( n_i \) mogućnosti, ukupan broj ishoda je \( n_1 \cdot n_2 \cdots n_k \).</li>
+        <li><span class="formula-label">Varijacije bez ponavljanja</span> Broj uređenih izbora \( k \) različitih elemenata iz skupa od \( n \) je \( V(n,k) = n(n-1)(n-2)\cdots(n-k+1) = \dfrac{n!}{(n-k)!} \).</li>
+        <li><span class="formula-label">Trocifren broj</span> Broj oblika \( \overline{abc} \) sa \( a \in \{1,2,\dots,9\} \), tj. cifra stotica ne sme biti \( 0 \).</li>
+        <li><span class="formula-label">Komplementarno brojanje</span> \( \#(\text{traženi}) = \#(\text{svi}) - \#(\text{loši}) \), korisno kad je „loš“ skup lakše prebrojati.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-17" width="720" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Tri „kutije“ za cifre stotica, desetica i jedinica. Brojevi iznad pokazuju koliko ima izbora na svakoj poziciji. Ispod su primeri ispravnih brojeva i jedan precrtan primer koji počinje nulom.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Razumevanje uslova</h3>
+      <p>Skup dozvoljenih cifara je \( S = \{0, 2, 4, 6, 8\} \) — pet parnih cifara. Tražimo trocifrene brojeve oblika \( \overline{abc} \) sa dva uslova:</p>
+      <ul>
+        <li>cifre \( a, b, c \) su <strong>međusobno različite</strong>;</li>
+        <li>broj je <strong>trocifren</strong>, dakle \( a \neq 0 \).</li>
+      </ul>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš \( a \neq 0 \), a \( b \) i \( c \) smeju biti \( 0 \)?</summary>
+          <div class="detail-content"><p>Zato što broj poput \( 042 \) zapravo ima samo dve cifre — to je \( 42 \). U brojevima poput \( 408 \) ili \( 480 \) nula je u sredini ili na kraju i broj je sasvim trocifren.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Broj izbora za cifru stotica</h3>
+      <p>Cifra \( a \) (stotice) ne sme biti \( 0 \), pa biramo iz skupa \( \{2, 4, 6, 8\} \).</p>
+      <div class="math-block">\[ \text{broj izbora za } a = 4. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Broj izbora za cifru desetica</h3>
+      <p>Cifra \( b \) (desetice) sme biti bilo koja cifra iz \( S \) — uključujući \( 0 \) — samo da bude različita od već izabrane \( a \). Pošto je \( |S| = 5 \), a jedna je „potrošena“:</p>
+      <div class="math-block">\[ \text{broj izbora za } b = 5 - 1 = 4. \]</div>
+      <div class="callout callout-info">
+        <p>Pažljivo: iako smo za \( a \) imali samo 4 mogućnosti (bez nule), za \( b \) opet imamo 4, jer se nula ovde „vraća u igru“ — ona nije bila izabrana.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Broj izbora za cifru jedinica</h3>
+      <p>Cifra \( c \) mora biti različita od već izabranih \( a \) i \( b \), pa preostaje:</p>
+      <div class="math-block">\[ \text{broj izbora za } c = 5 - 2 = 3. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Princip množenja</h3>
+      <p>Pošto su izbori po pozicijama nezavisni (pošto smo odgovarajuće uslove već uračunali u broj mogućnosti), množimo:</p>
+      <div class="math-block">\[ N = 4 \cdot 4 \cdot 3 = 48. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koje brojeve dobijamo, na primer, ako je \( a = 4 \) i \( b = 0 \)?</summary>
+          <div class="detail-content"><p>Onda \( c \in \{2, 6, 8\} \), dakle brojevi \( 402, 406, 408 \). Tri broja, baš kao što formula tvrdi.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera komplementom</h3>
+      <p>Drugi pristup: ukupno uređenih izbora tri različite cifre iz skupa od pet je</p>
+      <div class="math-block">\[ V(5,3) = 5 \cdot 4 \cdot 3 = 60. \]</div>
+      <p>Oduzmemo „loše“ (one koji počinju nulom). Tu je \( a = 0 \) fiksirano, a za \( b \) i \( c \) biramo dve različite od preostalih \( 4 \):</p>
+      <div class="math-block">\[ \text{loši} = 1 \cdot 4 \cdot 3 = 12. \]</div>
+      <div class="math-block">\[ N = 60 - 12 = 48. \quad \checkmark \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kad cifra \( 0 \) može biti u skupu, prva pozicija je „posebna“ jer je za nju broj izbora <em>manji</em> od veličine skupa. Trik je redosled brojanja — počnimo od pozicije sa najjačim ograničenjem (stotice), pa tek onda od pozicija sa slabijim. Tako se nula prirodno isključi iz prvog koraka, a u kasnijim koracima se „vraća“ kao validna cifra.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ N = 4 \cdot 4 \cdot 3 = 48. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 60 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 86 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 28 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 64 \)</span>
+    <span class="answer-option correct" data-option="E">(E) \( 48 \)</span>
+  </div>
+  <p class="verification">Provera: dve nezavisne metode (princip množenja po pozicijama i komplement \( 60 - 12 \)) daju isti rezultat \( 48 \). Distraktor \( 60 \) odgovara izostavljanju uslova „nije nula na početku“, dok je \( 28 \) pogrešno dobijen ako se nula uračuna i u prvi izbor i kao već potrošena.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Računati \( 5 \cdot 4 \cdot 3 = 60 \).</strong> Tako se broje i nizovi koji počinju nulom (npr. \( 024 \)), a oni nisu trocifreni.</li>
+    <li><strong>Tretirati pozicije kao nezavisne sa ponavljanjem</strong> i pisati \( 5 \cdot 5 \cdot 5 = 125 \). Time se ignoriše uslov da su sve cifre različite.</li>
+    <li><strong>Mešanje varijacija i kombinacija.</strong> Ovde je redosled bitan (\( 246 \neq 642 \)), pa je u pitanju varijacija \( V(5,3) \), a ne kombinacija \( \binom{5}{3} = 10 \).</li>
+    <li><strong>Pogrešno smanjivanje skupa</strong> — pisati \( 4 \cdot 3 \cdot 2 = 24 \) zaboravljajući da nula nije bila iskorišćena u prvom koraku, pa za desetice opet imamo \( 4 \) izbora, ne \( 3 \).</li>
+    <li><strong>Dvostruko brojanje.</strong> Ako se isti broj dobije dva puta na različite načine (na primer kroz različite „strategije“ brojanja), neki rešavači pomisle da treba sabrati — ne, treba paziti da svaki broj brojimo tačno jednom.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koliko ima <strong>parnih</strong> trocifrenih brojeva sa različitim ciframa iz skupa \( \{0, 1, 2, 3, 4, 5\} \)? (Sada skup ima i neparne cifre, a uslov „paran broj“ znači da se zadnja cifra mora završavati na \( 0, 2 \) ili \( 4 \).)</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Razdvoji slučajeve po poslednjoj cifri: (i) \( c = 0 \); (ii) \( c \in \{2, 4\} \). U slučaju (i) nema dodatnog ograničenja na \( a \), pa je \( 5 \cdot 4 \cdot 1 = 20 \). U slučaju (ii) cifra \( a \) ne sme biti \( 0 \) ni \( c \), pa za svako \( c \) imamo \( 4 \cdot 4 \cdot 1 = 16 \), tj. \( 2 \cdot 16 = 32 \). Ukupno \( 20 + 32 = 52 \).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-17');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var warning   = cv('--sol-canvas-warning');
+
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 17px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Brojanje po pozicijama: stotice · desetice · jedinice', W / 2, 18);
+
+    // Three boxes for positions
+    var boxW = 150, boxH = 110;
+    var gap = 40;
+    var totalW = 3 * boxW + 2 * gap;
+    var startX = (W - totalW) / 2;
+    var boxY = 80;
+
+    var labels = ['stotice', 'desetice', 'jedinice'];
+    var counts = [4, 4, 3];
+    var setsTxt = ['{2, 4, 6, 8}', '{0, 2, 4, 6, 8} \\ {a}', '{0, 2, 4, 6, 8} \\ {a, b}'];
+    var colors = [primary, secondary, accent];
+
+    for (var i = 0; i < 3; i++) {
+      var bx = startX + i * (boxW + gap);
+      // Box background
+      ctx.fillStyle = cvAlpha(['--sol-canvas-primary','--sol-canvas-secondary','--sol-canvas-accent'][i], 0.10);
+      ctx.fillRect(bx, boxY, boxW, boxH);
+      // Border
+      ctx.strokeStyle = colors[i];
+      ctx.lineWidth = 2.5;
+      ctx.strokeRect(bx, boxY, boxW, boxH);
+
+      // Position label (above)
+      ctx.fillStyle = text;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(labels[i], bx + boxW / 2, boxY - 8);
+
+      // Big count number inside
+      ctx.fillStyle = colors[i];
+      ctx.font = 'bold 48px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(String(counts[i]), bx + boxW / 2, boxY + boxH / 2 - 8);
+
+      // "izbora" word
+      ctx.fillStyle = muted;
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText('izbora', bx + boxW / 2, boxY + boxH - 8);
+    }
+
+    // Multiplication signs between boxes
+    ctx.fillStyle = text;
+    ctx.font = 'bold 28px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    for (var j = 0; j < 2; j++) {
+      var mx = startX + (j + 1) * boxW + j * gap + gap / 2;
+      ctx.fillText('×', mx, boxY + boxH / 2);
+    }
+
+    // Equation under boxes
+    var eqY = boxY + boxH + 40;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 22px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('4 · 4 · 3 = 48', W / 2, eqY);
+
+    // Underline result
+    var resultText = '48';
+    var resultMetrics = ctx.measureText(resultText);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    var rx = W / 2 + 60;
+    ctx.moveTo(rx - resultMetrics.width / 2 - 4, eqY + 18);
+    ctx.lineTo(rx + resultMetrics.width / 2 + 4, eqY + 18);
+    ctx.stroke();
+
+    // Examples section
+    var exY = eqY + 50;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Primeri ispravnih brojeva:', startX, exY);
+
+    // Good examples
+    var goodEx = ['246', '802', '480', '628'];
+    var gx = startX + 200;
+    ctx.font = 'bold 16px "JetBrains Mono", monospace';
+    for (var k = 0; k < goodEx.length; k++) {
+      // Green check pill
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.18);
+      ctx.fillRect(gx + k * 70, exY - 4, 56, 26);
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(gx + k * 70, exY - 4, 56, 26);
+      ctx.fillStyle = accent;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(goodEx[k], gx + k * 70 + 28, exY + 9);
+    }
+
+    // Bad examples row
+    var badY = exY + 50;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Ne broje se (ne zadovoljavaju uslove):', startX, badY);
+
+    var badEx = ['024', '244', '888'];
+    var badReason = ['počinje 0', 'ponavlja se', 'sve iste'];
+    var bx0 = startX + 230;
+    ctx.font = 'bold 16px "JetBrains Mono", monospace';
+    for (var m = 0; m < badEx.length; m++) {
+      var bxm = bx0 + m * 90;
+      // Red pill
+      ctx.fillStyle = cvAlpha('--sol-canvas-danger', 0.15);
+      ctx.fillRect(bxm, badY - 4, 56, 26);
+      ctx.strokeStyle = danger;
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(bxm, badY - 4, 56, 26);
+      ctx.fillStyle = danger;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(badEx[m], bxm + 28, badY + 9);
+      // Strike through
+      ctx.strokeStyle = danger;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(bxm + 4, badY + 9);
+      ctx.lineTo(bxm + 52, badY + 9);
+      ctx.stroke();
+      // Reason below
+      ctx.fillStyle = muted;
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.textBaseline = 'top';
+      ctx.fillText(badReason[m], bxm + 28, badY + 26);
+      ctx.font = 'bold 16px "JetBrains Mono", monospace';
+    }
+
+    // Bottom caption
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('Skup cifara: {0, 2, 4, 6, 8}. Prva pozicija isključuje 0.', W / 2, H - 10);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Trocifreni brojevi sa različitim parnim ciframa: 4·4·3 = 48",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["princip množenja", "varijacije bez ponavljanja", "trocifren broj", "parne cifre", "komplementarno brojanje"]
+}
+BRAINSPARK_META-->

@@ -1,0 +1,611 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Problem: Skup S = {t, e, h, n, i, k, a}, |S| = 7. Koliko reči dužine 3 može se napisati ako se slova MOGU ponavljati?
+
+Analiza:
+- "Reč" znači uređeni niz slova (poredak je važan: "tea" ≠ "ate").
+- Dužina reči = 3 (3 pozicije).
+- Slova se mogu ponavljati → svaka pozicija nezavisno bira jedno od 7 slova.
+
+Princip množenja (osnovni princip prebrojavanja):
+Ako se prva pozicija može popuniti na n_1 načina, druga na n_2 načina (nezavisno), …, k-ta na n_k načina, ukupno je n_1 · n_2 · … · n_k načina.
+
+Primena:
+Pozicija 1: 7 izbora.
+Pozicija 2: 7 izbora (jer se slova ponavljaju).
+Pozicija 3: 7 izbora.
+Ukupno = 7 · 7 · 7 = 7^3 = 343.
+
+Provera distraktora:
+(A) 35 = C(7,3) = 7!/(3! · 4!) — broj kombinacija (podskupova) bez ponavljanja, gde poredak nije važan. POGREŠNO jer u rečima poredak JESTE važan.
+(B) 210 = 7 · 6 · 5 = 7!/4! = V(7,3) — varijacije bez ponavljanja (poredak važan, ALI ponavljanje zabranjeno). POGREŠNO jer ponavljanje JE dozvoljeno.
+(C) 343 = 7^3 — varijacije sa ponavljanjem klase 3 iz skupa od 7 elemenata. TAČNO.
+(D) 2187 = 3^7 — pogrešna baza/eksponent, kao da imamo 3 mogućnosti i 7 pozicija (obrnuto).
+(E) 5040 = 7! — sve permutacije svih 7 slova (sve "reči" dužine 7 bez ponavljanja, što nije ovaj zadatak).
+
+Formula opšte: broj varijacija sa ponavljanjem klase k iz skupa od n elemenata je V_k^n(p) = n^k.
+Ovde: n = 7, k = 3, V_3^7(p) = 7^3 = 343.
+
+Konkretni primeri "reči" iz S:
+- "tea" (t-e-a) ✓ — sva 3 različita
+- "tee" (t-e-e) ✓ — slovo e se ponavlja
+- "ttt" (t-t-t) ✓ — sva 3 ista (DOZVOLJENO!)
+- "kit" (k-i-t) ✓
+- "akt" (a-k-t) ✓
+Reč ne mora imati smisao — bilo koji niz slova iz S dužine 3.
+
+Insight: Razlika između C(7,3) = 35, V(7,3) = 210 i V_3^7(p) = 343 ilustruje kako rastu opcije kako relaksiramo uslove:
+- Izbor podskupa (poredak nije važan, ponavljanje zabranjeno): 35
+- Uređen izbor (poredak važan, ponavljanje zabranjeno): 210 = 35 · 6 = 35 · 3!
+- Uređen sa ponavljanjem (poredak važan, ponavljanje dozvoljeno): 343
+
+Vizualni prikaz: STATIČNO drvo izbora — 3 nivoa (3 pozicije), prvi nivo se grana u 7, svaki čvor drugog nivoa se grana u 7, a zatim svaki čvor trećeg nivoa se grana u 7. Ukupno 7 · 7 · 7 = 343 listova.
+Drugi panel: 3 kvadrata (pozicije) jedan do drugog, svaki sa "7 izbora" iznad i operacija množenja.
+
+Odgovor: (C) 343.
+</script>
+
+<h1 data-card="problem-title">Broj reči dužine tri sa ponavljanjem slova</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika — princip množenja i varijacije sa ponavljanjem</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Dat je skup \( S = \{ t, e, h, n, i, k, a \} \). Koliko reči dužine tri slova se može napisati pomoću slova iz skupa \( S \), ako se slova mogu ponavljati?</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">Skup \( S \)</span>
+      <span class="given-value">\( \{ t, e, h, n, i, k, a \} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">\( |S| \)</span>
+      <span class="given-value">\( 7 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Dužina reči</span>
+      <span class="given-value">\( 3 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Ponavljanje</span>
+      <span class="given-value">dozvoljeno</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 35 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 210 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 343 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 2187 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 5040 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">„Reč" znači uređeni niz slova — poredak je važan, jer „tea" i „ate" nisu ista reč. Pošto je ponavljanje dozvoljeno, svaka od tri pozicije može <em>nezavisno</em> primiti bilo koje od \( 7 \) slova. Po osnovnom principu množenja, ukupan broj reči je \( 7 \cdot 7 \cdot 7 = 7^3 \). To je definicija varijacija sa ponavljanjem klase \( 3 \) iz skupa od \( 7 \) elemenata.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Princip množenja i tri tipa prebrojavanja</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Princip množenja</span> Ako se prva radnja može izvršiti na \( n_1 \) načina, a (nezavisno) druga na \( n_2 \) načina, …, \( k \)-ta na \( n_k \) načina, onda se sve zajedno mogu izvršiti na \( n_1 \cdot n_2 \cdots n_k \) načina.</li>
+        <li><span class="formula-label">Varijacije sa ponavljanjem</span> Broj uređenih nizova dužine \( k \) iz skupa od \( n \) elemenata sa <em>dozvoljenim</em> ponavljanjem: \( \overline{V}_{k}^{n} = n^{k} \).</li>
+        <li><span class="formula-label">Varijacije bez ponavljanja</span> Broj uređenih nizova dužine \( k \) iz skupa od \( n \) elemenata <em>bez</em> ponavljanja: \( V_{k}^{n} = \dfrac{n!}{(n-k)!} = n(n-1)(n-2)\cdots(n-k+1) \).</li>
+        <li><span class="formula-label">Kombinacije</span> Broj <em>neuređenih</em> izbora \( k \) elemenata iz skupa od \( n \) elemenata bez ponavljanja: \( \binom{n}{k} = \dfrac{n!}{k!\,(n-k)!} \).</li>
+        <li><span class="formula-label">Kratko poređenje</span> Za \( n = 7, k = 3 \): \( \binom{7}{3} = 35 \), \( V_3^7 = 7\cdot 6 \cdot 5 = 210 \), \( \overline{V}_3^7 = 7^3 = 343 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-tree" width="760" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Stablo izbora: \( 3 \) pozicije \( \times \, 7 \) mogućnosti svaka \( = 7^3 = 343 \) reči. Ispod su prikazane tri pozicije sa principom množenja.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Pažljivo pročitaj uslove zadatka</h3>
+      <p>Tri ključne reči u zadatku odlučuju koje pravilo prebrojavanja primenjujemo:</p>
+      <ul>
+        <li><strong>„Reč"</strong> — uređen niz slova. Reč „tea" se razlikuje od reči „eat" iako sadrže ista slova. Dakle, <em>poredak je važan</em>.</li>
+        <li><strong>„Dužine tri"</strong> — biramo \( 3 \) pozicije.</li>
+        <li><strong>„Slova se mogu ponavljati"</strong> — isto slovo sme da se pojavi više puta. Reči poput „aaa", „tee", „kkk" su dozvoljene.</li>
+      </ul>
+      <div class="callout callout-info"><p>Reč ne mora biti smislena — bilo koji niz dužine \( 3 \) iz skupa \( S \) se računa.</p></div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Primeni princip množenja</h3>
+      <p>Posmatrajmo tri prazne pozicije reči: \( \square \, \square \, \square \). Pošto se slova mogu ponavljati, izbor slova u jednoj poziciji <em>ne utiče</em> na izbore u drugim pozicijama.</p>
+      <ul>
+        <li>Prvu poziciju popunjavamo bilo kojim od \( 7 \) slova \( \to \mathbf{7} \) načina.</li>
+        <li>Drugu poziciju popunjavamo bilo kojim od \( 7 \) slova (uključujući i ono iz prve pozicije) \( \to \mathbf{7} \) načina.</li>
+        <li>Treću poziciju popunjavamo bilo kojim od \( 7 \) slova \( \to \mathbf{7} \) načina.</li>
+      </ul>
+      <p>Po principu množenja:</p>
+      <div class="math-block">\[ \underbrace{7}_{\text{1. mesto}} \cdot \underbrace{7}_{\text{2. mesto}} \cdot \underbrace{7}_{\text{3. mesto}} = 7^{3}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto u drugoj poziciji opet imamo \( 7 \) izbora, a ne \( 6 \)?</summary>
+          <div class="detail-content"><p>Jer ponavljanje JE dozvoljeno. Slovo izabrano u prvoj poziciji <em>ne</em> oduzima se iz „rezerve" — ono ostaje na raspolaganju i u drugoj poziciji. Da je ponavljanje zabranjeno, drugu bismo birali iz \( 6 \) preostalih slova, a treću iz \( 5 \), pa bi rezultat bio \( 7 \cdot 6 \cdot 5 = 210 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunaj \( 7^{3} \)</h3>
+      <div class="math-block">\[ 7^{3} = 7 \cdot 7 \cdot 7 = 49 \cdot 7 = 343. \]</div>
+      <p>Dakle, ukupno postoji \( \mathbf{343} \) reči dužine tri iz skupa \( S \) sa dozvoljenim ponavljanjem.</p>
+      <div class="callout callout-success"><p>Formula uopšteno: broj <em>varijacija sa ponavljanjem</em> klase \( k \) iz skupa od \( n \) elemenata je \( \overline{V}_{k}^{n} = n^{k} \). Ovde \( n = 7, k = 3 \).</p></div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera: poređenje sa distraktorima</h3>
+      <p>Tri broja iz ponuđenih opcija odgovaraju različitim, srodnim, ali pogrešnim interpretacijama:</p>
+      <div class="compare-grid">
+        <div class="compare-left">
+          <p><strong>Pogrešno: \( \binom{7}{3} = 35 \) (opcija A)</strong></p>
+          <p>Ovo bi bio broj <em>podskupova</em> od po \( 3 \) različita slova, gde poredak nije važan. Skupovi \( \{t,e,a\} \) i \( \{a,e,t\} \) su isti podskup, ali su različite reči.</p>
+        </div>
+        <div class="compare-right">
+          <p><strong>Tačno: \( 7^{3} = 343 \) (opcija C)</strong></p>
+          <p>Reči — uređeni nizovi sa ponavljanjem. \( tea, eat, ate \) su tri <em>različite</em> reči.</p>
+        </div>
+      </div>
+      <ul>
+        <li>\( 35 = \binom{7}{3} \) — kombinacije (poredak nevažan, bez ponavljanja). <span class="crossed">netačno</span></li>
+        <li>\( 210 = 7 \cdot 6 \cdot 5 = V_{3}^{7} \) — varijacije <em>bez</em> ponavljanja. <span class="crossed">netačno</span> (zadatak dozvoljava ponavljanje).</li>
+        <li>\( 343 = 7^{3} = \overline{V}_{3}^{7} \) — <span class="result">tačno</span>.</li>
+        <li>\( 2187 = 3^{7} \) — obrnut odnos baze i eksponenta. <span class="crossed">netačno</span>.</li>
+        <li>\( 5040 = 7! \) — sve permutacije svih \( 7 \) slova (reč dužine \( 7 \) bez ponavljanja). <span class="crossed">netačno</span>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Mali test razuma — koliko ima reči koje sadrže slovo \( a \)?</h3>
+      <p>Da bismo se uverili da formula radi, prebrojimo posebnu klasu reči — one koje na nekoj poziciji sadrže slovo \( a \). Po komplementu:</p>
+      <ul>
+        <li>Reči koje <em>ne sadrže</em> slovo \( a \): preostaje \( 6 \) slova, dakle \( 6^{3} = 216 \).</li>
+        <li>Reči koje sadrže slovo \( a \): \( 343 - 216 = 127 \).</li>
+      </ul>
+      <p>Brojevi su konzistentni i logični, što potvrđuje rezultat \( 343 \).</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p><strong>Tri uslova — tri formule.</strong> U kombinatorici postoje tri „nivoa slobode" pri biranju \( k \) elemenata iz \( n \): da li je <em>poredak važan</em> i da li je <em>ponavljanje dozvoljeno</em>. Za \( n = 7, k = 3 \) odgovori su: \( \binom{7}{3} = 35 \) (poredak nevažan, bez ponavljanja), \( V_3^7 = 210 \) (poredak važan, bez ponavljanja), \( \overline{V}_3^7 = 7^3 = 343 \) (poredak važan, sa ponavljanjem). Reči su <em>uređeni</em> nizovi i ponavljanje je dozvoljeno, pa je odgovor \( 7^3 = 343 \). Pažljivo čitanje teksta zadatka rešava polovinu problema!</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Mešanje reči i podskupova \( \to 35 \) (opcija A).</strong> „Reč" je <em>uređen</em> niz, dok je podskup neuređen. Bira se kombinacija \( \binom{7}{3} \) tek kada redosled nije važan, npr. „izaberi tim od \( 3 \) igrača iz grupe od \( 7 \)".</li>
+    <li><strong>Zaboravljanje da je ponavljanje dozvoljeno \( \to 210 \) (opcija B).</strong> Formula \( 7 \cdot 6 \cdot 5 \) važi kada se slova ne smeju ponavljati. Ovde slovo izabrano u prvoj poziciji <em>ostaje</em> u igri za drugu i treću.</li>
+    <li><strong>Zamena baze i eksponenta \( \to 2187 \) (opcija D).</strong> \( 3^7 = 2187 \) bi značilo „\( 7 \) pozicija, svaka sa \( 3 \) izbora". Ovde je obrnuto: \( 3 \) pozicije, svaka sa \( 7 \) izbora, pa je \( 7^3 = 343 \).</li>
+    <li><strong>Računanje \( n! \) bez razloga \( \to 5040 \) (opcija E).</strong> \( 7! = 5040 \) je broj rasporeda <em>svih</em> \( 7 \) slova u red, što odgovara reči dužine \( 7 \) bez ponavljanja — što nije pitanje.</li>
+    <li><strong>Pretpostavka da reč mora biti „smislena".</strong> Zadatak ne traži postojeće reči srpskog jezika. Niz „qwx" iz odgovarajućeg skupa, ili „aaa", „nhh", „kkk" — sve se broji.</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \overline{V}_{3}^{7} = 7^{3} = 343. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 35 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 210 \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( 343 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 2187 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 5040 \)</span>
+  </div>
+  <p class="verification">Provera: \( 7 \cdot 7 = 49 \), \( 49 \cdot 7 = 343 \). Direktno prebrojavanje preko principa množenja daje isto kao formula \( \overline{V}_{k}^{n} = n^{k} \) za \( n = 7, k = 3 \). Tačan odgovor je (C) \( 343 \).</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Pretpostavimo da i dalje koristimo skup \( S = \{ t, e, h, n, i, k, a \} \). Koliko ima reči dužine \( 3 \) u kojima se nijedno slovo ne ponavlja, ali <em>prvo</em> i <em>poslednje</em> slovo moraju biti samoglasnici (skup samoglasnika u \( S \) je \( \{ e, i, a \} \), \( 3 \) slova)? Pokušaj sam!</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p><strong>Korak 1.</strong> Prvo slovo (samoglasnik): \( 3 \) izbora iz \( \{ e, i, a \} \).</p>
+      <p><strong>Korak 2.</strong> Treće slovo (samoglasnik, različit od prvog): \( 2 \) izbora.</p>
+      <p><strong>Korak 3.</strong> Drugo slovo (bilo koje slovo iz \( S \) različito od već izabranih dva): \( 7 - 2 = 5 \) izbora.</p>
+      <p><strong>Korak 4.</strong> Po principu množenja: \( 3 \cdot 5 \cdot 2 = 30 \) reči.</p>
+      <div class="math-block">\[ 3 \cdot 2 \cdot 5 = 30. \]</div>
+      <p>Generalizacija: ako sastavni delovi reči imaju različite skupove iz kojih se biraju, princip množenja daje proizvod broja izbora po pozicijama (uz brojanje već iskorišćenih elemenata kada je ponavljanje zabranjeno).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16), g = parseInt(c.slice(3,5), 16), b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-tree');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var tertiary  = cv('--sol-canvas-tertiary');
+    var warning   = cv('--sol-canvas-warning');
+
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // ===== Title =====
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Stablo izbora: 3 pozicije, svaka sa 7 mogućnosti', W/2, 26);
+    ctx.fillStyle = muted;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillText('Ukupno: 7 · 7 · 7 = 7³ = 343 reči', W/2, 48);
+
+    // ===== Top half: tree visualization =====
+    // Tree: root (no symbol) → 7 children (level 1) → from one highlighted, 7 grandchildren (level 2)
+    //                                                                                → from one, 7 great-grandchildren (level 3)
+    // We show full fan only at level 1; partial fan at levels 2 and 3 (one branch expanded) to fit.
+
+    var letters = ['t', 'e', 'h', 'n', 'i', 'k', 'a'];
+
+    var rootX = W / 2;
+    var rootY = 80;
+    var lvl1Y = 160;
+    var lvl2Y = 250;
+    var lvl3Y = 330;
+
+    // Level 1: 7 children spread across width
+    var lvl1Spread = W - 80;
+    var lvl1StartX = 40;
+    var lvl1Step = lvl1Spread / 6; // 7 nodes
+
+    // Highlight branches: index 1 (letter 'e'), then under 'e' we expand
+    var highlightIdx1 = 1; // 'e'
+    var highlightIdx2 = 4; // under 'e', the 5th letter ('i')
+
+    // Draw root node
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.15);
+    ctx.beginPath();
+    ctx.arc(rootX, rootY, 16, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.fillText('start', rootX, rootY + 4);
+
+    // Position label "1. mesto" on the right of level 1
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('1. mesto', 8, lvl1Y + 4);
+    ctx.fillText('2. mesto', 8, lvl2Y + 4);
+    ctx.fillText('3. mesto', 8, lvl3Y + 4);
+
+    // Draw lines from root to level 1
+    for (var i = 0; i < 7; i++) {
+      var x = lvl1StartX + i * lvl1Step;
+      var isHL1 = (i === highlightIdx1);
+      ctx.strokeStyle = isHL1 ? primary : cvAlpha('--sol-canvas-axis', 0.55);
+      ctx.lineWidth = isHL1 ? 2 : 1;
+      ctx.beginPath();
+      ctx.moveTo(rootX, rootY + 16);
+      ctx.lineTo(x, lvl1Y - 14);
+      ctx.stroke();
+    }
+
+    // Draw level 1 nodes (7 letters)
+    for (var i = 0; i < 7; i++) {
+      var x = lvl1StartX + i * lvl1Step;
+      var isHL1 = (i === highlightIdx1);
+      ctx.fillStyle = isHL1 ? cvAlpha('--sol-canvas-primary', 0.25) : cvAlpha('--sol-canvas-grid', 0.9);
+      ctx.beginPath();
+      ctx.arc(x, lvl1Y, 14, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = isHL1 ? primary : muted;
+      ctx.lineWidth = isHL1 ? 2 : 1;
+      ctx.stroke();
+      ctx.fillStyle = isHL1 ? primary : text;
+      ctx.font = isHL1 ? 'bold 13px Inter, system-ui, sans-serif' : '12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(letters[i], x, lvl1Y + 4);
+    }
+
+    // Level 2: from highlighted node 'e', spread 7 children
+    var hl1X = lvl1StartX + highlightIdx1 * lvl1Step;
+    // Width of level 2 fan
+    var lvl2Spread = Math.min(W - 80, 540);
+    var lvl2CenterX = Math.max(lvl2Spread / 2 + 40, Math.min(W - lvl2Spread / 2 - 40, hl1X));
+    var lvl2StartX = lvl2CenterX - lvl2Spread / 2;
+    var lvl2Step = lvl2Spread / 6;
+
+    for (var j = 0; j < 7; j++) {
+      var x = lvl2StartX + j * lvl2Step;
+      var isHL2 = (j === highlightIdx2);
+      ctx.strokeStyle = isHL2 ? secondary : cvAlpha('--sol-canvas-axis', 0.4);
+      ctx.lineWidth = isHL2 ? 2 : 1;
+      ctx.beginPath();
+      ctx.moveTo(hl1X, lvl1Y + 14);
+      ctx.lineTo(x, lvl2Y - 14);
+      ctx.stroke();
+    }
+    // Faint indication of other (non-highlighted) level-1 nodes also producing 7 children each
+    for (var i = 0; i < 7; i++) {
+      if (i === highlightIdx1) continue;
+      var x = lvl1StartX + i * lvl1Step;
+      // small fan of 3 short tick lines suggesting branching
+      ctx.strokeStyle = cvAlpha('--sol-canvas-axis', 0.25);
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x - 8, lvl1Y + 14);
+      ctx.lineTo(x - 14, lvl2Y - 30);
+      ctx.moveTo(x, lvl1Y + 14);
+      ctx.lineTo(x, lvl2Y - 30);
+      ctx.moveTo(x + 8, lvl1Y + 14);
+      ctx.lineTo(x + 14, lvl2Y - 30);
+      ctx.stroke();
+      // Ellipsis below
+      ctx.fillStyle = muted;
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('…', x, lvl2Y - 16);
+    }
+
+    // Draw level 2 nodes
+    for (var j = 0; j < 7; j++) {
+      var x = lvl2StartX + j * lvl2Step;
+      var isHL2 = (j === highlightIdx2);
+      ctx.fillStyle = isHL2 ? cvAlpha('--sol-canvas-secondary', 0.25) : cvAlpha('--sol-canvas-grid', 0.85);
+      ctx.beginPath();
+      ctx.arc(x, lvl2Y, 13, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = isHL2 ? secondary : muted;
+      ctx.lineWidth = isHL2 ? 2 : 1;
+      ctx.stroke();
+      ctx.fillStyle = isHL2 ? secondary : text;
+      ctx.font = isHL2 ? 'bold 12px Inter, system-ui, sans-serif' : '11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(letters[j], x, lvl2Y + 4);
+    }
+
+    // Level 3: from highlighted node level-2 ('i'), spread 7 children
+    var hl2X = lvl2StartX + highlightIdx2 * lvl2Step;
+    var lvl3Spread = Math.min(W - 80, 480);
+    var lvl3CenterX = Math.max(lvl3Spread / 2 + 40, Math.min(W - lvl3Spread / 2 - 40, hl2X));
+    var lvl3StartX = lvl3CenterX - lvl3Spread / 2;
+    var lvl3Step = lvl3Spread / 6;
+
+    for (var k = 0; k < 7; k++) {
+      var x = lvl3StartX + k * lvl3Step;
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(hl2X, lvl2Y + 13);
+      ctx.lineTo(x, lvl3Y - 12);
+      ctx.stroke();
+    }
+    // Faint fans for other level-2 siblings
+    for (var j = 0; j < 7; j++) {
+      if (j === highlightIdx2) continue;
+      var x = lvl2StartX + j * lvl2Step;
+      ctx.strokeStyle = cvAlpha('--sol-canvas-axis', 0.22);
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x - 6, lvl2Y + 13);
+      ctx.lineTo(x - 10, lvl3Y - 28);
+      ctx.moveTo(x, lvl2Y + 13);
+      ctx.lineTo(x, lvl3Y - 28);
+      ctx.moveTo(x + 6, lvl2Y + 13);
+      ctx.lineTo(x + 10, lvl3Y - 28);
+      ctx.stroke();
+      ctx.fillStyle = muted;
+      ctx.font = '10px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('…', x, lvl3Y - 18);
+    }
+
+    // Draw level 3 nodes (leaves) — 7 letters
+    for (var k = 0; k < 7; k++) {
+      var x = lvl3StartX + k * lvl3Step;
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.25);
+      ctx.beginPath();
+      ctx.arc(x, lvl3Y, 12, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(letters[k], x, lvl3Y + 4);
+    }
+
+    // Highlight final word "e-i-?" example: take last leaf as 't'
+    var sampleLeafX = lvl3StartX + 0 * lvl3Step; // letter 't' position
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.arc(sampleLeafX, lvl3Y, 17, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('reč „eit"', sampleLeafX, lvl3Y + 30);
+
+    // ===== Right-side annotation: "7 grana" labels =====
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('×7', W - 14, lvl1Y - 6);
+    ctx.fillStyle = secondary;
+    ctx.fillText('×7', W - 14, lvl2Y - 6);
+    ctx.fillStyle = accent;
+    ctx.fillText('×7', W - 14, lvl3Y - 6);
+
+    // ===== Bottom half: 3 boxes "principle of multiplication" =====
+    var boxY = 380;
+    var boxH = 70;
+    var boxW = 110;
+    var gap = 30;
+    var totalW = 3 * boxW + 2 * gap + 2 * 30;  // including = signs
+    var startX = (W - totalW) / 2;
+
+    // Title for bottom panel
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Princip množenja po pozicijama:', W/2, boxY - 10);
+
+    // Three boxes
+    var labels = ['1. pozicija', '2. pozicija', '3. pozicija'];
+    var colors = [primary, secondary, accent];
+
+    for (var b = 0; b < 3; b++) {
+      var bx = startX + b * (boxW + gap + 30);
+      ctx.fillStyle = cvAlpha(['--sol-canvas-primary','--sol-canvas-secondary','--sol-canvas-accent'][b], 0.12);
+      ctx.strokeStyle = colors[b];
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(bx, boxY, boxW, boxH, 10); else ctx.rect(bx, boxY, boxW, boxH);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = muted;
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(labels[b], bx + boxW/2, boxY + 18);
+
+      ctx.fillStyle = colors[b];
+      ctx.font = 'bold 24px Inter, system-ui, sans-serif';
+      ctx.fillText('7', bx + boxW/2, boxY + 48);
+
+      ctx.fillStyle = muted;
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.fillText('izbora', bx + boxW/2, boxY + 64);
+
+      // Multiplication sign between boxes
+      if (b < 2) {
+        ctx.fillStyle = text;
+        ctx.font = 'bold 20px Inter, system-ui, sans-serif';
+        ctx.fillText('×', bx + boxW + gap/2 + 15, boxY + boxH/2 + 7);
+      }
+    }
+
+    // Equals sign and result
+    var resultX = startX + 3 * (boxW + gap + 30) - gap;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 20px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('=', resultX - 5, boxY + boxH/2 + 7);
+
+    // Final answer box
+    var ansBoxX = resultX + 18;
+    var ansBoxW = 120;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.18);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(ansBoxX, boxY, ansBoxW, boxH, 10); else ctx.rect(ansBoxX, boxY, ansBoxW, boxH);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('7³', ansBoxX + ansBoxW/2, boxY + 22);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 28px Inter, system-ui, sans-serif';
+    ctx.fillText('343', ansBoxX + ansBoxW/2, boxY + 56);
+
+    // ===== Bottom caption =====
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Primeri reči: „tea", „kit", „akt", „aaa", „eee" — sve dozvoljene jer se slova mogu ponavljati.', W/2, H - 18);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Broj reči dužine tri sa ponavljanjem slova iz skupa od sedam slova",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["varijacije-sa-ponavljanjem", "princip-mnozenja", "kombinatorika", "prebrojavanje", "uredjeni-nizovi"]
+}
+BRAINSPARK_META-->

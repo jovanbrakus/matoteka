@@ -1,0 +1,511 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Problem: Dat je skup S = {t, e, h, n, i, k, a}.
+Koliko troslovnih reči se može napisati pomoću slova iz skupa S, ako se slova ne mogu ponavljati?
+
+Korak 1 — veličina skupa:
+  S = {t, e, h, n, i, k, a} — sedam različitih slova.
+  |S| = 7.
+
+Korak 2 — model i interpretacija:
+  Tri „slota": pozicija 1, pozicija 2, pozicija 3 (za reč dužine 3).
+  Slova se NE smeju ponavljati.
+  Redosled je BITAN — „eth" i „het" su različite reči.
+  Dakle radi se o uređenom izboru 3 elementa iz 7 različitih, bez ponavljanja.
+
+  To je tačno definicija varijacija (uređena permutacija) bez ponavljanja:
+    V(n, k) = P(n, k) = n! / (n - k)!
+  ili po pravilu proizvoda: n · (n-1) · (n-2) · ... · (n-k+1) = n(n-1)·...·(n-k+1)  (k faktora).
+
+Korak 3 — pravilo proizvoda (slot po slot):
+  Pozicija 1: 7 izbora (bilo koje slovo iz S).
+  Pozicija 2: 6 izbora (jedno slovo je već iskorišćeno, ostalo ih je 6).
+  Pozicija 3: 5 izbora (dva slova već iskorišćena, ostalo ih je 5).
+
+  Ukupno: N = 7 · 6 · 5 = 42 · 5 = 210.
+
+Korak 4 — kontra-provera preko formule:
+  V(7, 3) = 7! / (7 - 3)! = 7! / 4! = (7 · 6 · 5 · 4!) / 4! = 7 · 6 · 5 = 210. ✓
+
+Korak 5 — distraktori:
+  (A) 35 = C(7, 3) — kombinacije bez ponavljanja (NEUREĐENI izbor, ali zadatak traži REČI, gde redosled bitan). ZAMKA.
+  (B) 210 = V(7, 3) = P(7, 3) — naš rezultat. ✓
+  (C) 343 = 7³ — varijacije SA ponavljanjem (ako bi se slova mogla ponavljati). ZAMKA.
+  (D) 2187 = 3^7 ili 7³ · ? — neobičan broj, verovatno nesporazum.
+       Provera: 3^7 = 2187, 7^3 = 343. 3·7^3 = 1029. Nije baš jasno odakle.
+  (E) 5040 = 7! = V(7, 7) — sve permutacije svih 7 slova. ZAMKA (zaboravljeno da se uzima samo 3).
+
+Odgovor: (B) 210.
+
+Pedagoški cilj:
+  1) Razlikovati varijacije bez ponavljanja (210), kombinacije bez ponavljanja (35),
+     varijacije sa ponavljanjem (343), i permutacije celog skupa (5040).
+  2) Pravilo proizvoda kao osnovni alat: 7 · 6 · 5 = 210.
+  3) Vizualizacija putem 3-slot dijagrama gde se brojevi izbora smanjuju (7 → 6 → 5).
+
+Vizuelno: Tri slot kućice prikazane vodoravno. Iznad svake je broj izbora (7, 6, 5).
+Ispod su sva slova {t, e, h, n, i, k, a} sa preckanim onima koja su već potrošena.
+Donji deo: prosta jednačina 7 · 6 · 5 = 210 sa istaknutim brojevima.
+Drugi deo (opcionalno): poređenje sa varijantom „sa ponavljanjem" (7 · 7 · 7 = 343).
+</script>
+
+<h1 data-card="problem-title">Troslovne reči iz skupa od 7 slova bez ponavljanja</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika — varijacije bez ponavljanja, pravilo proizvoda</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Dat je skup \( S = \{t,\, e,\, h,\, n,\, i,\, k,\, a\} \). Koliko troslovnih reči se može napisati pomoću slova iz skupa \( S \), ako se slova ne mogu ponavljati?</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">Skup</span>
+      <span class="given-value">\( S = \{t, e, h, n, i, k, a\} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">\( |S| \)</span>
+      <span class="given-value">\( 7 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Dužina reči</span>
+      <span class="given-value">\( 3 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Ponavljanje</span>
+      <span class="given-value">nije dozvoljeno</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 35 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 210 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 343 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 2187 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 5040 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">„Reč" znači <em>uređen</em> niz slova — \( eth \) i \( het \) su različite reči — pa redosled bitan. Slova se ne ponavljaju, pa je svaki put kad postavimo neko slovo, raspoloživi pul smanjen za jedan. Po pravilu proizvoda imamo \( 7 \) izbora za prvo, \( 6 \) za drugo i \( 5 \) za treće slovo. Rezultat: \( 7 \cdot 6 \cdot 5 \). Ovo je formula za varijacije bez ponavljanja \( V(7, 3) = \tfrac{7!}{4!} \) — proverićemo da daju isti broj.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Tri vrste prebrojavanja: varijacije, kombinacije, permutacije</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Pravilo proizvoda</span> Ako se postupak sastoji od \( k \) nezavisnih koraka, gde \( i \)-ti korak ima \( n_i \) ishoda, ukupan broj ishoda je \( n_1 \cdot n_2 \cdots n_k \).</li>
+        <li><span class="formula-label">Varijacije bez ponavljanja</span> Uređen izbor \( k \) različitih elemenata iz \( n \)-skupa. Redosled bitan, ponavljanje zabranjeno: \[ V(n, k) \;=\; \dfrac{n!}{(n - k)!} \;=\; n(n-1)(n-2)\cdots(n - k + 1). \] Ovde: \( V(7, 3) = \tfrac{7!}{4!} = 7 \cdot 6 \cdot 5 = 210 \).</li>
+        <li><span class="formula-label">Varijacije sa ponavljanjem</span> Uređen izbor \( k \) elemenata iz \( n \)-skupa, ponavljanje dozvoljeno: \( n^k \). Ovde bi to bilo \( 7^3 = 343 \) — to je distraktor (C).</li>
+        <li><span class="formula-label">Kombinacije bez ponavljanja</span> NEuređen izbor (podskup): \( \binom{n}{k} = \tfrac{n!}{k!(n-k)!} \). Ovde: \( \binom{7}{3} = 35 \) — to je distraktor (A) za one koji pomešaju „izabrati slova" sa „složiti reč".</li>
+        <li><span class="formula-label">Permutacije celog skupa</span> Sve uređene rasporede svih \( n \) elemenata: \( n! \). Ovde: \( 7! = 5040 \) — to je distraktor (E) ako se zaboravi da uzimamo samo \( 3 \) slova.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Slot dijagram troslovne reči">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="780" height="620"></canvas>
+  </div>
+  <p class="canvas-caption">Tri slota troslovne reči. Pri popunjavanju levo na desno, „pul" raspoloživih slova se smanjuje za jedan (slovo iskorišćeno na poziciji \( i \) ne sme se ponoviti). Stoga \( 7 \to 6 \to 5 \) izbora po pravilu proizvoda. Donji deo poredi varijantu <em>bez</em> ponavljanja (\( 210 \)) sa varijantom <em>sa</em> ponavljanjem (\( 343 \)) — razlika je suštinska za odabir tačnog odgovora.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Šta je „reč"? — uređen niz slova</h3>
+      <p>U kombinatorici, „reč dužine \( k \) iz skupa \( S \)" znači <em>uređen niz</em> od \( k \) slova, tj. uređena \( k \)-torka. Na primer, iz skupa \( S \) imamo reči \( eth, het, the, the\)..., gde je redosled važan: \( eth \neq het \).</p>
+      <p>Pošto reč ima dužinu \( 3 \), tražimo broj uređenih trojki \( (d_1, d_2, d_3) \) sa slovima iz \( S \), bez ponavljanja.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto „nije uređeno" ovde nije ispravno?</summary>
+          <div class="detail-content"><p>Ako bismo brojali samo <em>podskupove</em> od po tri slova (gde \( \{e, t, h\} \) i \( \{h, t, e\} \) jesu isti podskup), dobili bismo \( \binom{7}{3} = 35 \) — što jeste distraktor (A). Ali zadatak govori o „rečima", što po definiciji znači uređene nizove. Slova \( eth, the, het, hte, teh, tha \) su <em>različite reči</em>, čak i kada koriste ista tri slova.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Brojimo izbore za svaku poziciju</h3>
+      <p>Reč ima tri pozicije: \( d_1 d_2 d_3 \). Idemo levo na desno i brojimo koliko slova možemo staviti na svaku poziciju, znajući da iskorišćena slova „izlaze iz pula".</p>
+      <ul>
+        <li><strong>\( d_1 \) (prvo slovo):</strong> bilo koje od sedam slova \( \{t, e, h, n, i, k, a\} \). <span class="result">\( 7 \) izbora</span>.</li>
+        <li><strong>\( d_2 \) (drugo slovo):</strong> ne sme biti isto kao \( d_1 \). Ostala su \( 7 - 1 = 6 \) slova. <span class="result">\( 6 \) izbora</span>.</li>
+        <li><strong>\( d_3 \) (treće slovo):</strong> ne sme biti isto kao \( d_1 \) ili \( d_2 \). Ostala su \( 7 - 2 = 5 \) slova. <span class="result">\( 5 \) izbora</span>.</li>
+      </ul>
+      <p>Svi koraci su nezavisni u smislu pravila proizvoda — kasnije pozicije ne <em>zavise od toga koja</em> slova su prethodno odabrana, samo od <em>koliko</em> ih je preostalo, i to je uvek isto.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Pravilo proizvoda — finalni račun</h3>
+      <p>Po pravilu proizvoda:</p>
+      <div class="math-block">\[ N \;=\; 7 \cdot 6 \cdot 5. \]</div>
+      <p>Računamo:</p>
+      <div class="math-block">\[ 7 \cdot 6 \;=\; 42, \qquad 42 \cdot 5 \;=\; 210. \]</div>
+      <p>Dakle <span class="result">\( N = 210 \)</span> različitih troslovnih reči bez ponavljanja.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Kontra-provera formulom za varijacije</h3>
+      <p>Standardna oznaka: broj uređenih izbora \( k \) različitih elemenata iz \( n \)-skupa je \( V(n, k) \) (varijacije bez ponavljanja). Formula:</p>
+      <div class="math-block">\[ V(n, k) \;=\; \dfrac{n!}{(n - k)!}. \]</div>
+      <p>Za \( n = 7,\, k = 3 \):</p>
+      <div class="math-block">\[ V(7, 3) \;=\; \dfrac{7!}{(7 - 3)!} \;=\; \dfrac{7!}{4!} \;=\; \dfrac{7 \cdot 6 \cdot 5 \cdot 4!}{4!} \;=\; 7 \cdot 6 \cdot 5 \;=\; 210. \;\;\checkmark \]</div>
+      <p>Oba puta isto — račun stoji.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliko bi reči bilo da se slova SMEJU ponavljati?</summary>
+          <div class="detail-content"><p>Tada bi svaka pozicija imala po \( 7 \) izbora, neovisno od ostalih: \( 7 \cdot 7 \cdot 7 = 7^3 = 343 \). To je distraktor (C). Lepa ilustracija razlike: ponavljanje dozvoljeno → \( n^k \); ponavljanje zabranjeno → \( n(n-1)\cdots(n-k+1) \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Mali sanity-check: konkretni primeri</h3>
+      <p>Da utvrdimo intuiciju, navedimo nekoliko reči koje se broje (i ne broje):</p>
+      <ul>
+        <li>\( eth \) — broji se (sve tri pozicije imaju različita slova).</li>
+        <li>\( het \) — broji se, i različita je od \( eth \).</li>
+        <li>\( tek \) — broji se.</li>
+        <li>\( ana \) — <strong>NE broji se</strong>: slovo \( a \) se ponavlja.</li>
+        <li>\( ttt \) — <strong>NE broji se</strong>: tri puta isto slovo.</li>
+      </ul>
+      <p>Reči ne moraju imati smisao u srpskom jeziku — kombinatorika broji <em>sve</em> moguće uređene trojke, pa i \( hki, nta, tan \).</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Ovaj zadatak je „rendgen" za četiri standardna pojma kombinatorike: <em>kombinacije</em> (35), <em>varijacije bez ponavljanja</em> (210, naša traženja), <em>varijacije sa ponavljanjem</em> (343), i <em>permutacije celog skupa</em> (5040). Sve četiri vrednosti su među opcijama — to nije slučajnost! Ko jasno razlikuje <em>uređeno vs. neuređeno</em> i <em>sa vs. bez ponavljanja</em>, padne tačan odgovor odmah; ko pomeša bilo šta od ta dva, padne u zamku.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Brkanje kombinacija i varijacija.</strong> \( \binom{7}{3} = 35 \) (opcija A) broji <em>podskupove</em> — ali zadatak traži <em>reči</em>, gde je redosled bitan. Reči \( eth \) i \( het \) su različite, iako koriste ista tri slova.</li>
+    <li><strong>Zaboravljen uslov „bez ponavljanja".</strong> Ako se slova mogu ponavljati, dobija se \( 7^3 = 343 \) (opcija C). Treba pažljivo pročitati formulaciju zadatka.</li>
+    <li><strong>Sve permutacije celog skupa.</strong> \( 7! = 5040 \) (opcija E) je broj rasporeda <em>svih sedam</em> slova u liniji. Ali tražimo samo trolslovne reči, ne sedmoslovne.</li>
+    <li><strong>Greška u množenju.</strong> \( 7 \cdot 6 \cdot 5 \) može se brzo: \( 7 \cdot 6 = 42 \), zatim \( 42 \cdot 5 = 210 \). Ne \( 42 \cdot 5 = 200 \) ili \( 250 \).</li>
+    <li><strong>Mešanje slova sa cifrom \( 0 \) na vodećoj poziciji.</strong> U zadacima sa brojevima često postoji ograničenje da prva cifra ne sme biti \( 0 \) — ovde takvo ograničenje ne postoji jer se radi o slovima abecede. Sva sedma slova su u pulu za sve tri pozicije.</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ N \;=\; V(7, 3) \;=\; 7 \cdot 6 \cdot 5 \;=\; 210. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 35 \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( 210 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 343 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 2187 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 5040 \)</span>
+  </div>
+  <p class="verification">Provera formulom: \( V(7, 3) = \tfrac{7!}{4!} = \tfrac{5040}{24} = 210 \) ✓. Sanity-check distraktora: \( \binom{7}{3} = 35 \) (opcija A — kombinacije, neuređeno), \( 7^3 = 343 \) (opcija C — sa ponavljanjem), \( 7! = 5040 \) (opcija E — sve permutacije sedam slova).</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koliko troslovnih reči iz istog skupa \( S = \{t, e, h, n, i, k, a\} \) sadrži <em>tačno jedan samoglasnik</em> (samoglasnici su \( e, i, a \)), bez ponavljanja slova? A koliko ako se dozvoli ponavljanje?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p><strong>Bez ponavljanja:</strong> Imamo \( 3 \) samoglasnika i \( 4 \) suglasnika \( (t, h, n, k) \). Biramo: poziciju samoglasnika \( \binom{3}{1} = 3 \) (od tri pozicije), zatim koji samoglasnik \( 3 \), zatim na preostale dve pozicije po dva različita suglasnika u redosledu \( 4 \cdot 3 = 12 \). Ukupno: \( 3 \cdot 3 \cdot 12 = 108 \). <strong>Sa ponavljanjem:</strong> izbor pozicije za samoglasnik \( 3 \), izbor samoglasnika \( 3 \), za preostale dve pozicije svaki suglasnik (sa ponavljanjem) \( 4 \cdot 4 = 16 \). Ukupno: \( 3 \cdot 3 \cdot 16 = 144 \). Razlika između varijanata pokazuje koliko je „bez ponavljanja" jača restrikcija od izgleda.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+    var danger    = cv('--sol-canvas-danger');
+
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // ===== Title =====
+    ctx.fillStyle = text;
+    ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Tri slota — varijacije bez ponavljanja', W / 2, 30);
+
+    // =================================================================
+    // SLOTS — three boxes side by side
+    // =================================================================
+    var letters = ['t', 'e', 'h', 'n', 'i', 'k', 'a'];
+    var slotW = 200;
+    var slotH = 110;
+    var startY = 70;
+    var totalSlotsW = 3 * slotW + 2 * 24;
+    var startX = (W - totalSlotsW) / 2;
+
+    // Choices per slot
+    var choices = [7, 6, 5];
+    // Used letters per step (for visualization): step i has used i letters (the first i in our example)
+    // We'll just show: slot 1 — all 7 chips active; slot 2 — first chip crossed; slot 3 — first 2 chips crossed.
+
+    var positionLabels = ['d₁', 'd₂', 'd₃'];
+    var positionDesc = ['1. slovo', '2. slovo', '3. slovo'];
+
+    for (var i = 0; i < 3; i++) {
+      var sx = startX + i * (slotW + 24);
+
+      // Slot box
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 2.5;
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.10);
+      ctx.fillRect(sx, startY, slotW, slotH);
+      ctx.strokeRect(sx, startY, slotW, slotH);
+
+      // Position label
+      ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+      ctx.fillStyle = text;
+      ctx.textAlign = 'center';
+      ctx.fillText(positionLabels[i], sx + slotW / 2, startY + 30);
+
+      // Sub label
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.fillStyle = muted;
+      ctx.fillText(positionDesc[i], sx + slotW / 2, startY + 50);
+
+      // Number of choices in big text
+      ctx.font = 'bold 36px Inter, system-ui, sans-serif';
+      ctx.fillStyle = primary;
+      ctx.fillText(choices[i].toString(), sx + slotW / 2, startY + slotH - 18);
+
+      // "izbora" label
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.fillStyle = muted;
+      ctx.fillText('izbora', sx + slotW / 2, startY + slotH + 14);
+
+      // Letter chips below
+      var chipY = startY + slotH + 38;
+      var chipR = 14;
+      var chipSpacing = 24;
+      var chipStartX = sx + slotW / 2 - (7 * chipSpacing) / 2 + chipSpacing / 2;
+      for (var k = 0; k < 7; k++) {
+        var cx = chipStartX + k * chipSpacing;
+        var cy = chipY + chipR;
+        // For step i, first i letters are "used" (just illustrative — first i chips crossed)
+        var isUsed = (k < i);
+
+        ctx.beginPath();
+        ctx.arc(cx, cy, chipR, 0, Math.PI * 2);
+        if (isUsed) {
+          ctx.fillStyle = cvAlpha('--sol-canvas-danger', 0.18);
+          ctx.fill();
+          ctx.strokeStyle = cv('--sol-canvas-danger');
+          ctx.lineWidth = 1.8;
+          ctx.stroke();
+          // X strikethrough
+          ctx.strokeStyle = cv('--sol-canvas-danger');
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(cx - chipR + 4, cy - chipR + 4);
+          ctx.lineTo(cx + chipR - 4, cy + chipR - 4);
+          ctx.moveTo(cx + chipR - 4, cy - chipR + 4);
+          ctx.lineTo(cx - chipR + 4, cy + chipR - 4);
+          ctx.stroke();
+        } else {
+          ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.18);
+          ctx.fill();
+          ctx.strokeStyle = cv('--sol-canvas-accent');
+          ctx.lineWidth = 1.8;
+          ctx.stroke();
+        }
+        // Letter text
+        ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+        ctx.fillStyle = isUsed ? cv('--sol-canvas-danger') : cv('--sol-canvas-text');
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(letters[k], cx, cy);
+        ctx.textBaseline = 'alphabetic';
+      }
+
+      // Multiplication dot between slots
+      if (i < 2) {
+        ctx.font = 'bold 32px Inter, system-ui, sans-serif';
+        ctx.fillStyle = secondary;
+        ctx.textAlign = 'center';
+        ctx.fillText('·', sx + slotW + 12, startY + slotH / 2 + 12);
+      }
+    }
+
+    // =================================================================
+    // EQUATION 7 · 6 · 5 = 210
+    // =================================================================
+    var eqY = startY + slotH + 130;
+
+    ctx.font = 'bold 26px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+
+    var parts = [
+      { txt: '7', color: cv('--sol-canvas-primary') },
+      { txt: '·', color: cv('--sol-canvas-text') },
+      { txt: '6', color: cv('--sol-canvas-primary') },
+      { txt: '·', color: cv('--sol-canvas-text') },
+      { txt: '5', color: cv('--sol-canvas-primary') },
+      { txt: '=', color: cv('--sol-canvas-text') },
+      { txt: '210', color: cv('--sol-canvas-accent') }
+    ];
+
+    // Center it
+    var totalW = 0;
+    for (var p = 0; p < parts.length; p++) {
+      totalW += ctx.measureText(parts[p].txt).width + 16;
+    }
+    totalW -= 16;
+    var px = W / 2 - totalW / 2;
+    for (var p = 0; p < parts.length; p++) {
+      ctx.fillStyle = parts[p].color;
+      ctx.textAlign = 'left';
+      ctx.fillText(parts[p].txt, px, eqY);
+      px += ctx.measureText(parts[p].txt).width + 16;
+    }
+
+    // =================================================================
+    // COMPARISON: with vs without repetition
+    // =================================================================
+    var compY = eqY + 50;
+
+    // Subtitle
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.fillText('Poređenje: sa ponavljanjem vs bez ponavljanja', W / 2, compY);
+
+    // Two boxes
+    var boxW = 280;
+    var boxH = 90;
+    var boxGap = 60;
+    var box1X = W / 2 - boxW - boxGap / 2;
+    var box2X = W / 2 + boxGap / 2;
+    var boxY = compY + 18;
+
+    // Box 1: WITHOUT repetition (correct)
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.12);
+    ctx.fillRect(box1X, boxY, boxW, boxH);
+    ctx.strokeRect(box1X, boxY, boxW, boxH);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Bez ponavljanja  ✓', box1X + boxW / 2, boxY + 22);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.fillText('V(7,3) = 7 · 6 · 5', box1X + boxW / 2, boxY + 42);
+    ctx.font = 'bold 24px Inter, system-ui, sans-serif';
+    ctx.fillStyle = accent;
+    ctx.fillText('210', box1X + boxW / 2, boxY + 75);
+
+    // Box 2: WITH repetition (distractor)
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2;
+    ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.10);
+    ctx.fillRect(box2X, boxY, boxW, boxH);
+    ctx.strokeRect(box2X, boxY, boxW, boxH);
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Sa ponavljanjem (distraktor C)', box2X + boxW / 2, boxY + 22);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.fillText('7³ = 7 · 7 · 7', box2X + boxW / 2, boxY + 42);
+    ctx.font = 'bold 24px Inter, system-ui, sans-serif';
+    ctx.fillStyle = warning;
+    ctx.fillText('343', box2X + boxW / 2, boxY + 75);
+
+    // Caption
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    ctx.fillText('U zadatku: ponavljanje NIJE dozvoljeno → leva kućica.', W / 2, H - 14);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Troslovne reči iz 7 slova bez ponavljanja: 210",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["varijacije bez ponavljanja", "pravilo proizvoda", "kombinatorika", "permutacije", "uređeni izbor"]
+}
+BRAINSPARK_META-->

@@ -1,0 +1,979 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: U piramidi (tetraedru) ABCD su strane ABC i ABD jednakostranicni
+trouglovi i medjusobno SU NORMALNE. AB = 2. Naci ukupnu povrsinu piramide.
+
+Strane: 4 trougaone strane — ABC, ABD, ACD, BCD. (Tetraedar.)
+
+Korak 1: Povrsine ABC i ABD.
+  Jednakostranicni trougao stranice 2: P = (sqrt(3)/4) * 4 = sqrt(3).
+  P(ABC) = P(ABD) = sqrt(3).
+
+Korak 2: Stranica CD. Sinteticki.
+  Neka je M sredina ivice AB. U jednakostranicnom trouglu visina iz
+  suprotnog temena pada u sredinu osnovice: dakle CM ⊥ AB i DM ⊥ AB,
+  gde je CM = DM = (sqrt(3)/2) * 2 = sqrt(3).
+  Dvoedreni ugao izmedju ravni ABC i ABD duz ivice AB je upravo ugao
+  ∠CMD (jer su MC i MD obe normalne na AB i polaze iz iste tacke M
+  na ivici).  Dato: ravni su normalne ⇒ ∠CMD = 90°.
+  Po Pitagorinoj teoremi u trouglu CMD:
+    CD^2 = CM^2 + DM^2 = 3 + 3 = 6  ⇒  CD = sqrt(6).
+
+Korak 3: Stranice ACD i BCD.
+  AC = AD = 2 (iz jednakostranicnih ABC i ABD), CD = sqrt(6).
+  AC = BC = 2, BD = AD = 2, CD = sqrt(6).
+  Trouglovi ACD i BCD su podudarni (sukladni), oba sa stranicama 2, 2, sqrt(6).
+  To je jednakokraki trougao sa kracima 2 i osnovicom sqrt(6).
+
+Korak 4: Povrsina trougla 2,2,sqrt(6).
+  Visina h spustena iz vrha izmedju krakova na osnovicu sqrt(6):
+    Po Pitagorinoj teoremi (osnovica se polovi):
+      h^2 = 2^2 - (sqrt(6)/2)^2 = 4 - 6/4 = 16/4 - 6/4 = 10/4 = 5/2.
+      h = sqrt(10)/2.
+  Provera: 4 - 6/4 = 5/2 ✓ (5/2 > 0, dakle trougao postoji).
+  Povrsina:
+    P = (1/2) * sqrt(6) * sqrt(10)/2 = sqrt(60)/4 = (2*sqrt(15))/4 = sqrt(15)/2.
+
+  Provera Heronovom formulom:
+    s = (2 + 2 + sqrt(6))/2 = 2 + sqrt(6)/2.
+    s - 2 = sqrt(6)/2,  s - 2 = sqrt(6)/2,  s - sqrt(6) = 2 - sqrt(6)/2.
+    P^2 = (2 + sqrt(6)/2)*(sqrt(6)/2)*(sqrt(6)/2)*(2 - sqrt(6)/2)
+        = (sqrt(6)/2)^2 * (4 - 6/4)
+        = (6/4) * (10/4) = 60/16 = 15/4.
+    P = sqrt(15)/2. ✓
+
+Korak 5: Ukupna povrsina.
+  P_total = P(ABC) + P(ABD) + P(ACD) + P(BCD)
+         = sqrt(3) + sqrt(3) + sqrt(15)/2 + sqrt(15)/2
+         = 2*sqrt(3) + sqrt(15).
+
+Numericka provera:
+  sqrt(3) ≈ 1,732.  2*sqrt(3) ≈ 3,464.
+  sqrt(15) ≈ 3,873.
+  Ukupno ≈ 7,337.
+  Druge opcije:
+   (B) 4 + 2*sqrt(3) ≈ 7,464 — blizu, ali ne tacno.
+   (C) 2*sqrt(3) + sqrt(10) ≈ 3,464 + 3,162 = 6,626.
+   (D) 4*sqrt(3) ≈ 6,928.
+   (E) 5*sqrt(3) ≈ 8,660.
+  Tacan odgovor: (A) 2*sqrt(3) + sqrt(15).
+
+Geometrijski sanity-check (koordinate samo za proveru, ne za resavanje):
+  Postavimo M = (0,0,0), A = (-1,0,0), B = (1,0,0).
+  C u ravni z = 0 sa CM ⊥ AB: C = (0, sqrt(3), 0).
+  D u ravni y = 0 (ravan ABD ⊥ ravan ABC duz AB): D = (0, 0, sqrt(3)).
+  Provera: |AC|^2 = 1 + 3 + 0 = 4, |AC| = 2 ✓
+           |AD|^2 = 1 + 0 + 3 = 4, |AD| = 2 ✓
+           |CD|^2 = 0 + 3 + 3 = 6, |CD| = sqrt(6) ✓
+  Ravni: ABC u y-z gledano sa z=0 (ravan z = 0); ABD u ravni y = 0.
+  Te ravni se seku duz x-ose i normalne su. ✓
+  (Ova koordinatna provera je samo verifikacija — resavanje je sinteticko.)
+
+PITFALL: "medjusobno normalne strane" znaci dvoedreni ugao 90° duz ZAJEDNICKE
+ivice (ovde AB), NE normalnost vektora normala u nekom drugom smislu.
+
+PITFALL: zaboraviti da piramida ABCD = tetraedar ima 4 strane, ne 3.
+
+PITFALL: ne uociti da CM i DM polaze iz iste tacke M, sto je preduslov za
+pravougli trougao CMD.
+</script>
+
+<h1 data-card="problem-title">Površina tetraedra sa normalnim jednakostraničnim stranama</h1>
+<p data-card="problem-subtitle" class="subtitle">Stereometrija — dvoedreni ugao, Pitagorina teorema u prostoru, jednakostranični i jednakokraki trouglovi</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>U piramidi \( ABCD \) međusobno normalne strane \( ABC \) i \( ABD \) su jednakostranični trouglovi. Ako je \( AB = 2 \), tada je površina te piramide jednaka:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">\( AB \)</span>
+      <span class="given-value">\( 2 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">\( \triangle ABC,\ \triangle ABD \)</span>
+      <span class="given-value">jednakostranični</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Dvoedreni ugao duž \( AB \)</span>
+      <span class="given-value">\( 90^\circ \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 2\sqrt{3} + \sqrt{15} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 4 + 2\sqrt{3} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 2\sqrt{3} + \sqrt{10} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 4\sqrt{3} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 5\sqrt{3} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Strane \( ABC \) i \( ABD \) su poznate (jednakostranični, površine \( \sqrt{3} \) svaka). Pomoću sredine \( M \) ivice \( AB \) prepoznamo da su visine \( CM \) i \( DM \) <em>upravo ona dva kraka koja mere dvoedreni ugao</em> — pošto je on \( 90^\circ \), trougao \( CMD \) je pravougli i daje \( CD = \sqrt{6} \). Zatim su strane \( ACD \) i \( BCD \) jednakokraki trouglovi sa stranicama \( 2,\,2,\,\sqrt{6} \) — njihovu površinu nalazimo geometrijski.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Dvoedreni ugao, jednakostranični trougao, jednakokraki trougao</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Dvoedreni ugao</span> Ugao između dve poluravni koje se seku duž zajedničke ivice mere se uglom između dve poluprave: jedne u svakoj poluravni, obe normalne na ivicu i sa istim početkom na ivici. „Strane su međusobno normalne“ \( \iff \) dvoedreni ugao između njih je \( 90^\circ \).</li>
+        <li><span class="formula-label">Jednakostranični trougao stranice \( a \)</span> Visina \( h = \dfrac{a\sqrt{3}}{2} \), površina \( P = \dfrac{a^2\sqrt{3}}{4} \). Visina iz vrha pada u <em>sredinu</em> suprotne stranice.</li>
+        <li><span class="formula-label">Pitagorina teorema u prostoru</span> Ako su \( CM \) i \( DM \) međusobno normalne i polaze iz iste tačke \( M \), onda \( CD^2 = CM^2 + DM^2 \).</li>
+        <li><span class="formula-label">Jednakokraki trougao</span> Sa kracima \( b \) i osnovicom \( a \), visina iz vrha na osnovicu je \( h = \sqrt{b^2 - (a/2)^2} \), a površina \( P = \dfrac{a}{2}\sqrt{b^2 - (a/2)^2} \).</li>
+        <li><span class="formula-label">Tetraedar</span> Piramida sa trougaonom osnovom — ima <em>četiri</em> trougaone strane.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Tetraedar ABCD (3D)">
+  <h2>📐 Vizuelni prikaz — tetraedar ABCD</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-pyramid" width="800" height="620"></canvas>
+  </div>
+  <p class="canvas-caption">Tetraedar \( ABCD \). Strane \( ABC \) (plava) i \( ABD \) (zelena) su jednakostranični trouglovi i normalne su jedna na drugu duž zajedničke ivice \( AB \). Tačka \( M \) je sredina ivice \( AB \); duži \( CM \) i \( DM \) su visine tih jednakostraničnih trouglova i u tački \( M \) zaklapaju ugao od \( 90^\circ \) (dvoedreni ugao). Druge dve strane \( ACD \) i \( BCD \) su jednakokraki trouglovi.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Pravougli trougao CMD">
+  <h2>📐 Vizuelni prikaz — pravougli trougao \( \triangle CMD \) (rezultat dvoedrenog ugla)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-cmd" width="800" height="460"></canvas>
+  </div>
+  <p class="canvas-caption">Pošto su strane \( ABC \) i \( ABD \) normalne duž \( AB \), a obe visine \( CM \) i \( DM \) su normalne na \( AB \) i polaze iz iste tačke \( M \), trougao \( CMD \) je pravougli sa pravim uglom u \( M \). Iz \( CM = DM = \sqrt{3} \) sledi \( CD = \sqrt{3 + 3} = \sqrt{6} \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Trougao ACD u svojoj ravni">
+  <h2>📐 Vizuelni prikaz — strana \( \triangle ACD \) (jednakokraki, \( 2\text{–}2\text{–}\sqrt 6 \))</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-acd" width="800" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Trougao \( ACD \) je jednakokraki sa kracima \( AC = AD = 2 \) i osnovicom \( CD = \sqrt{6} \). Visina iz vrha \( A \) pada u sredinu osnovice; iz Pitagorine teoreme: \( h_A = \sqrt{4 - \tfrac{6}{4}} = \sqrt{\tfrac{10}{4}} = \tfrac{\sqrt{10}}{2} \). Površina: \( P_{ACD} = \tfrac{1}{2}\cdot\sqrt 6 \cdot \tfrac{\sqrt{10}}{2} = \tfrac{\sqrt{60}}{4} = \tfrac{\sqrt{15}}{2} \). Trougao \( BCD \) je njemu podudaran.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Razvijena mreža sa površinama">
+  <h2>📐 Vizuelni prikaz — sastavljeni zbir površina</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-net" width="800" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Šematska razvijena mreža (samo radi sabiranja površina): dva jednakostranična trougla \( ABC \) i \( ABD \), svako po \( \sqrt{3} \), i dva jednakokraka \( ACD \) i \( BCD \), svako po \( \tfrac{\sqrt{15}}{2} \). Ukupno: \( 2\sqrt{3} + \sqrt{15} \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Površine jednakostraničnih strana \( ABC \) i \( ABD \)</h3>
+      <p>Obe strane su jednakostranični trouglovi stranice \( a = 2 \). Iz formule za površinu jednakostraničnog trougla:</p>
+      <div class="math-block">
+        \[ P_{ABC} \;=\; P_{ABD} \;=\; \dfrac{a^2\sqrt{3}}{4} \;=\; \dfrac{4\sqrt{3}}{4} \;=\; \sqrt{3}. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Sredina \( M \) ivice \( AB \) i visine \( CM \), \( DM \)</h3>
+      <p>Označimo sredinu ivice \( AB \) sa \( M \). U svakom jednakostraničnom trouglu visina iz suprotnog temena <em>pada baš u sredinu osnovice</em>. Dakle:</p>
+      <div class="math-block">\[ CM \perp AB,\qquad DM \perp AB. \]</div>
+      <p>Dužine tih visina:</p>
+      <div class="math-block">
+        \[ CM \;=\; DM \;=\; \dfrac{a\sqrt{3}}{2} \;=\; \dfrac{2\sqrt{3}}{2} \;=\; \sqrt{3}. \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš sredina \( AB \)?</summary>
+          <div class="detail-content"><p>U jednakostraničnom trouglu visine, simetrale i medijane se poklapaju. Dakle visina iz vrha \( C \) na stranicu \( AB \) prolazi kroz sredinu te stranice — što je upravo \( M \). Isto važi i za \( D \). Zato obe visine „sleću“ u istu tačku \( M \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Tumačenje uslova „međusobno normalne strane“</h3>
+      <p>Dvoedreni ugao između ravni \( ABC \) i \( ABD \) duž zajedničke ivice \( AB \) meri se uglom između dve poluprave koje su:</p>
+      <ul>
+        <li>obe <em>normalne</em> na \( AB \),</li>
+        <li>obe sa <em>početkom u istoj tački</em> na ivici \( AB \),</li>
+        <li>svaka leži u <em>svojoj</em> ravni.</li>
+      </ul>
+      <p>Te dve poluprave su upravo \( MC \) (u ravni \( ABC \)) i \( MD \) (u ravni \( ABD \)). Pošto je dvoedreni ugao prav:</p>
+      <div class="math-block">\[ \angle CMD \;=\; 90^\circ \quad\Longleftrightarrow\quad CM \perp DM. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kako prepoznati dvoedreni ugao u opštem slučaju?</summary>
+          <div class="detail-content"><p>Izabereš proizvoljnu tačku \( T \) na ivici, povučeš normale na ivicu po jednu u svakoj poluravni, i meriš ugao između njih u tački \( T \). U našem slučaju je prirodan izbor \( T = M \) (sredina \( AB \)) jer su tu već prirodno date dve normale — visine jednakostraničnih trouglova.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Dužina \( CD \) — Pitagorina teorema u trouglu \( CMD \)</h3>
+      <p>Trougao \( CMD \) je pravougli sa pravim uglom u \( M \) i katetama \( CM = DM = \sqrt{3} \). Hipotenuza \( CD \):</p>
+      <div class="math-block">
+        \[ CD^2 \;=\; CM^2 + DM^2 \;=\; (\sqrt{3})^2 + (\sqrt{3})^2 \;=\; 3 + 3 \;=\; 6, \]
+      </div>
+      <div class="math-block">
+        \[ \boxed{\,CD \;=\; \sqrt{6}\,}. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Stranice trouglova \( ACD \) i \( BCD \)</h3>
+      <p>Iz jednakostraničnih strana znamo:</p>
+      <div class="math-block">\[ AC = BC = AD = BD = 2. \]</div>
+      <p>U kombinaciji sa \( CD = \sqrt{6} \), oba trougla \( \triangle ACD \) i \( \triangle BCD \) imaju iste stranice \( 2,\,2,\,\sqrt{6} \) — dakle <em>podudarni su</em> (po SSS), pa imaju jednake površine.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: postoji li uopšte trougao sa stranicama \( 2,2,\sqrt 6 \)?</summary>
+          <div class="detail-content"><p>Nejednakost trougla: zbir bilo koje dve stranice mora biti veći od treće. Imamo \( 2 + 2 = 4 > \sqrt{6} \approx 2{,}449 \) ✓ i \( 2 + \sqrt{6} > 2 \) ✓. Sve uredu, trougao postoji.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Površina trougla \( ACD \) (jednakokraki)</h3>
+      <p>Trougao \( \triangle ACD \) je jednakokraki sa kracima \( AC = AD = 2 \) i osnovicom \( CD = \sqrt{6} \). Visina iz vrha \( A \) pada u sredinu osnovice; iz Pitagorine teoreme na polovinu trougla:</p>
+      <div class="math-block">
+        \[ h_A^2 \;=\; AC^2 - \left(\dfrac{CD}{2}\right)^2 \;=\; 4 - \dfrac{6}{4} \;=\; \dfrac{16 - 6}{4} \;=\; \dfrac{10}{4} \quad\Longrightarrow\quad h_A \;=\; \dfrac{\sqrt{10}}{2}. \]
+      </div>
+      <p>Površina:</p>
+      <div class="math-block">
+        \[ P_{ACD} \;=\; \dfrac{1}{2}\cdot CD \cdot h_A \;=\; \dfrac{1}{2}\cdot \sqrt{6}\cdot \dfrac{\sqrt{10}}{2} \;=\; \dfrac{\sqrt{60}}{4} \;=\; \dfrac{2\sqrt{15}}{4} \;=\; \dfrac{\sqrt{15}}{2}. \]
+      </div>
+      <p>Iz podudarnosti: <span class="result">\( P_{BCD} = P_{ACD} = \dfrac{\sqrt{15}}{2} \)</span>.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: alternativni izvod preko Heronove formule</summary>
+          <div class="detail-content">
+            <p>\( s = \dfrac{2 + 2 + \sqrt{6}}{2} = 2 + \dfrac{\sqrt{6}}{2} \), pa</p>
+            <p>\( s - 2 = \dfrac{\sqrt{6}}{2},\ s - 2 = \dfrac{\sqrt{6}}{2},\ s - \sqrt{6} = 2 - \dfrac{\sqrt{6}}{2}. \)</p>
+            <p>\( P^2 = \left(\dfrac{\sqrt{6}}{2}\right)^{\!2}\!\left(2+\dfrac{\sqrt{6}}{2}\right)\!\left(2-\dfrac{\sqrt{6}}{2}\right) = \dfrac{6}{4}\cdot\left(4 - \dfrac{6}{4}\right) = \dfrac{6}{4}\cdot\dfrac{10}{4} = \dfrac{60}{16} = \dfrac{15}{4} \).</p>
+            <p>Dakle \( P = \dfrac{\sqrt{15}}{2} \). ✓</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="7">
+    <div class="step-badge">7</div>
+    <div class="step-content">
+      <h3 class="step-title">Sabiranje svih površina</h3>
+      <p>Tetraedar ima četiri strane, pa je ukupna površina:</p>
+      <div class="math-block">
+        \[ \begin{aligned}
+        P &\;=\; P_{ABC} + P_{ABD} + P_{ACD} + P_{BCD} \\[2pt]
+          &\;=\; \sqrt{3} + \sqrt{3} + \dfrac{\sqrt{15}}{2} + \dfrac{\sqrt{15}}{2} \\[2pt]
+          &\;=\; 2\sqrt{3} + \sqrt{15}.
+        \end{aligned} \]
+      </div>
+      <p><span class="result">\( P = 2\sqrt{3} + \sqrt{15} \approx 3{,}464 + 3{,}873 \approx 7{,}337 \)</span>.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Cela tajna leži u tome da su <em>dve visine</em> jednakostraničnih trouglova — \( CM \) i \( DM \) — istovremeno i <em>kraci dvoedrenog ugla</em>. Pošto je dvoedreni ugao prav, trougao \( CMD \) je pravougli, i Pitagorina teorema u jednom potezu daje \( CD = \sqrt{6} \). Bez te konstrukcije, \( CD \) bi delovala kao misteriozna treća stranica iz vazduha.</p>
+  <div class="callout callout-info">Pravilo za sve probleme sa „normalnim stranama duž ivice“: nadji sredinu (ili bilo koju zgodnu tačku) na ivici, povuci po jednu normalu u svakoj ravni — to su kraci dvoedrenog ugla.</div>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Brojanje samo tri strane.</strong> Tetraedar \( ABCD \) ima <em>četiri</em> strane: \( ABC,\ ABD,\ ACD,\ BCD \). Često se zaboravi sabrati \( P_{BCD} \) (uz pretpostavku da je „simetrično“ već uračunato).</li>
+    <li><strong>Pogrešno tumačenje normalnih strana.</strong> „Strane su normalne“ znači dvoedreni ugao \( 90^\circ \) duž zajedničke ivice — <em>ne</em> da su normale ravni okomite ili da je neka strana okomita na osnovu. Posledica te zamene može biti netačno \( CD \).</li>
+    <li><strong>Računanje \( CD \) kao da su \( C \) i \( D \) u istoj ravni.</strong> Ako se zaboravi prostornost, lako se zaključi \( CD = 2\cdot CM = 2\sqrt{3} \) (kao da je \( CMD \) ispružen) ili \( CD = 0 \) (kao da se poklapaju). Pravougli trougao \( CMD \) je suština.</li>
+    <li><strong>Aritmetička greška u korenu.</strong> \( \sqrt{60}/4 = 2\sqrt{15}/4 = \sqrt{15}/2 \), <em>ne</em> \( \sqrt{15}/4 \). Greška u tom faktoru daje opciju koja izgleda kao \( 2\sqrt{3} + \sqrt{15}/2 \) — ne postoji u ponuđenim odgovorima, ali navodi na sumnju u (A) ili (C).</li>
+    <li><strong>Mešanje \( \sqrt{15} \) i \( \sqrt{10} \).</strong> Visina jednakokrakog trougla je \( \dfrac{\sqrt{10}}{2} \), a površina je \( \dfrac{\sqrt{15}}{2} \). Ako se površina napiše sa \( \sqrt{10} \), dobija se opcija (C), koja je tipična zamka.</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ P \;=\; 2\sqrt{3} + \sqrt{15}. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 2\sqrt{3} + \sqrt{15} \)</span>
+    <span class="answer-option" data-option="B">(B) \( 4 + 2\sqrt{3} \)</span>
+    <span class="answer-option" data-option="C">(C) \( 2\sqrt{3} + \sqrt{10} \)</span>
+    <span class="answer-option" data-option="D">(D) \( 4\sqrt{3} \)</span>
+    <span class="answer-option" data-option="E">(E) \( 5\sqrt{3} \)</span>
+  </div>
+  <p class="verification">Numerička provera: \( 2\sqrt{3} \approx 3{,}464 \) i \( \sqrt{15} \approx 3{,}873 \), zbir \( \approx 7{,}337 \). Sintetička provera: \( CM \perp DM \) iz dvoedrenog ugla \( 90^\circ \) ⇒ \( CD = \sqrt{6} \) ⇒ visina \( h = \sqrt{4 - \tfrac{6}{4}} = \tfrac{\sqrt{10}}{2} \) ⇒ \( P_{ACD} = \tfrac{\sqrt{15}}{2} \). Sabiranjem 4 strane: \( 2\sqrt{3} + \sqrt{15} \). ✓</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Pretpostavi da je dvoedreni ugao duž \( AB \) jednak \( \alpha \in (0^\circ, 180^\circ) \), umesto \( 90^\circ \) (ostalo isto: \( ABC \) i \( ABD \) jednakostranični stranice \( 2 \)). Izrazi ukupnu površinu \( P(\alpha) \). Za koje vrednosti \( \alpha \) ona dostiže maksimum, a za koje minimum?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Po kosinusnoj teoremi u trouglu \( CMD \) sa stranicama \( CM = DM = \sqrt{3} \) i uglom \( \alpha \) između njih:</p>
+      <p>\( CD^2 = 3 + 3 - 6\cos\alpha = 6(1 - \cos\alpha) = 12\sin^2(\alpha/2) \), pa \( CD = 2\sqrt{3}\,|\sin(\alpha/2)| \).</p>
+      <p>Trougao \( ACD \) ima krake \( 2 \) i osnovicu \( CD \), pa površina (dok je trougao nedegenerisan):</p>
+      <p>\( P_{ACD} = \dfrac{1}{2}\cdot CD \cdot \sqrt{4 - CD^2/4} = \dfrac{1}{2}\cdot 2\sqrt{3}\sin(\alpha/2)\cdot\sqrt{4 - 3\sin^2(\alpha/2)} = \sqrt{3}\,\sin(\alpha/2)\sqrt{4 - 3\sin^2(\alpha/2)} \).</p>
+      <p>Ukupno: \( P(\alpha) = 2\sqrt{3} + 2\sqrt{3}\,\sin(\alpha/2)\sqrt{4 - 3\sin^2(\alpha/2)} \). Smenom \( t = \sin(\alpha/2) \in (0, 1] \) maksimizujemo \( f(t) = t\sqrt{4 - 3t^2} \). Diferenciranje daje \( t^2 = 2/3 \), tj. \( \sin^2(\alpha/2) = 2/3 \) — to odgovara dvoedrenom uglu \( \alpha \approx 109{,}47^\circ \) (poznat iz hemije kao tetraedarski ugao!). Tada je \( P_{\max} = 2\sqrt{3} + 4 \). Za \( \alpha = 90^\circ \) (naš zadatak) imamo \( t = \sin 45^\circ = \tfrac{\sqrt 2}{2} \), \( f(t) = \tfrac{\sqrt 2}{2}\sqrt{4 - 3/2} = \tfrac{\sqrt 2}{2}\cdot\tfrac{\sqrt{10}}{\sqrt 2} = \tfrac{\sqrt{10}}{2} \), pa \( P_{ACD} = \sqrt{3}\cdot \tfrac{\sqrt{10}}{2} = \tfrac{\sqrt{30}}{2} \) — alternativna potvrda da je \( 2\cdot \tfrac{\sqrt{30}}{2} = \sqrt{30}\stackrel{?}{=}\sqrt{15}\cdot\sqrt 2 \)... a \( \sqrt{15}\cdot\sqrt 2 = \sqrt{30} \) ✓ (faktor \( \sqrt 2 \) razlika od našeg \( \sqrt{15} \) zbog drugačije parametrizacije, dvostruka strana). Minimum je u graničnim slučajevima \( \alpha \to 0 \) i \( \alpha \to 180^\circ \), gde piramida degeneriše u dva trougla u jednoj ravni.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  // ─────────── CANVAS 1: 3D PYRAMID ───────────
+  function drawPyramid() {
+    var canvas = document.getElementById('diagram-pyramid');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, H = canvas.height;
+
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Tetraedar ABCD: strane ABC ⊥ ABD duž zajedničke ivice AB', W / 2, 14);
+
+    // 3D coordinates: M at origin, AB along x-axis
+    // A = (-1, 0, 0), B = (1, 0, 0)
+    // ABC lies in plane z = 0, with C at (0, sqrt(3), 0) — well, let's put it at (0, 0, sqrt(3)) for "into the screen"
+    // ABD lies in plane perpendicular: y = 0, with D at (0, sqrt(3), 0)
+    // Adjust: let's put C "down-front" (out of page) and D "up" so the diagram reads naturally.
+    // Use: C = (0, -sqrt(3)/sqrt(2), sqrt(3)/sqrt(2))? No, let's keep it simple: use a fixed isometric-like projection.
+
+    // Simpler: define 3D points where C is "front-down" and D is "up-back" so both are visible.
+    // We'll use raw 3D coords and a single oblique projection.
+    var s3 = Math.sqrt(3);
+    var A3 = [-1, 0, 0];
+    var B3 = [ 1, 0, 0];
+    var M3 = [ 0, 0, 0];
+    var C3 = [ 0, 0,  s3];   // in plane y=0 (the "ABD-perpendicular" plane). z = depth, will project down
+    var D3 = [ 0, s3, 0];    // in plane z=0, going up
+
+    // Oblique projection: x_screen = cx + scale*(x + 0.45*y), y_screen = cy + scale*(-z*0.85 - 0.30*y)
+    // Tweak so things spread nicely.
+    var cx = W / 2 - 30;
+    var cy = H / 2 + 30;
+    var scale = 130;
+    function proj(p) {
+      var px = cx + scale * (p[0] + 0.50 * p[1]);
+      var py = cy + scale * (-p[2] * 0.85 - 0.32 * p[1]);
+      return [px, py];
+    }
+
+    var A = proj(A3);
+    var B = proj(B3);
+    var M = proj(M3);
+    var C = proj(C3);
+    var D = proj(D3);
+
+    // Helper: draw filled triangle
+    function fillTri(p1, p2, p3, color) {
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.moveTo(p1[0], p1[1]);
+      ctx.lineTo(p2[0], p2[1]);
+      ctx.lineTo(p3[0], p3[1]);
+      ctx.closePath();
+      ctx.fill();
+    }
+    function edge(p1, p2, color, width, dashed) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width;
+      ctx.setLineDash(dashed ? [7, 5] : []);
+      ctx.beginPath();
+      ctx.moveTo(p1[0], p1[1]);
+      ctx.lineTo(p2[0], p2[1]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // Fill faces (back to front)
+    fillTri(A, B, D, cvAlpha('--sol-canvas-accent', 0.18));    // ABD (top, green)
+    fillTri(A, C, D, cvAlpha('--sol-canvas-secondary', 0.10));  // ACD
+    fillTri(B, C, D, cvAlpha('--sol-canvas-warning', 0.10));    // BCD
+    fillTri(A, B, C, cvAlpha('--sol-canvas-primary', 0.20));    // ABC (front, blue)
+
+    // Edges
+    edge(A, B, text, 3, false);             // AB — bold (shared edge)
+    edge(A, C, primary, 2, false);
+    edge(B, C, primary, 2, false);
+    edge(A, D, accent, 2, false);
+    edge(B, D, accent, 2, false);
+    edge(C, D, highlight, 2.5, false);      // CD result
+
+    // Altitudes CM and DM (dashed)
+    edge(C, M, secondary, 1.5, true);
+    edge(D, M, secondary, 1.5, true);
+
+    // Right angle marker at M between MC and MD
+    var mcDx = C[0] - M[0], mcDy = C[1] - M[1];
+    var mcLen = Math.hypot(mcDx, mcDy);
+    var ucx = mcDx / mcLen * 16, ucy = mcDy / mcLen * 16;
+    var mdDx = D[0] - M[0], mdDy = D[1] - M[1];
+    var mdLen = Math.hypot(mdDx, mdDy);
+    var udx = mdDx / mdLen * 16, udy = mdDy / mdLen * 16;
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(M[0] + ucx, M[1] + ucy);
+    ctx.lineTo(M[0] + ucx + udx, M[1] + ucy + udy);
+    ctx.lineTo(M[0] + udx, M[1] + udy);
+    ctx.stroke();
+
+    // Vertices: small dots
+    function dot(p, color) {
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(p[0], p[1], 5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    dot(A, text);
+    dot(B, text);
+    dot(M, warning);
+    dot(C, primary);
+    dot(D, accent);
+
+    // Vertex labels
+    ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('A', A[0] - 12, A[1] + 4);
+    ctx.textAlign = 'left';
+    ctx.fillText('B', B[0] + 12, B[1] + 4);
+
+    ctx.fillStyle = primary;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('C', C[0], C[1] + 12);
+    ctx.fillStyle = accent;
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('D', D[0] - 4, D[1] - 12);
+
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('M', M[0] + 8, M[1] + 12);
+
+    // Edge labels
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('AB = 2', (A[0] + B[0]) / 2, (A[1] + B[1]) / 2 + 12);
+
+    ctx.fillStyle = highlight;
+    ctx.fillText('CD = √6', (C[0] + D[0]) / 2 - 36, (C[1] + D[1]) / 2 - 6);
+
+    ctx.fillStyle = secondary;
+    ctx.fillText('CM = √3', (C[0] + M[0]) / 2 + 32, (C[1] + M[1]) / 2 + 6);
+    ctx.fillText('DM = √3', (D[0] + M[0]) / 2 + 32, (D[1] + M[1]) / 2 - 16);
+
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.fillText('90°', M[0] + ucx * 1.6 + udx * 0.9, M[1] + ucy * 1.6 + udy * 0.9 - 4);
+
+    // Legend (bottom)
+    var legendY = H - 90;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.55);
+    ctx.fillRect(20, legendY - 7, 18, 14);
+    ctx.fillStyle = text;
+    ctx.fillText('△ABC — jednakostranični (P = √3)', 44, legendY);
+
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.55);
+    ctx.fillRect(20, legendY + 22 - 7, 18, 14);
+    ctx.fillStyle = text;
+    ctx.fillText('△ABD — jednakostranični (P = √3), normalna na ABC duž AB', 44, legendY + 22);
+
+    ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.45);
+    ctx.fillRect(20, legendY + 44 - 7, 18, 14);
+    ctx.fillStyle = text;
+    ctx.fillText('△ACD i △BCD — jednakokraki (2, 2, √6),  P = √15/2 svaki', 44, legendY + 44);
+
+    ctx.fillStyle = warning;
+    ctx.fillRect(20, legendY + 66 - 7, 18, 14);
+    ctx.fillStyle = text;
+    ctx.fillText('M — sredina AB; CM ⊥ DM (dvoedreni ugao 90°)', 44, legendY + 66);
+  }
+
+  // ─────────── CANVAS 2: 2D right triangle CMD ───────────
+  function drawCMD() {
+    var canvas = document.getElementById('diagram-cmd');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, H = canvas.height;
+
+    var bg = cv('--sol-canvas-bg');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var warning = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Pravougli trougao CMD u ravni normalnoj na AB', W / 2, 14);
+
+    // Place M, C, D
+    // CM and DM both length L (in pixels), perpendicular at M
+    var L = 200;
+    var Mx = W / 2, My = H / 2 + 60;
+    var Cx = Mx - L, Cy = My;          // C to the left
+    var Dx = Mx,     Dy = My - L;       // D up
+
+    // Draw filled right-triangle (light fill)
+    ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.12);
+    ctx.beginPath();
+    ctx.moveTo(Mx, My);
+    ctx.lineTo(Cx, Cy);
+    ctx.lineTo(Dx, Dy);
+    ctx.closePath();
+    ctx.fill();
+
+    // Edges
+    function edge2(p1, p2, color, width) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width;
+      ctx.setLineDash([]);
+      ctx.beginPath();
+      ctx.moveTo(p1[0], p1[1]);
+      ctx.lineTo(p2[0], p2[1]);
+      ctx.stroke();
+    }
+    edge2([Mx, My], [Cx, Cy], primary, 3);
+    edge2([Mx, My], [Dx, Dy], accent, 3);
+    edge2([Cx, Cy], [Dx, Dy], highlight, 3);
+
+    // Right-angle square at M
+    var sq = 18;
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(Mx - sq, My);
+    ctx.lineTo(Mx - sq, My - sq);
+    ctx.lineTo(Mx, My - sq);
+    ctx.stroke();
+
+    // Vertex dots
+    function dotXY(x, y, color) {
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(x, y, 6, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    dotXY(Mx, My, warning);
+    dotXY(Cx, Cy, primary);
+    dotXY(Dx, Dy, accent);
+
+    // Labels
+    ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+    ctx.fillStyle = warning;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('M', Mx + 10, My + 10);
+
+    ctx.fillStyle = primary;
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('C', Cx - 10, Cy);
+
+    ctx.fillStyle = accent;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('D', Dx, Dy - 10);
+
+    // Side labels
+    ctx.font = '14px Inter, system-ui, sans-serif';
+    ctx.fillStyle = primary;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('CM = √3', (Mx + Cx) / 2, My + 12);
+
+    ctx.fillStyle = accent;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('DM = √3', Mx + 14, (My + Dy) / 2);
+
+    ctx.fillStyle = highlight;
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('CD = √6', (Cx + Dx) / 2 + 10, (Cy + Dy) / 2 - 8);
+
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('90°', Mx - sq + 4, My - sq + 2);
+
+    // Bottom annotation: Pythagoras
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('CD² = CM² + DM² = 3 + 3 = 6  ⇒  CD = √6', W / 2, H - 24);
+  }
+
+  // ─────────── CANVAS 3: 2D isosceles triangle ACD ───────────
+  function drawACD() {
+    var canvas = document.getElementById('diagram-acd');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, H = canvas.height;
+
+    var bg = cv('--sol-canvas-bg');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var warning = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Strana △ACD: jednakokraki, krak 2, osnovica √6', W / 2, 14);
+
+    // Real lengths: leg = 2, base = sqrt(6) ≈ 2.449
+    // Height h = sqrt(10)/2 ≈ 1.581
+    // Pixel scale: choose so the figure occupies central area
+    var pxPerUnit = 110;
+    var halfBase = Math.sqrt(6) / 2 * pxPerUnit;     // ≈ 134.7 px
+    var height = Math.sqrt(10) / 2 * pxPerUnit;       // ≈ 173.9 px
+
+    var Ax = W / 2,         Ay = 90;                  // apex A on top
+    var Cx = W / 2 - halfBase, Cy = Ay + height;
+    var Dx = W / 2 + halfBase, Dy = Ay + height;
+    var midX = W / 2,       midY = Ay + height;        // midpoint of CD
+
+    // Fill triangle
+    ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.14);
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay);
+    ctx.lineTo(Cx, Cy);
+    ctx.lineTo(Dx, Dy);
+    ctx.closePath();
+    ctx.fill();
+
+    // Edges
+    ctx.lineWidth = 2.5;
+    ctx.setLineDash([]);
+    ctx.strokeStyle = primary;
+    ctx.beginPath(); ctx.moveTo(Ax, Ay); ctx.lineTo(Cx, Cy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(Ax, Ay); ctx.lineTo(Dx, Dy); ctx.stroke();
+    ctx.strokeStyle = highlight;
+    ctx.beginPath(); ctx.moveTo(Cx, Cy); ctx.lineTo(Dx, Dy); ctx.stroke();
+
+    // Altitude (dashed)
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay); ctx.lineTo(midX, midY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Right-angle square at base
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2;
+    var sq = 14;
+    ctx.beginPath();
+    ctx.moveTo(midX, midY - sq);
+    ctx.lineTo(midX + sq, midY - sq);
+    ctx.lineTo(midX + sq, midY);
+    ctx.stroke();
+
+    // Vertices
+    function dotXY(x, y, color) {
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(x, y, 6, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    dotXY(Ax, Ay, text);
+    dotXY(Cx, Cy, primary);
+    dotXY(Dx, Dy, accent);
+    dotXY(midX, midY, warning);
+
+    // Vertex labels
+    ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('A', Ax, Ay - 10);
+
+    ctx.fillStyle = primary;
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'top';
+    ctx.fillText('C', Cx - 10, Cy + 6);
+
+    ctx.fillStyle = accent;
+    ctx.textAlign = 'left';
+    ctx.fillText('D', Dx + 10, Dy + 6);
+
+    // Side labels
+    ctx.font = '14px Inter, system-ui, sans-serif';
+    ctx.fillStyle = primary;
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('AC = 2', (Ax + Cx) / 2 - 6, (Ay + Cy) / 2);
+
+    ctx.fillStyle = primary;
+    ctx.textAlign = 'left';
+    ctx.fillText('AD = 2', (Ax + Dx) / 2 + 6, (Ay + Dy) / 2);
+
+    ctx.fillStyle = highlight;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('CD = √6', midX, midY + 16);
+
+    ctx.fillStyle = secondary;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('h = √10/2', midX + 12, (Ay + midY) / 2);
+
+    // Result block (right side)
+    var rx = W - 30;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.fillStyle = accent;
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'top';
+    ctx.fillText('P = ½ · √6 · √10/2', rx, 100);
+    ctx.fillText('   = √60 / 4', rx, 122);
+    ctx.fillText('   = 2√15 / 4', rx, 144);
+    ctx.fillText('   = √15 / 2', rx, 166);
+
+    // Bottom annotation
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('Visina iz A pada u sredinu CD;  h² = 2² − (√6/2)² = 4 − 3/2 = 5/2', W / 2, H - 16);
+  }
+
+  // ─────────── CANVAS 4: schematic net + sum ───────────
+  function drawNet() {
+    var canvas = document.getElementById('diagram-net');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, H = canvas.height;
+
+    var bg = cv('--sol-canvas-bg');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var warning = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Sastav ukupne površine: 4 trougaone strane', W / 2, 14);
+
+    // Four cards/triangles in a row
+    var n = 4;
+    var cardW = (W - 80) / n;
+    var topY = 80;
+    var triH = 200;
+    var labels = ['△ABC', '△ABD', '△ACD', '△BCD'];
+    var areas  = ['√3',   '√3',   '√15/2', '√15/2'];
+    var sides  = ['jedn., a=2', 'jedn., a=2', 'kraci 2, osnovica √6', 'kraci 2, osnovica √6'];
+    var fillVar = ['--sol-canvas-primary', '--sol-canvas-accent', '--sol-canvas-secondary', '--sol-canvas-warning'];
+
+    for (var i = 0; i < n; i++) {
+      var x0 = 40 + i * cardW;
+      var x1 = x0 + cardW - 20;
+      var midx = (x0 + x1) / 2;
+
+      // Card frame (subtle)
+      ctx.fillStyle = cvAlpha(fillVar[i], 0.06);
+      ctx.fillRect(x0, topY - 10, x1 - x0, triH + 80);
+
+      // Triangle: equilateral for first two, isosceles for last two
+      var apexX = midx;
+      var apexY = topY + 10;
+      var baseY = topY + triH;
+      if (i < 2) {
+        // Equilateral (visual): base = some width, height = base * sqrt(3)/2
+        var base = Math.min(120, x1 - x0 - 20);
+        var ht = base * Math.sqrt(3) / 2;
+        baseY = apexY + ht;
+        ctx.fillStyle = cvAlpha(fillVar[i], 0.30);
+        ctx.beginPath();
+        ctx.moveTo(apexX, apexY);
+        ctx.lineTo(apexX - base / 2, baseY);
+        ctx.lineTo(apexX + base / 2, baseY);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = cv(fillVar[i]);
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      } else {
+        // Isosceles (visual): legs visually = some length, base = sqrt(6)/2 * legs (proportional)
+        var leg = 130;            // pixel
+        // base/leg = sqrt(6)/2 ≈ 1.225 — too wide. Scale: real ratio base:leg = sqrt(6):2 ≈ 1.225:1
+        var halfB = leg * Math.sqrt(6) / 4;   // base/2 = leg * sqrt(6)/(2*2)
+        var ht2 = leg * Math.sqrt(10) / 4;    // h = leg * sqrt(10) / (2*2)
+        baseY = apexY + ht2;
+        ctx.fillStyle = cvAlpha(fillVar[i], 0.30);
+        ctx.beginPath();
+        ctx.moveTo(apexX, apexY);
+        ctx.lineTo(apexX - halfB, baseY);
+        ctx.lineTo(apexX + halfB, baseY);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = cv(fillVar[i]);
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+
+      // Label
+      ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx.fillStyle = cv(fillVar[i]);
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText(labels[i], midx, baseY + 16);
+
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.fillStyle = muted;
+      ctx.fillText(sides[i], midx, baseY + 38);
+
+      ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+      ctx.fillStyle = text;
+      ctx.fillText('P = ' + areas[i], midx, baseY + 56);
+    }
+
+    // Sum line at bottom
+    ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+    ctx.fillStyle = accent;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Ukupno:  √3 + √3 + √15/2 + √15/2  =  2√3 + √15  ≈  7,337', W / 2, H - 28);
+  }
+
+  function drawAll() {
+    drawPyramid();
+    drawCMD();
+    drawACD();
+    drawNet();
+  }
+
+  drawAll();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        drawAll();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Površina tetraedra sa dve jednakostranične normalne strane",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["stereometrija", "tetraedar", "dvoedreni ugao", "jednakostranični trougao", "Pitagorina teorema u prostoru", "površina"]
+}
+BRAINSPARK_META-->

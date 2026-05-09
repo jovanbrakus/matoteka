@@ -1,0 +1,834 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: U jednakostraničan trougao stranice a upisan je kvadrat (jedna stranica kvadrata leži na jednoj
+  stranici trougla, a druga dva temena leže na druga dva stranica trougla). Naći stranicu kvadrata x.
+
+  Sintetičko rešenje preko sličnih trouglova.
+
+  Konstrukcija:
+  Neka je ABC jednakostranični trougao sa stranicom a. Bazna stranica AB leži horizontalno. Visina iz C
+  pada u središte O baze: |CO| = h = a*sqrt(3)/2.
+  Kvadrat MNPQ upisan je tako da su M, N na AB (sa M levo od N), a Q, P su gore (Q iznad M, P iznad N).
+  Stranica kvadrata: x.
+
+  Ključ: tačke Q i P leže na bočnim stranicama trougla. Linija QP je paralelna sa AB i nalazi se
+  na visini x iznad AB. Trougao iznad linije QP (sa temenom C) sličan je trouglu ABC sa koeficijentom
+  sličnosti k = (h - x) / h. Stranica gornjeg trougla, koja leži na liniji QP, ima dužinu:
+    a' = a * k = a * (h - x) / h.
+
+  Ali a' upravo treba da bude dužina QP = x (jer je to gornja stranica kvadrata):
+    x = a * (h - x) / h.
+
+  Rešavamo:
+    x * h = a * (h - x)
+    x * h = a*h - a*x
+    x*h + a*x = a*h
+    x (h + a) = a*h
+    x = a*h / (h + a).
+
+  Ubacimo h = a*sqrt(3)/2:
+    x = a * (a*sqrt(3)/2) / (a*sqrt(3)/2 + a)
+      = (a^2 * sqrt(3)/2) / (a*(sqrt(3)/2 + 1))
+      = (a * sqrt(3)/2) / (sqrt(3)/2 + 1)
+      = (a * sqrt(3)/2) / ((sqrt(3) + 2)/2)
+      = a * sqrt(3) / (sqrt(3) + 2).
+
+  Racionalizacija (množimo sa (sqrt(3) - 2) / (sqrt(3) - 2)):
+    x = a*sqrt(3) * (sqrt(3) - 2) / ((sqrt(3))^2 - 2^2)
+      = a*sqrt(3) * (sqrt(3) - 2) / (3 - 4)
+      = a*sqrt(3) * (sqrt(3) - 2) / (-1)
+      = -a*sqrt(3)*(sqrt(3) - 2)
+      = a*sqrt(3)*(2 - sqrt(3))
+      = 2*a*sqrt(3) - a*3
+      = a*(2*sqrt(3) - 3).
+
+  Provera: pošto je 2*sqrt(3) ≈ 3.464, x ≈ a*(3.464 - 3) = 0.464*a, što je razumno (manje od a).
+  Takođe x mora biti < h ≈ 0.866*a. 0.464 < 0.866 ✓.
+
+  Odgovor: (C) a(2*sqrt(3) - 3).
+
+  Plan canvas:
+  Canvas 1: jednakostranični trougao ABC sa upisanim kvadratom MNPQ na bazi. Označiti a, x, vrhove.
+  Canvas 2: konstrukcija sličnih trouglova. Trougao ABC i mali trougao C-Q-P. Pokazati paralelu QP || AB.
+  Canvas 3: bočni pogled — visina h, h - x, odnosi a : a' = h : (h - x). Vizualizacija sličnosti.
+  Canvas 4: konačni rezultat sa numeričkim vrednostima — x ≈ 0.464a; pokazati racionalizaciju vizuelno.
+
+  Pitfalls:
+    - pretpostaviti da su sve stranice kvadrata uvučene jednako u trougao (greška)
+    - pomešati k = (h - x)/h sa k = x/h
+    - greška u racionalizaciji znaka (sqrt(3))^2 - 2^2 = 3 - 4 = -1, lako pogrešiti znak
+    - zaboraviti faktor 1/2 u visini h = a*sqrt(3)/2
+</script>
+
+<h1 data-card="problem-title">Stranica kvadrata upisanog u jednakostranični trougao</h1>
+<p data-card="problem-subtitle" class="subtitle">Geometrija &mdash; jednakostranični trougao, upisani kvadrat, slični trouglovi, racionalizacija</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Ako je \( x \) stranica kvadrata upisanog u jednakostranični trougao stranice \( a \), onda je \( x \) jednako:</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">stranica trougla</span>
+      <span class="given-value">\( a \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">visina trougla</span>
+      <span class="given-value">\( h = \dfrac{a\sqrt{3}}{2} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">tražena</span>
+      <span class="given-value">\( x = ? \)</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( a(3\sqrt{3} - 2) \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( a(3\sqrt{3} + 2) \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( a(2\sqrt{3} - 3) \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( a(2\sqrt{3} - 2) \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( a(3\sqrt{3} + 3) \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Postavimo kvadrat sa stranicom \( x \) tako da mu donja stranica leži na bazi trougla. Gornja stranica kvadrata je paralelna sa bazom i seče bočne stranice trougla, pa je trougao iznad nje sličan polaznom. Iz odnosa sličnosti dobijamo jednačinu po \( x \), iz koje \( x \) izračunamo i racionalizujemo.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne činjenice i formule</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Visina jednakostraničnog trougla:</strong> \( h = \dfrac{a\sqrt{3}}{2} \).</li>
+        <li><strong>Talesova teorema (paralelnost):</strong> ako prava paralelna jednoj stranici trougla seče druge dve, dobijena dva trougla su slična. Koeficijent sličnosti je odnos visina (ili odgovarajućih stranica).</li>
+        <li><strong>Slični trouglovi:</strong> ako je koeficijent sličnosti \( k \), tada su sve linearne dužine u odnosu \( 1 : k \).</li>
+        <li><strong>Racionalizacija imenioca:</strong> \( \dfrac{1}{\sqrt{3} + 2} = \dfrac{\sqrt{3} - 2}{(\sqrt{3})^2 - 2^2} = \dfrac{\sqrt{3} - 2}{-1} = 2 - \sqrt{3} \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — upisani kvadrat">
+  <h2>📐 Konfiguracija: upisani kvadrat</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-p12-a" width="720" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Jednakostranični trougao \( ABC \) stranice \( a \) sa kvadratom \( MNPQ \) upisanim tako da donja stranica \( MN \) leži na bazi \( AB \), a gornja temena \( P, Q \) leže na bočnim stranicama \( BC \) i \( CA \). Stranica kvadrata je \( x \), a visina trougla \( h = \tfrac{a\sqrt{3}}{2} \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — slični trouglovi">
+  <h2>📐 Slični trouglovi (Talesova teorema)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-p12-b" width="720" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Pošto je gornja stranica kvadrata \( QP \) paralelna sa bazom \( AB \), trougao \( CQP \) (iznad kvadrata, zelena oblast) sličan je trouglu \( CAB \) (ceo trougao). Koeficijent sličnosti je odnos visina: \( k = \dfrac{h - x}{h} \). Odgovarajuća stranica \( QP \) tako ima dužinu \( a \cdot k = \dfrac{a(h - x)}{h} \), a istovremeno je \( |QP| = x \) — to je naša jednačina.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — odnos visina">
+  <h2>📐 Odnos visina i konačna proporcija</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-p12-c" width="720" height="440"></canvas>
+  </div>
+  <p class="canvas-caption">Šematski prikaz visina: ceo trougao ima visinu \( h \), a manji (slični) trougao iznad kvadrata ima visinu \( h - x \). Iz proporcije \( \dfrac{a}{h} = \dfrac{x}{h - x} \) (odnos osnova prema visinama u sličnim trouglovima) dolazimo do jednačine \( x \cdot h = a(h - x) \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavljanje konfiguracije</h3>
+      <p>Neka je \( ABC \) jednakostranični trougao stranice \( a \), sa bazom \( AB \) i vrhom \( C \). Visina iz \( C \) iznosi</p>
+      <div class="math-block">\[ h = \frac{a\sqrt{3}}{2}. \]</div>
+      <p>Kvadrat \( MNPQ \) upisujemo tako da \( M, N \) leže na \( AB \), a \( Q, P \) na bočnim stranicama (\( Q \) na \( CA \), \( P \) na \( BC \)). Stranica kvadrata je \( x \), pa je \( |MN| = |QP| = x \) i visina kvadrata je takođe \( x \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Slični trouglovi: \( \triangle CQP \sim \triangle CAB \)</h3>
+      <p>Gornja stranica kvadrata \( QP \) leži na pravoj paralelnoj bazi \( AB \) (jer su \( MNPQ \) ćoškovi kvadrata), na visini \( x \) od \( AB \). Po <span class="formula-label">Talesovoj teoremi</span>, presek paralelne prave sa stranicama daje trougao \( CQP \) sličan trouglu \( CAB \).</p>
+      <p>Koeficijent sličnosti \( k \) je odnos visina iz \( C \):</p>
+      <div class="math-block">\[ k = \frac{\text{visina } \triangle CQP}{\text{visina } \triangle CAB} = \frac{h - x}{h}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je visina malog trougla baš \( h - x \)?</summary>
+          <div class="detail-content"><p>Visina celog trougla je \( h \). Donja stranica kvadrata je na visini \( 0 \), a gornja na visini \( x \). Iznad gornje stranice ostaje upravo \( h - x \) prostora do vrha \( C \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Jednačina iz odnosa sličnosti</h3>
+      <p>Stranice sličnih trouglova su u istom odnosu \( k \). Posebno, \( |QP| \) odgovara \( |AB| = a \), pa je</p>
+      <div class="math-block">\[ |QP| = a \cdot k = \frac{a(h - x)}{h}. \]</div>
+      <p>Ali \( QP \) je gornja stranica kvadrata, dakle \( |QP| = x \). Izjednačavanje daje glavnu jednačinu:</p>
+      <div class="math-block">\[ x = \frac{a(h - x)}{h}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Rešavanje po \( x \)</h3>
+      <p>Pomnožimo obe strane sa \( h \) i grupišemo članove uz \( x \):</p>
+      <div class="math-block">\[ x \cdot h = a(h - x) = ah - ax \;\Longrightarrow\; xh + ax = ah \;\Longrightarrow\; x(h + a) = ah. \]</div>
+      <div class="math-block">\[ x = \frac{ah}{h + a}. \]</div>
+      <p>Ovo je opšta formula koja ne zavisi od konkretne visine — radi za bilo koji trougao u kome je upisan kvadrat na ovaj način (uz odgovarajuću \( h \)).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Zamena \( h = \dfrac{a\sqrt{3}}{2} \)</h3>
+      <p>Sada konkretno za jednakostranični trougao:</p>
+      <div class="math-block">\[ x = \frac{a \cdot \dfrac{a\sqrt{3}}{2}}{\dfrac{a\sqrt{3}}{2} + a} = \frac{\dfrac{a^2 \sqrt{3}}{2}}{a\left(\dfrac{\sqrt{3}}{2} + 1\right)} = \frac{\dfrac{a\sqrt{3}}{2}}{\dfrac{\sqrt{3} + 2}{2}} = \frac{a\sqrt{3}}{\sqrt{3} + 2}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Racionalizacija imenioca</h3>
+      <p>Pomnožimo brojilac i imenilac sa \( \sqrt{3} - 2 \) (konjugat imenioca):</p>
+      <div class="math-block">\[ x = \frac{a\sqrt{3}}{\sqrt{3} + 2} \cdot \frac{\sqrt{3} - 2}{\sqrt{3} - 2} = \frac{a\sqrt{3}(\sqrt{3} - 2)}{(\sqrt{3})^2 - 2^2} = \frac{a\sqrt{3}(\sqrt{3} - 2)}{3 - 4} = \frac{a\sqrt{3}(\sqrt{3} - 2)}{-1}. \]</div>
+      <p>Razvijemo brojilac i obrnemo znak (zbog deljenja sa \( -1 \)):</p>
+      <div class="math-block">\[ x = -a\sqrt{3}(\sqrt{3} - 2) = a\sqrt{3}(2 - \sqrt{3}) = 2a\sqrt{3} - a \cdot 3 = a(2\sqrt{3} - 3). \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto se znak menja?</summary>
+          <div class="detail-content"><p>Imenilac \( (\sqrt{3})^2 - 2^2 = 3 - 4 = -1 \). Deljenje sa \( -1 \) menja znak izraza u brojiocu, pa \( -(\sqrt{3} - 2) = 2 - \sqrt{3} \). Pošto je \( 2 > \sqrt{3} \approx 1{,}732 \), rezultat \( 2 - \sqrt{3} \) je <em>pozitivan</em>, kao što i mora biti za stranicu kvadrata.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="7">
+    <div class="step-badge">7</div>
+    <div class="step-content">
+      <h3 class="step-title">Numerička provera razumnosti</h3>
+      <p>\( 2\sqrt{3} \approx 3{,}464 \), pa je</p>
+      <div class="math-block">\[ x \approx a \cdot (3{,}464 - 3) = 0{,}464 \cdot a. \]</div>
+      <p>To je manje od stranice trougla \( a \) i manje od visine \( h \approx 0{,}866 \cdot a \) — ima smisla. <span class="result">\( x = a(2\sqrt{3} - 3) \approx 0{,}464\,a \)</span></p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Trik je u tome da gornja stranica kvadrata, baš zato što je <em>paralelna</em> bazi, automatski stvara sličan, manji trougao iznad sebe. Sličnost spaja dve dužine — visinu prostora koji ostaje (\( h - x \)) i osnovu malog trougla (\( x \)) — u jednu jednačinu. Dalje je samo algebra: izvlačenje \( x \) i racionalizacija imenioca \( \sqrt{3} + 2 \), gde je negativan znak razlike kvadrata (\( 3 - 4 = -1 \)) ključan trik.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ x = \dfrac{a\sqrt{3}}{\sqrt{3} + 2} = a(2\sqrt{3} - 3) \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( a(3\sqrt{3} - 2) \)</span>
+    <span class="answer-option" data-option="B">(B) \( a(3\sqrt{3} + 2) \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( a(2\sqrt{3} - 3) \)</span>
+    <span class="answer-option" data-option="D">(D) \( a(2\sqrt{3} - 2) \)</span>
+    <span class="answer-option" data-option="E">(E) \( a(3\sqrt{3} + 3) \)</span>
+  </div>
+  <p class="verification">Provera: \( x \approx 0{,}464\,a \), što je između \( 0 \) i visine \( h \approx 0{,}866\,a \). Vraćanjem u jednačinu sličnosti \( \dfrac{a(h - x)}{h} = a - \dfrac{ax}{h} = a\left(1 - \dfrac{2x}{a\sqrt{3}}\right) \). Sa \( x = a(2\sqrt{3} - 3) \): \( \dfrac{2x}{a\sqrt{3}} = \dfrac{2(2\sqrt{3} - 3)}{\sqrt{3}} = 4 - 2\sqrt{3} \), pa \( 1 - (4 - 2\sqrt{3}) = 2\sqrt{3} - 3 \). To je tačno \( x/a \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešan koeficijent sličnosti:</strong> stavljanje \( k = x/h \) (umesto \( (h-x)/h \)). To je odnos visina suprotno orijentisanih trouglova — ovde gledamo trougao iznad kvadrata, ne ispod njega.</li>
+    <li><strong>Zaboravljanje racionalizacije:</strong> izraz \( \dfrac{a\sqrt{3}}{\sqrt{3} + 2} \) je <em>tačan</em>, ali nije među ponuđenim odgovorima — treba ga svesti na oblik bez korena u imeniocu.</li>
+    <li><strong>Greška u znaku pri racionalizaciji:</strong> \( (\sqrt{3})^2 - 2^2 = -1 \), <em>ne</em> \( +1 \). Ovo menja znak rezultata.</li>
+    <li><strong>Pogrešna visina trougla:</strong> \( h = \dfrac{a\sqrt{3}}{2} \), ne \( a\sqrt{3} \) (to bi bila stranica šestougla) niti \( \dfrac{a}{2} \).</li>
+    <li><strong>Pretpostavka da je \( x = a/3 \) ili \( x = a/2 \):</strong> intuicija obmanjuje — kvadrat „ne mora“ deliti trougao na trećine ili polovine.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Generalizuj formulu \( x = \dfrac{ah}{h + a} \) za bilo koji trougao u koji se upisuje kvadrat sa jednom stranicom na osnovici. Šta se dešava ako je trougao <em>jednakokraki</em> sa stranicama \( a, b, b \) i visinom \( h \) na osnovicu \( a \)? Posebno, koliko je \( x \) ako je trougao pravougli sa katetama \( a \) i \( h \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Argument sa sličnim trouglovima radi <em>za svaki</em> trougao kome je osnovica \( a \) i odgovarajuća visina \( h \) — slični trougao iznad linije paralelne osnovici uvek ima koeficijent \( k = (h-x)/h \). Tako je \( x = \dfrac{ah}{h + a} \) univerzalna. Za pravougli trougao sa katetama \( a \) (osnovica) i \( h \), formula daje istu vrednost. Za jednakostranični trougao stranice \( 1 \) (\( a = 1, h = \sqrt{3}/2 \)): \( x = \dfrac{\sqrt{3}/2}{\sqrt{3}/2 + 1} = \dfrac{\sqrt{3}}{\sqrt{3} + 2} = 2\sqrt{3} - 3 \). ✓</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  // ============================================================
+  // Canvas A — Configuration: triangle with inscribed square
+  // ============================================================
+  (function setupCanvasA() {
+    var canvas = document.getElementById('diagram-p12-a');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width;
+    var H = canvas.height;
+
+    function draw() {
+      var bg        = cv('--sol-canvas-bg');
+      var primary   = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent    = cv('--sol-canvas-accent');
+      var text      = cv('--sol-canvas-text');
+      var muted     = cv('--sol-canvas-muted');
+      var warning   = cv('--sol-canvas-warning');
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      // Title
+      ctx.fillStyle = text;
+      ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Jednakostranični trougao ABC sa upisanim kvadratom MNPQ', W / 2, 30);
+
+      // Triangle parameters
+      // a = 380 px on screen; h = a*sqrt(3)/2
+      var a = 380;
+      var h = a * Math.sqrt(3) / 2;
+      // Position: base centered horizontally, leave room above and below
+      var baseY = 420;
+      var Ax = (W - a) / 2;
+      var Bx = Ax + a;
+      var Cx = (Ax + Bx) / 2;
+      var Cy = baseY - h;
+
+      // Compute square side x for visual
+      // x = a*h/(h+a)  in our pixel scale
+      var x_px = a * h / (h + a);
+
+      // Square positions (centered on triangle base)
+      var Mx = Cx - x_px / 2;
+      var Nx = Cx + x_px / 2;
+      var My = baseY;
+      var Ny = baseY;
+      var Qx = Mx;
+      var Qy = baseY - x_px;
+      var Px2 = Nx;
+      var Py2 = baseY - x_px;
+
+      // Fill triangle (light)
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.08);
+      ctx.beginPath();
+      ctx.moveTo(Ax, baseY);
+      ctx.lineTo(Bx, baseY);
+      ctx.lineTo(Cx, Cy);
+      ctx.closePath();
+      ctx.fill();
+
+      // Fill square (accent)
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.20);
+      ctx.beginPath();
+      ctx.moveTo(Mx, My);
+      ctx.lineTo(Nx, Ny);
+      ctx.lineTo(Px2, Py2);
+      ctx.lineTo(Qx, Qy);
+      ctx.closePath();
+      ctx.fill();
+
+      // Triangle outline
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(Ax, baseY);
+      ctx.lineTo(Bx, baseY);
+      ctx.lineTo(Cx, Cy);
+      ctx.closePath();
+      ctx.stroke();
+
+      // Square outline
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(Mx, My);
+      ctx.lineTo(Nx, Ny);
+      ctx.lineTo(Px2, Py2);
+      ctx.lineTo(Qx, Qy);
+      ctx.closePath();
+      ctx.stroke();
+
+      // Vertex labels (triangle)
+      ctx.fillStyle = text;
+      ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText('A', Ax - 8, baseY + 8);
+      ctx.textAlign = 'left';
+      ctx.fillText('B', Bx + 8, baseY + 8);
+      ctx.textAlign = 'center';
+      ctx.fillText('C', Cx, Cy - 12);
+
+      // Vertex labels (square)
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText('M', Mx - 4, My + 18);
+      ctx.textAlign = 'left';
+      ctx.fillText('N', Nx + 4, Ny + 18);
+      ctx.fillText('P', Px2 + 4, Py2 - 4);
+      ctx.textAlign = 'right';
+      ctx.fillText('Q', Qx - 4, Qy - 4);
+
+      // Side label "a" (under base)
+      ctx.fillStyle = primary;
+      ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('a', (Ax + Bx) / 2, baseY + 48);
+      // bracket for a
+      ctx.strokeStyle = muted;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(Ax, baseY + 22);
+      ctx.lineTo(Ax, baseY + 30);
+      ctx.lineTo(Bx, baseY + 30);
+      ctx.lineTo(Bx, baseY + 22);
+      ctx.stroke();
+
+      // Side labels "x" (right side of square)
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('x', Px2 + 12, (Py2 + Ny) / 2 + 4);
+      // bracket
+      ctx.strokeStyle = muted;
+      ctx.beginPath();
+      ctx.moveTo(Px2 + 4, Py2);
+      ctx.lineTo(Px2 + 9, Py2);
+      ctx.lineTo(Px2 + 9, Ny);
+      ctx.lineTo(Px2 + 4, Ny);
+      ctx.stroke();
+      // bottom side x
+      ctx.fillStyle = accent;
+      ctx.textAlign = 'center';
+      ctx.fillText('x', (Mx + Nx) / 2, baseY + 14);
+
+      // Height marker (left of triangle)
+      ctx.strokeStyle = warning;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([5, 4]);
+      ctx.beginPath();
+      ctx.moveTo(Cx, Cy);
+      ctx.lineTo(Cx, baseY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = warning;
+      ctx.font = 'italic 13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('h = a√3/2', Cx + 6, (Cy + baseY) / 2);
+
+      // Side labels a along legs
+      ctx.fillStyle = primary;
+      ctx.font = '13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText('a', (Ax + Cx) / 2 - 8, (baseY + Cy) / 2);
+      ctx.textAlign = 'left';
+      ctx.fillText('a', (Bx + Cx) / 2 + 8, (baseY + Cy) / 2);
+
+      // Caption
+      ctx.fillStyle = muted;
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Stranica MN leži na bazi AB; temena P i Q pripadaju bočnim stranicama trougla.', W / 2, H - 18);
+    }
+
+    draw();
+
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() {
+          styles = getComputedStyle(root);
+          draw();
+        }, 50);
+      }
+    });
+  })();
+
+  // ============================================================
+  // Canvas B — Similar triangles (Thales)
+  // ============================================================
+  (function setupCanvasB() {
+    var canvas = document.getElementById('diagram-p12-b');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width;
+    var H = canvas.height;
+
+    function draw() {
+      var bg        = cv('--sol-canvas-bg');
+      var primary   = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent    = cv('--sol-canvas-accent');
+      var text      = cv('--sol-canvas-text');
+      var muted     = cv('--sol-canvas-muted');
+      var warning   = cv('--sol-canvas-warning');
+      var highlight = cv('--sol-canvas-highlight');
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      ctx.fillStyle = text;
+      ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Slični trouglovi: △CQP ~ △CAB  (k = (h − x)/h)', W / 2, 30);
+
+      // Triangle dims
+      var a = 380;
+      var h = a * Math.sqrt(3) / 2;
+      var baseY = 420;
+      var Ax = (W - a) / 2;
+      var Bx = Ax + a;
+      var Cx = (Ax + Bx) / 2;
+      var Cy = baseY - h;
+      var x_px = a * h / (h + a);
+
+      // Triangle
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.08);
+      ctx.beginPath();
+      ctx.moveTo(Ax, baseY);
+      ctx.lineTo(Bx, baseY);
+      ctx.lineTo(Cx, Cy);
+      ctx.closePath();
+      ctx.fill();
+
+      // Highlight upper similar triangle CQP (above QP line)
+      var Qx = Cx - x_px / 2;
+      var Px2 = Cx + x_px / 2;
+      var Qy = baseY - x_px;
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.30);
+      ctx.beginPath();
+      ctx.moveTo(Qx, Qy);
+      ctx.lineTo(Px2, Qy);
+      ctx.lineTo(Cx, Cy);
+      ctx.closePath();
+      ctx.fill();
+
+      // Triangle outline
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(Ax, baseY);
+      ctx.lineTo(Bx, baseY);
+      ctx.lineTo(Cx, Cy);
+      ctx.closePath();
+      ctx.stroke();
+
+      // QP line (parallel to base)
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(Qx, Qy);
+      ctx.lineTo(Px2, Qy);
+      ctx.stroke();
+
+      // Square (light, just to show context)
+      var Mx = Qx, Nx = Px2;
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 3]);
+      ctx.beginPath();
+      ctx.moveTo(Mx, baseY);
+      ctx.lineTo(Mx, Qy);
+      ctx.moveTo(Nx, baseY);
+      ctx.lineTo(Nx, Qy);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Parallel marks on AB and QP
+      function parallelMark(cx, cy) {
+        ctx.strokeStyle = warning;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(cx - 6, cy - 6);
+        ctx.lineTo(cx, cy + 6);
+        ctx.moveTo(cx + 2, cy - 6);
+        ctx.lineTo(cx + 8, cy + 6);
+        ctx.stroke();
+      }
+      parallelMark(Cx - 4, baseY - 4); // on base, slightly above
+      parallelMark(Cx - 4, Qy - 4);    // on QP
+
+      // Labels
+      ctx.fillStyle = text;
+      ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText('A', Ax - 8, baseY + 8);
+      ctx.textAlign = 'left';
+      ctx.fillText('B', Bx + 8, baseY + 8);
+      ctx.textAlign = 'center';
+      ctx.fillText('C', Cx, Cy - 12);
+
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText('Q', Qx - 6, Qy + 4);
+      ctx.textAlign = 'left';
+      ctx.fillText('P', Px2 + 6, Qy + 4);
+
+      // Annotation: "QP || AB"
+      ctx.fillStyle = warning;
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('QP ∥ AB  ⟹  △CQP ~ △CAB', Bx + 14, Qy + 4);
+
+      // Lengths annotation: |QP| = x, |AB| = a
+      ctx.fillStyle = accent;
+      ctx.textAlign = 'center';
+      ctx.fillText('|QP| = x', (Qx + Px2) / 2, Qy - 8);
+      ctx.fillStyle = primary;
+      ctx.fillText('|AB| = a', (Ax + Bx) / 2, baseY + 22);
+
+      // Heights: h and h - x (drawn outside left)
+      ctx.strokeStyle = muted;
+      ctx.lineWidth = 1.2;
+      ctx.setLineDash([4, 3]);
+      // Full height
+      ctx.beginPath();
+      ctx.moveTo(Ax - 30, Cy);
+      ctx.lineTo(Ax - 30, baseY);
+      ctx.stroke();
+      // (h - x) bracket
+      ctx.beginPath();
+      ctx.moveTo(Ax - 50, Cy);
+      ctx.lineTo(Ax - 50, Qy);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // tick marks
+      ctx.strokeStyle = muted;
+      ctx.beginPath();
+      ctx.moveTo(Ax - 35, Cy); ctx.lineTo(Ax - 25, Cy);
+      ctx.moveTo(Ax - 35, baseY); ctx.lineTo(Ax - 25, baseY);
+      ctx.moveTo(Ax - 55, Cy); ctx.lineTo(Ax - 45, Cy);
+      ctx.moveTo(Ax - 55, Qy); ctx.lineTo(Ax - 45, Qy);
+      ctx.stroke();
+
+      ctx.fillStyle = warning;
+      ctx.font = 'italic 13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText('h', Ax - 36, (Cy + baseY) / 2);
+      ctx.fillStyle = highlight;
+      ctx.fillText('h − x', Ax - 56, (Cy + Qy) / 2);
+
+      // Bottom note
+      ctx.fillStyle = muted;
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Slični trouglovi: |QP| / |AB| = (h − x) / h  ⟹  x = a(h − x)/h', W / 2, H - 14);
+    }
+
+    draw();
+
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() {
+          styles = getComputedStyle(root);
+          draw();
+        }, 50);
+      }
+    });
+  })();
+
+  // ============================================================
+  // Canvas C — Heights ratio + final answer
+  // ============================================================
+  (function setupCanvasC() {
+    var canvas = document.getElementById('diagram-p12-c');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width;
+    var H = canvas.height;
+
+    function draw() {
+      var bg        = cv('--sol-canvas-bg');
+      var primary   = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent    = cv('--sol-canvas-accent');
+      var text      = cv('--sol-canvas-text');
+      var muted     = cv('--sol-canvas-muted');
+      var warning   = cv('--sol-canvas-warning');
+      var highlight = cv('--sol-canvas-highlight');
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      ctx.fillStyle = text;
+      ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Odnos visina i finalni rezultat', W / 2, 30);
+
+      // Two columns: left — visual proportion bar; right — formula derivation
+      // Left bar
+      var barX = 90;
+      var barTop = 70;
+      var barBottom = 360;
+      var barW = 60;
+
+      // Total height represents h
+      // x = h * a / (h + a) with a = 1 (relative). Actually let's draw proportions:
+      // Total = h (full bar). Lower portion = x (orange/accent). Upper = h - x.
+
+      // Use real proportion with a treated as 1:
+      // h = sqrt(3)/2 ≈ 0.866; x = a*h/(h+a) = 0.866/1.866 ≈ 0.464
+      // x/h = 0.464/0.866 ≈ 0.536
+
+      var totalH = barBottom - barTop;
+      var xRatio = 0.536;
+      var xH = totalH * xRatio;
+      var midY = barBottom - xH;
+
+      // Upper part (h - x)
+      ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.25);
+      ctx.fillRect(barX, barTop, barW, midY - barTop);
+      // Lower part (x)
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.30);
+      ctx.fillRect(barX, midY, barW, barBottom - midY);
+      // Outline
+      ctx.strokeStyle = muted;
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(barX, barTop, barW, totalH);
+      // dividing line
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(barX, midY);
+      ctx.lineTo(barX + barW, midY);
+      ctx.stroke();
+
+      // Labels
+      ctx.fillStyle = warning;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('h − x', barX + barW + 10, (barTop + midY) / 2 + 4);
+      ctx.fillStyle = accent;
+      ctx.fillText('x', barX + barW + 10, (midY + barBottom) / 2 + 4);
+
+      // Tick labels
+      ctx.fillStyle = muted;
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText('vrh C (gore)', barX - 6, barTop + 4);
+      ctx.fillText('baza AB (dole)', barX - 6, barBottom + 4);
+
+      // Total height bracket
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(barX + barW + 70, barTop);
+      ctx.lineTo(barX + barW + 80, barTop);
+      ctx.lineTo(barX + barW + 80, barBottom);
+      ctx.lineTo(barX + barW + 70, barBottom);
+      ctx.stroke();
+      ctx.fillStyle = primary;
+      ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('h', barX + barW + 88, (barTop + barBottom) / 2 + 4);
+
+      // Right column — formulas
+      var fx = 320;
+      ctx.fillStyle = text;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('Iz sličnih trouglova:', fx, 90);
+
+      ctx.font = '15px Inter, system-ui, sans-serif';
+      ctx.fillStyle = primary;
+      ctx.fillText('x / a  =  (h − x) / h', fx, 122);
+
+      ctx.fillStyle = text;
+      ctx.fillText('⟹   x · h  =  a · (h − x)', fx, 152);
+      ctx.fillText('⟹   x (h + a)  =  a · h', fx, 182);
+
+      ctx.fillStyle = secondary;
+      ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx.fillText('x  =  a·h / (a + h)', fx, 218);
+
+      ctx.fillStyle = text;
+      ctx.font = '14px Inter, system-ui, sans-serif';
+      ctx.fillText('Sa h = a√3/2:', fx, 252);
+
+      ctx.fillStyle = primary;
+      ctx.font = '15px Inter, system-ui, sans-serif';
+      ctx.fillText('x  =  a√3 / (√3 + 2)', fx, 280);
+
+      ctx.fillStyle = text;
+      ctx.fillText('⟹  (racionalizacija)', fx, 308);
+
+      ctx.fillStyle = highlight;
+      ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+      ctx.fillText('x  =  a (2√3 − 3)', fx, 342);
+
+      ctx.fillStyle = muted;
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.fillText('≈ 0,464 · a', fx, 366);
+
+      // Bottom note
+      ctx.fillStyle = muted;
+      ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Provera: 2√3 ≈ 3,464; pa je x ≈ 0,464·a — između 0 i a, kako mora biti.', W / 2, H - 16);
+    }
+
+    draw();
+
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() {
+          styles = getComputedStyle(root);
+          draw();
+        }, 50);
+      }
+    });
+  })();
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Stranica kvadrata upisanog u jednakostranični trougao stranice a",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["jednakostranični trougao", "upisani kvadrat", "slični trouglovi", "racionalizacija imenioca", "talesova teorema"]
+}
+BRAINSPARK_META-->

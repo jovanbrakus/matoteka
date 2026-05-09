@@ -1,0 +1,491 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+PROBLEM: Naci rastojanje tacke A(2, 1) od prave 3x + 4y + 1 = 0.
+
+FORMULA — rastojanje tacke (x0, y0) od prave Ax + By + C = 0:
+d = |A*x0 + B*y0 + C| / sqrt(A^2 + B^2)
+
+UVRSTAVANJE:
+A = 3, B = 4, C = 1, x0 = 2, y0 = 1.
+Brojilac: |3*2 + 4*1 + 1| = |6 + 4 + 1| = |11| = 11.
+Imenilac: sqrt(3^2 + 4^2) = sqrt(9 + 16) = sqrt(25) = 5.
+Rastojanje: d = 11/5.
+
+ODGOVOR: (B) 11/5.
+
+OPCIJE:
+- (A) 12/5 — racun greska |6+4+1| sa pomerajem (mozda |3*2+4*1+2|=12)
+- (B) 11/5 — TACAN
+- (C) 10/3 — pogresna nakon mesanja
+- (D) 1/2 — jako pogresno
+- (E) 6/7 — nemoguce sa ovim koeficijentima
+
+PROVERA — geometrijski:
+Prava 3x + 4y + 1 = 0 ima normalu (3, 4)/5 = (0.6, 0.8).
+Tacka na pravoj: za x=0, 4y = -1, y = -1/4. Pa P0 = (0, -1/4).
+Vector AP0 = P0 - A = (0 - 2, -1/4 - 1) = (-2, -5/4).
+Projekcija na normalu: ((-2)*3 + (-5/4)*4) / 5 = (-6 - 5)/5 = -11/5.
+|projekcija| = 11/5. ✓
+
+DRUGI PRISTUP — preko tacke najblize na pravoj:
+Tacka P na pravoj koja je najbliza A(2,1) je projekcija A na pravu.
+Pravac normale na pravu kroz A: (2,1) + t*(3,4) = (2+3t, 1+4t).
+Tacka mora biti na pravoj: 3(2+3t) + 4(1+4t) + 1 = 0
+6 + 9t + 4 + 16t + 1 = 0
+11 + 25t = 0
+t = -11/25.
+P = (2 - 33/25, 1 - 44/25) = (50/25 - 33/25, 25/25 - 44/25) = (17/25, -19/25).
+|AP|^2 = (33/25)^2 + (44/25)^2 = (33^2 + 44^2)/625 = (1089 + 1936)/625 = 3025/625 = 4.84
+|AP| = sqrt(4.84) = 2.2 = 11/5. ✓
+
+VIZUELNI PRIKAZ — koordinatna ravan:
+1) Prava 3x+4y+1=0: presek sa x-osom (y=0): 3x+1=0, x=-1/3. Sa y-osom (x=0): 4y+1=0, y=-1/4.
+2) Tacka A(2, 1) — gore desno.
+3) Normala iz A na pravu, sa istaknutim podnozjem normale P=(17/25, -19/25).
+4) Oznacena duzina AP = 11/5.
+
+Nesto malo o teoriji za podsetnik:
+- Opsta jednacina prave: Ax + By + C = 0.
+- Vector (A, B) je normalan na pravu.
+- Rastojanje tacke od prave je duzina projekcije vektora (od bilo koje tacke prave do tacke) na vektor normale.
+
+Static slika je dovoljna — algebra je ovde glavni sadrzaj.
+</script>
+
+<h1 data-card="problem-title">Rastojanje tačke od prave</h1>
+<p data-card="problem-subtitle" class="subtitle">Analitička geometrija — formula rastojanja tačke i prave u ravni</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Rastojanje tačke \( A(2,\,1) \) od prave \( 3x + 4y + 1 = 0 \) jednako je:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">Tačka</span>
+      <span class="given-value">\( A(2,\,1) \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Prava \( p \)</span>
+      <span class="given-value">\( 3x + 4y + 1 = 0 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Tražimo</span>
+      <span class="given-value">\( d(A, p) \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \dfrac{12}{5} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \dfrac{11}{5} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \dfrac{10}{3} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \dfrac{1}{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \dfrac{6}{7} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Direktna primena formule za rastojanje tačke \( (x_0, y_0) \) od prave \( Ax + By + C = 0 \): u brojiocu se nalazi \( |Ax_0 + By_0 + C| \), a u imeniocu \( \sqrt{A^2 + B^2} \). Uvrstimo \( A = 3,\, B = 4,\, C = 1 \) i \( (x_0, y_0) = (2, 1) \), zatim sredimo razlomak.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Rastojanje tačke od prave — formula i izvod</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Opšti oblik prave:</strong> svaka prava u ravni može se zapisati kao \( Ax + By + C = 0 \), gde \( (A, B) \neq (0, 0) \). Vektor \( \vec{n} = (A, B) \) je <em>normala</em> prave (okomit na nju).</li>
+        <li><strong>Formula rastojanja</strong> tačke \( M(x_0, y_0) \) od prave \( p: Ax + By + C = 0 \): \[ d(M, p) = \dfrac{|A x_0 + B y_0 + C|}{\sqrt{A^2 + B^2}}. \]</li>
+        <li><strong>Geometrijski smisao:</strong> izraz \( Ax_0 + By_0 + C \) je „znak udaljenosti" — meri koliko se tačka odstupa od prave duž normale, ali skalirano. Deljenje sa \( \sqrt{A^2+B^2} \) normalizuje tu meru u stvarnu euklidsku dužinu.</li>
+        <li><strong>Pamti:</strong> ako tačka leži <em>na</em> pravoj, brojilac je \( 0 \), pa \( d = 0 \). Što je veći apsolutni iznos brojioca, to je tačka dalja od prave.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="700" height="600"></canvas>
+  </div>
+  <p class="canvas-caption">Koordinatna ravan sa pravom \( 3x + 4y + 1 = 0 \) (prolazi kroz \( (-\tfrac{1}{3}, 0) \) i \( (0, -\tfrac{1}{4}) \)) i tačkom \( A(2, 1) \). Iz tačke \( A \) spuštamo normalu na pravu; podnožje normale označavamo sa \( P \). Dužina \( |AP| = d = \tfrac{11}{5} \) je traženo rastojanje.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Identifikujemo koeficijente prave</h3>
+      <p>Prava je u opštem obliku \( Ax + By + C = 0 \), gde je</p>
+      <div class="math-block">\[ A = 3, \quad B = 4, \quad C = 1. \]</div>
+      <p>Tačka je \( (x_0, y_0) = (2, 1) \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( C = +1 \), a ne \( -1 \)?</summary>
+          <div class="detail-content"><p>Jednačina je \( 3x + 4y + 1 = 0 \) — slobodan član se čita <em>onako kako je napisan</em>. Da je bilo \( 3x + 4y - 1 = 0 \), tada bi \( C = -1 \). Pažljivost na znak je važna jer u brojiocu uzimamo apsolutnu vrednost na kraju, ali sam izraz \( Ax_0 + By_0 + C \) može biti pozitivan ili negativan — i to govori sa koje strane prave se tačka nalazi.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo brojilac</h3>
+      <p>Uvrstimo koordinate tačke u izraz \( Ax_0 + By_0 + C \):</p>
+      <div class="math-block">\[ A x_0 + B y_0 + C = 3 \cdot 2 + 4 \cdot 1 + 1 = 6 + 4 + 1 = 11. \]</div>
+      <p>Apsolutna vrednost: \( |11| = 11 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo imenilac</h3>
+      <div class="math-block">\[ \sqrt{A^2 + B^2} = \sqrt{3^2 + 4^2} = \sqrt{9 + 16} = \sqrt{25} = 5. \]</div>
+      <p>(Pitagorina trojka \( 3, 4, 5 \) — koristan obrazac koji se često pojavljuje.)</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Sastavljamo formulu</h3>
+      <div class="math-block">\[ d(A, p) = \dfrac{|A x_0 + B y_0 + C|}{\sqrt{A^2 + B^2}} = \dfrac{11}{5}. \]</div>
+      <p>Numerički: \( \dfrac{11}{5} = 2{,}2 \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: gde je tačno tačka \( A \) u odnosu na pravu — iznad ili ispod?</summary>
+          <div class="detail-content"><p>Pošto je izraz \( Ax_0 + By_0 + C = 11 > 0 \), tačka je sa one strane prave gde je \( 3x + 4y + 1 > 0 \). Probajmo koordinatni početak: \( 3 \cdot 0 + 4 \cdot 0 + 1 = 1 > 0 \) — početak je na istoj strani kao \( A \). Pošto prava prolazi kroz negativne ose, a tačka \( A(2, 1) \) je u prvom kvadrantu, ovo se vizuelno slaže.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera — direktan pristup preko podnožja normale</h3>
+      <p>Druga metoda (radi sigurnosti): nađimo tačku \( P \) na pravoj koja je najbliža \( A \) — to je <em>podnožje normale</em> spuštene iz \( A \). Pravac normale ka pravoj je \( (A, B) = (3, 4) \), pa parametarski:</p>
+      <div class="math-block">\[ (x, y) = (2, 1) + t(3, 4) = (2 + 3t,\, 1 + 4t). \]</div>
+      <p>Uvrstimo u jednačinu prave:</p>
+      <div class="math-block">\[ 3(2 + 3t) + 4(1 + 4t) + 1 = 0 \;\Longleftrightarrow\; 11 + 25t = 0 \;\Longleftrightarrow\; t = -\dfrac{11}{25}. \]</div>
+      <p>Pomeraj od \( A \) do \( P \) je \( t \cdot (3, 4) = -\tfrac{11}{25}(3, 4) \). Dužina:</p>
+      <div class="math-block">\[ |AP| = |t| \cdot \sqrt{3^2 + 4^2} = \dfrac{11}{25} \cdot 5 = \dfrac{11}{5}. \]</div>
+      <p>Slaže se s formulom — i obrazlaže <em>zašto</em> formula radi: \( |t| \) je upravo \( \dfrac{|A x_0 + B y_0 + C|}{A^2 + B^2} \), a dužina kraka \( \sqrt{A^2 + B^2} \), pa se kvadratni koren ostavi <em>jednom</em> u imeniocu.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Formula \( d = \dfrac{|Ax_0 + By_0 + C|}{\sqrt{A^2 + B^2}} \) je projekciona ideja u zamaskiranom obliku. Vektor \( \vec{n} = (A, B) \) je normalan na pravu, a izraz \( Ax_0 + By_0 + C \) meri „signed" projekciju duž te normale (sa minusom proporcionalnim slobodnom članu \( C \)). Deljenje sa \( |\vec{n}| = \sqrt{A^2 + B^2} \) pretvara tu sirovu projekciju u stvarnu euklidsku udaljenost. Apsolutna vrednost briše znak — ne zanima nas <em>na kojoj strani</em>, već <em>koliko daleko</em>.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ d(A, p) = \dfrac{|3 \cdot 2 + 4 \cdot 1 + 1|}{\sqrt{3^2 + 4^2}} = \dfrac{11}{5}. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( \dfrac{12}{5} \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( \dfrac{11}{5} \)</span>
+    <span class="answer-option" data-option="C">(C) \( \dfrac{10}{3} \)</span>
+    <span class="answer-option" data-option="D">(D) \( \dfrac{1}{2} \)</span>
+    <span class="answer-option" data-option="E">(E) \( \dfrac{6}{7} \)</span>
+  </div>
+  <p class="verification">Provera kroz koordinate podnožja \( P \): za \( t = -\tfrac{11}{25} \) dobijamo \( P\!\left(2 - \tfrac{33}{25},\, 1 - \tfrac{44}{25}\right) = \left(\tfrac{17}{25},\, -\tfrac{19}{25}\right) \). Provera da \( P \) leži na pravoj: \( 3 \cdot \tfrac{17}{25} + 4 \cdot \left(-\tfrac{19}{25}\right) + 1 = \tfrac{51 - 76 + 25}{25} = 0 \) ✓. Rastojanje: \( |AP| = \sqrt{\left(\tfrac{33}{25}\right)^2 + \left(\tfrac{44}{25}\right)^2} = \tfrac{1}{25}\sqrt{33^2 + 44^2} = \tfrac{1}{25}\sqrt{3025} = \tfrac{55}{25} = \tfrac{11}{5} \) ✓.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zaboravljanje apsolutne vrednosti:</strong> ako bi izraz \( Ax_0 + By_0 + C \) bio negativan, dobio bi se negativan broj — što za rastojanje nema smisla. Uvek uzeti \( |\cdot| \).</li>
+    <li><strong>Korenovanje samo \( A^2 \) ili samo \( B^2 \):</strong> u imeniocu mora biti \( \sqrt{A^2 + B^2} \), <em>obavezno</em> sa oba sabirka. Pisati samo \( \sqrt{A^2} = A \) je čest propust.</li>
+    <li><strong>Brkanje koeficijenata kada je prava data eksplicitno:</strong> ako je prava \( y = mx + n \), prvo je prebaciti u opšti oblik: \( mx - y + n = 0 \), pa \( A = m,\, B = -1,\, C = n \). Pažnja na znak \( B \).</li>
+    <li><strong>Greška u znaku \( C \):</strong> ako je prava \( 3x + 4y = 1 \), tada je \( C = -1 \) (jer \( 3x + 4y - 1 = 0 \)) — različito od ovog zadatka gde je \( C = +1 \). Tačno čitanje znaka je ključno.</li>
+    <li><strong>Pisanje \( A^2 + B^2 \) kao \( (A+B)^2 \):</strong> nije isto. Ovde \( 3^2 + 4^2 = 25 \), ali \( (3+4)^2 = 49 \) — potpuno različite vrednosti.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Za istu pravu \( p: 3x + 4y + 1 = 0 \), nađite jednačinu prave \( q \) koja je <em>paralelna</em> sa \( p \) i nalazi se na rastojanju \( \dfrac{11}{5} \) od \( p \) sa one strane gde leži tačka \( A(2, 1) \). Odredite presek prave \( q \) sa pravama \( y = x \) i \( y = -x \).</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Prava paralelna sa \( p \) ima isti normalni vektor, pa je oblika \( 3x + 4y + C' = 0 \). Rastojanje između paralelnih pravih \( 3x+4y+C_1=0 \) i \( 3x+4y+C_2=0 \) je \( \dfrac{|C_1 - C_2|}{\sqrt{A^2+B^2}} = \dfrac{|C_1 - C_2|}{5} \). Da bi to bilo \( \tfrac{11}{5} \), treba \( |C' - 1| = 11 \), pa \( C' = -10 \) ili \( C' = 12 \). Sa one strane gde je \( A \) (gde je izraz \( 3x+4y+1 \) pozitivan, kao u tački \( A \) gde daje \( 11 \)) biramo onu vrednost \( C' \) za koju je \( A \) na rastojanju nula od \( q \) — to je \( C' = -11 \), dakle \( q: 3x + 4y - 11 = 0 \) (i kroz tu pravu prolazi sama tačka \( A \)). Presek sa \( y = x \): iz \( 3x + 4x - 11 = 0 \) sledi \( x = \tfrac{11}{7} \), pa tačka \( \left(\tfrac{11}{7},\, \tfrac{11}{7}\right) \). Presek sa \( y = -x \): iz \( 3x - 4x - 11 = 0 \) sledi \( x = -11 \), pa tačka \( (-11,\, 11) \). Rastojanje od \( q \) do \( p \): \( \dfrac{|1-(-11)|}{5} = \dfrac{12}{5} \) — što odgovara udaljenosti od \( O(0,0) \) ka \( A \) (zato što i \( O \) leži na rastojanju \( \tfrac{1}{5} \) od \( p \), pa zbir od \( O \) do \( q \) preko \( A \) iznosi \( \tfrac{1}{5} + \tfrac{11}{5} = \tfrac{12}{5} \)).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Koordinatni sistem
+    var xMin = -4, xMax = 4;
+    var yMin = -3, yMax = 3.5;
+    var W = canvas.width, H = canvas.height - 80; // ostavljamo prostor dolje za caption
+    var topPad = 30;
+    var sx = W / (xMax - xMin);
+    var sy = H / (yMax - yMin);
+    var scale = Math.min(sx, sy);
+    var originX = -xMin * scale + (W - (xMax - xMin) * scale) / 2;
+    var originY = topPad + yMax * scale;
+
+    function tx(x) { return originX + x * scale; }
+    function ty(y) { return originY - y * scale; }
+
+    // Grid (jedinicne linije)
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var gx = Math.ceil(xMin); gx <= Math.floor(xMax); gx++) {
+      ctx.beginPath();
+      ctx.moveTo(tx(gx), ty(yMin));
+      ctx.lineTo(tx(gx), ty(yMax));
+      ctx.stroke();
+    }
+    for (var gy = Math.ceil(yMin); gy <= Math.floor(yMax); gy++) {
+      ctx.beginPath();
+      ctx.moveTo(tx(xMin), ty(gy));
+      ctx.lineTo(tx(xMax), ty(gy));
+      ctx.stroke();
+    }
+
+    // Ose
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(tx(xMin), ty(0));
+    ctx.lineTo(tx(xMax), ty(0));
+    ctx.moveTo(tx(0), ty(yMin));
+    ctx.lineTo(tx(0), ty(yMax));
+    ctx.stroke();
+
+    // Strelice osa
+    function arrow(x1, y1, x2, y2) {
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+      var ang = Math.atan2(y2 - y1, x2 - x1);
+      ctx.beginPath();
+      ctx.moveTo(x2, y2);
+      ctx.lineTo(x2 - 8 * Math.cos(ang - 0.4), y2 - 8 * Math.sin(ang - 0.4));
+      ctx.lineTo(x2 - 8 * Math.cos(ang + 0.4), y2 - 8 * Math.sin(ang + 0.4));
+      ctx.closePath();
+      ctx.fillStyle = axis;
+      ctx.fill();
+    }
+    arrow(tx(xMax) - 1, ty(0), tx(xMax) + 8, ty(0));
+    arrow(tx(0), ty(yMax) + 1, tx(0), ty(yMax) - 8);
+
+    // Oznake osa
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.fillText('x', tx(xMax) + 12, ty(0) + 5);
+    ctx.fillText('y', tx(0) - 14, ty(yMax) - 10);
+
+    // Brojevi na osama
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillStyle = muted;
+    for (var gx2 = Math.ceil(xMin); gx2 <= Math.floor(xMax); gx2++) {
+      if (gx2 === 0) continue;
+      ctx.fillText(String(gx2), tx(gx2) - 4, ty(0) + 16);
+    }
+    for (var gy2 = Math.ceil(yMin); gy2 <= Math.floor(yMax); gy2++) {
+      if (gy2 === 0) continue;
+      ctx.fillText(String(gy2), tx(0) + 6, ty(gy2) + 4);
+    }
+    ctx.fillText('O', tx(0) + 6, ty(0) + 16);
+
+    // Prava 3x + 4y + 1 = 0  ⇔  y = -(3x + 1)/4
+    function lineY(x) { return -(3 * x + 1) / 4; }
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.moveTo(tx(xMin), ty(lineY(xMin)));
+    ctx.lineTo(tx(xMax), ty(lineY(xMax)));
+    ctx.stroke();
+
+    // Oznake preseka prave sa osama: x = -1/3, y = -1/4
+    ctx.fillStyle = primary;
+    ctx.beginPath();
+    ctx.arc(tx(-1/3), ty(0), 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(tx(0), ty(-1/4), 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillStyle = primary;
+    ctx.fillText('(-1/3, 0)', tx(-1/3) - 56, ty(0) - 8);
+    ctx.fillText('(0, -1/4)', tx(0) + 8, ty(-1/4) + 18);
+
+    // Tacka A(2, 1)
+    var Ax = tx(2), Ay = ty(1);
+    // Halo
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.20);
+    ctx.beginPath();
+    ctx.arc(Ax, Ay, 12, 0, Math.PI * 2);
+    ctx.fill();
+    // Tacka
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(Ax, Ay, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = text;
+    ctx.lineWidth = 1.4;
+    ctx.stroke();
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 16px Inter, system-ui';
+    ctx.fillText('A(2, 1)', Ax + 12, Ay - 8);
+
+    // Podnozje normale P = (17/25, -19/25)
+    var Px = 17/25, Py = -19/25;
+    var Pxc = tx(Px), Pyc = ty(Py);
+
+    // Normala iz A do P (isprekidana)
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2.4;
+    ctx.setLineDash([8, 5]);
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay);
+    ctx.lineTo(Pxc, Pyc);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Pravi ugao u P (mali kvadratic)
+    // Pravac AP: (Px - 2, Py - 1), normalizovan
+    var apx = Px - 2, apy = Py - 1;
+    var apLen = Math.hypot(apx, apy);
+    apx /= apLen; apy /= apLen;
+    // Pravac prave (pravac perpendikularan na AP, tj. tangent prave): (-apy, apx) — okrenuti za 90
+    var lpx = -apy, lpy = apx;
+    var sq = 12;
+    ctx.strokeStyle = text;
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(Pxc - apx * sq, Pyc - apy * sq);
+    ctx.lineTo(Pxc - apx * sq + lpx * sq, Pyc - apy * sq + lpy * sq);
+    ctx.lineTo(Pxc + lpx * sq, Pyc + lpy * sq);
+    ctx.stroke();
+
+    // Tacka P
+    ctx.fillStyle = highlight;
+    ctx.beginPath();
+    ctx.arc(Pxc, Pyc, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = text;
+    ctx.lineWidth = 1.2;
+    ctx.stroke();
+
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 15px Inter, system-ui';
+    ctx.fillText('P (podnožje)', Pxc + 10, Pyc + 18);
+
+    // Oznaka rastojanja d = 11/5 (na sredini AP)
+    var midX = (Ax + Pxc) / 2;
+    var midY = (Ay + Pyc) / 2;
+    // Pomerimo oznaku za malo udesno (po normali na AP)
+    var offX = -apy * 18, offY = apx * 18;
+    ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.18);
+    var labelX = midX + offX - 32;
+    var labelY = midY + offY - 14;
+    ctx.fillRect(labelX, labelY, 88, 26);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 1.3;
+    ctx.strokeRect(labelX, labelY, 88, 26);
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.fillText('d = 11/5', labelX + 14, labelY + 17);
+
+    // Oznaka prave (na sredini)
+    ctx.fillStyle = primary;
+    ctx.font = 'italic 14px Inter, system-ui';
+    var labX = tx(2.5);
+    var labY = ty(lineY(2.5)) + 18;
+    ctx.fillText('p: 3x + 4y + 1 = 0', labX, labY);
+
+    // Naslov i formula u dnu
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui';
+    ctx.fillText('Rastojanje tačke A(2, 1) od prave p: 3x + 4y + 1 = 0', 20, canvas.height - 56);
+
+    ctx.fillStyle = muted;
+    ctx.font = '13px Inter, system-ui';
+    ctx.fillText('d = |3·2 + 4·1 + 1| / √(3² + 4²) = 11 / 5 = 2,2', 20, canvas.height - 36);
+
+    ctx.fillText('Podnožje normale: P (17/25, -19/25) ≈ (0,68; -0,76).', 20, canvas.height - 16);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Rastojanje tačke od prave u koordinatnoj ravni",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["analitička geometrija", "rastojanje", "prava u ravni", "normala", "projekcija"]
+}
+BRAINSPARK_META-->

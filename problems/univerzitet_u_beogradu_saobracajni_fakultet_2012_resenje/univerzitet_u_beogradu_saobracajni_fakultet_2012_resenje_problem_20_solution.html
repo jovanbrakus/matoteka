@@ -1,0 +1,508 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: koliko ima celih brojeva x koji zadovoljavaju 3^(x+2) + 3^(2-x) <= 82.
+
+Strategija: smena t = 3^x, t > 0.
+  3^(x+2) = 9 * 3^x = 9t.
+  3^(2-x) = 9 * 3^(-x) = 9/t.
+
+Nejednačina: 9t + 9/t <= 82.
+
+Pomnožimo sa t (pozitivno, smer ostaje):
+  9t^2 - 82t + 9 <= 0.
+
+Diskriminanta: D = 82^2 - 4*9*9 = 6724 - 324 = 6400. sqrt(D) = 80.
+Koreni: t = (82 ± 80)/(2*9) = (82 ± 80)/18.
+  t_1 = (82 - 80)/18 = 2/18 = 1/9.
+  t_2 = (82 + 80)/18 = 162/18 = 9.
+
+Pošto je vodeći koeficijent 9 > 0, kvadratni je <= 0 IZMEĐU korena: 1/9 <= t <= 9.
+
+Vraćamo se: 1/9 <= 3^x <= 9, tj. 3^(-2) <= 3^x <= 3^2, dakle -2 <= x <= 2.
+
+Celi brojevi: -2, -1, 0, 1, 2 → 5 brojeva.
+
+Provera krajeva:
+  x = -2: 3^0 + 3^4 = 1 + 81 = 82. <= 82 (jednakost) ✓
+  x = 2:  3^4 + 3^0 = 81 + 1 = 82. ✓
+  x = 0:  3^2 + 3^2 = 9 + 9 = 18 <= 82 ✓
+  x = 3:  3^5 + 3^(-1) = 243 + 1/3 ≈ 243,33 > 82 ✗ (odbacujemo)
+  x = -3: 3^(-1) + 3^5 = 1/3 + 243 > 82 ✗
+
+Distraktori:
+  4: zaboravlja jedan kraj (npr. -2 ili 2) — interval (−2, 2) ∪ {jedan kraj} ima 4 cela broja.
+     Ili: pogrešno postavi -2 < x < 2 strogo, pa ostaje {-1, 0, 1} = 3? Bolje: postavi -1 ≤ x ≤ 2 = {-1,0,1,2} = 4.
+  6: nepravilno proširuje interval — npr. -3 <= x <= 2 ili greška u korenu (uzme 3 i 3, ili sl).
+  3: stroga nejednakost: -2 < x < 2 daje {-1, 0, 1} = 3.
+  beskonačno mnogo: pogrešno tumačenje da je nejednačina uvek tačna ili da nema ograničenja.
+
+Tačan odgovor: 5 → opcija (C) (po abecednom redu sa vrednostima 3, 4, 5, 6, beskonačno).
+
+Vizualizacija: f(x) = 3^(x+2) + 3^(2-x). Funkcija je simetrična oko x = 0
+(jer f(-x) = 3^(-x+2) + 3^(2+x) = 3^(2-x) + 3^(x+2) = f(x)).
+Minimum u x = 0: f(0) = 9 + 9 = 18.
+f(2) = 81 + 1 = 82, f(-2) = 1 + 81 = 82, f(3) = 243 + 1/3 ≈ 243,33.
+Crtamo na [-3, 3], horizontalna linija y = 82, presek u x = ±2; označimo cele brojeve {-2,-1,0,1,2} kao tačke ispod ili na liniji.
+</script>
+
+<h1 data-card="problem-title">Eksponencijalna nejednačina \( 3^{x+2} + 3^{2-x} \le 82 \) — celi brojevi</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — eksponencijalne nejednačine, smena, kvadratna nejednačina</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Celih brojeva \( x \), koji zadovoljavaju nejednakost</p>
+  <div class="math-block">
+    \[ 3^{x+2} + 3^{2-x} \le 82, \]
+  </div>
+  <p>ima:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 4 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 5 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 6 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">beskonačno mnogo</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Uvodimo smenu \( t = 3^x > 0 \) da bismo nejednačinu sveli na racionalnu po \( t \). Nakon množenja sa \( t \) dobijamo kvadratnu nejednačinu, čije rešenje vraćamo u \( x \) preko stroge monotonosti funkcije \( 3^x \). Na kraju prebrojimo cele brojeve u dobijenom intervalu.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Smena kod eksponencijalnih nejednačina</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Pravilo stepena:</strong> \( a^{x+y} = a^x \cdot a^y \) i \( a^{-x} = 1/a^x \). Posebno \( 3^{x+2} = 9 \cdot 3^x \), \( 3^{2-x} = 9 \cdot 3^{-x} \).</li>
+        <li><strong>Smena:</strong> \( t = 3^x \), pa je \( t > 0 \) i \( 3^{-x} = 1/t \). Tako se zbir eksponencijalnih izraza sa istom bazom svodi na izraz oblika \( At + B/t \).</li>
+        <li><strong>Množenje sa \( t > 0 \):</strong> smer nejednakosti se ne menja.</li>
+        <li><strong>Monotonost:</strong> funkcija \( 3^x \) je strogo rastuća na \( \mathbb{R} \), pa \( 3^a \le 3^b \iff a \le b \).</li>
+        <li><strong>Kvadratna \( ax^2 + bx + c \le 0 \) sa \( a > 0 \):</strong> rešenje je segment \( [x_1, x_2] \) između korena (uključujući ih kad je nestrogo).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="exp-graph" width="720" height="540"></canvas>
+  </div>
+  <p class="canvas-caption">Grafik funkcije \( f(x) = 3^{x+2} + 3^{2-x} \): simetrična „dolina“ sa minimumom \( f(0) = 18 \). Horizontalna prava \( y = 82 \) seče grafik u tačkama \( x = -2 \) i \( x = 2 \). Pet celih brojeva \( \{-2, -1, 0, 1, 2\} \) leži ispod ili na pragu — to su jedina celobrojna rešenja.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Razdvajanje stepena</h3>
+      <p>Pomoću pravila \( 3^{a+b} = 3^a \cdot 3^b \) izdvojimo zajedničke konstante:</p>
+      <div class="math-block">
+        \[ 3^{x+2} = 3^2 \cdot 3^x = 9 \cdot 3^x, \qquad 3^{2-x} = 3^2 \cdot 3^{-x} = \frac{9}{3^x}. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Smena \( t = 3^x \)</h3>
+      <p>Stavimo \( t = 3^x \). Kako je \( 3^x > 0 \) za svako realno \( x \), automatski je \( t > 0 \). Nejednačina postaje:</p>
+      <div class="math-block">
+        \[ 9t + \frac{9}{t} \le 82. \]
+      </div>
+      <p>Pomnožimo obe strane sa \( t > 0 \) (smer ostaje):</p>
+      <div class="math-block">
+        \[ 9t^2 + 9 \le 82\, t \quad \Longleftrightarrow \quad 9t^2 - 82\,t + 9 \le 0. \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto smemo množiti sa \( t \) bez razdvajanja slučajeva?</summary>
+          <div class="detail-content"><p>Zato što je \( t = 3^x > 0 \) <em>uvek</em> — nema slučaja \( t < 0 \). Da je u igri običan parametar, morali bismo razdvajati po znaku.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Rešavanje kvadratne nejednačine po \( t \)</h3>
+      <p>Diskriminanta polinoma \( 9t^2 - 82t + 9 \):</p>
+      <div class="math-block">
+        \[ D = 82^2 - 4 \cdot 9 \cdot 9 = 6724 - 324 = 6400, \qquad \sqrt{D} = 80. \]
+      </div>
+      <div class="math-block">
+        \[ t_{1,2} = \frac{82 \pm 80}{18} \quad \Rightarrow \quad t_1 = \frac{2}{18} = \frac{1}{9}, \;\; t_2 = \frac{162}{18} = 9. \]
+      </div>
+      <p>Vodeći koeficijent \( 9 > 0 \), pa je trinom nepozitivan <em>između</em> korena:</p>
+      <div class="math-block">
+        \[ \frac{1}{9} \le t \le 9. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Vraćanje smene</h3>
+      <p>Vratimo \( t = 3^x \) i izrazimo granice kao stepene trojke:</p>
+      <div class="math-block">
+        \[ \frac{1}{9} = 3^{-2}, \qquad 9 = 3^{2}. \]
+      </div>
+      <div class="math-block">
+        \[ 3^{-2} \le 3^x \le 3^{2}. \]
+      </div>
+      <p>Funkcija \( 3^x \) je strogo rastuća, pa nejednakosti „padnu“ na eksponente:</p>
+      <div class="math-block">
+        \[ -2 \le x \le 2. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Brojanje celih brojeva u \( [-2,\, 2] \)</h3>
+      <p>Cela rešenja su sledeća:</p>
+      <div class="math-block">
+        \[ x \in \{-2,\, -1,\, 0,\, 1,\, 2\}. \]
+      </div>
+      <p>Ima ih ukupno <span class="result">\( 5 \)</span>.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: provera krajeva</summary>
+          <div class="detail-content"><p>\( x = 2 \): \( 3^4 + 3^0 = 81 + 1 = 82 \le 82 \) \(\checkmark\). \( x = -2 \): \( 3^0 + 3^4 = 1 + 81 = 82 \le 82 \) \(\checkmark\). \( x = 3 \): \( 3^5 + 3^{-1} = 243 + \tfrac{1}{3} > 82 \) — već van.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Suma \( 3^{x+2} + 3^{2-x} \) je <em>simetrična</em> oko \( x = 0 \) — zameni \( x \) sa \( -x \) i izrazi se obrnu. Po nejednakosti aritmetičke i geometrijske sredine je njen minimum baš u \( x = 0 \) i jednak \( 2\sqrt{9 \cdot 9} = 18 \). Linija \( y = 82 \) preseca grafik tačno tamo gde se jedan sabirak izjednači sa \( 81 \), a drugi sa \( 1 \) — odatle \( x = \pm 2 \) bez muke.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pogrešno razdvajanje stepena — npr. \( 3^{x+2} = 3^x + 3^2 \) (sabiranje umesto množenja).</li>
+    <li>Zaboravljanje da je \( t = 3^x \) <em>uvek</em> pozitivno; razdvajanje slučajeva kojih nema.</li>
+    <li>Nakon množenja sa \( t \) ostaviti \( 9t + 9 \) umesto \( 9t^2 + 9 \) (greška u distribuciji).</li>
+    <li>Smer kvadratne: \( 9t^2 - 82t + 9 \le 0 \) je <em>između</em> korena, ne van. Tu se „uđe“ u dolinu, a ne pobegne iz nje.</li>
+    <li>Korišćenje stroge nejednakosti i izostavljanje krajeva \( x = \pm 2 \), pa rezultat ispadne \( 3 \) celih brojeva.</li>
+    <li>Brojanje celih brojeva uz grešku u krajevima — \( [-2, 2] \) ima \( 2 - (-2) + 1 = 5 \) celobrojnih elemenata, ne \( 4 \).</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \#\bigl\{\, x \in \mathbb{Z} \,:\, 3^{x+2} + 3^{2-x} \le 82 \,\bigr\} = 5 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 3 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 4 \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( 5 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 6 \)</span>
+    <span class="answer-option" data-option="E">(E) beskonačno mnogo</span>
+  </div>
+  <p class="verification">Provera: \( x = -2 \) i \( x = 2 \) daju tačno \( 82 \) (granica je uključena), \( x = -1, 0, 1 \) daju \( 30, 18, 30 \) — sve \( \le 82 \). Već \( x = 3 \) prelazi prag (\(\approx 243\)). Skup je \(\{-2,-1,0,1,2\}\) — pet brojeva.</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Za koliko celih brojeva \( x \) važi \( 2^{x+3} + 2^{3-x} \le 65 \)? Pokušaj prvo da pogodiš dužinu intervala bez računa, koristeći AM-GM ideju iz ključnog uvida.</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Smena \( s = 2^x \): nejednakost postaje \( 8s + 8/s \le 65 \), tj. \( 8s^2 - 65 s + 8 \le 0 \). Diskriminanta \( 65^2 - 4 \cdot 8 \cdot 8 = 4225 - 256 = 3969 = 63^2 \). Koreni \( s = (65 \pm 63)/16 \in \{1/8, 8\} = \{2^{-3}, 2^{3}\} \), pa \( -3 \le x \le 3 \) i celih brojeva ima \( 7 \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('exp-graph');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  var W = canvas.width, H = canvas.height;
+  var marginL = 70, marginR = 30, marginT = 60, marginB = 80;
+  // Math view: x in [-3.2, 3.2], y in [0, 130]
+  var xMin = -3.2, xMax = 3.2;
+  var yMin = 0, yMax = 130;
+  var plotW = W - marginL - marginR;
+  var plotH = H - marginT - marginB;
+  var sx = plotW / (xMax - xMin);
+  var sy = plotH / (yMax - yMin);
+
+  function X(x) { return marginL + (x - xMin) * sx; }
+  function Y(y) { return marginT + (yMax - y) * sy; }
+  function f(x) { return Math.pow(3, x + 2) + Math.pow(3, 2 - x); }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('f(x) = 3^(x+2) + 3^(2−x)   i   y = 82', W / 2, 26);
+
+    // Grid: vertical at integer x, horizontal at multiples of 20
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var gx = -3; gx <= 3; gx++) {
+      ctx.beginPath();
+      ctx.moveTo(X(gx), Y(yMin));
+      ctx.lineTo(X(gx), Y(yMax));
+      ctx.stroke();
+    }
+    for (var gy = 0; gy <= 130; gy += 20) {
+      ctx.beginPath();
+      ctx.moveTo(X(xMin), Y(gy));
+      ctx.lineTo(X(xMax), Y(gy));
+      ctx.stroke();
+    }
+
+    // Shade region under threshold (between -2 and 2 from y=0 up to f(x))
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.16);
+    ctx.beginPath();
+    ctx.moveTo(X(-2), Y(0));
+    var Nshade = 80;
+    for (var i = 0; i <= Nshade; i++) {
+      var xv = -2 + (4) * (i / Nshade);
+      ctx.lineTo(X(xv), Y(f(xv)));
+    }
+    ctx.lineTo(X(2), Y(0));
+    ctx.closePath();
+    ctx.fill();
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(X(xMin), Y(0));
+    ctx.lineTo(X(xMax), Y(0));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(X(0), Y(yMin));
+    ctx.lineTo(X(0), Y(yMax));
+    ctx.stroke();
+
+    // Tick labels — x
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (var tx = -3; tx <= 3; tx++) {
+      if (tx === 0) continue;
+      ctx.fillText(String(tx), X(tx), Y(0) + 5);
+    }
+    // y ticks
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (var ty = 20; ty <= 120; ty += 20) {
+      ctx.fillText(String(ty), X(0) - 6, Y(ty));
+    }
+    ctx.fillText('0', X(0) - 6, Y(0));
+
+    // Axis labels
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 13px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('x', X(xMax) - 14, Y(0) - 14);
+    ctx.fillText('y', X(0) + 8, Y(yMax) + 14);
+
+    // Threshold line y = 82
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2.2;
+    ctx.setLineDash([8, 5]);
+    ctx.beginPath();
+    ctx.moveTo(X(xMin), Y(82));
+    ctx.lineTo(X(xMax), Y(82));
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 12px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('y = 82', X(xMax) - 56, Y(82) - 12);
+
+    // Curve f(x)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    var first = true;
+    for (var i2 = 0; i2 <= 240; i2++) {
+      var xv2 = xMin + (xMax - xMin) * (i2 / 240);
+      var yv2 = f(xv2);
+      if (yv2 > yMax + 5) {
+        // skip outside top
+        first = true;
+        continue;
+      }
+      var px = X(xv2), py = Y(yv2);
+      if (first) { ctx.moveTo(px, py); first = false; }
+      else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+
+    // Intersection markers at x = -2 and x = 2 with y = 82
+    [-2, 2].forEach(function(xc) {
+      ctx.fillStyle = highlight;
+      ctx.beginPath();
+      ctx.arc(X(xc), Y(82), 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = bg;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Drop dashed lines to x-axis
+      ctx.strokeStyle = muted;
+      ctx.lineWidth = 1.2;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(X(xc), Y(82));
+      ctx.lineTo(X(xc), Y(0));
+      ctx.stroke();
+      ctx.setLineDash([]);
+    });
+
+    // Highlight 5 integer x values on x-axis (closed dots)
+    var ints = [-2, -1, 0, 1, 2];
+    ints.forEach(function(xi) {
+      ctx.beginPath();
+      ctx.arc(X(xi), Y(0), 6, 0, Math.PI * 2);
+      ctx.fillStyle = accent;
+      ctx.fill();
+      ctx.strokeStyle = bg;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    });
+
+    // Open circles at x = -3, x = 3 (excluded — to show boundary)
+    [-3, 3].forEach(function(xi) {
+      ctx.beginPath();
+      ctx.arc(X(xi), Y(0), 6, 0, Math.PI * 2);
+      ctx.fillStyle = bg;
+      ctx.fill();
+      ctx.strokeStyle = warning;
+      ctx.lineWidth = 2.2;
+      ctx.stroke();
+    });
+
+    // Minimum at (0, 18)
+    ctx.fillStyle = secondary;
+    ctx.beginPath();
+    ctx.arc(X(0), Y(18), 5.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 12px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('min (0, 18)', X(0) + 10, Y(18) + 4);
+
+    // Label intersection points
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 12px Inter, system-ui';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('(−2, 82)', X(-2) - 8, Y(82) - 6);
+    ctx.textAlign = 'left';
+    ctx.fillText('(2, 82)', X(2) + 8, Y(82) - 6);
+
+    // Bottom legend
+    var legendY = H - 22;
+    ctx.font = '12px Inter, system-ui';
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'left';
+    var lx = marginL;
+    ctx.fillStyle = accent;
+    ctx.beginPath(); ctx.arc(lx, legendY, 5.5, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = text;
+    ctx.fillText('celi brojevi rešenja: −2, −1, 0, 1, 2  (5 ukupno)', lx + 12, legendY);
+
+    var lx2 = lx + 360;
+    ctx.beginPath(); ctx.arc(lx2, legendY, 5.5, 0, Math.PI*2);
+    ctx.fillStyle = bg; ctx.fill();
+    ctx.strokeStyle = warning; ctx.lineWidth = 2.2; ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.fillText('±3: van skupa', lx2 + 12, legendY);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Eksponencijalna nejednačina 3^(x+2) + 3^(2−x) ≤ 82 — broj celih rešenja",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["eksponencijalne nejednačine", "smena promenljive", "kvadratna nejednačina", "celi brojevi"]
+}
+BRAINSPARK_META-->

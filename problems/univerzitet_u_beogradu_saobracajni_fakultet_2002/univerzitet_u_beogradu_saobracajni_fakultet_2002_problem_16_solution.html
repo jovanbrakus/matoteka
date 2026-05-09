@@ -1,0 +1,426 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Zbir kvadrata najveceg negativnog i najmanjeg pozitivnog resenja jednacine
+cos 2x + sin^4(x/2) = cos^4(x/2).
+
+Resenje:
+1) Razlika cetvrtih stepena: cos^4(x/2) - sin^4(x/2)
+   = (cos^2(x/2) - sin^2(x/2)) * (cos^2(x/2) + sin^2(x/2))
+   = cos x * 1 = cos x.
+   (koristili smo cos^2 - sin^2 = cos(2*(x/2)) = cos x i osnovni identitet cos^2 + sin^2 = 1)
+
+2) Jednacina postaje: cos 2x = cos x.
+
+3) Smena cos 2x = 2 cos^2 x - 1:
+   2 cos^2 x - 1 = cos x
+   2 cos^2 x - cos x - 1 = 0.
+
+4) Faktorizacija (kvadratna po t = cos x):
+   (2 cos x + 1)(cos x - 1) = 0.
+
+5) Slucaj A: cos x = 1 -> x = 2k*pi, k iz Z.
+   Najmanji pozitivni iz ove familije: 2*pi (za k=1).
+   Najveci negativni iz ove familije: -2*pi (za k=-1).
+
+6) Slucaj B: cos x = -1/2 -> x = +-2*pi/3 + 2k*pi, k iz Z.
+   Najmanji pozitivni iz ove familije: 2*pi/3 (priblizno 2,094).
+   Najveci negativni iz ove familije: -2*pi/3 (priblizno -2,094).
+
+7) Spajanje obe familije:
+   - Najmanji pozitivni od svih: min(2*pi, 2*pi/3) = 2*pi/3.
+   - Najveci negativni od svih: max(-2*pi, -2*pi/3) = -2*pi/3.
+
+8) Trazena suma kvadrata:
+   (2*pi/3)^2 + (-2*pi/3)^2 = 4*pi^2/9 + 4*pi^2/9 = 8*pi^2/9.
+
+Tacan odgovor: (A) 8*pi^2/9.
+
+Provera (numericki):
+- 2*pi/3 ~ 2,0944. Kvadrat ~ 4,3865. Dva puta ~ 8,7729.
+- 8*pi^2/9 = 8 * 9,8696 / 9 ~ 8,7729. ✓
+
+Vizuelni prikaz: staticka jedinicna kruznica.
+- Tacke gde cos x = 1: ugao 0 (tacka (1,0)).
+- Tacke gde cos x = -1/2: uglovi 2*pi/3 i -2*pi/3 (tacke (-1/2, +-sqrt(3)/2)).
+- Vertikalna linija x = -1/2 i x = 1 (vertikalne presečne linije za cos = const).
+- Jasno oznaciti: 2*pi/3 (zelenom, "najmanji pozitivni") i -2*pi/3 (pink, "najveci negativni").
+
+Pitfalls:
+- Pomesati "najveci negativni" sa "najmanji po apsolutnoj vrednosti" - srecom, to je isto za negativne brojeve, ali smer rasudjivanja treba biti jasan.
+- Zaboraviti da cos x = 1 takodje daje resenja (x = 2*pi je daleko, ali x = -2*pi je takodje resenje, jednostavno nije najveci negativni).
+- Pogresno faktorisati 2c^2 - c - 1.
+</script>
+
+<h1 data-card="problem-title">Zbir kvadrata graničnih rešenja trigonometrijske jednačine</h1>
+<p data-card="problem-subtitle" class="subtitle">Trigonometrija — identiteti dvostrukog ugla, faktorizacija, kosinusna jednačina</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Zbir kvadrata najvećeg negativnog i najmanjeg pozitivnog rešenja jednačine</p>
+  <div class="math-block">\[ \cos 2x + \sin^{4}\!\tfrac{x}{2} = \cos^{4}\!\tfrac{x}{2} \]</div>
+  <p>jednak je:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \dfrac{8\pi^{2}}{9} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \dfrac{2\pi^{2}}{9} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \dfrac{\pi^{2}}{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 2\pi^{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \dfrac{4\pi^{2}}{9} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Razliku četvrtih stepena na desnoj strani razložićemo kao razliku kvadrata, što je svodi na \( \cos x \). Dobijamo jednačinu \( \cos 2x = \cos x \), koju kvadratnom faktorizacijom rastavljamo na dva slučaja i nalazimo dve granične vrednosti.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključni identiteti i koraci</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Razlika kvadrata</span> \( a^{2}-b^{2} = (a-b)(a+b) \). Primenjuje se i na \( a^{4}-b^{4} = (a^{2}-b^{2})(a^{2}+b^{2}) \).</li>
+        <li><span class="formula-label">Pitagorin identitet</span> \( \cos^{2}\alpha + \sin^{2}\alpha = 1 \).</li>
+        <li><span class="formula-label">Kosinus dvostrukog ugla</span> \( \cos 2\alpha = \cos^{2}\alpha - \sin^{2}\alpha = 2\cos^{2}\alpha - 1 \).</li>
+        <li><span class="formula-label">Osnovne kosinusne jednačine</span> \( \cos x = 1 \Rightarrow x = 2k\pi \); \( \cos x = -\tfrac{1}{2} \Rightarrow x = \pm\tfrac{2\pi}{3} + 2k\pi \), \( k \in \mathbb{Z} \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="700" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Jedinična kružnica: rešenja \( \cos x = 1 \) i \( \cos x = -\tfrac{1}{2} \). Najmanji pozitivni ugao je \( \tfrac{2\pi}{3} \) (zelena), a najveći negativni \( -\tfrac{2\pi}{3} \) (roza).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Razložimo \( \cos^{4}\tfrac{x}{2} - \sin^{4}\tfrac{x}{2} \) kao razliku kvadrata</h3>
+      <p>Primenjujemo \( a^{2}-b^{2}=(a-b)(a+b) \) sa \( a=\cos^{2}\tfrac{x}{2} \), \( b=\sin^{2}\tfrac{x}{2} \):</p>
+      <div class="math-block">\[ \cos^{4}\!\tfrac{x}{2}-\sin^{4}\!\tfrac{x}{2} = \bigl(\cos^{2}\!\tfrac{x}{2}-\sin^{2}\!\tfrac{x}{2}\bigr)\bigl(\cos^{2}\!\tfrac{x}{2}+\sin^{2}\!\tfrac{x}{2}\bigr). \]</div>
+      <p>Drugi činilac je \( 1 \) (Pitagorin identitet), a prvi je upravo \( \cos\!\bigl(2\cdot\tfrac{x}{2}\bigr) = \cos x \).</p>
+      <div class="math-block">\[ \cos^{4}\!\tfrac{x}{2}-\sin^{4}\!\tfrac{x}{2} = \cos x. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( \cos^{2}\tfrac{x}{2}-\sin^{2}\tfrac{x}{2}=\cos x \)?</summary>
+          <div class="detail-content"><p>Jer formula \( \cos^{2}\alpha-\sin^{2}\alpha=\cos 2\alpha \) sa \( \alpha=\tfrac{x}{2} \) daje \( \cos\bigl(2\cdot\tfrac{x}{2}\bigr) = \cos x \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Sredimo polaznu jednačinu</h3>
+      <p>Polazna jednačina \( \cos 2x + \sin^{4}\tfrac{x}{2} = \cos^{4}\tfrac{x}{2} \) prelazi (premeštanjem) u:</p>
+      <div class="math-block">\[ \cos 2x = \cos^{4}\!\tfrac{x}{2}-\sin^{4}\!\tfrac{x}{2} = \cos x. \]</div>
+      <p>Dakle treba rešiti \( \cos 2x = \cos x \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Svedi na kvadratnu jednačinu po \( \cos x \)</h3>
+      <p>Koristimo \( \cos 2x = 2\cos^{2}x - 1 \):</p>
+      <div class="math-block">\[ 2\cos^{2}x - 1 = \cos x \;\Longleftrightarrow\; 2\cos^{2}x - \cos x - 1 = 0. \]</div>
+      <p>Faktorišemo (smena \( t=\cos x \), pa \( 2t^{2}-t-1 = (2t+1)(t-1) \)):</p>
+      <div class="math-block">\[ (2\cos x + 1)(\cos x - 1) = 0. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Reši dve familije</h3>
+      <p><strong>Slučaj A:</strong> \( \cos x = 1 \Rightarrow x = 2k\pi \), \( k\in\mathbb{Z} \). U toj familiji najmanji pozitivni je \( 2\pi \), najveći negativni je \( -2\pi \).</p>
+      <p><strong>Slučaj B:</strong> \( \cos x = -\tfrac{1}{2} \Rightarrow x = \pm\tfrac{2\pi}{3} + 2k\pi \), \( k\in\mathbb{Z} \). Najmanji pozitivni je \( \tfrac{2\pi}{3} \) (\( \approx 2{,}094 \)), najveći negativni je \( -\tfrac{2\pi}{3} \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliko je \( \tfrac{2\pi}{3} \) u stepenima?</summary>
+          <div class="detail-content"><p>\( \tfrac{2\pi}{3} = 120^{\circ} \), pa je \( \cos 120^{\circ} = -\tfrac{1}{2} \). ✓</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Pronađi globalne ekstremne kandidate</h3>
+      <p>Spajamo obe familije i biramo:</p>
+      <ul>
+        <li>Najmanji pozitivni: <span class="result">\( \tfrac{2\pi}{3} \)</span> (jer \( \tfrac{2\pi}{3} < 2\pi \)).</li>
+        <li>Najveći negativni: <span class="result">\( -\tfrac{2\pi}{3} \)</span> (jer \( -\tfrac{2\pi}{3} > -2\pi \)).</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunaj zbir kvadrata</h3>
+      <div class="math-block">\[ \left(\tfrac{2\pi}{3}\right)^{2} + \left(-\tfrac{2\pi}{3}\right)^{2} = \tfrac{4\pi^{2}}{9} + \tfrac{4\pi^{2}}{9} = \boxed{\dfrac{8\pi^{2}}{9}}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: numerički, koliko je \( \tfrac{8\pi^{2}}{9} \)?</summary>
+          <div class="detail-content"><p>\( \pi^{2}\approx 9{,}8696 \), pa je \( \tfrac{8\pi^{2}}{9}\approx 8{,}77 \). I zaista: \( 2\cdot(2{,}094)^{2}\approx 8{,}77 \). ✓</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Razlika \( \cos^{4}\tfrac{x}{2}-\sin^{4}\tfrac{x}{2} \) izgleda komplikovano, ali je „prerušeni“ \( \cos x \). Čim to uočimo, jednačina se svodi na elementarnu trigonometrijsku, pa onda na kvadratnu po \( \cos x \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Zaboravljanje da je \( \cos^{2}\alpha - \sin^{2}\alpha = \cos 2\alpha \), pa pokušaj direktnog razvoja četvrtih stepena.</li>
+    <li>Korišćenje samo formule \( \cos 2x = 1 - 2\sin^{2}x \) bez prelaska na \( \cos x \) — vodi u sinusno-kosinusni ćorsokak.</li>
+    <li>Pogrešno faktorisanje: \( 2t^{2}-t-1 \neq (2t-1)(t+1) \). Tačno je \( (2t+1)(t-1) \).</li>
+    <li>Mešanje „najveći negativni“ sa „najmanji negativni“: najveći negativni je onaj <em>najbliži nuli</em>, dakle \( -\tfrac{2\pi}{3} \), a ne \( -2\pi \).</li>
+    <li>Uzimanje samo familije \( \cos x = -\tfrac{1}{2} \) i propuštanje \( \cos x = 1 \) (ili obrnuto) — uvek treba ispitati obe.</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \left(\tfrac{2\pi}{3}\right)^{2} + \left(-\tfrac{2\pi}{3}\right)^{2} = \dfrac{8\pi^{2}}{9} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( \dfrac{8\pi^{2}}{9} \)</span>
+    <span class="answer-option" data-option="B">(B) \( \dfrac{2\pi^{2}}{9} \)</span>
+    <span class="answer-option" data-option="C">(C) \( \dfrac{\pi^{2}}{2} \)</span>
+    <span class="answer-option" data-option="D">(D) \( 2\pi^{2} \)</span>
+    <span class="answer-option" data-option="E">(E) \( \dfrac{4\pi^{2}}{9} \)</span>
+  </div>
+  <p class="verification">Provera: \( \tfrac{8\pi^{2}}{9}\approx 8{,}77 \), a \( 2\cdot(2{,}094)^{2}\approx 8{,}77 \). Slaže se.</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta bi se promenilo da je tražen <em>najveći pozitivni</em> i <em>najmanji negativni</em> koren? Da li takvi koreni uopšte postoje, i zbog čega? A šta ako pitanje glasi: koliko ima rešenja na intervalu \( [-2\pi,\, 2\pi] \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Skup rešenja je beskonačan u oba smera (\( x = 2k\pi \) i \( x = \pm\tfrac{2\pi}{3}+2k\pi \)), pa „najveći pozitivni“ i „najmanji negativni“ ne postoje. Na \( [-2\pi, 2\pi] \) prebroj sve: iz \( \cos x = 1 \) imaš \( -2\pi, 0, 2\pi \) (3 rešenja), a iz \( \cos x = -\tfrac{1}{2} \) imaš \( \pm\tfrac{2\pi}{3}, \pm\tfrac{4\pi}{3} \) (4 rešenja). Ukupno 7.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var cx = canvas.width / 2;
+    var cy = 250;
+    var R = 180;
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Rešenja jednačine cos 2x = cos x na jediničnoj kružnici', cx, 26);
+
+    // Grid lines (light)
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(cx - R - 30, cy); ctx.lineTo(cx + R + 30, cy);
+    ctx.moveTo(cx, cy - R - 30); ctx.lineTo(cx, cy + R + 30);
+    ctx.stroke();
+
+    // Axis labels
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText('x (cos)', cx + R + 10, cy - 6);
+    ctx.textAlign = 'center';
+    ctx.fillText('y (sin)', cx + 14, cy - R - 18);
+
+    // Vertical line cos x = -1/2
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([6, 4]);
+    var xHalf = cx + (-0.5) * R;
+    ctx.beginPath();
+    ctx.moveTo(xHalf, cy - R - 10); ctx.lineTo(xHalf, cy + R + 10);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = warning;
+    ctx.font = '12px Inter, system-ui';
+    ctx.textAlign = 'right';
+    ctx.fillText('cos x = −1/2', xHalf - 8, cy + R + 28);
+
+    // Vertical line cos x = 1
+    ctx.strokeStyle = primary;
+    ctx.setLineDash([6, 4]);
+    var xOne = cx + 1 * R;
+    ctx.beginPath();
+    ctx.moveTo(xOne, cy - R - 10); ctx.lineTo(xOne, cy + R + 10);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = primary;
+    ctx.textAlign = 'left';
+    ctx.fillText('cos x = 1', xOne + 8, cy - R - 14);
+
+    // Unit circle
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Origin
+    ctx.fillStyle = text;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.font = '11px Inter, system-ui';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'right';
+    ctx.fillText('O', cx - 6, cy + 14);
+
+    // Helper to draw an angle and point on circle
+    function drawAngle(theta, color, labelTop, labelBot, big) {
+      var px = cx + Math.cos(theta) * R;
+      var py = cy - Math.sin(theta) * R; // canvas y inverted
+      // Radius line
+      ctx.strokeStyle = color;
+      ctx.lineWidth = big ? 3 : 1.5;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy); ctx.lineTo(px, py);
+      ctx.stroke();
+      // Glow
+      if (big) {
+        ctx.beginPath();
+        ctx.arc(px, py, 11, 0, Math.PI * 2);
+        ctx.fillStyle = cvAlpha(big === 'g' ? '--sol-canvas-accent' : '--sol-canvas-highlight', 0.25);
+        ctx.fill();
+      }
+      // Point
+      ctx.beginPath();
+      ctx.arc(px, py, big ? 6 : 4, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+      // Label
+      ctx.fillStyle = color;
+      ctx.font = big ? 'bold 13px Inter, system-ui' : '12px Inter, system-ui';
+      var lx = cx + Math.cos(theta) * (R + 26);
+      var ly = cy - Math.sin(theta) * (R + 26);
+      ctx.textAlign = 'center';
+      ctx.fillText(labelTop, lx, ly);
+      if (labelBot) {
+        ctx.font = '11px Inter, system-ui';
+        ctx.fillStyle = color;
+        ctx.fillText(labelBot, lx, ly + 14);
+      }
+    }
+
+    // cos x = 1 solution: x = 0
+    drawAngle(0, primary, 'x = 0', '(2kπ)', false);
+
+    // cos x = -1/2 solutions: 2π/3 (highlighted GREEN) and -2π/3 (highlighted PINK)
+    drawAngle(2 * Math.PI / 3, cv('--sol-canvas-accent'), '+2π/3', 'najmanji pozitivni', 'g');
+    drawAngle(-2 * Math.PI / 3, cv('--sol-canvas-highlight'), '−2π/3', 'najveći negativni', 'h');
+
+    // Other -1/2 solutions: 4π/3 (= -2π/3 + 2π) and -4π/3 - draw faintly
+    // Already covered by -2π/3 (same point), so skip.
+
+    // Bottom legend / formula box
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Sve familije rešenja:', cx, cy + R + 80);
+    ctx.font = '13px Inter, system-ui';
+    ctx.fillStyle = primary;
+    ctx.fillText('cos x = 1   →   x = 2kπ', cx, cy + R + 104);
+    ctx.fillStyle = warning;
+    ctx.fillText('cos x = −1/2   →   x = ±2π/3 + 2kπ', cx, cy + R + 124);
+
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillText('Suma kvadrata =  (2π/3)² + (−2π/3)²  =  8π²/9', cx, cy + R + 152);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Zbir kvadrata graničnih rešenja jednačine cos 2x = cos x",
+  "subject": "math",
+  "unit": "trigonometry",
+  "topic_tags": ["trigonometrijske jednačine", "dvostruki ugao", "razlika kvadrata", "faktorizacija"]
+}
+BRAINSPARK_META-->

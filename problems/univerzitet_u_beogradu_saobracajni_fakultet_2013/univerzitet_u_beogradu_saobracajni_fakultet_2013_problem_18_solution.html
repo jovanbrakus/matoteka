@@ -1,0 +1,488 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Zadatak: broj svih rešenja jednačine
+  log_3(x + 1) − log_3(3x − 1) + log_3(5x − 4) = 2 · log_3(x − 2).
+
+Korak 1. DOMEN (svi argumenti logaritma > 0):
+  x + 1 > 0  ⇒ x > −1
+  3x − 1 > 0 ⇒ x > 1/3
+  5x − 4 > 0 ⇒ x > 4/5
+  x − 2 > 0  ⇒ x > 2
+  Presek: x > 2.
+
+Korak 2. Spojiti logaritme (po pravilima zbira/razlike):
+  log_3 [(x+1)(5x−4) / (3x−1)] = log_3 [(x−2)²].
+  Pošto je log_3 injektivno:
+  (x+1)(5x−4) / (3x−1) = (x−2)².
+
+Korak 3. Pomnožiti sa (3x−1) (na x > 2 je 3x − 1 > 5 > 0, smer nepromenjen):
+  (x+1)(5x−4) = (x−2)²(3x−1).
+
+LHS: (x+1)(5x−4) = 5x² + 5x − 4x − 4 = 5x² + x − 4.
+
+RHS: (x−2)² = x² − 4x + 4. Pa
+  (x² − 4x + 4)(3x − 1) = 3x³ − x² − 12x² + 4x + 12x − 4
+  = 3x³ − 13x² + 16x − 4.
+
+Korak 4. Jednačina:
+  3x³ − 13x² + 16x − 4 = 5x² + x − 4
+  3x³ − 18x² + 15x = 0
+  3x · (x² − 6x + 5) = 0
+  3x · (x − 1)(x − 5) = 0
+  ⇒ x ∈ {0, 1, 5}.
+
+Korak 5. Filter po domenu x > 2:
+  x = 0: ne (≤ 2)
+  x = 1: ne (≤ 2)
+  x = 5: DA (5 > 2)
+  Jedinstveno rešenje x = 5.
+
+Provera (x = 5):
+  log_3(6) − log_3(14) + log_3(21) = ?  vs  2·log_3(3) = 2.
+  LHS = log_3(6 · 21 / 14) = log_3(126/14) = log_3(9) = 2. ✓
+
+Odgovor: 1 rešenje (opcija C).
+
+Vizuelni prikaz: na brojnoj pravoj domen (x > 2 zelena traka), tri kandidata 0, 1, 5
+prikazana kao tačke; samo x = 5 unutar zelene zone — jedino realno rešenje.
+
+Alternativno: dva grafika
+  f(x) = log_3((x+1)(5x−4)/(3x−1)) i g(x) = 2·log_3(x−2),
+  preseci na intervalu x > 2; ima samo jedan presek u x = 5.
+
+Idemo sa kombinovanim canvasom (brojna prava sa kandidatima i domen).
+</script>
+
+<h1 data-card="problem-title">Logaritamska jednačina i provera domena</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — logaritamske jednačine, domen, kubna pomoćna jednačina</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Broj svih rešenja jednačine</p>
+  <div class="math-block">
+    \[ \log_3(x + 1) - \log_3(3x - 1) + \log_3(5x - 4) = 2\,\log_3(x - 2) \]
+  </div>
+  <p>je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 0 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">veći od \( 3 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Najpre odredimo <em>domen</em> (svi argumenti logaritma moraju biti pozitivni). Zatim spajamo logaritme i koristimo injektivnost \( \log_3 \) — argumenti se izjednače. Posle množenja imeniocem dobijamo kubnu jednačinu, koju faktorišemo. Na kraju zadržavamo samo one korene koji leže u domenu.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Pravila logaritama i injektivnost</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Zbir/razlika</span> \( \log_a A + \log_a B = \log_a(AB) \), \( \log_a A - \log_a B = \log_a(A/B) \).</li>
+        <li><span class="formula-label">Stepen</span> \( k \cdot \log_a A = \log_a(A^{k}) \). Specijalno \( 2 \log_a(x - 2) = \log_a (x - 2)^{2} \).</li>
+        <li><span class="formula-label">Injektivnost</span> Pošto je \( \log_3 \) strogo rastuća funkcija, \( \log_3 P = \log_3 Q \iff P = Q \) (uz uslov \( P, Q > 0 \)).</li>
+        <li><span class="formula-label">Domen</span> \( \log_a f(x) \) postoji samo kad je \( f(x) > 0 \). Domen jednačine je presek <em>svih</em> takvih uslova.</li>
+        <li><span class="formula-label">Pažnja: \( (x - 2)^{2} \)</span> \( (x - 2)^{2} \ge 0 \) <em>uvek</em>, ali \( 2 \log_3(x - 2) \) zahteva \( x - 2 > 0 \). Ne smemo „pojednostaviti“ \( 2 \log_3(x - 2) \) u \( \log_3 (x - 2)^2 \) i izgubiti uslov \( x > 2 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <p>Domen jednačine je \( x > 2 \) (zelena traka). Tri kandidata iz kubne jednačine \( 3x(x - 1)(x - 5) = 0 \) leže na \( 0, 1, 5 \). Samo \( x = 5 \) upada u zelenu zonu — to je <em>jedino</em> rešenje.</p>
+  <div class="canvas-wrapper">
+    <canvas id="diagram1" width="900" height="460"></canvas>
+  </div>
+  <p class="canvas-caption">Svetla traka: zabranjeni deo (\( x \le 2 \)). Zelena traka: dozvoljeni domen (\( x > 2 \)). Tri kandidata: \( 0, 1, 5 \) (popunjeni tamni krugovi). Samo \( x = 5 \) je u domenu — označeno zelenim prstenom.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Domen</h3>
+      <p>Svi argumenti logaritma moraju biti strogo pozitivni:</p>
+      <div class="math-block">
+        \[ x + 1 > 0,\quad 3x - 1 > 0,\quad 5x - 4 > 0,\quad x - 2 > 0. \]
+      </div>
+      <p>Iz svake nejednakosti: \( x > -1, \; x > 1/3, \; x > 4/5, \; x > 2 \). Najjači uslov vlada:</p>
+      <div class="math-block">
+        \[ \boxed{\,x > 2.\,} \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto sva četiri uslova, a ne samo \( x > 2 \)?</summary>
+          <div class="detail-content">
+            <p>Iako je \( x > 2 \) ovde najjači (povlači za sobom sve ostale), <em>moraš</em> ih sve napisati pre nego što presečemo. Tek kada vidiš sve, znaš koji je najuži. U drugačijim primerima različiti uslovi mogu se „ukrstiti“ i daju, recimo, \( x \in (1, 3) \) bez najjačeg.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Spajanje logaritama</h3>
+      <p>Na levoj strani primenimo \( \log A - \log B + \log C = \log(AC/B) \); na desnoj \( 2 \log D = \log D^{2} \):</p>
+      <div class="math-block">
+        \[ \log_3 \dfrac{(x + 1)(5x - 4)}{3x - 1} = \log_3 (x - 2)^{2}. \]
+      </div>
+      <p>Pošto je \( \log_3 \) injektivno, izjednačujemo argumente (oba su \( > 0 \) na domenu \( x > 2 \)):</p>
+      <div class="math-block">
+        \[ \dfrac{(x + 1)(5x - 4)}{3x - 1} = (x - 2)^{2}. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Množenje imeniocem</h3>
+      <p>Na domenu \( x > 2 \) je \( 3x - 1 > 5 > 0 \), pa smer nejednakosti/jednakosti ostaje. Pomnožimo:</p>
+      <div class="math-block">
+        \[ (x + 1)(5x - 4) = (x - 2)^{2}\,(3x - 1). \]
+      </div>
+      <p><strong>Leva strana:</strong></p>
+      <div class="math-block">
+        \[ (x + 1)(5x - 4) = 5x^{2} + 5x - 4x - 4 = 5x^{2} + x - 4. \]
+      </div>
+      <p><strong>Desna strana:</strong> najpre \( (x - 2)^{2} = x^{2} - 4x + 4 \), zatim</p>
+      <div class="math-block">
+        \[ (x^{2} - 4x + 4)(3x - 1) = 3x^{3} - x^{2} - 12x^{2} + 4x + 12x - 4 = 3x^{3} - 13x^{2} + 16x - 4. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Sređivanje u kubnu jednačinu</h3>
+      <p>Prebacujemo sve na desnu stranu:</p>
+      <div class="math-block">
+        \[ 3x^{3} - 13x^{2} + 16x - 4 - (5x^{2} + x - 4) = 0 \;\Longrightarrow\; 3x^{3} - 18x^{2} + 15x = 0. \]
+      </div>
+      <p>Konstantni član se poništio (oba su \( -4 \)) — uvek je dobar znak da se korenovi „lepo“ ponašaju. Izvlačimo \( 3x \):</p>
+      <div class="math-block">
+        \[ 3x\,(x^{2} - 6x + 5) = 0 \;\Longrightarrow\; 3x\,(x - 1)(x - 5) = 0. \]
+      </div>
+      <p>Kandidati: \( x \in \{0,\, 1,\, 5\} \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kako brzo faktorisati \( x^{2} - 6x + 5 \)?</summary>
+          <div class="detail-content">
+            <p>Tražimo dva broja čiji je zbir \( 6 \) a proizvod \( 5 \) — to su \( 1 \) i \( 5 \). Pa \( x^{2} - 6x + 5 = (x - 1)(x - 5) \). (Ili Vietove: \( x_1 + x_2 = 6, \; x_1 \cdot x_2 = 5 \).)</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera domena za svaki kandidat</h3>
+      <p>Domen je \( x > 2 \). Filtriramo:</p>
+      <ul>
+        <li>\( x = 0: \; 0 \not> 2 \) → <em>odbacuje se</em>. (Argument \( x - 2 = -2 < 0 \): \( \log_3(-2) \) nije definisan.)</li>
+        <li>\( x = 1: \; 1 \not> 2 \) → <em>odbacuje se</em>. (Argument \( x - 2 = -1 < 0 \) i \( 5x - 4 = 1 \), itd.)</li>
+        <li>\( x = 5: \; 5 > 2 \) → <em>ulazi</em>. ✓</li>
+      </ul>
+      <p>Ostaje <strong>jedno</strong> rešenje: \( x = 5 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera direktnom zamenom</h3>
+      <p>Argumenti za \( x = 5 \): \( x + 1 = 6 \), \( 3x - 1 = 14 \), \( 5x - 4 = 21 \), \( x - 2 = 3 \).</p>
+      <div class="math-block">
+        \[ \log_3 6 - \log_3 14 + \log_3 21 = \log_3 \dfrac{6 \cdot 21}{14} = \log_3 \dfrac{126}{14} = \log_3 9 = 2. \]
+      </div>
+      <p>Desna strana: \( 2 \log_3 3 = 2 \cdot 1 = 2 \). Jednako — provera prošla. ✓</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Logaritamske jednačine se uvek rešavaju u tri faze: <em>(1) domen</em> pre svega, <em>(2) sređivanje</em> u algebarsku jednačinu, <em>(3) filtriranje</em> rešenja kroz domen. Bez prve faze, kandidat \( x = 1 \) izgleda kao validno rešenje (kubna ga vraća), ali je tu \( \log_3(x - 2) = \log_3(-1) \) — nemoguće. Bez treće faze, lako se dobije <em>3</em> umesto <em>1</em> rešenje (klopka u distractoru B).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ x = 5 \quad \text{— ukupno } 1 \text{ rešenje.} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 0 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 3 \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( 1 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 2 \)</span>
+    <span class="answer-option" data-option="E">(E) veći od \( 3 \)</span>
+  </div>
+  <p class="verification">Direktna provera za \( x = 5 \): leva strana \( = \log_3 9 = 2 \), desna strana \( = 2 \log_3 3 = 2 \). Kandidati \( x = 0 \) i \( x = 1 \) ne ulaze u domen (zahtev \( x > 2 \)).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Preskakanje domena.</strong> Bez uslova \( x > 2 \), kubna daje tri kandidata i tačan odgovor bi delovao kao \( 3 \) (distraktor B). To je najčešća zamka u logaritamskim jednačinama.</li>
+    <li><strong>„\( 2 \log(x - 2) = \log (x - 2)^{2} \) važi za sve \( x \)“.</strong> Pravilo \( k \log a = \log a^{k} \) zahteva \( a > 0 \). Bez tog ograničenja, \( 2 \log_3(x - 2) \) i \( \log_3(x - 2)^2 \) mogu davati različite domene; \( \log_3(x - 2)^2 \) je definisan i za \( x < 2 \), ali to NIJE deo izvorne jednačine.</li>
+    <li><strong>Greška u množenju \( (x - 2)^2 (3x - 1) \).</strong> Lako se izgubi neki član. Disciplinovano izmnoži \( (x^2 - 4x + 4)(3x - 1) \) član po član: \( 3x^3 - x^2 - 12x^2 + 4x + 12x - 4 \), pa zatim spoji slične sabirke.</li>
+    <li><strong>Pogrešna faktorizacija \( x^2 - 6x + 5 \).</strong> Koreni su \( 1 \) i \( 5 \), pa \( (x - 1)(x - 5) \). Pogrešni \( (x + 1)(x - 5) \) ili slično daje pogrešne kandidate i lako se promakne nedostatak provere.</li>
+    <li><strong>Loše čitanje opcija.</strong> Opcija (E) glasi „veći od 3“, što navodi na razmišljanje o broju rešenja preko 3 (a kubna ima 3 korena maksimalno!). Pošto kubna ima najviše 3 realnih korena, opcija (E) je matematički nemoguća — ali zamišljena je kao zamka.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Izmenimo zadatak: koliko ima rešenja \( \log_3(x + 1) - \log_3(3x - 1) + \log_3(5x - 4) = 2\,\log_3 |x - 2| \) (sa apsolutnom vrednošću)? Da li uvođenje \( |x - 2| \) menja domen i broj rešenja?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Domen za \( |x - 2| \) je samo \( x \neq 2 \), ne \( x > 2 \). Ostali uslovi daju \( x > 4/5 \) i \( x \neq 2 \). Algebarski deo: \( |x - 2|^{2} = (x - 2)^{2} \) bilo gde, pa kubna ostaje ista i daje \( x \in \{0, 1, 5\} \). Filtriramo: \( x = 0 \) ne (jer \( 0 \le 4/5 \), tačnije \( 0 < 4/5 \) — argument \( 5x - 4 = -4 < 0 \), van domena); \( x = 1 \) DA (jer \( 1 > 4/5 \), \( 1 \neq 2 \), i sve ostalo > 0); \( x = 5 \) DA. Dakle <strong>2 rešenja</strong>: \( x = 1 \) i \( x = 5 \). Provera \( x = 1 \): \( \log_3 2 - \log_3 2 + \log_3 1 = 0 \), a \( 2 \log_3 |{-1}| = 0 \) ✓.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.indexOf('#') === 0) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram1');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  var xMin = -2, xMax = 7;
+  var pL = 70, pR = W - 50;
+  function xPos(x) { return pL + (x - xMin) / (xMax - xMin) * (pR - pL); }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Domen jednačine: x > 2  i  kandidati iz kubne: {0, 1, 5}', W / 2, 14);
+
+    // Domain band
+    var bandY = 110;
+    var bandH = 44;
+
+    // Forbidden region: x ≤ 2
+    ctx.fillStyle = cvAlpha('--sol-canvas-danger', 0.18);
+    ctx.fillRect(pL, bandY, xPos(2) - pL, bandH);
+
+    // Allowed region: x > 2
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.45);
+    ctx.fillRect(xPos(2), bandY, pR - xPos(2), bandH);
+
+    ctx.strokeStyle = cv('--sol-canvas-axis');
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(pL, bandY, pR - pL, bandH);
+
+    // Labels for the two regions
+    ctx.fillStyle = cv('--sol-canvas-danger');
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('zabranjeno (x ≤ 2)', (pL + xPos(2)) / 2, bandY + bandH / 2);
+
+    ctx.fillStyle = cv('--sol-canvas-accent');
+    ctx.fillText('domen: x > 2', (xPos(2) + pR) / 2, bandY + bandH / 2);
+
+    // Caption above band
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Domen iz uslova log_3(x+1), log_3(3x−1), log_3(5x−4), log_3(x−2):', pL, bandY - 22);
+
+    // Boundary at x=2 (open circle: 2 not included)
+    var bx = xPos(2);
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = cv('--sol-canvas-danger');
+    ctx.fillStyle = bg;
+    ctx.beginPath();
+    ctx.arc(bx, bandY + bandH / 2, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(bx, bandY + bandH / 2, 6, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.fillStyle = cv('--sol-canvas-danger');
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('granica x=2 (ne ulazi)', bx, bandY - 4);
+
+    // Number axis below
+    var axisY = bandY + bandH + 80;
+    ctx.strokeStyle = cv('--sol-canvas-axis');
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(pL - 10, axisY);
+    ctx.lineTo(pR + 10, axisY);
+    ctx.stroke();
+    // arrow tip
+    ctx.beginPath();
+    ctx.moveTo(pR + 10, axisY);
+    ctx.lineTo(pR + 2, axisY - 5);
+    ctx.lineTo(pR + 2, axisY + 5);
+    ctx.closePath();
+    ctx.fillStyle = cv('--sol-canvas-axis');
+    ctx.fill();
+
+    // Tick marks for integers from xMin to xMax
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = cv('--sol-canvas-text');
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (var k = xMin; k <= xMax; k++) {
+      var tx = xPos(k);
+      ctx.strokeStyle = cv('--sol-canvas-axis');
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(tx, axisY - 5);
+      ctx.lineTo(tx, axisY + 5);
+      ctx.stroke();
+      ctx.fillStyle = cv('--sol-canvas-text');
+      ctx.fillText(String(k), tx, axisY + 8);
+    }
+    // axis label
+    ctx.fillStyle = cv('--sol-canvas-text');
+    ctx.font = 'italic 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('x', pR + 18, axisY - 10);
+
+    // Three candidates: 0, 1, 5
+    function drawCand(x, accepted, labelText) {
+      var px = xPos(x);
+      var py = axisY;
+      // big circle for candidate
+      ctx.lineWidth = 2.5;
+      if (accepted) {
+        // green ring + filled blue dot
+        ctx.fillStyle = cv('--sol-canvas-primary');
+        ctx.beginPath();
+        ctx.arc(px, py, 8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = cv('--sol-canvas-accent');
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(px, py, 13, 0, Math.PI * 2);
+        ctx.stroke();
+      } else {
+        // red X over the dot
+        ctx.fillStyle = cv('--sol-canvas-text');
+        ctx.beginPath();
+        ctx.arc(px, py, 7, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = cv('--sol-canvas-danger');
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(px - 8, py - 8);
+        ctx.lineTo(px + 8, py + 8);
+        ctx.moveTo(px - 8, py + 8);
+        ctx.lineTo(px + 8, py - 8);
+        ctx.stroke();
+      }
+      // label below
+      ctx.fillStyle = accepted ? cv('--sol-canvas-accent') : cv('--sol-canvas-danger');
+      ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText(labelText, px, py + 24);
+    }
+    drawCand(0, false, 'x=0 nije u domenu');
+    drawCand(1, false, 'x=1 nije u domenu');
+    drawCand(5, true,  'x=5 ✓ rešenje');
+
+    // Heading "Kandidati iz 3x(x−1)(x−5)=0"
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Kandidati iz kubne 3x(x−1)(x−5) = 0: {0, 1, 5}', pL, axisY - 40);
+
+    // Bottom result text
+    ctx.fillStyle = cv('--sol-canvas-primary');
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('Filtriranje kroz domen: jedinstveno rešenje  x = 5  →  ukupno 1', W / 2, H - 18);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Logaritamska jednačina i provera domena",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["logaritamske jednačine", "domen", "kubna jednačina", "faktorizacija"]
+}
+BRAINSPARK_META-->

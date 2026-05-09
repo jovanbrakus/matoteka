@@ -1,0 +1,446 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Koliko ima dvocifrenih brojeva čiji je zbir cifara 9?
+
+  Dvocifren broj N = ab (zapis sa cifrom desetica a i jedinica b),
+  N = 10a + b. Uslovi:
+    a ∈ {1, 2, 3, 4, 5, 6, 7, 8, 9}  (a ≠ 0, jer je broj dvocifren)
+    b ∈ {0, 1, 2, ..., 9}
+    a + b = 9.
+
+  Iz a + b = 9 sledi b = 9 − a. Treba proveriti da li je b ∈ {0,...,9}
+  za svako dozvoljeno a.
+
+  a = 1 → b = 8 → 18
+  a = 2 → b = 7 → 27
+  a = 3 → b = 6 → 36
+  a = 4 → b = 5 → 45
+  a = 5 → b = 4 → 54
+  a = 6 → b = 3 → 63
+  a = 7 → b = 2 → 72
+  a = 8 → b = 1 → 81
+  a = 9 → b = 0 → 90
+
+  Svako b je u dozvoljenom opsegu (0–8). Ukupno 9 brojeva.
+
+  Provera kombinatornom formulom (zvezdice i pregrade):
+  Broj nenegativnih celobrojnih rešenja jednačine a + b = 9 je C(9+1, 1) = 10.
+  Ali tu je uračunato (a, b) = (0, 9) koje daje broj 09, jednocifreni.
+  Oduzimamo: 10 − 1 = 9. ✓
+
+  Alternativno: kvadratni zbir cifara delivost — broj je deljiv sa 9,
+  jer je zbir cifara 9. Dvocifreni umnošci od 9 su:
+  9·2 = 18, 9·3 = 27, ..., 9·11 = 99 → ali 9·11 = 99 ima zbir cifara 18, ne 9.
+  Treba proveriti svaki: 18 (1+8=9 ✓), 27 (2+7=9 ✓), 36, 45, 54, 63, 72, 81, 90 (9+0=9 ✓), 99 (9+9=18 ✗).
+  Dakle 9 brojeva.
+
+  Odgovor: (B) 9.
+</script>
+
+<h1 data-card="problem-title">Brojanje dvocifrenih brojeva sa datim zbirom cifara</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika &mdash; brojanje, zbir cifara, ograničenja po cifri</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Dvocifrenih brojeva čiji je zbir cifara jednak \( 9 \) ima:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 10 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 9 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 8 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 7 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 6 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Dvocifren broj zapisaćemo kao \( \overline{ab} = 10a + b \), gde su \( a \in \{1,\dots,9\} \) i \( b \in \{0,\dots,9\} \). Iz uslova \( a + b = 9 \) sledi \( b = 9 - a \). Sistematično ćemo proći vrednosti \( a \) i prebrojati koliko parova \( (a,b) \) zadovoljava i ograničenje da je \( b \) cifra.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne ideje za brojanje sa ograničenjima</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Zapis dvocifrenog broja:</strong> \( \overline{ab} = 10a + b \), pri čemu je \( a \in \{1, 2, \dots, 9\} \) (cifra desetica ne sme biti \( 0 \)) i \( b \in \{0, 1, \dots, 9\} \).</li>
+        <li><strong>Pravilo deljivosti sa 9:</strong> broj je deljiv sa \( 9 \) akko je zbir njegovih cifara deljiv sa \( 9 \). Ovde tražimo zbir tačno \( 9 \), pa svi takvi brojevi jesu deljivi sa \( 9 \).</li>
+        <li><strong>Brojanje rešenja jednačine \( a + b = n \) u nenegativnim celim brojevima:</strong> tačno \( n + 1 \) rešenje (\( a \in \{0,1,\dots,n\} \), \( b = n - a \)). Ako se nameću ograničenja, jednostavno oduzmemo nedopuštene slučajeve.</li>
+        <li><strong>Bijektivni argument:</strong> dovoljno je pokazati da je svakom dopuštenom \( a \) jednoznačno pridružen tačno jedan dopušten \( b \) &mdash; tada je broj rešenja jednak broju dopuštenih \( a \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagCanvas" width="700" height="540"></canvas>
+  </div>
+  <p class="canvas-caption">Svaki dopušten par \( (a, b) \) sa \( a + b = 9 \) leži na pravoj na rešetki cifara &mdash; primetno je da kandidat \( (0, 9) \) otpada jer daje jednocifreni broj.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavimo zapis dvocifrenog broja</h3>
+      <p>Označimo cifru desetica sa \( a \) i cifru jedinica sa \( b \). Tada je broj</p>
+      <div class="math-block">\[ N = \overline{ab} = 10a + b. \]</div>
+      <p>Da bi \( N \) bio <em>dvocifren</em>, mora biti \( a \neq 0 \), tj.</p>
+      <div class="math-block">\[ a \in \{1, 2, 3, 4, 5, 6, 7, 8, 9\}, \quad b \in \{0, 1, 2, \dots, 9\}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto \( a \) ne sme biti \( 0 \)?</summary>
+          <div class="detail-content"><p>Ako je \( a = 0 \), broj postaje \( 0 \cdot 10 + b = b \), tj. jednocifren (ili \( 0 \) ako je i \( b = 0 \)). Tako \( 09 \) nije dvocifren broj, već zapravo broj \( 9 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Iskoristimo uslov \( a + b = 9 \)</h3>
+      <p>Iz uslova zadatka dobijamo</p>
+      <div class="math-block">\[ b = 9 - a. \]</div>
+      <p>Dakle, čim izaberemo \( a \), cifra \( b \) je jednoznačno određena. Treba proveriti za koje \( a \in \{1,\dots,9\} \) je i \( b = 9 - a \) važeća cifra (\( 0 \le b \le 9 \)).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Proverimo ograničenje na \( b \)</h3>
+      <p>Pošto je \( a \ge 1 \), iz \( b = 9 - a \) sledi \( b \le 8 \), tj. \( b \le 9 \). ✓</p>
+      <p>Pošto je \( a \le 9 \), važi \( b = 9 - a \ge 0 \). ✓</p>
+      <p>Zaključak: za <em>svako</em> \( a \in \{1, 2, \dots, 9\} \), pripadna cifra \( b \) je u dozvoljenom opsegu. Imamo dakle bijekciju između dopuštenih \( a \) i traženih dvocifrenih brojeva, pa je broj rešenja jednak broju dopuštenih vrednosti za \( a \), tj. \( 9 \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koja je razlika između jednačine \( a + b = 9 \) na nenegativnim celim brojevima i ovog problema?</summary>
+          <div class="detail-content"><p>U jednačini \( a + b = 9 \) sa \( a, b \ge 0 \) ima tačno \( 9 + 1 = 10 \) rešenja (\( a \) može biti \( 0, 1, \dots, 9 \)). Razlika je samo par \( (a, b) = (0, 9) \) koji ovde otpada (jer \( a \neq 0 \)). Otuda \( 10 - 1 = 9 \). To je još jedan način da se dođe do istog odgovora.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Eksplicitno nabrojimo brojeve (kontrola)</h3>
+      <p>Konkretni brojevi su:</p>
+      <div class="math-block">\[ 18,\ 27,\ 36,\ 45,\ 54,\ 63,\ 72,\ 81,\ 90. \]</div>
+      <p>Lako se proveri da je za svaki zbir cifara baš \( 9 \) i da je svaki dvocifren. Ima ih ukupno <span class="result">\( 9 \)</span>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Kontrolna provera preko deljivosti</h3>
+      <p>Po pravilu deljivosti, ako je zbir cifara \( 9 \), broj je deljiv sa \( 9 \). Dvocifreni umnošci broja \( 9 \) su</p>
+      <div class="math-block">\[ 18,\ 27,\ 36,\ 45,\ 54,\ 63,\ 72,\ 81,\ 90,\ 99. \]</div>
+      <p>Ima ih \( 10 \), ali kod \( 99 \) zbir cifara je \( 9 + 9 = 18 \), a ne \( 9 \). Zato se izbacuje, ostaje <span class="result">\( 9 \)</span> brojeva &mdash; isto kao gore.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Glavni trik je da postavimo problem kao izbor jedne cifre, a ne dve. Čim biramo cifru desetica \( a \in \{1, \dots, 9\} \), cifra jedinica \( b = 9 - a \) je fiksirana, a ograničenje \( 0 \le b \le 9 \) je automatski zadovoljeno. Zato je odgovor jednostavno \( |\{1,\dots,9\}| = 9 \). Razlika u odnosu na "naivnu" formulu (\( n+1 = 10 \)) je upravo to što \( a = 0 \) nije dozvoljeno.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \#\{\,\overline{ab} : 10 \le \overline{ab} \le 99,\ a + b = 9\,\} = 9 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 10 \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( 9 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 8 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 7 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 6 \)</span>
+  </div>
+  <p class="verification">Eksplicitna lista: \( 18, 27, 36, 45, 54, 63, 72, 81, 90 \) &mdash; ukupno \( 9 \) brojeva. Svaki ima zbir cifara \( 9 \) i jeste dvocifren. ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Brojanje uključujući \( 09 \) i tako dolaženje do \( 10 \) (opcija A) &mdash; \( 09 \) nije dvocifren broj.</li>
+    <li>Izostavljanje broja \( 90 \) (\( a = 9, b = 0 \)) &mdash; nula kao cifra jedinica je dozvoljena, samo cifra desetica ne sme biti \( 0 \).</li>
+    <li>Računanje samo "simetričnih" parova (\( 18 \) i \( 81 \), \( 27 \) i \( 72 \), itd.) i zaboravljanje sredine \( 45 \) i \( 54 \), ili \( 90 \) bez para.</li>
+    <li>Tumačenje <em>cifre</em> \( a \) kao bilo kog prirodnog broja, pa otići preko \( 9 \).</li>
+    <li>Nepoznavanje pravila deljivosti i izabiranje opcije \( C \) ili \( D \) na osnovu manuelnog brojanja sa propustima.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koliko ima <em>trocifrenih</em> brojeva čiji je zbir cifara jednak \( 9 \)? Pokušaj da generalizuješ: koliko je \( k \)-cifrenih brojeva sa zbirom cifara \( n \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Za trocifren broj sa ciframa \( a, b, c \) traži se \( a + b + c = 9 \), \( a \in \{1,\dots,9\} \), \( b, c \in \{0,\dots,9\} \). Smenom \( a' = a - 1 \) prelazimo na \( a' + b + c = 8 \) sa \( a', b, c \ge 0 \). Po formuli sa zvezdicama i pregradama imamo \( \binom{8 + 2}{2} = \binom{10}{2} = 45 \) rešenja. Ne treba oduzimati &mdash; jer je gornje ograničenje \( \le 9 \) na \( b, c \) ovde "neaktivno" (svako \( b, c \le 8 \) automatski). Generalno za \( k \)-cifrene brojeve sa zbirom \( n \), kada je \( n \) malo, broj rešenja je \( \binom{n + k - 2}{k - 1} \) (uz korekciju kada veliko \( n \) proizvodi cifre \( > 9 \)).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagCanvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var danger    = cv('--sol-canvas-danger');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.font = 'bold 16px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.fillText('Cifre (a, b) dvocifrenog broja sa  a + b = 9', W / 2, 28);
+
+    // Grid setup: a horizontal axis (0..9), b vertical axis (0..9)
+    var leftPad = 70;
+    var topPad = 60;
+    var bottomPad = 110;
+    var rightPad = 40;
+    var plotW = W - leftPad - rightPad;
+    var plotH = H - topPad - bottomPad;
+    var step = Math.min(plotW, plotH) / 9; // cell size
+
+    // Origin: bottom-left of plot area
+    var ox = leftPad;
+    var oy = topPad + plotH;
+
+    // Forbidden column for a = 0 (shaded background)
+    ctx.fillStyle = cvAlpha('--sol-canvas-danger', 0.10);
+    ctx.fillRect(ox - step / 2, topPad - step / 2, step, plotH + step);
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var i = 0; i <= 9; i++) {
+      // vertical
+      ctx.beginPath();
+      ctx.moveTo(ox + i * step, topPad - step / 2);
+      ctx.lineTo(ox + i * step, oy + step / 2);
+      ctx.stroke();
+      // horizontal
+      ctx.beginPath();
+      ctx.moveTo(ox - step / 2, topPad + i * step);
+      ctx.lineTo(ox + 9 * step + step / 2, topPad + i * step);
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(ox - step / 2, oy);
+    ctx.lineTo(ox + 9 * step + step / 2 + 8, oy);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(ox, oy + step / 2);
+    ctx.lineTo(ox, topPad - step / 2 - 8);
+    ctx.stroke();
+
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('a (cifra desetica)', ox + 4.5 * step, oy + 60);
+    ctx.save();
+    ctx.translate(ox - 50, topPad + 4.5 * step);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('b (cifra jedinica)', 0, 0);
+    ctx.restore();
+
+    // Tick labels
+    ctx.font = '12px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    for (var k = 0; k <= 9; k++) {
+      ctx.textAlign = 'center';
+      ctx.fillText(k.toString(), ox + k * step, oy + 18);
+      ctx.textAlign = 'right';
+      ctx.fillText(k.toString(), ox - 8, topPad + (9 - k) * step + 4);
+    }
+
+    // Diagonal line a + b = 9
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(ox + 0 * step, topPad + 0 * step);     // (a=0, b=9) at top-left
+    ctx.lineTo(ox + 9 * step, topPad + 9 * step);     // (a=9, b=0) at bottom-right
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Plot points
+    var pts = [
+      { a: 0, b: 9, valid: false, label: '(0,9)' },
+      { a: 1, b: 8, valid: true, label: '18' },
+      { a: 2, b: 7, valid: true, label: '27' },
+      { a: 3, b: 6, valid: true, label: '36' },
+      { a: 4, b: 5, valid: true, label: '45' },
+      { a: 5, b: 4, valid: true, label: '54' },
+      { a: 6, b: 3, valid: true, label: '63' },
+      { a: 7, b: 2, valid: true, label: '72' },
+      { a: 8, b: 1, valid: true, label: '81' },
+      { a: 9, b: 0, valid: true, label: '90' }
+    ];
+
+    for (var p = 0; p < pts.length; p++) {
+      var pt = pts[p];
+      var px = ox + pt.a * step;
+      var py = topPad + (9 - pt.b) * step;
+
+      if (pt.valid) {
+        // Green filled dot
+        ctx.beginPath();
+        ctx.arc(px, py, 9, 0, Math.PI * 2);
+        ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.30);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(px, py, 6, 0, Math.PI * 2);
+        ctx.fillStyle = accent;
+        ctx.fill();
+        // Label
+        ctx.fillStyle = text;
+        ctx.font = 'bold 12px Inter, Segoe UI, system-ui, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText(pt.label, px + 11, py - 8);
+      } else {
+        // Red X for the rejected (0,9)
+        ctx.strokeStyle = danger;
+        ctx.lineWidth = 2.5;
+        var s = 7;
+        ctx.beginPath();
+        ctx.moveTo(px - s, py - s);
+        ctx.lineTo(px + s, py + s);
+        ctx.moveTo(px + s, py - s);
+        ctx.lineTo(px - s, py + s);
+        ctx.stroke();
+        ctx.fillStyle = danger;
+        ctx.font = 'bold 11px Inter, Segoe UI, system-ui, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText('(0,9)  09 nije dvocifren', px + 12, py + 4);
+      }
+    }
+
+    // Forbidden region label
+    ctx.fillStyle = danger;
+    ctx.font = 'italic 11px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('a = 0  zabranjeno', ox, topPad - 20);
+
+    // Legend / summary at bottom
+    var legY = H - 70;
+    // Title
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 13px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Prava  a + b = 9', leftPad, legY);
+
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(leftPad + 200, legY - 5, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.fillText('važeći (a, b) — ukupno 9', leftPad + 215, legY);
+
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 2.5;
+    var lx = leftPad + 430;
+    ctx.beginPath();
+    ctx.moveTo(lx - 6, legY - 11);
+    ctx.lineTo(lx + 6, legY + 1);
+    ctx.moveTo(lx + 6, legY - 11);
+    ctx.lineTo(lx - 6, legY + 1);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.fillText('izbačen (0, 9)', lx + 14, legY);
+
+    // Summary box
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.16);
+    ctx.fillRect(leftPad, legY + 15, W - leftPad - rightPad, 30);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(leftPad, legY + 15, W - leftPad - rightPad, 30);
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Ukupno 9 dvocifrenih brojeva: 18, 27, 36, 45, 54, 63, 72, 81, 90',
+                 W / 2, legY + 35);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Brojanje dvocifrenih brojeva sa zbirom cifara 9",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["brojanje", "cifre", "zbir cifara", "deljivost sa 9", "ograničenja"]
+}
+BRAINSPARK_META-->

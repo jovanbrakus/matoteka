@@ -1,0 +1,704 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Vrednost izraza ((1 + i√3)/(1 + i))^30.
+
+  Koristim polarni oblik (Mavrov-De Moivreova formula).
+
+  Brojilac: z1 = 1 + i√3.
+    |z1| = √(1 + 3) = √4 = 2.
+    arg(z1) = arctan(√3 / 1) = π/3 (prvi kvadrant).
+    z1 = 2(cos(π/3) + i sin(π/3)) = 2 e^{iπ/3}.
+
+  Imenilac: z2 = 1 + i.
+    |z2| = √(1 + 1) = √2.
+    arg(z2) = arctan(1/1) = π/4.
+    z2 = √2 (cos(π/4) + i sin(π/4)) = √2 e^{iπ/4}.
+
+  Količnik: z = z1 / z2.
+    |z| = |z1| / |z2| = 2 / √2 = √2.
+    arg(z) = arg(z1) - arg(z2) = π/3 - π/4 = (4π - 3π)/12 = π/12.
+    z = √2 e^{iπ/12} = √2 (cos(π/12) + i sin(π/12)).
+
+  z^30 = (√2)^30 · e^{i · 30π/12} = (√2)^30 · e^{i · 5π/2}.
+
+  (√2)^30: ((√2)^2)^15 = 2^15.
+  e^{i · 5π/2}: 5π/2 = 2π + π/2 (period 2π), pa je e^{i · 5π/2} = e^{iπ/2} = i.
+
+  z^30 = 2^15 · i.
+
+  Provera modula: |z^30| = (√2)^30 = 2^15. Imaginarna jedinica i ima modul 1, pa modul rezultata 2^15 · i je 2^15 ✓.
+
+  Odgovor: (A) 2^15 · i.
+
+  (Numerički: 2^15 = 32768.)
+
+  Vizuelni prikazi:
+  1. Kompleksna ravan: z1 = 1 + i√3 (modul 2, ugao 60°), z2 = 1 + i (modul √2, ugao 45°), kvocijent z = √2 ∠ 15°.
+  2. Rotacija: 30 zavoja od π/12 ide do 30·π/12 = 5π/2; mod 2π je π/2 — dakle čista imaginarna jedinica.
+  3. Skaliranje: modul (√2)^30 = 2^15 vs jedinična kružnica.
+
+  Pitfalls:
+  - Pogrešno računanje ugla preko atan2 (znak komponente).
+  - Mešanje stepena modula i ugla — De Moivre množi ugao stepena n, a modul stepenuje na n.
+  - Zaboravljanje redukcije ugla mod 2π; bez nje 5π/2 ne ukazuje direktno na i.
+  - Mešanje stepena (√2)^30 — tačan trik: (√2)^2 = 2, pa (√2)^30 = 2^15.
+  - Pokušaj direktnog množenja brojilac na 30 — komputaciono sumanje.
+</script>
+
+<h1 data-card="problem-title">Trideseti stepen kompleksnog izraza preko polarnog oblika</h1>
+<p data-card="problem-subtitle" class="subtitle">Kompleksni brojevi &mdash; polarni oblik, De Moivreova formula, deljenje, stepenovanje</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Vrednost izraza</p>
+  <div class="math-block">\[ \left( \dfrac{1 + i\sqrt{3}}{1 + i} \right)^{30} \]</div>
+  <p>jednaka je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 2^{15}\cdot i \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 2^{15} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 2^{30} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Brojilac i imenilac prepišemo u polarnom obliku \( r\,e^{i\varphi} \). Deljenje postaje deljenje modula i oduzimanje argumenata, a stepenovanje (De Moivre) postaje stepenovanje modula i množenje argumenta brojem 30. Na kraju ugao redukujemo modulo \( 2\pi \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Polarni oblik i De Moivreova formula</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Polarni oblik:</strong> svaki kompleksan broj \( z = a + bi \) može se zapisati kao \( z = r(\cos\varphi + i\sin\varphi) = r\,e^{i\varphi} \), gde je \( r = |z| = \sqrt{a^2 + b^2} \) modul i \( \varphi = \arg z \) argument.</li>
+        <li><strong>Množenje:</strong> \( r_1 e^{i\varphi_1} \cdot r_2 e^{i\varphi_2} = r_1 r_2\, e^{i(\varphi_1 + \varphi_2)} \) — moduli se množe, argumenti sabiraju.</li>
+        <li><strong>Deljenje:</strong> \[ \dfrac{r_1 e^{i\varphi_1}}{r_2 e^{i\varphi_2}} = \dfrac{r_1}{r_2}\, e^{i(\varphi_1 - \varphi_2)} — \text{ moduli se dele, argumenti oduzimaju}. \]</li>
+        <li><strong>De Moivreova formula:</strong> \[ \left( r\,e^{i\varphi} \right)^n = r^n\, e^{i\,n\varphi}. \] Modul se stepenuje, a argument množi sa \( n \).</li>
+        <li><strong>Periodičnost:</strong> \( e^{i(\varphi + 2\pi k)} = e^{i\varphi} \) za svako celo \( k \). Argument se redukuje modulo \( 2\pi \).</li>
+        <li><strong>Korisne vrednosti:</strong> \( e^{i\,0} = 1 \), \( e^{i\,\pi/2} = i \), \( e^{i\,\pi} = -1 \), \( e^{i\,3\pi/2} = -i \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — brojilac, imenilac i njihov količnik">
+  <h2>📐 Vizuelni prikaz — brojilac, imenilac i njihov količnik</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram15a" width="700" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">U kompleksnoj ravni: brojilac \( 1 + i\sqrt{3} \) sa argumentom \( 60° \) i modulom \( 2 \); imenilac \( 1 + i \) sa argumentom \( 45° \) i modulom \( \sqrt{2} \). Količnik \( z \) ima modul \( \sqrt{2} \) i argument \( 60° - 45° = 15° \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Polarni oblik brojioca \( 1 + i\sqrt{3} \)</h3>
+      <p>Računamo modul i argument:</p>
+      <div class="math-block">\[ |1 + i\sqrt{3}| = \sqrt{1^2 + (\sqrt{3})^2} = \sqrt{1 + 3} = \sqrt{4} = 2. \]</div>
+      <p>Tačka \( (1, \sqrt{3}) \) leži u prvom kvadrantu, pa je argument:</p>
+      <div class="math-block">\[ \arg(1 + i\sqrt{3}) = \arctan\!\dfrac{\sqrt{3}}{1} = \dfrac{\pi}{3} \;\;(60°). \]</div>
+      <p>Dakle:</p>
+      <div class="math-block">\[ 1 + i\sqrt{3} = 2\,e^{i\pi/3} = 2\!\left(\cos\dfrac{\pi}{3} + i\sin\dfrac{\pi}{3}\right). \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: prepoznaj „polovinu jednakostraničnog trougla“.</summary>
+          <div class="detail-content"><p>Tačka \( (1, \sqrt{3}) \) zajedno sa koordinatnim početkom obrazuje trougao iz \( 30°\)-\( 60°\)-\( 90° \). Hipotenuza je modul \( 2 \), a kateta nasuprot ugla \( 60° \) je \( \sqrt{3} \). Ovo je standardni trougao kojeg vredi pamtiti.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Polarni oblik imenioca \( 1 + i \)</h3>
+      <p>Modul i argument:</p>
+      <div class="math-block">\[ |1 + i| = \sqrt{1^2 + 1^2} = \sqrt{2}, \qquad \arg(1 + i) = \dfrac{\pi}{4} \;\;(45°). \]</div>
+      <p>Pa imamo:</p>
+      <div class="math-block">\[ 1 + i = \sqrt{2}\,e^{i\pi/4}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Količnik \( z = \dfrac{1 + i\sqrt{3}}{1 + i} \)</h3>
+      <p>Pri deljenju polarnih brojeva, moduli se <em>dele</em>, a argumenti <em>oduzimaju</em>:</p>
+      <div class="math-block">\[ z = \dfrac{2\,e^{i\pi/3}}{\sqrt{2}\,e^{i\pi/4}} = \dfrac{2}{\sqrt{2}}\, e^{i(\pi/3 - \pi/4)}. \]</div>
+      <p>Pojednostavljujemo modul i sređujemo argument:</p>
+      <div class="math-block">\[ \dfrac{2}{\sqrt{2}} = \sqrt{2}, \qquad \dfrac{\pi}{3} - \dfrac{\pi}{4} = \dfrac{4\pi - 3\pi}{12} = \dfrac{\pi}{12}. \]</div>
+      <p>Konačno:</p>
+      <div class="math-block">\[ z = \sqrt{2}\, e^{i\pi/12}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš \( \tfrac{\pi}{12} \)?</summary>
+          <div class="detail-content"><p>To je \( 15° \), što je razlika \( 60° - 45° \). U geometriji \( 15° \) je polovina od \( 30° \) — pa odatle i tabelarne vrednosti \( \cos 15°, \sin 15° \). Ovde nam te vrednosti, srećom, neće trebati eksplicitno.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Stepenovanje na 30 — De Moivre</h3>
+      <p>Po De Moivreovoj formuli, modul se stepenuje, a argument množi sa 30:</p>
+      <div class="math-block">\[ z^{30} = \left( \sqrt{2}\, e^{i\pi/12} \right)^{30} = (\sqrt{2})^{30} \cdot e^{i\,\frac{30\pi}{12}} = (\sqrt{2})^{30} \cdot e^{i\,\frac{5\pi}{2}}. \]</div>
+      <p>Modul računamo zgodno preko \( (\sqrt{2})^2 = 2 \):</p>
+      <div class="math-block">\[ (\sqrt{2})^{30} = \left((\sqrt{2})^2\right)^{15} = 2^{15}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: \( 2^{15} \) — koji je to broj?</summary>
+          <div class="detail-content"><p>\( 2^{10} = 1024 \), \( 2^{15} = 2^{10}\cdot 2^5 = 1024 \cdot 32 = 32{,}768 \). Nije nam potrebna decimalna vrednost — odgovor ostaje u obliku \( 2^{15} \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Redukcija ugla \( \tfrac{5\pi}{2} \) modulo \( 2\pi \)</h3>
+      <p>Kako je trigonometrijski krug periodičan, ugao redukujemo:</p>
+      <div class="math-block">\[ \dfrac{5\pi}{2} = 2\pi + \dfrac{\pi}{2}. \]</div>
+      <p>Oduzimamo pun krug \( 2\pi \), pa ostaje \( \tfrac{\pi}{2} \). Tako:</p>
+      <div class="math-block">\[ e^{i\,\frac{5\pi}{2}} = e^{i\,\frac{\pi}{2}} = \cos\dfrac{\pi}{2} + i\sin\dfrac{\pi}{2} = 0 + i\cdot 1 = i. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Spajanje rezultata</h3>
+      <p>Modul \( 2^{15} \) puta jedinični kompleksni broj \( i \):</p>
+      <div class="math-block">\[ z^{30} = 2^{15}\cdot i. \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — rotacija ugla pri stepenovanju">
+  <h2>📐 Vizuelni prikaz — gde dovodi 30 puta po \( \tfrac{\pi}{12} \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram15b" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Stepenovanje sa 30 znači rotaciju za \( 30 \cdot 15° = 450° = 360° + 90° \). Posle „punog kruga“, krajnja pozicija ugla je tačno \( 90° \) — pa je smer čisto imaginaran (tačka na pozitivnoj imaginarnoj osi).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — modul">
+  <h2>📐 Vizuelni prikaz — kako modul \( \sqrt{2} \) postaje \( 2^{15} \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram15c" width="700" height="380"></canvas>
+  </div>
+  <p class="canvas-caption">Kvadriranjem se modul \( \sqrt{2} \) udvostručuje: \( (\sqrt{2})^2 = 2 \). Trideset puta stepenovanje grupišemo u petnaest „kvadriranja“: \( (\sqrt{2})^{30} = 2^{15} = 32\,768 \).</p>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Polarni oblik kompleksne brojeve „razlaže“ na dve nezavisne veličine: <em>veličinu</em> (modul) i <em>smer</em> (argument). Sve operacije postaju dvostruke — modul se ponaša kao realan broj (množi/deli/stepenuje), a argument kao ugao (sabira/oduzima/množi sa stepenom). U ovom zadatku se po jedna od te dve veličine elegantno svodi: modul \( \sqrt{2}\to 2^{15} \), a argument \( \tfrac{\pi}{12}\cdot 30 = \tfrac{5\pi}{2}\equiv \tfrac{\pi}{2} \). Kombinacija daje \( 2^{15}\cdot i \).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \left( \dfrac{1 + i\sqrt{3}}{1 + i} \right)^{30} = 2^{15}\cdot i \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 2^{15}\cdot i \)</span>
+    <span class="answer-option" data-option="B">(B) \( 1 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 2^{15} \)</span>
+    <span class="answer-option" data-option="D">(D) \( 2^{30} \)</span>
+    <span class="answer-option" data-option="E">(E) \( 2 \)</span>
+  </div>
+  <p class="verification">Kontrola modula: \( |z^{30}| = |z|^{30} = (\sqrt{2})^{30} = 2^{15} \). Kako je \( |i| = 1 \), modul rezultata \( |2^{15}\cdot i| = 2^{15} \) ✓. Kontrola smera: \( 30 \cdot 15° = 450° \), redukovano na \( 90° \) — to je tačno smer imaginarne jedinice. ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pokušaj direktnog množenja:</strong> računati \( (1 + i\sqrt{3})^{30} \) i \( (1 + i)^{30} \) razvojem binoma je kataklizmički dugačak put. Polarni oblik je <em>jedini</em> razuman pristup.</li>
+    <li><strong>Mešanje stepena modula i ugla:</strong> De Moivre kaže \( r^n \) za modul i \( n\varphi \) za argument. Greška „\( r\cdot n \)“ za modul ili „\( \varphi^n \)“ za argument je veoma česta.</li>
+    <li><strong>Zaboravljen kvadrat unutar modula:</strong> \( |1 + i\sqrt{3}| = \sqrt{1^2 + (\sqrt{3})^2} = 2 \), <em>ne</em> \( \sqrt{1 + \sqrt{3}} \). Imaginarni deo se kvadrira pre korenovanja.</li>
+    <li><strong>Greška u redukciji ugla:</strong> \( \tfrac{5\pi}{2} \) ne odgovara \( \pi \) ili \( -\tfrac{\pi}{2} \) — pravilna redukcija je \( \tfrac{5\pi}{2} - 2\pi = \tfrac{\pi}{2} \), što daje \( i \) (a ne \( -1 \) ili \( -i \)).</li>
+    <li><strong>Pogrešan modul \( (\sqrt{2})^{30} \):</strong> nije \( 2^{30} \), već \( 2^{15} \). Ako se zaboravi, dobija se opcija (D) \( 2^{30} \), zamka koja čeka neoprezne.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Bez dugačkih računa odredi vrednost izraza \( \left( \dfrac{1 + i\sqrt{3}}{1 + i} \right)^{12} \). Da li je rezultat realan, čisto imaginaran ili „mešan“ kompleksan broj?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Količnik je \( z = \sqrt{2}\, e^{i\pi/12} \). Stepenom \( 12 \): modul \( (\sqrt{2})^{12} = 2^6 = 64 \); argument \( 12 \cdot \tfrac{\pi}{12} = \pi \). Pa je \( z^{12} = 64\cdot e^{i\pi} = 64 \cdot (-1) = -64 \) — <em>realan</em> broj. Lepa činjenica: \( z^{12} \) ima ugao \( \pi \), tj. tačno na negativnoj realnoj osi.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  // ---------- Canvas 1: complex plane with z1, z2, quotient ----------
+  (function canvas1() {
+    var canvas = document.getElementById('diagram15a');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, CH = canvas.height;
+
+    function draw() {
+      var bg        = cv('--sol-canvas-bg');
+      var grid      = cv('--sol-canvas-grid');
+      var axis      = cv('--sol-canvas-axis');
+      var primary   = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent    = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text      = cv('--sol-canvas-text');
+      var muted     = cv('--sol-canvas-muted');
+
+      ctx.clearRect(0, 0, W, CH);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, CH);
+
+      ctx.fillStyle = text;
+      ctx.font = 'bold 16px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Kompleksna ravan: brojilac, imenilac i njihov količnik', W / 2, 28);
+
+      var ox = W / 2;
+      var oy = 290;
+      var sc = 65; // 1 unit = 65 px
+
+      // Grid (every 0.5)
+      ctx.strokeStyle = grid;
+      ctx.lineWidth = 1;
+      for (var gx = -3; gx <= 3; gx++) {
+        ctx.beginPath();
+        ctx.moveTo(ox + gx * sc, 60);
+        ctx.lineTo(ox + gx * sc, 480);
+        ctx.stroke();
+      }
+      for (var gy = -2; gy <= 3; gy++) {
+        ctx.beginPath();
+        ctx.moveTo(ox - 4 * sc, oy - gy * sc);
+        ctx.lineTo(ox + 4 * sc, oy - gy * sc);
+        ctx.stroke();
+      }
+
+      // Axes
+      ctx.strokeStyle = axis;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(ox - 4 * sc, oy);
+      ctx.lineTo(ox + 4 * sc, oy);
+      ctx.moveTo(ox, 60); ctx.lineTo(ox, 480);
+      ctx.stroke();
+
+      // Axis labels
+      ctx.fillStyle = muted;
+      ctx.font = '12px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('Re', ox + 4 * sc - 22, oy - 6);
+      ctx.fillText('Im', ox + 6, 70);
+      ctx.textAlign = 'center';
+      [-2, -1, 1, 2].forEach(function(n) {
+        ctx.fillText(String(n), ox + n * sc, oy + 14);
+      });
+      ctx.textAlign = 'right';
+      [1, 2].forEach(function(n) {
+        ctx.fillText(String(n), ox - 4, oy - n * sc + 4);
+      });
+
+      // Unit circle (reference)
+      ctx.strokeStyle = muted;
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 4]);
+      ctx.beginPath();
+      ctx.arc(ox, oy, sc, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Points
+      function plotComplex(re, im, color, label, labelOff) {
+        var x = ox + re * sc;
+        var y = oy - im * sc;
+        // Vector from origin
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(ox, oy); ctx.lineTo(x, y);
+        ctx.stroke();
+        // Arrowhead
+        var ang = Math.atan2(y - oy, x - ox);
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x - 10 * Math.cos(ang - 0.35), y - 10 * Math.sin(ang - 0.35));
+        ctx.lineTo(x - 10 * Math.cos(ang + 0.35), y - 10 * Math.sin(ang + 0.35));
+        ctx.closePath();
+        ctx.fillStyle = color;
+        ctx.fill();
+        // Dot
+        ctx.beginPath();
+        ctx.arc(x, y, 4.5, 0, Math.PI * 2);
+        ctx.fill();
+        // Label
+        ctx.fillStyle = color;
+        ctx.font = 'bold 13px Inter, Segoe UI, system-ui, sans-serif';
+        ctx.textAlign = labelOff.align;
+        ctx.fillText(label, x + labelOff.dx, y + labelOff.dy);
+      }
+
+      // z1 = 1 + i√3 (modul 2, ugao 60°)
+      plotComplex(1, Math.sqrt(3), primary, 'z₁ = 1 + i√3   (|·| = 2, 60°)',
+                  { dx: 10, dy: -8, align: 'left' });
+
+      // z2 = 1 + i (modul √2, ugao 45°)
+      plotComplex(1, 1, secondary, 'z₂ = 1 + i   (|·| = √2, 45°)',
+                  { dx: 10, dy: 18, align: 'left' });
+
+      // Quotient z = √2 ∠ 15°
+      var modZ = Math.sqrt(2);
+      var argZ = Math.PI / 12;
+      var qx = modZ * Math.cos(argZ);
+      var qy = modZ * Math.sin(argZ);
+      plotComplex(qx, qy, accent, 'z = z₁/z₂   (|·| = √2, 15°)',
+                  { dx: 12, dy: -8, align: 'left' });
+
+      // Angle arcs at origin
+      function drawAngleArc(angDeg, radius, color, label) {
+        var ang = angDeg * Math.PI / 180;
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(ox, oy, radius, 0, -ang, true);
+        ctx.stroke();
+        // Place label at midpoint
+        var mid = -ang / 2;
+        var lx = ox + (radius + 14) * Math.cos(mid);
+        var ly = oy + (radius + 14) * Math.sin(mid);
+        ctx.fillStyle = color;
+        ctx.font = 'bold 11px Inter, Segoe UI, system-ui, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText(label, lx, ly);
+      }
+      drawAngleArc(60, 38, primary, '60°');
+      drawAngleArc(45, 60, secondary, '45°');
+      drawAngleArc(15, 86, accent, '15°');
+
+      // Subtraction caption
+      ctx.fillStyle = text;
+      ctx.font = 'bold 13px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Deljenje: moduli se DELE,  argumenti se ODUZIMAJU.', W / 2, 504);
+    }
+
+    draw();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+      }
+    });
+  })();
+
+  // ---------- Canvas 2: rotation by 30 * 15 = 450 -> 90 ----------
+  (function canvas2() {
+    var canvas = document.getElementById('diagram15b');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, CH = canvas.height;
+
+    function draw() {
+      var bg        = cv('--sol-canvas-bg');
+      var grid      = cv('--sol-canvas-grid');
+      var axis      = cv('--sol-canvas-axis');
+      var primary   = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent    = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text      = cv('--sol-canvas-text');
+      var muted     = cv('--sol-canvas-muted');
+
+      ctx.clearRect(0, 0, W, CH);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, CH);
+
+      ctx.fillStyle = text;
+      ctx.font = 'bold 16px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('30 koraka po 15° = 450° ≡ 90°  (mod 360°)', W / 2, 28);
+
+      var ox = W / 2 - 50;
+      var oy = 260;
+      var R = 130;
+
+      // Axes
+      ctx.strokeStyle = axis;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(ox - R - 30, oy);
+      ctx.lineTo(ox + R + 30, oy);
+      ctx.moveTo(ox, oy - R - 30); ctx.lineTo(ox, oy + R + 30);
+      ctx.stroke();
+
+      // Axis labels
+      ctx.fillStyle = muted;
+      ctx.font = '12px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('Re', ox + R + 14, oy - 4);
+      ctx.fillText('Im', ox + 6, oy - R - 18);
+
+      // Unit circle (the path of normalized z^k angle)
+      ctx.strokeStyle = muted;
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 4]);
+      ctx.beginPath();
+      ctx.arc(ox, oy, R, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Plot all 30 successive angles k * 15° on the unit circle
+      ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.6);
+      for (var k = 1; k <= 30; k++) {
+        var a = k * Math.PI / 12; // radians
+        var px = ox + R * Math.cos(a);
+        var py = oy - R * Math.sin(a);
+        ctx.beginPath();
+        ctx.arc(px, py, 3.4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Highlight starting position k=1 (15°)
+      var aStart = Math.PI / 12;
+      var sx = ox + R * Math.cos(aStart);
+      var sy = oy - R * Math.sin(aStart);
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(ox, oy); ctx.lineTo(sx, sy);
+      ctx.stroke();
+      ctx.fillStyle = primary;
+      ctx.beginPath();
+      ctx.arc(sx, sy, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = primary;
+      ctx.font = 'bold 12px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('k = 1: 15°', sx + 10, sy + 4);
+
+      // Final position k=30 (450° = 90°)
+      var aEnd = 30 * Math.PI / 12; // = 5π/2
+      var ex = ox + R * Math.cos(aEnd);
+      var ey = oy - R * Math.sin(aEnd);
+      // Glow ring
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.25);
+      ctx.beginPath();
+      ctx.arc(ex, ey, 14, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(ox, oy); ctx.lineTo(ex, ey);
+      ctx.stroke();
+      // Arrowhead
+      var ang = Math.atan2(ey - oy, ex - ox);
+      ctx.beginPath();
+      ctx.moveTo(ex, ey);
+      ctx.lineTo(ex - 10 * Math.cos(ang - 0.35), ey - 10 * Math.sin(ang - 0.35));
+      ctx.lineTo(ex - 10 * Math.cos(ang + 0.35), ey - 10 * Math.sin(ang + 0.35));
+      ctx.closePath();
+      ctx.fillStyle = accent;
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(ex, ey, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 13px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('k = 30: 450° ≡ 90°  →  smer  i', ex + 12, ey - 6);
+
+      // Spiral arc (small) from start to end, indicating multiple loops
+      ctx.strokeStyle = highlight;
+      ctx.lineWidth = 1.4;
+      ctx.setLineDash([4, 4]);
+      // sweep two full loops + 90° from 15° to 90°+360° (=450°)
+      ctx.beginPath();
+      ctx.arc(ox, oy, R - 12, -aStart, -aEnd, true);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Side info panel
+      var xT = ox + R + 80;
+      var yT = 80;
+      ctx.fillStyle = text;
+      ctx.font = 'bold 14px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('De Moivre na ugao:', xT, yT);
+      ctx.fillStyle = primary;
+      ctx.font = 'bold 13px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.fillText('arg(z³⁰) = 30 · π/12', xT, yT + 24);
+      ctx.fillStyle = secondary;
+      ctx.fillText('= 30π/12 = 5π/2', xT, yT + 44);
+      ctx.fillStyle = text;
+      ctx.font = 'bold 13px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.fillText('Mod 2π:', xT, yT + 76);
+      ctx.fillStyle = accent;
+      ctx.fillText('5π/2 - 2π = π/2', xT, yT + 96);
+      ctx.fillStyle = muted;
+      ctx.font = '12px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.fillText('e^{iπ/2} = i', xT, yT + 116);
+      ctx.fillStyle = text;
+      ctx.font = 'bold 14px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.fillText('Smer rezultata:', xT, yT + 152);
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 16px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.fillText('+ Im (čista i)', xT, yT + 174);
+
+      // Caption
+      ctx.fillStyle = muted;
+      ctx.font = '12px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('30 ravnomernih koraka po 15° popune krug, plus dolaze do 90° na kraju.', W / 2, 470);
+    }
+
+    draw();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+      }
+    });
+  })();
+
+  // ---------- Canvas 3: modulus growth ----------
+  (function canvas3() {
+    var canvas = document.getElementById('diagram15c');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, CH = canvas.height;
+
+    function draw() {
+      var bg        = cv('--sol-canvas-bg');
+      var primary   = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent    = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text      = cv('--sol-canvas-text');
+      var muted     = cv('--sol-canvas-muted');
+
+      ctx.clearRect(0, 0, W, CH);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, CH);
+
+      ctx.fillStyle = text;
+      ctx.font = 'bold 16px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Stepenovanje modula: (√2)³⁰ = 2¹⁵', W / 2, 28);
+
+      function box(x, y, w, h, fill, stroke) {
+        ctx.fillStyle = fill;
+        ctx.strokeStyle = stroke;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        if (ctx.roundRect) {
+          ctx.roundRect(x, y, w, h, 8);
+        } else {
+          ctx.rect(x, y, w, h);
+        }
+        ctx.fill();
+        ctx.stroke();
+      }
+      function arrow(xc, y0, y1) {
+        ctx.strokeStyle = muted;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(xc, y0); ctx.lineTo(xc, y1);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(xc - 6, y1 - 7);
+        ctx.lineTo(xc, y1 + 3);
+        ctx.lineTo(xc + 6, y1 - 7);
+        ctx.stroke();
+      }
+
+      var X = W / 2;
+
+      box(X - 230, 60, 460, 56, cvAlpha('--sol-canvas-primary', 0.10), primary);
+      ctx.fillStyle = text;
+      ctx.font = 'bold 13px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Polazni modul:', X, 82);
+      ctx.fillStyle = primary;
+      ctx.font = 'bold 16px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.fillText('|z| = √2', X, 105);
+
+      arrow(X, 120, 144);
+
+      box(X - 230, 148, 460, 64, cvAlpha('--sol-canvas-secondary', 0.10), secondary);
+      ctx.fillStyle = text;
+      ctx.font = 'bold 13px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.fillText('Stepenuj na 30 — preko (√2)² = 2:', X, 170);
+      ctx.fillStyle = secondary;
+      ctx.font = 'bold 16px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.fillText('(√2)³⁰ = ((√2)²)¹⁵ = 2¹⁵', X, 196);
+
+      arrow(X, 216, 240);
+
+      box(X - 230, 244, 460, 80, cvAlpha('--sol-canvas-accent', 0.18), accent);
+      ctx.fillStyle = text;
+      ctx.font = 'bold 14px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.fillText('Modul rezultata: |z³⁰| = 2¹⁵ = 32 768', X, 270);
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 16px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.fillText('z³⁰ = 2¹⁵ · i', X, 300);
+    }
+
+    draw();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+      }
+    });
+  })();
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Trideseti stepen količnika kompleksnih brojeva (1 + i√3)/(1 + i) preko polarnog oblika",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["kompleksni brojevi", "polarni oblik", "De Moivreova formula", "stepenovanje", "argument", "modul"]
+}
+BRAINSPARK_META-->

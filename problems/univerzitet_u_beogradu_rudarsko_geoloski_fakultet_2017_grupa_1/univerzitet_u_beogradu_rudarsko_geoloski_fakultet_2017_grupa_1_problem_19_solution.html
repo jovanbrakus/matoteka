@@ -1,0 +1,523 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Prvi clan geometrijskog niza je 5, peti clan je 80. Naci S_10.
+
+Strategija:
+1) Iz a_n = a_1 * q^(n-1) odrediti kolicnik q.
+2) Primeniti formulu za zbir prvih n clanova S_n = a_1 * (q^n - 1) / (q - 1).
+
+Korak 1 — kolicnik:
+  a_5 = a_1 * q^4
+  80 = 5 * q^4
+  q^4 = 16
+  q = +/- 2 (jer je 2^4 = 16 i (-2)^4 = 16)
+
+Razmatranje obe vrednosti:
+  Za q = 2:  niz 5, 10, 20, 40, 80, 160, 320, 640, 1280, 2560.
+    Peti clan = 80 ✓
+    S_10 = 5 * (2^10 - 1) / (2 - 1) = 5 * 1023 = 5115. To odgovara opciji C.
+  Za q = -2: niz 5, -10, 20, -40, 80, -160, 320, -640, 1280, -2560.
+    Peti clan = 80 ✓
+    S_10 = 5 * ((-2)^10 - 1) / (-2 - 1) = 5 * (1024 - 1)/(-3) = 5 * 1023 / (-3) = -1705.
+    Negativno, nije medju ponudjenim opcijama.
+
+Pa je jedinstveni valjani odgovor S_10 = 5115, sto odgovara opciji C.
+
+Korak 2 — direktna provera za q=2:
+  5 + 10 + 20 + 40 + 80 + 160 + 320 + 640 + 1280 + 2560.
+  5+10 = 15
+  15+20 = 35
+  35+40 = 75
+  75+80 = 155
+  155+160 = 315
+  315+320 = 635
+  635+640 = 1275
+  1275+1280 = 2555
+  2555+2560 = 5115 ✓
+
+Drugi pristup: 5 * (2^10 - 1) = 5 * 1023 = 5115.
+
+Odgovor: C) 5115.
+
+Vizuelni prikaz: stubicni dijagram clanova niza (eksponencijalni rast) i kumulativni zbir koji dostize 5115 nakon 10. clana.
+</script>
+
+<h1 data-card="problem-title">Zbir prvih deset članova geometrijskog niza</h1>
+<p data-card="problem-subtitle" class="subtitle">Određivanje količnika i primena formule za parcijalni zbir</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Prvi član geometrijskog niza je \( 5 \), a peti član je \( 80 \). Zbir prvih deset članova je:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">\( a_1 \)</span>
+      <span class="given-value">\( 5 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">\( a_5 \)</span>
+      <span class="given-value">\( 80 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Traži se</span>
+      <span class="given-value">\( S_{10} \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 5225 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 4855 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 5115 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 5450 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">
+    Iz veze \( a_5 = a_1 \cdot q^{4} \) odredićemo količnik \( q \), pažljivo razmotriti obe njegove moguće vrednosti, a zatim primeniti formulu za zbir prvih \( n \) članova geometrijskog niza \( S_n = a_1 \cdot \dfrac{q^{n} - 1}{q - 1} \) za \( n = 10 \).
+  </p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Geometrijski niz — opšti član i zbir</summary>
+    <div class="detail-content">
+      <ul>
+        <li>
+          <span class="formula-label">Opšti član</span>
+          \( a_n = a_1 \cdot q^{\,n-1} \), gde je \( q \) količnik (odnos dva uzastopna člana, \( q = a_{n+1}/a_n \)).
+        </li>
+        <li>
+          <span class="formula-label">Zbir prvih n članova</span>
+          \( \displaystyle S_n = a_1 \cdot \frac{q^{n} - 1}{q - 1} \), za \( q \neq 1 \).
+        </li>
+        <li>
+          <span class="formula-label">Parni eksponent</span>
+          Jednačina \( q^{2k} = c \) (sa \( c > 0 \)) ima dva realna rešenja: \( q = \pm\, c^{1/(2k)} \). Treba proveriti oba.
+        </li>
+        <li>
+          <span class="formula-label">Specijalan slučaj</span>
+          Ako je \( q = 1 \), niz je konstantan i \( S_n = n \cdot a_1 \).
+        </li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="760" height="540"></canvas>
+  </div>
+  <p class="canvas-caption">Plavi stubići: vrednosti članova \( a_n = 5 \cdot 2^{\,n-1} \) (eksponencijalni rast). Zelena izlomljena linija: tekući zbir \( S_n \), koji posle desetog člana dostiže \( 5115 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavi vezu petog i prvog člana</h3>
+      <p>Iz formule opšteg člana \( a_n = a_1 \cdot q^{\,n-1} \) za \( n = 5 \) dobijamo:</p>
+      <div class="math-block">\[ a_5 = a_1 \cdot q^{4} \quad \Longrightarrow \quad 80 = 5 \cdot q^{4}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je eksponent \( 4 \), a ne \( 5 \)?</summary>
+          <div class="detail-content"><p>Zato što između prvog i petog člana ima tačno četiri „koraka" množenja sa \( q \): \( a_1 \to a_2 \to a_3 \to a_4 \to a_5 \). Eksponent je uvek \( n - 1 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunaj \( q \) — pazi, dva korena</h3>
+      <p>Podelimo obe strane sa \( 5 \):</p>
+      <div class="math-block">\[ q^{4} = \frac{80}{5} = 16. \]</div>
+      <p>Pošto je \( 2^{4} = 16 \) i \( (-2)^{4} = 16 \), jednačina ima <em>dva</em> realna rešenja:</p>
+      <div class="math-block">\[ q = 2 \quad \text{ili} \quad q = -2. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš dva rešenja, a ne četiri?</summary>
+          <div class="detail-content"><p>Jednačina \( q^4 = 16 \) ima u kompleksnim brojevima tačno četiri rešenja, ali samo dva su realna: \( \pm\,2 \). Geometrijski niz se po dogovoru posmatra nad realnim brojevima, pa preostaju samo ova dva kandidata.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Probaj \( q = 2 \) i izračunaj \( S_{10} \)</h3>
+      <p>Niz je tada \( 5,\ 10,\ 20,\ 40,\ 80,\ 160,\ 320,\ 640,\ 1280,\ 2560 \), i zaista je peti član \( 80 \). Primenom formule za zbir:</p>
+      <div class="math-block">\[ S_{10} \;=\; a_1 \cdot \frac{q^{10} - 1}{q - 1} \;=\; 5 \cdot \frac{2^{10} - 1}{2 - 1}. \]</div>
+      <p>Pošto je \( 2^{10} = 1024 \), dobijamo:</p>
+      <div class="math-block">\[ S_{10} \;=\; 5 \cdot \frac{1024 - 1}{1} \;=\; 5 \cdot 1023 \;=\; 5115. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Probaj \( q = -2 \) i odbaci je</h3>
+      <p>Za \( q = -2 \) niz je \( 5,\ -10,\ 20,\ -40,\ 80,\ -160,\ 320,\ -640,\ 1280,\ -2560 \) (peti član je opet \( 80 \) ✓), ali zbir ispada negativan:</p>
+      <div class="math-block">\[ S_{10} \;=\; 5 \cdot \frac{(-2)^{10} - 1}{-2 - 1} \;=\; 5 \cdot \frac{1024 - 1}{-3} \;=\; 5 \cdot \frac{1023}{-3} \;=\; -1705. \]</div>
+      <p>Tako velika negativna vrednost <span class="crossed">ne nalazi se</span> među ponuđenim opcijama, pa ova grana otpada. Ostaje jedinstveni valjani odgovor iz prethodnog koraka.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto se zbir za \( q=-2 \) toliko razlikuje?</summary>
+          <div class="detail-content"><p>Kod \( q = -2 \) članovi naizmenično menjaju znak, pa se mnogo otkazuje. Imenilac \( q - 1 = -3 \) takođe ulazi sa negativnim znakom, što ukupan zbir vodi u minus. Numerički \( S_{10} = -1705 \), što ne može biti pozitivan višecifren broj iz odgovora.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera direktnim sabiranjem</h3>
+      <p>Za \( q = 2 \) saberimo članove „peške":</p>
+      <div class="math-block">\[ 5 + 10 + 20 + 40 + 80 + 160 + 320 + 640 + 1280 + 2560. \]</div>
+      <p>Grupisanjem u parove:</p>
+      <div class="math-block">\[ \underbrace{(5 + 10)}_{15} + \underbrace{(20 + 40)}_{60} + \underbrace{(80 + 160)}_{240} + \underbrace{(320 + 640)}_{960} + \underbrace{(1280 + 2560)}_{3840}. \]</div>
+      <div class="math-block">\[ 15 + 60 + 240 + 960 + 3840 \;=\; 5115. \quad \checkmark \]</div>
+      <p>Rezultat se slaže sa onim iz formule.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>
+    Kada relacija \( q^4 = 16 \) daje dva realna rešenja \( q = \pm\,2 \), <strong>oba</strong> su tehnički validni geometrijski nizovi sa istim petim članom. Ali zbir \( S_{10} \) ih razdvaja: za \( q=2 \) je \( S_{10} = 5115 \), za \( q=-2 \) je \( S_{10} = -1705 \). Pošto su sve ponuđene opcije pozitivne, automatski biramo pozitivnu granu — i dobijamo upravo \( 5 \cdot (2^{10} - 1) = 5 \cdot 1023 = 5115 \).
+  </p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ S_{10} \;=\; 5 \cdot \frac{2^{10} - 1}{2 - 1} \;=\; 5 \cdot 1023 \;=\; 5115. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 5225 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 4855 \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( 5115 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 5450 \)</span>
+  </div>
+  <p class="verification">Provera: \( a_5 = 5 \cdot 2^{4} = 80 \) ✓; sabiranje članova \( 5,10,20,\ldots,2560 \) daje \( 5115 \) ✓.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>
+      Pisati \( a_5 = a_1 \cdot q^{5} \) umesto \( q^{4} \). Eksponent je uvek \( n - 1 \), broj množenja sa \( q \) između prvog i \( n \)-tog člana.
+    </li>
+    <li>
+      Iz \( q^4 = 16 \) zaključiti samo \( q = 2 \), zaboravljajući da i \( q = -2 \) daje \( q^4 = 16 \). Kod parnog eksponenta uvek treba proveriti oba znaka — i tek zatim isključiti onaj koji ne daje smislen odgovor.
+    </li>
+    <li>
+      Mešati formule sa aritmetičkim nizom: koristiti \( S_n = \tfrac{n}{2}(a_1 + a_n) \). Ona važi <em>isključivo</em> za aritmetički niz.
+    </li>
+    <li>
+      Greška \( 2^{10} = 1000 \). Tačno je \( 2^{10} = 1024 \), pa je \( 2^{10} - 1 = 1023 \) (jedna od onih konstanti koje vredi znati napamet).
+    </li>
+    <li>
+      Zaboraviti množenje sa \( a_1 = 5 \) i napisati odgovor \( 1023 \) ili \( 1024 \) — to je samo izraz \( 2^{10} - 1 \), nije zbir niza.
+    </li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>
+    Koliko najmanje članova istog niza (\( a_1 = 5 \), \( q = 2 \)) treba sabrati da bi zbir prvi put prešao \( 1\,000\,000 \)? Drugim rečima, naći najmanji prirodan broj \( n \) za koji važi \( 5 \cdot (2^{n} - 1) > 10^{6} \).
+  </p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>
+        Treba rešiti \( 2^{n} > \tfrac{10^{6}}{5} + 1 = 200\,001 \). Logaritmovanjem (po osnovi \( 2 \)) dobijamo \( n > \log_{2}(200\,001) \approx 17{,}61 \), pa je traženo \( n = 18 \). Provera: \( S_{18} = 5 \cdot (2^{18} - 1) = 5 \cdot 262\,143 = 1\,310\,715 > 10^{6} \), dok je \( S_{17} = 5 \cdot 131\,071 = 655\,355 < 10^{6} \). ✓
+      </p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  // Niz: a_n = 5 * 2^(n-1)
+  var terms = [];
+  var partial = [];
+  var sum = 0;
+  for (var i = 1; i <= 10; i++) {
+    var t = 5 * Math.pow(2, i - 1);
+    terms.push(t);
+    sum += t;
+    partial.push(sum);
+  }
+  // sum = 5115, max term = 2560
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    var W = canvas.width;
+    var H = canvas.height;
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Layout
+    var marginLeft = 78;
+    var marginRight = 40;
+    var marginTop = 64;
+    var marginBottom = 100;
+    var plotW = W - marginLeft - marginRight;
+    var plotH = H - marginTop - marginBottom;
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Članovi niza a_n i tekući zbir S_n  (a_1 = 5, q = 2)', marginLeft, 28);
+
+    // Y axis: linear with max ~5300 to fit final S_10 = 5115
+    var yMax = 5400;
+    function xPos(n) {
+      var step = plotW / 10;
+      return marginLeft + (n - 1) * step + step * 0.5;
+    }
+    function yPos(v) {
+      return marginTop + plotH - (v / yMax) * plotH;
+    }
+
+    // Grid lines (horizontal)
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    var gridVals = [0, 1000, 2000, 3000, 4000, 5000];
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'right';
+    for (var g = 0; g < gridVals.length; g++) {
+      var y = yPos(gridVals[g]);
+      ctx.beginPath();
+      ctx.moveTo(marginLeft, y);
+      ctx.lineTo(W - marginRight, y);
+      ctx.stroke();
+      ctx.fillText(String(gridVals[g]), marginLeft - 8, y + 4);
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(marginLeft, marginTop);
+    ctx.lineTo(marginLeft, marginTop + plotH);
+    ctx.lineTo(W - marginRight, marginTop + plotH);
+    ctx.stroke();
+
+    // Bars (a_n)
+    var barWidth = (plotW / 10) * 0.55;
+    for (var i = 0; i < 10; i++) {
+      var n = i + 1;
+      var v = terms[i];
+      var x = xPos(n) - barWidth / 2;
+      var yTop = yPos(v);
+      var yBot = yPos(0);
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.75);
+      ctx.fillRect(x, yTop, barWidth, yBot - yTop);
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(x, yTop, barWidth, yBot - yTop);
+
+      // x-axis label (n)
+      ctx.fillStyle = text;
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('n=' + n, xPos(n), marginTop + plotH + 18);
+      // value above bar
+      ctx.fillStyle = muted;
+      ctx.font = '10px Inter, system-ui, sans-serif';
+      var label = String(v);
+      var labelY = yTop - 6;
+      if (labelY < marginTop + 14) labelY = yTop + 12;
+      ctx.fillText(label, xPos(n), labelY);
+    }
+
+    // Tekući zbir line (S_n)
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    for (var i = 0; i < 10; i++) {
+      var n = i + 1;
+      var x = xPos(n);
+      var y = yPos(partial[i]);
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+
+    // Points on the S_n line
+    for (var i = 0; i < 10; i++) {
+      var n = i + 1;
+      var x = xPos(n);
+      var y = yPos(partial[i]);
+      ctx.beginPath();
+      ctx.arc(x, y, 4.5, 0, Math.PI * 2);
+      ctx.fillStyle = accent;
+      ctx.fill();
+    }
+
+    // Final S_10 callout
+    var xFinal = xPos(10);
+    var yFinal = yPos(partial[9]);
+    ctx.beginPath();
+    ctx.arc(xFinal, yFinal, 9, 0, Math.PI * 2);
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.25);
+    ctx.fill();
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(xFinal, yFinal, 9, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('S₁₀ = 5115', xFinal - 14, yFinal - 4);
+
+    // Mark the 5th term (problem datum)
+    var x5 = xPos(5);
+    var y5 = yPos(terms[4]);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(x5, marginTop + plotH);
+    ctx.lineTo(x5, y5);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('a₅ = 80 (dato)', x5, y5 - 16);
+
+    // Axis titles
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Indeks člana n', marginLeft + plotW / 2, H - 56);
+    ctx.save();
+    ctx.translate(22, marginTop + plotH / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('Vrednost', 0, 0);
+    ctx.restore();
+
+    // Legend (bottom)
+    var legY = H - 24;
+    var legX = marginLeft;
+
+    // Bar swatch
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.75);
+    ctx.fillRect(legX, legY - 10, 18, 12);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(legX, legY - 10, 18, 12);
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('a_n  (član niza)', legX + 24, legY);
+
+    // Line swatch
+    var lx = legX + 200;
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(lx, legY - 4);
+    ctx.lineTo(lx + 22, legY - 4);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(lx + 11, legY - 4, 3.5, 0, Math.PI * 2);
+    ctx.fillStyle = accent;
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.fillText('S_n  (tekući zbir)', lx + 30, legY);
+
+    // Highlight swatch (5th term)
+    var hx = legX + 400;
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(hx, legY - 4);
+    ctx.lineTo(hx + 22, legY - 4);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = text;
+    ctx.fillText('peti član (dato)', hx + 30, legY);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Zbir prvih deset članova geometrijskog niza",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["geometrijski niz", "zbir niza", "kolicnik niza", "eksponencijalni rast"]
+}
+BRAINSPARK_META-->

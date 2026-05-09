@@ -1,0 +1,502 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: vrednost izraza E = ((1+i)^2012 + (1-i)^2012) / (2·(1+i)^2012).
+
+Strategija: kvadrirati 1±i da se "uđe" u potencije od 2 i i.
+
+Korak 1 — kvadrati:
+  (1+i)^2 = 1 + 2i + i^2 = 1 + 2i - 1 = 2i.
+  (1-i)^2 = 1 - 2i + i^2 = -2i.
+
+Korak 2 — 2012 = 2·1006, pa
+  (1+i)^2012 = ((1+i)^2)^1006 = (2i)^1006 = 2^1006 · i^1006.
+  (1-i)^2012 = ((1-i)^2)^1006 = (-2i)^1006 = (-1)^1006 · 2^1006 · i^1006
+              = 2^1006 · i^1006   (jer je 1006 paran).
+
+Korak 3 — i^1006:
+  1006 = 4·251 + 2, pa i^1006 = i^2 = -1.
+  Dakle:
+    (1+i)^2012 = 2^1006 · (-1) = -2^1006.
+    (1-i)^2012 = 2^1006 · (-1) = -2^1006.
+
+Korak 4 — uvrstiti u E:
+  brojilac:    (-2^1006) + (-2^1006) = -2^1007.
+  imenilac:    2 · (-2^1006) = -2^1007.
+  E = (-2^1007)/(-2^1007) = 1.
+
+Alternativan put preko polarnog oblika:
+  1 + i = √2 · e^{iπ/4}, 1 - i = √2 · e^{-iπ/4}.
+  (1+i)^2012 = (√2)^2012 · e^{i·2012·π/4} = 2^1006 · e^{i·503π}
+             = 2^1006 · (cos 503π + i sin 503π) = 2^1006 · (-1) = -2^1006.
+  (1-i)^2012 = 2^1006 · e^{-i·503π} = 2^1006 · (-1) = -2^1006.
+  (Konjugovano je samo sebi jer je realno.)
+  Pa je brojilac 2·(1+i)^2012 = imenilac, i E = 1.
+
+Distraktori:
+  (A) 1/2 — student je shvatio da brojilac = 2 puta neki član ali pomešao
+            sa imeniocem 4·(...).
+  (B) 0 — pogrešno zaključio da je (1+i)^2012 čisto imaginarno.
+  (C) 2 — uzeo brojilac kao 2·(1+i)^2012 + 2·(1-i)^2012.
+  (D) -1 — zaboravio jedan minus, dobio (1+i)^2012 = +2^1006.
+  (E) 1 — TAČNO.
+
+Vizuelni prikaz (kompleksna ravan):
+  - 1+i kao tačka (1,1) na arg = π/4, modul √2.
+  - 1+i)^2 = 2i kao rotacija za π/4 + skaliranje na modul 2 (tačka (0,2)).
+  - Strelice koje pokazuju kako svako kvadriranje udvostručuje argument
+    (rotacija) i kvadrira modul (skaliranje).
+  - Naznačeno gde "padne" (1+i)^2012 — na realnu osu, na -2^1006.
+  - Statički graf — interaktivnost ovde ne dodaje vrednost (po uputstvu:
+    aritmetika kompleksnih brojeva, stepenovanje, ostaje statična).
+</script>
+
+<h1 data-card="problem-title">Visoki stepeni \( 1 \pm i \) i njihov odnos</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — kompleksni brojevi, kvadriranje \( 1 \pm i \), ciklus stepena \( i^n \), polarni oblik</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Vrednost izraza</p>
+  <div class="math-block">
+    \[ \dfrac{(1+i)^{2012} + (1-i)^{2012}}{2\,(1+i)^{2012}} \]
+  </div>
+  <p>(\( i \) je imaginarna jedinica) je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \dfrac{1}{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 0 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( -1 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Izbegavamo direktno stepenovanje na 2012 — koristimo da je \( (1+i)^2 = 2i \) i \( (1-i)^2 = -2i \), pa visok eksponent prebacujemo na "lepe" izraze \( (2i)^{1006} \) i \( (-2i)^{1006} \). Ostaje samo da iskoristimo ciklus \( i^n \) (period 4) i da uporedimo brojilac sa imeniocem.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Stepeni od \( 1 \pm i \), ciklus \( i^n \) i polarni oblik</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Kvadrat</span> \( (1+i)^2 = 1 + 2i + i^2 = 2i \) i \( (1-i)^2 = -2i \). Ovo je najkorisniji identitet za stepenovanje.</li>
+        <li><span class="formula-label">Ciklus \( i^n \)</span> \( i^1 = i,\ i^2 = -1,\ i^3 = -i,\ i^4 = 1 \), period \( 4 \). Za bilo koji \( n \) važi \( i^n = i^{n \bmod 4} \).</li>
+        <li><span class="formula-label">Polarni oblik</span> \( 1+i = \sqrt{2}\,e^{i\pi/4} \), \( 1-i = \sqrt{2}\,e^{-i\pi/4} \). Konjugovani su, pa su i njihovi stepeni konjugovani.</li>
+        <li><span class="formula-label">De Moivreova formula</span> \( (re^{i\varphi})^n = r^n e^{in\varphi} \).</li>
+        <li class="note">Ako je \( z \) realan broj, onda je \( \bar{z} = z \), pa za realne stepene važi \( z + \bar{z} = 2z \). To će biti ključno na kraju.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="720" height="640"></canvas>
+  </div>
+  <p class="canvas-caption">Kompleksna ravan: tačke \( 1+i,\ (1+i)^2 = 2i,\ (1+i)^4 = -4 \) i sukcesivne potencije. Svako kvadriranje <em>udvostručava argument</em> (rotacija) i <em>kvadrira modul</em> (skaliranje). Posle dovoljno kvadriranja "padamo" na realnu osu — zato je \( (1+i)^{2012} \) realan broj.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Pojednostavi \( (1+i)^2 \) i \( (1-i)^2 \)</h3>
+      <p>Direktnim razvojem:</p>
+      <div class="math-block">\[ (1+i)^2 = 1 + 2i + i^2 = 2i,\qquad (1-i)^2 = 1 - 2i + i^2 = -2i. \]</div>
+      <p>Ovo je ključ — umesto eksponenta \( 2012 \) imaćemo eksponent \( 1006 \) na izrazu \( 2i \) ili \( -2i \), gde \( 2 \) izlazi kao broj, a \( i \) ulazi u svoj poznati ciklus.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Pretvori stepen 2012 u stepen 1006</h3>
+      <p>Pošto je \( 2012 = 2 \cdot 1006 \), pišemo</p>
+      <div class="math-block">\[ (1+i)^{2012} = \big((1+i)^2\big)^{1006} = (2i)^{1006} = 2^{1006} \cdot i^{\,1006}. \]</div>
+      <p>Slično:</p>
+      <div class="math-block">\[ (1-i)^{2012} = (-2i)^{1006} = (-1)^{1006}\cdot 2^{1006} \cdot i^{\,1006} = 2^{1006} \cdot i^{\,1006}, \]</div>
+      <p>jer je \( (-1)^{1006} = 1 \) (paran eksponent). Dakle <strong>oba</strong> stepena su jednaka — to je ogroman pojednostavljivač.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( (-1)^{1006} = 1 \)?</summary>
+          <div class="detail-content"><p>Eksponent je paran, pa se \( -1 \) "anulira" u parovima: \( (-1)^{1006} = ((-1)^2)^{503} = 1^{503} = 1 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Iskoristi ciklus \( i^n \) za \( i^{1006} \)</h3>
+      <p>Stepeni od \( i \) se ponavljaju po periodu \( 4 \): \( i^0=1,\ i^1=i,\ i^2=-1,\ i^3=-i \). Delimo \( 1006 \) sa \( 4 \):</p>
+      <div class="math-block">\[ 1006 = 4 \cdot 251 + 2 \;\;\Longrightarrow\;\; i^{1006} = i^2 = -1. \]</div>
+      <p>Otuda:</p>
+      <div class="math-block">\[ (1+i)^{2012} = 2^{1006}\cdot(-1) = -2^{1006},\quad (1-i)^{2012} = -2^{1006}. \]</div>
+      <p>Zanimljivo — visoki stepen \( (1+i) \) je <em>realan</em> broj. Geometrijski: rotacija od \( 2012 \cdot \frac{\pi}{4} = 503\pi \) je celobrojan umnožak \( \pi \), pa završava na realnoj osi.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Saberi i podeli</h3>
+      <p>Brojilac:</p>
+      <div class="math-block">\[ (1+i)^{2012} + (1-i)^{2012} = -2^{1006} + (-2^{1006}) = -2 \cdot 2^{1006} = -2^{1007}. \]</div>
+      <p>Imenilac:</p>
+      <div class="math-block">\[ 2\,(1+i)^{2012} = 2\cdot(-2^{1006}) = -2^{1007}. \]</div>
+      <p>Konačno:</p>
+      <div class="math-block">\[ \dfrac{-2^{1007}}{-2^{1007}} = 1. \]</div>
+      <p><span class="result">Vrednost izraza je \( 1 \).</span></p>
+      <div class="checkpoint">
+        <details>
+          <summary>Elegantna varijanta: zašto je odgovor "očigledno" 1?</summary>
+          <div class="detail-content">
+            <p>Brojevi \( 1+i \) i \( 1-i \) su konjugovani, pa su i \( (1+i)^{2012} \) i \( (1-i)^{2012} \) konjugovani. Ali utvrdili smo da je \( (1+i)^{2012} \) <em>realan</em> broj, a realan broj je sam svoj konjugat. Dakle \( (1-i)^{2012} = (1+i)^{2012} \), pa je brojilac jednak \( 2(1+i)^{2012} \) — istom kao imenilac. Razlomak se "vidi" kao \( 1 \) bez ijednog računa.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Sa \( (1+i)^2 = 2i \) i \( (1-i)^2 = -2i \), bilo koji <em>paran</em> stepen od \( 1 \pm i \) pretvaramo u stepen jednostavnog \( \pm 2i \), gde se "geometrija" svede na ciklus \( i^n \). Kad je eksponent još deljiv sa \( 4 \), stepen "pada" na realnu osu, pa konjugovani parovi automatski daju isti broj — i razlomak postaje očigledan.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \dfrac{(1+i)^{2012} + (1-i)^{2012}}{2\,(1+i)^{2012}} = 1 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( \dfrac{1}{2} \)</span>
+    <span class="answer-option" data-option="B">(B) \( 0 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 2 \)</span>
+    <span class="answer-option" data-option="D">(D) \( -1 \)</span>
+    <span class="answer-option correct" data-option="E">(E) \( 1 \)</span>
+  </div>
+  <p class="verification">Provera (polarni oblik): \( 1+i = \sqrt{2}\,e^{i\pi/4} \), pa \( (1+i)^{2012} = 2^{1006}\,e^{i\,503\pi} = -2^{1006} \). Slično \( (1-i)^{2012} = -2^{1006} \). Brojilac \( -2^{1007} \), imenilac \( -2^{1007} \), količnik \( 1 \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pisanje \( (1+i)^{2012} = 1^{2012} + i^{2012} \) — binom se NE razlaže član po član za stepenovanje. Mora se ići preko \( (1+i)^2 = 2i \) ili polarnog oblika.</li>
+    <li>Greška u znaku: zaboravljanje da je \( i^{1006} = i^2 = -1 \) (a ne \( +1 \) ili \( -i \)). Uvek se eksponent svodi po modulu \( 4 \).</li>
+    <li>Pretpostavka da je \( (1+i)^{2012} \) čisto imaginarno — pa se ceo izraz "skraćuje" na \( 0 \). Realnost stepena dolazi iz \( 2012/4 \) — ovde je \( 503 \), neparno, pa ide u \( -1 \), ali ostaje na realnoj osi.</li>
+    <li>Računanje samo brojioca i pisanje "ne može jer je veliki broj" — celo rešenje je odnos, brojevi se skraćuju i odgovor je <em>uvek</em> jednostavan.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta ako je eksponent <em>neparan</em> ili nije deljiv sa \( 4 \)? Izračunaj na isti način:</p>
+  <div class="math-block">\[ \dfrac{(1+i)^{2014} + (1-i)^{2014}}{2\,(1+i)^{2014}}. \]</div>
+  <p>Da li je rezultat ponovo \( 1 \), ili nešto drugo? Što se geometrijski događa?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>\( (1+i)^{2014} = ((1+i)^2)^{1007} = (2i)^{1007} = 2^{1007} \cdot i^{1007} \). Pošto je \( 1007 = 4\cdot 251 + 3 \), to je \( i^{1007} = i^3 = -i \). Dakle \( (1+i)^{2014} = -2^{1007} i \).</p>
+      <p>Slično \( (1-i)^{2014} = (-2i)^{1007} = -2^{1007}\cdot i^{1007} = -2^{1007}\cdot(-i) = 2^{1007} i \). To su <em>konjugovani</em> čisto imaginarni brojevi, pa im je zbir <strong>0</strong>!</p>
+      <p>Brojilac \( = 0 \), imenilac \( \neq 0 \), pa je odgovor \( 0 \). Geometrijski: za \( n = 2014 \), tačka \( (1+i)^n \) padne na imaginarnu osu, a \( (1-i)^n \) na suprotnu stranu — savršeno se ponište.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+    var tertiary  = cv('--sol-canvas-tertiary');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Kompleksna ravan: stepeni od 1+i (svaki korak = kvadriranje)', canvas.width/2, 14);
+
+    // Coordinate system: math units, scale so that |1+i|=√2 fits
+    var cx = canvas.width / 2;
+    var cy = 320;
+    var unit = 36;  // pixels per unit
+
+    // Plot range: x from -5 to 5, y from -3 to 3 (in units)
+    var xMin = -4.5, xMax = 4.5;
+    var yMin = -2.7, yMax = 2.7;
+
+    function tx(u) { return cx + u * unit; }
+    function ty(v) { return cy - v * unit; }
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var gx = Math.ceil(xMin); gx <= Math.floor(xMax); gx++) {
+      ctx.beginPath();
+      ctx.moveTo(tx(gx), ty(yMin));
+      ctx.lineTo(tx(gx), ty(yMax));
+      ctx.stroke();
+    }
+    for (var gy = Math.ceil(yMin); gy <= Math.floor(yMax); gy++) {
+      ctx.beginPath();
+      ctx.moveTo(tx(xMin), ty(gy));
+      ctx.lineTo(tx(xMax), ty(gy));
+      ctx.stroke();
+    }
+
+    // Axes (Re, Im)
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(tx(xMin), ty(0));
+    ctx.lineTo(tx(xMax), ty(0));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(tx(0), ty(yMin));
+    ctx.lineTo(tx(0), ty(yMax));
+    ctx.stroke();
+
+    // Axis labels
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Re', tx(xMax) - 24, ty(0) - 14);
+    ctx.fillText('Im', tx(0) + 8, ty(yMax) + 14);
+
+    // Tick numbers on Re axis
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (var tk = -4; tk <= 4; tk++) {
+      if (tk === 0) continue;
+      ctx.fillText(tk.toString(), tx(tk), ty(0) + 4);
+    }
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (var ty2 = -2; ty2 <= 2; ty2++) {
+      if (ty2 === 0) continue;
+      ctx.fillText(ty2.toString() + 'i', tx(0) - 5, ty(ty2));
+    }
+
+    // Plot key powers of (1+i): n = 0..4 (extending the sequence)
+    // (1+i)^0 = 1, (1+i)^1 = 1+i, (1+i)^2 = 2i, (1+i)^3 = -2+2i, (1+i)^4 = -4
+    var powers = [
+      { n: 0, re: 1,  im: 0,  label: '(1+i)⁰ = 1', color: tertiary, anchor: 'left',  off: [10, -8] },
+      { n: 1, re: 1,  im: 1,  label: '(1+i)¹ = 1+i', color: primary, anchor: 'left',  off: [10, -8] },
+      { n: 2, re: 0,  im: 2,  label: '(1+i)² = 2i', color: accent, anchor: 'left',  off: [10, 0] },
+      { n: 3, re: -2, im: 2,  label: '(1+i)³ = −2+2i', color: highlight, anchor: 'right', off: [-10, -8] },
+      { n: 4, re: -4, im: 0,  label: '(1+i)⁴ = −4', color: warning, anchor: 'right', off: [-10, -10] }
+    ];
+
+    // Connect powers with arrows showing rotation+scaling
+    ctx.strokeStyle = secondary;
+    ctx.setLineDash([4, 4]);
+    ctx.lineWidth = 1.5;
+    for (var i2 = 0; i2 < powers.length - 1; i2++) {
+      var a = powers[i2], b2 = powers[i2 + 1];
+      // Draw arc-like curve from a to b2
+      ctx.beginPath();
+      var ax = tx(a.re), ay = ty(a.im);
+      var bx = tx(b2.re), by = ty(b2.im);
+      // simple curved path
+      var mx = (ax + bx) / 2;
+      var my = (ay + by) / 2 - 18;
+      ctx.moveTo(ax, ay);
+      ctx.quadraticCurveTo(mx, my, bx, by);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Vector from origin to (1+i)^1 (highlight start)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(tx(0), ty(0));
+    ctx.lineTo(tx(1), ty(1));
+    ctx.stroke();
+
+    // Draw points
+    for (var p = 0; p < powers.length; p++) {
+      var pt = powers[p];
+      var px = tx(pt.re), py = ty(pt.im);
+      // glow
+      ctx.beginPath();
+      ctx.arc(px, py, 9, 0, Math.PI * 2);
+      ctx.fillStyle = cvAlpha(p === 0 ? '--sol-canvas-tertiary' :
+                              p === 1 ? '--sol-canvas-primary' :
+                              p === 2 ? '--sol-canvas-accent' :
+                              p === 3 ? '--sol-canvas-highlight' :
+                                        '--sol-canvas-warning', 0.25);
+      ctx.fill();
+      // dot
+      ctx.beginPath();
+      ctx.arc(px, py, 5, 0, Math.PI * 2);
+      ctx.fillStyle = pt.color;
+      ctx.fill();
+      // label
+      ctx.fillStyle = pt.color;
+      ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+      ctx.textAlign = pt.anchor;
+      ctx.textBaseline = 'middle';
+      ctx.fillText(pt.label, px + pt.off[0], py + pt.off[1]);
+    }
+
+    // Mark unit circle (radius √2) — argument cycle hint
+    ctx.strokeStyle = cvAlpha('--sol-canvas-secondary', 0.35);
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.arc(tx(0), ty(0), Math.sqrt(2) * unit, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Caption inside canvas — top right
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'top';
+    ctx.fillText('isprekidan krug: |1+i| = √2', tx(xMax) - 5, 36);
+
+    // ── Bottom section: cycle of i^n and final placement ──
+    var sectY = 470;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Ciklus i ⁿ (period 4)', canvas.width/2, sectY);
+
+    // Draw 4 boxes for i^0, i^1, i^2, i^3
+    var bx0 = canvas.width/2 - 240;
+    var by0 = sectY + 28;
+    var bw = 110, bh = 56;
+
+    var cycle = [
+      { l: 'i⁰ = 1',  c: tertiary },
+      { l: 'i¹ = i',  c: primary },
+      { l: 'i² = −1', c: accent, hilite: true },
+      { l: 'i³ = −i', c: highlight }
+    ];
+
+    for (var k = 0; k < 4; k++) {
+      var box = cycle[k];
+      var x = bx0 + k * 120;
+      // round rect
+      ctx.beginPath();
+      var rr = 10;
+      ctx.moveTo(x + rr, by0);
+      ctx.lineTo(x + bw - rr, by0);
+      ctx.quadraticCurveTo(x + bw, by0, x + bw, by0 + rr);
+      ctx.lineTo(x + bw, by0 + bh - rr);
+      ctx.quadraticCurveTo(x + bw, by0 + bh, x + bw - rr, by0 + bh);
+      ctx.lineTo(x + rr, by0 + bh);
+      ctx.quadraticCurveTo(x, by0 + bh, x, by0 + bh - rr);
+      ctx.lineTo(x, by0 + rr);
+      ctx.quadraticCurveTo(x, by0, x + rr, by0);
+      ctx.closePath();
+      ctx.fillStyle = box.hilite
+        ? cvAlpha('--sol-canvas-accent', 0.30)
+        : cvAlpha(k === 0 ? '--sol-canvas-tertiary' :
+                  k === 1 ? '--sol-canvas-primary' :
+                            '--sol-canvas-highlight', 0.10);
+      ctx.fill();
+      ctx.strokeStyle = box.c;
+      ctx.lineWidth = box.hilite ? 3 : 2;
+      ctx.stroke();
+
+      ctx.fillStyle = text;
+      ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(box.l, x + bw/2, by0 + bh/2);
+    }
+
+    // Arrow indicating where 1006 lands
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('1006 mod 4 = 2  ⇒  i¹⁰⁰⁶ = −1', canvas.width/2, by0 + bh + 12);
+
+    // Final conclusion
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillText('(1+i)²⁰¹² = (2i)¹⁰⁰⁶ = 2¹⁰⁰⁶ · i¹⁰⁰⁶ = −2¹⁰⁰⁶  (realan broj)', canvas.width/2, by0 + bh + 36);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Visok stepen 1±i: vrednost odnosa ((1+i)²⁰¹²+(1-i)²⁰¹²)/(2(1+i)²⁰¹²)",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["kompleksni brojevi", "stepenovanje", "imaginarna jedinica", "polarni oblik", "De Moivre"]
+}
+BRAINSPARK_META-->

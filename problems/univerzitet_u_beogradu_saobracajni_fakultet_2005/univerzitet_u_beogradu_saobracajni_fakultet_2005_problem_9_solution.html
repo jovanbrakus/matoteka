@@ -1,0 +1,567 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Naći a + 2b ako je ostatak pri deljenju polinoma P(x) = x^3 + 2x^2 + ax + b polinomom D(x) = x^2 - x - 2 jednak R(x) = 7x + 7.
+
+Strategija: Po algoritmu deljenja polinoma važi P(x) = Q(x) D(x) + R(x), pri čemu je R(x) stepena manjeg od D(x). Ovde je deg D = 2 i deg R = 1, što je konzistentno.
+
+Ključna posledica: ako je x = c koren delioca D(x) (tj. D(c) = 0), onda je P(c) = R(c). Ovo je generalizacija Bezuove teoreme.
+
+Faktorizacija delioca: D(x) = x^2 - x - 2 = (x - 2)(x + 1). Koreni: x = 2 i x = -1.
+
+Postavljamo dve jednačine:
+1) P(2) = R(2):
+   P(2) = 8 + 8 + 2a + b = 16 + 2a + b.
+   R(2) = 14 + 7 = 21.
+   16 + 2a + b = 21  =>  2a + b = 5.
+
+2) P(-1) = R(-1):
+   P(-1) = -1 + 2 - a + b = 1 - a + b.
+   R(-1) = -7 + 7 = 0.
+   1 - a + b = 0  =>  -a + b = -1  =>  b = a - 1.
+
+Zamenom:
+   2a + (a - 1) = 5  =>  3a = 6  =>  a = 2.
+   b = 2 - 1 = 1.
+
+Traženi izraz: a + 2b = 2 + 2(1) = 4.
+
+Provera direktnim deljenjem polinoma:
+P(x) = x^3 + 2x^2 + 2x + 1.
+Deli sa D(x) = x^2 - x - 2:
+- x^3 : x^2 = x. Pomnoži: x · (x^2 - x - 2) = x^3 - x^2 - 2x. Oduzmi: (x^3 + 2x^2 + 2x + 1) - (x^3 - x^2 - 2x) = 3x^2 + 4x + 1.
+- 3x^2 : x^2 = 3. Pomnoži: 3 · (x^2 - x - 2) = 3x^2 - 3x - 6. Oduzmi: (3x^2 + 4x + 1) - (3x^2 - 3x - 6) = 7x + 7. ✓
+
+Dakle Q(x) = x + 3, R(x) = 7x + 7. Identitet provere: P(x) = (x+3)(x^2 - x - 2) + 7x + 7. Uvrsti x = 0: P(0) = b = 1. Račun: (3)(-2) + 7 = -6 + 7 = 1. ✓
+
+Eliminacija drugih opcija:
+- (B) 0: tražilo bi a + 2b = 0, ali smo dobili 4.
+- (C) 3, (D) 2, (E) 6 — ne odgovaraju.
+
+Tačan odgovor: (A) 4.
+
+Vizuelna ideja: brojna prava sa korenima delioca (-1 i 2) gde je svaki par tačaka markiran sa P(c) = R(c). Pored toga, šema deljenja polinoma kao niz pravougaonika P = Q · D + R, sa konkretnim brojnim vrednostima.
+</script>
+
+<h1 data-card="problem-title">Ostatak pri deljenju polinoma</h1>
+<p data-card="problem-subtitle" class="subtitle">Polinomi — Bezuova teorema i nepoznati koeficijenti</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Ako je ostatak pri deljenju polinoma \( x^3+2x^2+ax+b \) polinomom \( x^2-x-2 \) jednak \( 7x+7 \), onda je \( a+2b \) jednako:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">P(x)</span>
+      <span class="given-value">\( x^3 + 2x^2 + ax + b \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">D(x)</span>
+      <span class="given-value">\( x^2 - x - 2 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">R(x)</span>
+      <span class="given-value">\( 7x + 7 \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 4 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 0 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 6 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Faktorisaćemo delilac \( x^2 - x - 2 = (x-2)(x+1) \) i u njegova dva korena (\( x = 2 \) i \( x = -1 \)) iskoristiti generalizovanu Bezuovu teoremu: \( P(c) = R(c) \) kad je \( D(c) = 0 \). To daje sistem od dve linearne jednačine sa dve nepoznate \( a, b \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Algoritam deljenja polinoma i Bezuova teorema</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Algoritam deljenja</span> Za polinome \( P(x) \) i \( D(x) \neq 0 \) postoje jedinstveni \( Q(x) \) i \( R(x) \) takvi da je \( P(x) = Q(x)\,D(x) + R(x) \) i \( \deg R &lt; \deg D \).</li>
+        <li><span class="formula-label">Bezuova teorema</span> Ostatak pri deljenju \( P(x) \) sa \( (x - c) \) je \( P(c) \).</li>
+        <li><span class="formula-label">Generalizacija</span> Ako je \( D(c) = 0 \), onda je \( P(c) = R(c) \). Naime, \( P(c) = Q(c)\,D(c) + R(c) = Q(c)\cdot 0 + R(c) = R(c) \).</li>
+        <li>Faktorizacija kvadratnog trinoma preko Vietovih formula ili razlaganjem: \( x^2 - x - 2 = (x-2)(x+1) \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="760" height="600"></canvas>
+  </div>
+  <p class="canvas-caption">Gore: blok-šema deljenja polinoma \( P(x) = Q(x)\,D(x) + R(x) \). Dole: brojna prava sa korenima delioca \( x = -1 \) i \( x = 2 \) — tačke u kojima \( D(c) = 0 \), pa važi \( P(c) = R(c) \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Faktorizacija delioca</h3>
+      <p>Tražimo nule kvadratnog trinoma \( x^2 - x - 2 \). Po Vietovim formulama tražimo dva broja čiji je zbir \( 1 \) i proizvod \( -2 \) — to su \( 2 \) i \( -1 \). Dakle:</p>
+      <div class="math-block">\[ x^2 - x - 2 = (x - 2)(x + 1). \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je važno da delilac ima dva različita realna korena?</summary>
+          <div class="detail-content"><p>Svaki koren delioca daje jednu jednačinu preko \( P(c) = R(c) \). Dva različita korena znači dve nezavisne jednačine — taman dovoljno za dve nepoznate \( a \) i \( b \). Da je delilac imao dvostruki koren, trebala bi nam i jednačina sa izvodom (\( P'(c) = R'(c) \)).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Primena \( P(c) = R(c) \) za \( c = 2 \)</h3>
+      <p>Iz algoritma deljenja je \( P(x) = Q(x)D(x) + R(x) \). U korenu delioca je \( D(c) = 0 \), pa ostaje \( P(c) = R(c) \). Za \( c = 2 \):</p>
+      <div class="math-block">\[ \begin{aligned}
+      P(2) &amp;= 2^3 + 2\cdot 2^2 + 2a + b = 8 + 8 + 2a + b = 16 + 2a + b, \\
+      R(2) &amp;= 7\cdot 2 + 7 = 21.
+      \end{aligned} \]</div>
+      <p>Izjednačavanjem dobijamo prvu jednačinu:</p>
+      <div class="math-block">\[ 16 + 2a + b = 21 \;\Longrightarrow\; \boxed{\,2a + b = 5\,}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Primena \( P(c) = R(c) \) za \( c = -1 \)</h3>
+      <p>Sada za \( c = -1 \):</p>
+      <div class="math-block">\[ \begin{aligned}
+      P(-1) &amp;= (-1)^3 + 2\cdot(-1)^2 + a\cdot(-1) + b = -1 + 2 - a + b = 1 - a + b, \\
+      R(-1) &amp;= 7\cdot(-1) + 7 = 0.
+      \end{aligned} \]</div>
+      <p>Druga jednačina:</p>
+      <div class="math-block">\[ 1 - a + b = 0 \;\Longrightarrow\; \boxed{\,b = a - 1\,}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kako prepoznati da li u jednačinu sa \( P(-1) \) treba ući \( -a \) ili \( +a \)?</summary>
+          <div class="detail-content"><p>Pažljivo zameni \( x = -1 \) u svaki član. Linearni član je \( ax \), pa je \( ax|_{x=-1} = -a \). Kvadratni član \( 2x^2 \) postaje \( 2 \), a kubni \( x^3 \) postaje \( -1 \). Najsigurnije je sve potpisati zasebno i tek onda sabrati.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Rešavanje sistema</h3>
+      <p>Iz druge jednačine \( b = a - 1 \) zameni u prvu:</p>
+      <div class="math-block">\[ 2a + (a - 1) = 5 \;\Longrightarrow\; 3a = 6 \;\Longrightarrow\; a = 2. \]</div>
+      <p>Tada je \( b = a - 1 = 1 \). Konačno:</p>
+      <div class="math-block">\[ a + 2b = 2 + 2\cdot 1 = 4. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera direktnim deljenjem</h3>
+      <p>Sa \( a = 2,\ b = 1 \) imamo \( P(x) = x^3 + 2x^2 + 2x + 1 \). Podelimo ga sa \( x^2 - x - 2 \):</p>
+      <div class="math-block">\[ \begin{aligned}
+      x^3 + 2x^2 + 2x + 1 &amp;= x \cdot (x^2 - x - 2) + (3x^2 + 4x + 1) \\
+      &amp;= x \cdot (x^2 - x - 2) + 3 \cdot (x^2 - x - 2) + (7x + 7) \\
+      &amp;= (x + 3)(x^2 - x - 2) + (7x + 7).
+      \end{aligned} \]</div>
+      <p>Količnik je \( Q(x) = x + 3 \), a ostatak \( R(x) = 7x + 7 \) — tačno kako traži zadatak.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kad god ti je delilac proizvod \( (x - x_1)(x - x_2)\cdots(x - x_k) \) različitih linearnih faktora, ne moraš da deliš polinome — samo izračunaj \( P(x_i) \) i izjednači sa \( R(x_i) \). Time postavljaš tačno onoliko jednačina koliko ima nepoznatih, čime sistem postaje jednostavan i bez „mukotrpnog" pisanja kolone deljenja.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ a + 2b = 4 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 4 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 0 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 3 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 2 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 6 \)</span>
+  </div>
+  <p class="verification">Provera: za \( a = 2,\ b = 1 \) je \( P(x) = x^3 + 2x^2 + 2x + 1 = (x+3)(x^2 - x - 2) + 7x + 7 \), pa je ostatak zaista \( 7x + 7 \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Greška sa znakom kod faktorizacije: \( x^2 - x - 2 = (x-2)(x+1) \), ne \( (x+2)(x-1) \). Provera: \( (x+2)(x-1) = x^2 + x - 2 \) — pogrešan srednji koeficijent.</li>
+    <li>Zamena \( x = -1 \) bez pažnje sa znakovima: \( a\cdot(-1) = -a \), a ne \( +a \). Slično, \( (-1)^3 = -1 \).</li>
+    <li>Direktno traženje \( a \) i \( b \) deljenjem polinoma sa simboličnim koeficijentima — moguće, ali sporije i podložnije računskim greškama nego primena Bezuove teoreme.</li>
+    <li>Posle dobijanja \( a, b \) odgovoriti vrednošću \( a + b = 3 \) (opcija C) umesto traženog \( a + 2b = 4 \). Pažljivo pročitati šta zadatak traži.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Promenimo zadatak: neka je delilac sada \( (x-2)^2 \) (dvostruki koren), polinom \( P(x) = x^3 + 2x^2 + ax + b \), a ostatak \( 7x + 7 \). Možeš li i u ovom slučaju jedinstveno odrediti \( a \) i \( b \)? Koja dodatna jednačina ti je potrebna?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Za dvostruki koren u \( x = 2 \) iz \( P(x) = Q(x)(x-2)^2 + R(x) \) izvodom u \( x = 2 \) dobijamo \( P'(2) = R'(2) \), uz \( P(2) = R(2) \). Tako sa dve jednačine (jedna na vrednosti, jedna na izvodu) ponovo postaješ sa dva uslova nad dve nepoznate.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  var W = canvas.width, H = canvas.height;
+
+  function roundedRect(x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+  }
+
+  function drawBlock(x, y, w, h, fillColor, strokeColor, title, body) {
+    ctx.save();
+    roundedRect(x, y, w, h, 10);
+    ctx.fillStyle = fillColor;
+    ctx.fill();
+    ctx.strokeStyle = strokeColor;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    var text = cv('--sol-canvas-text');
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText(title, x + w/2, y + 10);
+
+    ctx.font = '13px ui-monospace, Menlo, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(body, x + w/2, y + 32);
+    ctx.restore();
+  }
+
+  function drawArrow(ax, ay, bx, by, color) {
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(ax, ay);
+    ctx.lineTo(bx, by);
+    ctx.stroke();
+    var ang = Math.atan2(by - ay, bx - ax);
+    var headLen = 10;
+    ctx.beginPath();
+    ctx.moveTo(bx, by);
+    ctx.lineTo(bx - headLen * Math.cos(ang - Math.PI/7), by - headLen * Math.sin(ang - Math.PI/7));
+    ctx.lineTo(bx - headLen * Math.cos(ang + Math.PI/7), by - headLen * Math.sin(ang + Math.PI/7));
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function draw() {
+    styles = getComputedStyle(root);
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var tertiary  = cv('--sol-canvas-tertiary');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // ============ TOP HALF: Block diagram of polynomial division ============
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Algoritam deljenja:  P(x) = Q(x) · D(x) + R(x)', W/2, 28);
+
+    // Identity equation as blocks
+    var blockY = 60;
+    var blockH = 76;
+
+    // P(x) block
+    var pX = 30, pW = 200;
+    drawBlock(pX, blockY, pW, blockH,
+      cvAlpha('--sol-canvas-primary', 0.16),
+      cv('--sol-canvas-primary'),
+      'P(x)  (deli se)',
+      'x³ + 2x² + ax + b');
+
+    // = sign
+    ctx.fillStyle = text;
+    ctx.font = 'bold 22px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('=', pX + pW + 16, blockY + blockH/2);
+
+    // Q(x) block
+    var qX = pX + pW + 36, qW = 130;
+    drawBlock(qX, blockY, qW, blockH,
+      cvAlpha('--sol-canvas-tertiary', 0.16),
+      cv('--sol-canvas-tertiary'),
+      'Q(x)  (količnik)',
+      'x + 3');
+
+    // ·
+    ctx.font = 'bold 22px Inter, system-ui, sans-serif';
+    ctx.fillText('·', qX + qW + 14, blockY + blockH/2);
+
+    // D(x) block
+    var dX = qX + qW + 32, dW = 180;
+    drawBlock(dX, blockY, dW, blockH,
+      cvAlpha('--sol-canvas-warning', 0.18),
+      cv('--sol-canvas-warning'),
+      'D(x)  (delilac)',
+      'x² − x − 2 = (x−2)(x+1)');
+
+    // +
+    ctx.font = 'bold 22px Inter, system-ui, sans-serif';
+    ctx.fillText('+', dX + dW + 14, blockY + blockH/2);
+
+    // R(x) block
+    var rX = dX + dW + 32, rW = 130;
+    drawBlock(rX, blockY, rW, blockH,
+      cvAlpha('--sol-canvas-accent', 0.18),
+      cv('--sol-canvas-accent'),
+      'R(x)  (ostatak)',
+      '7x + 7');
+
+    // Note about degree
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Stepen ostatka R(x) je strogo manji od stepena delioca D(x):  deg R = 1 < 2 = deg D.',
+                 W/2, blockY + blockH + 12);
+
+    // ============ MIDDLE: Trick — when D(c)=0, P(c)=R(c) ============
+    var midY = blockY + blockH + 46;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Trik: ako je D(c) = 0, onda je  P(c) = Q(c) · 0 + R(c) = R(c).', W/2, midY);
+
+    // ============ BOTTOM HALF: number line with the two roots ============
+    var nlY = midY + 60;
+    var nlLeft = 80, nlRight = W - 80;
+    var nlW = nlRight - nlLeft;
+    var xMin = -3, xMax = 4;
+    function nx(v) { return nlLeft + (v - xMin) / (xMax - xMin) * nlW; }
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Brojna prava — koreni delioca i jednakosti P(c) = R(c)', W/2, nlY - 18);
+
+    // axis
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(nlLeft - 10, nlY);
+    ctx.lineTo(nlRight + 10, nlY);
+    ctx.stroke();
+    // arrow tip
+    ctx.beginPath();
+    ctx.moveTo(nlRight + 10, nlY);
+    ctx.lineTo(nlRight + 2, nlY - 5);
+    ctx.lineTo(nlRight + 2, nlY + 5);
+    ctx.closePath();
+    ctx.fillStyle = axis;
+    ctx.fill();
+
+    // ticks
+    ctx.strokeStyle = muted;
+    ctx.fillStyle = muted;
+    ctx.lineWidth = 1;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (var t = -3; t <= 4; t++) {
+      var tx = nx(t);
+      ctx.beginPath();
+      ctx.moveTo(tx, nlY - 5);
+      ctx.lineTo(tx, nlY + 5);
+      ctx.stroke();
+      ctx.fillText(t.toString(), tx, nlY + 8);
+    }
+    // x label
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'left';
+    ctx.fillText('x', nlRight + 16, nlY - 6);
+
+    // The two roots: x = -1 and x = 2
+    function markRoot(xVal, label, eq, color) {
+      var x = nx(xVal);
+      // big circle
+      ctx.beginPath();
+      ctx.arc(x, nlY, 9, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.strokeStyle = bg;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // label above
+      ctx.fillStyle = color;
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(label, x, nlY - 16);
+
+      // equation below the tick numbers
+      ctx.fillStyle = cv('--sol-canvas-text');
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.textBaseline = 'top';
+      ctx.fillText(eq, x, nlY + 28);
+    }
+
+    markRoot(-1, 'x = −1   (D(−1) = 0)', 'P(−1) = R(−1) = 0',  cv('--sol-canvas-warning'));
+    markRoot(2,  'x = 2    (D(2) = 0)',  'P(2)  = R(2)  = 21', cv('--sol-canvas-warning'));
+
+    // Curly bracket / span showing factor (x+1)(x-2)
+    ctx.strokeStyle = cvAlpha('--sol-canvas-warning', 0.7);
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(nx(-1), nlY - 38);
+    ctx.lineTo(nx(2),  nlY - 38);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(nx(-1), nlY - 38);
+    ctx.lineTo(nx(-1), nlY - 16);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(nx(2),  nlY - 38);
+    ctx.lineTo(nx(2),  nlY - 16);
+    ctx.stroke();
+    // label centered
+    ctx.fillStyle = cv('--sol-canvas-warning');
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('koreni delioca  D(x) = (x − 2)(x + 1)', (nx(-1) + nx(2))/2, nlY - 44);
+
+    // ============ Bottom annotation: the resulting system and answer ============
+    var annY = nlY + 78;
+
+    // Two equation boxes side by side
+    var boxW = 280, boxH = 64, boxGap = 40;
+    var totalW = boxW * 2 + boxGap;
+    var ax0 = (W - totalW) / 2;
+
+    // Left box: 2a + b = 5
+    drawBlock(ax0, annY, boxW, boxH,
+      cvAlpha('--sol-canvas-primary', 0.12),
+      cv('--sol-canvas-primary'),
+      'iz P(2) = R(2) = 21',
+      '2a + b = 5');
+
+    // Right box: -a + b = -1
+    drawBlock(ax0 + boxW + boxGap, annY, boxW, boxH,
+      cvAlpha('--sol-canvas-tertiary', 0.14),
+      cv('--sol-canvas-tertiary'),
+      'iz P(−1) = R(−1) = 0',
+      '−a + b = −1   ⇒   b = a − 1');
+
+    // Final result strip
+    var resY = annY + boxH + 22;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.18);
+    roundedRect((W - 360)/2, resY, 360, 38, 10);
+    ctx.fill();
+    ctx.strokeStyle = cv('--sol-canvas-accent');
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = cv('--sol-canvas-accent');
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('a = 2,   b = 1   ⇒   a + 2b = 4', W/2, resY + 19);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Bezuova teorema — ostatak deljenja x³+2x²+ax+b sa x²−x−2",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["polinomi", "deljenje polinoma", "Bezuova teorema", "sistem jednačina"]
+}
+BRAINSPARK_META-->

@@ -1,0 +1,860 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Prava kupa, poluprečnik osnove r manji od bočne ivice (izvodnice) s.
+  Dato: obim osnog preseka O = 36 i površina omotača M = 65π.
+  Traži: ukupna površina P kupe.
+
+  1) Osni presek prave kupe je jednakokraki trougao:
+     - osnovica = 2r (prečnik osnove kupe)
+     - kraci = s i s (dve izvodnice koje izlaze iz vrha do krajeva prečnika)
+     Obim: 2r + 2s = 36  =>  r + s = 18.
+
+  2) Omotač prave kupe je kružni isečak poluprečnika s i dužine luka 2πr.
+     Površina omotača: M = π r s = 65 π   =>   r·s = 65.
+
+  3) r i s su koreni kvadratne jednačine t^2 - 18 t + 65 = 0.
+     Diskriminanta: 324 - 260 = 64. √64 = 8.
+     t = (18 ± 8)/2 = 13 ili 5.
+
+  4) Pošto je dato r < s, biramo r = 5, s = 13.
+     Provera: r + s = 18 ✓, r·s = 65 ✓, 5 < 13 ✓.
+
+  5) Ukupna površina kupe:
+     P = P_baze + P_omotača = π r^2 + π r s = π r (r + s) = π · 5 · 18 = 90 π.
+
+  Tačan odgovor: C) 90π.
+
+  Sanity check (Pitagora, ne treba za odgovor): h^2 = s^2 - r^2 = 169 - 25 = 144 = 12^2,
+  pa je h = 12. Trojac (5, 12, 13). Zapremina (informaciono) = (1/3)π·25·12 = 100π. OK.
+
+  Vizuelni prikazi (potrebno 3–4):
+  1) 3D prikaz prave kupe sa označenim r, s, h, vrhom V i centrom O osnove.
+  2) Osni presek — jednakokraki trougao sa osnovicom 2r = 10 i kracima s = 13.
+  3) Razvijena površina (mreža): krug osnove + kružni isečak omotača.
+  4) Vijetova vizualizacija: krivina y = t^2 - 18t + 65 sa korenima 5 i 13 (ili tabela).
+     Odlučio sam za #4: razvijena površina je dovoljno vredna a Vijet bi se mogao prikazati
+     tabelarno u step-solution. Ipak, ide 4 vizuelna jer je hint tražio 3–4. Uzimamo:
+     1) 3D kupa, 2) osni presek, 3) razvijena površina, 4) finalna sklopka P = πr(r+s) sa brojevima.
+
+  Geometrija: synthetic — jednakokraki trougao, kružni isečak, klasične formule kupe.
+  Bez koordinata. Vijetove formule su algebra, ne analitička geometrija.
+
+  Pitfalls:
+  - Mešanje izvodnice s sa visinom h. Visina h je kateta, izvodnica s je hipotenuza.
+  - Mešanje obima sa površinom u osnom preseku.
+  - Tumačenje "površine" — neki student bi mogao zaboraviti P_baze i dati samo M = 65π.
+  - Bez uslova r < s rešenje nije jednoznačno (mogli bismo uzeti r = 13, ali tada osnova
+    ne bi mogla da formira osni presek sa tim kracima — ipak, formula bi dala drugu vrednost
+    za π r^2: 169π, a to nije među opcijama jer P bi bilo 169π + 65π = 234π).
+  - Greška u Vijetu: zameniti znak srednjeg koeficijenta, dobiti t^2 + 18t + 65.
+</script>
+
+<h1 data-card="problem-title">Površina prave kupe iz obima osnog preseka i omotača</h1>
+<p data-card="problem-subtitle" class="subtitle">Stereometrija &mdash; prava kupa, osni presek, razvijena površina, Vijetove formule</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Dužina obima osnog preseka prave kupe, čiji je poluprečnik osnove manji od bočne ivice, je \( O = 36 \), dok je površina omotača jednaka \( M = 65\pi \). Njena površina je:</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">Obim osnog preseka</span>
+      <span class="given-value">\( O = 36 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Površina omotača</span>
+      <span class="given-value">\( M = 65\pi \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Uslov</span>
+      <span class="given-value">\( r &lt; s \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Traženo</span>
+      <span class="given-value">\( P = ? \)</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 100\pi \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 95\pi \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 90\pi \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 140\pi \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 110\pi \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Iz obima osnog preseka (jednakokraki trougao sa osnovicom \( 2r \) i kracima \( s \)) dobijamo \( r + s = 18 \), a iz površine omotača \( M = \pi r s \) dobijamo \( r s = 65 \). Po Vijetovim formulama \( r \) i \( s \) su koreni kvadratne jednačine \( t^2 - 18t + 65 = 0 \); uslov \( r &lt; s \) bira \( r = 5,\ s = 13 \). Konačnu površinu dobijamo lepim grupisanjem: \( P = \pi r^2 + \pi r s = \pi r (r + s) \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule o pravoj kupi i Vijetovim formulama</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Prava kupa</strong> ima poluprečnik osnove \( r \), visinu \( h \) (iz vrha \( V \) normalno na ravan osnove) i izvodnicu (bočnu ivicu) \( s \). Pitagora: \( s^2 = r^2 + h^2 \).</li>
+        <li><strong>Osni presek</strong> je presek kupe ravni koja sadrži visinu — to je jednakokraki trougao sa osnovicom \( 2r \) i kracima \( s \). Njegov obim: \( O = 2r + 2s \).</li>
+        <li><strong>Površina omotača</strong> (kružnog isečka kada se razvije): \[ M = \pi r s. \]</li>
+        <li><strong>Površina osnove</strong> je krug: \( B = \pi r^2 \). Ukupna površina: \[ P = B + M = \pi r^2 + \pi r s = \pi r (r + s). \]</li>
+        <li><strong>Vijetove formule</strong> za \( t^2 + p t + q = 0 \): zbir korena \( t_1 + t_2 = -p \), proizvod \( t_1 t_2 = q \). Obrnuto: ako znamo \( S = t_1 + t_2 \) i \( P = t_1 t_2 \), tada \( t_1, t_2 \) zadovoljavaju \( t^2 - S t + P = 0 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — prava kupa u 3D">
+  <h2>📐 Vizuelni prikaz — prava kupa u 3D</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram13a" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Prava kupa sa vrhom \( V \), centrom osnove \( O \), poluprečnikom \( r \), visinom \( h \) i izvodnicom (bočnom ivicom) \( s \). Tačke \( A \) i \( A' \) su na obodu osnove na suprotnim stranama prečnika; trougao \( V A A' \) je <em>osni presek</em> kupe.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — osni presek">
+  <h2>📐 Vizuelni prikaz — osni presek (jednakokraki trougao)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram13b" width="700" height="480"></canvas>
+  </div>
+  <p class="canvas-caption">Osni presek je jednakokraki trougao sa osnovicom \( 2r = 10 \) i kracima (izvodnicama) \( s = 13 \). Obim: \( 2r + 2s = 10 + 26 = 36 \). Visina trougla iz vrha \( V \) je upravo visina kupe \( h = 12 \) — Pitagorin trojac \( (5, 12, 13) \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Iz obima osnog preseka: \( r + s = 18 \)</h3>
+      <p>Osni presek prave kupe je jednakokraki trougao. Njegova osnovica je prečnik osnove kupe, dakle \( 2r \), a oba kraka su izvodnice kupe, dakle \( s \). Obim:</p>
+      <div class="math-block">\[ O \;=\; 2r + 2s \;=\; 36 \quad\Longrightarrow\quad r + s \;=\; 18. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je osnovica \( 2r \), a ne \( r \)?</summary>
+          <div class="detail-content"><p>Osni presek prolazi kroz <em>celu</em> osnovu — od jedne tačke oboda do dijametralno suprotne — pa zahvata <em>prečnik</em>, ne poluprečnik. Prečnik kruga je dva poluprečnika.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Iz omotača: \( r \cdot s = 65 \)</h3>
+      <p>Površina omotača prave kupe (kružnog isečka kada se razvije u ravan) je \( M = \pi r s \). Iz uslova:</p>
+      <div class="math-block">\[ \pi r s \;=\; 65\pi \quad\Longrightarrow\quad r s \;=\; 65. \]</div>
+      <p>Sada imamo simetrični sistem:</p>
+      <div class="math-block">\[ \begin{cases} r + s = 18 \\ r \cdot s = 65 \end{cases} \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Vijetove formule — \( r \) i \( s \) kao koreni</h3>
+      <p>Po obratnim Vijetovim formulama, brojevi \( r \) i \( s \) su koreni kvadratne jednačine</p>
+      <div class="math-block">\[ t^2 \;-\; (r + s)\, t \;+\; r s \;=\; 0, \quad\text{odnosno}\quad t^2 - 18 t + 65 = 0. \]</div>
+      <p>Diskriminanta i koreni:</p>
+      <div class="math-block">\[ D \;=\; 18^2 - 4\cdot 65 \;=\; 324 - 260 \;=\; 64, \qquad \sqrt{D} = 8. \]</div>
+      <div class="math-block">\[ t_{1,2} \;=\; \dfrac{18 \pm 8}{2} \;=\; \{\,5,\;\, 13\,\}. \]</div>
+      <p>Uslov \( r &lt; s \) bira:</p>
+      <div class="math-block">\[ \boxed{\,r = 5,\quad s = 13\,}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: prepoznaj Pitagorin trojac.</summary>
+          <div class="detail-content"><p>Visina kupe \( h \) zadovoljava \( h^2 = s^2 - r^2 = 169 - 25 = 144 \), pa je \( h = 12 \). Trojac \( (5, 12, 13) \) je klasičan Pitagorin trojac. Za odgovor zadatka visina nam ne treba — ali je elegantna provera.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Ukupna površina — pametno grupisanje</h3>
+      <p>Ukupna površina kupe je zbir površine osnove i omotača:</p>
+      <div class="math-block">\[ P \;=\; \pi r^2 \;+\; \pi r s \;=\; \pi r\,(r + s). \]</div>
+      <p>Najlepše je <em>ne</em> računati sabirke posebno, već iskoristiti već poznato \( r + s = 18 \) i \( r = 5 \):</p>
+      <div class="math-block">\[ P \;=\; \pi \cdot 5 \cdot 18 \;=\; 90\,\pi. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: dobijaš li isto računajući sabirke?</summary>
+          <div class="detail-content"><p>\( \pi r^2 = 25\pi \) (osnova) i \( \pi r s = 65\pi \) (omotač). Zbir: \( 25\pi + 65\pi = 90\pi \). ✓ Identično, ali sa više aritmetike.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — razvijena površina (mreža)">
+  <h2>📐 Vizuelni prikaz — razvijena površina kupe</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram13c" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Kada „razvijemo“ kupu u ravan, dobijamo dva dela: krug osnove poluprečnika \( r = 5 \) (površina \( \pi r^2 = 25\pi \)) i kružni isečak poluprečnika \( s = 13 \) sa lukom dužine \( 2\pi r = 10\pi \) (površina \( \pi r s = 65\pi \)). Zbir je tražena ukupna površina \( P = 90\pi \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — sklapanje konačne površine">
+  <h2>📐 Vizuelni prikaz — \( P = \pi r (r + s) \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram13d" width="700" height="420"></canvas>
+  </div>
+  <p class="canvas-caption">Vizuelno sažimanje: osnova \( 25\pi \) i omotač \( 65\pi \) sklapaju se u ukupnu površinu \( 90\pi \). Ekvivalentno tome: faktorisani oblik \( P = \pi r (r + s) = \pi \cdot 5 \cdot 18 \) izbegava posebno računanje sabiraka.</p>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Dva podatka — obim osnog preseka i površina omotača — daju upravo <em>zbir</em> i <em>proizvod</em> dva nepoznata broja \( r \) i \( s \). To je gotovo signalna lampa za <strong>Vijetove formule</strong>: ne moraš ručno rešavati sistem, dovoljno je rešiti jednu kvadratnu jednačinu \( t^2 - S t + P = 0 \). Uslov \( r &lt; s \) onda samo bira koji je koren koji. Druga elegancija: ukupna površina se faktorisanjem svodi na \( \pi r (r + s) \), pa <em>direktno</em> koristimo poznatu sumu — bez pojedinačnog računanja \( r^2 \) i \( rs \).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ P \;=\; \pi r (r + s) \;=\; \pi \cdot 5 \cdot 18 \;=\; 90\,\pi \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 100\pi \)</span>
+    <span class="answer-option" data-option="B">(B) \( 95\pi \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( 90\pi \)</span>
+    <span class="answer-option" data-option="D">(D) \( 140\pi \)</span>
+    <span class="answer-option" data-option="E">(E) \( 110\pi \)</span>
+  </div>
+  <p class="verification">Provera po komponentama: osnova \( B = \pi r^2 = 25\pi \), omotač \( M = \pi r s = 65\pi \). Zbir \( 25\pi + 65\pi = 90\pi \) ✓. Pitagorina provera (informaciono): \( h = \sqrt{s^2 - r^2} = \sqrt{144} = 12 \), poznati trojac \( (5,12,13) \) ✓.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Osnovica osnog preseka kao \( r \) umesto \( 2r \).</strong> Tada bi se dobilo \( r + 2s = 36 \), pogrešan sistem i pogrešan odgovor.</li>
+    <li><strong>Mešanje izvodnice \( s \) sa visinom \( h \).</strong> U formuli \( M = \pi r s \) <em>mora</em> stajati izvodnica (bočna ivica), ne visina kupe. Sa visinom \( h = 12 \) bi se dobilo \( \pi r h = 60\pi \neq 65\pi \).</li>
+    <li><strong>Davanje samo omotača kao odgovora.</strong> Pitanje glasi „njena površina“, što za telo znači ukupna površina, dakle osnova + omotač. Samo omotač \( 65\pi \) nije među ponuđenim odgovorima — što je dobar putokaz studentu.</li>
+    <li><strong>Ignorisanje uslova \( r &lt; s \).</strong> Sa \( r = 13, s = 5 \) sve ostale algebarske relacije i dalje važe (zbir i proizvod su simetrični!), ali ukupna površina bi tada bila \( \pi \cdot 13 \cdot 18 = 234\pi \) — ne postoji u opcijama, što ponovo signalizira grešku.</li>
+    <li><strong>Pogrešan predznak u Vijetu.</strong> Iz \( r + s = 18 \) i \( rs = 65 \) jednačina je \( t^2 - 18t + 65 = 0 \), <em>ne</em> \( t^2 + 18t + 65 = 0 \). Pravilo: koeficijent uz \( t \) je \( -(r+s) \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Za istu kupu (\( r = 5, s = 13, h = 12 \)) izračunaj <em>zapreminu</em> kupe i <em>centralni ugao</em> kružnog isečka koji čini omotač kada se kupa razvije u ravan.</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Zapremina: \( V = \tfrac{1}{3}\pi r^2 h = \tfrac{1}{3}\pi \cdot 25 \cdot 12 = 100\pi \). Centralni ugao isečka: dužina luka razvijenog isečka mora biti jednaka obimu osnove, dakle \( s\,\alpha = 2\pi r \), odakle \( \alpha = \dfrac{2\pi r}{s} = \dfrac{10\pi}{13} \) radijana \( \approx 138{,}5^\circ \). Zanimljivo je primetiti da je \( \alpha &lt; 2\pi \) — bez toga, isečak ne bi mogao da se „uvije“ u kupu jer bi se preklopio.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  // ---------- Canvas A: 3D right cone ----------
+  (function canvasA() {
+    var canvas = document.getElementById('diagram13a');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, H = canvas.height;
+
+    function draw() {
+      var bg        = cv('--sol-canvas-bg');
+      var primary   = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent    = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text      = cv('--sol-canvas-text');
+      var muted     = cv('--sol-canvas-muted');
+      var tertiary  = cv('--sol-canvas-tertiary');
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      ctx.fillStyle = text;
+      ctx.font = 'bold 16px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Prava kupa — 3D pogled', W / 2, 28);
+
+      // Cone parameters (visual; not to numerical scale because s = 13, r = 5, h = 12 makes a tall cone)
+      var cx = W / 2;
+      var apexY = 90;        // V at top
+      var baseCY = 380;      // base center O y
+      var rx = 150;           // ellipse semi-axis along x (radius in projection)
+      var ry = 38;            // ellipse semi-axis along y (perspective squashing)
+
+      // Base ellipse (back half — dashed)
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6, 5]);
+      ctx.beginPath();
+      ctx.ellipse(cx, baseCY, rx, ry, 0, Math.PI, 2 * Math.PI);
+      ctx.stroke();
+
+      // Slant edges (lines from apex to base ellipse extremes)
+      ctx.setLineDash([]);
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = primary;
+      ctx.beginPath();
+      ctx.moveTo(cx - rx, baseCY);
+      ctx.lineTo(cx, apexY);
+      ctx.lineTo(cx + rx, baseCY);
+      ctx.stroke();
+
+      // Base ellipse front half (solid)
+      ctx.beginPath();
+      ctx.ellipse(cx, baseCY, rx, ry, 0, 0, Math.PI);
+      ctx.stroke();
+
+      // Light fill on the cone face (front)
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.08);
+      ctx.beginPath();
+      ctx.moveTo(cx - rx, baseCY);
+      ctx.lineTo(cx, apexY);
+      ctx.lineTo(cx + rx, baseCY);
+      ctx.ellipse(cx, baseCY, rx, ry, 0, 0, Math.PI);
+      ctx.closePath();
+      ctx.fill();
+
+      // Axis (height) — from V down to O (center of base)
+      ctx.strokeStyle = secondary;
+      ctx.lineWidth = 2;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(cx, apexY);
+      ctx.lineTo(cx, baseCY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Radius from O to right edge of base
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(cx, baseCY);
+      ctx.lineTo(cx + rx, baseCY);
+      ctx.stroke();
+
+      // Diameter A — A' across base (axial section base)
+      ctx.strokeStyle = highlight;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([3, 3]);
+      ctx.beginPath();
+      ctx.moveTo(cx - rx, baseCY);
+      ctx.lineTo(cx + rx, baseCY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Right angle marker at O
+      ctx.strokeStyle = muted;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(cx + 12, baseCY);
+      ctx.lineTo(cx + 12, baseCY - 12);
+      ctx.lineTo(cx, baseCY - 12);
+      ctx.stroke();
+
+      // Points
+      function dot(x, y, color) {
+        ctx.beginPath();
+        ctx.arc(x, y, 4.5, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+      }
+      dot(cx, apexY, primary);              // V
+      dot(cx, baseCY, secondary);            // O
+      dot(cx + rx, baseCY, accent);          // A
+      dot(cx - rx, baseCY, accent);          // A'
+
+      // Labels
+      ctx.font = 'bold 16px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = primary;
+      ctx.fillText('V', cx, apexY - 12);
+      ctx.fillStyle = secondary;
+      ctx.fillText('O', cx + 14, baseCY + 18);
+      ctx.fillStyle = accent;
+      ctx.fillText('A', cx + rx + 14, baseCY + 6);
+      ctx.fillText('A′', cx - rx - 14, baseCY + 6);
+
+      // r label (on radius)
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 16px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('r', cx + rx / 2, baseCY - 8);
+
+      // h label (on axis)
+      ctx.fillStyle = secondary;
+      ctx.fillText('h', cx - 14, (apexY + baseCY) / 2);
+
+      // s label (on right slant)
+      ctx.save();
+      ctx.fillStyle = primary;
+      var midSx = (cx + (cx + rx)) / 2;
+      var midSy = (apexY + baseCY) / 2;
+      ctx.fillText('s', midSx + 18, midSy - 4);
+      ctx.restore();
+
+      // Caption strip below
+      ctx.fillStyle = muted;
+      ctx.font = '13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Trougao V A A′ je osni presek (jednakokraki sa osnovicom 2r i kracima s).', W / 2, 440);
+      ctx.fillText('Pitagora u VOA: s² = r² + h².', W / 2, 462);
+    }
+
+    draw();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+      }
+    });
+  })();
+
+  // ---------- Canvas B: axial section (isoceles triangle) ----------
+  (function canvasB() {
+    var canvas = document.getElementById('diagram13b');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, H = canvas.height;
+
+    function draw() {
+      var bg        = cv('--sol-canvas-bg');
+      var primary   = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent    = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text      = cv('--sol-canvas-text');
+      var muted     = cv('--sol-canvas-muted');
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      ctx.fillStyle = text;
+      ctx.font = 'bold 16px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Osni presek — jednakokraki trougao (r = 5, s = 13, h = 12)', W / 2, 28);
+
+      // Triangle vertices in canvas coordinates.
+      // We scale so that 1 unit = 22 px → r=5 → 110 px (half-base), h=12 → 264 px (height), s=13 → ~286 px hypotenuse.
+      var scale = 22;
+      var halfBase = 5 * scale;  // 110
+      var height   = 12 * scale; // 264
+      var apexX = W / 2;
+      var apexY = 70;
+      var baseY = apexY + height; // 70 + 264 = 334
+      var leftX = apexX - halfBase;
+      var rightX = apexX + halfBase;
+
+      // Shaded triangle
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.08);
+      ctx.beginPath();
+      ctx.moveTo(apexX, apexY);
+      ctx.lineTo(leftX, baseY);
+      ctx.lineTo(rightX, baseY);
+      ctx.closePath();
+      ctx.fill();
+
+      // Edges
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(apexX, apexY);
+      ctx.lineTo(leftX, baseY);
+      ctx.lineTo(rightX, baseY);
+      ctx.closePath();
+      ctx.stroke();
+
+      // Height (dashed) from apex to midpoint of base
+      ctx.strokeStyle = secondary;
+      ctx.lineWidth = 2;
+      ctx.setLineDash([5, 5]);
+      ctx.beginPath();
+      ctx.moveTo(apexX, apexY);
+      ctx.lineTo(apexX, baseY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Right-angle marker at base-mid
+      ctx.strokeStyle = muted;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(apexX + 12, baseY);
+      ctx.lineTo(apexX + 12, baseY - 12);
+      ctx.lineTo(apexX, baseY - 12);
+      ctx.stroke();
+
+      // Half-base (right side) highlighted as accent
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(apexX, baseY);
+      ctx.lineTo(rightX, baseY);
+      ctx.stroke();
+
+      // Left half base — also accent (lighter) to emphasize 2r
+      ctx.strokeStyle = cvAlpha('--sol-canvas-accent', 0.6);
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(leftX, baseY);
+      ctx.lineTo(apexX, baseY);
+      ctx.stroke();
+
+      // Vertices
+      function dot(x, y, color, label, dx, dy) {
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.fillStyle = color;
+        ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(label, x + dx, y + dy);
+      }
+      dot(apexX, apexY, primary, 'V', 0, -12);
+      dot(leftX, baseY, accent, 'A′', -16, 22);
+      dot(rightX, baseY, accent, 'A', 16, 22);
+      dot(apexX, baseY, secondary, 'M', -12, 22);
+
+      // Labels for sides
+      ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+
+      // Left krak: s = 13
+      ctx.fillStyle = primary;
+      var midLx = (apexX + leftX) / 2;
+      var midLy = (apexY + baseY) / 2;
+      ctx.save();
+      ctx.translate(midLx - 24, midLy);
+      ctx.rotate(Math.atan2(baseY - apexY, leftX - apexX));
+      ctx.fillText('s = 13', 0, -8);
+      ctx.restore();
+
+      // Right krak: s = 13
+      var midRx = (apexX + rightX) / 2;
+      var midRy = (apexY + baseY) / 2;
+      ctx.save();
+      ctx.translate(midRx + 24, midRy);
+      ctx.rotate(Math.atan2(baseY - apexY, rightX - apexX));
+      ctx.fillText('s = 13', 0, -8);
+      ctx.restore();
+
+      // Right half-base label
+      ctx.fillStyle = accent;
+      ctx.fillText('r = 5', (apexX + rightX) / 2, baseY + 24);
+      // Left half-base label
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.85);
+      ctx.fillText('r = 5', (apexX + leftX) / 2, baseY + 24);
+
+      // Height label
+      ctx.fillStyle = secondary;
+      ctx.fillText('h = 12', apexX - 36, (apexY + baseY) / 2);
+
+      // Bottom annotations
+      ctx.fillStyle = muted;
+      ctx.font = '13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Obim: 2r + 2s = 10 + 26 = 36 ✓     Pitagora: 5² + 12² = 25 + 144 = 169 = 13² ✓', W / 2, baseY + 70);
+      ctx.fillText('Trojac (5, 12, 13).', W / 2, baseY + 92);
+    }
+
+    draw();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+      }
+    });
+  })();
+
+  // ---------- Canvas C: net of cone (circle + sector) ----------
+  (function canvasC() {
+    var canvas = document.getElementById('diagram13c');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, H = canvas.height;
+
+    function draw() {
+      var bg        = cv('--sol-canvas-bg');
+      var primary   = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent    = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text      = cv('--sol-canvas-text');
+      var muted     = cv('--sol-canvas-muted');
+      var warning   = cv('--sol-canvas-warning');
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      ctx.fillStyle = text;
+      ctx.font = 'bold 16px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Razvijena površina kupe = krug osnove + kružni isečak omotača', W / 2, 28);
+
+      // Left: base circle of radius r = 5 → 14 px/unit so 70 px
+      var leftCX = 165;
+      var leftCY = 240;
+      var rPx = 70;
+      // Base disk
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.18);
+      ctx.beginPath();
+      ctx.arc(leftCX, leftCY, rPx, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.arc(leftCX, leftCY, rPx, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Radius marker
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(leftCX, leftCY);
+      ctx.lineTo(leftCX + rPx, leftCY);
+      ctx.stroke();
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('r = 5', leftCX + rPx / 2, leftCY - 8);
+
+      // Center dot
+      ctx.beginPath();
+      ctx.arc(leftCX, leftCY, 3.5, 0, Math.PI * 2);
+      ctx.fillStyle = accent;
+      ctx.fill();
+
+      // Label below
+      ctx.fillStyle = text;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.fillText('Osnova: krug', leftCX, leftCY + rPx + 30);
+      ctx.fillStyle = accent;
+      ctx.fillText('B = π r² = 25π', leftCX, leftCY + rPx + 52);
+
+      // Right: sector. We use s = 13, scaled to 14 px/unit → sPx = 182. But we have 700 px wide canvas
+      // and used 165 + 70 + ~50 gap = 285 left. So sector center near x = 360 with radius = 180.
+      var sCX = 380;
+      var sCY = 240;
+      var sPx = 180;
+      // Central angle alpha = 2πr/s = 10π/13 rad ≈ 2.4166 rad ≈ 138.46°.
+      // We orient sector so its bisector points to the right.
+      var alpha = (2 * Math.PI * 5) / 13; // rad
+      var startA = -alpha / 2;
+      var endA = alpha / 2;
+
+      // Sector fill
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.18);
+      ctx.beginPath();
+      ctx.moveTo(sCX, sCY);
+      ctx.arc(sCX, sCY, sPx, startA, endA);
+      ctx.closePath();
+      ctx.fill();
+
+      // Sector outline
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(sCX, sCY);
+      ctx.lineTo(sCX + sPx * Math.cos(startA), sCY + sPx * Math.sin(startA));
+      ctx.arc(sCX, sCY, sPx, startA, endA);
+      ctx.lineTo(sCX, sCY);
+      ctx.stroke();
+
+      // Slant labels (s = 13)
+      ctx.fillStyle = primary;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      // Top edge (start angle)
+      var topX = sCX + (sPx / 2) * Math.cos(startA);
+      var topY = sCY + (sPx / 2) * Math.sin(startA);
+      ctx.textAlign = 'left';
+      ctx.fillText('s = 13', topX + 8, topY - 4);
+      // Bottom edge (end angle)
+      var botX = sCX + (sPx / 2) * Math.cos(endA);
+      var botY = sCY + (sPx / 2) * Math.sin(endA);
+      ctx.fillText('s = 13', botX + 8, botY + 14);
+
+      // Arc length label (the curve)
+      ctx.fillStyle = highlight;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('luk = 2π r = 10π', sCX + sPx + 5, sCY + 6);
+
+      // Vertex of sector (apex of cone when assembled)
+      ctx.beginPath();
+      ctx.arc(sCX, sCY, 4, 0, Math.PI * 2);
+      ctx.fillStyle = primary;
+      ctx.fill();
+      ctx.fillStyle = primary;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText('V', sCX - 6, sCY + 4);
+
+      // Sector area label
+      ctx.fillStyle = text;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Omotač: kružni isečak', sCX + 30, sCY + sPx + 24);
+      ctx.fillStyle = primary;
+      ctx.fillText('M = π r s = 65π', sCX + 30, sCY + sPx + 46);
+
+      // Bottom summary
+      ctx.fillStyle = muted;
+      ctx.font = '13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('P = B + M = 25π + 65π = 90π', W / 2, H - 24);
+    }
+
+    draw();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+      }
+    });
+  })();
+
+  // ---------- Canvas D: assembling the final formula ----------
+  (function canvasD() {
+    var canvas = document.getElementById('diagram13d');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, H = canvas.height;
+
+    function draw() {
+      var bg        = cv('--sol-canvas-bg');
+      var primary   = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent    = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text      = cv('--sol-canvas-text');
+      var muted     = cv('--sol-canvas-muted');
+      var warning   = cv('--sol-canvas-warning');
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      ctx.fillStyle = text;
+      ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Sklapanje konačne površine: P = πr² + πrs = πr(r + s)', W / 2, 30);
+
+      // Three boxes: B = 25π   +   M = 65π   =   P = 90π
+      var boxW = 170, boxH = 110;
+      var y = 100;
+      var xs = [60, 280, 500];
+
+      // Box 1: B
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.15);
+      ctx.fillRect(xs[0], y, boxW, boxH);
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(xs[0], y, boxW, boxH);
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('OSNOVA', xs[0] + boxW / 2, y + 26);
+      ctx.fillStyle = text;
+      ctx.font = 'bold 22px Inter, system-ui, sans-serif';
+      ctx.fillText('B = π r²', xs[0] + boxW / 2, y + 60);
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 22px Inter, system-ui, sans-serif';
+      ctx.fillText('= 25π', xs[0] + boxW / 2, y + 92);
+
+      // Plus sign
+      ctx.fillStyle = text;
+      ctx.font = 'bold 32px Inter, system-ui, sans-serif';
+      ctx.fillText('+', (xs[0] + boxW + xs[1]) / 2, y + boxH / 2 + 10);
+
+      // Box 2: M
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.15);
+      ctx.fillRect(xs[1], y, boxW, boxH);
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(xs[1], y, boxW, boxH);
+      ctx.fillStyle = primary;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('OMOTAČ', xs[1] + boxW / 2, y + 26);
+      ctx.fillStyle = text;
+      ctx.font = 'bold 22px Inter, system-ui, sans-serif';
+      ctx.fillText('M = π r s', xs[1] + boxW / 2, y + 60);
+      ctx.fillStyle = primary;
+      ctx.font = 'bold 22px Inter, system-ui, sans-serif';
+      ctx.fillText('= 65π', xs[1] + boxW / 2, y + 92);
+
+      // Equals sign
+      ctx.fillStyle = text;
+      ctx.font = 'bold 32px Inter, system-ui, sans-serif';
+      ctx.fillText('=', (xs[1] + boxW + xs[2]) / 2, y + boxH / 2 + 10);
+
+      // Box 3: P
+      ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.18);
+      ctx.fillRect(xs[2], y, boxW, boxH);
+      ctx.strokeStyle = highlight;
+      ctx.lineWidth = 2.5;
+      ctx.strokeRect(xs[2], y, boxW, boxH);
+      ctx.fillStyle = highlight;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('UKUPNO', xs[2] + boxW / 2, y + 26);
+      ctx.fillStyle = text;
+      ctx.font = 'bold 22px Inter, system-ui, sans-serif';
+      ctx.fillText('P = π r (r + s)', xs[2] + boxW / 2, y + 60);
+      ctx.fillStyle = highlight;
+      ctx.font = 'bold 22px Inter, system-ui, sans-serif';
+      ctx.fillText('= 90π', xs[2] + boxW / 2, y + 92);
+
+      // Below: substitution line
+      ctx.fillStyle = muted;
+      ctx.font = '14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Zamene: r = 5, s = 13, r + s = 18.', W / 2, y + boxH + 50);
+      ctx.fillStyle = text;
+      ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+      ctx.fillText('P = π · 5 · 18 = 90π', W / 2, y + boxH + 86);
+    }
+
+    draw();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+      }
+    });
+  })();
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Površina prave kupe iz obima osnog preseka i omotača",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["stereometrija", "prava kupa", "osni presek", "omotač", "Vijetove formule", "razvijena površina"]
+}
+BRAINSPARK_META-->

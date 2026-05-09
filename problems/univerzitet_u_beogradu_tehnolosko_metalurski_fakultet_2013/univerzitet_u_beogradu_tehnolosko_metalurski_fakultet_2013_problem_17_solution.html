@@ -1,0 +1,501 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+PROBLEM:
+Reši jednačinu  log_4 ( log_2 ( log_{1/3} x ) ) = 0
+i odredi u kom intervalu (od ponuđenih) leži rešenje.
+
+KORACI — &bdquo;razmotavanje&rdquo; spolja ka unutra:
+
+(1) Spoljašnji log_4: log_4 ( ... ) = 0  =>  ... = 4^0 = 1.
+   Dakle: log_2 ( log_{1/3} x ) = 1.
+
+(2) Srednji log_2: log_2 ( ... ) = 1  =>  ... = 2^1 = 2.
+   Dakle: log_{1/3} x = 2.
+
+(3) Unutrašnji log_{1/3}: log_{1/3} x = 2  =>  x = (1/3)^2 = 1/9.
+
+PROVERA (zameni nazad):
+  log_{1/3} (1/9) = log_{1/3} ((1/3)^2) = 2  ✓
+  log_2 (2) = 1  ✓
+  log_4 (1) = 0  ✓
+
+POREĐENJE INTERVALA:
+  x = 1/9 ≈ 0,1111
+  Intervali:
+  (A) (0, 1/8) = (0, 0,125) — sadrži 1/9 jer je 1/9 < 1/8  ✓
+  (B) (1/8, 1/6) = (0,125, 0,1667)
+  (C) (1/6, 1/2) = (0,1667, 0,5)
+  (D) (1/2, 1) = (0,5, 1)
+  (E) (1, 5)
+
+ODGOVOR: (A) (0, 1/8)
+
+Provera 1/9 < 1/8: ekvivalentno 8 < 9  ✓
+
+DOMENI:
+- Da bi log_{1/3} x bio definisan: x > 0.
+- Da bi log_2 ( log_{1/3} x ) bio definisan: log_{1/3} x > 0, tj. (jer je baza 1/3 manja od 1) treba x ∈ (0, 1).
+- Da bi log_4 ( log_2 ( log_{1/3} x ) ) bio definisan: log_2 ( log_{1/3} x ) > 0, tj. log_{1/3} x > 1, tj. x < 1/3.
+Naše x = 1/9 < 1/3, zadovoljava sve domene.
+
+Distractori:
+(B) 1/8 — ako neko izračuna 1/8 možda je pomešao 2^3 i 3^2.
+(C) 1/6 — u sredini, neka greška.
+(D) 1/2 — možda su postavili (1/3)^1 = 1/3 i pogrešno odgovorili 1/2 kao zaokruženi interval.
+(E) (1, 5) — ako se greši i napiše x = 9 (umesto 1/9), tj. zaboravi se da je baza 1/3 manja od 1.
+
+KEY INSIGHT:
+- Hijerarhija &bdquo;razmotavanja&rdquo;: kad imaš log_a(...) = c, onda ... = a^c.
+- Specifično: log(...) = 0 znači (...) = 1, log(...) = 1 znači (...) = baza, itd.
+
+VIZUELNI PRIKAZ:
+1. Brojevna prava sa svim navedenim intervalima i obeleženom tačkom x = 1/9.
+2. Možda i &bdquo;tabela razmotavanja&rdquo; sa stepenima.
+
+PEDAGOŠKI:
+- Pažljivo objasniti šta &bdquo;log_a y = c&rdquo; znači: y = a^c.
+- Pokazati da je 1/9 = (1/3)^2, pa log_{1/3}(1/9) = 2 (NE -2, jer je baza takođe razlomak).
+- Bitan detalj: log_{1/3} x je pozitivno za x ∈ (0, 1) i negativno za x > 1.
+</script>
+
+<h1 data-card="problem-title">Logaritamska jednačina trostruko ugnježdenog logaritma</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra &mdash; logaritmi sa različitim bazama, &bdquo;razmotavanje&rdquo; ugnježdene jednačine</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Rešenje jednačine \[ \log_4 \!\left( \log_2 \!\left( \log_{1/3} x \right) \right) = 0 \] nalazi se u intervalu:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \left( 0,\; \dfrac{1}{8} \right) \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \left( \dfrac{1}{8},\; \dfrac{1}{6} \right) \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \left( \dfrac{1}{6},\; \dfrac{1}{2} \right) \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \left( \dfrac{1}{2},\; 1 \right) \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( (1,\; 5) \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Trostruki logaritam &bdquo;razmotavamo&rdquo; korak po korak: idemo od najspoljnjijeg ka najunutarnjem. Svaki put primenjujemo osnovni identitet \( \log_a y = c \;\Leftrightarrow\; y = a^c \). Tako tri uzastopna eksponenciranja (sa bazama \( 4 \), \( 2 \), \( 1/3 \)) daju vrednost \( x \). Na kraju proverimo u koji interval ona upada.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Logaritmi &mdash; ključne formule i identiteti</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Definicija logaritma:</strong> \( \log_a y = c \;\Longleftrightarrow\; a^c = y \), pri čemu \( a > 0,\; a \neq 1,\; y > 0 \). Drugim rečima, logaritam je &bdquo;eksponent na koji treba dići bazu da se dobije zadati broj&rdquo;.</li>
+        <li><strong>Tri zlatna pravila:</strong> \[ \log_a 1 = 0, \quad \log_a a = 1, \quad \log_a (a^k) = k. \]</li>
+        <li><strong>Logaritam sa razlomljenom bazom \( 1/a \):</strong> \[ \log_{1/a} x \;=\; -\log_a x. \] Specifično, \( \log_{1/3}(1/9) = -\log_3(1/9) = -(-2) = 2 \) &mdash; pozitivan broj!</li>
+        <li><strong>Domen ugnježdenog logaritma:</strong> svaki podizraz mora biti pozitivan. U našem zadatku to znači:
+          <ul>
+            <li>\( x > 0 \) (zbog \( \log_{1/3} x \));</li>
+            <li>\( \log_{1/3} x > 0 \), tj. \( x \in (0, 1) \) (zbog \( \log_2(\cdot) \));</li>
+            <li>\( \log_2(\log_{1/3} x) > 0 \), tj. \( \log_{1/3} x > 1 \), tj. \( x < 1/3 \) (zbog \( \log_4(\cdot) \)).</li>
+          </ul>
+          Sve tri uslovi se sažimaju u: \( 0 < x < 1/3 \).
+        </li>
+        <li><strong>Pažnja kod baze \( a < 1 \):</strong> funkcija \( \log_a x \) je <em>opadajuća</em>, pa &bdquo;mali \( x \)&rdquo; daje &bdquo;veliki \( \log \)&rdquo;. Konkretno, \( \log_{1/3}(1/9) = 2 \) (ne \( -2 \)), jer je \( (1/3)^2 = 1/9 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="numlineDiagram" width="780" height="460"></canvas>
+  </div>
+  <p class="canvas-caption">Brojevna prava sa svim ponuđenim intervalima (A) &ndash; (E). Tačka \( x = \dfrac{1}{9} \approx 0{,}1111 \) jasno upada u interval \( \left(0,\; \dfrac{1}{8}\right) \), jer je \( \dfrac{1}{9} < \dfrac{1}{8} \) (ekvivalentno: \( 8 < 9 \)).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Razmotavanje najspoljnijeg logaritma (baza \( 4 \))</h3>
+      <p>Polazna jednačina:</p>
+      <div class="math-block">\[ \log_4 \!\left( \log_2 \!\left( \log_{1/3} x \right) \right) = 0. \]</div>
+      <p>Po definiciji logaritma, \( \log_4 (\,A\,) = 0 \) znači \( A = 4^0 = 1 \). Označimo \( A = \log_2 (\log_{1/3} x) \). Onda:</p>
+      <div class="math-block">\[ \log_2 \!\left( \log_{1/3} x \right) = 1. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto \( 4^0 = 1 \), a ne \( 0 \)?</summary>
+          <div class="detail-content"><p>Po definiciji stepena, svaki broj na nulti stepen je \( 1 \) (osim \( 0^0 \), koji je sporan slučaj). Logaritamski: \( \log_a 1 = 0 \) za bilo koju validnu bazu \( a \), jer je \( a^0 = 1 \). Ovo je &bdquo;ulazna tačka&rdquo; svake logaritamske skale.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Razmotavanje srednjeg logaritma (baza \( 2 \))</h3>
+      <p>Sada imamo \( \log_2 (B) = 1 \), gde je \( B = \log_{1/3} x \). Po definiciji, \( \log_2 (B) = 1 \) znači \( B = 2^1 = 2 \). Dakle:</p>
+      <div class="math-block">\[ \log_{1/3} x = 2. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Razmotavanje unutrašnjeg logaritma (baza \( 1/3 \))</h3>
+      <p>Po definiciji \( \log_{1/3} x = 2 \) znači:</p>
+      <div class="math-block">\[ x = \left(\frac{1}{3}\right)^{\!2} = \frac{1}{9}. \]</div>
+      <p>Pažljivo: baza \( 1/3 \) je razlomak (manje od \( 1 \)), ali eksponent \( 2 \) je <em>pozitivan</em>, pa rezultat \( (1/3)^2 = 1/9 \) jeste pozitivan razlomak. (Ne treba mešati sa &bdquo;negativnim eksponentom&rdquo; &mdash; ovde nije.)</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliko je \( \log_{1/3} 9 \) (sa \( 9 \) umesto \( 1/9 \))?</summary>
+          <div class="detail-content"><p>Funkcija \( \log_{1/3} \) je <em>opadajuća</em>: što je argument veći, vrednost je manja (negativnija). Računamo: \( (1/3)^{-2} = 3^2 = 9 \), pa \( \log_{1/3} 9 = -2 \). Dakle, \( \log_{1/3}(1/9) = +2 \), a \( \log_{1/3}(9) = -2 \) &mdash; suprotnog su predznaka.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Identifikacija intervala</h3>
+      <p>Imamo \( x = \dfrac{1}{9} \approx 0{,}1111 \). Uporedi sa graničnim vrednostima:</p>
+      <div class="math-block">\[ \frac{1}{9} \;<\; \frac{1}{8} \quad\Longleftrightarrow\quad 8 \;<\; 9. \quad\checkmark \]</div>
+      <p>Pošto je \( \dfrac{1}{9} \) između \( 0 \) i \( \dfrac{1}{8} \), tačno je da \( x \in \left( 0,\; \dfrac{1}{8} \right) \) &mdash; opcija <strong>(A)</strong>.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kako brzo poređam dva razlomka sa istim brojiocem?</summary>
+          <div class="detail-content"><p>Za pozitivne razlomke sa istim brojiocem (ovde \( 1 \)), važi: <em>što je imenilac veći, razlomak je manji</em>. Pošto \( 9 > 8 \), zaključujemo \( \dfrac{1}{9} < \dfrac{1}{8} \). Slično: \( \dfrac{1}{100} < \dfrac{1}{50} < \dfrac{1}{2} \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera (zamena u polaznu jednačinu)</h3>
+      <p>Ukucamo \( x = 1/9 \) i razvijamo iznutra ka napolju:</p>
+      <div class="math-block">\[ \log_{1/3}\!\left(\frac{1}{9}\right) = \log_{1/3}\!\left(\left(\tfrac{1}{3}\right)^{\!2}\right) = 2. \]</div>
+      <div class="math-block">\[ \log_{2}(2) = 1. \]</div>
+      <div class="math-block">\[ \log_{4}(1) = 0. \quad\checkmark \]</div>
+      <p>Polazna jednačina je zadovoljena, pa je \( x = \dfrac{1}{9} \) jedinstveno rešenje.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Ugnježdenu logaritamsku jednačinu rešavamo &bdquo;sloj po sloj&rdquo;, primenjujući fundamentalni identitet \( \log_a y = c \;\Leftrightarrow\; y = a^c \) tri puta uzastopno. Svaki put baza spoljnijeg logaritma postaje baza odgovarajućeg eksponenta. Kompozicija od tri eksponenciranja:</p>
+  <div class="math-block">\[ x \;=\; \left(\frac{1}{3}\right)^{2^{4^{0}}} \;=\; \left(\frac{1}{3}\right)^{2^{1}} \;=\; \left(\frac{1}{3}\right)^{2} \;=\; \frac{1}{9}. \]</div>
+  <p>Ovaj &bdquo;tornjić eksponenata&rdquo; (od dna ka vrhu: \( 4 \to 2 \to 1/3 \)) lepo prikazuje strukturu trostruko ugnježdenog logaritma.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ x = \frac{1}{9} \;\in\; \left(0,\; \frac{1}{8}\right) \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( \left(0,\; \tfrac{1}{8}\right) \)</span>
+    <span class="answer-option" data-option="B">(B) \( \left(\tfrac{1}{8},\; \tfrac{1}{6}\right) \)</span>
+    <span class="answer-option" data-option="C">(C) \( \left(\tfrac{1}{6},\; \tfrac{1}{2}\right) \)</span>
+    <span class="answer-option" data-option="D">(D) \( \left(\tfrac{1}{2},\; 1\right) \)</span>
+    <span class="answer-option" data-option="E">(E) \( (1,\; 5) \)</span>
+  </div>
+  <p class="verification">Provera: \( \log_{1/3}(1/9) = 2 \), zatim \( \log_2(2) = 1 \), zatim \( \log_4(1) = 0 \) ✓. Pošto \( \dfrac{1}{9} = 0{,}1\overline{1} < 0{,}125 = \dfrac{1}{8} \), rešenje upada u interval \( \left(0, \tfrac{1}{8}\right) \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešan smer &bdquo;razmotavanja&rdquo;.</strong> Neki počinju od najunutarnjeg logaritma, a treba krenuti od spoljnjeg. Spoljni logaritam je &bdquo;najviši sloj&rdquo;, pa njega prvog &bdquo;skidamo&rdquo; primenom \( \log_a y = c \Rightarrow y = a^c \).</li>
+    <li><strong>Zaboravljeno da je baza \( 1/3 \) razlomak.</strong> Greška: pisati \( \log_{1/3} x = 2 \Rightarrow x = 3^2 = 9 \). Zapravo je \( x = (1/3)^2 = 1/9 \). Ovo vodi na pogrešan odgovor (E) interval \( (1, 5) \) &mdash; klasičan distractor.</li>
+    <li><strong>Mešanje znakova kod \( \log_{1/a} \).</strong> Identitet \( \log_{1/a} x = -\log_a x \) korisno je upamtiti, ali ako se pogrešno primeni, lako se promeni znak. Sigurnija provera: \( (1/3)^2 = 1/9 \) bukvalno, bez identiteta.</li>
+    <li><strong>Nepoštovanje domena.</strong> Da bi celokupna jednačina imala smisla, mora biti \( 0 < x < 1/3 \). Naše rešenje \( x = 1/9 \) zaista zadovoljava, ali generalno treba paziti &mdash; rešenja koja izlaze iz domena su &bdquo;lažna&rdquo;.</li>
+    <li><strong>\( \log_4 (1) \) nije \( 4 \).</strong> Tipična brzopleta greška: pomešati &bdquo;baza\(^c = y\)&rdquo; sa &bdquo;\( y \cdot c = \) baza&rdquo;. Pravilo: \( \log_a 1 = 0 \) UVEK, jer je \( a^0 = 1 \) za svaku validnu bazu.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Reši sličnu jednačinu \( \log_{27} \!\left( \log_3 \!\left( \log_{1/2} x \right) \right) = \dfrac{1}{3} \). Izgleda komplikovano, ali isti princip važi: razmotaj sloj po sloj, koristeći \( \log_a y = c \Rightarrow y = a^c \). Da li i ovde rešenje upada u interval \( (0, 1) \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Korak 1: \( \log_{27}(A) = 1/3 \Rightarrow A = 27^{1/3} = 3 \). Korak 2: \( \log_3(B) = 3 \Rightarrow B = 3^3 = 27 \). Korak 3: \( \log_{1/2} x = 27 \Rightarrow x = (1/2)^{27} = 2^{-27} = \dfrac{1}{2^{27}} \approx 7{,}45 \cdot 10^{-9} \). Veoma mali pozitivan broj &mdash; svakako u \( (0, 1) \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('numlineDiagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+    var tertiary  = cv('--sol-canvas-tertiary');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Brojevna prava: gde leži x = 1/9 ≈ 0,1111?', W / 2, 28);
+
+    // Number line: x from 0 to 5.2
+    var marginL = 60, marginR = 60;
+    var lineY = 200;
+    var x0 = marginL;
+    var x1 = W - marginR;
+
+    // Two scales: zoomed range [0, 1/2] mapped to first 2/3 of width, then [1/2, 5.2] for last 1/3
+    // Actually use a single non-linear scale for clarity: split into zoom region and main region.
+    // Plan: left half (0 to W*0.7) shows [0, 1/2], right (W*0.7 to W*0.95) shows (1/2, 5).
+    var splitX = (x0 + (x1 - x0) * 0.62);
+    var leftEnd = 0.5; // value at splitX
+
+    function tx(v) {
+      if (v <= leftEnd) {
+        return x0 + (v / leftEnd) * (splitX - x0);
+      } else {
+        // value 0.5 -> splitX, value 5 -> x1
+        return splitX + ((v - leftEnd) / (5 - leftEnd)) * (x1 - splitX);
+      }
+    }
+
+    // Main line
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(x0, lineY);
+    ctx.lineTo(x1, lineY);
+    ctx.stroke();
+
+    // Arrow on right
+    ctx.beginPath();
+    ctx.moveTo(x1, lineY);
+    ctx.lineTo(x1 - 12, lineY - 6);
+    ctx.lineTo(x1 - 12, lineY + 6);
+    ctx.closePath();
+    ctx.fillStyle = axis;
+    ctx.fill();
+
+    // Mark "scale break" at splitX
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(splitX - 6, lineY - 12);
+    ctx.lineTo(splitX + 6, lineY - 8);
+    ctx.moveTo(splitX - 6, lineY - 8);
+    ctx.lineTo(splitX + 6, lineY - 4);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = muted;
+    ctx.font = '10px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('skala', splitX, lineY - 18);
+
+    // Tick values to show
+    var ticks = [
+      { v: 0, label: '0' },
+      { v: 1/8, label: '1/8' },
+      { v: 1/6, label: '1/6' },
+      { v: 1/2, label: '1/2' },
+      { v: 1, label: '1' },
+      { v: 5, label: '5' }
+    ];
+
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.8;
+    ticks.forEach(function(t) {
+      var px = tx(t.v);
+      ctx.beginPath();
+      ctx.moveTo(px, lineY - 7);
+      ctx.lineTo(px, lineY + 7);
+      ctx.stroke();
+      ctx.fillStyle = text;
+      ctx.font = '13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(t.label, px, lineY + 24);
+    });
+
+    // Draw intervals as colored bars above the line
+    var intervals = [
+      { from: 0,    to: 1/8, label: '(A)', color: accent,    yOff: -56, isCorrect: true },
+      { from: 1/8,  to: 1/6, label: '(B)', color: primary,   yOff: -78, isCorrect: false },
+      { from: 1/6,  to: 1/2, label: '(C)', color: secondary, yOff: -56, isCorrect: false },
+      { from: 1/2,  to: 1,   label: '(D)', color: tertiary,  yOff: -78, isCorrect: false },
+      { from: 1,    to: 5,   label: '(E)', color: highlight, yOff: -56, isCorrect: false }
+    ];
+
+    intervals.forEach(function(iv) {
+      var x_l = tx(iv.from);
+      var x_r = tx(iv.to);
+      var y = lineY + iv.yOff;
+      var barH = 18;
+
+      ctx.fillStyle = cvAlpha(iv.isCorrect ? '--sol-canvas-accent' :
+        (iv.label === '(B)' ? '--sol-canvas-primary' :
+         iv.label === '(C)' ? '--sol-canvas-secondary' :
+         iv.label === '(D)' ? '--sol-canvas-tertiary' : '--sol-canvas-highlight'), iv.isCorrect ? 0.55 : 0.28);
+      ctx.fillRect(x_l, y, x_r - x_l, barH);
+
+      ctx.strokeStyle = iv.color;
+      ctx.lineWidth = iv.isCorrect ? 3 : 2;
+      ctx.strokeRect(x_l, y, x_r - x_l, barH);
+
+      // Label inside or above
+      ctx.fillStyle = text;
+      ctx.font = (iv.isCorrect ? 'bold ' : '') + '12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      var labelText = iv.label;
+      ctx.fillText(labelText, (x_l + x_r) / 2, y - 4);
+
+      // Vertical lines from interval endpoints down to number line
+      ctx.strokeStyle = cvAlpha(iv.isCorrect ? '--sol-canvas-accent' :
+        (iv.label === '(B)' ? '--sol-canvas-primary' :
+         iv.label === '(C)' ? '--sol-canvas-secondary' :
+         iv.label === '(D)' ? '--sol-canvas-tertiary' : '--sol-canvas-highlight'), 0.4);
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 3]);
+      ctx.beginPath();
+      ctx.moveTo(x_l, y + barH);
+      ctx.lineTo(x_l, lineY - 7);
+      ctx.moveTo(x_r, y + barH);
+      ctx.lineTo(x_r, lineY - 7);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    });
+
+    // Mark x = 1/9 with a special pin
+    var solX = tx(1/9);
+
+    // Star/pin marker
+    ctx.fillStyle = warning;
+    ctx.beginPath();
+    ctx.arc(solX, lineY, 9, 0, Math.PI * 2);
+    ctx.fill();
+
+    // White inner ring
+    ctx.fillStyle = bg;
+    ctx.beginPath();
+    ctx.arc(solX, lineY, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Vertical pin line
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(solX, lineY + 50);
+    ctx.lineTo(solX, lineY + 80);
+    ctx.stroke();
+
+    // Pin label
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('x = 1/9', solX, lineY + 102);
+
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('≈ 0,1111', solX, lineY + 122);
+
+    // Comparison annotation: 1/9 < 1/8
+    var x18 = tx(1/8);
+    var compY = lineY + 160;
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 1.6;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(solX, lineY + 82);
+    ctx.lineTo(solX, compY);
+    ctx.lineTo((solX + x18) / 2, compY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('1/9 < 1/8  ⟺  8 < 9  ✓', (solX + x18) / 2, compY + 24);
+
+    // Top legend
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('TAČAN INTERVAL (A): (0, 1/8)', marginL, 60);
+
+    ctx.fillStyle = muted;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillText('Sva pet ponuđenih intervala u jednom prikazu — \nrešenje x = 1/9 sa žutim pinom.', marginL, 82);
+    // The \n won't render in canvas; replace with two lines manually:
+    // (Already drawn one line at 82; above text was simplified. Skip second line for clarity.)
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Logaritamska jednačina log₄(log₂(log₁/₃ x)) = 0: x = 1/9",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["logaritamska jednačina", "ugnježdeni logaritmi", "definicija logaritma", "razlomljena baza", "domeni logaritma"]
+}
+BRAINSPARK_META-->

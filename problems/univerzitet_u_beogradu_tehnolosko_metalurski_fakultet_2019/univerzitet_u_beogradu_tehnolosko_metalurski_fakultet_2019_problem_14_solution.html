@@ -1,0 +1,553 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: u razvoju (∛2 + 1/∛3)^n, sedmi clan od pocetka i sedmi od kraja stoje
+  u odnosu 1 : 6. Naci n.
+
+  Binomni razvoj: (a + b)^n = sum_{k=0..n} C(n,k) a^(n-k) b^k.
+  T_{k+1} = C(n,k) a^(n-k) b^k.
+  Ovde a = 2^(1/3), b = 3^(-1/3).
+
+  Sedmi clan od pocetka: k = 6.
+    T_7 = C(n,6) * 2^((n-6)/3) * 3^(-6/3) = C(n,6) * 2^((n-6)/3) * 3^(-2).
+
+  Sedmi clan od kraja: razvoj ima n+1 clanova; sedmi od kraja ima broj
+  (n+1) - 7 + 1 = n - 5 (jedan-zasnovano), tj. T_{n-5}, sto odgovara k = n - 6.
+    T_{n-5} = C(n, n-6) * a^(n - (n-6)) * b^(n-6)
+            = C(n, n-6) * a^6 * b^(n-6)
+            = C(n, n-6) * 2^(6/3) * 3^(-(n-6)/3)
+            = C(n,6) * 4 * 3^(-(n-6)/3).
+    (Korisecemo C(n,6) = C(n, n-6).)
+
+  Odnos:
+    T_7 / T_{n-5} = [C(n,6) 2^((n-6)/3) 3^(-2)] / [C(n,6) * 4 * 3^(-(n-6)/3)]
+                  = 2^((n-6)/3) * 3^(-2) / (4 * 3^(-(n-6)/3))
+                  = 2^((n-6)/3 - 2) * 3^((n-6)/3 - 2)
+                  = 6^((n-6)/3 - 2).
+    (jer 4 = 2^2, pa 2^((n-6)/3) / 2^2 = 2^((n-6)/3 - 2).)
+
+  Postavljamo = 1/6 = 6^(-1):
+    (n-6)/3 - 2 = -1
+    (n-6)/3 = 1
+    n - 6 = 3
+    n = 9.
+
+  Provera: za n = 9.
+    T_7 = C(9,6) * 2^(3/3) * 3^(-2) = 84 * 2 * (1/9) = 168/9.
+    T_{n-5} = T_4 = C(9, 3) * 2^(6/3) * 3^(-3/3) = 84 * 4 * (1/3) = 336/3 = 112.
+    Odnos T_7 / T_4 = (168/9) / 112 = 168 / (9 * 112) = 168 / 1008 = 1/6. OK.
+
+  Odgovor: (D) 9.
+
+  Vizuelizacija: bar chart koeficijenata C(9, k) za k = 0..9 (Pascalov red),
+  sa istaknutom simetrijom C(9, 6) = C(9, 3). Plus tabela racuna T_7 vs T_4.
+
+  Pitfalls:
+  - Pomesati indeks "k-tog clana od kraja". Zlatno pravilo: u razvoju sa n+1
+    clanova, m-ti clan od kraja je (n - m + 2)-gi od pocetka, sto odgovara
+    k = n - m + 1 (jer T_{k+1} ima taj redni broj).
+    Konkretno, sedmi od kraja: m = 7, redni broj n - 5, k = n - 6.
+  - Zaboraviti da je 1/∛3 = 3^(-1/3), pa je b^k = 3^(-k/3) (negativan eksponent!).
+  - Ne primetiti da se C(n,6) skraćuje (jer C(n,6) = C(n, n-6)).
+  - Greska 4 = 2^4 (ne, 4 = 2^2!).
+</script>
+
+<h1 data-card="problem-title">Odnos sedmog člana od početka i od kraja u binomnom razvoju</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra &mdash; binomna formula, opšti član razvoja, simetrija binomnih koeficijenata</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>Tekst zadatka</h2>
+  <p>Ako se u razvoju</p>
+  <div class="math-block">\[ \left(\sqrt[3]{2} \;+\; \frac{1}{\sqrt[3]{3}}\right)^{\!n} \]</div>
+  <p>sedmi član od početka i sedmi član od kraja odnose kao \( 1 : 6 \), onda je \( n \) jednako:</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">Razvoj</span>
+      <span class="given-value">\( \left(2^{1/3} + 3^{-1/3}\right)^{n} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Uslov</span>
+      <span class="given-value">\( T_{7} : T_{n-5} = 1 : 6 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Traženo</span>
+      <span class="given-value">\( n = ? \)</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 6 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 7 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 8 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 9 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 10 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>Plan rešavanja</h2>
+  <p class="plan-text">Napišemo opšti član \( T_{k+1} = \binom{n}{k}\,2^{(n-k)/3}\,3^{-k/3} \). Sedmi član od početka odgovara \( k = 6 \), a sedmi član od kraja je \( T_{n-5} \) sa \( k = n - 6 \). Zbog simetrije \( \binom{n}{6} = \binom{n}{n-6} \), <strong>binomni koeficijenti se skraćuju</strong>, pa odnos zavisi samo od stepena dvojke i trojke. Sređivanjem pomoću \( 2^a\!\cdot 3^a = 6^a \), odnos se svodi na \( 6^{(n-6)/3\,-\,2} = 6^{-1} \), odakle je \( n = 9 \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>Podsetnik iz teorije</h2>
+  <details>
+    <summary>Binomna formula i opšti član</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Binomna formula:</strong> \( (a+b)^{n} = \displaystyle\sum_{k=0}^{n}\binom{n}{k}\,a^{\,n-k}\,b^{\,k} \), gde su \( \binom{n}{k} = \dfrac{n!}{k!(n-k)!} \) binomni koeficijenti.</li>
+        <li><strong>Opšti član:</strong> \( T_{k+1} = \binom{n}{k}\,a^{\,n-k}\,b^{\,k} \). Indeks \( k \) ide od \( 0 \) do \( n \); razvoj ima ukupno \( n+1 \) članova.</li>
+        <li><strong>Simetrija binomnih koeficijenata:</strong> \( \binom{n}{k} = \binom{n}{n-k} \). Geometrijski: red Paskalovog trougla je simetričan.</li>
+        <li><strong>„m-ti član od kraja":</strong> u razvoju sa \( n+1 \) članova to je član sa rednim brojem \( (n+1) - m + 1 = n - m + 2 \) od početka, što odgovara indeksu \( k = n - m + 1 \). Specijalno, <em>sedmi</em> član od kraja (\( m = 7 \)) ima \( k = n - 6 \), tj. zovemo ga \( T_{n-5} \).</li>
+        <li><strong>Pravila stepena</strong> koja ćemo koristiti: \( a^{p}\!\cdot a^{q} = a^{p+q} \), \( \dfrac{a^p}{a^q} = a^{p-q} \), i \( a^p\!\cdot b^p = (ab)^p \). Specijalno: \( 2^{p}\!\cdot 3^{p} = 6^{p} \).</li>
+        <li><strong>Nule eksponenta:</strong> \( a^0 = 1 \) za \( a \ne 0 \); izjednačavanje stepena u istoj osnovi: ako \( c^{p} = c^{q} \) i \( c &gt; 0 \), \( c \ne 1 \), onda \( p = q \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — Paskalov red za n = 9">
+  <h2>Vizuelni prikaz &mdash; binomni koeficijenti reda \( n = 9 \) i njihova simetrija</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram14a" width="700" height="510"></canvas>
+  </div>
+  <p class="canvas-caption">Histogram koeficijenata \( \binom{9}{k} \) za \( k = 0, 1, \dots, 9 \). Sedmi član od početka (\( k = 6 \)) i sedmi član od kraja (\( k = 3 \)) imaju jednake koeficijente \( \binom{9}{6} = \binom{9}{3} = 84 \) &mdash; zato se u odnosu skraćuju i ostaje samo deo sa eksponentima dvojke i trojke.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — odnos T_7 / T_4 za n = 9">
+  <h2>Vizuelni prikaz &mdash; provera odnosa za \( n = 9 \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram14b" width="700" height="470"></canvas>
+  </div>
+  <p class="canvas-caption">Numerička provera: \( T_{7} = 84\!\cdot\! 2\!\cdot\!\dfrac{1}{9} = \dfrac{168}{9} \) i \( T_{4} = 84\!\cdot\! 4\!\cdot\!\dfrac{1}{3} = 112 \). Odnos je \( \dfrac{T_7}{T_4} = \dfrac{168}{9\!\cdot\! 112} = \dfrac{1}{6} \) &mdash; tačno što zadatak traži.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Identifikuj \( a \), \( b \) i napiši opšti član</h3>
+      <p>Razvoj je oblika \( (a + b)^{n} \) gde je</p>
+      <div class="math-block">\[ a = \sqrt[3]{2} = 2^{1/3}, \qquad b = \frac{1}{\sqrt[3]{3}} = 3^{-1/3}. \]</div>
+      <p>Po binomnoj formuli, opšti član je</p>
+      <div class="math-block">\[ T_{k+1} = \binom{n}{k}\, a^{\,n-k}\, b^{\,k} = \binom{n}{k}\, 2^{(n-k)/3}\, 3^{-k/3}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je eksponent kod trojke negativan?</summary>
+          <div class="detail-content"><p>Jer \( b = \dfrac{1}{\sqrt[3]{3}} = 3^{-1/3} \). Onda \( b^{k} = \left(3^{-1/3}\right)^{k} = 3^{-k/3} \). Recipročna baza daje negativni eksponent &mdash; jedna od najčešćih grešaka u zadacima sa korenima.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Sedmi član od početka: \( T_{7} \) (tj. \( k = 6 \))</h3>
+      <p>Stavimo \( k = 6 \) u opšti član:</p>
+      <div class="math-block">\[ T_{7} = \binom{n}{6}\, 2^{(n-6)/3}\, 3^{-6/3} = \binom{n}{6}\, 2^{(n-6)/3}\, 3^{-2}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Sedmi član od kraja: \( T_{n-5} \) (tj. \( k = n - 6 \))</h3>
+      <p>Razvoj ima \( n+1 \) članova, pa <em>sedmi od kraja</em> ima redni broj \( (n+1) - 7 + 1 = n - 5 \), što odgovara indeksu \( k = n - 6 \). Stavimo \( k = n - 6 \):</p>
+      <div class="math-block">\[ T_{n-5} = \binom{n}{n-6}\, 2^{(n-(n-6))/3}\, 3^{-(n-6)/3} = \binom{n}{n-6}\, 2^{6/3}\, 3^{-(n-6)/3}. \]</div>
+      <p>Po simetriji \( \binom{n}{n-6} = \binom{n}{6} \) i \( 2^{6/3} = 2^{2} = 4 \), pa je</p>
+      <div class="math-block">\[ T_{n-5} = \binom{n}{6}\cdot 4 \cdot 3^{-(n-6)/3}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš \( k = n - 6 \) za sedmi od kraja?</summary>
+          <div class="detail-content">
+            <p>Brojanje od kraja: poslednji član je \( T_{n+1} \) (tj. \( k = n \)), pretposlednji je \( T_{n} \) (tj. \( k = n-1 \)), \( \dots \). „m-ti od kraja" ima \( k = n - m + 1 \). Za \( m = 7 \): \( k = n - 6 \).</p>
+            <p>Zgodna mnemonika: <em>k-ti od početka i k-ti od kraja imaju iste binomne koeficijente</em> &mdash; zato se u odnosu „skraćuju".</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavi odnos i skrati \( \binom{n}{6} \)</h3>
+      <p>Iz uslova zadatka \( T_{7} : T_{n-5} = 1 : 6 \) sledi</p>
+      <div class="math-block">\[ \frac{T_{7}}{T_{n-5}} = \frac{\binom{n}{6}\, 2^{(n-6)/3}\, 3^{-2}}{\binom{n}{6}\cdot 4\cdot 3^{-(n-6)/3}} = \frac{1}{6}. \]</div>
+      <p>Binomni koeficijenti se skraćuju (oba su \( \binom{n}{6} \)):</p>
+      <div class="math-block">\[ \frac{2^{(n-6)/3}\, 3^{-2}}{4\cdot 3^{-(n-6)/3}} = \frac{1}{6}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Sredi izraz pomoću \( 4 = 2^{2} \) i pravila stepena</h3>
+      <p>Brojilac sa stepenom \( 2 \) podelimo sa \( 4 = 2^{2} \): dobijamo \( 2^{(n-6)/3 - 2} \). Stepen \( 3 \) prebacujemo iz imenioca u brojilac (menjajući mu znak): dobijamo \( 3^{(n-6)/3 - 2} \). Ukupno:</p>
+      <div class="math-block">\[ 2^{(n-6)/3 - 2}\cdot 3^{(n-6)/3 - 2} = \frac{1}{6}. \]</div>
+      <p>Pošto su eksponenti jednaki (oba \( (n-6)/3 - 2 \)), spajamo baze:</p>
+      <div class="math-block">\[ \left(2\cdot 3\right)^{(n-6)/3 - 2} = 6^{(n-6)/3 - 2} = \frac{1}{6} = 6^{-1}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kako se \( 3^{-2}/3^{-(n-6)/3} \) sređuje?</summary>
+          <div class="detail-content"><p>\( \dfrac{3^{-2}}{3^{-(n-6)/3}} = 3^{-2 - (-(n-6)/3)} = 3^{-2 + (n-6)/3} = 3^{(n-6)/3 - 2} \). Dakle eksponent je <em>isti</em> kao kod dvojke &mdash; baš zato se baze spajaju u \( 6 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Izjednači eksponente i nađi \( n \)</h3>
+      <p>Pošto je osnova \( 6 &gt; 0 \), \( 6 \ne 1 \), eksponencijalna funkcija je injektivna, pa eksponenti moraju biti jednaki:</p>
+      <div class="math-block">\[ \frac{n - 6}{3} - 2 = -1 \;\;\Longrightarrow\;\; \frac{n - 6}{3} = 1 \;\;\Longrightarrow\;\; n - 6 = 3 \;\;\Longrightarrow\;\; n = 9. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="7">
+    <div class="step-badge">7</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera za \( n = 9 \)</h3>
+      <p>\( T_{7} = \binom{9}{6}\cdot 2^{(9-6)/3}\cdot 3^{-2} = 84\cdot 2^{1}\cdot \dfrac{1}{9} = \dfrac{168}{9} \).</p>
+      <p>\( T_{n-5} = T_{4} = \binom{9}{3}\cdot 4\cdot 3^{-(9-6)/3} = 84\cdot 4\cdot \dfrac{1}{3} = \dfrac{336}{3} = 112 \).</p>
+      <p>Odnos:</p>
+      <div class="math-block">\[ \frac{T_{7}}{T_{4}} = \frac{168/9}{112} = \frac{168}{9\cdot 112} = \frac{168}{1008} = \frac{1}{6}. \;\; \checkmark \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>Ključni uvid</h2>
+  <p>Ključ ovog zadatka je u jednostavnoj činjenici: <strong>binomni koeficijenti \( k \)-tog člana od početka i \( k \)-tog člana od kraja su jednaki</strong>, jer je \( \binom{n}{k} = \binom{n}{n-k} \). Zato se u odnosu \( T_{k+1} : T_{n-k+1} \) faktor \( \binom{n}{k} \) potpuno skrati i ostane samo „čisti" eksponencijalni odnos. Ovde se još i baze \( 2 \) i \( 3 \) zgodno spajaju u \( 6 \) (jer eksponenti ispadnu jednaki), pa cela jednačina postaje \( 6^{\text{nesto}} = 6^{-1} \) &mdash; otvoren put do \( n \). Bez ovih dveju opservacija (simetrija + spajanje baza) zadatak bi se činio glomaznim.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ 6^{(n-6)/3 - 2} = 6^{-1} \;\;\Longrightarrow\;\; \frac{n-6}{3} = 1 \;\;\Longrightarrow\;\; \boxed{n = 9}. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 6 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 7 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 8 \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 9 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 10 \)</span>
+  </div>
+  <p class="verification">Provera: za \( n = 9 \), \( T_{7} = \dfrac{168}{9} \), \( T_{4} = 112 \), pa \( \dfrac{T_{7}}{T_{4}} = \dfrac{168}{1008} = \dfrac{1}{6} \) ✓.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešan indeks člana od kraja.</strong> U razvoju sa \( n+1 \) članova, \( m \)-ti od kraja je član sa indeksom \( k = n - m + 1 \). Za \( m = 7 \): \( k = n - 6 \), a redni broj člana je \( n - 5 \) (ne \( n - 7 \) niti \( n - 6 \)). Zgodna provera: prvi od kraja (\( m = 1 \)) mora biti \( T_{n+1} \), tj. \( k = n \) &mdash; što odgovara formuli \( k = n - 1 + 1 = n \). ✓</li>
+    <li><strong>Zaboravljanje da je \( \dfrac{1}{\sqrt[3]{3}} = 3^{-1/3} \).</strong> Eksponent kod trojke je <em>negativan</em>; ako se to propusti, ceo račun se okreće naopako i rešenje ne ispada celo.</li>
+    <li><strong>Greška \( 4 = 2^{4} \).</strong> Tačno: \( 4 = 2^{2} \), pa je \( 2^{6/3} = 2^{2} = 4 \). Ovo je tipična „brza" greška pod stresom ispita.</li>
+    <li><strong>Ne videti simetriju \( \binom{n}{6} = \binom{n}{n-6} \)</strong> i nepotrebno množiti faktorijele &mdash; pa ipak na kraju otkriti da se sve skrati. Bolje od starta primetiti i odmah skratiti.</li>
+    <li><strong>Greška u smeru odnosa.</strong> Zadatak kaže \( T_{7} : T_{n-5} = 1 : 6 \) &mdash; sedmi <em>od početka</em> je manji, sedmi <em>od kraja</em> je veći. Ako se odnos postavi naopako (\( 6 : 1 \)), dobija se eksponent \( +1 \) i pogrešan \( n \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>Dodatni izazov</h2>
+  <p>U razvoju \( \left(\sqrt[3]{2} + \dfrac{1}{\sqrt[3]{3}}\right)^{9} \) (sa \( n = 9 \) koje smo upravo našli):</p>
+  <ol>
+    <li>Koliki je peti član \( T_{5} \)?</li>
+    <li>Postoji li u tom razvoju član koji je <em>racionalan broj</em> (tj. ne sadrži kub-koren)? Ako da, koji je on?</li>
+  </ol>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p><strong>(1) \( T_{5} \) (tj. \( k = 4 \)):</strong> \( T_{5} = \binom{9}{4}\cdot 2^{(9-4)/3}\cdot 3^{-4/3} = 126\cdot 2^{5/3}\cdot 3^{-4/3} \). Iracionalno (sadrži \( 2^{5/3} \) i \( 3^{-4/3} \)).</p>
+      <p><strong>(2) Racionalan član:</strong> \( T_{k+1} = \binom{9}{k}\, 2^{(9-k)/3}\, 3^{-k/3} \) je racionalan kad su <em>oba</em> eksponenta cela broja, tj. \( (9-k)/3 \in \mathbb{Z} \) i \( -k/3 \in \mathbb{Z} \). Drugi uslov daje \( k \in \{0, 3, 6, 9\} \). Provera: za \( k = 0 \) i \( k = 9 \) prvi uslov takođe drži; za \( k = 3 \): \( (9-3)/3 = 2 \in \mathbb{Z} \) ✓; za \( k = 6 \): \( (9-6)/3 = 1 \in \mathbb{Z} \) ✓. Dakle racionalni su \( T_{1}, T_{4}, T_{7}, T_{10} \) &mdash; <em>četiri</em> racionalna člana. Recimo, \( T_{4} = 112 \) (cela vrednost!), kao što smo izračunali u proveri.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  // ---------- Canvas A: Pascal row n=9 bar chart ----------
+  (function canvasA() {
+    var canvas = document.getElementById('diagram14a');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, H = canvas.height;
+
+    var coeffs = [1, 9, 36, 84, 126, 126, 84, 36, 9, 1];
+    var maxC = 126;
+
+    function draw() {
+      var bg        = cv('--sol-canvas-bg');
+      var grid      = cv('--sol-canvas-grid');
+      var axis      = cv('--sol-canvas-axis');
+      var primary   = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent    = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text      = cv('--sol-canvas-text');
+      var muted     = cv('--sol-canvas-muted');
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      ctx.fillStyle = text;
+      ctx.font = 'bold 16px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Binomni koeficijenti  C(9, k)  za  k = 0, 1, …, 9', W / 2, 28);
+
+      // Plot area
+      var padL = 60, padR = 40, padT = 70, padB = 130;
+      var plotW = W - padL - padR;
+      var plotH = H - padT - padB;
+      var nBars = coeffs.length;
+      var slot = plotW / nBars;
+      var barW = slot * 0.7;
+
+      // Y-axis grid + labels
+      ctx.strokeStyle = grid;
+      ctx.lineWidth = 1;
+      var ySteps = [0, 30, 60, 90, 120, 150];
+      for (var i = 0; i < ySteps.length; i++) {
+        var v = ySteps[i];
+        var py = padT + plotH - (v / 150) * plotH;
+        ctx.beginPath(); ctx.moveTo(padL, py); ctx.lineTo(padL + plotW, py); ctx.stroke();
+        ctx.fillStyle = muted;
+        ctx.font = '11px Inter, Segoe UI, system-ui, sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText(String(v), padL - 6, py + 4);
+      }
+
+      // Axes
+      ctx.strokeStyle = axis;
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(padL, padT); ctx.lineTo(padL, padT + plotH);
+      ctx.lineTo(padL + plotW, padT + plotH);
+      ctx.stroke();
+
+      // Bars
+      for (var k = 0; k < nBars; k++) {
+        var c = coeffs[k];
+        var bh = (c / 150) * plotH;
+        var bx = padL + slot * k + (slot - barW) / 2;
+        var by = padT + plotH - bh;
+
+        var fill, stroke;
+        if (k === 6) { fill = cvAlpha('--sol-canvas-primary', 0.7); stroke = primary; }
+        else if (k === 3) { fill = cvAlpha('--sol-canvas-secondary', 0.7); stroke = secondary; }
+        else { fill = cvAlpha('--sol-canvas-text', 0.18); stroke = muted; }
+
+        ctx.fillStyle = fill;
+        ctx.strokeStyle = stroke;
+        ctx.lineWidth = 1.4;
+        ctx.fillRect(bx, by, barW, bh);
+        ctx.strokeRect(bx, by, barW, bh);
+
+        // Coefficient on top
+        ctx.fillStyle = (k === 3 || k === 6) ? stroke : text;
+        ctx.font = (k === 3 || k === 6) ? 'bold 12px Inter, Segoe UI, system-ui, sans-serif'
+                                        : '12px Inter, Segoe UI, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(String(c), bx + barW / 2, by - 6);
+
+        // k label below
+        ctx.fillStyle = muted;
+        ctx.font = '12px Inter, Segoe UI, system-ui, sans-serif';
+        ctx.fillText('k = ' + k, bx + barW / 2, padT + plotH + 18);
+      }
+
+      // Annotations connecting symmetric bars
+      var k6cx = padL + slot * 6 + slot / 2;
+      var k3cx = padL + slot * 3 + slot / 2;
+      var topY = padT + plotH - (84 / 150) * plotH - 32;
+
+      ctx.strokeStyle = highlight;
+      ctx.lineWidth = 1.8;
+      ctx.setLineDash([5, 4]);
+      ctx.beginPath();
+      ctx.moveTo(k3cx, topY); ctx.lineTo(k6cx, topY); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = highlight;
+      ctx.font = 'italic bold 13px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('C(9, 3) = C(9, 6) = 84', (k3cx + k6cx) / 2, topY - 6);
+
+      // Legend below
+      function legendDot(x, y, color) {
+        ctx.fillStyle = color;
+        ctx.beginPath(); ctx.rect(x, y - 10, 14, 14); ctx.fill();
+        ctx.strokeStyle = color; ctx.lineWidth = 1; ctx.stroke();
+      }
+
+      var lyA = padT + plotH + 60;
+      ctx.font = '13px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      legendDot(60, lyA, primary);
+      ctx.fillStyle = text;
+      ctx.fillText('k = 6  →  T₇ (sedmi član od početka)', 82, lyA + 1);
+
+      legendDot(60, lyA + 28, secondary);
+      ctx.fillStyle = text;
+      ctx.fillText('k = 3  →  T₄ = sedmi član od kraja (jer n + 1 = 10, pa je T_{n−5} = T₄)', 82, lyA + 29);
+    }
+
+    draw();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+      }
+    });
+  })();
+
+  // ---------- Canvas B: numerical verification of the ratio ----------
+  (function canvasB() {
+    var canvas = document.getElementById('diagram14b');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, H = canvas.height;
+
+    function box(x, y, w, h, fill, stroke) {
+      ctx.fillStyle = fill;
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth = 1.6;
+      if (ctx.roundRect) { ctx.beginPath(); ctx.roundRect(x, y, w, h, 10); ctx.fill(); ctx.stroke(); }
+      else { ctx.fillRect(x, y, w, h); ctx.strokeRect(x, y, w, h); }
+    }
+
+    function draw() {
+      var bg        = cv('--sol-canvas-bg');
+      var primary   = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent    = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text      = cv('--sol-canvas-text');
+      var muted     = cv('--sol-canvas-muted');
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      ctx.fillStyle = text;
+      ctx.font = 'bold 17px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Provera odnosa za n = 9', W / 2, 30);
+
+      // Two columns — T_7 and T_4
+      box(40, 60, 310, 240, cvAlpha('--sol-canvas-primary', 0.10), primary);
+      box(370, 60, 290, 240, cvAlpha('--sol-canvas-secondary', 0.10), secondary);
+
+      // Left column: T_7
+      ctx.fillStyle = primary;
+      ctx.font = 'bold 16px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('T₇   (sedmi od početka,  k = 6)', 195, 86);
+
+      ctx.fillStyle = text;
+      ctx.font = '14px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('T₇  =  C(9, 6) · 2^((9−6)/3) · 3^(−2)', 60, 122);
+      ctx.fillText('     =  84 · 2¹ · 1/9', 60, 152);
+      ctx.fillText('     =  168 / 9', 60, 182);
+
+      ctx.fillStyle = primary;
+      ctx.font = 'bold 22px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('T₇  =  168/9  ≈  18,67', 195, 230);
+
+      ctx.fillStyle = muted;
+      ctx.font = 'italic 12px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.fillText('(C(9,6) = 84,   2^((9−6)/3) = 2,   3^(−2) = 1/9)', 195, 260);
+
+      // Right column: T_4
+      ctx.fillStyle = secondary;
+      ctx.font = 'bold 16px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('T₄   (sedmi od kraja,  k = 3)', 515, 86);
+
+      ctx.fillStyle = text;
+      ctx.font = '14px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('T₄  =  C(9, 3) · 2^(6/3) · 3^(−3/3)', 390, 122);
+      ctx.fillText('     =  84 · 4 · 1/3', 390, 152);
+      ctx.fillText('     =  336 / 3  =  112', 390, 182);
+
+      ctx.fillStyle = secondary;
+      ctx.font = 'bold 22px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('T₄  =  112', 515, 230);
+
+      ctx.fillStyle = muted;
+      ctx.font = 'italic 12px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.fillText('(C(9,3) = 84,   2² = 4,   3^(−1) = 1/3)', 515, 260);
+
+      // Ratio box
+      box(110, 320, W - 220, 110, cvAlpha('--sol-canvas-accent', 0.16), accent);
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 16px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Odnos:', W / 2, 348);
+      ctx.fillStyle = text;
+      ctx.font = '15px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.fillText('T₇ / T₄  =  (168/9) / 112  =  168 / (9 · 112)  =  168 / 1008', W / 2, 376);
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 24px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.fillText('=  1 / 6     ✓', W / 2, 412);
+
+      // Footer note
+      ctx.fillStyle = muted;
+      ctx.font = '12px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Tačno onaj odnos koji zadatak zahteva, što potvrđuje da je n = 9.', W / 2, 452);
+    }
+
+    draw();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+      }
+    });
+  })();
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Binomni razvoj (∛2 + 1/∛3)^n: odnos sedmog člana od početka i od kraja je 1:6",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["binomna formula", "binomni koeficijenti", "opšti član razvoja", "Paskalov trougao", "stepeni"]
+}
+BRAINSPARK_META-->

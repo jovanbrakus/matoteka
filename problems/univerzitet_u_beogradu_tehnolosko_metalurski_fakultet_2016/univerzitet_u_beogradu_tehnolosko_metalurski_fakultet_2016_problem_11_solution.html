@@ -1,0 +1,577 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem 11 (TMF Beograd 2016): Ako je f(2x + 1) = x − 1, onda je f(f(x)) jednako:
+  Ponuđeni: (A) (x-9)/4; (B) (x+9)/4; (C) (x+4)/9; (D) -(x+9)/4; (E) 1.
+
+  Strategija: izvedi eksplicitnu formulu za f, pa primeni dvaput.
+
+  Korak 1 — Iz f(2x+1) = x − 1 nađi f(t).
+  Smena: t = 2x + 1, pa je x = (t − 1)/2.
+  Tada je f(t) = (t − 1)/2 − 1 = (t − 1 − 2)/2 = (t − 3)/2.
+
+  Dakle: f(x) = (x − 3)/2.
+
+  Provera ovog koraka (trebalo bi da bude konzistentno):
+  Ako u f(x) = (x − 3)/2 stavimo x = 2u + 1:
+  f(2u + 1) = (2u + 1 − 3)/2 = (2u − 2)/2 = u − 1. ✓
+
+  Korak 2 — Računamo f(f(x)).
+  Spoljnji f primenjen na unutrašnji f(x) = (x − 3)/2:
+  f(f(x)) = f((x − 3)/2)
+         = ((x − 3)/2 − 3)/2
+         = ((x − 3 − 6)/2)/2
+         = ((x − 9)/2)/2
+         = (x − 9)/4.
+
+  Tačan odgovor: (A) (x − 9)/4.
+
+  Provera kontrolnim vrednostima:
+  x = 9: f(9) = (9 − 3)/2 = 3, f(f(9)) = f(3) = (3 − 3)/2 = 0.
+         Po formuli (x − 9)/4 = 0/4 = 0. ✓
+  x = 13: f(13) = (13 − 3)/2 = 5, f(f(13)) = f(5) = (5 − 3)/2 = 1.
+         Po formuli (13 − 9)/4 = 4/4 = 1. ✓
+  x = 1: f(1) = (1 − 3)/2 = -1, f(f(1)) = f(-1) = (-1 − 3)/2 = -2.
+         Po formuli (1 − 9)/4 = -8/4 = -2. ✓
+
+  Alternativno (bez ide na f(t)) — direktnim postupkom:
+  f(2x + 1) = x − 1.  Da bismo izračunali f(f(x)), prvo nam treba
+  formula za f(x), pa nam je smena ipak najkraći put.
+
+  Vizuelni prikaz:
+  Statičan — "function machine" dijagram:
+   x  →  [ f ]  →  (x−3)/2  →  [ f ]  →  (x−9)/4
+  Plus grafik prave y = (x−3)/2 i y = (x−9)/4 na istim osama.
+
+  Pitfalls:
+   - Pogrešno postaviti smenu: t = 2x + 1 daje x = (t-1)/2, ne x = (t+1)/2.
+   - Posle smene zaboraviti da se rezultat -1 izračunava sa novim x, pa
+     pisati f(t) = x - 1 ne supstituirajući.
+   - Mešati f(f(x)) sa (f(x))^2: f∘f je kompozicija, ne kvadrat.
+   - Pri izračunavanju f((x-3)/2), zaboraviti da se "−3" i "/2" rade
+     iznova: ((x-3)/2 - 3)/2.
+   - Greška u algebri: (x-3)/2 - 3 = (x-3-6)/2 = (x-9)/2. Često
+     ljudi zaborave da množe -3 sa 2 pre oduzimanja.
+</script>
+
+<h1 data-card="problem-title">Kompozicija funkcije \( f \circ f \)</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra &mdash; eksplicitna formula iz substitucije i dvostruka primena funkcije</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>Tekst zadatka</h2>
+  <p>Ako je \( f(2x + 1) = x - 1 \), onda je \( f(f(x)) \) jednako:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">dato</span>
+      <span class="given-value">\( f(2x + 1) = x - 1 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">traži se</span>
+      <span class="given-value">\( f(f(x)) \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \dfrac{x - 9}{4} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \dfrac{x + 9}{4} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \dfrac{x + 4}{9} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( -\dfrac{x + 9}{4} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>Plan rešavanja</h2>
+  <p class="plan-text">Iz uslova \( f(2x + 1) = x - 1 \) prvo izvodimo eksplicitnu formulu \( f(t) \) za proizvoljan argument \( t \), tako što uvedemo smenu \( t = 2x + 1 \). Kada imamo \( f \) kao linearnu funkciju, kompoziciju \( f(f(x)) \) računamo direktnom dvostrukom primenom.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne ideje iz funkcija</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Argument funkcije je &bdquo;slepa&rdquo; promenljiva:</strong> ako je \( f(2x + 1) = x - 1 \), tada za bilo koji izraz koji upisujemo umesto \( 2x + 1 \) možemo izvesti \( f \) tog izraza, pod uslovom da znamo koji \( x \) odgovara tom izrazu.</li>
+        <li><strong>Smena promenljive:</strong> ako stavimo \( t = 2x + 1 \), iz toga sledi \( x = \dfrac{t - 1}{2} \). Tada \( f(t) = x - 1 = \dfrac{t-1}{2} - 1 = \dfrac{t - 3}{2} \).</li>
+        <li><strong>Kompozicija \( f \circ f \):</strong> \( (f \circ f)(x) = f(f(x)) \), tj. najpre primenimo \( f \) na \( x \), pa rezultat ponovo &bdquo;ubacimo&rdquo; u \( f \). Ovo NIJE isto što i \( f(x) \cdot f(x) = f(x)^2 \).</li>
+        <li><strong>Linearne funkcije pod kompozicijom:</strong> ako je \( f(x) = ax + b \), tada je \( f(f(x)) = a(ax + b) + b = a^2 x + ab + b \). Kompozicija dve linearne je opet linearna.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz: funkcijska mašina">
+  <h2>Vizuelni prikaz: funkcijska mašina i grafici \( f \) i \( f \circ f \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-p11" width="720" height="640"></canvas>
+  </div>
+  <p class="canvas-caption">Gore: dvostruka primena funkcije \( f \) kao &bdquo;mašina&rdquo;. Ulaz \( x \) prolazi kroz prvu mašinu i izlazi kao \( f(x) = \dfrac{x-3}{2} \); zatim kroz drugu mašinu i izlazi kao \( f(f(x)) = \dfrac{x-9}{4} \). Dole: graf \( f \) (plava prava) i \( f \circ f \) (zelena prava). Zelena ima manji nagib (\( 1/4 \) naspram \( 1/2 \)) i prolazi kroz \( (9, 0) \) umesto \( (3, 0) \) &mdash; očekivano, jer je dva puta primenjeno isto polovljenje.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavi smenu: \( t = 2x + 1 \)</h3>
+      <p>Cilj prvog koraka je da iz \( f(2x + 1) = x - 1 \) izvučemo &bdquo;čistu&rdquo; formulu za \( f \) koja prima proizvoljan argument. Uvodimo novu promenljivu \( t \) koja označava argument funkcije:</p>
+      <div class="math-block">\[ t = 2x + 1. \]</div>
+      <p>Sada izrazi \( x \) preko \( t \) tako da možeš da zameniš na desnoj strani:</p>
+      <div class="math-block">\[ 2x + 1 = t \;\Longrightarrow\; 2x = t - 1 \;\Longrightarrow\; x = \dfrac{t - 1}{2}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Izvedi formulu \( f(t) \)</h3>
+      <p>Polazna jednakost je \( f(2x + 1) = x - 1 \), tj. \( f(t) = x - 1 \) (leva strana je sad \( f(t) \)). Zameni \( x = \dfrac{t-1}{2} \) na desnoj strani:</p>
+      <div class="math-block">\[ f(t) = \dfrac{t - 1}{2} - 1 = \dfrac{t - 1}{2} - \dfrac{2}{2} = \dfrac{t - 1 - 2}{2} = \dfrac{t - 3}{2}. \]</div>
+      <p>Kako je \( t \) samo &bdquo;ime promenljive&rdquo;, zameni \( t \) sa \( x \):</p>
+      <div class="math-block">\[ \boxed{\, f(x) = \dfrac{x - 3}{2}. \,} \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto smenom dobijamo formulu sa \( t \), pa onda &bdquo;preimenujemo&rdquo; u \( x \)?</summary>
+          <div class="detail-content"><p>Argument funkcije je samo &bdquo;mesto&rdquo; gde stoji ulazni broj &mdash; ime te promenljive nije važno. Ako napišemo \( f(\heartsuit) = \dfrac{\heartsuit - 3}{2} \), dobijamo isti pravilnik. Pa pišemo \( f(x) = \dfrac{x - 3}{2} \), znajući da \( x \) sad nije isto što i \( x \) iz polaznog \( f(2x + 1) \) &mdash; to je nezavisna promenljiva nove formule.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera formule \( f(x) = \dfrac{x - 3}{2} \)</h3>
+      <p>Ubacimo \( x = 2u + 1 \) (vraćamo se na originalni oblik):</p>
+      <div class="math-block">\[ f(2u + 1) = \dfrac{(2u + 1) - 3}{2} = \dfrac{2u - 2}{2} = u - 1. \;\checkmark \]</div>
+      <p>Tačno se podudara sa \( f(2x + 1) = x - 1 \) iz uslova. Možemo sigurno koristiti \( f(x) = \dfrac{x-3}{2} \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo \( f(f(x)) \) &mdash; prva primena</h3>
+      <p>Označimo unutrašnju primenu kao \( u = f(x) = \dfrac{x - 3}{2} \). Tada je \( f(f(x)) = f(u) \).</p>
+      <div class="math-block">\[ u = f(x) = \dfrac{x - 3}{2}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Druga primena: \( f(u) \)</h3>
+      <p>Po istoj formuli \( f(\square) = \dfrac{\square - 3}{2} \), zamenimo \( \square = u \):</p>
+      <div class="math-block">\[ f(u) = \dfrac{u - 3}{2}. \]</div>
+      <p>Vraćamo \( u = \dfrac{x - 3}{2} \):</p>
+      <div class="math-block">\[ f(f(x)) = \dfrac{\,\dfrac{x - 3}{2} - 3\,}{2}. \]</div>
+      <p>Sredimo brojilac jednog razlomka unutar drugog. Pišemo \( -3 = -\dfrac{6}{2} \) da bismo imali zajednički imenilac:</p>
+      <div class="math-block">\[ \dfrac{x - 3}{2} - 3 = \dfrac{x - 3}{2} - \dfrac{6}{2} = \dfrac{x - 3 - 6}{2} = \dfrac{x - 9}{2}. \]</div>
+      <p>Sada još deljenje sa \( 2 \) (deljenje razlomka brojem je množenje sa \( \tfrac{1}{2} \)):</p>
+      <div class="math-block">\[ f(f(x)) = \dfrac{\;\dfrac{x - 9}{2}\;}{2} = \dfrac{x - 9}{2 \cdot 2} = \dfrac{x - 9}{4}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera kontrolnim vrednostima</h3>
+      <p>Brza provera za \( x = 9 \):</p>
+      <div class="math-block">\[ f(9) = \dfrac{9 - 3}{2} = 3, \qquad f(f(9)) = f(3) = \dfrac{3 - 3}{2} = 0. \]</div>
+      <p>Po izvedenoj formuli: \( \dfrac{9 - 9}{4} = 0 \). \( \checkmark \)</p>
+      <p>Još jedna provera za \( x = 13 \):</p>
+      <div class="math-block">\[ f(13) = \dfrac{13 - 3}{2} = 5, \qquad f(f(13)) = f(5) = \dfrac{5 - 3}{2} = 1. \]</div>
+      <p>Po formuli: \( \dfrac{13 - 9}{4} = 1 \). \( \checkmark \) Dva pogotka, formula je sigurna.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je nagib polovljen sa \( 1/2 \) na \( 1/4 \)?</summary>
+          <div class="detail-content"><p>\( f(x) = \dfrac{1}{2}x - \dfrac{3}{2} \) ima nagib \( \dfrac{1}{2} \). Kompozicija dve linearne funkcije sa nagibima \( a \) i \( a \) ima nagib \( a^2 = \dfrac{1}{4} \). Slobodan član je \( a \cdot b + b = \dfrac{1}{2} \cdot \big(-\dfrac{3}{2}\big) + \big(-\dfrac{3}{2}\big) = -\dfrac{3}{4} - \dfrac{3}{2} = -\dfrac{9}{4} \). Zato \( f \circ f = \dfrac{x}{4} - \dfrac{9}{4} = \dfrac{x - 9}{4} \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>Ključni uvid</h2>
+  <p>Kad funkcija nije data eksplicitno, već preko izraza poput \( f(2x + 1) = \ldots \), prvi korak je gotovo uvek <strong>smena</strong>: uvedi novu promenljivu \( t \) za argument funkcije, pa nađi inverz tog argumenta (\( x \) preko \( t \)). Time iz &bdquo;skrivene&rdquo; formule iskočiš na običan oblik \( f(t) = \ldots \) i sve dalje radiš direktno. Drugi važan uvid: kompozicija \( f(f(x)) \) <em>nije</em> kvadrat \( f(x)^2 \) &mdash; to je dvostruko prolazak kroz mašinu. Za linearno \( f \), nagibi se množe (\( a^2 \)) i &bdquo;pomeranje\&rdquo; se nakuplja.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ f(f(x)) = \dfrac{x - 9}{4} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( \dfrac{x - 9}{4} \)</span>
+    <span class="answer-option" data-option="B">(B) \( \dfrac{x + 9}{4} \)</span>
+    <span class="answer-option" data-option="C">(C) \( \dfrac{x + 4}{9} \)</span>
+    <span class="answer-option" data-option="D">(D) \( -\dfrac{x + 9}{4} \)</span>
+    <span class="answer-option" data-option="E">(E) \( 1 \)</span>
+  </div>
+  <p class="verification">Provera: \( f(x) = \dfrac{x - 3}{2} \). Za \( x = 9 \): \( f(9) = 3 \), \( f(3) = 0 \), pa \( f(f(9)) = 0 = \dfrac{9 - 9}{4} \) ✓. Za \( x = 13 \): \( f(13) = 5 \), \( f(5) = 1 \), pa \( f(f(13)) = 1 = \dfrac{13 - 9}{4} \) ✓.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešna inverzna smena.</strong> Iz \( t = 2x + 1 \) sledi \( x = \dfrac{t - 1}{2} \), a NE \( x = \dfrac{t + 1}{2} \) ili \( x = \dfrac{t - 1}{2} - 1 \). Greška sa znakom \( -1 \) je najčešća u prijemnim listićima.</li>
+    <li><strong>Mešanje \( f(f(x)) \) sa \( f(x) \cdot f(x) \).</strong> Kompozicija \( f \circ f \) je dvostruka primena funkcije, ne kvadrat vrednosti. Da je traženo \( (f(x))^2 \), za \( f(x) = \dfrac{x-3}{2} \) bilo bi \( \dfrac{(x-3)^2}{4} \) &mdash; sasvim druga formula.</li>
+    <li><strong>Greška &bdquo;dvostruke crte razlomka&rdquo;.</strong> Kod \( \dfrac{(x - 3)/2 - 3}{2} \) važno je prvo svesti brojilac na zajednički imenilac \( \dfrac{x - 9}{2} \), a TEK ONDA podeliti sa \( 2 \). Ako se zaboravi međukorak, lako se napravi greška u znaku ili konstanti.</li>
+    <li><strong>Pomešati \( -3 \) sa \( -6 \) ili \( -9 \).</strong> Pri svođenju \( -3 = -\dfrac{6}{2} \) (a ne \( -\dfrac{3}{2} \)) lako se omane. Sigurniji put je razdvojiti razlomak: \( \dfrac{x-3}{2} - 3 = \dfrac{x}{2} - \dfrac{3}{2} - 3 = \dfrac{x}{2} - \dfrac{9}{2} = \dfrac{x - 9}{2} \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>Dodatni izazov</h2>
+  <p>Za istu funkciju \( f(x) = \dfrac{x - 3}{2} \), izračunaj \( f(f(f(x))) \), tj. trostruku kompoziciju \( f^3(x) = (f \circ f \circ f)(x) \). Koji obrazac primećuješ za \( f^n(x) \)? Postoji li &bdquo;fiksna tačka&rdquo; \( x_0 \) za koju je \( f(x_0) = x_0 \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>\( f^3(x) = f(f(f(x))) = f\!\left(\dfrac{x-9}{4}\right) = \dfrac{(x-9)/4 - 3}{2} = \dfrac{(x - 9 - 12)/4}{2} = \dfrac{x - 21}{8} \). Obrazac: \( f^n(x) = \dfrac{x - (3 \cdot 2^n - 3)}{2^n} = \dfrac{x - 3(2^n - 1)}{2^n} \). Fiksna tačka: \( f(x_0) = x_0 \;\Leftrightarrow\; \dfrac{x_0 - 3}{2} = x_0 \;\Leftrightarrow\; x_0 - 3 = 2x_0 \;\Leftrightarrow\; x_0 = -3 \). Provera: \( f(-3) = \dfrac{-3 - 3}{2} = -3 \) ✓. To znači da \( f^n(-3) = -3 \) za svako \( n \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-p11');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+    var tertiary  = cv('--sol-canvas-tertiary');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // ─── Top half: function machine ───
+    var topY0 = 20, topY1 = 220;
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Funkcijska mašina:  primena f dva puta', W / 2, topY0 + 18);
+
+    // Box dimensions
+    var boxY = 90;
+    var boxH = 70;
+    // Three input/output labels and two boxes
+    // Layout: in -> [f] -> mid -> [f] -> out
+    var slots = 5;
+    var pad = 50;
+    var slotW = (W - 2 * pad) / slots;
+
+    function center(i) { return pad + i * slotW + slotW / 2; }
+
+    // Arrow segments
+    function arrow(x0, x1, y) {
+      ctx.strokeStyle = muted;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x0, y);
+      ctx.lineTo(x1, y);
+      ctx.stroke();
+      // arrow head
+      ctx.beginPath();
+      ctx.moveTo(x1, y);
+      ctx.lineTo(x1 - 8, y - 5);
+      ctx.lineTo(x1 - 8, y + 5);
+      ctx.closePath();
+      ctx.fillStyle = muted;
+      ctx.fill();
+    }
+
+    // Boxes for f
+    function fBox(cx, cy, w, h, label) {
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.16);
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 2;
+      ctx.fillRect(cx - w/2, cy - h/2, w, h);
+      ctx.strokeRect(cx - w/2, cy - h/2, w, h);
+      ctx.fillStyle = text;
+      ctx.font = 'bold italic 22px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, cx, cy + 8);
+    }
+
+    // Slot 0: x (input)
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 22px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('x', center(0), boxY + boxH/2 + 7);
+    ctx.font = '11px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('ulaz', center(0), boxY + boxH/2 + 28);
+
+    // Arrow 0 → 1
+    arrow(center(0) + 16, center(1) - 38, boxY + boxH/2);
+
+    // Slot 1: first f box
+    fBox(center(1), boxY + boxH/2, 70, boxH, 'f');
+
+    // Arrow 1 → 2
+    arrow(center(1) + 38, center(2) - 60, boxY + boxH/2);
+
+    // Slot 2: f(x) = (x-3)/2
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 16px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('(x − 3) / 2', center(2), boxY + boxH/2 + 6);
+    ctx.font = '11px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('= f(x)', center(2), boxY + boxH/2 + 24);
+
+    // Arrow 2 → 3
+    arrow(center(2) + 56, center(3) - 38, boxY + boxH/2);
+
+    // Slot 3: second f box
+    fBox(center(3), boxY + boxH/2, 70, boxH, 'f');
+
+    // Arrow 3 → 4
+    arrow(center(3) + 38, center(4) - 60, boxY + boxH/2);
+
+    // Slot 4: (x-9)/4 final output
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 18px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('(x − 9) / 4', center(4), boxY + boxH/2 + 6);
+    ctx.font = '11px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('= f(f(x))', center(4), boxY + boxH/2 + 24);
+
+    // Substitution detail under the second f box
+    var detailY = topY1 + 10;
+    ctx.fillStyle = cvAlpha('--sol-canvas-text', 0.05);
+    ctx.fillRect(50, detailY - 12, W - 100, 36);
+    ctx.fillStyle = text;
+    ctx.font = '13px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('f((x − 3)/2)  =  ((x − 3)/2  −  3) / 2  =  ((x − 9)/2) / 2  =  (x − 9) / 4', W / 2, detailY + 11);
+
+    // ─── Bottom half: graphs of f and f∘f ───
+    var plotLeft = 70;
+    var plotRight = W - 40;
+    var plotTop = 280;
+    var plotBottom = H - 50;
+    var plotW = plotRight - plotLeft;
+    var plotH = plotBottom - plotTop;
+
+    var xMin = -2, xMax = 14;
+    var yMin = -4, yMax = 5;
+
+    function tx(x) { return plotLeft + (x - xMin) / (xMax - xMin) * plotW; }
+    function ty(y) { return plotBottom - (y - yMin) / (yMax - yMin) * plotH; }
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Grafici  y = f(x) = (x − 3)/2  i  y = f(f(x)) = (x − 9)/4', W / 2, plotTop - 12);
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 4]);
+    for (var gx = -2; gx <= 14; gx += 2) {
+      ctx.beginPath();
+      ctx.moveTo(tx(gx), plotTop);
+      ctx.lineTo(tx(gx), plotBottom);
+      ctx.stroke();
+    }
+    for (var gy = -4; gy <= 5; gy++) {
+      ctx.beginPath();
+      ctx.moveTo(plotLeft, ty(gy));
+      ctx.lineTo(plotRight, ty(gy));
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(plotLeft, ty(0));
+    ctx.lineTo(plotRight, ty(0));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(tx(0), plotTop);
+    ctx.lineTo(tx(0), plotBottom);
+    ctx.stroke();
+
+    // Tick labels x
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var lx = -2; lx <= 14; lx += 2) {
+      if (lx === 0) continue;
+      ctx.fillText(String(lx), tx(lx), ty(0) + 14);
+    }
+    ctx.textAlign = 'right';
+    for (var ly = -4; ly <= 5; ly++) {
+      if (ly === 0) continue;
+      ctx.fillText(String(ly), plotLeft - 6, ty(ly) + 4);
+    }
+    ctx.fillStyle = text;
+    ctx.font = 'italic 13px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('x', plotRight - 12, ty(0) - 6);
+    ctx.fillText('y', tx(0) + 8, plotTop + 12);
+
+    // f(x) = (x-3)/2
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    var x0 = xMin, y0 = (x0 - 3) / 2;
+    ctx.moveTo(tx(x0), ty(y0));
+    var x1 = xMax, y1 = (x1 - 3) / 2;
+    ctx.lineTo(tx(x1), ty(y1));
+    ctx.stroke();
+
+    // f(f(x)) = (x-9)/4
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    var ax0 = xMin, ay0 = (ax0 - 9) / 4;
+    ctx.moveTo(tx(ax0), ty(ay0));
+    var ax1 = xMax, ay1 = (ax1 - 9) / 4;
+    ctx.lineTo(tx(ax1), ty(ay1));
+    ctx.stroke();
+
+    // Mark zeros: f(3) = 0, f∘f(9) = 0
+    function zeroDot(x, color, label, dy) {
+      ctx.beginPath();
+      ctx.arc(tx(x), ty(0), 11, 0, Math.PI * 2);
+      ctx.fillStyle = cvAlpha(color === primary ? '--sol-canvas-primary' : '--sol-canvas-accent', 0.30);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(tx(x), ty(0), 5.5, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.fillStyle = color;
+      ctx.font = 'bold 12px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, tx(x), ty(0) + dy);
+    }
+    zeroDot(3, primary, 'f(3) = 0', -16);
+    zeroDot(9, accent, 'f(f(9)) = 0', 22);
+
+    // Highlight verification at x = 13: y_f = 5, y_ff = 1
+    var Xv = 13;
+    var YvF = (Xv - 3) / 2;     // = 5
+    var YvFF = (Xv - 9) / 4;    // = 1
+    ctx.strokeStyle = cv('--sol-canvas-text');
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 4]);
+    ctx.beginPath();
+    ctx.moveTo(tx(Xv), ty(0));
+    ctx.lineTo(tx(Xv), ty(YvF));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Dot on each line at x = 13
+    ctx.beginPath();
+    ctx.arc(tx(Xv), ty(YvF), 5, 0, Math.PI * 2);
+    ctx.fillStyle = primary;
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(tx(Xv), ty(YvFF), 5, 0, Math.PI * 2);
+    ctx.fillStyle = accent;
+    ctx.fill();
+
+    ctx.fillStyle = text;
+    ctx.font = '11px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('(13, 5)', tx(Xv) + 6, ty(YvF) - 4);
+    ctx.fillText('(13, 1)', tx(Xv) + 6, ty(YvFF) - 4);
+
+    // Legend
+    var lx = plotLeft + 8, ly = plotTop + 8;
+    ctx.fillStyle = cvAlpha('--sol-canvas-text', 0.05);
+    ctx.fillRect(lx - 6, ly - 4, 220, 50);
+    ctx.font = '12px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.moveTo(lx, ly + 12);
+    ctx.lineTo(lx + 24, ly + 12);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.fillText('y = f(x) = (x − 3)/2', lx + 30, ly + 16);
+
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.moveTo(lx, ly + 32);
+    ctx.lineTo(lx + 24, ly + 32);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.fillText('y = f(f(x)) = (x − 9)/4', lx + 30, ly + 36);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Kompozicija f(f(x)) iz f(2x+1) = x - 1",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["funkcije", "kompozicija funkcija", "smena promenljive", "linearna funkcija", "eksplicitna formula"]
+}
+BRAINSPARK_META-->

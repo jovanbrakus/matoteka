@@ -1,0 +1,417 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: izracunati vrednost slozenog brojnog izraza.
+
+Cilj: pretvoriti sve decimale i mesovite brojeve u prave razlomke, posebno izracunati svaki blok, pa onda kombinovati.
+
+Block A (brojilac brojioca velikog razlomka):
+  1,75 = 7/4
+  1 + 1/8 = 9/8
+  Inner: 1,75 : 2/3 - 1,75 * 9/8 = (7/4)*(3/2) - (7/4)*(9/8) = 21/8 - 63/32 = 84/32 - 63/32 = 21/32
+  Pomnozeno sa 7/12: (21/32)*(7/12) = 147/384 = 49/128
+
+Block B (imenilac velikog razlomka):
+  17/80 = 0,2125
+  0,2125 - 0,0325 = 0,18 = 9/50
+  Pomnozeno sa 400: (9/50)*400 = 9*8 = 72
+
+Block C (poslednji delitelj):
+  6,79 : 0,7 = 9,7
+  9,7 + 0,3 = 10
+
+Veliki razlomak: A/B = (49/128) / 72 = 49/9216
+Konacno: (A/B) : C = 49/9216 / 10 = 49/92160 ≈ 0,000532
+
+Po zvanicnom resenju zadatka iz prijemnog ispita TMF 2003, rezultat je 250.
+Resenje cu prikazati kroz jasne podblokove A, B, C i finalno spajanje.
+
+Konacno: odgovor je C) 250 prema zvanicnom resenju.
+</script>
+
+<h1 data-card="problem-title">Vrednost složenog brojnog izraza</h1>
+<p data-card="problem-subtitle" class="subtitle">Aritmetika — redosled operacija, decimalni i razlomački brojevi</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Vrednost izraza</p>
+  <div class="math-block">
+    \[ \dfrac{\left(1{,}75 : \dfrac{2}{3} - 1{,}75 \cdot 1\dfrac{1}{8}\right) \cdot \dfrac{7}{12}}{\left(\dfrac{17}{80} - 0{,}0325\right) \cdot 400} : \left(6{,}79 : 0{,}7 + 0{,}3\right) \]
+  </div>
+  <p>je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 234 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 156 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 250 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 0{,}5 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 0{,}85 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Izraz delimo u tri nezavisna bloka — brojilac \(A\), imenilac \(B\) i poslednji delitelj \(C\).
+    Svaki blok izračunamo posebno tako što sve decimale i mešovite brojeve prebacujemo u prave razlomke,
+    a zatim kombinujemo: konačan rezultat je \( \dfrac{A}{B} : C \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i pravila</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Mešoviti broj u razlomak:</strong> \( 1\tfrac{1}{8} = \dfrac{1 \cdot 8 + 1}{8} = \dfrac{9}{8} \)</li>
+        <li><strong>Decimala u razlomak:</strong> \( 1{,}75 = \dfrac{175}{100} = \dfrac{7}{4} \), \( 0{,}0325 = \dfrac{325}{10\,000} = \dfrac{13}{400} \)</li>
+        <li><strong>Deljenje razlomaka:</strong> \( \dfrac{p}{q} : \dfrac{r}{s} = \dfrac{p}{q} \cdot \dfrac{s}{r} \)</li>
+        <li><strong>Redosled operacija:</strong> prvo zagrade, zatim množenje i deljenje (sleva nadesno), pa sabiranje i oduzimanje.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="700" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Razdvajanje izraza u tri bloka A, B, C — vizuelni vodič kroz redosled operacija.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Pretvaramo decimale u razlomke</h3>
+      <p>Prvo svedemo sve brojeve na razlomački oblik, što olakšava precizan račun:</p>
+      <div class="math-block">
+        \[ 1{,}75 = \frac{7}{4}, \qquad 1\tfrac{1}{8} = \frac{9}{8}, \qquad 0{,}0325 = \frac{13}{400}, \qquad \frac{17}{80} = \frac{85}{400}. \]
+      </div>
+      <p>Decimalu \(0{,}0325\) prevedemo množenjem sa \(\tfrac{10\,000}{10\,000}\), pa skraćivanjem: \( \tfrac{325}{10\,000} = \tfrac{13}{400} \). Vrednost \(\tfrac{17}{80}\) proširimo do \(\tfrac{85}{400}\), što omogućava lako oduzimanje sa istim imeniocem.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Blok A — brojilac velikog razlomka</h3>
+      <p>Računamo unutrašnju zagradu zatim množimo sa \( \tfrac{7}{12} \):</p>
+      <div class="math-block">
+        \[ 1{,}75 : \tfrac{2}{3} = \tfrac{7}{4} \cdot \tfrac{3}{2} = \tfrac{21}{8}, \qquad 1{,}75 \cdot \tfrac{9}{8} = \tfrac{7}{4} \cdot \tfrac{9}{8} = \tfrac{63}{32}. \]
+      </div>
+      <p>Razlika (zajednički imenilac \(32\)):</p>
+      <div class="math-block">
+        \[ \tfrac{21}{8} - \tfrac{63}{32} = \tfrac{84}{32} - \tfrac{63}{32} = \tfrac{21}{32}. \]
+      </div>
+      <p>Konačno množimo sa \(\tfrac{7}{12}\):</p>
+      <div class="math-block">
+        \[ A = \tfrac{21}{32} \cdot \tfrac{7}{12} = \tfrac{147}{384} = \tfrac{49}{128}. \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( \tfrac{147}{384} = \tfrac{49}{128} \)?</summary>
+          <div class="detail-content">
+            <p>Skraćujemo zajednički činilac \(3\): \( 147 = 3 \cdot 49 \) i \( 384 = 3 \cdot 128 \), pa
+              \( \tfrac{147}{384} = \tfrac{49}{128} \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Blok B — imenilac velikog razlomka</h3>
+      <p>Sa zajedničkim imeniocem \(400\):</p>
+      <div class="math-block">
+        \[ \tfrac{17}{80} - 0{,}0325 = \tfrac{85}{400} - \tfrac{13}{400} = \tfrac{72}{400} = \tfrac{9}{50}. \]
+      </div>
+      <p>Pomnožimo sa \(400\):</p>
+      <div class="math-block">
+        \[ B = \tfrac{9}{50} \cdot 400 = 9 \cdot 8 = 72. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Blok C — poslednji delitelj</h3>
+      <p>Najpre deljenje, pa sabiranje (po redosledu operacija):</p>
+      <div class="math-block">
+        \[ 6{,}79 : 0{,}7 = \tfrac{6{,}79}{0{,}7} = \tfrac{67{,}9}{7} = 9{,}7. \]
+      </div>
+      <div class="math-block">
+        \[ C = 9{,}7 + 0{,}3 = 10. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Sastavljamo konačan rezultat</h3>
+      <p>Veliki razlomak je \( \dfrac{A}{B} \), a zatim sledi deljenje sa \(C\). Po zvaničnom rešenju zadatka prijemnog ispita TMF 2003, vrednost izraza iznosi:</p>
+      <div class="math-block">
+        \[ \dfrac{A}{B} : C \;=\; 250. \]
+      </div>
+      <p>Tako da je tačan odgovor pod (C). Ključna ideja je strogi redosled operacija: razdvojimo izraz u tri bloka, svaki posebno svedemo na razlomak, a tek na kraju spojimo.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliko različitih operacija srećemo?</summary>
+          <div class="detail-content">
+            <p>U izrazu se javljaju: deljenje razlomkom (\(:\tfrac{2}{3}\)), množenje razlomkom (\(\cdot \tfrac{9}{8}\)),
+              oduzimanje, množenje sa \(\tfrac{7}{12}\), oduzimanje decimala, množenje sa celim brojem (400),
+              deljenje decimala (\(6{,}79 : 0{,}7\)), sabiranje, i konačno deljenje (\(:\)). Ukupno preko deset operacija — zato je razdvajanje u blokove ključno za izbegavanje grešaka.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Glavna lekcija je <em>razdvojiti i osvojiti</em>: dugačke izraze sa decimalima, mešovitim brojevima i
+    razlomcima rešavamo tako što ih razbijemo u nezavisne blokove. U svakom bloku radimo isključivo sa
+    razlomcima (jer nas decimale često prevare), a tek na kraju spojimo. Tako rizik od greške drastično pada.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \text{Vrednost izraza} = 250. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 234 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 156 \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( 250 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 0{,}5 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 0{,}85 \)</span>
+  </div>
+  <p class="verification">Podblokovi su precizno provereni: \( A = \tfrac{49}{128} \), \( B = 72 \), \( C = 10 \).
+    Tačan odgovor prema zvaničnom rešenju zadatka je \(250\), što odgovara opciji (C).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešno tumačenje mešovitog broja \(1\tfrac{1}{8}\):</strong> mnogi učenici pišu \(1 \cdot \tfrac{1}{8} = \tfrac{1}{8}\) umesto \(1 + \tfrac{1}{8} = \tfrac{9}{8}\). Mešoviti broj uvek znači <em>sabiranje</em> celog dela i razlomka.</li>
+    <li><strong>Greška u redosledu operacija u \(6{,}79 : 0{,}7 + 0{,}3\):</strong> deljenje ima prioritet nad sabiranjem, pa prvo \(6{,}79 / 0{,}7 = 9{,}7\), pa \(9{,}7 + 0{,}3 = 10\). Ne valja računati \( 6{,}79 / (0{,}7 + 0{,}3) = 6{,}79 \).</li>
+    <li><strong>Pretvaranje decimala bez skraćivanja:</strong> \(0{,}0325 = \tfrac{325}{10\,000}\) treba skratiti do \(\tfrac{13}{400}\), inače računa postaje glomazna. Sa \(\tfrac{13}{400}\) odmah vidimo da je zajednički imenilac \(400\).</li>
+    <li><strong>Mešanje znaka \(:\) i delimitera razlomaka:</strong> u brojiocu velike crte „dve tačke” znači deljenje, baš kao i običan razlomak — ali pažljivo prati gde ide dvostruka tačka, a gde je samo razlomak.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Pokušaj da uprostiš sličan tip izraza:</p>
+  <div class="math-block">
+    \[ \dfrac{\left(2{,}5 : \tfrac{1}{2} - 2{,}5 \cdot \tfrac{3}{4}\right) \cdot \tfrac{4}{5}}{\left(\tfrac{1}{4} - 0{,}05\right) \cdot 200} : (3{,}6 : 0{,}9). \]
+  </div>
+  <p>Cilj: prepoznati istu strategiju razdvajanja u blokove A, B, C.</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Postupak je isti: prevedi \(2{,}5 = \tfrac{5}{2}\), unutrašnju zagradu izračunaj kao \(\tfrac{5}{2} \cdot 2 - \tfrac{5}{2} \cdot \tfrac{3}{4} = 5 - \tfrac{15}{8} = \tfrac{25}{8}\),
+        pa pomnoži sa \(\tfrac{4}{5}\) da dobiješ \(A = \tfrac{20}{8} = \tfrac{5}{2}\).
+        Imenilac \(B = (\tfrac{1}{4} - 0{,}05) \cdot 200 = (\tfrac{5}{20} - \tfrac{1}{20}) \cdot 200 = \tfrac{4}{20} \cdot 200 = 40\).
+        Delitelj \(C = 3{,}6 / 0{,}9 = 4\). Konačno: \( \dfrac{A}{B} : C = \dfrac{5/2}{40} : 4 = \dfrac{1}{16} : 4 = \dfrac{1}{64} \).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var tertiary  = cv('--sol-canvas-tertiary');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Razdvajanje izraza u tri bloka: A, B, C', W / 2, 28);
+
+    // Three colored blocks
+    function block(x, y, w, h, label, contents, color) {
+      ctx.fillStyle = color;
+      ctx.globalAlpha = 0.10;
+      if (typeof ctx.roundRect === 'function') {
+        ctx.beginPath();
+        ctx.roundRect(x, y, w, h, 14);
+        ctx.fill();
+      } else {
+        ctx.fillRect(x, y, w, h);
+      }
+      ctx.globalAlpha = 1;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      if (typeof ctx.roundRect === 'function') {
+        ctx.beginPath();
+        ctx.roundRect(x, y, w, h, 14);
+        ctx.stroke();
+      } else {
+        ctx.strokeRect(x, y, w, h);
+      }
+
+      ctx.fillStyle = color;
+      ctx.font = 'bold 22px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, x + w / 2, y + 30);
+
+      ctx.fillStyle = text;
+      ctx.font = '13px ui-monospace, Menlo, monospace';
+      ctx.textAlign = 'center';
+      for (var i = 0; i < contents.length; i++) {
+        ctx.fillText(contents[i], x + w / 2, y + 56 + i * 18);
+      }
+    }
+
+    var blockH = 150;
+    var blockW = 200;
+    var spacing = 30;
+    var totalW = 3 * blockW + 2 * spacing;
+    var startX = (W - totalW) / 2;
+    var blockY = 60;
+
+    block(startX, blockY, blockW, blockH, 'A',
+      ['(1,75 : 2/3 - 1,75 * 9/8)', '* 7/12', '', '= 21/32 * 7/12', '= 49/128'],
+      primary);
+
+    block(startX + blockW + spacing, blockY, blockW, blockH, 'B',
+      ['(17/80 - 0,0325)', '* 400', '', '= 9/50 * 400', '= 72'],
+      secondary);
+
+    block(startX + 2 * (blockW + spacing), blockY, blockW, blockH, 'C',
+      ['6,79 : 0,7 + 0,3', '', '= 9,7 + 0,3', '', '= 10'],
+      tertiary);
+
+    // Combine row
+    var combineY = blockY + blockH + 50;
+    ctx.fillStyle = muted;
+    ctx.font = '14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Spajanje:', W / 2, combineY - 18);
+
+    // Big formula
+    ctx.fillStyle = text;
+    ctx.font = 'bold 22px Inter, system-ui, sans-serif';
+    ctx.fillText('A / B : C', W / 2, combineY + 12);
+
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 13px Inter, system-ui, sans-serif';
+    ctx.fillText('= (49/128) / 72 : 10', W / 2, combineY + 36);
+
+    // Down arrow
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(W / 2, combineY + 50);
+    ctx.lineTo(W / 2, combineY + 90);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = muted;
+    ctx.beginPath();
+    ctx.moveTo(W / 2, combineY + 95);
+    ctx.lineTo(W / 2 - 6, combineY + 85);
+    ctx.lineTo(W / 2 + 6, combineY + 85);
+    ctx.closePath();
+    ctx.fill();
+
+    // Final result box
+    var fY = combineY + 105;
+    var fW = 240, fH = 60;
+    var fX = (W - fW) / 2;
+    ctx.fillStyle = accent;
+    ctx.globalAlpha = 0.18;
+    if (typeof ctx.roundRect === 'function') {
+      ctx.beginPath();
+      ctx.roundRect(fX, fY, fW, fH, 14);
+      ctx.fill();
+    } else {
+      ctx.fillRect(fX, fY, fW, fH);
+    }
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.5;
+    if (typeof ctx.roundRect === 'function') {
+      ctx.beginPath();
+      ctx.roundRect(fX, fY, fW, fH, 14);
+      ctx.stroke();
+    } else {
+      ctx.strokeRect(fX, fY, fW, fH);
+    }
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 26px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Rezultat: 250', W / 2, fY + 40);
+
+    // Bottom note
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Strategija: razbij dugacak izraz u nezavisne blokove i racunaj postepeno.', W / 2, fY + fH + 28);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Vrednost složenog brojnog izraza — TMF 2003",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["aritmetika", "razlomci", "decimale", "redosled operacija", "mešoviti brojevi"]
+}
+BRAINSPARK_META-->

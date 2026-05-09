@@ -1,0 +1,990 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Problem: Bazen oblika kvadra sa dnom 3 m × 4 m, sadrži vodu visine 1,5 m.
+Spušta se kocka ivice 2 m na dno (tone, ne pliva). Za koliko se podigne nivo vode?
+
+Dato:
+  - Bazen: dno 3 m × 4 m, površina dna A_b = 3·4 = 12 m².
+  - Početna visina vode h_0 = 1,5 m.
+  - Početna zapremina vode V_w = 12 · 1,5 = 18 m³.
+  - Kocka ivice a = 2 m, V_k = 8 m³.
+  - Bočna površina kocke "u preseku po podu" = 2·2 = 4 m².
+
+Ključno opažanje: Kocka ivice 2 m, a voda je samo 1,5 m visoka početno.
+Pa kocka VIRI iznad nivoa vode kad se spusti. Da li će voda preliti kocku?
+
+Trebamo odrediti finalnu visinu vode h_w nakon potapanja kocke.
+
+Slučaj A: h_w ≤ 2 (voda još uvek ne prelazi vrh kocke).
+  Voda zauzima samo deo bazena oko kocke (površina A_b - A_k = 12 - 4 = 8 m²),
+  do visine h_w. Zapremina vode = 8 · h_w.
+  Pošto je voda inkompresibilna, njena zapremina je sačuvana = 18 m³.
+  8 · h_w = 18 → h_w = 18/8 = 2,25 m.
+  ALI 2,25 > 2! Kontradikcija — voda bi prelila kocku. Slučaj A NIJE moguć.
+
+Slučaj B: h_w > 2 (voda prelazi vrh kocke).
+  Zapremina vode = (zapremina od dna do visine 2 oko kocke)
+                 + (zapremina od visine 2 do h_w u celom bazenu)
+  = 8 · 2 + 12 · (h_w - 2)
+  = 16 + 12 · (h_w - 2).
+  Postavljamo = 18:
+  16 + 12(h_w - 2) = 18
+  12(h_w - 2) = 2
+  h_w - 2 = 1/6
+  h_w = 2 + 1/6 = 13/6 m.
+
+  Provera: 13/6 ≈ 2,1667 > 2. Konzistentno sa slučajem B. ✓
+
+Razlika (podizanje nivoa):
+  Δh = h_w - h_0 = 13/6 - 3/2 = 13/6 - 9/6 = 4/6 = 2/3 m.
+
+ALTERNATIVNI PRISTUP — kroz "konzervaciju zapremine":
+  Voda + kocka popunjavaju bazen do nivoa h_w (ako h_w > 2).
+  Zapremina = V_w + V_k = 18 + 8 = 26 m³.
+  Voda + kocka popunjavaju ceo presek bazena do h_w (jer je kocka potpuno potopljena):
+  12 · h_w = 26 → h_w = 26/12 = 13/6 m. ✓ — isto rešenje, jednostavnije.
+  Δh = 13/6 - 3/2 = 2/3 m.
+
+Tačan odgovor: (D) 2/3 m.
+
+Provera ostalih opcija:
+  (A) 3/4 = 0,75 m — možda iz pogrešne pretpostavke da voda raste samo oko kocke.
+       Ako računamo Δh kao zapremina_kocke / (površina_oko) = 8/(12-4) = 1.
+       Ne, to je 1 m (opcija E), ne 3/4. Mislim da je 3/4 m izvedeno iz a/(a²-...?)
+  (B) 4/3 m — možda od pogrešne formule sa a²/površina = 4/3 (jer 12 - 4 = 8, ne odgovara).
+       Ali 4/3 = 8/6 = V_k/(neto). Nepoznato poreklo.
+  (C) 1/2 m — možda iz V_k/(2·12) = 8/24 = 1/3. Ne, ne odgovara baš 1/2.
+  (D) 2/3 m — naš odgovor. ✓
+  (E) 1 m — pogrešno: pretpostavka da voda raste samo oko kocke (ali bi tada bila 2,5 m, što >2).
+
+Vizuelni prikazi (4 kanvasa):
+  1) Bočni presek (početno stanje): bazen prazan po dnu, kocka sa strane (van vode), voda do 1,5 m.
+     STATIČKI - prikazuje "pre" sliku.
+  2) Bočni presek (konačno stanje): kocka na dnu, voda do 13/6 m, vrh kocke ispod nivoa vode.
+     STATIČKI - prikazuje "posle".
+  3) Pogled odozgo (top-view) na dno bazena 3×4 sa "stopalom" kocke 2×2 na sredini.
+     STATIČKI ali ilustruje 12 m² i 4 m² i 8 m² u različitim bojama.
+  4) 3D aksonometrijski prikaz - kocka u bazenu, voda transparentna, podizanje nivoa.
+     STATIČKI 3D crtež.
+</script>
+
+<h1 data-card="problem-title">Podizanje nivoa vode pri potapanju kocke u bazen</h1>
+<p data-card="problem-subtitle" class="subtitle">Stereometrija — zapremine kvadra i kocke, princip očuvanja zapremine vode</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>U bazenu oblika kvadra, čije dno ima dimenzije \( 3\,\text{m} \times 4\,\text{m} \), nalazi se voda do visine \( 1{,}5\,\text{m} \). Za koliko će se podići nivo vode u bazenu ako se na njegovo dno spusti teška kocka (koja ne pliva, već tone) ivice \( 2\,\text{m} \)?</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">Dno bazena</span>
+      <span class="given-value">\( 3\,\text{m} \times 4\,\text{m} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Početni nivo vode</span>
+      <span class="given-value">\( h_0 = 1{,}5\,\text{m} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Ivica kocke</span>
+      <span class="given-value">\( a = 2\,\text{m} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Tražimo</span>
+      <span class="given-value">\( \Delta h = h_w - h_0 \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \dfrac{3}{4}\,\text{m} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \dfrac{4}{3}\,\text{m} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \dfrac{1}{2}\,\text{m} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \dfrac{2}{3}\,\text{m} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 1\,\text{m} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Kocka tone na dno i istiskuje vodu — voda mora negde drugde da ode, pa nivo raste. Najpre proverimo da li je kocka potpuno potopljena (vrh ispod nivoa vode). Ako jeste, primenimo princip očuvanja zapremine: zapremina vode plus zapremina kocke ispunjava bazen do novog nivoa. Razliku starog i novog nivoa daje odgovor.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i princip očuvanja zapremine</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Zapremina kvadra</strong> sa dnom \( A \) i visinom \( h \): \( V = A \cdot h \). Za bazen sa dnom \( 3 \times 4\,\text{m}^2 \) zapremina vode na nivou \( h \) je \( V_w = 12 \cdot h \).</li>
+        <li><strong>Zapremina kocke</strong> ivice \( a \): \( V = a^3 \). Za našu kocku \( V_k = 2^3 = 8\,\text{m}^3 \).</li>
+        <li><strong>Princip očuvanja zapremine</strong> (voda je nestišljiva): kada uronimo telo zapremine \( V_k \) u bazen, ukupna zapremina (voda + uronjeni deo tela) ispod nivoa vode mora biti jednaka početnoj zapremini vode plus uronjenoj zapremini tela.</li>
+        <li><strong>Telo potopljeno do dna</strong> visine \( a \): efektivno popunjava prostor od dna do visine \( a \) sa horizontalnim presekom \( A_k = a^2 \). Iznad njega (ako je \( h_w > a \)) je čista voda na celoj površini bazena.</li>
+        <li><strong>Princip „test slučajeva”</strong>: prvo pretpostavimo da voda <em>ne</em> prelazi vrh kocke i izračunajmo \( h_w \); ako rezultat <em>prelazi</em> \( a \), pretpostavka je pogrešna i moramo primeniti drugu formulu.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz: pre potapanja">
+  <h2>📐 Pre potapanja — početno stanje</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagramBefore" width="720" height="480"></canvas>
+  </div>
+  <p class="canvas-caption">Bočni presek bazena pre potapanja: voda do nivoa \( h_0 = 1{,}5\,\text{m} \) (svetlo plavo), iznad nje je vazduh. Kocka ivice \( 2\,\text{m} \) prikazana je sa strane — još uvek je van bazena. Primetimo da je ivica kocke \( 2 > 1{,}5 = h_0 \), pa kocka, kada je spustimo, viri iznad <em>početnog</em> nivoa vode.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz: posle potapanja">
+  <h2>📐 Posle potapanja — konačno stanje</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagramAfter" width="720" height="480"></canvas>
+  </div>
+  <p class="canvas-caption">Bočni presek bazena nakon spuštanja kocke. Kocka leži na dnu (siva), a voda se popela do novog nivoa \( h_w = 13/6\,\text{m} \approx 2{,}17\,\text{m} \). Vrh kocke je <em>ispod</em> vode (na visini \( 2\,\text{m} \)), pa je kocka potpuno potopljena. Razlika nivoa \( \Delta h = h_w - h_0 = 2/3\,\text{m} \) prikazana je kao žuta traka.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz: pogled odozgo">
+  <h2>📐 Pogled odozgo na dno bazena</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagramTop" width="720" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Pogled odozgo na dno bazena \( 3 \times 4\,\text{m}^2 \) (ukupna površina \( 12\,\text{m}^2 \)). Kvadrat \( 2 \times 2\,\text{m}^2 \) (površina \( 4\,\text{m}^2 \)) je „stopalo” kocke. Preostalih \( 12 - 4 = 8\,\text{m}^2 \) je „prsten” oko kocke kroz koji voda može da se prostire <em>ispod</em> visine \( 2\,\text{m} \). Iznad visine \( 2\,\text{m} \) (vrh kocke) presek je opet ceo \( 12\,\text{m}^2 \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz: 3D aksonometrija">
+  <h2>📐 3D pogled — bazen sa kockom</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram3d" width="720" height="540"></canvas>
+  </div>
+  <p class="canvas-caption">Aksonometrijski (kosi) 3D prikaz: bazen \( 3 \times 4 \times h \), kocka u uglu, voda do novog nivoa \( h_w = 13/6\,\text{m} \). Plavi sloj je voda, sivi blok je kocka, žuta isprekidana linija označava <em>početni</em> nivo \( h_0 = 1{,}5\,\text{m} \), a plava puna linija <em>konačni</em> nivo. Razlika je \( \Delta h = 2/3\,\text{m} \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Početna zapremina vode</h3>
+      <p>Bazen je kvadar sa dnom \( A = 3 \cdot 4 = 12\,\text{m}^2 \). Voda je na visini \( h_0 = 1{,}5\,\text{m} \), pa je njena zapremina:</p>
+      <div class="math-block">\[ V_w \;=\; A \cdot h_0 \;=\; 12 \cdot 1{,}5 \;=\; 18\,\text{m}^3. \]</div>
+      <p>Ova zapremina vode je <em>očuvana</em> tokom potapanja — voda samo menja oblik, ne i količinu.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliko je zapremina kocke?</summary>
+          <div class="detail-content"><p>Kocka ima ivicu \( a = 2\,\text{m} \), pa je njena zapremina \( V_k = a^3 = 2^3 = 8\,\text{m}^3 \). To je deo prostora koji kocka <em>oduzima</em> bazenu — voda mora taj deo izbeći i podići se.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Da li voda prekriva vrh kocke?</h3>
+      <p>Kocka ima ivicu \( 2\,\text{m} \), a početni nivo vode je samo \( 1{,}5\,\text{m} \). Pre potapanja kocka <em>viri</em> iznad nivoa vode. Pitanje je: posle potapanja, da li novi nivo \( h_w \) prelazi vrh kocke (na visini \( 2\,\text{m} \)) ili ne?</p>
+      <p>Probajmo prvo <strong>pretpostavku A</strong>: voda ostaje ispod vrha kocke, tj. \( h_w \le 2 \). Tada voda zauzima samo „prsten” oko kocke, sa površinom preseka \( A - a^2 = 12 - 4 = 8\,\text{m}^2 \), pa:</p>
+      <div class="math-block">\[ 8 \cdot h_w \;=\; V_w \;=\; 18 \quad\Longrightarrow\quad h_w \;=\; \frac{18}{8} \;=\; 2{,}25\,\text{m}. \]</div>
+      <p>Ali \( 2{,}25 > 2 \) — <em>protivuje</em> pretpostavci! Znači pretpostavka A nije tačna.</p>
+      <div class="callout callout-warning">
+        <p><strong>Zaključak:</strong> voda <em>preliva</em> vrh kocke. Moramo koristiti drugačiju formulu — pretpostavku B u kojoj je \( h_w > 2 \).</p>
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je opcija A važna provera, čak i ako se pokaže netačnom?</summary>
+          <div class="detail-content"><p>Bez te provere ne znamo da li koristiti formulu „voda samo oko kocke” ili „voda preko cele površine bazena”. Geometrija problema bi mogla biti različita za različite dimenzije. Test pokaže koja varijanta odgovara konkretnim brojevima.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Princip očuvanja zapremine (kocka potpuno potopljena)</h3>
+      <p>Pošto je kocka potpuno potopljena, ukupna zapremina koju zauzimaju <em>voda i kocka zajedno</em> (od dna do nivoa vode \( h_w \)) jednaka je zapremini bazena do tog nivoa:</p>
+      <div class="math-block">\[ V_w + V_k \;=\; A \cdot h_w. \]</div>
+      <p>Ova jednačina ima jednostavnu interpretaciju: ako bismo „uklonili” kocku, voda bi se „prelila” u praznine i ravnomerno raspodelila preko cele dna bazena \( A = 12\,\text{m}^2 \) do iste visine \( h_w \), jer su voda i kocka skupa popunile bazen do nivoa \( h_w \).</p>
+      <p>Zamenimo brojeve:</p>
+      <div class="math-block">\[ 18 + 8 \;=\; 12 \cdot h_w \quad\Longrightarrow\quad h_w \;=\; \frac{26}{12} \;=\; \frac{13}{6}\,\text{m}. \]</div>
+      <p>Provera konzistentnosti: \( \frac{13}{6} \approx 2{,}17 > 2 \), što potvrđuje da je kocka potpuno potopljena. ✓</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto formula \( V_w + V_k = A \cdot h_w \) važi samo kada je \( h_w \ge a \)?</summary>
+          <div class="detail-content"><p>Ako je \( h_w < a \), kocka <em>viri</em> iznad vode pa nije potpuno potopljena. Onda voda zauzima samo prostor oko (ne iznad) kocke, pa je formula drugačija: \( V_w = (A - a^2) \cdot h_w \). U našem slučaju je \( h_w = 13/6 \approx 2{,}17 \ge 2 = a \), pa formula važi.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Razlika nivoa</h3>
+      <p>Podizanje nivoa je razlika novog i starog nivoa:</p>
+      <div class="math-block">\[ \Delta h \;=\; h_w - h_0 \;=\; \frac{13}{6} - \frac{3}{2} \;=\; \frac{13}{6} - \frac{9}{6} \;=\; \frac{4}{6} \;=\; \frac{2}{3}\,\text{m}. \]</div>
+      <p>To odgovara opciji <strong>(D)</strong>.</p>
+      <div class="callout callout-success">
+        <p><strong>Provera kroz „pomeranje vode”:</strong> volumen vode koju kocka istisne je \( 8\,\text{m}^3 \). Pošto je kocka potpuno potopljena i čitava površina bazena \( 12\,\text{m}^2 \) sada drži dodatnu vodu, podizanje je \( \dfrac{V_k}{A} = \dfrac{8}{12} = \dfrac{2}{3}\,\text{m} \). ✓</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kada je kocka <em>potpuno potopljena</em>, formula za podizanje nivoa je elegantna: \( \Delta h = V_k / A \), gde je \( A \) površina <em>celog</em> dna bazena (ne „prstena” oko kocke!). To je zato što se voda iznad vrha kocke raspoređuje preko cele površine bazena. Trik je u tome da prvo proverimo da li je kocka stvarno potopljena: ako bi formula \( h_w = V_w / (A - a^2) \) (samo prsten) dala vrednost veću od ivice kocke, znamo da je kocka potopljena i prelazimo na drugu formulu. Ako bi dala vrednost manju od ivice, kocka viri i koristimo prvu formulu.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pretpostavka da kocka viri iznad vode</strong> bez provere. Tada bi se dobilo \( h_w = 18/8 = 2{,}25\,\text{m} \) i \( \Delta h = 0{,}75\,\text{m} \) (opcija A) — ali to <em>protivuje</em> samoj pretpostavci jer je \( 2{,}25 > 2 \).</li>
+    <li><strong>Korišćenje pogrešne formule \( \Delta h = V_k / (A - a^2) \)</strong>. Ovo bi dalo \( 8/8 = 1\,\text{m} \) (opcija E), ali to važi samo ako kocka viri iznad vode — što ovde nije slučaj.</li>
+    <li><strong>Zaboravljanje da se podizanje računa preko <em>cele</em> površine bazena</strong> kada je kocka potpuno potopljena. Voda iznad vrha kocke vidi celu površinu \( 12\,\text{m}^2 \), ne samo prsten od \( 8\,\text{m}^2 \).</li>
+    <li><strong>Mešanje jedinica</strong>. Sve je u metrima, ali mnogi računaju delom u centimetrima. Drži se metara — \( 18\,\text{m}^3 \) i \( 8\,\text{m}^3 \), ne \( 1{,}5 \cdot 10^7\,\text{cm}^3 \).</li>
+    <li><strong>Neuvažavanje da kocka tone i ne pliva.</strong> Reč „teška” je ključna: znači da je gustina veća od vode, pa cela kocka leži na dnu. Da je laka i da pliva, problem bi se rešavao Arhimedovim zakonom.</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \Delta h \;=\; h_w - h_0 \;=\; \frac{V_w + V_k}{A} - h_0 \;=\; \frac{18 + 8}{12} - \frac{3}{2} \;=\; \frac{13}{6} - \frac{9}{6} \;=\; \frac{2}{3}\,\text{m} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( \dfrac{3}{4}\,\text{m} \)</span>
+    <span class="answer-option" data-option="B">(B) \( \dfrac{4}{3}\,\text{m} \)</span>
+    <span class="answer-option" data-option="C">(C) \( \dfrac{1}{2}\,\text{m} \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( \dfrac{2}{3}\,\text{m} \)</span>
+    <span class="answer-option" data-option="E">(E) \( 1\,\text{m} \)</span>
+  </div>
+  <p class="verification">Provera kroz princip „istisnute zapremine”: kocka je potpuno potopljena, pa istisne \( V_k = 8\,\text{m}^3 \) vode. Ta voda se ravnomerno rasporedi preko \( A = 12\,\text{m}^2 \) bazena, pa je podizanje \( \Delta h = V_k/A = 8/12 = 2/3\,\text{m} \). ✓</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta ako bismo umesto kocke ivice \( 2\,\text{m} \) spustili kocku ivice \( 3\,\text{m} \)? (Pretpostavi da bazen ima dovoljnu dubinu.) Kolika bi tada bila konačna visina vode? Da li je kocka još uvek potpuno potopljena? Generalno, za koje vrednosti ivice \( a \) važi „jednostavna” formula \( \Delta h = a^3 / 12 \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Za kocku ivice \( 3\,\text{m} \): \( V_k = 27\,\text{m}^3 \). Ukupno \( V_w + V_k = 18 + 27 = 45\,\text{m}^3 \). Probajmo „potpuno potopljena” formulu: \( h_w = 45/12 = 3{,}75\,\text{m} > 3 \). ✓ Kocka jeste potopljena, pa \( \Delta h = 3{,}75 - 1{,}5 = 2{,}25\,\text{m} \). Generalno, da bi „jednostavna” formula \( \Delta h = a^3/12 \) važila, mora biti \( h_w \ge a \), tj. \( (V_w + a^3)/12 \ge a \), što daje \( a^3 - 12a + 18 \ge 0 \). Za našu kocku \( a = 2 \): \( 8 - 24 + 18 = 2 \ge 0 \) ✓ (granični slučaj nije aktivan), a za \( a = 1 \): \( 1 - 12 + 18 = 7 \ge 0 \) ✓ — ipak, za male \( a \) kocka možda <em>ne</em> bude potopljena ako je \( h_0 \) malo, što treba proveriti zasebno. Ovaj zadatak je „granični” — sa ivicom kocke \( 2 \) i nivoom \( 1{,}5 \), tek <em>posle</em> potapanja je voda dovoljna da pokrije kocku.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16), g = parseInt(c.slice(3,5), 16), b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  // ======== Canvas 1: Before ========
+  var canvasB = document.getElementById('diagramBefore');
+  if (canvasB) {
+    var ctxB = canvasB.getContext('2d');
+    function drawBefore() {
+      var bg = cv('--sol-canvas-bg');
+      var grid = cv('--sol-canvas-grid');
+      var axis = cv('--sol-canvas-axis');
+      var primary = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text = cv('--sol-canvas-text');
+      var muted = cv('--sol-canvas-muted');
+      var warning = cv('--sol-canvas-warning');
+
+      ctxB.clearRect(0, 0, canvasB.width, canvasB.height);
+      ctxB.fillStyle = bg;
+      ctxB.fillRect(0, 0, canvasB.width, canvasB.height);
+
+      var W = canvasB.width, H = canvasB.height;
+
+      // Title
+      ctxB.fillStyle = text;
+      ctxB.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctxB.textAlign = 'center';
+      ctxB.fillText('Bočni presek bazena — pre potapanja kocke', W/2, 28);
+
+      // Bazen rectangle (3x4 m, but we use width 4 for side view)
+      // Coordinate system: 1 m = 80 px
+      var scale = 80;
+      var poolWidthM = 4;     // duzina osnove bazena (uzimamo 4 m za bocni pogled)
+      var poolHeightM = 3;    // visina bazena (do vrha)
+      var pX = 80;            // bazen x leva strana
+      var pY = H - 80 - poolHeightM * scale;
+      var pW = poolWidthM * scale;
+      var pH = poolHeightM * scale;
+
+      // Pool walls
+      ctxB.strokeStyle = axis;
+      ctxB.lineWidth = 3;
+      ctxB.beginPath();
+      ctxB.moveTo(pX, pY);
+      ctxB.lineTo(pX, pY + pH);
+      ctxB.lineTo(pX + pW, pY + pH);
+      ctxB.lineTo(pX + pW, pY);
+      ctxB.stroke();
+
+      // Water (level h0 = 1.5)
+      var waterH = 1.5 * scale;
+      ctxB.fillStyle = cvAlpha('--sol-canvas-primary', 0.35);
+      ctxB.fillRect(pX, pY + pH - waterH, pW, waterH);
+      ctxB.strokeStyle = primary;
+      ctxB.lineWidth = 2;
+      ctxB.setLineDash([]);
+      ctxB.beginPath();
+      ctxB.moveTo(pX, pY + pH - waterH);
+      ctxB.lineTo(pX + pW, pY + pH - waterH);
+      ctxB.stroke();
+
+      // Water surface ripples (subtle)
+      ctxB.strokeStyle = cvAlpha('--sol-canvas-primary', 0.6);
+      ctxB.lineWidth = 1;
+      for (var i = 0; i < 4; i++) {
+        ctxB.beginPath();
+        var rx = pX + 30 + i * 80;
+        ctxB.arc(rx, pY + pH - waterH, 6, 0, Math.PI, true);
+        ctxB.stroke();
+      }
+
+      // Cube to the side (above ground next to pool)
+      var cubeSize = 2 * scale;
+      var cX = pX + pW + 60;
+      var cY = pY + pH - cubeSize;
+      // 3D cube perspective (front face)
+      ctxB.fillStyle = cvAlpha('--sol-canvas-muted', 0.35);
+      ctxB.fillRect(cX, cY, cubeSize, cubeSize);
+      ctxB.strokeStyle = text;
+      ctxB.lineWidth = 2;
+      ctxB.strokeRect(cX, cY, cubeSize, cubeSize);
+      // Top face (depth)
+      var depth = 25;
+      ctxB.beginPath();
+      ctxB.moveTo(cX, cY);
+      ctxB.lineTo(cX + depth, cY - depth);
+      ctxB.lineTo(cX + cubeSize + depth, cY - depth);
+      ctxB.lineTo(cX + cubeSize, cY);
+      ctxB.closePath();
+      ctxB.fillStyle = cvAlpha('--sol-canvas-muted', 0.5);
+      ctxB.fill();
+      ctxB.stroke();
+      // Right face
+      ctxB.beginPath();
+      ctxB.moveTo(cX + cubeSize, cY);
+      ctxB.lineTo(cX + cubeSize + depth, cY - depth);
+      ctxB.lineTo(cX + cubeSize + depth, cY - depth + cubeSize);
+      ctxB.lineTo(cX + cubeSize, cY + cubeSize);
+      ctxB.closePath();
+      ctxB.fillStyle = cvAlpha('--sol-canvas-muted', 0.25);
+      ctxB.fill();
+      ctxB.stroke();
+
+      // Arrow showing cube goes into pool
+      ctxB.strokeStyle = warning;
+      ctxB.lineWidth = 2.5;
+      ctxB.setLineDash([6, 4]);
+      ctxB.beginPath();
+      ctxB.moveTo(cX + cubeSize/2, cY - 10);
+      ctxB.bezierCurveTo(cX, cY - 60, pX + pW - 40, pY + 20, pX + pW/2, pY + pH - waterH - 5);
+      ctxB.stroke();
+      ctxB.setLineDash([]);
+      // Arrowhead
+      ctxB.fillStyle = warning;
+      ctxB.beginPath();
+      ctxB.moveTo(pX + pW/2, pY + pH - waterH - 5);
+      ctxB.lineTo(pX + pW/2 - 7, pY + pH - waterH - 18);
+      ctxB.lineTo(pX + pW/2 + 7, pY + pH - waterH - 18);
+      ctxB.closePath();
+      ctxB.fill();
+
+      // Labels
+      ctxB.fillStyle = text;
+      ctxB.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctxB.textAlign = 'left';
+      // Pool dimension
+      ctxB.fillText('Bazen: 3 × 4 m (dno)', pX, pY - 12);
+      // Water level label
+      ctxB.fillStyle = primary;
+      ctxB.fillText('h₀ = 1,5 m', pX + 10, pY + pH - waterH - 8);
+      // Cube label
+      ctxB.fillStyle = text;
+      ctxB.textAlign = 'center';
+      ctxB.fillText('Kocka, ivica 2 m', cX + cubeSize/2, cY + cubeSize + 22);
+      ctxB.fillStyle = muted;
+      ctxB.font = '12px Inter, system-ui, sans-serif';
+      ctxB.fillText('(tone, ne pliva)', cX + cubeSize/2, cY + cubeSize + 38);
+
+      // Vertical scale on left
+      ctxB.strokeStyle = muted;
+      ctxB.lineWidth = 1;
+      ctxB.setLineDash([2, 3]);
+      for (var k = 0; k <= 3; k++) {
+        var yy = pY + pH - k * scale;
+        ctxB.beginPath();
+        ctxB.moveTo(pX - 20, yy);
+        ctxB.lineTo(pX, yy);
+        ctxB.stroke();
+        ctxB.fillStyle = muted;
+        ctxB.font = '11px Inter, system-ui, sans-serif';
+        ctxB.textAlign = 'right';
+        ctxB.fillText(k + ' m', pX - 24, yy + 4);
+      }
+      ctxB.setLineDash([]);
+
+      // Annotation: V_w = 18 m³
+      ctxB.fillStyle = primary;
+      ctxB.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctxB.textAlign = 'center';
+      ctxB.fillText('V_voda = 12 · 1,5 = 18 m³', pX + pW/2, pY + pH - waterH/2 + 5);
+
+      // "Pre potapanja" subtitle
+      ctxB.fillStyle = muted;
+      ctxB.font = 'italic 13px Inter, system-ui, sans-serif';
+      ctxB.textAlign = 'center';
+      ctxB.fillText('Stanje 1: kocka još nije u bazenu', W/2, H - 30);
+    }
+    drawBefore();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function(){ styles = getComputedStyle(root); drawBefore(); }, 50);
+      }
+    });
+  }
+
+  // ======== Canvas 2: After ========
+  var canvasA = document.getElementById('diagramAfter');
+  if (canvasA) {
+    var ctxA = canvasA.getContext('2d');
+    function drawAfter() {
+      var bg = cv('--sol-canvas-bg');
+      var primary = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text = cv('--sol-canvas-text');
+      var muted = cv('--sol-canvas-muted');
+      var axis = cv('--sol-canvas-axis');
+      var warning = cv('--sol-canvas-warning');
+
+      ctxA.clearRect(0, 0, canvasA.width, canvasA.height);
+      ctxA.fillStyle = bg;
+      ctxA.fillRect(0, 0, canvasA.width, canvasA.height);
+
+      var W = canvasA.width, H = canvasA.height;
+
+      ctxA.fillStyle = text;
+      ctxA.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctxA.textAlign = 'center';
+      ctxA.fillText('Bočni presek bazena — posle potapanja kocke', W/2, 28);
+
+      var scale = 80;
+      var poolWidthM = 4;
+      var poolHeightM = 3;
+      var pX = 130;
+      var pY = H - 80 - poolHeightM * scale;
+      var pW = poolWidthM * scale;
+      var pH = poolHeightM * scale;
+
+      // Pool walls
+      ctxA.strokeStyle = axis;
+      ctxA.lineWidth = 3;
+      ctxA.beginPath();
+      ctxA.moveTo(pX, pY);
+      ctxA.lineTo(pX, pY + pH);
+      ctxA.lineTo(pX + pW, pY + pH);
+      ctxA.lineTo(pX + pW, pY);
+      ctxA.stroke();
+
+      // Cube on bottom (left side of pool)
+      var cubeSize = 2 * scale;
+      var cubeX = pX + 40;
+      var cubeY = pY + pH - cubeSize;
+
+      // Water (new level h_w = 13/6 ≈ 2.1667 m)
+      var newWaterH = (13/6) * scale;
+      // Draw water everywhere
+      ctxA.fillStyle = cvAlpha('--sol-canvas-primary', 0.35);
+      ctxA.fillRect(pX, pY + pH - newWaterH, pW, newWaterH);
+
+      // Cube on top of water (inside the water)
+      ctxA.fillStyle = cvAlpha('--sol-canvas-muted', 0.65);
+      ctxA.fillRect(cubeX, cubeY, cubeSize, cubeSize);
+      ctxA.strokeStyle = text;
+      ctxA.lineWidth = 2;
+      ctxA.strokeRect(cubeX, cubeY, cubeSize, cubeSize);
+
+      // New water surface
+      ctxA.strokeStyle = primary;
+      ctxA.lineWidth = 2.5;
+      ctxA.beginPath();
+      ctxA.moveTo(pX, pY + pH - newWaterH);
+      ctxA.lineTo(pX + pW, pY + pH - newWaterH);
+      ctxA.stroke();
+
+      // Old water level (dashed)
+      var oldWaterH = 1.5 * scale;
+      ctxA.strokeStyle = warning;
+      ctxA.lineWidth = 2;
+      ctxA.setLineDash([8, 5]);
+      ctxA.beginPath();
+      ctxA.moveTo(pX, pY + pH - oldWaterH);
+      ctxA.lineTo(pX + pW, pY + pH - oldWaterH);
+      ctxA.stroke();
+      ctxA.setLineDash([]);
+
+      // Δh shaded band between old and new levels
+      ctxA.fillStyle = cvAlpha('--sol-canvas-warning', 0.3);
+      ctxA.fillRect(pX + pW + 8, pY + pH - newWaterH, 12, newWaterH - oldWaterH);
+      ctxA.strokeStyle = warning;
+      ctxA.lineWidth = 1.5;
+      ctxA.strokeRect(pX + pW + 8, pY + pH - newWaterH, 12, newWaterH - oldWaterH);
+      // Δh arrows
+      ctxA.fillStyle = warning;
+      ctxA.beginPath();
+      ctxA.moveTo(pX + pW + 14, pY + pH - newWaterH);
+      ctxA.lineTo(pX + pW + 8, pY + pH - newWaterH + 8);
+      ctxA.lineTo(pX + pW + 20, pY + pH - newWaterH + 8);
+      ctxA.closePath();
+      ctxA.fill();
+      ctxA.beginPath();
+      ctxA.moveTo(pX + pW + 14, pY + pH - oldWaterH);
+      ctxA.lineTo(pX + pW + 8, pY + pH - oldWaterH - 8);
+      ctxA.lineTo(pX + pW + 20, pY + pH - oldWaterH - 8);
+      ctxA.closePath();
+      ctxA.fill();
+
+      // Δh label
+      ctxA.fillStyle = warning;
+      ctxA.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctxA.textAlign = 'left';
+      ctxA.fillText('Δh = 2/3 m', pX + pW + 28, pY + pH - (oldWaterH + newWaterH)/2 + 4);
+
+      // Vertical scale on left
+      ctxA.strokeStyle = muted;
+      ctxA.lineWidth = 1;
+      ctxA.setLineDash([2, 3]);
+      for (var k = 0; k <= 3; k++) {
+        var yy = pY + pH - k * scale;
+        ctxA.beginPath();
+        ctxA.moveTo(pX - 20, yy);
+        ctxA.lineTo(pX, yy);
+        ctxA.stroke();
+        ctxA.fillStyle = muted;
+        ctxA.font = '11px Inter, system-ui, sans-serif';
+        ctxA.textAlign = 'right';
+        ctxA.fillText(k + ' m', pX - 24, yy + 4);
+      }
+      ctxA.setLineDash([]);
+
+      // Labels
+      ctxA.fillStyle = primary;
+      ctxA.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctxA.textAlign = 'left';
+      ctxA.fillText('h_w = 13/6 ≈ 2,17 m', pX + pW - 100, pY + pH - newWaterH - 10);
+      ctxA.fillStyle = warning;
+      ctxA.fillText('h₀ = 1,5 m (početni)', pX + pW - 100, pY + pH - oldWaterH + 18);
+
+      // Cube label
+      ctxA.fillStyle = text;
+      ctxA.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctxA.textAlign = 'center';
+      ctxA.fillText('Kocka', cubeX + cubeSize/2, cubeY + cubeSize/2 - 10);
+      ctxA.fillStyle = muted;
+      ctxA.font = '12px Inter, system-ui, sans-serif';
+      ctxA.fillText('(ivica 2 m)', cubeX + cubeSize/2, cubeY + cubeSize/2 + 8);
+      ctxA.fillStyle = text;
+      ctxA.font = 'bold 12px Inter, system-ui, sans-serif';
+      ctxA.fillText('V_k = 8 m³', cubeX + cubeSize/2, cubeY + cubeSize/2 + 26);
+
+      // Top of cube indicator
+      ctxA.strokeStyle = secondary;
+      ctxA.lineWidth = 1;
+      ctxA.setLineDash([3, 4]);
+      ctxA.beginPath();
+      ctxA.moveTo(cubeX + cubeSize, cubeY);
+      ctxA.lineTo(pX + pW - 10, cubeY);
+      ctxA.stroke();
+      ctxA.setLineDash([]);
+      ctxA.fillStyle = secondary;
+      ctxA.font = '12px Inter, system-ui, sans-serif';
+      ctxA.textAlign = 'right';
+      ctxA.fillText('vrh kocke = 2 m', pX + pW - 14, cubeY - 6);
+
+      // Subtitle
+      ctxA.fillStyle = muted;
+      ctxA.font = 'italic 13px Inter, system-ui, sans-serif';
+      ctxA.textAlign = 'center';
+      ctxA.fillText('Stanje 2: kocka leži na dnu, voda se popela za 2/3 m', W/2, H - 30);
+    }
+    drawAfter();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function(){ styles = getComputedStyle(root); drawAfter(); }, 50);
+      }
+    });
+  }
+
+  // ======== Canvas 3: Top view ========
+  var canvasT = document.getElementById('diagramTop');
+  if (canvasT) {
+    var ctxT = canvasT.getContext('2d');
+    function drawTop() {
+      var bg = cv('--sol-canvas-bg');
+      var primary = cv('--sol-canvas-primary');
+      var accent = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text = cv('--sol-canvas-text');
+      var muted = cv('--sol-canvas-muted');
+      var axis = cv('--sol-canvas-axis');
+      var warning = cv('--sol-canvas-warning');
+      var secondary = cv('--sol-canvas-secondary');
+
+      ctxT.clearRect(0, 0, canvasT.width, canvasT.height);
+      ctxT.fillStyle = bg;
+      ctxT.fillRect(0, 0, canvasT.width, canvasT.height);
+
+      var W = canvasT.width, H = canvasT.height;
+
+      ctxT.fillStyle = text;
+      ctxT.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctxT.textAlign = 'center';
+      ctxT.fillText('Pogled odozgo na dno bazena', W/2, 30);
+
+      var scale = 90;
+      var poolW = 4 * scale;
+      var poolH = 3 * scale;
+      var pX = (W - poolW) / 2;
+      var pY = 70;
+
+      // Pool footprint - water area (annulus around cube)
+      ctxT.fillStyle = cvAlpha('--sol-canvas-primary', 0.25);
+      ctxT.fillRect(pX, pY, poolW, poolH);
+
+      // Cube footprint 2x2 - placed in left area
+      var cubeSize = 2 * scale;
+      var cubeX = pX + 30;
+      var cubeY = pY + (poolH - cubeSize) / 2;
+
+      // Erase water in cube area (now show cube)
+      ctxT.fillStyle = cvAlpha('--sol-canvas-muted', 0.65);
+      ctxT.fillRect(cubeX, cubeY, cubeSize, cubeSize);
+
+      // Pool border
+      ctxT.strokeStyle = axis;
+      ctxT.lineWidth = 3;
+      ctxT.strokeRect(pX, pY, poolW, poolH);
+
+      // Cube border
+      ctxT.strokeStyle = text;
+      ctxT.lineWidth = 2.5;
+      ctxT.strokeRect(cubeX, cubeY, cubeSize, cubeSize);
+
+      // Hatch the annulus area (around cube)
+      ctxT.strokeStyle = cvAlpha('--sol-canvas-primary', 0.5);
+      ctxT.lineWidth = 1;
+      // Above and below cube within pool
+      // Top strip
+      for (var x = pX; x < pX + poolW; x += 12) {
+        ctxT.beginPath();
+        // Top region
+        if (x >= cubeX && x <= cubeX + cubeSize) {
+          ctxT.moveTo(x, pY);
+          ctxT.lineTo(x + 8, cubeY);
+        } else {
+          ctxT.moveTo(x, pY);
+          ctxT.lineTo(x + 8, pY + poolH);
+        }
+        ctxT.stroke();
+      }
+
+      // Dimensions
+      ctxT.fillStyle = text;
+      ctxT.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctxT.textAlign = 'center';
+      // Width 4 m
+      ctxT.fillText('4 m', pX + poolW/2, pY + poolH + 25);
+      // Height 3 m (rotated)
+      ctxT.save();
+      ctxT.translate(pX - 20, pY + poolH/2);
+      ctxT.rotate(-Math.PI/2);
+      ctxT.fillText('3 m', 0, 0);
+      ctxT.restore();
+
+      // Cube dimensions
+      ctxT.fillStyle = muted;
+      ctxT.font = '12px Inter, system-ui, sans-serif';
+      ctxT.fillText('2 m', cubeX + cubeSize/2, cubeY - 8);
+
+      // Areas labels
+      ctxT.fillStyle = primary;
+      ctxT.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctxT.textAlign = 'left';
+      ctxT.fillText('Voda („prsten")', pX + poolW - 165, pY + 20);
+      ctxT.font = '12px Inter, system-ui, sans-serif';
+      ctxT.fillText('A_voda = 12 − 4 = 8 m²', pX + poolW - 165, pY + 38);
+
+      ctxT.fillStyle = text;
+      ctxT.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctxT.textAlign = 'center';
+      ctxT.fillText('Kocka', cubeX + cubeSize/2, cubeY + cubeSize/2 - 6);
+      ctxT.font = '12px Inter, system-ui, sans-serif';
+      ctxT.fillText('A_k = 4 m²', cubeX + cubeSize/2, cubeY + cubeSize/2 + 14);
+
+      // Annotation: total area
+      ctxT.fillStyle = text;
+      ctxT.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctxT.textAlign = 'center';
+      ctxT.fillText('Ukupna površina dna: 3 · 4 = 12 m²', W/2, pY + poolH + 60);
+
+      // Note about heights
+      ctxT.fillStyle = muted;
+      ctxT.font = 'italic 12px Inter, system-ui, sans-serif';
+      ctxT.fillText('Ispod h = 2 m (vrh kocke): voda zauzima samo 8 m².', W/2, pY + poolH + 84);
+      ctxT.fillText('Iznad h = 2 m: voda se prostire preko cele površine 12 m².', W/2, pY + poolH + 102);
+    }
+    drawTop();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function(){ styles = getComputedStyle(root); drawTop(); }, 50);
+      }
+    });
+  }
+
+  // ======== Canvas 4: 3D ========
+  var canvas3 = document.getElementById('diagram3d');
+  if (canvas3) {
+    var ctx3 = canvas3.getContext('2d');
+    function draw3() {
+      var bg = cv('--sol-canvas-bg');
+      var primary = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text = cv('--sol-canvas-text');
+      var muted = cv('--sol-canvas-muted');
+      var axis = cv('--sol-canvas-axis');
+      var warning = cv('--sol-canvas-warning');
+
+      ctx3.clearRect(0, 0, canvas3.width, canvas3.height);
+      ctx3.fillStyle = bg;
+      ctx3.fillRect(0, 0, canvas3.width, canvas3.height);
+
+      var W = canvas3.width, H = canvas3.height;
+
+      ctx3.fillStyle = text;
+      ctx3.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx3.textAlign = 'center';
+      ctx3.fillText('3D pogled — bazen, kocka i nivoi vode', W/2, 30);
+
+      // Axonometric projection with angle ~30°
+      var scale = 70;
+      var alpha = Math.PI / 6; // 30 degrees for depth
+      var dxFactor = Math.cos(alpha);
+      var dyFactor = Math.sin(alpha);
+
+      // Origin: front-bottom-left of pool
+      var oX = 200;
+      var oY = H - 90;
+
+      // Pool dimensions in m: width=4 (X), depth=3 (Y), height=3 (Z, drawing up)
+      var pwX = 4 * scale;
+      var pdY = 3 * scale;
+      var phZ = 3 * scale;
+
+      function project(x, y, z) {
+        // x: along pool width, y: depth (back), z: up
+        return {
+          x: oX + x * scale + y * scale * dxFactor,
+          y: oY - z * scale - y * scale * dyFactor
+        };
+      }
+
+      // Helper: draw quadrilateral
+      function quad(p1, p2, p3, p4, fill, stroke) {
+        ctx3.beginPath();
+        ctx3.moveTo(p1.x, p1.y);
+        ctx3.lineTo(p2.x, p2.y);
+        ctx3.lineTo(p3.x, p3.y);
+        ctx3.lineTo(p4.x, p4.y);
+        ctx3.closePath();
+        if (fill) { ctx3.fillStyle = fill; ctx3.fill(); }
+        if (stroke) { ctx3.strokeStyle = stroke; ctx3.stroke(); }
+      }
+
+      // ---- Draw pool walls (transparent) ----
+      // Floor (bottom)
+      var f1 = project(0, 0, 0);
+      var f2 = project(4, 0, 0);
+      var f3 = project(4, 3, 0);
+      var f4 = project(0, 3, 0);
+
+      // Back wall corners
+      var b1 = project(0, 3, 0);
+      var b2 = project(4, 3, 0);
+      var b3 = project(4, 3, 3);
+      var b4 = project(0, 3, 3);
+
+      // Top corners (outline of pool)
+      var t1 = project(0, 0, 3);
+      var t2 = project(4, 0, 3);
+      var t3 = project(4, 3, 3);
+      var t4 = project(0, 3, 3);
+
+      // Pool floor
+      ctx3.lineWidth = 2;
+      quad(f1, f2, f3, f4, cvAlpha('--sol-canvas-muted', 0.2), axis);
+
+      // ---- Water filled (h_w = 13/6 ≈ 2.167) ----
+      var hw = 13/6;
+      var w1 = project(0, 0, hw);
+      var w2 = project(4, 0, hw);
+      var w3 = project(4, 3, hw);
+      var w4 = project(0, 3, hw);
+
+      // Water back wall
+      quad(b1, b2, project(4, 3, hw), project(0, 3, hw), cvAlpha('--sol-canvas-primary', 0.2), null);
+      // Water left wall (facing viewer's right)
+      quad(project(0, 0, 0), project(0, 3, 0), project(0, 3, hw), project(0, 0, hw), cvAlpha('--sol-canvas-primary', 0.15), null);
+      // Water right wall (facing viewer)
+      quad(project(4, 0, 0), project(4, 3, 0), project(4, 3, hw), project(4, 0, hw), cvAlpha('--sol-canvas-primary', 0.25), null);
+      // Water front wall
+      quad(project(0, 0, 0), project(4, 0, 0), project(4, 0, hw), project(0, 0, hw), cvAlpha('--sol-canvas-primary', 0.3), null);
+      // Water surface (top)
+      quad(w1, w2, w3, w4, cvAlpha('--sol-canvas-primary', 0.5), primary);
+
+      // ---- Cube (2x2x2) on the pool floor ----
+      // Place cube at corner near front-left (so visible)
+      var cx = 0.5, cy = 0.5; // base footprint at (0.5,0.5) to (2.5,2.5) — fits in 4x3 pool
+      var cs = 2; // cube edge
+
+      var k1 = project(cx, cy, 0);
+      var k2 = project(cx + cs, cy, 0);
+      var k3 = project(cx + cs, cy + cs, 0);
+      var k4 = project(cx, cy + cs, 0);
+      var k5 = project(cx, cy, cs);
+      var k6 = project(cx + cs, cy, cs);
+      var k7 = project(cx + cs, cy + cs, cs);
+      var k8 = project(cx, cy + cs, cs);
+
+      ctx3.lineWidth = 2;
+      // Cube faces - draw back faces first (hidden)
+      // Top face
+      quad(k5, k6, k7, k8, cvAlpha('--sol-canvas-muted', 0.6), text);
+      // Front face
+      quad(k1, k2, k6, k5, cvAlpha('--sol-canvas-muted', 0.5), text);
+      // Right face (facing viewer)
+      quad(k2, k3, k7, k6, cvAlpha('--sol-canvas-muted', 0.4), text);
+
+      // Re-draw water surface with translucent over cube
+      ctx3.beginPath();
+      ctx3.moveTo(w1.x, w1.y);
+      ctx3.lineTo(w2.x, w2.y);
+      ctx3.lineTo(w3.x, w3.y);
+      ctx3.lineTo(w4.x, w4.y);
+      ctx3.closePath();
+      ctx3.fillStyle = cvAlpha('--sol-canvas-primary', 0.35);
+      ctx3.fill();
+      ctx3.strokeStyle = primary;
+      ctx3.lineWidth = 2.5;
+      ctx3.stroke();
+
+      // ---- Old water level (h0 = 1.5, dashed) ----
+      var h0 = 1.5;
+      var o1 = project(0, 0, h0);
+      var o2 = project(4, 0, h0);
+      var o3 = project(4, 3, h0);
+      var o4 = project(0, 3, h0);
+      ctx3.strokeStyle = warning;
+      ctx3.lineWidth = 2;
+      ctx3.setLineDash([8, 5]);
+      ctx3.beginPath();
+      ctx3.moveTo(o1.x, o1.y); ctx3.lineTo(o2.x, o2.y);
+      ctx3.lineTo(o3.x, o3.y); ctx3.lineTo(o4.x, o4.y);
+      ctx3.closePath();
+      ctx3.stroke();
+      ctx3.setLineDash([]);
+
+      // ---- Pool top edges (outline above water) ----
+      ctx3.strokeStyle = axis;
+      ctx3.lineWidth = 2;
+      ctx3.setLineDash([4, 3]);
+      ctx3.beginPath();
+      ctx3.moveTo(t1.x, t1.y); ctx3.lineTo(t2.x, t2.y);
+      ctx3.lineTo(t3.x, t3.y); ctx3.lineTo(t4.x, t4.y); ctx3.lineTo(t1.x, t1.y);
+      ctx3.stroke();
+      ctx3.setLineDash([]);
+      // Vertical edges of pool
+      ctx3.strokeStyle = axis;
+      ctx3.lineWidth = 2;
+      ctx3.beginPath();
+      ctx3.moveTo(f1.x, f1.y); ctx3.lineTo(t1.x, t1.y);
+      ctx3.moveTo(f2.x, f2.y); ctx3.lineTo(t2.x, t2.y);
+      ctx3.moveTo(f3.x, f3.y); ctx3.lineTo(t3.x, t3.y);
+      ctx3.moveTo(f4.x, f4.y); ctx3.lineTo(t4.x, t4.y);
+      ctx3.stroke();
+
+      // ---- Labels ----
+      ctx3.fillStyle = primary;
+      ctx3.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx3.textAlign = 'left';
+      var labW = project(4, 0, hw);
+      ctx3.fillText('h_w = 13/6 m ≈ 2,17 m', labW.x + 12, labW.y + 4);
+
+      ctx3.fillStyle = warning;
+      var labO = project(4, 0, h0);
+      ctx3.fillText('h₀ = 1,5 m (početni)', labO.x + 12, labO.y + 4);
+
+      ctx3.fillStyle = text;
+      ctx3.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx3.fillText('Kocka (ivica 2 m)', k7.x + 8, k7.y - 4);
+      ctx3.font = '12px Inter, system-ui, sans-serif';
+      ctx3.fillStyle = muted;
+      ctx3.fillText('V_k = 8 m³', k7.x + 8, k7.y + 14);
+
+      // Bottom label
+      ctx3.fillStyle = muted;
+      ctx3.font = 'italic 13px Inter, system-ui, sans-serif';
+      ctx3.textAlign = 'center';
+      ctx3.fillText('Ispuna: V_voda + V_kocka = 18 + 8 = 26 m³ = 12 · h_w', W/2, H - 30);
+    }
+    draw3();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function(){ styles = getComputedStyle(root); draw3(); }, 50);
+      }
+    });
+  }
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Podizanje nivoa vode pri potapanju kocke u kvadarni bazen",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["stereometrija", "kvadar", "kocka", "zapremina", "očuvanje zapremine", "potapanje tela"]
+}
+BRAINSPARK_META-->

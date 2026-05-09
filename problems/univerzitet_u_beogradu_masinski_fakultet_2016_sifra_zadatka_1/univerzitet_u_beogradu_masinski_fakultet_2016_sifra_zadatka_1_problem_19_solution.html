@@ -1,0 +1,1051 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Pravilna trostrana zarubljena piramida.
+  Donja osnova: jednakostranican trougao stranice a.
+  Gornja osnova: jednakostranican trougao stranice b, a > b.
+  Bocne ivice zaklapaju ugao alpha sa ravni osnove (donje).
+  Naci zapreminu V.
+
+  Step 1 — geometrija pravilne zarubljene piramide:
+    Pravilna => obe osnove su pravilni n-uglovi (ovde jednakostranicni trouglovi),
+    osa piramide prolazi kroz centroide obe osnove i okomita je na obe ravni osnova.
+    Gornja osnova je homotetski smanjena donja, oko zajednickog centroida (osi).
+
+  Step 2 — cirkumradijus jednakostranicnog trougla stranice s:
+    R = s / sqrt(3)  (rastojanje od centroida do temena).
+    Provera: visina h = s*sqrt(3)/2, a centroid je na 2/3 visine od temena =>
+      ne — centroid je na 2/3 medijane mereno od temena, na 1/3 od stranice.
+      Medijana = visina = s*sqrt(3)/2. R = (2/3)(s*sqrt(3)/2) = s*sqrt(3)/3 = s/sqrt(3). OK.
+
+  Step 3 — horizontalna projekcija bocne ivice:
+    Donje teme A je na rastojanju R_a = a/sqrt(3) od ose.
+    Odgovarajuce gornje teme A' je na rastojanju R_b = b/sqrt(3) od iste ose,
+    na istom radijalnom pravcu (jer je homotetija centrirana na osi).
+    Stoga je horizontalna projekcija ivice AA' jednaka R_a - R_b = (a-b)/sqrt(3).
+
+  Step 4 — visina H piramide:
+    Bocna ivica zaklapa ugao alpha sa osnovom.
+    Razmotri pravougli trougao: kateta vertikalna = H, kateta horizontalna = (a-b)/sqrt(3),
+    hipotenuza = bocna ivica l. Tan(alpha) = H / horizontal = H*sqrt(3)/(a-b).
+    => H = (a-b)/sqrt(3) * tan(alpha).
+
+  Step 5 — povrsine osnova:
+    B_a = a^2 * sqrt(3) / 4
+    B_b = b^2 * sqrt(3) / 4
+    sqrt(B_a * B_b) = (a*b) * sqrt(3) / 4
+
+  Step 6 — formula za zapreminu zarubljene piramide:
+    V = H/3 * (B_a + B_b + sqrt(B_a*B_b))
+      = H/3 * (sqrt(3)/4) * (a^2 + b^2 + ab)
+      = H * sqrt(3) / 12 * (a^2 + ab + b^2)
+
+  Step 7 — supstitucija:
+    V = [(a-b) * tan(alpha) / sqrt(3)] * sqrt(3)/12 * (a^2 + ab + b^2)
+      = (a-b)(a^2 + ab + b^2) * tan(alpha) / 12
+    Identiteta a^3 - b^3 = (a-b)(a^2 + ab + b^2):
+    V = (a^3 - b^3) * tan(alpha) / 12.
+
+  Odgovor: (D)  V = (1/12) * (a^3 - b^3) * tg(alpha).
+
+  Sanity check (numericki):
+    a=4, b=2, alpha=60°, tan=sqrt(3)≈1.7321
+    a-b = 2; (a-b)/sqrt(3) = 2/1.7321 ≈ 1.1547
+    H = 1.1547 * 1.7321 ≈ 2.0000
+    B_a = 16*sqrt(3)/4 = 4*sqrt(3) ≈ 6.9282
+    B_b = 4*sqrt(3)/4 = sqrt(3) ≈ 1.7321
+    sqrt(B_a*B_b) = sqrt(12) = 2*sqrt(3) ≈ 3.4641
+    suma = 12.1244
+    V = 2/3 * 12.1244 ≈ 8.0829
+    Formula: (a^3 - b^3) * tan / 12 = (64-8)*sqrt(3)/12 = 56*1.7321/12 ≈ 8.0832. ✓
+
+  Eliminacija drugih opcija:
+    (A) a^3*b^3*tg(alpha) — dimenziono pogresno (sesta stepen po duzini),
+    (B) (1/6)*a^2*b*tg — pogresan koeficijent, samo treci stepen ali oblik nije razlika kuba,
+    (C) (1/3)*a*b^2*tg — slicno, nema strukturu razlike kuba,
+    (E) (a^3+b^3)*tg — zbir umesto razlike, ne odgovara geometriji (V mora rasti sa a-b).
+
+  Visuals:
+    1. 3D ortogonalni prikaz zarubljene piramide sa obema osnovama, oznaceno H i alpha.
+    2. Pogled odozgo: dve koncentricne jednakostranicne trouglove (gornja unutar donje), radijalna linija od centra ka temenu, oznacena duzina (a-b)/sqrt(3).
+    3. Pravougli trougao bocne ivice: H vertikalno, (a-b)/sqrt(3) horizontalno, ugao alpha, bocna ivica kao hipotenuza.
+    4. Interaktivni 3D prikaz sa slajderima za a, b, alpha; ispisuje se H i V uzivo.
+</script>
+
+<h1 data-card="problem-title">Zapremina pravilne trostrane zarubljene piramide</h1>
+<p data-card="problem-subtitle" class="subtitle">Stereometrija — zarubljena piramida, jednakostranicni trougao, ugao bocne ivice sa osnovom</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Osnovne ivice pravilne trostrane zarubljene piramide su \( a \) i \( b \) (\( a > b \)), a bočne ivice zaklapaju sa osnovom ugao \( \alpha \). Zapremina te piramide iznosi:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">Donja osnova</span>
+      <span class="given-value">\( \triangle \) stranice \( a \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Gornja osnova</span>
+      <span class="given-value">\( \triangle \) stranice \( b \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Ugao</span>
+      <span class="given-value">\( \angle(\text{bočna ivica},\ \text{osnova}) = \alpha \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Uslov</span>
+      <span class="given-value">\( a > b > 0 \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( a^3 b^3\,\operatorname{tg}\alpha \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \dfrac{1}{6}\,a^2 b\,\operatorname{tg}\alpha \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \dfrac{1}{3}\,a b^2\,\operatorname{tg}\alpha \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \dfrac{1}{12}\,(a^3 - b^3)\,\operatorname{tg}\alpha \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( (a^3 + b^3)\,\operatorname{tg}\alpha \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Iskoristićemo simetriju pravilne piramide da preko cirkumradijusa obe osnove izračunamo horizontalnu projekciju bočne ivice, iz nje i ugla \( \alpha \) izvučemo visinu \( H \), a zatim primenimo standardnu formulu za zapreminu zarubljene piramide.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Cirkumradijus jednakostraničnog trougla</span> stranice \( s \) je \( R = \dfrac{s}{\sqrt{3}} \) (rastojanje od težišta do temena).</li>
+        <li><span class="formula-label">Površina jednakostraničnog trougla</span> stranice \( s \) je \( P = \dfrac{s^2\sqrt{3}}{4} \).</li>
+        <li><span class="formula-label">Zapremina zarubljene piramide</span> sa visinom \( H \) i osnovama površina \( B_1, B_2 \): \( V = \dfrac{H}{3}\!\left(B_1 + B_2 + \sqrt{B_1 B_2}\right) \).</li>
+        <li><span class="formula-label">Razlika kubova</span>: \( a^3 - b^3 = (a-b)(a^2 + ab + b^2) \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="3D prikaz piramide">
+  <h2>📐 3D prikaz piramide</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram3d" width="720" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Pravilna trostrana zarubljena piramida: obe osnove su jednakostranični trouglovi, gornja je homotetski smanjena donja oko zajedničke vertikalne ose. Bočna ivica \( AA' \) zaklapa ugao \( \alpha \) sa ravni osnove.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Pogled odozgo: koncentrične osnove">
+  <h2>📐 Pogled odozgo</h2>
+  <div class="canvas-wrapper">
+    <canvas id="topView" width="720" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Projekcija na ravan donje osnove: gornji trougao (stranice \( b \)) je centriran nad donjim (stranice \( a \)). Centroid \( O \) je zajednička osa. Radijalna razlika \( OA - OA' = \dfrac{a - b}{\sqrt{3}} \) je horizontalna projekcija bočne ivice.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Pravougli trougao bočne ivice">
+  <h2>📐 Pravougli trougao bočne ivice</h2>
+  <div class="canvas-wrapper">
+    <canvas id="rightTri" width="720" height="460"></canvas>
+  </div>
+  <p class="canvas-caption">Spuštanjem normale iz \( A' \) na ravan donje osnove dobijamo pravougli trougao u kojem je \( H \) suprotna ugao \( \alpha \), a horizontalna kateta jednaka radijalnoj razlici \( \dfrac{a-b}{\sqrt{3}} \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Interaktivni model — slajderi za a, b, α">
+  <h2>📐 Interaktivni model</h2>
+  <div class="canvas-wrapper">
+    <canvas id="interactive" width="720" height="520"></canvas>
+  </div>
+  <div class="canvas-controls">
+    <label>\( a \): <input type="range" id="aSlider" min="2" max="6" step="0.1" value="4"></label>
+    <label>\( b \): <input type="range" id="bSlider" min="0.5" max="3.5" step="0.1" value="2"></label>
+    <label>\( \alpha \): <input type="range" id="alphaSlider" min="20" max="80" step="1" value="55"></label>
+    <p class="note" id="readout">Pomeri klizače da vidiš kako se menjaju \( H \) i \( V \).</p>
+  </div>
+  <p class="canvas-caption">Eksperimentalno: kada \( b \to a \), telo postaje prizma i \( V \to 0 \) jer \( H \to 0 \); kada \( b \to 0 \), telo se približava punoj piramidi i formula prelazi u \( V = \dfrac{a^3\,\operatorname{tg}\alpha}{12} \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Cirkumradijusi obe osnove</h3>
+      <p>U pravilnoj zarubljenoj piramidi obe osnove su pravilni trouglovi sa zajedničkim centrom (težištem) na istoj vertikalnoj osi. Težište jednakostraničnog trougla stranice \( s \) je udaljeno \( s/\sqrt{3} \) od svakog temena.</p>
+      <div class="math-block">\[ R_a = \frac{a}{\sqrt{3}}, \qquad R_b = \frac{b}{\sqrt{3}}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( R = s/\sqrt{3} \), a ne \( s\sqrt{3}/2 \)?</summary>
+          <div class="detail-content"><p>\( s\sqrt{3}/2 \) je <em>visina</em> jednakostraničnog trougla. Težište deli visinu u odnosu \( 2{:}1 \) (od temena), pa je rastojanje težišta od temena \( \frac{2}{3}\cdot\frac{s\sqrt{3}}{2} = \frac{s}{\sqrt{3}} \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Horizontalna projekcija bočne ivice</h3>
+      <p>Donje teme \( A \) i njegovo gornje korespondentno teme \( A' \) leže na istom radijalnom pravcu kroz osu \( O \). Horizontalna projekcija duži \( AA' \) je razlika njihovih udaljenosti od ose:</p>
+      <div class="math-block">\[ d = R_a - R_b = \frac{a - b}{\sqrt{3}}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( a > b \) bitno?</summary>
+          <div class="detail-content"><p>Da bi \( d > 0 \), tj. da bi bočna ivica zaista bila kosa (a ne vertikalna prizma). Slučaj \( a = b \) daje prizmu, a \( a < b \) bi značilo da se telo „širi“ naviše, što nije slučaj zarubljene piramide.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Visina piramide preko ugla \( \alpha \)</h3>
+      <p>Pravougli trougao formiran bočnom ivicom, njenom horizontalnom projekcijom \( d \) i visinom \( H \) ima ugao \( \alpha \) između bočne ivice i osnove. Tangens:</p>
+      <div class="math-block">\[ \operatorname{tg}\alpha = \frac{H}{d} \;\Longrightarrow\; H = d\,\operatorname{tg}\alpha = \frac{a - b}{\sqrt{3}}\,\operatorname{tg}\alpha. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Površine osnova</h3>
+      <p>Za jednakostraničan trougao stranice \( s \) važi \( P = \dfrac{s^2\sqrt{3}}{4} \), pa:</p>
+      <div class="math-block">\[ B_a = \frac{a^2\sqrt{3}}{4}, \qquad B_b = \frac{b^2\sqrt{3}}{4}, \qquad \sqrt{B_a B_b} = \frac{ab\sqrt{3}}{4}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Zapremina po opštoj formuli</h3>
+      <p>Primenjujemo \( V = \dfrac{H}{3}(B_a + B_b + \sqrt{B_a B_b}) \). Izvlačimo zajednički faktor \( \dfrac{\sqrt{3}}{4} \):</p>
+      <div class="math-block">\[ V = \frac{H}{3}\cdot\frac{\sqrt{3}}{4}\,(a^2 + b^2 + ab). \]</div>
+      <p>Zamena \( H = \dfrac{(a-b)\,\operatorname{tg}\alpha}{\sqrt{3}} \):</p>
+      <div class="math-block">\[ V = \frac{1}{3}\cdot\frac{(a-b)\,\operatorname{tg}\alpha}{\sqrt{3}}\cdot\frac{\sqrt{3}}{4}\,(a^2 + ab + b^2) = \frac{(a - b)(a^2 + ab + b^2)\,\operatorname{tg}\alpha}{12}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Razlika kubova — kompaktan oblik</h3>
+      <p>Identitet \( a^3 - b^3 = (a - b)(a^2 + ab + b^2) \) sažima rezultat:</p>
+      <div class="math-block">\[ \boxed{\;V = \frac{1}{12}\,(a^3 - b^3)\,\operatorname{tg}\alpha\;} \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: brojni primer (\(a = 4,\ b = 2,\ \alpha = 60^\circ\)).</summary>
+          <div class="detail-content"><p>\( a^3 - b^3 = 64 - 8 = 56 \), \( \operatorname{tg}60^\circ = \sqrt{3} \approx 1{,}732 \). Tada \( V = \dfrac{56\sqrt{3}}{12} = \dfrac{14\sqrt{3}}{3}\approx 8{,}083 \). Direktna provera preko \( H \approx 2{,}000 \) i \( B_a + B_b + \sqrt{B_a B_b}\approx 12{,}124 \) daje istu vrednost.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Dve duboke veze nam štede vreme: (1) <em>simetrija</em> — pravilna zarubljena piramida deli osu sa težištima obe osnove, pa horizontalna projekcija bočne ivice mora biti razlika cirkumradijusa; (2) <em>algebarski identitet</em> \( a^3 - b^3 = (a-b)(a^2 + ab + b^2) \) — taj trinom \( a^2 + ab + b^2 \) je upravo kombinacija koja izlazi iz formule \( B_a + B_b + \sqrt{B_a B_b} \) za jednakostranične osnove. Geometrija i algebra se ovde savršeno poklapaju.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ V = \dfrac{1}{12}\,(a^3 - b^3)\,\operatorname{tg}\alpha \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( a^3 b^3\,\operatorname{tg}\alpha \)</span>
+    <span class="answer-option" data-option="B">(B) \( \dfrac{1}{6}\,a^2 b\,\operatorname{tg}\alpha \)</span>
+    <span class="answer-option" data-option="C">(C) \( \dfrac{1}{3}\,a b^2\,\operatorname{tg}\alpha \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( \dfrac{1}{12}\,(a^3 - b^3)\,\operatorname{tg}\alpha \)</span>
+    <span class="answer-option" data-option="E">(E) \( (a^3 + b^3)\,\operatorname{tg}\alpha \)</span>
+  </div>
+  <p class="verification">Provera dimenzija: \( [a^3] = \mathrm{m^3} \), \( \operatorname{tg}\alpha \) je bezdimenziono, pa je \( [V] = \mathrm{m^3} \) — tačno. Granični slučajevi: \( b \to a \) daje \( V \to 0 \) (degenerisana prizma sa \( H = 0 \)), a \( b \to 0 \) daje \( V \to \dfrac{a^3\,\operatorname{tg}\alpha}{12} \), što odgovara punoj piramidi visine \( H = \dfrac{a\,\operatorname{tg}\alpha}{\sqrt{3}} \) i osnove \( \dfrac{a^2\sqrt{3}}{4} \). Opcije (A) i (E) eliminišemo i dimenziono i strukturno (zbir kubova ne raste sa \( a - b \)).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Mešanje cirkumradijusa \( R = s/\sqrt{3} \) sa apotem (poluradijus upisanog kruga) \( r = s/(2\sqrt{3}) \). Bočna ivica spaja temena, pa nam treba \( R \), ne \( r \).</li>
+    <li>Pretpostavka da je ugao \( \alpha \) izmedju bočne <strong>strane</strong> (četvorougla) i osnove. Tu bi se umesto \( R \) pojavio apotem, a rezultat bi imao drugačiji koeficijent.</li>
+    <li>Zaboravljanje srednjeg člana \( \sqrt{B_a B_b} \) u formuli za zapreminu zarubljene piramide. Bez njega bi se gubio identitet razlike kubova.</li>
+    <li>Pisanje rezultata u obliku \( \dfrac{(a-b)(a^2 + ab + b^2)}{12}\,\operatorname{tg}\alpha \) i ne prepoznavanje da je to upravo opcija (D).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Pretpostavi sada da je dat ugao \( \beta \) između <em>bočne strane</em> (trapezne stranice) i ravni osnove (umesto ugla \( \alpha \) između bočne ivice i osnove). Izvedi formulu za visinu \( H(\beta) \) i zapreminu \( V(\beta) \). Da li dobijaš isti algebarski oblik \( (a^3 - b^3) \) ili neki drugi?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Sada nam treba apotem (rastojanje od težišta do stranice trougla): \( r = \dfrac{s}{2\sqrt{3}} \). Razlika apotema je \( \dfrac{a - b}{2\sqrt{3}} \). Tada \( H = \dfrac{a - b}{2\sqrt{3}}\,\operatorname{tg}\beta \), pa zapremina postaje \( V = \dfrac{(a^3 - b^3)\,\operatorname{tg}\beta}{24} \). Ista struktura razlike kubova, samo upola manji koeficijent — naporedi sa originalnom formulom!</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram3d');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  // Draw a static 3D oblique projection of the truncated pyramid
+  function project(x, y, z) {
+    // Simple cabinet projection: x' = x + 0.5*y*cos(30), y' = z + 0.5*y*sin(30)
+    var cos30 = Math.cos(Math.PI / 6);
+    var sin30 = Math.sin(Math.PI / 6);
+    return { x: x + 0.5 * y * cos30, y: z + 0.5 * y * sin30 };
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var grid      = cv('--sol-canvas-grid');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Pyramid parameters in 3D math coords
+    var a = 4;     // bottom side
+    var b = 2.2;   // top side
+    var H = 3.2;   // height
+
+    // Equilateral triangle vertices, centered at origin, side s, lying in z = z0
+    function triangle(s, z0) {
+      var R = s / Math.sqrt(3);
+      // Three vertices at angles 90°, 210°, 330°
+      var verts = [];
+      for (var i = 0; i < 3; i++) {
+        var ang = Math.PI / 2 + i * 2 * Math.PI / 3;
+        verts.push({ x: R * Math.cos(ang), y: R * Math.sin(ang), z: z0 });
+      }
+      return verts;
+    }
+
+    var bottom = triangle(a, 0);
+    var top    = triangle(b, H);
+
+    // Map math coords -> canvas pixels
+    var cx = canvas.width / 2;
+    var cy = canvas.height / 2 + 80;
+    var scale = 60;
+
+    function p(v) {
+      var pr = project(v.x, v.y, v.z);
+      return { x: cx + pr.x * scale, y: cy - pr.y * scale };
+    }
+
+    var pb = bottom.map(p);
+    var pt = top.map(p);
+
+    // Bottom face (filled, slightly transparent)
+    ctx.beginPath();
+    ctx.moveTo(pb[0].x, pb[0].y);
+    ctx.lineTo(pb[1].x, pb[1].y);
+    ctx.lineTo(pb[2].x, pb[2].y);
+    ctx.closePath();
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.12);
+    ctx.fill();
+
+    // Lateral faces (3 trapezia)
+    for (var i = 0; i < 3; i++) {
+      var j = (i + 1) % 3;
+      ctx.beginPath();
+      ctx.moveTo(pb[i].x, pb[i].y);
+      ctx.lineTo(pb[j].x, pb[j].y);
+      ctx.lineTo(pt[j].x, pt[j].y);
+      ctx.lineTo(pt[i].x, pt[i].y);
+      ctx.closePath();
+      ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.10);
+      ctx.fill();
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+
+    // Top face (filled)
+    ctx.beginPath();
+    ctx.moveTo(pt[0].x, pt[0].y);
+    ctx.lineTo(pt[1].x, pt[1].y);
+    ctx.lineTo(pt[2].x, pt[2].y);
+    ctx.closePath();
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.18);
+    ctx.fill();
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Bottom outline (on top, so it's visible)
+    ctx.beginPath();
+    ctx.moveTo(pb[0].x, pb[0].y);
+    ctx.lineTo(pb[1].x, pb[1].y);
+    ctx.lineTo(pb[2].x, pb[2].y);
+    ctx.closePath();
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Highlight one lateral edge (vertex 0 -> top vertex 0)
+    ctx.beginPath();
+    ctx.moveTo(pb[0].x, pb[0].y);
+    ctx.lineTo(pt[0].x, pt[0].y);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // Vertical axis through centroid
+    var ob = p({ x: 0, y: 0, z: 0 });
+    var ot = p({ x: 0, y: 0, z: H });
+    ctx.beginPath();
+    ctx.setLineDash([5, 4]);
+    ctx.moveTo(ob.x, ob.y);
+    ctx.lineTo(ot.x, ot.y);
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Horizontal projection segment from O to A (vertex 0 of bottom)
+    ctx.beginPath();
+    ctx.setLineDash([4, 3]);
+    ctx.moveTo(ob.x, ob.y);
+    ctx.lineTo(pb[0].x, pb[0].y);
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Vertical from A' down to its projection on the bottom plane (which lies along OA at distance R_b)
+    var proj_top0 = p({ x: top[0].x, y: top[0].y, z: 0 });
+    ctx.beginPath();
+    ctx.setLineDash([3, 3]);
+    ctx.moveTo(pt[0].x, pt[0].y);
+    ctx.lineTo(proj_top0.x, proj_top0.y);
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 1.2;
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Labels
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillStyle = primary;
+    ctx.fillText('A', pb[0].x - 18, pb[0].y + 6);
+    ctx.fillText('B', pb[1].x + 8, pb[1].y + 16);
+    ctx.fillText('C', pb[2].x + 8, pb[2].y + 16);
+    ctx.fillStyle = accent;
+    ctx.fillText("A'", pt[0].x - 22, pt[0].y - 4);
+    ctx.fillText("B'", pt[1].x + 6, pt[1].y - 6);
+    ctx.fillText("C'", pt[2].x + 6, pt[2].y - 6);
+
+    // Side length labels
+    ctx.font = '14px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    var midBC = { x: (pb[1].x + pb[2].x) / 2, y: (pb[1].y + pb[2].y) / 2 };
+    ctx.fillText('a', midBC.x + 8, midBC.y + 22);
+    var midBCt = { x: (pt[1].x + pt[2].x) / 2, y: (pt[1].y + pt[2].y) / 2 };
+    ctx.fillText('b', midBCt.x + 6, midBCt.y - 8);
+
+    // H label on the axis
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 15px Inter, system-ui, sans-serif';
+    ctx.fillText('H', (ob.x + ot.x) / 2 - 18, (ob.y + ot.y) / 2);
+
+    // alpha angle arc at A
+    var Apx = pb[0];
+    var Apr = pt[0];
+    var dx = Apr.x - Apx.x;
+    var dy = Apr.y - Apx.y;
+    var ang = Math.atan2(dy, dx);
+    ctx.beginPath();
+    ctx.arc(Apx.x, Apx.y, 28, ang, 0, false);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = highlight;
+    ctx.font = 'italic bold 14px Inter, system-ui, sans-serif';
+    ctx.fillText('α', Apx.x + 30, Apx.y - 6);
+
+    // Title
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.fillText('Pravilna trostrana zarubljena piramida', 30, 30);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Ružičasta: bočna ivica AA′  •  Zelena: gornja osnova  •  Plava: donja osnova', 30, 50);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('topView');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var grid      = cv('--sol-canvas-grid');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var cx = canvas.width / 2;
+    var cy = canvas.height / 2 + 20;
+    var scale = 60;
+
+    function tri(s) {
+      var R = s / Math.sqrt(3);
+      var verts = [];
+      for (var i = 0; i < 3; i++) {
+        var ang = Math.PI / 2 + i * 2 * Math.PI / 3;
+        verts.push({ x: cx + R * Math.cos(ang) * scale, y: cy - R * Math.sin(ang) * scale });
+      }
+      return verts;
+    }
+
+    var a = 4;
+    var b = 2.2;
+    var bottom = tri(a);
+    var top    = tri(b);
+
+    // Axes through O for orientation
+    ctx.beginPath();
+    ctx.moveTo(cx - 220, cy);
+    ctx.lineTo(cx + 220, cy);
+    ctx.moveTo(cx, cy - 220);
+    ctx.lineTo(cx, cy + 220);
+    ctx.strokeStyle = grid;
+    ctx.setLineDash([3, 3]);
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Bottom triangle (filled, primary)
+    ctx.beginPath();
+    ctx.moveTo(bottom[0].x, bottom[0].y);
+    ctx.lineTo(bottom[1].x, bottom[1].y);
+    ctx.lineTo(bottom[2].x, bottom[2].y);
+    ctx.closePath();
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.10);
+    ctx.fill();
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Top triangle (filled, accent)
+    ctx.beginPath();
+    ctx.moveTo(top[0].x, top[0].y);
+    ctx.lineTo(top[1].x, top[1].y);
+    ctx.lineTo(top[2].x, top[2].y);
+    ctx.closePath();
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.20);
+    ctx.fill();
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Radial line from O to A (vertex 0 of bottom)
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(bottom[0].x, bottom[0].y);
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Mark R_b on the same radial line (top vertex 0 sits along this line, between O and A)
+    // Highlight the segment from top vertex to bottom vertex (this is (a-b)/sqrt(3))
+    ctx.beginPath();
+    ctx.moveTo(top[0].x, top[0].y);
+    ctx.lineTo(bottom[0].x, bottom[0].y);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 4;
+    ctx.stroke();
+
+    // Center dot
+    ctx.beginPath();
+    ctx.arc(cx, cy, 4, 0, 2 * Math.PI);
+    ctx.fillStyle = text;
+    ctx.fill();
+
+    // Vertex dots
+    ctx.fillStyle = primary;
+    bottom.forEach(function(v) {
+      ctx.beginPath();
+      ctx.arc(v.x, v.y, 4, 0, 2 * Math.PI);
+      ctx.fill();
+    });
+    ctx.fillStyle = accent;
+    top.forEach(function(v) {
+      ctx.beginPath();
+      ctx.arc(v.x, v.y, 4, 0, 2 * Math.PI);
+      ctx.fill();
+    });
+
+    // Labels
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.fillText('O', cx + 8, cy + 16);
+    ctx.fillStyle = primary;
+    ctx.fillText('A', bottom[0].x - 16, bottom[0].y - 8);
+    ctx.fillText('B', bottom[1].x + 8, bottom[1].y + 16);
+    ctx.fillText('C', bottom[2].x - 24, bottom[2].y + 16);
+    ctx.fillStyle = accent;
+    ctx.fillText("A'", top[0].x + 6, top[0].y - 6);
+    ctx.fillText("B'", top[1].x + 6, top[1].y + 16);
+    ctx.fillText("C'", top[2].x - 24, top[2].y + 16);
+
+    // R_a label along OA (mid)
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = secondary;
+    var midOA = { x: (cx + top[0].x) / 2 + 12, y: (cy + top[0].y) / 2 };
+    ctx.fillText('R_b = b/√3', midOA.x, midOA.y);
+
+    // Highlight segment label
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    var midSeg = { x: (top[0].x + bottom[0].x) / 2 + 14, y: (top[0].y + bottom[0].y) / 2 };
+    ctx.fillText('(a − b)/√3', midSeg.x, midSeg.y);
+
+    // Title and legend
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.fillText('Pogled odozgo: dve koncentrične jednakostranične osnove', 30, 30);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Ružičasti segment: horizontalna projekcija bočne ivice AA′', 30, 50);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('rightTri');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var grid      = cv('--sol-canvas-grid');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Right triangle: horizontal leg = d, vertical leg = H, hypotenuse = lateral edge l
+    var Ax = 160, Ay = 360; // bottom-left vertex (A)
+    var Bx = 540, By = 360; // bottom-right (foot of perpendicular from A')
+    var Tx = 540, Ty = 130; // top-right (A' projected? No: A' is above the projection)
+    // We'll have: A at bottom-left, the projection of A' onto bottom plane at bottom-right (call it A''), and A' above A''.
+    // d = horizontal leg, H = vertical leg, l = hypotenuse from A to A'.
+
+    // Triangle fill
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay);
+    ctx.lineTo(Bx, By);
+    ctx.lineTo(Tx, Ty);
+    ctx.closePath();
+    ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.10);
+    ctx.fill();
+
+    // Horizontal leg (d)
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay);
+    ctx.lineTo(Bx, By);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // Vertical leg (H)
+    ctx.beginPath();
+    ctx.moveTo(Bx, By);
+    ctx.lineTo(Tx, Ty);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // Hypotenuse (lateral edge)
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay);
+    ctx.lineTo(Tx, Ty);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // Right-angle box at B
+    ctx.beginPath();
+    ctx.rect(Bx - 16, By - 16, 16, 16);
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // alpha angle at A
+    ctx.beginPath();
+    ctx.arc(Ax, Ay, 36, -Math.atan2(Ty - Ay, Tx - Ax), 0, false);
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Vertices
+    ctx.fillStyle = primary;
+    [{ x: Ax, y: Ay }, { x: Bx, y: By }, { x: Tx, y: Ty }].forEach(function(p) {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 5, 0, 2 * Math.PI);
+      ctx.fill();
+    });
+
+    // Labels
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.fillText('A', Ax - 22, Ay + 6);
+    ctx.fillText('A″', Bx + 8, By + 22);
+    ctx.fillStyle = accent;
+    ctx.fillText("A'", Tx + 8, Ty - 4);
+
+    // Leg labels
+    ctx.font = 'italic 16px Inter, system-ui, sans-serif';
+    ctx.fillStyle = primary;
+    ctx.fillText('d = (a − b)/√3', (Ax + Bx) / 2 - 60, By + 30);
+    ctx.fillStyle = accent;
+    ctx.fillText('H', Bx + 18, (By + Ty) / 2);
+    ctx.fillStyle = highlight;
+    ctx.fillText('bočna ivica  l', (Ax + Tx) / 2 - 100, (Ay + Ty) / 2 - 12);
+
+    // alpha label
+    ctx.fillStyle = warning;
+    ctx.font = 'italic bold 18px Inter, system-ui, sans-serif';
+    ctx.fillText('α', Ax + 44, Ay - 8);
+
+    // Title and formula
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.fillText('Pravougli trougao bočne ivice', 30, 30);
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText("tan α = H / d  ⟹  H = d · tan α = (a − b)/√3 · tan α", 30, 52);
+
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('A″ = projekcija temena A′ na ravan donje osnove (vertikalno ispod A′)', 30, 75);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('interactive');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  var aSlider = document.getElementById('aSlider');
+  var bSlider = document.getElementById('bSlider');
+  var alphaSlider = document.getElementById('alphaSlider');
+  var readout = document.getElementById('readout');
+
+  function project(x, y, z) {
+    var cos30 = Math.cos(Math.PI / 6);
+    var sin30 = Math.sin(Math.PI / 6);
+    return { x: x + 0.5 * y * cos30, y: z + 0.5 * y * sin30 };
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var a = parseFloat(aSlider.value);
+    var b = parseFloat(bSlider.value);
+    var alphaDeg = parseFloat(alphaSlider.value);
+    if (b >= a) {
+      b = a - 0.1;
+      bSlider.value = b.toFixed(1);
+    }
+    var alpha = alphaDeg * Math.PI / 180;
+    var d = (a - b) / Math.sqrt(3);
+    var H = d * Math.tan(alpha);
+
+    var V = (Math.pow(a, 3) - Math.pow(b, 3)) * Math.tan(alpha) / 12;
+
+    function triangle(s, z0) {
+      var R = s / Math.sqrt(3);
+      var verts = [];
+      for (var i = 0; i < 3; i++) {
+        var ang = Math.PI / 2 + i * 2 * Math.PI / 3;
+        verts.push({ x: R * Math.cos(ang), y: R * Math.sin(ang), z: z0 });
+      }
+      return verts;
+    }
+
+    var bottom = triangle(a, 0);
+    var top    = triangle(b, H);
+
+    var cx = canvas.width / 2;
+    var cy = canvas.height / 2 + 110;
+    var scale = 50;
+
+    function p(v) {
+      var pr = project(v.x, v.y, v.z);
+      return { x: cx + pr.x * scale, y: cy - pr.y * scale };
+    }
+
+    var pb = bottom.map(p);
+    var pt = top.map(p);
+
+    // Bottom face fill
+    ctx.beginPath();
+    ctx.moveTo(pb[0].x, pb[0].y);
+    ctx.lineTo(pb[1].x, pb[1].y);
+    ctx.lineTo(pb[2].x, pb[2].y);
+    ctx.closePath();
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.10);
+    ctx.fill();
+
+    // Lateral faces
+    for (var i = 0; i < 3; i++) {
+      var j = (i + 1) % 3;
+      ctx.beginPath();
+      ctx.moveTo(pb[i].x, pb[i].y);
+      ctx.lineTo(pb[j].x, pb[j].y);
+      ctx.lineTo(pt[j].x, pt[j].y);
+      ctx.lineTo(pt[i].x, pt[i].y);
+      ctx.closePath();
+      ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.10);
+      ctx.fill();
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+
+    // Top face
+    ctx.beginPath();
+    ctx.moveTo(pt[0].x, pt[0].y);
+    ctx.lineTo(pt[1].x, pt[1].y);
+    ctx.lineTo(pt[2].x, pt[2].y);
+    ctx.closePath();
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.20);
+    ctx.fill();
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Bottom outline
+    ctx.beginPath();
+    ctx.moveTo(pb[0].x, pb[0].y);
+    ctx.lineTo(pb[1].x, pb[1].y);
+    ctx.lineTo(pb[2].x, pb[2].y);
+    ctx.closePath();
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Highlight one lateral edge
+    ctx.beginPath();
+    ctx.moveTo(pb[0].x, pb[0].y);
+    ctx.lineTo(pt[0].x, pt[0].y);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // Axis
+    var ob = p({ x: 0, y: 0, z: 0 });
+    var ot = p({ x: 0, y: 0, z: H });
+    ctx.beginPath();
+    ctx.setLineDash([5, 4]);
+    ctx.moveTo(ob.x, ob.y);
+    ctx.lineTo(ot.x, ot.y);
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Labels
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.fillStyle = primary;
+    ctx.fillText('A', pb[0].x - 16, pb[0].y + 6);
+    ctx.fillStyle = accent;
+    ctx.fillText("A'", pt[0].x - 18, pt[0].y - 4);
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 13px Inter, system-ui, sans-serif';
+    ctx.fillText('H', (ob.x + ot.x) / 2 - 14, (ob.y + ot.y) / 2);
+
+    // Numerical readout box
+    ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.15);
+    ctx.fillRect(20, 20, 320, 100);
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(20, 20, 320, 100);
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.fillText('Trenutni parametri', 32, 42);
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.fillText('a = ' + a.toFixed(2) + ',  b = ' + b.toFixed(2) + ',  α = ' + alphaDeg.toFixed(0) + '°', 32, 62);
+    ctx.fillText('d = (a−b)/√3 = ' + d.toFixed(3), 32, 80);
+    ctx.fillText('H = d · tan α = ' + H.toFixed(3), 32, 96);
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillText('V = (a³ − b³) · tan α / 12 = ' + V.toFixed(3), 32, 114);
+
+    // Update readout below
+    if (readout) {
+      readout.innerHTML = '<strong>Visina:</strong> H = ' + H.toFixed(3) + '  •  <strong>Zapremina:</strong> V = ' + V.toFixed(3);
+    }
+  }
+
+  draw();
+
+  aSlider.addEventListener('input', draw);
+  bSlider.addEventListener('input', draw);
+  alphaSlider.addEventListener('input', draw);
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Zapremina pravilne trostrane zarubljene piramide preko ugla bočne ivice",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["stereometrija", "zarubljena piramida", "jednakostranicni trougao", "ugao bocne ivice", "razlika kubova"]
+}
+BRAINSPARK_META-->

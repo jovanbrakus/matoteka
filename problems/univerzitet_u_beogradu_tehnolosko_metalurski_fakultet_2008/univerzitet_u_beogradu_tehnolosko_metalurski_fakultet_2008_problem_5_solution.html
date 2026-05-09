@@ -1,0 +1,390 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Problem: f(x) = sqrt(x+1), g(x) = 4x - 1. Naci f(g(5/4)) + g(f(5/4)).
+
+1) Unutrasnji deo prve kompozicije: g(5/4) = 4*(5/4) - 1 = 5 - 1 = 4.
+   Spoljni: f(4) = sqrt(4+1) = sqrt(5).
+
+2) Unutrasnji deo druge kompozicije: f(5/4) = sqrt(5/4 + 1) = sqrt(9/4) = 3/2.
+   Spoljni: g(3/2) = 4*(3/2) - 1 = 6 - 1 = 5.
+
+Zbir: sqrt(5) + 5 = 5 + sqrt(5).
+
+Domeni: f zahteva x + 1 >= 0, tj. x >= -1. Za x = 5/4 OK; takodje za g(5/4) = 4 OK.
+
+Tacan odgovor: (C) 5 + sqrt(5).
+
+Vizuelni prikaz: dijagram toka u dva kanala. Gornji: 5/4 -> g -> 4 -> f -> sqrt(5). Donji: 5/4 -> f -> 3/2 -> g -> 5. Pa znak + i rezultat 5 + sqrt(5).
+Staticki canvas, dovoljno visine za naslov i racune.
+
+Provera: f∘g i g∘f generalno NISU jednake — ovde dobijamo razlicite medjuvrednosti, ali zbir je tacno 5 + sqrt(5) ≈ 5 + 2,236 = 7,236.
+
+Eliminacija opcija:
+(A) 5 - sqrt(5) ≈ 2,76 — pogresan znak.
+(B) 2*sqrt(5) ≈ 4,47.
+(D) 10.
+(E) 7/2 = 3,5.
+(C) ≈ 7,236 — odgovara nasem racunu.
+</script>
+
+<h1 data-card="problem-title">Kompozicije \( f \circ g \) i \( g \circ f \): zbir vrednosti</h1>
+<p data-card="problem-subtitle" class="subtitle">Računanje sa korenom i linearnom funkcijom; \( f \circ g \neq g \circ f \).</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Ako je \( f(x) = \sqrt{x+1} \) i \( g(x) = 4x - 1 \), onda je zbir</p>
+  <div class="math-block">\[ f\!\left(g\!\left(\tfrac{5}{4}\right)\right) + g\!\left(f\!\left(\tfrac{5}{4}\right)\right) \]</div>
+  <p>jednak:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">\( f(x) \)</span>
+      <span class="given-value">\( \sqrt{x+1} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">\( g(x) \)</span>
+      <span class="given-value">\( 4x - 1 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Argument</span>
+      <span class="given-value">\( x = \tfrac{5}{4} \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 5 - \sqrt{5} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 2\sqrt{5} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 5 + \sqrt{5} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 10 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \dfrac{7}{2} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Računamo dve kompozicije nezavisno: prvo \( g \) pa \( f \) na argumentu \( \tfrac{5}{4} \), pa zatim \( f \) pa \( g \). Pravilo „iznutra ka spolja": vrednost unutrašnje funkcije postaje argument spoljne. Na kraju saberemo rezultate.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Kompozicija funkcija</summary>
+    <div class="detail-content">
+      <ul>
+        <li>Kompozicija \( (f \circ g)(x) = f(g(x)) \): prvo se primeni \( g \), pa onda \( f \) na rezultat.</li>
+        <li>Generalno <strong>nije</strong> komutativna: \( f \circ g \neq g \circ f \).</li>
+        <li>Da bi \( f(g(x)) \) postojalo, vrednost \( g(x) \) mora biti u domenu od \( f \). Za \( f(x) = \sqrt{x+1} \) potrebno je \( x + 1 \geq 0 \), tj. \( x \geq -1 \).</li>
+        <li>Za \( g(x) = 4x - 1 \) domen i kodomen su \( \mathbb{R} \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz toka kompozicija">
+  <h2>📐 Vizuelni prikaz toka kompozicija</h2>
+  <div class="canvas-wrapper">
+    <canvas id="flow" width="780" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Dva paralelna kanala: gornji prati \( f(g(\tfrac{5}{4})) \), donji prati \( g(f(\tfrac{5}{4})) \). Vrednosti se na kraju sabiraju u \( 5 + \sqrt{5} \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo \( g\!\left(\tfrac{5}{4}\right) \)</h3>
+      <p>Direktno uvrštavamo u linearnu funkciju \( g(x) = 4x - 1 \).</p>
+      <div class="math-block">\[ g\!\left(\tfrac{5}{4}\right) = 4 \cdot \tfrac{5}{4} - 1 = 5 - 1 = 4. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Spoljna funkcija: \( f \) primenjena na \( 4 \)</h3>
+      <p>Sad rezultat ulazi u \( f(x) = \sqrt{x+1} \).</p>
+      <div class="math-block">\[ f\!\left(g\!\left(\tfrac{5}{4}\right)\right) = f(4) = \sqrt{4 + 1} = \sqrt{5}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto smemo da računamo \( f(4) \)?</summary>
+          <div class="detail-content"><p>Domen od \( f \) je \( x \geq -1 \), a \( 4 \geq -1 \), pa je \( f(4) \) definisano.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo \( f\!\left(\tfrac{5}{4}\right) \)</h3>
+      <p>Sad startujemo drugu kompoziciju iznutra. Pod korenom je \( \tfrac{5}{4} + 1 = \tfrac{9}{4} \).</p>
+      <div class="math-block">\[ f\!\left(\tfrac{5}{4}\right) = \sqrt{\tfrac{5}{4} + 1} = \sqrt{\tfrac{9}{4}} = \tfrac{3}{2}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto \( \sqrt{\tfrac{9}{4}} = \tfrac{3}{2} \), a ne \( \pm\tfrac{3}{2} \)?</summary>
+          <div class="detail-content"><p>Funkcija \( \sqrt{\,\cdot\,} \) označava aritmetički (nenegativni) koren. Daje samo nenegativnu vrednost.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Spoljna funkcija: \( g \) primenjena na \( \tfrac{3}{2} \)</h3>
+      <p>Linearna funkcija na rezultat prethodnog koraka:</p>
+      <div class="math-block">\[ g\!\left(f\!\left(\tfrac{5}{4}\right)\right) = g\!\left(\tfrac{3}{2}\right) = 4 \cdot \tfrac{3}{2} - 1 = 6 - 1 = 5. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Sabiramo dva rezultata</h3>
+      <p>Konačno spajamo dve kompozicije:</p>
+      <div class="math-block">\[ f(g(\tfrac{5}{4})) + g(f(\tfrac{5}{4})) = \sqrt{5} + 5 = 5 + \sqrt{5}. \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Vrednost \( x = \tfrac{5}{4} \) je <em>pažljivo izabrana</em>: \( g \) ga „uljepšava" u celi broj \( 4 \) (jer ukida razlomak \( \tfrac{5}{4} \)), dok ga \( f \) pretvara u racionalan broj \( \tfrac{3}{2} \) (jer \( \tfrac{5}{4} + 1 = \tfrac{9}{4} \) je kvadrat racionalnog broja). Bez ova dva „srećna" izbora računi sa korenom bili bi mnogo neugodniji.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ f\!\left(g\!\left(\tfrac{5}{4}\right)\right) + g\!\left(f\!\left(\tfrac{5}{4}\right)\right) = \sqrt{5} + 5 = 5 + \sqrt{5}. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 5 - \sqrt{5} \)</span>
+    <span class="answer-option" data-option="B">(B) \( 2\sqrt{5} \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( 5 + \sqrt{5} \)</span>
+    <span class="answer-option" data-option="D">(D) \( 10 \)</span>
+    <span class="answer-option" data-option="E">(E) \( \dfrac{7}{2} \)</span>
+  </div>
+  <p class="verification">Numerička provera: \( \sqrt{5} \approx 2{,}236 \), pa je zbir \( \approx 7{,}236 \). Opcija (B) \( 2\sqrt{5} \approx 4{,}47 \) i (E) \( 3{,}5 \) su premale; (D) \( 10 \) je prevelika; (A) \( \approx 2{,}76 \) ima pogrešan znak. Ostaje (C).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pretpostavka da je \( f \circ g = g \circ f \) i računanje samo jedne kompozicije pa udvostručavanje rezultata. Kompozicija nije komutativna.</li>
+    <li>Greška u smeru: računati \( f(\tfrac{5}{4}) \) pa to upisati u \( f \) umesto u \( g \). Pravilo je: <em>spoljna funkcija deluje na vrednost unutrašnje</em>.</li>
+    <li>Pisanje \( \sqrt{\tfrac{9}{4}} = \tfrac{9}{2} \) ili \( \tfrac{3}{4} \). Tačno je \( \tfrac{\sqrt{9}}{\sqrt{4}} = \tfrac{3}{2} \).</li>
+    <li>Mešanje: \( g(\tfrac{5}{4}) = 4 \cdot \tfrac{5}{4} - 1 = 4 \), a ne \( 4 \cdot \tfrac{5}{4} \cdot (-1) \). Linearna funkcija je \( 4x - 1 \), ne \( 4x \cdot (-1) \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Za koje vrednosti \( x \) je \( f(g(x)) = g(f(x)) \), tj. kada se dve kompozicije slažu? Reši jednačinu i opiši geometrijski značaj rešenja.</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Iz \( f(g(x)) = \sqrt{4x} = 2\sqrt{x} \) (uz uslov \( x \geq 0 \)) i \( g(f(x)) = 4\sqrt{x+1} - 1 \), traži se \( 2\sqrt{x} = 4\sqrt{x+1} - 1 \). Nakon kvadriranja i sređivanja dobija se kvadratna jednačina po \( \sqrt{x} \). Geometrijski: to su \( x \)-koordinate preseka grafika dve kompozicije.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('flow');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function drawNode(cx, cy, w, h, fill, stroke, label, labelColor) {
+    ctx.fillStyle = fill;
+    ctx.strokeStyle = stroke;
+    ctx.lineWidth = 2;
+    var r = 14;
+    ctx.beginPath();
+    ctx.moveTo(cx - w/2 + r, cy - h/2);
+    ctx.lineTo(cx + w/2 - r, cy - h/2);
+    ctx.quadraticCurveTo(cx + w/2, cy - h/2, cx + w/2, cy - h/2 + r);
+    ctx.lineTo(cx + w/2, cy + h/2 - r);
+    ctx.quadraticCurveTo(cx + w/2, cy + h/2, cx + w/2 - r, cy + h/2);
+    ctx.lineTo(cx - w/2 + r, cy + h/2);
+    ctx.quadraticCurveTo(cx - w/2, cy + h/2, cx - w/2, cy + h/2 - r);
+    ctx.lineTo(cx - w/2, cy - h/2 + r);
+    ctx.quadraticCurveTo(cx - w/2, cy - h/2, cx - w/2 + r, cy - h/2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = labelColor;
+    ctx.font = 'bold 16px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, cx, cy);
+  }
+
+  function drawArrow(x0, y0, x1, y1, color, midLabel) {
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+    ctx.lineTo(x1, y1);
+    ctx.stroke();
+    var ang = Math.atan2(y1 - y0, x1 - x0);
+    var ah = 10;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x1 - ah * Math.cos(ang - 0.4), y1 - ah * Math.sin(ang - 0.4));
+    ctx.lineTo(x1 - ah * Math.cos(ang + 0.4), y1 - ah * Math.sin(ang + 0.4));
+    ctx.closePath();
+    ctx.fill();
+    if (midLabel) {
+      var mx = (x0 + x1) / 2;
+      var my = (y0 + y1) / 2 - 14;
+      ctx.font = 'bold 13px Inter, system-ui';
+      var tw = ctx.measureText(midLabel).width + 14;
+      ctx.fillStyle = cv('--sol-canvas-bg');
+      ctx.fillRect(mx - tw / 2, my - 11, tw, 22);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(mx - tw / 2, my - 11, tw, 22);
+      ctx.fillStyle = color;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(midLabel, mx, my);
+    }
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var warning   = cv('--sol-canvas-warning');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var grid      = cv('--sol-canvas-grid');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.font = 'bold 16px Inter, system-ui';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Dva kanala kompozicije sa argumentom x = 5/4', canvas.width / 2, 16);
+
+    // Layout
+    var cx0 = 90;            // start node
+    var cx1 = 280;           // first stage node
+    var cx2 = 500;           // second stage node
+    var cx3 = 700;           // sum node
+    var rowTop = 130;
+    var rowBot = 320;
+    var nodeW = 110, nodeH = 56;
+
+    // Channel labels
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.fillStyle = primary;
+    ctx.textAlign = 'left';
+    ctx.fillText('Kanal 1:  f(g(5/4))', 20, rowTop - 50);
+    ctx.fillStyle = secondary;
+    ctx.fillText('Kanal 2:  g(f(5/4))', 20, rowBot - 50);
+
+    // START nodes
+    drawNode(cx0, rowTop, nodeW, nodeH, cvAlpha('--sol-canvas-primary', 0.18), primary, '5/4', text);
+    drawNode(cx0, rowBot, nodeW, nodeH, cvAlpha('--sol-canvas-secondary', 0.18), secondary, '5/4', text);
+
+    // First stage nodes
+    drawNode(cx1, rowTop, nodeW, nodeH, cvAlpha('--sol-canvas-warning', 0.20), warning, '4', text);
+    drawNode(cx1, rowBot, nodeW, nodeH, cvAlpha('--sol-canvas-warning', 0.20), warning, '3/2', text);
+
+    // Second stage nodes
+    drawNode(cx2, rowTop, nodeW, nodeH, cvAlpha('--sol-canvas-accent', 0.22), accent, '√5', text);
+    drawNode(cx2, rowBot, nodeW, nodeH, cvAlpha('--sol-canvas-accent', 0.22), accent, '5', text);
+
+    // Sum node (centered between rows)
+    var sumY = (rowTop + rowBot) / 2;
+    drawNode(cx3, sumY, 130, 70, cvAlpha('--sol-canvas-primary', 0.25), primary, '5 + √5', text);
+
+    // Arrows with operation labels
+    // Top channel
+    drawArrow(cx0 + nodeW / 2, rowTop, cx1 - nodeW / 2, rowTop, primary, 'g(x)=4x−1');
+    drawArrow(cx1 + nodeW / 2, rowTop, cx2 - nodeW / 2, rowTop, primary, 'f(x)=√(x+1)');
+    // Bottom channel
+    drawArrow(cx0 + nodeW / 2, rowBot, cx1 - nodeW / 2, rowBot, secondary, 'f(x)=√(x+1)');
+    drawArrow(cx1 + nodeW / 2, rowBot, cx2 - nodeW / 2, rowBot, secondary, 'g(x)=4x−1');
+
+    // Merging arrows into sum node
+    drawArrow(cx2 + nodeW / 2, rowTop, cx3 - 65, sumY - 18, primary, '');
+    drawArrow(cx2 + nodeW / 2, rowBot, cx3 - 65, sumY + 18, secondary, '');
+
+    // Plus sign between channels near sum
+    ctx.font = 'bold 22px Inter, system-ui';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('+', cx3 - 90, sumY);
+
+    // Caption (math summary)
+    ctx.font = '13px Inter, system-ui';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Gornji kanal:  5/4  →  g  →  4  →  f  →  √5', canvas.width / 2, 410);
+    ctx.fillText('Donji kanal:   5/4  →  f  →  3/2  →  g  →  5', canvas.width / 2, 432);
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.fillStyle = text;
+    ctx.fillText('Zbir:  √5 + 5  =  5 + √5  ≈  7,236', canvas.width / 2, 460);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Kompozicija funkcija f∘g i g∘f sa korenom i linearnom funkcijom",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["kompozicija funkcija", "kvadratni koren", "linearna funkcija", "domen funkcije"]
+}
+BRAINSPARK_META-->

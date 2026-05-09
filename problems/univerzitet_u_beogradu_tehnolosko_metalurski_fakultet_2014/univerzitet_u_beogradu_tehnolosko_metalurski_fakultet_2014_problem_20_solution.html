@@ -1,0 +1,806 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+PROBLEM:
+Right triangular prism. Total surface area P = 420√3 cm². Height H = 4√3 cm.
+Base sides ratio 5:7:8. Find volume V.
+
+SETUP:
+Let base sides be a = 5k, b = 7k, c = 8k for some k > 0.
+Semi-perimeter s = (5k + 7k + 8k)/2 = 20k/2 = 10k.
+
+BASE AREA via Heron's formula:
+B = √[s(s-a)(s-b)(s-c)]
+  = √[10k · (10k - 5k) · (10k - 7k) · (10k - 8k)]
+  = √[10k · 5k · 3k · 2k]
+  = √[300 k^4]
+  = √300 · k^2
+  = 10√3 · k^2.   (since √300 = √(100·3) = 10√3)
+
+So B = 10 k² √3.
+
+LATERAL SURFACE: M = perimeter × H = (5k + 7k + 8k) · H = 20k · 4√3 = 80k√3.
+
+TOTAL SURFACE: P = 2B + M.
+  2B + M = 420√3
+  2·(10 k² √3) + 80k √3 = 420 √3
+  20 k² √3 + 80k √3 = 420 √3
+  Divide both sides by √3:
+  20 k² + 80 k = 420
+  Divide by 20:
+  k² + 4k = 21
+  k² + 4k − 21 = 0
+  Discriminant = 16 + 84 = 100.
+  k = (−4 ± 10)/2 → k = 3 or k = −7.
+  Positive solution: k = 3.
+
+So sides are a = 15, b = 21, c = 24 cm. Let's sanity-check:
+  s = 30, s−a = 15, s−b = 9, s−c = 6.
+  B = √(30·15·9·6) = √24300 = √(8100·3) = 90√3 ≈ 155,88 cm².
+  Heron: 30·15 = 450; 9·6 = 54; 450·54 = 24300. √24300 = √(2700·9) = 3√2700 ... let's compute:
+    = √(900 · 27) = 30√27 = 30·3√3 = 90√3 ✓
+  Also B from formula: 10·9·√3 = 90√3. ✓
+
+VOLUME: V = B · H = 90√3 · 4√3 = 90·4·3 = 1080 cm³.
+
+ANSWER OPTIONS:
+A) 1020, B) 1030, C) 1080, D) 1040, E) 1050.
+Correct: C) 1080 cm³.
+
+VERIFY (full check):
+  k = 3 → 5k=15, 7k=21, 8k=24 (sides).
+  Perimeter = 60.
+  Lateral M = 60 · 4√3 = 240√3.
+  Base B = 90√3.
+  Total P = 2·90√3 + 240√3 = 180√3 + 240√3 = 420√3. ✓
+  Volume V = 90√3 · 4√3 = 360 · 3 = 1080. ✓
+
+VISUAL AIDS:
+1. 3D-style sketch of triangular prism with labeled sides 15, 21, 24, height 4√3.
+2. Static base triangle with Heron computation visualized (semi-perimeter & Heron quantities).
+3. Optionally: simple slider for k ranging 1..6 to show how P(k) and V(k) change.
+   But k is discrete-feeling; skip. Static 3D + base triangle suffice.
+
+GEOMETRY CHECK: Triangle inequality for 5,7,8: 5+7=12>8, 5+8=13>7, 7+8=15>5 ✓ valid triangle.
+The triangle 15-21-24 is also valid (similar to 5-7-8).
+</script>
+
+<h1 data-card="problem-title">Zapremina prave trostrane prizme</h1>
+<p data-card="problem-subtitle" class="subtitle">Stereometrija &mdash; Heronova formula, površina i zapremina prizme</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>
+    Površina prave trostrane prizme je \( P = 420\sqrt{3} \) cm², a dužina njene visine je
+    \( H = 4\sqrt{3} \) cm. Ako se dužine njenih osnovnih ivica odnose kao \( 5 : 7 : 8 \),
+    zapremina prizme je:
+  </p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">površina</span>
+      <span class="given-value">\( P = 420\sqrt{3} \) cm²</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">visina prizme</span>
+      <span class="given-value">\( H = 4\sqrt{3} \) cm</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">odnos ivica osnove</span>
+      <span class="given-value">\( a : b : c = 5 : 7 : 8 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">traži se</span>
+      <span class="given-value">\( V = ? \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 1020 \) cm³</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 1030 \) cm³</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 1080 \) cm³</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 1040 \) cm³</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 1050 \) cm³</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">
+    Označimo ivice osnove sa \( 5k, 7k, 8k \). Heronovom formulom izrazimo površinu osnove kao
+    \( B = 10k^{2}\sqrt{3} \). Iz uslova za totalnu površinu \( P = 2B + M \) (gde je
+    \( M = \text{obim} \cdot H \)) dobijamo kvadratnu jednačinu po \( k \), pa rešenje
+    \( k = 3 \) zamenimo u \( V = B \cdot H \).
+  </p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Prizma, Heronova formula, površina i zapremina</summary>
+    <div class="detail-content">
+      <ul>
+        <li>
+          <strong>Prava prizma</strong> ima dve podudarne osnove i bočne ivice upravne na osnovu
+          (svi bočni stranici su pravougaonici). Visina prizme \( H \) je rastojanje između osnova.
+        </li>
+        <li>
+          <strong>Površina prizme:</strong> \( P = 2B + M \), gde je \( B \) površina osnove, a
+          \( M \) površina <em>omotača</em> (zbir svih bočnih pravougaonika).
+        </li>
+        <li>
+          <strong>Omotač prave prizme:</strong> \( M = O \cdot H \), gde je \( O \) obim osnove
+          (zbir dužina ivica osnove).
+        </li>
+        <li>
+          <strong>Zapremina prizme:</strong> \( V = B \cdot H \).
+        </li>
+        <li>
+          <strong>Heronova formula:</strong> za trougao stranica \( a, b, c \) i polurjihovog
+          obima \( s = \tfrac{a + b + c}{2} \) važi
+          \[ B = \sqrt{s\,(s - a)(s - b)(s - c)}. \]
+        </li>
+        <li>
+          <strong>Trik sa odnosima:</strong> kad su date proporcije \( a : b : c = m : n : p \),
+          uvodimo zajednički faktor \( k \) tako da \( a = mk \), \( b = nk \), \( c = pk \), pa
+          \( B \) bude proporcionalno \( k^{2} \), a \( O \) proporcionalno \( k \).
+        </li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="3D prikaz prave trostrane prizme">
+  <h2>📐 3D prikaz prave trostrane prizme</h2>
+  <div class="canvas-wrapper">
+    <canvas id="prism-3d-canvas" width="720" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">
+    Prizma sa osnovnim trouglom stranica \( 5k, 7k, 8k \) i visinom \( H = 4\sqrt{3} \). Tri bočne
+    strane su pravougaonici dimenzija \( (5k) \times H \), \( (7k) \times H \) i \( (8k) \times H \).
+    Kad nađemo \( k = 3 \), ivice osnove postaju \( 15, 21, 24 \) cm.
+  </p>
+</div>
+
+<div data-card="visual-aid" data-title="Heronova formula za osnovu">
+  <h2>📐 Heronova formula za osnovu</h2>
+  <div class="canvas-wrapper">
+    <canvas id="heron-canvas" width="720" height="460"></canvas>
+  </div>
+  <p class="canvas-caption">
+    Trougao osnove sa stranicama \( 5k, 7k, 8k \). Poluobimi su \( s = 10k \), pa razlike
+    \( s - a, s - b, s - c \) iznose \( 5k, 3k, 2k \). Njihov proizvod
+    \( s(s-a)(s-b)(s-c) = 300\,k^{4} \), odakle
+    \( B = \sqrt{300}\,k^{2} = 10\sqrt{3}\,k^{2} \).
+  </p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Uvedi parametar \( k \) za ivice osnove</h3>
+      <p>
+        Iz odnosa \( a : b : c = 5 : 7 : 8 \) možemo pisati:
+      </p>
+      <div class="math-block">
+        \[ a = 5k,\quad b = 7k,\quad c = 8k,\quad k > 0. \]
+      </div>
+      <p>Obim osnove tada je:</p>
+      <div class="math-block">
+        \[ O = a + b + c = 5k + 7k + 8k = 20k. \]
+      </div>
+      <p>Provera trouglova nejednakosti za odnos \( 5 : 7 : 8 \): \( 5 + 7 = 12 > 8 \). ✓
+      Trougao zaista postoji za svako \( k > 0 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunaj površinu osnove Heronovom formulom</h3>
+      <p>Poluobim:</p>
+      <div class="math-block">
+        \[ s = \frac{O}{2} = \frac{20k}{2} = 10k. \]
+      </div>
+      <p>Razlike sa stranicama:</p>
+      <div class="math-block">
+        \[ s - a = 5k,\qquad s - b = 3k,\qquad s - c = 2k. \]
+      </div>
+      <p>Onda po Heronu:</p>
+      <div class="math-block">
+        \[ B = \sqrt{s(s-a)(s-b)(s-c)} = \sqrt{10k\cdot 5k \cdot 3k \cdot 2k} = \sqrt{300\,k^{4}}. \]
+      </div>
+      <p>Pošto \( \sqrt{300} = \sqrt{100\cdot 3} = 10\sqrt{3} \) i \( \sqrt{k^{4}} = k^{2} \) (za \( k>0 \)):</p>
+      <div class="math-block">
+        \[ \boxed{\,B = 10\sqrt{3}\,k^{2}.\,} \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( \sqrt{300} = 10\sqrt{3} \)?</summary>
+          <div class="detail-content">
+            <p>
+              Faktorizacija: \( 300 = 100 \cdot 3 \). Otuda
+              \( \sqrt{300} = \sqrt{100}\cdot\sqrt{3} = 10\sqrt{3} \). Ovaj raspored
+              \( 10k\cdot 5k\cdot 3k\cdot 2k = 300\,k^{4} \) često se „skraćuje" lepše ako
+              prvo grupišemo \( 10k\cdot 3k = 30k^{2} \) i \( 5k\cdot 2k = 10k^{2} \), pa
+              \( 30k^{2}\cdot 10k^{2} = 300\,k^{4} \). ✓
+            </p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Izrazi omotač i ukupnu površinu</h3>
+      <p>
+        Omotač prave prizme je \( M = O \cdot H \):
+      </p>
+      <div class="math-block">
+        \[ M = 20k \cdot 4\sqrt{3} = 80\,k\sqrt{3}. \]
+      </div>
+      <p>Ukupna površina:</p>
+      <div class="math-block">
+        \[ P = 2B + M = 2 \cdot 10\sqrt{3}\,k^{2} + 80\,k\sqrt{3} = 20\sqrt{3}\,k^{2} + 80\sqrt{3}\,k. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavi i reši kvadratnu jednačinu po \( k \)</h3>
+      <p>Iz uslova \( P = 420\sqrt{3} \) imamo:</p>
+      <div class="math-block">
+        \[ 20\sqrt{3}\,k^{2} + 80\sqrt{3}\,k = 420\sqrt{3}. \]
+      </div>
+      <p>Pošto je svaki član deljiv sa \( \sqrt{3} \), podelimo obe strane:</p>
+      <div class="math-block">
+        \[ 20\,k^{2} + 80\,k = 420 \quad\Big/\,:20 \quad\Longrightarrow\quad k^{2} + 4k - 21 = 0. \]
+      </div>
+      <p>Diskriminanta: \( D = 16 + 84 = 100 \), \( \sqrt{D} = 10 \). Rešenja:</p>
+      <div class="math-block">
+        \[ k_{1,2} = \frac{-4 \pm 10}{2} \quad\Longrightarrow\quad k_{1} = 3,\ \ k_{2} = -7. \]
+      </div>
+      <p>
+        Pošto je \( k \) dužinski faktor, mora biti \( k > 0 \). Negativno rešenje
+        <span class="crossed">\( k = -7 \)</span> odbacujemo. Ostaje \( k = 3 \).
+      </p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: faktorizacija umesto formule</summary>
+          <div class="detail-content">
+            <p>
+              \( k^{2} + 4k - 21 = 0 \) može se faktorizovati: tražimo dva broja sa zbirom \( 4 \)
+              i proizvodom \( -21 \). To su \( 7 \) i \( -3 \): \( (k + 7)(k - 3) = 0 \), pa
+              \( k = 3 \) (uzimamo pozitivno).
+            </p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunaj zapreminu</h3>
+      <p>
+        Sada poznajemo sve veličine: ivice osnove su \( 15, 21, 24 \) cm, a površina osnove je
+      </p>
+      <div class="math-block">
+        \[ B = 10\sqrt{3}\cdot k^{2} = 10\sqrt{3}\cdot 9 = 90\sqrt{3}\ \text{cm}^{2}. \]
+      </div>
+      <p>Zapremina prizme:</p>
+      <div class="math-block">
+        \[ V = B \cdot H = 90\sqrt{3} \cdot 4\sqrt{3} = 90 \cdot 4 \cdot \left(\sqrt{3}\right)^{2} = 360 \cdot 3 = 1080\ \text{cm}^{3}. \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: pažljiv račun \( \sqrt{3}\cdot\sqrt{3} \)</summary>
+          <div class="detail-content">
+            <p>
+              \( \sqrt{3}\cdot\sqrt{3} = \left(\sqrt{3}\right)^{2} = 3 \) — kvadrat korena „skida"
+              koren. Bez ovog ključnog uprošćavanja zapremina bi ostala u obliku
+              \( 360\sqrt{9} = 360 \cdot 3 = 1080 \), što je isto. ✓
+            </p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>
+    Kad zadaci daju <em>odnos</em> stranica (ne same dužine), uvedi zajednički faktor \( k \) i
+    pretvori sve veličine u funkcije od \( k \). Tada površina osnove zavisi kao \( k^{2} \), a
+    obim kao \( k \) — pa uslov za totalnu površinu (zbir tih doprinosa) postaje
+    <strong>kvadratna jednačina po \( k \)</strong>. Drugi važan trik: faktorisanje
+    zajedničkog \( \sqrt{3} \) na obe strane <em>pre</em> sređivanja jednačine drastično pojednostavljuje
+    račun.
+  </p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">
+      \[ V = B \cdot H = 90\sqrt{3} \cdot 4\sqrt{3} = 1080\ \text{cm}^{3}. \]
+    </p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 1020 \) cm³</span>
+    <span class="answer-option" data-option="B">(B) \( 1030 \) cm³</span>
+    <span class="answer-option correct" data-option="C">(C) \( 1080 \) cm³</span>
+    <span class="answer-option" data-option="D">(D) \( 1040 \) cm³</span>
+    <span class="answer-option" data-option="E">(E) \( 1050 \) cm³</span>
+  </div>
+  <p class="verification">
+    Provera: za \( k = 3 \) je \( O = 60 \), \( M = 60 \cdot 4\sqrt{3} = 240\sqrt{3} \),
+    \( B = 90\sqrt{3} \), pa \( P = 2\cdot 90\sqrt{3} + 240\sqrt{3} = 180\sqrt{3} + 240\sqrt{3}
+    = 420\sqrt{3} \) cm² — što se poklapa sa polaznim podatkom. ✓
+  </p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>
+      <strong>Zaboravljen poluobim.</strong> Heronova formula koristi \( s = (a+b+c)/2 \), a ne
+      ceo obim. Ako se piše \( s = a+b+c \), vrednosti \( s - a \), \( s - b \), \( s - c \) postaju
+      pogrešne, pa i \( B \).
+    </li>
+    <li>
+      <strong>Mešanje \( P \) i \( B \).</strong> \( P \) označava <em>ukupnu</em> površinu prizme
+      (osnove + omotač), dok \( B \) označava površinu samo jedne osnove. Tu razliku odredba
+      \( P = 2B + M \) jasno čuva.
+    </li>
+    <li>
+      <strong>Krivo uprošćavanje korena.</strong> \( \sqrt{300\,k^{4}} = 10\sqrt{3}\,k^{2} \), a ne
+      <span class="crossed">\( 300\,k^{2} \)</span> ili <span class="crossed">\( 10\,k^{2}\sqrt{30} \)</span>.
+    </li>
+    <li>
+      <strong>Negativno rešenje za \( k \).</strong> Iz \( k^{2} + 4k - 21 = 0 \) dobijaju se dva
+      koruna; samo pozitivno (\( k = 3 \)) ima geometrijski smisao.
+    </li>
+    <li>
+      <strong>Pogrešno nasleđivanje konstanti.</strong> Visina je \( H = 4\sqrt{3} \), tako da
+      \( H^{2} = 48 \) (ne \( 12 \)). U množenju \( 90\sqrt{3} \cdot 4\sqrt{3} \) ključno je da
+      se \( \sqrt{3}\cdot\sqrt{3} = 3 \), a ne \( \sqrt{6} \) ili \( \sqrt{9} = 3 \) (drugi
+      izraz daje isti rezultat, ali sa pogrešnim međurezultatom).
+    </li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>
+    Pretpostavimo da su odnosi ivica osnove sada \( 3 : 4 : 5 \) (pravougli trougao!), a sve ostalo
+    isto: \( P = 420\sqrt{3} \), \( H = 4\sqrt{3} \). Da li tu možeš da nađeš \( k \) bez Heronove
+    formule? I koliko bi onda iznosila zapremina?
+  </p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>
+        Trougao \( 3k\!:\!4k\!:\!5k \) je <em>pravougli</em> (Pitagora: \( 9 + 16 = 25 \)), pa je
+        \( B = \tfrac{1}{2}\cdot 3k\cdot 4k = 6k^{2} \) — bez Herona. Obim je \( 12k \), pa
+        \( M = 12k\cdot 4\sqrt{3} = 48k\sqrt{3} \). Tada
+        \( P = 12k^{2} + 48k\sqrt{3} = 420\sqrt{3} \) — ovde se \( \sqrt{3} \) <em>ne</em>
+        skraćuje sa svih članova jer kvadratni član nema \( \sqrt{3} \), pa rešenje za \( k \) nije
+        više „lepo" celobrojno. Zapazi koliko zadatak postaje suptilniji čim se izgubi simetrija
+        sa \( \sqrt{3} \) u svim sabircima!
+      </p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('prism-3d-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Prava trostrana prizma: osnova 15 × 21 × 24, visina H = 4√3', W/2, 14);
+
+    // Compute base triangle vertices in 2D (math coords).
+    // Place side 24 along the x-axis (0,0)-(24,0) for the bottom base.
+    // Third vertex C: distances 21 from A=(0,0) and 15 from B=(24,0).
+    // Let C = (x, y).  x^2 + y^2 = 441, (x-24)^2 + y^2 = 225.
+    // Subtract: -48 x + 576 = -216  =>  -48 x = -792  =>  x = 16.5.
+    // y^2 = 441 - 272.25 = 168.75 = 675/4. y = √(675)/2 = 15√3/2 ≈ 12.99.
+    var Ax = 0, Ay = 0, Bx = 24, By = 0;
+    var Cx = 16.5, Cy = Math.sqrt(168.75); // ≈ 12.99
+
+    // Right-prism axes:  x-axis horizontal, y-axis "depth" (will be skewed),
+    //   z-axis vertical (prism height).
+    // Project (x,y,z) -> (sx, sy):
+    //   sx = ox + x*scale - y*depthCos*scale
+    //   sy = oy - z*scale - y*depthSin*scale     (note: y depth INCREASES downward in canvas frame here)
+    // But the bottom base is "horizontal", so we want the horizontal triangle to appear receding in depth.
+    // Let's interpret math (X, Y) of triangle as (X = horizontal, Y = depth).
+    var scale = 14; // px per cm
+    var depthCos = 0.55; // cos of depth angle
+    var depthSin = 0.40; // sin of depth angle (positive = appears higher on screen)
+    var ox = 110;
+    var oy = 360;
+    var Hp = 4 * Math.sqrt(3); // prism height in cm  ≈ 6.93
+
+    function P(X, Y, Z) {
+      // X horizontal, Y depth, Z vertical (cm)
+      return {
+        x: ox + X * scale - Y * depthCos * scale,
+        y: oy - Z * scale - Y * depthSin * scale  // depth pulls upward on screen for top-down look
+      };
+    }
+
+    // Bottom base vertices (Z = 0)
+    var A0 = P(Ax, Ay, 0);
+    var B0 = P(Bx, By, 0);
+    var C0 = P(Cx, Cy, 0);
+    // Top base vertices (Z = Hp)
+    var A1 = P(Ax, Ay, Hp);
+    var B1 = P(Bx, By, Hp);
+    var C1 = P(Cx, Cy, Hp);
+
+    // Draw back faces first (lighter), then front (stronger).
+    // Back lateral face: side BC (right-back of prism)
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.10);
+    ctx.beginPath();
+    ctx.moveTo(B0.x, B0.y); ctx.lineTo(C0.x, C0.y); ctx.lineTo(C1.x, C1.y); ctx.lineTo(B1.x, B1.y);
+    ctx.closePath(); ctx.fill();
+
+    // Top base
+    ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.18);
+    ctx.beginPath();
+    ctx.moveTo(A1.x, A1.y); ctx.lineTo(B1.x, B1.y); ctx.lineTo(C1.x, C1.y);
+    ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Front lateral face: side AB (front)
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.20);
+    ctx.beginPath();
+    ctx.moveTo(A0.x, A0.y); ctx.lineTo(B0.x, B0.y); ctx.lineTo(B1.x, B1.y); ctx.lineTo(A1.x, A1.y);
+    ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Left lateral face: side AC
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.14);
+    ctx.beginPath();
+    ctx.moveTo(A0.x, A0.y); ctx.lineTo(C0.x, C0.y); ctx.lineTo(C1.x, C1.y); ctx.lineTo(A1.x, A1.y);
+    ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Bottom base — visible edges (we draw with a dashed back-line for the hidden BC edge inside)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.moveTo(A0.x, A0.y); ctx.lineTo(B0.x, B0.y);  // AB (front)
+    ctx.stroke();
+    // AC and BC at bottom (these belong to lateral face borders, partially covered)
+    ctx.strokeStyle = accent;
+    ctx.beginPath();
+    ctx.moveTo(A0.x, A0.y); ctx.lineTo(C0.x, C0.y);  // AC
+    ctx.stroke();
+    ctx.strokeStyle = primary;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(B0.x, B0.y); ctx.lineTo(C0.x, C0.y);  // BC (potentially hidden if behind)
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Vertical edges
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(A0.x, A0.y); ctx.lineTo(A1.x, A1.y);
+    ctx.moveTo(B0.x, B0.y); ctx.lineTo(B1.x, B1.y);
+    ctx.moveTo(C0.x, C0.y); ctx.lineTo(C1.x, C1.y);
+    ctx.stroke();
+
+    // Vertex labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px sans-serif';
+    ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+    ctx.fillText('A', A0.x - 4, A0.y + 4);
+    ctx.textAlign = 'left';
+    ctx.fillText('B', B0.x + 4, B0.y + 4);
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText('C', C0.x, C0.y - 18);
+
+    ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
+    ctx.fillText('A₁', A1.x - 4, A1.y - 2);
+    ctx.textAlign = 'left';
+    ctx.fillText('B₁', B1.x + 4, B1.y - 2);
+    ctx.textAlign = 'center';
+    ctx.fillText('C₁', C1.x, C1.y - 4);
+
+    // Side length labels
+    function midOf(P1, P2) { return { x: (P1.x + P2.x)/2, y: (P1.y + P2.y)/2 }; }
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 13px sans-serif';
+    var mAB = midOf(A0, B0);
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText('c = 24 (= 8k)', mAB.x, mAB.y + 4);
+
+    ctx.fillStyle = accent;
+    var mAC = midOf(A0, C0);
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    ctx.fillText('b = 21 (= 7k)', mAC.x - 8, mAC.y);
+
+    ctx.fillStyle = primary;
+    var mBC = midOf(B0, C0);
+    ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.fillText('a = 15 (= 5k)', mBC.x + 8, mBC.y - 6);
+
+    // Height label on a vertical edge (use AA1 as reference)
+    var midH = midOf(A0, A1);
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 13px sans-serif';
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    ctx.fillText('H = 4√3', midH.x - 6, midH.y);
+
+    // Side panel: numerical summary
+    var px = W - 230, py = 60;
+    ctx.fillStyle = cvAlpha('--sol-canvas-grid', 0.4);
+    ctx.fillRect(px, py, 220, 230);
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(px, py, 220, 230);
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px sans-serif';
+    ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+    ctx.fillText('Veličine za k = 3:', px + 12, py + 10);
+    ctx.font = '12.5px sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Stranice: 15, 21, 24 cm', px + 12, py + 34);
+    ctx.fillText('Obim O = 60 cm', px + 12, py + 54);
+    ctx.fillText('Površina B = 90√3 ≈ 155,88', px + 12, py + 74);
+    ctx.fillText('Visina H = 4√3 ≈ 6,93 cm', px + 12, py + 94);
+    ctx.fillText('Omotač M = 240√3 ≈ 415,69', px + 12, py + 114);
+    ctx.fillText('Površina P = 420√3 ≈ 727,46', px + 12, py + 134);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px sans-serif';
+    ctx.fillText('V = B · H = 1080 cm³', px + 12, py + 168);
+    ctx.font = '11px sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('= 90√3 · 4√3', px + 12, py + 192);
+    ctx.fillText('= 360 · (√3)² = 360 · 3', px + 12, py + 208);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('heron-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Heronova formula za trougao 5k : 7k : 8k  →  B = 10√3 · k²', W/2, 14);
+
+    // Place triangle: A=(0,0), B=(8k,0), C=(?, ?). For visual we use k=1 so 5,7,8.
+    // a = BC = 5, b = CA = 7, c = AB = 8.
+    // Coordinates: A=(0,0), B=(8,0). C: |AC|=7, |BC|=5.
+    // C = (x, y): x^2+y^2 = 49, (x-8)^2 + y^2 = 25.
+    // Subtract: -16x + 64 = -24 → -16x = -88 → x = 5.5
+    // y^2 = 49 - 30.25 = 18.75; y = √18.75 ≈ 4.330
+    var Ax = 0, Ay = 0, Bx = 8, By = 0;
+    var Cx = 5.5, Cy = Math.sqrt(18.75);
+
+    // Map math coords to canvas
+    var scale = 38;
+    var ox = 80;
+    var oy = H - 90;
+    function P(x, y) { return { x: ox + x * scale, y: oy - y * scale }; }
+    var A = P(Ax, Ay), B = P(Bx, By), C = P(Cx, Cy);
+
+    // Triangle fill
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.15);
+    ctx.beginPath();
+    ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.lineTo(C.x, C.y);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.4;
+    ctx.stroke();
+
+    // Vertex labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px sans-serif';
+    ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+    ctx.fillText('A', A.x - 6, A.y + 4);
+    ctx.textAlign = 'left';
+    ctx.fillText('B', B.x + 6, B.y + 4);
+    ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+    ctx.fillText('C', C.x, C.y - 8);
+
+    // Side labels
+    function mid(P1, P2) { return { x: (P1.x + P2.x)/2, y: (P1.y + P2.y)/2 }; }
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 13px sans-serif';
+    var mAB = mid(A, B);
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText('c = 8k', mAB.x, mAB.y + 6);
+    var mAC = mid(A, C);
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    ctx.fillText('b = 7k', mAC.x - 10, mAC.y - 6);
+    var mBC = mid(B, C);
+    ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.fillText('a = 5k', mBC.x + 10, mBC.y - 6);
+
+    // Annotation panel on the right
+    var px = W - 280, py = 60;
+    ctx.fillStyle = cvAlpha('--sol-canvas-grid', 0.4);
+    ctx.fillRect(px, py, 260, 320);
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(px, py, 260, 320);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px sans-serif';
+    ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+    ctx.fillText('Heronov račun', px + 14, py + 12);
+
+    ctx.fillStyle = muted;
+    ctx.font = '13px sans-serif';
+    var ly = py + 40;
+    var dy = 22;
+    ctx.fillText('s = (5k + 7k + 8k)/2 = 10k', px + 14, ly); ly += dy;
+    ctx.fillText('s − a = 10k − 5k = 5k', px + 14, ly); ly += dy;
+    ctx.fillText('s − b = 10k − 7k = 3k', px + 14, ly); ly += dy;
+    ctx.fillText('s − c = 10k − 8k = 2k', px + 14, ly); ly += dy + 4;
+
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 13px sans-serif';
+    ctx.fillText('Proizvod:', px + 14, ly); ly += dy;
+    ctx.fillStyle = text;
+    ctx.font = '13px sans-serif';
+    ctx.fillText('10k · 5k · 3k · 2k = 300 k⁴', px + 14, ly); ly += dy + 4;
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px sans-serif';
+    ctx.fillText('B = √(300 k⁴)', px + 14, ly); ly += dy;
+    ctx.fillText('   = 10√3 · k²', px + 14, ly); ly += dy + 6;
+
+    ctx.fillStyle = muted;
+    ctx.font = '12px sans-serif';
+    ctx.fillText('Za k = 3:  B = 10√3 · 9 = 90√3', px + 14, ly); ly += dy - 4;
+    ctx.fillText('B ≈ 155,88 cm²', px + 14, ly);
+
+    // Footer note
+    ctx.fillStyle = muted;
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('Visina trougla iz vrha C iznosi h_c = 2B/c = (10√3·k²) · 2/(8k) = (5√3/2)·k.',
+                 W/2, H - 10);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Zapremina prave trostrane prizme (P = 420√3, H = 4√3, ivice 5:7:8)",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["stereometrija", "prava_prizma", "Heronova_formula", "povrsina_prizme", "zapremina_prizme", "kvadratna_jednacina"]
+}
+BRAINSPARK_META-->

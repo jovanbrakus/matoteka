@@ -1,0 +1,554 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: z = 1 + i + i^2 + i^3 + ... + i^2015. Naći vrednost izraza z.
+
+Strategija: Stepeni broja i čine ciklus dužine 4:
+  i^0 = 1
+  i^1 = i
+  i^2 = -1
+  i^3 = -i
+  i^4 = 1   (ciklus se ponavlja)
+
+Ključna činjenica: zbir jednog ciklusa je
+  1 + i + (-1) + (-i) = 0.
+
+Brojanje članova:
+  Eksponenti idu od 0 do 2015, što je ukupno 2015 - 0 + 1 = 2016 članova.
+  2016 = 4 · 504, dakle imamo tačno 504 kompletna bloka.
+  Svaki blok daje 0, pa je z = 504 · 0 = 0.
+
+Alternativni pristup (geometrijski niz):
+  z = (i^2016 - 1) / (i - 1).
+  i^2016 = (i^4)^504 = 1^504 = 1.
+  z = (1 - 1)/(i - 1) = 0/(i - 1) = 0.
+
+Provera ostatka: 2015 mod 4 = 3 (jer 2015 = 4·503 + 3), pa poslednji član je i^2015 = i^3 = -i.
+Prvih 4 člana: 1 + i + (-1) + (-i) = 0. Sledećih 4: i^4 + i^5 + i^6 + i^7 = 1 + i + (-1) + (-i) = 0. ...
+
+Konačan odgovor: (A) 0.
+
+Vizuelni prikaz:
+  - Jedinična kružnica sa četiri tačke 1, i, -1, -i (stepeni broja i u kompleksnoj ravni).
+  - Vizuelizacija grupisanja 2016 članova u 504 bloka po 4, gde svaki blok daje 0.
+  - Statički prikazi (ne-interaktivni) — ovo je problem o brojanju i ciklusima, interaktivnost ne pomaže.
+</script>
+
+<h1 data-card="problem-title">Suma stepena imaginarne jedinice</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — kompleksni brojevi, ciklus stepena broja \( i \), grupisanje u sumama</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Ako je</p>
+  <div class="math-block">
+    \[ z = 1 + i + i^2 + i^3 + \ldots + i^{2015}, \]
+  </div>
+  <p>gde je \( i \) imaginarna jedinica, onda je \( z \) jednako:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 0 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 2i \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( i \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 1 + i \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 1 - i \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Iskoristićemo periodičnost stepena broja \( i \) sa periodom \( 4 \). Pokazaćemo da je zbir bilo koja četiri uzastopna stepena jednak nuli, prebrojati članove (ima ih \( 2016 \)) i zaključiti da je suma podeljena u tačno \( 504 \) bloka koji svi daju nulu.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Stepeni imaginarne jedinice i geometrijski niz</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Definicija</span> \( i^2 = -1 \). Odatle \( i^3 = i^2 \cdot i = -i \), a \( i^4 = (i^2)^2 = 1 \).</li>
+        <li><span class="formula-label">Periodičnost</span> Niz \( i^n \) je periodičan sa periodom \( 4 \): \( i^{n+4} = i^n \cdot i^4 = i^n \cdot 1 = i^n \). Vrednosti se cikluse ponavljaju kroz \( 1,\ i,\ -1,\ -i \).</li>
+        <li><span class="formula-label">Zbir jednog ciklusa</span> \( 1 + i + i^2 + i^3 = 1 + i - 1 - i = 0 \). Ovo je srž zadatka.</li>
+        <li><span class="formula-label">Suma geometrijskog niza</span> Za \( q \neq 1 \): \( 1 + q + q^2 + \ldots + q^n = \dfrac{q^{n+1} - 1}{q - 1} \). Ovde uzimamo \( q = i \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Stepeni broja i u kompleksnoj ravni">
+  <h2>📐 Stepeni broja \( i \) u kompleksnoj ravni</h2>
+  <div class="canvas-wrapper">
+    <canvas id="unit-circle" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Stepeni broja \( i \) leže na jediničnoj kružnici i ciklusi se ponavljaju na svakih \( 90^\circ \): \( i^0 = 1,\ i^1 = i,\ i^2 = -1,\ i^3 = -i \), a zatim \( i^4 = 1 \) opet.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Otkrivamo period stepena broja \( i \)</h3>
+      <p>Računajući prve stepene direktno iz \( i^2 = -1 \):</p>
+      <div class="math-block">
+        \[ i^0 = 1,\quad i^1 = i,\quad i^2 = -1,\quad i^3 = i^2 \cdot i = -i,\quad i^4 = i^2 \cdot i^2 = 1. \]
+      </div>
+      <p>Pošto je \( i^4 = 1 \), množenje sa \( i^4 \) ne menja ništa, pa je niz <strong>periodičan sa periodom \( 4 \)</strong>: \( i^{n+4} = i^n \).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliko iznosi \( i^{17} \)?</summary>
+          <div class="detail-content"><p>Pošto je \( 17 = 4 \cdot 4 + 1 \), ostatak pri deljenju sa \( 4 \) je \( 1 \), pa je \( i^{17} = i^1 = i \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Zbir četiri uzastopna stepena je nula</h3>
+      <p>Saberimo jedan kompletan ciklus:</p>
+      <div class="math-block">
+        \[ 1 + i + i^2 + i^3 = 1 + i + (-1) + (-i) = 0. \]
+      </div>
+      <p>Generalno, za bilo koji ceo broj \( k \geq 0 \) važi:</p>
+      <div class="math-block">
+        \[ i^{4k} + i^{4k+1} + i^{4k+2} + i^{4k+3} = i^{4k}\bigl(1 + i + i^2 + i^3\bigr) = i^{4k} \cdot 0 = 0. \]
+      </div>
+      <p>To znači: <strong>svaka grupa od četiri uzastopna stepena u našoj sumi daje nulu.</strong></p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Brojimo članove i grupišemo</h3>
+      <p>Suma \( z = i^0 + i^1 + i^2 + \ldots + i^{2015} \) ima članove sa eksponentima od \( 0 \) do \( 2015 \), to jest:</p>
+      <div class="math-block">
+        \[ \text{broj članova} = 2015 - 0 + 1 = 2016. \]
+      </div>
+      <p>Pošto je \( 2016 = 4 \cdot 504 \), suma se savršeno deli na \( 504 \) bloka po četiri uzastopna stepena, bez ostatka:</p>
+      <div class="math-block">
+        \[ z = \underbrace{(i^0 + i^1 + i^2 + i^3)}_{=\,0} + \underbrace{(i^4 + i^5 + i^6 + i^7)}_{=\,0} + \ldots + \underbrace{(i^{2012} + i^{2013} + i^{2014} + i^{2015})}_{=\,0}. \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš \( 2016 \), a ne \( 2015 \) članova?</summary>
+          <div class="detail-content"><p>Suma uključuje i početni \( 1 = i^0 \), pa eksponenti idu \( 0, 1, 2, \ldots, 2015 \). To je \( 2016 \) različitih eksponenata.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Konačni rezultat</h3>
+      <p>Sabiranjem \( 504 \) nula dobijamo:</p>
+      <div class="math-block">
+        \[ z = 504 \cdot 0 = 0. \]
+      </div>
+      <p>Dakle <span class="result">\( z = 0 \)</span>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera formulom geometrijskog niza</h3>
+      <p>Suma je geometrijski niz sa količnikom \( q = i \neq 1 \) i \( 2016 \) članova. Po standardnoj formuli:</p>
+      <div class="math-block">
+        \[ z = 1 + i + i^2 + \ldots + i^{2015} = \frac{i^{2016} - 1}{i - 1}. \]
+      </div>
+      <p>Pošto je \( 2016 = 4 \cdot 504 \), imamo \( i^{2016} = (i^4)^{504} = 1^{504} = 1 \). Dakle:</p>
+      <div class="math-block">
+        \[ z = \frac{1 - 1}{i - 1} = \frac{0}{i - 1} = 0. \]
+      </div>
+      <p>Oba pristupa daju isti rezultat — provera je uspešna.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="visual-aid" data-title="Grupisanje 2016 članova u 504 bloka">
+  <h2>📊 Grupisanje 2016 članova u 504 bloka</h2>
+  <div class="canvas-wrapper">
+    <canvas id="blocks" width="700" height="420"></canvas>
+  </div>
+  <p class="canvas-caption">Svaka kolona sa četiri kvadrata predstavlja jedan blok \( (1 + i - 1 - i) = 0 \). Imamo tačno \( 504 \) takvih blokova, jer je \( 2016 = 4 \cdot 504 \).</p>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kada vidimo dugačku sumu sa periodičnim članovima, prvi refleks treba da bude: <strong>da li se period uklapa u broj članova?</strong> Ovde period iznosi \( 4 \), a broj članova \( 2016 \) je deljiv sa \( 4 \) — pa se sve uredno paklira u blokove koji se međusobno poništavaju. Ako bi broj članova bio, recimo, \( 2017 \), ostao bi jedan „višak" član i odgovor ne bi bio nula.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Brojanje članova kao \( 2015 \) umesto \( 2016 \).</strong> Lako se zaboravi da suma počinje od \( i^0 = 1 \). Eksponenti od \( 0 \) do \( 2015 \) daju \( 2016 \) članova, što je deljivo sa \( 4 \).</li>
+    <li><strong>Pisanje \( i^4 = i \) umesto \( i^4 = 1 \).</strong> Period stepena nije \( 1 \) već \( 4 \): \( i^4 \) se vraća na \( 1 \), a tek \( i^5 = i \).</li>
+    <li><strong>Pretpostavka da je „dugačka suma" automatski velika.</strong> Periodičnost može uravnotežiti pozitivne i negativne članove i dovesti do \( 0 \), bez obzira na broj članova.</li>
+    <li><strong>Korišćenje formule geometrijskog niza bez provere uslova \( q \neq 1 \).</strong> Ovde \( q = i \neq 1 \), pa je formula primenjiva — ali na \( q = 1 \) bi trebalo posebno gledati (suma bi bila \( n \), broj članova).</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ z = 1 + i + i^2 + \ldots + i^{2015} = 0. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 0 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 2i \)</span>
+    <span class="answer-option" data-option="C">(C) \( i \)</span>
+    <span class="answer-option" data-option="D">(D) \( 1 + i \)</span>
+    <span class="answer-option" data-option="E">(E) \( 1 - i \)</span>
+  </div>
+  <p class="verification">Provera: \( 2016 \) članova \( = 4 \cdot 504 \), svaki blok od četiri uzastopna stepena daje \( 0 \), pa je ukupna suma \( 504 \cdot 0 = 0 \). Drugim metodom: \( (i^{2016} - 1)/(i - 1) = (1 - 1)/(i - 1) = 0 \). ✓</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta bi bilo da je gornja granica eksponenta \( 2017 \) umesto \( 2015 \)? Drugim rečima, izračunaj</p>
+  <div class="math-block">
+    \[ w = 1 + i + i^2 + i^3 + \ldots + i^{2017}. \]
+  </div>
+  <p>Da li i dalje dobijaš \( 0 \)? Ako ne, koja vrednost iskače i zašto?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Sada imaš \( 2018 \) članova. Podeli \( 2018 \) sa \( 4 \) i pogledaj ostatak. „Pun" deo daje nulu — preostaje par članova viška na kraju koji se ne uklapaju u poslednji blok.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('unit-circle');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var cx = canvas.width / 2;
+    var cy = canvas.height / 2 + 10;
+    var R = 150;
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (var gx = cx - 4 * R / 2; gx <= cx + 4 * R / 2; gx += R / 2) {
+      ctx.moveTo(gx, cy - R - 30); ctx.lineTo(gx, cy + R + 30);
+    }
+    for (var gy = cy - R - 30; gy <= cy + R + 30; gy += R / 2) {
+      ctx.moveTo(cx - 2 * R, gy); ctx.lineTo(cx + 2 * R, gy);
+    }
+    ctx.stroke();
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cx - R - 60, cy); ctx.lineTo(cx + R + 60, cy);
+    ctx.moveTo(cx, cy - R - 60); ctx.lineTo(cx, cy + R + 60);
+    ctx.stroke();
+
+    // Arrowheads
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(cx + R + 60, cy);
+    ctx.lineTo(cx + R + 50, cy - 6);
+    ctx.lineTo(cx + R + 50, cy + 6);
+    ctx.closePath(); ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - R - 60);
+    ctx.lineTo(cx - 6, cy - R - 50);
+    ctx.lineTo(cx + 6, cy - R - 50);
+    ctx.closePath(); ctx.fill();
+
+    // Axis labels
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.fillText('Re', cx + R + 65, cy + 4);
+    ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+    ctx.fillText('Im', cx - 8, cy - R - 70);
+
+    // Unit circle
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Powers of i: i^0=1, i^1=i, i^2=-1, i^3=-i
+    var pts = [
+      { x: cx + R, y: cy,       label: 'i⁰ = 1',  color: accent,    valStr: '1' },
+      { x: cx,     y: cy - R,   label: 'i¹ = i',  color: primary,   valStr: 'i' },
+      { x: cx - R, y: cy,       label: 'i² = −1', color: highlight, valStr: '-1' },
+      { x: cx,     y: cy + R,   label: 'i³ = −i', color: cv('--sol-canvas-warning') || primary, valStr: '-i' }
+    ];
+
+    // Cycle arrows (curved arrows between points)
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([3, 3]);
+    for (var k = 0; k < 4; k++) {
+      var p1 = pts[k];
+      var p2 = pts[(k + 1) % 4];
+      // arc from p1 to p2 along the circle
+      var ang1 = Math.atan2(-(p1.y - cy), p1.x - cx);
+      var ang2 = Math.atan2(-(p2.y - cy), p2.x - cx);
+      // small inner arrow on a smaller circle
+      var Rinner = R - 22;
+      var startA = -ang1; var endA = -ang2;
+      // handle wrap
+      ctx.beginPath();
+      ctx.arc(cx, cy, Rinner, startA, endA, false);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Points
+    for (var j = 0; j < pts.length; j++) {
+      var p = pts[j];
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 8, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.fill();
+      ctx.strokeStyle = bg;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
+    // Vector arrows from origin to each point
+    ctx.lineWidth = 2;
+    for (var j2 = 0; j2 < pts.length; j2++) {
+      var pp = pts[j2];
+      ctx.strokeStyle = pp.color;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(pp.x, pp.y);
+      ctx.stroke();
+    }
+
+    // Labels for each point
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.textBaseline = 'middle';
+    // i^0 = 1 (right)
+    ctx.fillStyle = pts[0].color;
+    ctx.textAlign = 'left';
+    ctx.fillText(pts[0].label, pts[0].x + 14, pts[0].y);
+    // i^1 = i (top)
+    ctx.fillStyle = pts[1].color;
+    ctx.textAlign = 'center';
+    ctx.fillText(pts[1].label, pts[1].x, pts[1].y - 18);
+    // i^2 = -1 (left)
+    ctx.fillStyle = pts[2].color;
+    ctx.textAlign = 'right';
+    ctx.fillText(pts[2].label, pts[2].x - 14, pts[2].y);
+    // i^3 = -i (bottom)
+    ctx.fillStyle = pts[3].color;
+    ctx.textAlign = 'center';
+    ctx.fillText(pts[3].label, pts[3].x, pts[3].y + 22);
+
+    // Title
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Ciklus stepena broja i u kompleksnoj ravni', canvas.width / 2, 14);
+
+    // Bottom note: sum of cycle = 0
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('1 + i + (−1) + (−i) = 0   →   svaki ciklus se međusobno poništava', canvas.width / 2, canvas.height - 14);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('blocks');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('2016 članova = 504 bloka × 4 stepena', canvas.width / 2, 14);
+
+    // Show first 3 blocks fully, then ellipsis, then last block
+    var blockColors = [accent, primary, highlight, warning];
+    var labels = ['1', 'i', '−1', '−i'];
+
+    var startX = 50;
+    var blockWidth = 110;
+    var blockGap = 18;
+    var topY = 70;
+    var cellH = 42;
+    var cellW = blockWidth - 4;
+
+    // Draw a single block of 4 stacked cells with sum on bottom
+    function drawBlock(x, label) {
+      // 4 cells
+      for (var i = 0; i < 4; i++) {
+        ctx.fillStyle = cvAlpha(['--sol-canvas-accent','--sol-canvas-primary','--sol-canvas-highlight','--sol-canvas-warning'][i], 0.85);
+        ctx.fillRect(x, topY + i * cellH, cellW, cellH - 4);
+        ctx.strokeStyle = bg;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x, topY + i * cellH, cellW, cellH - 4);
+
+        ctx.fillStyle = bg;
+        ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(labels[i], x + cellW / 2, topY + i * cellH + (cellH - 4) / 2);
+      }
+      // Block label below
+      ctx.fillStyle = text;
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText(label, x + cellW / 2, topY + 4 * cellH + 8);
+      // Sum = 0 below
+      ctx.fillStyle = muted;
+      ctx.font = '13px Inter, system-ui, sans-serif';
+      ctx.fillText('= 0', x + cellW / 2, topY + 4 * cellH + 28);
+    }
+
+    drawBlock(startX + 0 * (blockWidth + blockGap), 'Blok 1');
+    drawBlock(startX + 1 * (blockWidth + blockGap), 'Blok 2');
+    drawBlock(startX + 2 * (blockWidth + blockGap), 'Blok 3');
+
+    // Ellipsis
+    ctx.fillStyle = muted;
+    ctx.font = 'bold 24px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    var ellipseX = startX + 3 * (blockWidth + blockGap) + 28;
+    ctx.fillText('· · ·', ellipseX, topY + 2 * cellH);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('još 500 blokova', ellipseX, topY + 4 * cellH + 14);
+
+    drawBlock(startX + 4 * (blockWidth + blockGap) + 32, 'Blok 504');
+
+    // Total sum at bottom
+    ctx.font = 'bold 17px Inter, system-ui, sans-serif';
+    ctx.fillStyle = accent;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Ukupno:  z = 0 + 0 + 0 + … + 0 = 0', canvas.width / 2, canvas.height - 30);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Suma stepena imaginarne jedinice 1 + i + i² + … + i^2015",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["kompleksni brojevi", "imaginarna jedinica", "ciklus stepena", "geometrijski niz", "sumiranje"]
+}
+BRAINSPARK_META-->

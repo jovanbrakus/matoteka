@@ -1,0 +1,412 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Za a > 0, b > 0, sabrati izraze:
+  E = 1/(sqrt(a+b) + sqrt(a) + sqrt(b)) + 1/(sqrt(a+b) - sqrt(a) - sqrt(b))
+
+Strategija: Postaviti smene
+  u = sqrt(a+b)
+  v = sqrt(a) + sqrt(b)
+
+Tada je nazivnik prvog razlomka (u + v), a drugog (u - v).
+
+Sabiranje razlomaka sa istim "skraćenicama":
+  1/(u+v) + 1/(u-v) = [(u-v) + (u+v)] / [(u+v)(u-v)] = 2u / (u^2 - v^2)
+
+Računanje u^2 - v^2:
+  u^2 = a + b
+  v^2 = (sqrt(a) + sqrt(b))^2 = a + 2*sqrt(ab) + b
+  u^2 - v^2 = (a+b) - (a + 2*sqrt(ab) + b) = -2*sqrt(ab)
+
+Dakle:
+  E = 2u / (-2*sqrt(ab)) = -u/sqrt(ab) = -sqrt(a+b)/sqrt(ab)
+    = -sqrt((a+b)/(ab))
+    = -sqrt(a/(ab) + b/(ab))
+    = -sqrt(1/b + 1/a)
+    = -sqrt(1/a + 1/b)
+
+Provera: a = 1, b = 1
+  sqrt(2) + 1 + 1 = sqrt(2) + 2 ≈ 3,4142
+  sqrt(2) - 1 - 1 = sqrt(2) - 2 ≈ -0,5858
+  1/3,4142 + 1/(-0,5858) ≈ 0,2929 + (-1,7071) = -1,4142
+  Poredjenje: -sqrt(1+1) = -sqrt(2) ≈ -1,4142 ✓
+
+Odgovor: (C) -sqrt(1/a + 1/b)
+
+Bitna napomena: Za a = b nazivnik drugog razlomka je sqrt(2a) - 2*sqrt(a) = sqrt(a)(sqrt(2) - 2) ≠ 0,
+pa je izraz definisan. Za a > 0, b > 0 uvek važi sqrt(a+b) < sqrt(a) + sqrt(b),
+pa je drugi nazivnik negativan, ali nenula.
+</script>
+
+<h1 data-card="problem-title">Sabiranje racionalnih izraza sa korenima</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebarski identiteti — racionalisanje, razlika kvadrata i sabiranje razlomaka</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Ako je \( a > 0 \) i \( b > 0 \), izraz</p>
+  <div class="math-block">
+    \[ \frac{1}{\sqrt{a+b}+\sqrt{a}+\sqrt{b}} + \frac{1}{\sqrt{a+b}-\sqrt{a}-\sqrt{b}} \]
+  </div>
+  <p>identički je jednak izrazu:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \dfrac{\sqrt{a+b}}{\sqrt{ab}} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( -\dfrac{\sqrt{ab}}{\sqrt{a+b}} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( -\sqrt{\dfrac{1}{a}+\dfrac{1}{b}} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( -\dfrac{1}{2\sqrt{ab}} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 2\sqrt{a+b} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Uvešćemo dve pomoćne smene \( u = \sqrt{a+b} \) i \( v = \sqrt{a} + \sqrt{b} \). Tada se izraz prepoznaje kao zbir oblika \( \tfrac{1}{u+v} + \tfrac{1}{u-v} \), koji se svodi na razlomak sa razlikom kvadrata u nazivniku, a zatim se algebarski sredi do konačnog oblika.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Sabiranje dva razlomka sa istim brojem zajedničkih članova:</strong> \( \dfrac{1}{u+v} + \dfrac{1}{u-v} = \dfrac{(u-v) + (u+v)}{(u+v)(u-v)} = \dfrac{2u}{u^2-v^2} \).</li>
+        <li><strong>Razlika kvadrata:</strong> \( (u+v)(u-v) = u^2 - v^2 \). Korisno za eliminisanje korena u nazivnicima.</li>
+        <li><strong>Kvadrat zbira korena:</strong> \( (\sqrt{a}+\sqrt{b})^2 = a + 2\sqrt{ab} + b \).</li>
+        <li><strong>Korenovanje razlomka:</strong> \( \dfrac{\sqrt{x}}{\sqrt{y}} = \sqrt{\dfrac{x}{y}} \) za \( x \ge 0,\ y > 0 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="viz-canvas" width="700" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Tok pojednostavljivanja: smena \( u = \sqrt{a+b},\ v = \sqrt{a}+\sqrt{b} \), sabiranje razlomaka i razlika kvadrata.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Uvedimo smene</h3>
+      <p>Da bismo videli strukturu, postavimo:</p>
+      <div class="math-block">
+        \[ u = \sqrt{a+b}, \qquad v = \sqrt{a} + \sqrt{b}. \]
+      </div>
+      <p>Tada se izraz piše kratko kao:</p>
+      <div class="math-block">
+        \[ E = \frac{1}{u+v} + \frac{1}{u-v}. \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je smena baš \( v = \sqrt{a}+\sqrt{b} \)?</summary>
+          <div class="detail-content">
+            <p>Zato što se u prvom nazivniku javlja \( +\sqrt{a}+\sqrt{b} \), a u drugom \( -\sqrt{a}-\sqrt{b} = -(\sqrt{a}+\sqrt{b}) \). Time se oba nazivnika svode na oblik \( u+v \) i \( u-v \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Saberimo razlomke na zajednički nazivnik</h3>
+      <p>Zajednički nazivnik je \( (u+v)(u-v) \). Tada:</p>
+      <div class="math-block">
+        \[ \frac{1}{u+v} + \frac{1}{u-v} = \frac{(u-v) + (u+v)}{(u+v)(u-v)} = \frac{2u}{(u+v)(u-v)}. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Iskoristimo razliku kvadrata</h3>
+      <p>U nazivniku se javlja klasična razlika kvadrata:</p>
+      <div class="math-block">
+        \[ (u+v)(u-v) = u^2 - v^2. \]
+      </div>
+      <p>Pa je:</p>
+      <div class="math-block">
+        \[ E = \frac{2u}{u^2 - v^2}. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunajmo \( u^2 - v^2 \)</h3>
+      <p>Pošto je \( u = \sqrt{a+b} \), važi \( u^2 = a+b \). Za \( v = \sqrt{a}+\sqrt{b} \) razvijemo kvadrat:</p>
+      <div class="math-block">
+        \[ v^2 = (\sqrt{a}+\sqrt{b})^2 = a + 2\sqrt{ab} + b. \]
+      </div>
+      <p>Oduzimanjem dobijamo:</p>
+      <div class="math-block">
+        \[ u^2 - v^2 = (a+b) - (a + 2\sqrt{ab} + b) = -2\sqrt{ab}. \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( u^2 - v^2 < 0 \)?</summary>
+          <div class="detail-content">
+            <p>Za pozitivne \( a, b \) važi nejednakost \( \sqrt{a+b} < \sqrt{a} + \sqrt{b} \), tj. \( u < v \). Zato je \( u^2 - v^2 = -2\sqrt{ab} < 0 \). Ova negativnost je razlog zašto se u rezultatu pojavljuje znak minus.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Vratimo se nazad i sredimo</h3>
+      <p>Sada zamenimo \( u \) i \( u^2 - v^2 \) u izraz:</p>
+      <div class="math-block">
+        \[ E = \frac{2u}{u^2 - v^2} = \frac{2\sqrt{a+b}}{-2\sqrt{ab}} = -\frac{\sqrt{a+b}}{\sqrt{ab}}. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Prepišimo u traženom obliku</h3>
+      <p>Iskoristimo svojstvo korena \( \tfrac{\sqrt{x}}{\sqrt{y}} = \sqrt{\tfrac{x}{y}} \) i razdvojimo razlomak:</p>
+      <div class="math-block">
+        \[ -\frac{\sqrt{a+b}}{\sqrt{ab}} = -\sqrt{\frac{a+b}{ab}} = -\sqrt{\frac{a}{ab} + \frac{b}{ab}} = -\sqrt{\frac{1}{b} + \frac{1}{a}}. \]
+      </div>
+      <p>Dakle, izraz je identički jednak \( -\sqrt{\tfrac{1}{a} + \tfrac{1}{b}} \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: numerički test za \( a = b = 1 \)</summary>
+          <div class="detail-content">
+            <p>Polazni izraz: \( \tfrac{1}{\sqrt{2}+2} + \tfrac{1}{\sqrt{2}-2} \approx 0{,}2929 + (-1{,}7071) = -1{,}4142 \).</p>
+            <p>Naš rezultat: \( -\sqrt{1+1} = -\sqrt{2} \approx -1{,}4142 \). Slaže se!</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kada vidiš dva razlomka oblika \( \tfrac{1}{X+Y} + \tfrac{1}{X-Y} \), uvek se isplati uvesti smene \( u = X,\ v = Y \): sabiranje na zajednički nazivnik daje \( \tfrac{2u}{u^2-v^2} \), a u nazivniku se &bdquo;magično&ldquo; pojavljuje razlika kvadrata koja čisti korene. Znak minus u konačnom odgovoru direktno potiče od činjenice da je \( \sqrt{a+b} < \sqrt{a}+\sqrt{b} \), tj. trougaona nejednakost za korene.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \frac{1}{\sqrt{a+b}+\sqrt{a}+\sqrt{b}} + \frac{1}{\sqrt{a+b}-\sqrt{a}-\sqrt{b}} = -\sqrt{\frac{1}{a}+\frac{1}{b}} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( \dfrac{\sqrt{a+b}}{\sqrt{ab}} \)</span>
+    <span class="answer-option" data-option="B">(B) \( -\dfrac{\sqrt{ab}}{\sqrt{a+b}} \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( -\sqrt{\dfrac{1}{a}+\dfrac{1}{b}} \)</span>
+    <span class="answer-option" data-option="D">(D) \( -\dfrac{1}{2\sqrt{ab}} \)</span>
+    <span class="answer-option" data-option="E">(E) \( 2\sqrt{a+b} \)</span>
+  </div>
+  <p class="verification">Provera za \( a = b = 1 \): polazni izraz \( \approx 0{,}2929 - 1{,}7071 = -1{,}4142 \), a \( -\sqrt{1+1} = -\sqrt{2} \approx -1{,}4142 \). ✓ Provera za \( a = 1,\ b = 4 \): \( -\sqrt{1 + \tfrac{1}{4}} = -\sqrt{1{,}25} \approx -1{,}1180 \), što se poklapa sa direktnim računanjem polaznog izraza.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešno grupisanje članova u nazivniku:</strong> Drugi nazivnik je \( \sqrt{a+b} - \sqrt{a} - \sqrt{b} \), tj. \( \sqrt{a+b} - (\sqrt{a}+\sqrt{b}) \). Ako ne izvučeš znak minus pred zagradu, smena ne radi i razlika kvadrata se ne vidi.</li>
+    <li><strong>Zaboravljen znak minus:</strong> Pošto je \( u^2 - v^2 = -2\sqrt{ab} \) (negativno!), konačan rezultat ima znak minus. Ako ga &bdquo;izgubiš&ldquo;, dobijaš pogrešan odgovor (A) umesto (C).</li>
+    <li><strong>Mešanje \( \sqrt{a+b} \) i \( \sqrt{a}+\sqrt{b} \):</strong> Ova dva izraza nisu jednaka! Upravo je njihova razlika u kvadratima ono što nam daje \( -2\sqrt{ab} \).</li>
+    <li><strong>Nedovoljno sređivanje:</strong> Oblik \( -\tfrac{\sqrt{a+b}}{\sqrt{ab}} \) je već tačan, ali nije među ponuđenim opcijama. Treba ga prepisati kao \( -\sqrt{\tfrac{1}{a}+\tfrac{1}{b}} \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta dobijaš kao identički izraz ako u istom zadatku napišeš <em>razliku</em> umesto zbira:</p>
+  <div class="math-block">
+    \[ \frac{1}{\sqrt{a+b}+\sqrt{a}+\sqrt{b}} - \frac{1}{\sqrt{a+b}-\sqrt{a}-\sqrt{b}} = \,? \]
+  </div>
+  <p>Pokušaj da izvedeš odgovor istim trikom sa smenama \( u, v \).</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Sada je \( \tfrac{1}{u+v} - \tfrac{1}{u-v} = \tfrac{(u-v)-(u+v)}{u^2-v^2} = \tfrac{-2v}{-2\sqrt{ab}} = \tfrac{v}{\sqrt{ab}} = \tfrac{\sqrt{a}+\sqrt{b}}{\sqrt{ab}} = \tfrac{1}{\sqrt{b}} + \tfrac{1}{\sqrt{a}}\). Zanimljivo je da se ovde znak minus &bdquo;poništi&ldquo; i dobijamo lep pozitivan izraz \( \tfrac{1}{\sqrt{a}}+\tfrac{1}{\sqrt{b}} \).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+
+  var canvas = document.getElementById('viz-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function drawArrow(x1, y1, x2, y2, color) {
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    var headLen = 9;
+    var angle = Math.atan2(y2 - y1, x2 - x1);
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - headLen * Math.cos(angle - Math.PI / 6), y2 - headLen * Math.sin(angle - Math.PI / 6));
+    ctx.lineTo(x2 - headLen * Math.cos(angle + Math.PI / 6), y2 - headLen * Math.sin(angle + Math.PI / 6));
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function drawBox(x, y, label, color, bg) {
+    ctx.font = 'bold 16px Courier New, monospace';
+    var pad = 18;
+    var tw = ctx.measureText(label).width;
+    var bw = tw + pad * 2;
+    var bh = 36;
+    var bx = x - bw / 2;
+    var by = y - bh / 2;
+    ctx.fillStyle = bg;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    if (ctx.roundRect) {
+      ctx.roundRect(bx, by, bw, bh, 8);
+    } else {
+      ctx.rect(bx, by, bw, bh);
+    }
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = color;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, x, y + 1);
+    ctx.textBaseline = 'alphabetic';
+  }
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    var cx = W / 2;
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Tok algebarskog pojednostavljivanja', cx, 30);
+
+    // Subtitle: smena
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 14px Inter, system-ui, sans-serif';
+    ctx.fillText('Smena: u = √(a+b),    v = √a + √b', cx, 54);
+
+    // Step 1: original expression
+    drawBox(cx, 100, '1/(u + v)  +  1/(u - v)', primary, bg);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('polazni izraz nakon smene', cx + 175, 102);
+
+    drawArrow(cx, 122, cx, 152, axis);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('zajednički nazivnik', cx + 18, 142);
+
+    // Step 2: combined fraction
+    drawBox(cx, 175, '2u / [(u+v)(u-v)]', secondary, bg);
+    drawArrow(cx, 197, cx, 227, axis);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('razlika kvadrata: (u+v)(u-v) = u² - v²', cx + 18, 217);
+
+    // Step 3: difference of squares
+    drawBox(cx, 250, '2u / (u² - v²)', secondary, bg);
+    drawArrow(cx, 272, cx, 302, axis);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('u² = a+b,   v² = a + 2√(ab) + b', cx + 18, 292);
+
+    // Step 4: substitute u^2 - v^2 = -2 sqrt(ab)
+    drawBox(cx, 325, '2√(a+b) / (-2√(ab))', highlight, bg);
+    drawArrow(cx, 347, cx, 377, axis);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('skraćivanje, izvlačenje znaka', cx + 18, 367);
+
+    // Step 5: -sqrt((a+b)/(ab))
+    drawBox(cx, 400, '-√((a+b) / (ab))', accent, bg);
+    drawArrow(cx, 422, cx, 452, axis);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('razdvajanje razlomka pod korenom', cx + 18, 442);
+
+    // Final box
+    drawBox(cx, 480, '-√(1/a + 1/b)', accent, bg);
+
+    // Final answer label
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 17px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('= konačan oblik (odgovor C)', cx, 525);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Sabiranje racionalnih izraza sa korenima — smena i razlika kvadrata",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["algebarski identiteti", "racionalisanje", "razlika kvadrata", "smena promenljive", "kvadratni koreni", "sabiranje razlomaka"]
+}
+BRAINSPARK_META-->

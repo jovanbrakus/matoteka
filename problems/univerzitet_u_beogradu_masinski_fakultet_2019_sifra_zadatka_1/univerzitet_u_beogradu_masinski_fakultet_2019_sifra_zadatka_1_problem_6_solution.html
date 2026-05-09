@@ -1,0 +1,563 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Problem: f(x) = (x^2 - 1)^2 na intervalu (-1, 1). Da li je rastuća, opadajuća ili po delovima?
+
+Strategija 1 — analiza preko izvoda.
+  f'(x) = 2(x^2 - 1) · 2x = 4x(x^2 - 1) = 4x(x-1)(x+1).
+  Na intervalu (-1, 1): faktor (x-1) je strogo NEGATIVAN (x < 1), faktor (x+1) je strogo POZITIVAN (x > -1).
+  Dakle (x-1)(x+1) = x^2 - 1 < 0 na celom (-1, 1).
+
+  Za x ∈ (-1, 0): x < 0, pa f' = 4 · (neg) · (neg) = POZITIVNO ⟹ funkcija RASTE.
+  Za x = 0: f'(0) = 0.
+  Za x ∈ (0, 1): x > 0, pa f' = 4 · (poz) · (neg) = NEGATIVNO ⟹ funkcija OPADA.
+
+  Dakle: rastuća na (-1, 0), opadajuća na (0, 1). Maksimum u x = 0: f(0) = (0 - 1)^2 = 1.
+
+Strategija 2 — algebarsko rasuđivanje (bez izvoda).
+  f(x) = (x^2 - 1)^2 = (1 - x^2)^2 (jer je kvadrat).
+  Na (-1, 1) imamo 0 ≤ x^2 < 1, dakle 0 < 1 - x^2 ≤ 1.
+  Označimo t = 1 - x^2. Onda t ∈ (0, 1] i f = t^2.
+
+  Za x ∈ (-1, 0): kako x raste od -1 ka 0, x^2 opada od 1 ka 0, pa t = 1 - x^2 raste od 0 ka 1, pa t^2 raste od 0 ka 1. Dakle f raste.
+  Za x ∈ (0, 1): kako x raste od 0 ka 1, x^2 raste od 0 ka 1, pa t = 1 - x^2 opada od 1 ka 0, pa t^2 opada. Dakle f opada.
+
+  (Ovo je jednostavnije ako učenik nije siguran sa izvodima.)
+
+Vrednosti za sanity check:
+  f(-1) = 0  (krajnja, ne uključena)
+  f(-0.5) = (0.25 - 1)^2 = 0.5625
+  f(0) = 1  (maksimum)
+  f(0.5) = (0.25 - 1)^2 = 0.5625
+  f(1) = 0  (krajnja, ne uključena)
+
+  Vidimo simetriju: f je parna funkcija (f(-x) = f(x)) jer (x^2 - 1) postaje (x^2 - 1) za -x.
+
+Globalno (na celom R), f(x) = (x^2 - 1)^2 ima oblik „W” sa minimumima na x = ±1 (vrednost 0) i lokalnim maksimumom na x = 0 (vrednost 1). Mi gledamo samo srednji deo W.
+
+Odgovor: (C) strogo rastuća za x ∈ (-1, 0), a strogo opadajuća za x ∈ (0, 1).
+
+Provera odgovora kroz upoređivanje vrednosti:
+  f(-0.5) = 0.5625, f(0) = 1, f(0.5) = 0.5625.
+  Vidimo: -0.5 → 0.5625, raste do 0 → 1; pa opada do 0.5 → 0.5625. ✓ (C)
+
+Plan vizuelnog prikaza: STATIC graf y = (x^2 - 1)^2 globalno (npr. od x = -1.5 do x = 1.5) sa istaknutim opsegom (-1, 1) i lokalnim maksimumom u (0, 1). Dva ofarbana intervala: (-1, 0) zelen (rastuća), (0, 1) crven/narandžast (opadajuća). Vertikalna isprekidana u x = 0 koja deli dva monotona dela. Visina canvasa: 550+. Možda dve oblasti — leva pokazuje globalnu „W” formu, desna „zumira” na (-1, 1). Bolje: jedan canvas, jedan graf, jasno označen interval (-1, 1) i x = 0 kao deobna tačka, plus napomena „izvan (-1, 1) je drugačija priča”.
+
+Da li dodati interaktivnost? Mogli bismo dodati draggable point P po grafu sa očitavanjem y. Korisno za uvid kako f raste i opada. Ali pošto je glavna stvar u zadatku „prepoznati monotonost po delovima”, statika sa naglaskom na tablicu znakova izvoda je dovoljna i možda jasnija. ODLUKA: STATIC, jer je suština „znak f' menja se u x = 0”.
+</script>
+
+<h1 data-card="problem-title">Monotonost funkcije \( f(x) = (x^2 - 1)^2 \) na intervalu \( (-1, 1) \)</h1>
+<p data-card="problem-subtitle" class="subtitle">Ispitivanje monotonosti — znak izvoda i ponašanje po delovima</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Data je funkcija \( f(x) = (x^2 - 1)^2 \), \( x \in (-1, 1) \). Ta funkcija je:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">strogo rastuća za \( x \in (-1, 1) \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">strogo opadajuća za \( x \in (-1, 1) \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">strogo rastuća za \( x \in (-1, 0) \), a strogo opadajuća za \( x \in (0, 1) \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">strogo opadajuća za \( x \in (-1, 0) \), a strogo rastuća za \( x \in (0, 1) \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">konstantna za \( x \in (-1, 1) \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Najbrži put: izračunati izvod \( f'(x) \), faktorisati ga, i ispitati znak na \( (-1, 1) \). Tamo gde je \( f' > 0 \), funkcija raste; gde je \( f' < 0 \), opada. Alternativno (bez izvoda): smenom \( t = 1 - x^2 \) svedemo \( f \) na \( t^2 \) i pratimo kako se \( t \) menja sa \( x \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Pravila za izvod i monotonost</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Pravilo lanca</span> Ako je \( f(x) = \big(g(x)\big)^n \), onda \( f'(x) = n \big(g(x)\big)^{n-1} \cdot g'(x) \).</li>
+        <li><span class="formula-label">Znak izvoda</span> Ako je \( f'(x) > 0 \) na intervalu, onda \( f \) strogo raste na njemu. Ako je \( f'(x) < 0 \), strogo opada. \( f'(x) = 0 \) u izolovanim tačkama ne kvari strogu monotonost na okolnim intervalima.</li>
+        <li><span class="formula-label">Faktorizacija</span> \( x^2 - 1 = (x - 1)(x + 1) \) — razlika kvadrata.</li>
+        <li><span class="formula-label">Parna funkcija</span> Ako je \( f(-x) = f(x) \), graf je simetričan u odnosu na \( y \)-osu. Naša \( f(x) = (x^2 - 1)^2 \) je parna jer \( ((-x)^2 - 1)^2 = (x^2 - 1)^2 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — graf i ofarbani intervali">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="mono-canvas" width="760" height="580"></canvas>
+  </div>
+  <p class="canvas-caption">Plava kriva je \( y = (x^2 - 1)^2 \). Sivo je deo izvan zadatog intervala (\( x \le -1 \) i \( x \ge 1 \)) — globalna „W” forma. Zeleno je deo \( (-1, 0) \) gde funkcija <em>raste</em>, narandžasto je \( (0, 1) \) gde <em>opada</em>. Crna tačka u \( (0, 1) \) je lokalni maksimum unutar intervala.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo izvod (pravilo lanca)</h3>
+      <p>Funkcija je „kvadrat nečega”, pa po pravilu lanca:</p>
+      <div class="math-block">\[ f(x) = (x^2 - 1)^2 \;\;\Longrightarrow\;\; f'(x) = 2 \cdot (x^2 - 1) \cdot \dfrac{d}{dx}(x^2 - 1) = 2(x^2 - 1) \cdot 2x. \]</div>
+      <p>Skraćeno:</p>
+      <div class="math-block">\[ f'(x) = 4x(x^2 - 1) = 4x(x - 1)(x + 1). \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto se „spoljni” faktor \( 2 \) i „unutrašnji” \( 2x \) množe?</summary>
+          <div class="detail-content"><p>Ako je \( y = u^2 \) gde je \( u = u(x) \), tada \( \dfrac{dy}{dx} = \dfrac{dy}{du} \cdot \dfrac{du}{dx} = 2u \cdot u' \). Kod nas \( u = x^2 - 1 \) i \( u' = 2x \), pa \( f' = 2(x^2 - 1) \cdot 2x = 4x(x^2 - 1) \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Analizirate znak na \( (-1, 1) \) — faktor po faktor</h3>
+      <p>Na otvorenom intervalu \( (-1, 1) \) važi \( -1 < x < 1 \), odakle:</p>
+      <ul>
+        <li>\( x + 1 > 0 \) (jer \( x > -1 \)) — uvek <strong>+</strong>.</li>
+        <li>\( x - 1 < 0 \) (jer \( x < 1 \)) — uvek <strong>−</strong>.</li>
+        <li>Faktor \( x \): može biti negativan, nula, ili pozitivan u zavisnosti od mesta.</li>
+        <li>Konstanta \( 4 \): uvek <strong>+</strong>.</li>
+      </ul>
+      <p>Proizvod \( (x - 1)(x + 1) = x^2 - 1 \) je <em>negativan</em> na celom \( (-1, 1) \). Dakle znak izvoda zavisi samo od znaka faktora \( x \):</p>
+      <div class="math-block">\[ f'(x) = \underbrace{4}_{+} \cdot \underbrace{x}_{?} \cdot \underbrace{(x^2 - 1)}_{-}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Tablica znakova izvoda</h3>
+      <p>Razmatramo dva pod-intervala:</p>
+      <ul>
+        <li>Za \( x \in (-1, 0) \): \( x < 0 \) (negativan), pa \( f'(x) = (+) \cdot (-) \cdot (-) = + > 0 \). Funkcija <strong>raste</strong>.</li>
+        <li>Za \( x = 0 \): \( f'(0) = 4 \cdot 0 \cdot (-1) = 0 \). Tu je „prevoj” — kandidat za lokalni ekstrem.</li>
+        <li>Za \( x \in (0, 1) \): \( x > 0 \) (pozitivan), pa \( f'(x) = (+) \cdot (+) \cdot (-) = - < 0 \). Funkcija <strong>opada</strong>.</li>
+      </ul>
+      <p>Pošto izvod menja znak iz „+” u „−” pri prolasku kroz \( x = 0 \), tu je <strong>lokalni maksimum</strong>. Vrednost u njemu:</p>
+      <div class="math-block">\[ f(0) = (0 - 1)^2 = 1. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kako brzo „pročitati” znak proizvoda triju faktora?</summary>
+          <div class="detail-content"><p>Broj negativnih faktora je glavni: paran broj negativnih → ukupno pozitivno; neparan broj negativnih → ukupno negativno. Na \( (-1, 0) \) imamo dva negativna (\( x \) i \( x^2 - 1 \)) → pozitivno. Na \( (0, 1) \) imamo jedan negativan (samo \( x^2 - 1 \)) → negativno.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Sanity check vrednostima</h3>
+      <p>Računamo nekoliko tačnih vrednosti da potvrdimo:</p>
+      <div class="math-block">\[ f(-0{,}5) = (0{,}25 - 1)^2 = (-0{,}75)^2 = 0{,}5625, \]</div>
+      <div class="math-block">\[ f(0) = (0 - 1)^2 = 1, \]</div>
+      <div class="math-block">\[ f(0{,}5) = (0{,}25 - 1)^2 = (-0{,}75)^2 = 0{,}5625. \]</div>
+      <p>Niz \( 0{,}5625 \to 1 \to 0{,}5625 \) jasno pokazuje: <strong>raste</strong> na \( (-1, 0) \), pa <strong>opada</strong> na \( (0, 1) \). Funkcija je takođe <em>parna</em> (\( f(-x) = f(x) \)), pa graf izgleda simetrično u odnosu na \( y \)-osu — što potvrđuje strukturu.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Alternativni argument bez izvoda (za one koji ne vole derivacije)</h3>
+      <p>Smenom \( t = 1 - x^2 \) imamo \( f(x) = (x^2 - 1)^2 = (-(1 - x^2))^2 = (1 - x^2)^2 = t^2 \).</p>
+      <ul>
+        <li>Na \( (-1, 0) \): \( x \) raste od \( -1 \) ka \( 0 \), pa \( x^2 \) <em>opada</em> od \( 1 \) ka \( 0 \), pa \( t = 1 - x^2 \) <em>raste</em> od \( 0 \) ka \( 1 \), pa i \( t^2 \) <em>raste</em>. Zaključak: \( f \) raste.</li>
+        <li>Na \( (0, 1) \): \( x \) raste od \( 0 \) ka \( 1 \), pa \( x^2 \) <em>raste</em> od \( 0 \) ka \( 1 \), pa \( t \) <em>opada</em> od \( 1 \) ka \( 0 \), pa \( t^2 \) <em>opada</em>. Zaključak: \( f \) opada.</li>
+      </ul>
+      <p>Isti rezultat kao i izvodni metod — što je fina dvostruka potvrda.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Funkcija \( (x^2 - 1)^2 \) globalno ima oblik <strong>„W”</strong> — minimumi su u \( x = \pm 1 \) (vrednost \( 0 \)), a izgovara se „lokalni vrh” na sredini, u \( x = 0 \), gde dostiže \( 1 \). Pošto zadatak gleda samo unutrašnji deo \( (-1, 1) \), vidimo levo od nule rastući deo, a desno od nule opadajući deo — taman „srednji breg” iz globalne „W” forme. Trik koji ovo razotkriva: kvadrat je <em>uvek nenegativan</em> i jednak je nuli baš tamo gde je osnova nula (\( x = \pm 1 \)). Sve između tih nula mora biti pozitivno, sa maksimumom tamo gde je \( |x^2 - 1| \) najveći — to je u \( x = 0 \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Brkanje sa parent-funkcijom \( y = x^2 - 1 \).</strong> Bez kvadriranja, \( y = x^2 - 1 \) je opadajuća na \( (-\infty, 0) \) i rastuća na \( (0, +\infty) \). Sa kvadriranjem se znakovi „prevrću” u nekim oblastima — naročito tu gde je \( x^2 - 1 < 0 \) (kao na \( (-1, 1) \)). Rezultat je odgovor (C), <em>ne</em> (D).</li>
+    <li><strong>Pogrešan izbor (D).</strong> Ako pomešaš znak proizvoda i pomisliš da je \( f' < 0 \) na \( (-1, 0) \) i \( f' > 0 \) na \( (0, 1) \), izabraćeš (D). Vežbaj proveru: \( f(0) = 1 \) je <em>veće</em> nego \( f(-0{,}5) = 0{,}5625 \) i \( f(0{,}5) = 0{,}5625 \) — dakle \( x = 0 \) je <em>vrh</em>, a ne dno.</li>
+    <li><strong>Konfuzija oko stroge vs. ne-stroge monotonosti.</strong> U tački \( x = 0 \) izvod je \( 0 \), ali to <em>ne</em> sprečava strogu monotonost na pojedinačnim intervalima \( (-1, 0) \) i \( (0, 1) \) — strogo se odnosi na svaki pojedinačno, ne na njihovu uniju.</li>
+    <li><strong>Pretpostavka da je „kvadrat uvek raste”.</strong> \( g(x)^2 \) raste tamo gde \( g \) raste — <em>ali</em> samo ako \( g \ge 0 \). Kada je \( g < 0 \), kvadriranje obrće monotonost. Naša \( g(x) = x^2 - 1 \) je <em>negativna</em> na celom \( (-1, 1) \), pa zato kvadriranje „obrće priču”.</li>
+    <li><strong>Zaboravljanje parnosti.</strong> Pošto je \( f \) parna, dovoljno je analizirati ponašanje na \( [0, 1) \), a onda po simetriji prebaciti na \( (-1, 0] \). Ovo skraćuje rad za pola.</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ f \;\text{strogo raste na}\; (-1, 0), \quad f \;\text{strogo opada na}\; (0, 1) \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) strogo rastuća za \( x \in (-1, 1) \)</span>
+    <span class="answer-option" data-option="B">(B) strogo opadajuća za \( x \in (-1, 1) \)</span>
+    <span class="answer-option correct" data-option="C">(C) strogo rastuća za \( x \in (-1, 0) \), a strogo opadajuća za \( x \in (0, 1) \)</span>
+    <span class="answer-option" data-option="D">(D) strogo opadajuća za \( x \in (-1, 0) \), a strogo rastuća za \( x \in (0, 1) \)</span>
+    <span class="answer-option" data-option="E">(E) konstantna za \( x \in (-1, 1) \)</span>
+  </div>
+  <p class="verification">Provera vrednostima: \( f(-0{,}5) = 0{,}5625 \), \( f(0) = 1 \), \( f(0{,}5) = 0{,}5625 \). Niz raste sa \( 0{,}5625 \) ka \( 1 \) između \( -0{,}5 \) i \( 0 \), zatim opada nazad ka \( 0{,}5625 \) između \( 0 \) i \( 0{,}5 \). ✓ Potvrda izvodom: \( f'(x) = 4x(x^2 - 1) \); na \( (-1, 0) \) imamo dva negativna faktora (poz), na \( (0, 1) \) jedan (neg). ✓</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Kako bi izgledala tablica monotonosti za istu funkciju \( f(x) = (x^2 - 1)^2 \), ali na <em>celom</em> realnom domenu \( \mathbb{R} \)? Koliko ima ekstrema i koje su njihove vrste?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Iz \( f'(x) = 4x(x - 1)(x + 1) \) vidimo tri nule: \( x = -1, 0, 1 \). Znakovi u četiri intervala: \( (-\infty, -1) \): \( (+)(-)(-) = + \) tj. <em>poz</em> ispred faktora 4… polako: \( 4 \cdot (\text{neg}) \cdot (\text{neg}) \cdot (\text{neg}) = \text{neg} \). Dakle: opada na \( (-\infty, -1) \), raste na \( (-1, 0) \), opada na \( (0, 1) \), raste na \( (1, +\infty) \). To je klasičan oblik <strong>„W”</strong>: dva apsolutna minimuma (vrednost \( 0 \)) u \( x = \pm 1 \), i jedan lokalni maksimum (vrednost \( 1 \)) u \( x = 0 \). Funkcija je nenegativna, a teži ka \( +\infty \) kada \( x \to \pm \infty \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('mono-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  var W = canvas.width, H = canvas.height;
+  var marginL = 80, marginR = 50, marginT = 70, marginB = 130;
+  var plotW = W - marginL - marginR;
+  var plotH = H - marginT - marginB;
+
+  // Domen prikaza: malo šire od (-1, 1) da se vidi globalna W forma
+  var xMin = -1.6, xMax = 1.6;
+  var yMin = -0.15, yMax = 1.6;
+
+  function tx(x) { return marginL + (x - xMin) / (xMax - xMin) * plotW; }
+  function ty(y) { return marginT + (yMax - y) / (yMax - yMin) * plotH; }
+
+  function f(x) { return Math.pow(x*x - 1, 2); }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var warning   = cv('--sol-canvas-warning');
+    var tertiary  = cv('--sol-canvas-tertiary');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Naslov
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText('y = (x² − 1)²    na  x ∈ (−1, 1)', marginL, 30);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Globalna W-forma; istaknut zadati interval i delovi rastenja/opadanja.', marginL, 52);
+
+    // Pozadina ploče
+    ctx.fillStyle = cvAlpha('--sol-canvas-grid', 0.18);
+    ctx.fillRect(marginL, marginT, plotW, plotH);
+
+    // Osenči regije: (-1, 0) zelena, (0, 1) narandžasta — za istaknuti zadati interval
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.18);
+    ctx.fillRect(tx(-1), marginT, tx(0) - tx(-1), plotH);
+    ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.18);
+    ctx.fillRect(tx(0), marginT, tx(1) - tx(0), plotH);
+
+    // Mreža
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var gx = -1.5; gx <= 1.5; gx += 0.5) {
+      ctx.beginPath();
+      ctx.moveTo(tx(gx), marginT);
+      ctx.lineTo(tx(gx), marginT + plotH);
+      ctx.stroke();
+    }
+    for (var gy = 0; gy <= 1.5; gy += 0.5) {
+      ctx.beginPath();
+      ctx.moveTo(marginL, ty(gy));
+      ctx.lineTo(marginL + plotW, ty(gy));
+      ctx.stroke();
+    }
+
+    // Ose
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    // x-osa
+    ctx.beginPath();
+    ctx.moveTo(marginL, ty(0));
+    ctx.lineTo(marginL + plotW, ty(0));
+    ctx.stroke();
+    // y-osa (kroz x = 0)
+    ctx.beginPath();
+    ctx.moveTo(tx(0), marginT);
+    ctx.lineTo(tx(0), marginT + plotH);
+    ctx.stroke();
+    // x-strelica
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(marginL + plotW, ty(0));
+    ctx.lineTo(marginL + plotW - 8, ty(0) - 5);
+    ctx.lineTo(marginL + plotW - 8, ty(0) + 5);
+    ctx.closePath();
+    ctx.fill();
+    // y-strelica
+    ctx.beginPath();
+    ctx.moveTo(tx(0), marginT);
+    ctx.lineTo(tx(0) - 5, marginT + 8);
+    ctx.lineTo(tx(0) + 5, marginT + 8);
+    ctx.closePath();
+    ctx.fill();
+
+    // Sive vertikale: granice intervala (-1, 1)
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 1.8;
+    ctx.setLineDash([6, 5]);
+    ctx.beginPath();
+    ctx.moveTo(tx(-1), marginT);
+    ctx.lineTo(tx(-1), marginT + plotH);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(tx(1), marginT);
+    ctx.lineTo(tx(1), marginT + plotH);
+    ctx.stroke();
+    // Vertikala u x = 0 (deo intervala — međaš)
+    ctx.strokeStyle = secondary;
+    ctx.beginPath();
+    ctx.moveTo(tx(0), marginT);
+    ctx.lineTo(tx(0), marginT + plotH);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // ZADATA FUNKCIJA — kriva
+    // 1) deo izvan (-1, 1): siv (kontekst)
+    ctx.strokeStyle = cvAlpha('--sol-canvas-muted', 0.55);
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    var first = true;
+    for (var i = 0; i <= 200; i++) {
+      var x = xMin + (-1 - xMin) * i / 200;
+      var y = f(x);
+      if (first) { ctx.moveTo(tx(x), ty(y)); first = false; }
+      else ctx.lineTo(tx(x), ty(y));
+    }
+    ctx.stroke();
+    ctx.beginPath();
+    first = true;
+    for (var j = 0; j <= 200; j++) {
+      var xj = 1 + (xMax - 1) * j / 200;
+      var yj = f(xj);
+      if (first) { ctx.moveTo(tx(xj), ty(yj)); first = false; }
+      else ctx.lineTo(tx(xj), ty(yj));
+    }
+    ctx.stroke();
+
+    // 2) zelen deo (-1, 0): rastuća
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    first = true;
+    for (var k = 0; k <= 200; k++) {
+      var xk = -1 + (0 - (-1)) * k / 200;
+      var yk = f(xk);
+      if (first) { ctx.moveTo(tx(xk), ty(yk)); first = false; }
+      else ctx.lineTo(tx(xk), ty(yk));
+    }
+    ctx.stroke();
+
+    // 3) narandžast deo (0, 1): opadajuća
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    first = true;
+    for (var m = 0; m <= 200; m++) {
+      var xm = 0 + (1 - 0) * m / 200;
+      var ym = f(xm);
+      if (first) { ctx.moveTo(tx(xm), ty(ym)); first = false; }
+      else ctx.lineTo(tx(xm), ty(ym));
+    }
+    ctx.stroke();
+
+    // Lokalni maksimum u (0, 1)
+    var px0 = tx(0), py0 = ty(1);
+    ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.3);
+    ctx.beginPath();
+    ctx.arc(px0, py0, 14, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = highlight;
+    ctx.beginPath();
+    ctx.arc(px0, py0, 7, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('lok. maks  (0, 1)', px0 + 12, py0 - 4);
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('f\'(0) = 0', px0 + 12, py0 + 12);
+
+    // Krajnje tačke (-1, 0) i (1, 0) — otvorene (interval otvoren)
+    [-1, 1].forEach(function(xx) {
+      var ppx = tx(xx), ppy = ty(0);
+      ctx.fillStyle = bg;
+      ctx.strokeStyle = danger;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.arc(ppx, ppy, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+    });
+
+    // Strelice rasta/opadanja iznad ofarbanih zona
+    var arrY = ty(1.4);
+    // Zelena strelica desno (rast)
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(tx(-0.9), arrY + 8);
+    ctx.lineTo(tx(-0.1), arrY - 8);
+    ctx.stroke();
+    var ang1 = Math.atan2(-16, tx(-0.1) - tx(-0.9));
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.moveTo(tx(-0.1), arrY - 8);
+    ctx.lineTo(tx(-0.1) - 11 * Math.cos(ang1 - 0.4), arrY - 8 - 11 * Math.sin(ang1 - 0.4));
+    ctx.lineTo(tx(-0.1) - 11 * Math.cos(ang1 + 0.4), arrY - 8 - 11 * Math.sin(ang1 + 0.4));
+    ctx.closePath();
+    ctx.fill();
+    // Tekst
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillStyle = accent;
+    ctx.fillText('raste  (f\' > 0)', tx(-0.5), arrY - 22);
+
+    // Narandžasta strelica (opada)
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(tx(0.1), arrY - 8);
+    ctx.lineTo(tx(0.9), arrY + 8);
+    ctx.stroke();
+    var ang2 = Math.atan2(16, tx(0.9) - tx(0.1));
+    ctx.fillStyle = warning;
+    ctx.beginPath();
+    ctx.moveTo(tx(0.9), arrY + 8);
+    ctx.lineTo(tx(0.9) - 11 * Math.cos(ang2 - 0.4), arrY + 8 - 11 * Math.sin(ang2 - 0.4));
+    ctx.lineTo(tx(0.9) - 11 * Math.cos(ang2 + 0.4), arrY + 8 - 11 * Math.sin(ang2 + 0.4));
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = warning;
+    ctx.fillText('opada  (f\' < 0)', tx(0.5), arrY - 22);
+
+    // Oznake na osama
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    [-1.5, -1, -0.5, 0, 0.5, 1, 1.5].forEach(function(t) {
+      var lbl = (t === 0) ? '0' : t.toString().replace('.', ',');
+      ctx.fillText(lbl, tx(t), ty(0) + 6);
+    });
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    [0.5, 1, 1.5].forEach(function(t) {
+      ctx.fillText(t.toString().replace('.', ','), marginL - 6, ty(t));
+    });
+
+    // Donji red — tablica monotonosti
+    var tblY = H - 90;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Tablica:', marginL, tblY);
+    // tri kolone
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('x', marginL + 80, tblY - 14);
+    ctx.fillStyle = accent;
+    ctx.fillText('(−1, 0)', marginL + 200, tblY - 14);
+    ctx.fillStyle = warning;
+    ctx.fillText('(0, 1)', marginL + 350, tblY - 14);
+    // red sa f'
+    ctx.fillStyle = muted;
+    ctx.fillText('f\'(x)', marginL + 80, tblY + 8);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillText('+', marginL + 200, tblY + 8);
+    ctx.fillStyle = warning;
+    ctx.fillText('−', marginL + 350, tblY + 8);
+    // red sa f
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('f(x)', marginL + 80, tblY + 28);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.fillText('↗ raste', marginL + 200, tblY + 28);
+    ctx.fillStyle = warning;
+    ctx.fillText('↘ opada', marginL + 350, tblY + 28);
+
+    // Završna napomena
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText('Odgovor: (C) — rastuća na (−1, 0), opadajuća na (0, 1)', W / 2, H - 16);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Monotonost funkcije f(x) = (x²−1)² na intervalu (−1, 1)",
+  "subject": "math",
+  "unit": "calculus",
+  "topic_tags": ["monotonost", "izvod", "ekstremi", "pravilo lanca", "ispitivanje funkcije"]
+}
+BRAINSPARK_META-->

@@ -1,0 +1,460 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Petocifrenih prirodnih brojeva, cije su sve cifre razlicite i pripadaju skupu {1,2,3,4,5}, ima.
+
+Analiza:
+- Skup ima tacno 5 cifara: {1, 2, 3, 4, 5}.
+- Trebamo PETOCIFRENI broj, dakle 5 pozicija.
+- Sve cifre razlicite — znaci nijedna se ne ponavlja.
+- Pripadaju skupu {1,2,3,4,5}.
+
+Pošto trebamo 5 razlicitih cifara, a skup ima tacno 5 elemenata, MORAMO upotrebiti svaku cifru tacno jednom.
+Dakle to je broj permutacija skupa od 5 elemenata = 5! = 5 × 4 × 3 × 2 × 1 = 120.
+
+Takodje, nema problema sa "vodecom nulom" — 0 nije u skupu, pa svaka pozicija moze biti bilo koja cifra.
+
+Po koracima (popunjavanje pozicija sleva nadesno):
+  Pozicija desetina hiljada: 5 izbora (bilo koja od {1,2,3,4,5})
+  Pozicija hiljada:           4 izbora (preostale 4 cifre)
+  Pozicija stotina:           3 izbora
+  Pozicija desetica:          2 izbora
+  Pozicija jedinica:          1 izbor
+Ukupno: 5 × 4 × 3 × 2 × 1 = 120.
+
+Tacan odgovor: (B) 120.
+
+Eliminacija:
+  (A) 32 — nema veze sa permutacijama.
+  (B) 120 — TACAN, 5!.
+  (C) 25 = 5^2, suvise malo.
+  (D) 125 = 5^3, ako student misli da smem ponavljati cifre na 3 pozicije? Ili 5^3 nesto. Ne radi.
+       Zapravo, ako bi se dozvolilo ponavljanje: 5^5 = 3125, ne 125.
+       125 = 5*5*5 mozda neka pogresna logika "tri pozicije sa po 5 izbora"; ili 125 = 5^3.
+  (E) 48 — neka greska, mozda 4! + 4! = 48? Ne. 48 = 2 × 24 = 2 × 4!. Mozda 4! × 2 = 48 ako student izostavi neku cifru.
+
+Glavni pitfall: pomesati permutacije sa kombinacijama (C(5,5) = 1, sto bi dalo 1, ali to nije ponuda).
+Drugi: ne primetiti da su sve cifre RAZLICITE i da skup ima tacno 5 elemenata, pa pomisliti
+da treba 5^5 = 3125 (sa ponavljanjem). Ali 3125 nije medju opcijama.
+Treci: zaokruzivanje na 5 × 4 × 3 = 60 (samo prve tri pozicije) — daje 60, ali nije medju opcijama.
+4 × 3 × 2 × 1 = 24, ako student izostavi prvu poziciju.
+5 × 4 × 3 × 2 = 120 ako 4 razlicite cifre na 4 pozicije iz skupa od 5? Tu bi C(5,4) × 4! = 5 × 24 = 120 — koincidencija.
+
+Vizuelizacija: 5 kutija sa brojem mogucih izbora ispod. Mozda mali tree-fragment koji pokazuje
+prvi nivo (5 grana) i drugi (4 grane) i sustinu da se broj smanjuje.
+Statican — combinatorics, ne treba interaktivnost.
+</script>
+
+<h1 data-card="problem-title">Permutacije pet različitih cifara — broj petocifrenih brojeva</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika — princip množenja, permutacije, faktorijel</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Petocifrenih prirodnih brojeva, čije su sve cifre različite i pripadaju skupu \( \{1, 2, 3, 4, 5\} \), ima:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">skup cifara</span>
+      <span class="given-value">\( \{1,2,3,4,5\} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">broj cifara u broju</span>
+      <span class="given-value">\( 5 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">uslov</span>
+      <span class="given-value">sve cifre različite</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 32 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 120 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 25 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 125 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 48 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Pošto skup ima tačno \( 5 \) cifara, a tražimo petocifrene brojeve sa svim različitim ciframa, moramo iskoristiti svaku cifru iz \( \{1,2,3,4,5\} \) tačno jednom. To je broj <strong>permutacija</strong> skupa od \( 5 \) elemenata: \( 5! \). Računamo direktno koristeći princip množenja: za prvu poziciju \( 5 \) izbora, za drugu \( 4 \), itd.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Permutacije i faktorijel</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Princip množenja:</strong> ako se odluka donosi u \( k \) nezavisnih koraka, sa \( n_1, n_2, \dots, n_k \) izbora, ukupan broj ishoda je \( n_1 \cdot n_2 \cdots n_k \).</li>
+        <li><strong>Permutacija</strong> skupa od \( n \) elemenata je svaki uređeni raspored svih elemenata. Broj permutacija je \( n! = n \cdot (n-1) \cdot (n-2) \cdots 2 \cdot 1 \).</li>
+        <li>Mali faktorijeli: \( 1! = 1 \), \( 2! = 2 \), \( 3! = 6 \), \( 4! = 24 \), \( 5! = 120 \), \( 6! = 720 \).</li>
+        <li>U ovom problemu nije briga oko „vodeće nule" — broj \( 0 \) nije u skupu.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="720" height="600"></canvas>
+  </div>
+  <p class="canvas-caption">Pet pozicija u broju i broj preostalih izbora za svaku. Iznad — fragment „stabla odluka" za prvu poziciju (\( 5 \) grana) i drugu poziciju (\( 4 \) grane od svake). Ispod — formula \( 5 \cdot 4 \cdot 3 \cdot 2 \cdot 1 = 120 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Šta tačno tražimo?</h3>
+      <p>Petocifren broj ima \( 5 \) pozicija: desetine hiljada, hiljade, stotine, desetice, jedinice. Sve cifre moraju biti različite i moraju doći iz skupa \( \{1,2,3,4,5\} \).</p>
+      <p>Ključno zapažanje: skup ima tačno \( 5 \) elemenata, a treba nam \( 5 \) <em>različitih</em> cifara. Dakle moramo upotrebiti svaki element skupa tačno jednom — to su <strong>permutacije skupa</strong> \( \{1,2,3,4,5\} \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Princip množenja, pozicija po poziciju</h3>
+      <p>Popunjavamo pozicije sleva nadesno:</p>
+      <ul>
+        <li><strong>1. pozicija</strong> (desetine hiljada): \( 5 \) izbora — bilo koja od \( \{1,2,3,4,5\} \).</li>
+        <li><strong>2. pozicija</strong> (hiljade): \( 4 \) izbora — bilo koja preostala cifra.</li>
+        <li><strong>3. pozicija</strong> (stotine): \( 3 \) izbora.</li>
+        <li><strong>4. pozicija</strong> (desetice): \( 2 \) izbora.</li>
+        <li><strong>5. pozicija</strong> (jedinice): \( 1 \) izbor — onaj jedan broj koji je još preostao.</li>
+      </ul>
+      <p>Po principu množenja, ukupan broj ishoda je proizvod ovih brojeva.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto se broj izbora smanjuje za \( 1 \) na svakoj sledećoj poziciji?</summary>
+          <div class="detail-content"><p>Zato što „sve cifre različite" znači da već iskorišćenu cifru ne smemo ponovo upotrebiti. Posle prvog izbora ostane \( 5 - 1 = 4 \) neiskorišćenih cifara, pa onda \( 3 \), itd.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Računanje proizvoda</h3>
+      <p>Proizvod je faktorijel \( 5! \):</p>
+      <div class="math-block">\[ 5 \cdot 4 \cdot 3 \cdot 2 \cdot 1 \;=\; 5! \;=\; 120. \]</div>
+      <p>Možemo izračunati i postupno: \( 5 \cdot 4 = 20 \), \( 20 \cdot 3 = 60 \), \( 60 \cdot 2 = 120 \), \( 120 \cdot 1 = 120 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Sanity-check: nema problema sa vodećom nulom</h3>
+      <p>U problemima sa skupom koji uključuje \( 0 \) treba paziti da se \( 0 \) ne nađe na prvoj poziciji (broj koji počinje nulom nije „petocifren"). Ovde je skup \( \{1,2,3,4,5\} \) — bez nule, pa je svaka permutacija automatski validan petocifren broj.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: navedi tri primera takvih brojeva.</summary>
+          <div class="detail-content"><p>Na primer: \( 12345 \), \( 54321 \), \( 31254 \). Svi imaju pet različitih cifara iz skupa \( \{1,2,3,4,5\} \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kada broj pozicija = broj raspoloživih elemenata = broj <em>različitih</em> elemenata koje moramo upotrebiti, problem se uvek svodi na <strong>permutaciju</strong>. Tu je odgovor jednostavno \( n! \), bez ikakvih dodatnih izbora ili komplikacija.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ 5! \;=\; 5 \cdot 4 \cdot 3 \cdot 2 \cdot 1 \;=\; 120 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 32 \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( 120 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 25 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 125 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 48 \)</span>
+  </div>
+  <p class="verification">Provera principom množenja: \( 5 \) opcija za prvu cifru, \( 4 \) za drugu, \( 3 \), \( 2 \), \( 1 \) — proizvod je \( 120 \). Alternativno: ovo je broj permutacija pet objekata, \( P_5 = 5! = 120 \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pomešati sa varijacijama sa ponavljanjem.</strong> Da je dozvoljeno ponavljanje cifara, odgovor bi bio \( 5^5 = 3125 \) — ali ovde uslov „sve cifre različite" zabranjuje ponavljanje.</li>
+    <li>Pomešati sa kombinacijama. \( \binom{5}{5} = 1 \) — to bi bio broj <em>neuredjenih</em> izbora svih pet, ali nas zanima uređeni raspored u brojeve.</li>
+    <li>Misliti da postoji „problem vodeće cifre" i oduzeti nešto — nije potrebno, jer \( 0 \) nije u skupu.</li>
+    <li>Računati \( 5^3 = 125 \) ili sličnu pogrešnu formulu (zamka odgovor (D)).</li>
+    <li>Stati na \( 5 \cdot 4 \cdot 3 = 60 \) — uzeti samo prve tri pozicije i zaboraviti ostale dve.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koliko ima takvih petocifrenih brojeva (sa svim različitim ciframa iz \( \{1,2,3,4,5\} \)) koji su <em>parni</em>?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Broj je paran ako i samo ako mu je poslednja cifra parna. Iz skupa \( \{1,2,3,4,5\} \) parne su \( \{2, 4\} \) — \( 2 \) izbora za poslednju cifru. Preostale \( 4 \) cifre slobodno permutujemo na prve četiri pozicije: \( 4! = 24 \). Ukupno: \( 2 \cdot 24 = 48 \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var tertiary  = cv('--sol-canvas-tertiary');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var W = canvas.width, H = canvas.height;
+
+    // ── Title ──
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Princip množenja: koliko izbora na svakoj poziciji?', W / 2, 28);
+
+    // ── Decision tree fragment (top half) ──
+    // Root: position 1, 5 children labeled 1..5
+    // From one child (e.g. "3"), draw 4 grandchildren {1,2,4,5}
+    var rootX = W / 2;
+    var rootY = 70;
+
+    // Root node
+    ctx.fillStyle = primary;
+    ctx.beginPath();
+    ctx.arc(rootX, rootY, 22, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = bg;
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('start', rootX, rootY + 4);
+
+    // Level 1: 5 children at y = 160
+    var l1Y = 160;
+    var l1Spacing = 110;
+    var l1XStart = rootX - 2 * l1Spacing;
+    var l1Labels = ['1', '2', '3', '4', '5'];
+    var l1Cx = [];
+
+    for (var i = 0; i < 5; i++) {
+      var cx = l1XStart + i * l1Spacing;
+      l1Cx.push(cx);
+      // Edge from root
+      ctx.strokeStyle = (i === 2 ? accent : muted);
+      ctx.lineWidth = (i === 2 ? 2.5 : 1.5);
+      ctx.beginPath();
+      ctx.moveTo(rootX, rootY + 22);
+      ctx.lineTo(cx, l1Y - 18);
+      ctx.stroke();
+      // Node
+      ctx.fillStyle = (i === 2 ? accent : secondary);
+      ctx.beginPath();
+      ctx.arc(cx, l1Y, 18, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = bg;
+      ctx.font = 'bold 14px Inter, system-ui';
+      ctx.fillText(l1Labels[i], cx, l1Y + 5);
+    }
+
+    // Label "5 izbora" between root and level 1
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText('5 izbora', l1XStart + 5 * l1Spacing - 30, rootY + 70);
+
+    // Level 2: from cx of label "3" (i=2), draw 4 grandchildren {1,2,4,5}
+    var parentCx = l1Cx[2];
+    var parentCy = l1Y;
+    var l2Y = 250;
+    var l2Spacing = 28;
+    var l2Labels = ['1', '2', '4', '5'];
+    for (var j = 0; j < 4; j++) {
+      var gcx = parentCx + (j - 1.5) * l2Spacing;
+      // Edge
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(parentCx, parentCy + 18);
+      ctx.lineTo(gcx, l2Y - 12);
+      ctx.stroke();
+      // Node
+      ctx.fillStyle = tertiary;
+      ctx.beginPath();
+      ctx.arc(gcx, l2Y, 11, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = bg;
+      ctx.font = 'bold 11px Inter, system-ui';
+      ctx.fillText(l2Labels[j], gcx, l2Y + 4);
+    }
+    // Label "4 izbora" near level 2
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 12px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText('4 izbora', parentCx + 60, l2Y - 8);
+
+    // "..." dots showing tree continues
+    ctx.fillStyle = muted;
+    ctx.font = 'bold 16px Inter, system-ui';
+    ctx.textAlign = 'center';
+    for (var d = 0; d < 4; d++) {
+      var dotX = parentCx + (d - 1.5) * l2Spacing;
+      ctx.fillText('⋮', dotX, l2Y + 28);
+    }
+
+    // Annotation about tree
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 12px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('(prikazana je samo grana za izbor „3" na 1. poziciji — i njena 4 nastavka)', W / 2, l2Y + 60);
+
+    // ── Five boxes at bottom half ──
+    var boxesY = 360;
+    var boxW = 90, boxH = 90, gap = 18;
+    var totalW = 5 * boxW + 4 * gap;
+    var boxStartX = (W - totalW) / 2;
+
+    var positionLabels = ['des. hiljada', 'hiljade', 'stotine', 'desetice', 'jedinice'];
+    var choiceCounts = [5, 4, 3, 2, 1];
+    var boxColors = [primary, secondary, accent, highlight, tertiary];
+
+    // Section title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Pet pozicija u broju  i  broj preostalih izbora', W / 2, boxesY - 18);
+
+    for (var b = 0; b < 5; b++) {
+      var bx = boxStartX + b * (boxW + gap);
+      // Box background tint
+      ctx.fillStyle = cvAlpha(['--sol-canvas-primary','--sol-canvas-secondary','--sol-canvas-accent','--sol-canvas-highlight','--sol-canvas-tertiary'][b], 0.18);
+      ctx.fillRect(bx, boxesY, boxW, boxH);
+      // Border
+      ctx.strokeStyle = boxColors[b];
+      ctx.lineWidth = 2;
+      ctx.strokeRect(bx, boxesY, boxW, boxH);
+
+      // Big number (count)
+      ctx.fillStyle = boxColors[b];
+      ctx.font = 'bold 36px Inter, system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText(String(choiceCounts[b]), bx + boxW / 2, boxesY + 50);
+
+      // Subtitle: "izbora"
+      ctx.fillStyle = muted;
+      ctx.font = '11px Inter, system-ui';
+      ctx.fillText('izbora', bx + boxW / 2, boxesY + 70);
+
+      // Position label below box
+      ctx.fillStyle = text;
+      ctx.font = 'bold 11px Inter, system-ui';
+      ctx.fillText(positionLabels[b], bx + boxW / 2, boxesY + boxH + 18);
+
+      // Multiplication signs between boxes
+      if (b < 4) {
+        ctx.fillStyle = text;
+        ctx.font = 'bold 22px Inter, system-ui';
+        ctx.fillText('×', bx + boxW + gap / 2, boxesY + 56);
+      }
+    }
+
+    // ── Formula and result ──
+    var formulaY = boxesY + boxH + 60;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 18px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('5 × 4 × 3 × 2 × 1  =  5!  =  120', W / 2, formulaY);
+
+    // Highlight box around result
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    var resW = 70, resH = 32;
+    var resX = W / 2 + 100;
+    var resY = formulaY - 22;
+    ctx.strokeRect(resX, resY, resW, resH);
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.18);
+    ctx.fillRect(resX, resY, resW, resH);
+    // re-draw "120" inside accent
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 18px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('120', resX + resW / 2, formulaY);
+
+    // Footer note
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 12px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Princip množenja: broj načina = proizvod broja izbora na svakoj poziciji.', W / 2, H - 22);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Broj petocifrenih brojeva sa različitim ciframa iz {1,2,3,4,5}",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["permutacije", "princip množenja", "faktorijel", "kombinatorika", "brojanje"]
+}
+BRAINSPARK_META-->

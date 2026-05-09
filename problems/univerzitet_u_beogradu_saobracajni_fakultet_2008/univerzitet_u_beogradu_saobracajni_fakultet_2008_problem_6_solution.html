@@ -1,0 +1,434 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Roba je u toku godine dva puta pojeftinila za po 30%. Cena na kraju godine je manja od pocetne za:
+
+Strategija (multiplikativna):
+- Pocetna cena P. Posle prvog snizenja od 30%: P -> 0,7 * P (faktor 0,7).
+- Posle drugog snizenja od 30% (na vec smanjenu cenu): 0,7 * (0,7 P) = 0,49 P.
+- Smanjenje: P - 0,49 P = 0,51 P, tj. 51%.
+
+Tacan odgovor: (D) 51%.
+
+Mapiranje opcija (A,C,E,G,I) -> (A,B,C,D,E):
+- (A) 56%  -> A
+- (C) 60%  -> B   ← KLASICNA ZAMKA: 30 + 30
+- (E) 69%  -> C
+- (G) 51%  -> D  ← TACAN
+- (I) 67%  -> E
+
+Pitfalls:
+- Sabiranje 30% + 30% = 60% (nepravilno, baza se menja).
+- 30% * 30% = 9% i to oduzeti od 60% — slucajno tacno (60 - 9 = 51), ali rezonovanje je sumnjivo. Bolje multiplikativno.
+- Mnozenje na pocetnu bazu dva puta: 1 - 0,3*2 = 0,4 (40%, ali ne nudi se).
+
+Vizuelni prikaz: bar chart sa tri stupca: P (100%), 0,7P (70%), 0,49P (49%); donja oznaka pokazuje smanjenje od 51%. Mogao bi biti slider za drop% — interaktivnost donosi pravu vrednost jer pokazuje zasto 30% + 30% nije jednako 60% (pomeranjem slidera vidi se kako se ukupno smanjenje sve vise razlikuje od 2x). Da, dobar slucaj za interaktivnost — uvid je u "kako se baza smanjuje na svakom koraku".
+
+Plan: prikazi i slider sa procentom (5%-50%) i pogledom kako se P, P*(1-r), P*(1-r)^2 razlikuju i kako ukupno smanjenje 1-(1-r)^2 = 2r - r^2 nije isto kao 2r.
+</script>
+
+<h1 data-card="problem-title">Dva uzastopna sniženja od 30 % — koliko je ukupno sniženje cene?</h1>
+<p data-card="problem-subtitle" class="subtitle">Procenti — multiplikativne promene, sastavljeni faktori, čemu nije jednako 30 % + 30 %</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Roba je u toku godine <strong>dva puta</strong> pojeftinila za po \( 30\% \). Njena cena na kraju godine manja je od cene na početku godine za:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">Sniženje (svaki put)</span>
+      <span class="given-value">\( 30\% \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Broj sniženja</span>
+      <span class="given-value">\( 2 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Traži se</span>
+      <span class="given-value">ukupno sniženje (%)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 56\% \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 60\% \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 69\% \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 51\% \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 67\% \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Ne sabiramo procente. Sniženje od \( 30\% \) znači množenje cene faktorom \( 0{,}7 \). Drugo sniženje deluje na <em>već smanjenu</em> cenu — pa se faktori <strong>množe</strong>: ukupni faktor cene je \( 0{,}7 \cdot 0{,}7 = 0{,}49 \). Konačna cena je \( 49\% \) početne, dakle ukupno sniženje je \( 100\% - 49\% = 51\% \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Procenti i faktor cene</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Faktor sniženja</span> Sniženje od \( r\% \) znači množenje cene sa \( 1 - \dfrac{r}{100} \). Sniženje od \( 30\% \) → faktor \( 0{,}7 \).</li>
+        <li><span class="formula-label">Faktor poskupljenja</span> Poskupljenje od \( r\% \) znači množenje sa \( 1 + \dfrac{r}{100} \).</li>
+        <li><span class="formula-label">Uzastopne promene</span> Kad se promene primenjuju jedna na drugu, faktori se <em>množe</em>, ne sabiraju. Za dva sniženja od \( r\% \): ukupni faktor je \( (1 - r/100)^2 \).</li>
+        <li><span class="formula-label">Ukupno sniženje</span> Dva sniženja od \( r\% \) daju ukupno \( 1 - (1-r/100)^2 = 2(r/100) - (r/100)^2 \) — uvek <em>manje</em> od \( 2r\% \) jer drugi član oduzima.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — interaktivni dijagram sniženja">
+  <h2>📐 Vizuelni prikaz — interaktivni dijagram sniženja</h2>
+  <div class="canvas-wrapper">
+    <canvas id="discount-canvas" width="700" height="500"></canvas>
+  </div>
+  <div class="canvas-controls">
+    <label for="rate-slider"><strong>Procenat sniženja po koraku:</strong> <span id="rate-display">30 %</span></label>
+    <input id="rate-slider" type="range" min="5" max="50" value="30" step="1" />
+  </div>
+  <p class="canvas-caption">Tri stupca prikazuju cenu posle nula, jednog i dva sniženja. Pomeri klizač i osmotri zašto dva sniženja od \( r\% \) daju ukupno <em>manje</em> od \( 2r\% \): osnovica drugog sniženja je manja od početne, pa "drugih 30 %" predstavlja manji apsolutni iznos.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Označavamo početnu cenu i prevodimo sniženje u faktor</h3>
+      <p>Neka je \( P \) početna cena (npr. \( P = 100 \) novčanih jedinica — radi konkretnosti). Sniženje od \( 30\% \) znači da cena postaje \( 70\% \) prethodne, tj. množi se faktorom</p>
+      <div class="math-block">
+        \[ k \;=\; 1 - \frac{30}{100} \;=\; 0{,}7. \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: ako je \( P = 100 \), kolika je cena posle prvog sniženja?</summary>
+          <div class="detail-content"><p>\( 0{,}7 \cdot 100 = 70 \). Cena je pala za 30 jedinica, tj. baš za \( 30\% \) početnih 100. ✓</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Drugo sniženje deluje na <em>novu</em> cenu, ne na početnu</h3>
+      <p>Posle prvog sniženja cena je \( 0{,}7 P \). Drugih \( 30\% \) sniženja primenjuje se baš na <em>tu</em> smanjenu cenu — što znači još jedno množenje sa \( 0{,}7 \):</p>
+      <div class="math-block">
+        \[ \text{cena posle drugog sniženja} \;=\; 0{,}7 \cdot (0{,}7 P) \;=\; 0{,}49 \, P. \]
+      </div>
+      <p>Konkretno za \( P = 100 \): \( 0{,}7 \cdot 70 = 49 \). Apsolutni pad u drugom koraku je \( 70 - 49 = 21 \), a ne \( 30 \) — jer drugih \( 30\% \) ide od \( 70 \), ne od \( 100 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo ukupno sniženje</h3>
+      <p>Konačna cena je \( 0{,}49 \, P \), tj. \( 49\% \) početne. Ukupno sniženje je razlika:</p>
+      <div class="math-block">
+        \[ \text{sniženje} \;=\; P - 0{,}49 \, P \;=\; 0{,}51 \, P \;=\; 51\% \, P. \]
+      </div>
+      <p>Dakle <span class="result">ukupno sniženje iznosi \( 51\% \)</span>.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto rezultat <em>nije</em> 60 %?</summary>
+          <div class="detail-content"><p>Sabiranje \( 30\% + 30\% = 60\% \) bi bilo ispravno samo kad bi se oba sniženja primenjivala na <em>istu</em> bazu — početnu cenu \( P \). Ali drugo sniženje ide od umanjene cene \( 0{,}7 P \), pa je apsolutno manje od prvog. Razlika \( 60\% - 51\% = 9\% \) je upravo \( 0{,}3 \cdot 30\% = 9\% \) — drugi član u razvoju \( 1 - (1-r)^2 = 2r - r^2 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Opšta formula i provera</h3>
+      <p>Za dva uzastopna sniženja od \( r\% \) (sa \( r/100 = 0{,}3 \)) ukupno sniženje je</p>
+      <div class="math-block">
+        \[ 1 - (1 - r/100)^2 \;=\; 2 \cdot \frac{r}{100} - \left(\frac{r}{100}\right)^2 \;=\; 2 \cdot 0{,}3 - 0{,}3^2 \;=\; 0{,}6 - 0{,}09 \;=\; 0{,}51 \;=\; 51\%. \]
+      </div>
+      <p>Drugi član \( -(r/100)^2 = -0{,}09 \) tačno je razlog zašto ukupno sniženje nije \( 60\% \).</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Procenti se <strong>množe, a ne sabiraju</strong>, kad se primenjuju jedan na drugi. Razlog je <em>pokretna baza</em>: drugo sniženje meri \( 30\% \) <em>manje</em> osnovice nego prvo. Ovo važi i u suprotnom smeru — dva poskupljenja od \( 30\% \) ne daju \( 60\% \), nego \( 1{,}3 \cdot 1{,}3 - 1 = 0{,}69 = 69\% \). Pravilo "množi faktore" je univerzalno: za bilo koji niz uzastopnih promena, ukupna promena je proizvod faktora minus 1.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Sabiranje procenata: \( 30\% + 30\% = 60\% \) → opcija (B).</strong> Najčešća zamka. Procenti se sabiraju samo kad se odnose na istu bazu, što ovde nije slučaj.</li>
+    <li><strong>Pomenuto sniženje pa poskupljenje za isti procenat ⇒ ista cena.</strong> Pogrešno: \( 1 \cdot 0{,}7 \cdot 1{,}3 = 0{,}91 \), tj. izgubili smo \( 9\% \). I ovde se osnovica menja.</li>
+    <li><strong>Računanje samo prvog sniženja:</strong> "\( 30\% \)" — student ne primenjuje drugo. Daje pogrešan odgovor (ako bi bila ponuđena ta opcija).</li>
+    <li><strong>Brkanje uloga \( P \) i \( 0{,}49 P \).</strong> "Cena je 49 % početne" ne znači "cena je smanjena za 49 %", već za \( 100 - 49 = 51\% \).</li>
+    <li><strong>Pogrešan faktor: \( 0{,}3 \) umesto \( 0{,}7 \).</strong> \( 0{,}3 \cdot P \) je ono <em>što oduzimamo</em>, a ne nova cena. Nova cena je \( P - 0{,}3 P = 0{,}7 P \).</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ 1 - 0{,}7 \cdot 0{,}7 \;=\; 1 - 0{,}49 \;=\; 0{,}51 \;=\; 51\%. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 56\% \)</span>
+    <span class="answer-option" data-option="B">(B) \( 60\% \)</span>
+    <span class="answer-option" data-option="C">(C) \( 69\% \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 51\% \)</span>
+    <span class="answer-option" data-option="E">(E) \( 67\% \)</span>
+  </div>
+  <p class="verification">Provera sa \( P = 100 \): \( 100 \to 70 \to 49 \). Pad: \( 100 - 49 = 51 \), što je tačno \( 51\% \) početne cene. Opcija (B) \( 60\% \) je klasična zamka — sabiranje procenata umesto množenja faktora.</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Ista roba je posle dva sniženja od po \( 30\% \) još jednom <strong>poskupela</strong> za \( 30\% \). Kolika je sada cena u odnosu na početnu i da li je manja, jednaka ili veća od prvog sniženja?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Faktori se množe: \( 0{,}7 \cdot 0{,}7 \cdot 1{,}3 = 0{,}49 \cdot 1{,}3 = 0{,}637 \). Cena je \( 63{,}7\% \) početne, tj. ukupno sniženje je \( 36{,}3\% \). To je <em>manje</em> od cene posle samo jednog sniženja (\( 70\% \) početne) — dakle čak i posle poskupljenja roba je jeftinija nego nakon prvog sniženja, jer su dva sniženja "zaradila" više nego što je jedno poskupljenje "vratilo".</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+  function drawRoundRect(x, y, w, h, r, fill, stroke) {
+    if (ctx.roundRect) {
+      ctx.beginPath();
+      ctx.roundRect(x, y, w, h, r);
+    } else {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
+    }
+    if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+    if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 1.5; ctx.stroke(); }
+  }
+
+  var canvas = document.getElementById('discount-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  var slider = document.getElementById('rate-slider');
+  var display = document.getElementById('rate-display');
+
+  function fmtPct(x) {
+    // x as fraction in [0,1], output like "30,5 %"
+    var v = (x * 100);
+    var rounded = Math.round(v * 10) / 10;
+    var s = String(rounded).replace('.', ',');
+    if (s.indexOf(',') === -1) s += ',0';
+    // trim trailing ,0
+    if (/,0$/.test(s)) s = s.replace(/,0$/, '');
+    return s + ' %';
+  }
+
+  function draw(rate) {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+    var danger    = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var r = rate / 100;          // 0,30 for 30 %
+    var f = 1 - r;               // 0,7
+    var step1 = f;               // posle 1. snizenja
+    var step2 = f * f;           // posle 2. snizenja
+    var totalDrop = 1 - step2;   // 0,51 for r=0,3
+    var naiveDrop = 2 * r;       // 0,6 — pogresna pretpostavka
+
+    // Title
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Cena posle 0, 1 i 2 sniženja od po ' + fmtPct(r), canvas.width / 2, 14);
+
+    // Bar chart area
+    var areaTop = 60;
+    var areaBottom = 360;
+    var areaHeight = areaBottom - areaTop;     // 300
+    var bars = [
+      { label: 'Početno', frac: 1.0,    note: '100 %',                 color: primary,   note2: '' },
+      { label: 'Posle 1.', frac: step1, note: fmtPct(step1),           color: secondary, note2: '· (1 − r)' },
+      { label: 'Posle 2.', frac: step2, note: fmtPct(step2),           color: accent,    note2: '· (1 − r)²' }
+    ];
+
+    var n = bars.length;
+    var totalW = canvas.width - 120;
+    var slot = totalW / n;
+    var barW = Math.min(110, slot - 30);
+
+    for (var i = 0; i < n; i++) {
+      var b = bars[i];
+      var bh = areaHeight * b.frac;
+      var bx = 60 + i * slot + (slot - barW) / 2;
+      var by = areaBottom - bh;
+
+      // Background full-height rectangle (faded — represents 100 %)
+      drawRoundRect(bx, areaTop, barW, areaHeight, 8, cvAlpha('--sol-canvas-grid', 0.35), null);
+
+      // Filled portion (current value)
+      var colorVar = (i === 0) ? '--sol-canvas-primary' : (i === 1 ? '--sol-canvas-secondary' : '--sol-canvas-accent');
+      drawRoundRect(bx, by, barW, bh, 8, cvAlpha(colorVar, 0.6), b.color);
+
+      // Bar label
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.fillStyle = text;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText(b.label, bx + barW / 2, areaBottom + 12);
+
+      // Note2 (formula)
+      if (b.note2) {
+        ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+        ctx.fillStyle = muted;
+        ctx.fillText(b.note2, bx + barW / 2, areaBottom + 30);
+      } else {
+        ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+        ctx.fillStyle = muted;
+        ctx.fillText('= P', bx + barW / 2, areaBottom + 30);
+      }
+
+      // Value note above bar
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.fillStyle = b.color;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(b.note, bx + barW / 2, by - 6);
+    }
+
+    // Horizontal reference line at "100 %"
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(40, areaTop);
+    ctx.lineTo(canvas.width - 40, areaTop);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('100 % (P)', 40, areaTop - 4);
+
+    // Drop indicator (right side): bracket from 100% line to top of last bar
+    var lastBar = bars[n - 1];
+    var lastBarTop = areaBottom - areaHeight * lastBar.frac;
+    var bracketX = canvas.width - 40;
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(bracketX - 8, areaTop);
+    ctx.lineTo(bracketX, areaTop);
+    ctx.lineTo(bracketX, lastBarTop);
+    ctx.lineTo(bracketX - 8, lastBarTop);
+    ctx.stroke();
+    // Label
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = highlight;
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('ukupno', bracketX - 14, (areaTop + lastBarTop) / 2 - 8);
+    ctx.fillText(fmtPct(totalDrop), bracketX - 14, (areaTop + lastBarTop) / 2 + 8);
+
+    // Bottom comparison block: naive vs correct
+    var by2 = 410;
+    drawRoundRect(40, by2, canvas.width - 80, 75, 10, cvAlpha('--sol-canvas-warning', 0.10), warning);
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Naivno (sabiranje):', 56, by2 + 10);
+    ctx.fillText('Tačno (množenje faktora):', 56, by2 + 30);
+    ctx.fillText('Razlika:', 56, by2 + 50);
+
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.fillStyle = danger;
+    ctx.textAlign = 'right';
+    ctx.fillText('2 · ' + fmtPct(r) + '  =  ' + fmtPct(naiveDrop), canvas.width - 56, by2 + 10);
+    ctx.fillStyle = accent;
+    ctx.fillText('1 − (1 − r)²  =  ' + fmtPct(totalDrop), canvas.width - 56, by2 + 30);
+    ctx.fillStyle = highlight;
+    ctx.fillText('r²  =  ' + fmtPct(r * r), canvas.width - 56, by2 + 50);
+  }
+
+  function update() {
+    var rate = parseFloat(slider.value);
+    if (display) display.textContent = rate + ' %';
+    draw(rate);
+  }
+
+  if (slider) slider.addEventListener('input', update);
+  update();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        update();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Dva sniženja od po 30 % daju ukupno 51 %, ne 60 % — multiplikativni faktori",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["procenti", "uzastopne promene", "multiplikativni faktor", "sniženje cene", "kvadrat faktora", "pomena baze"]
+}
+BRAINSPARK_META-->

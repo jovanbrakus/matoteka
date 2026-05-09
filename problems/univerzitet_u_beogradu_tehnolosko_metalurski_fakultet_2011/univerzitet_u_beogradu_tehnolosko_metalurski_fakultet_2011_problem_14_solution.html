@@ -1,0 +1,596 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: skup rešenja nejednačine x + 4 < sqrt(x + 46).
+
+Strategija: nejednačine oblika A < sqrt(B) treba rešavati pažljivo, NIKADA ne kvadrirati bez razdvajanja slučajeva.
+
+1) Definicioni skup: x + 46 >= 0, tj. x >= -46. Sve dalje radimo unutar [-46, +inf).
+
+2) Razlikujmo dva slučaja po znaku leve strane (LHS = x + 4).
+
+   Slučaj A: x + 4 < 0, tj. x < -4.
+   Tada je LHS negativan, a RHS = sqrt(x + 46) >= 0 (kao kvadratni koren). Negativan broj je uvek manji od nenegativnog, pa je nejednačina automatski tačna kada god je definisana.
+   Presek sa domenom: -46 <= x < -4. To je interval [-46, -4).
+
+   Slučaj B: x + 4 >= 0, tj. x >= -4.
+   Sada su obe strane nenegativne, pa kvadriranje čuva smer:
+   (x + 4)^2 < x + 46
+   x^2 + 8x + 16 < x + 46
+   x^2 + 7x - 30 < 0
+   Koreni: x = (-7 ± sqrt(49 + 120))/2 = (-7 ± sqrt(169))/2 = (-7 ± 13)/2
+   => x = 3  ili  x = -10.
+   Parabola je otvorena nagore, pa je x^2 + 7x - 30 < 0 za x ∈ (-10, 3).
+   Presek sa x >= -4: [-4, 3).
+
+3) Unija slučajeva: [-46, -4) ∪ [-4, 3) = [-46, 3).
+
+Tačan odgovor: (D) [-46, 3).
+
+Provera u nekoliko tačaka:
+- x = -46: LHS = -42, RHS = sqrt(0) = 0. -42 < 0 ✓
+- x = -10: LHS = -6, RHS = sqrt(36) = 6. -6 < 6 ✓ (uključeno u rešenje)
+- x = 0: LHS = 4, RHS = sqrt(46) ≈ 6.78. 4 < 6.78 ✓
+- x = 3: LHS = 7, RHS = sqrt(49) = 7. 7 < 7? NE — jednakost, nije strogo manje. 3 NIJE u rešenju ✓ (otvoreno desno).
+- x = 4: LHS = 8, RHS = sqrt(50) ≈ 7.07. 8 < 7.07? NE ✓ (van rešenja).
+
+Vizuelni prikazi:
+1) Grafik y = x + 4 i y = sqrt(x + 46), označeno gde se seku (x = 3, ali i pseudo-presek na x = -10), i osenčen interval rešenja [-46, 3).
+2) Šema slučajeva: brojevna prava sa intervalima [-46, -4) i [-4, 3) i njihovom unijom.
+</script>
+
+<h1 data-card="problem-title">Iracionalna nejednačina sa kvadratnim korenom</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra &mdash; iracionalne nejednačine, razlaganje na slučajeve, kvadratne nejednačine</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Skup rešenja nejednačine</p>
+  <div class="math-block">\[ x + 4 \;<\; \sqrt{x + 46} \]</div>
+  <p>je:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">Nejednačina</span>
+      <span class="given-value">\( x + 4 < \sqrt{x + 46} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Tražimo</span>
+      <span class="given-value">skup svih \( x \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( (-10,\; 3) \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( [-4,\; +\infty) \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \emptyset \) (prazan skup)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( [-46,\; 3) \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( [-5,\; 3) \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Najpre odredimo domen (\( x + 46 \geq 0 \)). Zatim razlažemo na dva slučaja po znaku leve strane: ako je \( x + 4 < 0 \), nejednačina je automatski tačna (negativno \( < \) nenegativno); ako je \( x + 4 \geq 0 \), kvadriramo i rešavamo kvadratnu nejednačinu \( x^2 + 7x - 30 < 0 \). Konačno rešenje je unija dveju delimičnih oblasti.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Pravilo za nejednačine \( A < \sqrt{B} \)</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Domen</span>: \( \sqrt{B} \) je definisan akko \( B \geq 0 \).</li>
+        <li><span class="formula-label">Kvadratni koren</span>: \( \sqrt{B} \geq 0 \) za svako \( B \geq 0 \).</li>
+        <li><span class="formula-label">Ekvivalencija</span>: \( A < \sqrt{B} \;\iff\; B \geq 0 \;\wedge\; \big(A < 0 \;\vee\; (A \geq 0 \wedge A^2 < B)\big) \).</li>
+        <li>Ne sme se odmah kvadrirati ako leva strana može biti negativna — to bi davalo pogrešnu nejednačinu (kvadrat ne čuva smer kada je strana negativna).</li>
+        <li><span class="formula-label">Kvadratna nejednačina</span>: za \( a > 0 \), \( ax^2 + bx + c < 0 \) važi između korena (ako su realni).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — grafici obe strane">
+  <h2>📐 Grafik leve i desne strane</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-graphs" width="720" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Plava prava \( y = x + 4 \) i ljubičasta krivulja \( y = \sqrt{x + 46} \). Zeleno osenčen je skup onih \( x \) za koje je prava ispod krive — to je traženi skup rešenja.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Odredimo domen</h3>
+      <p>Da bi koren bio definisan, potrebno je</p>
+      <div class="math-block">\[ x + 46 \;\geq\; 0 \quad\Longleftrightarrow\quad x \;\geq\; -46. \]</div>
+      <p>Sve što ćemo dalje raditi važi unutar \( [-46, +\infty) \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Razložimo na slučajeve po znaku leve strane</h3>
+      <p>Posmatramo \( A = x + 4 \) i \( \sqrt{B} = \sqrt{x + 46} \). Pošto je koren uvek nenegativan, ako je \( A < 0 \), nejednačina automatski važi; ako je \( A \geq 0 \), bezbedno smemo kvadrirati.</p>
+      <ul>
+        <li><strong>Slučaj A:</strong> \( x + 4 < 0 \;\iff\; x < -4 \).</li>
+        <li><strong>Slučaj B:</strong> \( x + 4 \geq 0 \;\iff\; x \geq -4 \).</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj A: \( x &lt; -4 \) — nejednačina je automatski tačna</h3>
+      <p>Tada je \( x + 4 \) negativan broj, a \( \sqrt{x + 46} \geq 0 \). Negativno je strogo manje od nenegativnog:</p>
+      <div class="math-block">\[ x + 4 \;<\; 0 \;\leq\; \sqrt{x + 46}. \]</div>
+      <p>Presek sa domenom \( x \geq -46 \): rešenje slučaja A je interval</p>
+      <div class="math-block">\[ S_A \;=\; [-46,\; -4). \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: za \( x = -20 \) (u \( S_A \)) — da li nejednačina važi?</summary>
+          <div class="detail-content"><p>\( x + 4 = -16 \), \( \sqrt{x + 46} = \sqrt{26} \approx 5{,}10 \). Tačno: \( -16 < 5{,}10 \). ✓</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj B: \( x \geq -4 \) — kvadriramo</h3>
+      <p>Sada su obe strane nenegativne, pa kvadriranje čuva smer:</p>
+      <div class="math-block">\[ (x + 4)^2 \;<\; x + 46. \]</div>
+      <p>Razvijemo i sredimo:</p>
+      <div class="math-block">\[ x^2 + 8x + 16 \;<\; x + 46 \quad\Longleftrightarrow\quad x^2 + 7x - 30 \;<\; 0. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Rešimo kvadratnu nejednačinu</h3>
+      <p>Naći ćemo nule kvadratne funkcije \( x^2 + 7x - 30 \):</p>
+      <div class="math-block">\[ x \;=\; \dfrac{-7 \pm \sqrt{49 + 120}}{2} \;=\; \dfrac{-7 \pm \sqrt{169}}{2} \;=\; \dfrac{-7 \pm 13}{2}, \]</div>
+      <p>odakle dobijamo \( x = 3 \) ili \( x = -10 \). Parabola \( y = x^2 + 7x - 30 \) ima koeficijent uz \( x^2 \) jednak \( +1 \), pa je otvorena nagore i negativna <em>između</em> korena:</p>
+      <div class="math-block">\[ x^2 + 7x - 30 \;<\; 0 \quad\Longleftrightarrow\quad x \in (-10,\; 3). \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Presek sa uslovom slučaja B</h3>
+      <p>Rešenje slučaja B je presek dobijenog intervala sa \( x \geq -4 \):</p>
+      <div class="math-block">\[ S_B \;=\; (-10,\; 3) \,\cap\, [-4,\; +\infty) \;=\; [-4,\; 3). \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: za \( x = 3 \) — važi li nejednačina?</summary>
+          <div class="detail-content"><p>\( x + 4 = 7 \), \( \sqrt{x + 46} = \sqrt{49} = 7 \). Imamo \( 7 < 7 \)? Nije — jednakost, ne strogo manje. Zato je \( x = 3 \) <em>isključeno</em>.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="7">
+    <div class="step-badge">7</div>
+    <div class="step-content">
+      <h3 class="step-title">Unija slučajeva — finalni skup</h3>
+      <p>Konačno rešenje je unija delimičnih rešenja:</p>
+      <div class="math-block">\[ S \;=\; S_A \,\cup\, S_B \;=\; [-46,\; -4) \,\cup\, [-4,\; 3) \;=\; [-46,\; 3). \]</div>
+      <p>Tačka \( x = -4 \) je granična, ali se nalazi u \( S_B \), pa je uneta. Tačka \( x = -46 \) jeste u domenu i u njoj je \( -42 < 0 \), pa je uključena. Tačka \( x = 3 \) je isključena (jednakost).</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — brojevna prava sa unijom">
+  <h2>📐 Brojevna prava — unija slučajeva</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-numline" width="720" height="280"></canvas>
+  </div>
+  <p class="canvas-caption">Gornja traka: \( S_A = [-46, -4) \) (slučaj A — automatski). Srednja traka: \( S_B = [-4, 3) \) (slučaj B — posle kvadriranja). Donja traka: unija \( S = [-46, 3) \).</p>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kada poredimo \( A \) i \( \sqrt{B} \), <strong>znak leve strane menja sve</strong>: ako je negativna, nejednačina je trivijalna; ako je nenegativna, smemo kvadrirati. Ako preskočimo razdvajanje slučajeva i odmah kvadriramo, nestaje ceo deo \( S_A \) i odgovor postaje \( (-10, 3) \) — što odgovara opciji (A) i tipičnoj zamci u testu.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Direktno kvadriranje</strong> bez analize znaka leve strane — gubi se interval \( [-46, -4) \) i daje pogrešan odgovor (A).</li>
+    <li>Zaboraviti domen \( x \geq -46 \) — dobija se previše širok skup, recimo \( (-\infty, 3) \).</li>
+    <li>Pomešati strogu i nestrogu nejednakost na granicama: \( x = 3 \) NIJE u rešenju (jednakost), a \( x = -46 \) JESTE (jer \( -42 < 0 \)).</li>
+    <li>Pogrešan smer kvadratne nejednačine: \( x^2 + 7x - 30 < 0 \) važi <em>između</em> korena, ne van njih (parabola je otvorena nagore).</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ S \;=\; [-46,\; 3) \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( (-10,\; 3) \)</span>
+    <span class="answer-option" data-option="B">(B) \( [-4,\; +\infty) \)</span>
+    <span class="answer-option" data-option="C">(C) \( \emptyset \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( [-46,\; 3) \)</span>
+    <span class="answer-option" data-option="E">(E) \( [-5,\; 3) \)</span>
+  </div>
+  <p class="verification">Provera: \( x = -46 \;\Rightarrow\; -42 < 0 \) ✓; \( x = 0 \;\Rightarrow\; 4 < \sqrt{46} \approx 6{,}78 \) ✓; \( x = 3 \;\Rightarrow\; 7 < 7 \) ✗ (granica isključena); \( x = 4 \;\Rightarrow\; 8 < \sqrt{50} \approx 7{,}07 \) ✗.</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Reši nejednačinu \( x + 4 \;\geq\; \sqrt{x + 46} \) — to je „komplement" naše nejednačine na domenu. Kakav skup dobijaš i kako se on povezuje sa \( S = [-46, 3) \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Ako \( x + 4 < 0 \), nemoguće je da bude \( \geq \sqrt{x+46} \), pa je taj deo prazan. Za \( x + 4 \geq 0 \), kvadriraj: \( x^2 + 7x - 30 \geq 0 \;\Rightarrow\; x \leq -10 \) ili \( x \geq 3 \), i preseci sa \( x \geq -4 \). Rezultat: \( [3, +\infty) \). Unija sa \( S \) (i preseci sa domenom): \( [-46, +\infty) \) — što je tačno ceo domen, kao što i očekuješ.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-graphs');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+    var danger    = cv('--sol-canvas-danger');
+
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Coordinate system: x in [-50, 10], y in [-10, 12]
+    var padL = 70, padR = 30, padT = 60, padB = 80;
+    var xmin = -50, xmax = 10;
+    var ymin = -10, ymax = 12;
+    var plotW = W - padL - padR;
+    var plotH = H - padT - padB;
+    function X(x) { return padL + (x - xmin) / (xmax - xmin) * plotW; }
+    function Y(y) { return padT + (ymax - y) / (ymax - ymin) * plotH; }
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2,3]);
+    for (var gx = -50; gx <= 10; gx += 5) {
+      ctx.beginPath();
+      ctx.moveTo(X(gx), padT);
+      ctx.lineTo(X(gx), H - padB);
+      ctx.stroke();
+    }
+    for (var gy = -10; gy <= 12; gy += 2) {
+      ctx.beginPath();
+      ctx.moveTo(padL, Y(gy));
+      ctx.lineTo(W - padR, Y(gy));
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Shade solution interval [-46, 3) — vertical strip
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.13);
+    ctx.fillRect(X(-46), padT, X(3) - X(-46), plotH);
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(padL, Y(0)); ctx.lineTo(W - padR, Y(0));
+    ctx.moveTo(X(0), padT); ctx.lineTo(X(0), H - padB);
+    ctx.stroke();
+
+    // Tick labels
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    var ticksX = [-50, -46, -40, -30, -20, -10, -4, 0, 3, 10];
+    for (var i = 0; i < ticksX.length; i++) {
+      var t = ticksX[i];
+      ctx.beginPath();
+      ctx.strokeStyle = axis;
+      ctx.moveTo(X(t), Y(0) - 3);
+      ctx.lineTo(X(t), Y(0) + 3);
+      ctx.stroke();
+      ctx.fillText(t.toString(), X(t), Y(0) + 6);
+    }
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    var ticksY = [-10, -5, 5, 10];
+    for (var j = 0; j < ticksY.length; j++) {
+      var ty = ticksY[j];
+      ctx.beginPath();
+      ctx.strokeStyle = axis;
+      ctx.moveTo(X(0) - 3, Y(ty));
+      ctx.lineTo(X(0) + 3, Y(ty));
+      ctx.stroke();
+      ctx.fillText(ty.toString(), X(0) - 6, Y(ty));
+    }
+
+    // Curve y = sqrt(x + 46) on [-46, 10]
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    var first = true;
+    for (var sx = -46; sx <= 10; sx += 0.2) {
+      var sy = Math.sqrt(sx + 46);
+      if (sy < ymin) continue;
+      if (sy > ymax) continue;
+      if (first) { ctx.moveTo(X(sx), Y(sy)); first = false; }
+      else ctx.lineTo(X(sx), Y(sy));
+    }
+    ctx.stroke();
+
+    // Line y = x + 4 (clipped to plot)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    var x0 = xmin, y0 = x0 + 4;
+    if (y0 < ymin) { y0 = ymin; x0 = ymin - 4; }
+    if (y0 > ymax) { y0 = ymax; x0 = ymax - 4; }
+    var x1 = xmax, y1 = x1 + 4;
+    if (y1 > ymax) { y1 = ymax; x1 = ymax - 4; }
+    if (y1 < ymin) { y1 = ymin; x1 = ymin - 4; }
+    ctx.moveTo(X(x0), Y(y0));
+    ctx.lineTo(X(x1), Y(y1));
+    ctx.stroke();
+
+    // Domain start marker x = -46
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 1.6;
+    ctx.setLineDash([4,4]);
+    ctx.beginPath();
+    ctx.moveTo(X(-46), padT); ctx.lineTo(X(-46), H - padB);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Right boundary x = 3
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 1.6;
+    ctx.setLineDash([4,4]);
+    ctx.beginPath();
+    ctx.moveTo(X(3), padT); ctx.lineTo(X(3), H - padB);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Intersection points
+    // At x = 3 the two curves meet: y = 7 (off the visible range top=12, just OK)
+    // At x = -10 the line is -6, curve is 6 — no real intersection there.
+    function dot(x, y, color, r) {
+      ctx.beginPath();
+      ctx.arc(X(x), Y(y), r || 5, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.strokeStyle = bg;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+    // x=3, y=7: intersection (open dot — boundary excluded)
+    ctx.beginPath();
+    ctx.arc(X(3), Y(7), 6, 0, Math.PI * 2);
+    ctx.fillStyle = bg;
+    ctx.fill();
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    // x=-46, y=0: domain start (closed dot — included)
+    dot(-46, 0, warning, 6);
+
+    // Function labels
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.fillStyle = primary;
+    ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.fillText('y = x + 4', X(5) + 4, Y(9) - 4);
+    ctx.fillStyle = secondary;
+    ctx.fillText('y = √(x + 46)', X(-15), Y(7.5));
+
+    // Boundary value tags
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = warning;
+    ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+    ctx.fillText('x = −46', X(-46) + 4, padT + 4);
+    ctx.fillStyle = danger;
+    ctx.textAlign = 'right';
+    ctx.fillText('x = 3', X(3) - 4, padT + 4);
+
+    // Title
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText('x + 4 < √(x + 46):  prava ispod krive  ⇔  x ∈ [−46, 3)', W/2, 14);
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Zelena traka: skup rešenja.  Žuti graničnik: leva (uključena),  crveni: desna (isključena).', W/2, 36);
+
+    // Bottom sentence
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    ctx.fillText('U tački x = 3 obe funkcije imaju vrednost 7 — strogo manje ne važi, pa je 3 isključeno.', W/2, H - 50);
+    ctx.fillText('Za x ∈ [−46, −4): leva strana je negativna, koren nenegativan — automatski rešenje.', W/2, H - 28);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-numline');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+    var danger    = cv('--sol-canvas-danger');
+
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    var padL = 70, padR = 40;
+    var xmin = -50, xmax = 8;
+    function X(x) { return padL + (x - xmin) / (xmax - xmin) * (W - padL - padR); }
+
+    // Three rows: SA, SB, S
+    var rows = [
+      { y: 60,  label: 'S_A : [−46, −4)',           a: -46, b: -4, ai: true,  bi: false, color: secondary },
+      { y: 130, label: 'S_B : [−4, 3)',              a: -4,  b: 3,  ai: true,  bi: false, color: primary },
+      { y: 210, label: 'S = S_A ∪ S_B = [−46, 3)',  a: -46, b: 3,  ai: true,  bi: false, color: accent }
+    ];
+
+    // Underlying number line for each row
+    for (var i = 0; i < rows.length; i++) {
+      var r = rows[i];
+      // axis line
+      ctx.strokeStyle = muted;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(padL - 10, r.y);
+      ctx.lineTo(W - padR + 10, r.y);
+      ctx.stroke();
+      // tick marks at -46, -10, -4, 0, 3
+      var ticks = [-46, -10, -4, 0, 3];
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.fillStyle = muted;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      for (var t = 0; t < ticks.length; t++) {
+        var tx = ticks[t];
+        ctx.beginPath();
+        ctx.moveTo(X(tx), r.y - 4);
+        ctx.lineTo(X(tx), r.y + 4);
+        ctx.stroke();
+        if (i === 2) ctx.fillText(tx.toString(), X(tx), r.y + 8);
+      }
+
+      // shaded interval
+      ctx.fillStyle = cvAlpha(r.color === accent ? '--sol-canvas-accent' : (r.color === primary ? '--sol-canvas-primary' : '--sol-canvas-secondary'), 0.30);
+      ctx.fillRect(X(r.a), r.y - 12, X(r.b) - X(r.a), 24);
+
+      // Endpoint markers
+      // a (closed)
+      ctx.beginPath();
+      ctx.arc(X(r.a), r.y, 6, 0, Math.PI * 2);
+      ctx.fillStyle = r.color;
+      ctx.fill();
+      // b (open)
+      ctx.beginPath();
+      ctx.arc(X(r.b), r.y, 6, 0, Math.PI * 2);
+      ctx.fillStyle = bg;
+      ctx.fill();
+      ctx.strokeStyle = r.color;
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      // Row label
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.fillStyle = text;
+      ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+      ctx.fillText(r.label, padL - 60, r.y - 26);
+    }
+
+    // Title
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText('Unija dveju delimičnih oblasti', W/2, 14);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Iracionalna nejednačina x + 4 < √(x + 46)",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["iracionalna nejednačina", "kvadratni koren", "kvadratna nejednačina", "razlaganje na slučajeve", "domen"]
+}
+BRAINSPARK_META-->

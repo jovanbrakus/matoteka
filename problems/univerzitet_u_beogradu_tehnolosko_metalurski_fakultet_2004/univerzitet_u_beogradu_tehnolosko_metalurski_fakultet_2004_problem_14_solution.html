@@ -1,0 +1,468 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: zbir svih trocifrenih brojeva deljivih sa 11.
+
+Trocifreni brojevi: od 100 do 999 (ukljucivo).
+
+Najmanji trocifren broj deljiv sa 11:
+99 = 11·9 (dvocifren), 110 = 11·10. Dakle a_1 = 110.
+(Mozemo proveriti: 99 < 100 < 110, i 99 + 11 = 110 je sledeci umnozak 11.)
+
+Najveci trocifren broj deljiv sa 11:
+1100 = 11·100 (cetvorocifren), 990 = 11·90. Dakle a_n = 990.
+(Provera: 990 + 11 = 1001 je cetvorocifren.)
+
+Broj clanova:
+Multiplikativni indeksi su 10, 11, 12, ..., 90.
+Broj clanova: n = 90 - 10 + 1 = 81.
+(Alternativno: n = (a_n - a_1)/d + 1 = (990 - 110)/11 + 1 = 880/11 + 1 = 80 + 1 = 81.)
+
+Suma aritmeticke progresije:
+S_n = n · (a_1 + a_n) / 2 = 81 · (110 + 990) / 2 = 81 · 1100 / 2 = 81 · 550.
+
+81 · 550:
+81 · 5 = 405
+81 · 55 = 4455
+81 · 550 = 44550.
+
+Provera: 81 · 550 = (80 + 1) · 550 = 44000 + 550 = 44550. ✓
+
+Drugi nacin (preko sume umnozaka 11):
+S = 11 · (10 + 11 + 12 + ... + 90) = 11 · sum od k=10 do 90 od k.
+sum od 10 do 90 = sum od 1 do 90 minus sum od 1 do 9 = (90·91)/2 - (9·10)/2 = 4095 - 45 = 4050.
+S = 11 · 4050 = 44550. ✓
+
+Trazena suma je 44550.
+Tacan odgovor: (D) 44550.
+
+Vizuelni prikaz:
+1) Brojevna prava sa istaknutim umnoscima 11 (110, 121, 132, ..., 990) — staticki prikaz da pokaze koliko ih ima i da su ravnomerno rasporedjeni.
+2) Tabela sa formulom: a_1 = 110, a_n = 990, n = 81, S_n = n(a_1+a_n)/2.
+
+Mozemo prikazati i formulu Gausovog "uvijanja" — sparujemo prvi i poslednji, drugi i pretposlednji, itd., svi parovi imaju isti zbir 1100. Imamo 81 clan — neparan broj — pa pristup sa sparivanjem treba malo drugacije: prikazati 40 parova po 1100 i jedan srednji clan = 550.
+
+Provera Gausa: 40 parova · 1100 = 44000, plus srednji 550 (a_41), zbir 44550. ✓
+Srednji clan: (110 + 990)/2 = 550 (sredina = 11 · 50).
+</script>
+
+<h1 data-card="problem-title">Zbir trocifrenih brojeva deljivih sa 11</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — aritmetička progresija, suma niza, Gausov trik</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Zbir svih trocifrenih brojeva deljivih sa \( 11 \) iznosi:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 33\,660 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 40\,733 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 41\,624 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 44\,550 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 53\,031 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Pronaći ćemo najmanji i najveći trocifren broj deljiv sa \( 11 \), prebrojati koliko ih ima, a zatim primeniti formulu za sumu aritmetičke progresije \( S_n = \dfrac{n(a_1 + a_n)}{2} \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Aritmetička progresija (AP):</strong> niz \( a_1, a_2, a_3, \ldots \) u kojem se susedni članovi razlikuju za konstantu \( d \) (razlika).</li>
+        <li><strong>Opšti član AP:</strong> \( a_n = a_1 + (n-1) d \).</li>
+        <li><strong>Broj članova:</strong> ako znaš \( a_1 \) i \( a_n \): \( n = \dfrac{a_n - a_1}{d} + 1 \).</li>
+        <li><strong>Suma prvih \( n \) članova:</strong> \( S_n = \dfrac{n (a_1 + a_n)}{2} = \dfrac{n \bigl[2 a_1 + (n-1) d\bigr]}{2} \).</li>
+        <li><strong>Gausov trik:</strong> sparuj prvi i poslednji, drugi i pretposlednji,… svi parovi imaju isti zbir \( a_1 + a_n \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="series-canvas" width="700" height="600"></canvas>
+  </div>
+  <p class="canvas-caption">Gornji deo: brojna prava sa svim umnošcima broja \( 11 \) između \( 100 \) i \( 999 \) — pravilno raspoređene tačkice. Donji deo: Gausov trik — \( 40 \) parova po \( 1\,100 \) plus srednji član \( 550 \) daju ukupan zbir.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Pronađi prvi (najmanji) trocifren broj deljiv sa \( 11 \)</h3>
+      <p>Trocifreni brojevi su \( 100, 101, \ldots, 999 \). Tražimo najmanji koji je deljiv sa \( 11 \). Pošto je</p>
+      <div class="math-block">
+        \[ 11 \cdot 9 = 99 \quad (\text{dvocifren}), \qquad 11 \cdot 10 = 110 \quad (\text{trocifren}), \]
+      </div>
+      <p>najmanji trocifren umnožak je \( a_1 = 110 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Pronađi poslednji (najveći) trocifren broj deljiv sa \( 11 \)</h3>
+      <p>Sa druge strane, \( 11 \cdot 91 = 1\,001 \) je već četvorocifren, a \( 11 \cdot 90 = 990 \) je trocifren. Dakle:</p>
+      <div class="math-block">
+        \[ a_n = 990. \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kako brzo deliti \( 999 \) sa \( 11 \)?</summary>
+          <div class="detail-content">
+            <p>\( 999 = 11 \cdot 90 + 9 \), pa je najveći umnožak ne veći od \( 999 \) tačno \( 11 \cdot 90 = 990 \). Ostatak \( 9 \) potvrđuje da \( 999 \) <em>nije</em> deljiv sa \( 11 \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Prebroj članove niza</h3>
+      <p>Niz \( 110,\ 121,\ 132,\ \ldots,\ 990 \) je aritmetička progresija sa \( a_1 = 110 \), \( d = 11 \) i \( a_n = 990 \). Iz formule \( a_n = a_1 + (n-1) d \):</p>
+      <div class="math-block">
+        \[ n = \frac{a_n - a_1}{d} + 1 = \frac{990 - 110}{11} + 1 = \frac{880}{11} + 1 = 80 + 1 = 81. \]
+      </div>
+      <p>Dakle, ima tačno \( 81 \) trocifren broj deljiv sa \( 11 \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto \( +1 \) na kraju?</summary>
+          <div class="detail-content">
+            <p>Klasična „greška za jedan“. Ako ideš od \( 10 \) do \( 90 \) (jer \( a_1 = 11\cdot 10 \) i \( a_n = 11\cdot 90 \)), broj indeksa je \( 90 - 10 + 1 = 81 \), a ne \( 90 - 10 = 80 \). Uvek uključi i početni i krajnji indeks.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Primeni formulu za sumu aritmetičke progresije</h3>
+      <p>Suma prvih \( n \) članova AP-a:</p>
+      <div class="math-block">
+        \[ S_n = \frac{n (a_1 + a_n)}{2} = \frac{81 \cdot (110 + 990)}{2} = \frac{81 \cdot 1\,100}{2} = 81 \cdot 550. \]
+      </div>
+      <p>Računamo \( 81 \cdot 550 \):</p>
+      <div class="math-block">
+        \[ 81 \cdot 550 = (80 + 1) \cdot 550 = 80 \cdot 550 + 550 = 44\,000 + 550 = 44\,550. \]
+      </div>
+      <p>Dakle, traženi zbir je \( S_{81} = 44\,550 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Alternativna provera (suma umnožaka 11)</h3>
+      <p>Možemo izvući zajednički faktor \( 11 \):</p>
+      <div class="math-block">
+        \[ S = 11 \cdot 10 + 11 \cdot 11 + \cdots + 11 \cdot 90 = 11 \cdot (10 + 11 + \cdots + 90). \]
+      </div>
+      <p>Suma celih brojeva od \( 10 \) do \( 90 \) je:</p>
+      <div class="math-block">
+        \[ 10 + 11 + \cdots + 90 = \frac{(10 + 90) \cdot 81}{2} = \frac{100 \cdot 81}{2} = 4\,050. \]
+      </div>
+      <p>Pa je:</p>
+      <div class="math-block">
+        \[ S = 11 \cdot 4\,050 = 44\,550. \quad \checkmark \]
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>„Brojevi deljivi sa \( d \) između dva broja“ uvek čine <em>aritmetičku progresiju</em> sa razlikom \( d \). Ključ je tačno odrediti prvi i poslednji takav član — odatle sve teče po automatskim formulama. Ne računaj sve \( 81 \) sabiraka pojedinačno — Gausov trik (sparivanje prvog i poslednjeg) daje rezultat odjednom.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ S = 44\,550 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 33\,660 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 40\,733 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 41\,624 \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 44\,550 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 53\,031 \)</span>
+  </div>
+  <p class="verification">Dvostruka provera: \( S = \dfrac{81 \cdot (110 + 990)}{2} = 81 \cdot 550 = 44\,550 \) i \( S = 11 \cdot (10 + 11 + \cdots + 90) = 11 \cdot 4\,050 = 44\,550 \). Oba načina daju isti rezultat. ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešan prvi član:</strong> često se uzme \( 99 \) (jer \( 99 = 11 \cdot 9 \)), ali \( 99 \) je <em>dvocifren</em> broj. Prvi trocifren umnožak \( 11 \) je \( 110 \).</li>
+    <li><strong>Pogrešan poslednji član:</strong> \( 999 \) <em>nije</em> deljiv sa \( 11 \) (ostatak je \( 9 \)). Najveći trocifren umnožak \( 11 \) je \( 990 \).</li>
+    <li><strong>„Greška za jedan“ u broju članova:</strong> \( n = (990-110)/11 = 80 \) je netačno. Treba dodati \( 1 \): \( n = 80 + 1 = 81 \), jer brojimo i prvi i poslednji član.</li>
+    <li><strong>Korišćenje formule \( S = n^2 \) ili sl.:</strong> ova formula važi samo za zbir prvih \( n \) <em>neparnih</em> prirodnih brojeva. Za opštu AP koristi \( S_n = \dfrac{n(a_1 + a_n)}{2} \).</li>
+    <li><strong>Računska greška u \( 81 \cdot 550 \):</strong> bezbedan put — razloži \( 81 = 80 + 1 \), pa \( 80 \cdot 550 + 1 \cdot 550 = 44\,000 + 550 = 44\,550 \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koliko trocifrenih brojeva ima koji su deljivi sa \( 7 \), i koliki je njihov zbir? Generalizuj postupak.</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Najmanji trocifren umnožak \( 7 \): \( 7 \cdot 15 = 105 \) (jer \( 7 \cdot 14 = 98 \)). Najveći: \( 7 \cdot 142 = 994 \) (jer \( 7 \cdot 143 = 1\,001 \)). Broj članova: \( 142 - 15 + 1 = 128 \). Suma: \( S = \dfrac{128 \cdot (105 + 994)}{2} = \dfrac{128 \cdot 1\,099}{2} = 64 \cdot 1\,099 = 70\,336 \). Generalno, broj trocifrenih umnožaka \( d \) je \( \lfloor 999/d \rfloor - \lfloor 99/d \rfloor \).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('series-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  // ─── Top half: number line with multiples of 11 ───
+  var nlMarginL = 60, nlMarginR = 60;
+  var nlY = 130;        // y position of the number line
+  var nlW = W - nlMarginL - nlMarginR;
+
+  function nlX(value) {
+    // Map [100, 999] to [nlMarginL, nlMarginL + nlW]
+    return nlMarginL + (value - 100) / (999 - 100) * nlW;
+  }
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var warning = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('81 trocifrenih umnozaka 11:  110, 121, 132, ..., 990', W / 2, 30);
+
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.fillText('a₁ = 110,  d = 11,  aₙ = 990,  n = 81', W / 2, 50);
+
+    // ─── Number line ───
+    // Tick marks for endpoints 100 and 999
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(nlMarginL, nlY);
+    ctx.lineTo(W - nlMarginR, nlY);
+    ctx.stroke();
+
+    // Ticks at endpoints
+    [100, 999].forEach(function(v) {
+      ctx.beginPath();
+      ctx.moveTo(nlX(v), nlY - 8);
+      ctx.lineTo(nlX(v), nlY + 8);
+      ctx.stroke();
+    });
+
+    // Endpoint labels
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('100', nlX(100), nlY + 12);
+    ctx.fillText('999', nlX(999), nlY + 12);
+
+    // Plot all 81 multiples as small circles
+    ctx.fillStyle = primary;
+    for (var k = 10; k <= 90; k++) {
+      var v = 11 * k;
+      ctx.beginPath();
+      ctx.arc(nlX(v), nlY, 3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Highlight first (110) and last (990) and middle (550)
+    function bigDot(v, color, label, labelAbove) {
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(nlX(v), nlY, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      if (labelAbove) {
+        ctx.textBaseline = 'bottom';
+        ctx.fillText(label, nlX(v), nlY - 12);
+      } else {
+        ctx.textBaseline = 'top';
+        ctx.fillText(label, nlX(v), nlY + 28);
+      }
+    }
+    bigDot(110, accent, '110 = a₁', true);
+    bigDot(990, accent, '990 = aₙ', true);
+    bigDot(550, highlight, '550 = srednji', false);
+
+    // Connecting arcs for first-last pair
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 1.6;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    var x1 = nlX(110), x2 = nlX(990);
+    var midX = (x1 + x2) / 2;
+    var arcTop = nlY - 50;
+    ctx.moveTo(x1, nlY);
+    ctx.quadraticCurveTo(midX, arcTop, x2, nlY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('110 + 990 = 1100', midX, arcTop - 4);
+
+    // ─── Bottom half: Gauss pairing illustration ───
+    var gaussTop = 250;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Gausov trik: sparivanje prvog i poslednjeg', W / 2, gaussTop);
+
+    // Draw stylized pair boxes
+    var bx = 120, by = gaussTop + 40;
+    var boxW = 100, boxH = 40, gap = 14;
+
+    // Pair 1: 110 + 990
+    var rows = [
+      { left: '110', right: '990', sum: '1100' },
+      { left: '121', right: '979', sum: '1100' },
+      { left: '132', right: '968', sum: '1100' },
+      { left: '⋮',   right: '⋮',   sum: '⋮' },
+      { left: '539', right: '561', sum: '1100' }
+    ];
+
+    for (var i = 0; i < rows.length; i++) {
+      var rowY = by + i * (boxH + gap);
+      var r = rows[i];
+
+      // Left box
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.12);
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 1.4;
+      ctx.fillRect(bx, rowY, boxW, boxH);
+      ctx.strokeRect(bx, rowY, boxW, boxH);
+      ctx.fillStyle = text;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(r.left, bx + boxW / 2, rowY + boxH / 2);
+
+      // Plus
+      ctx.fillStyle = muted;
+      ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+      ctx.fillText('+', bx + boxW + 24, rowY + boxH / 2);
+
+      // Right box
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.12);
+      ctx.fillRect(bx + boxW + 50, rowY, boxW, boxH);
+      ctx.strokeRect(bx + boxW + 50, rowY, boxW, boxH);
+      ctx.fillStyle = text;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.fillText(r.right, bx + boxW + 50 + boxW / 2, rowY + boxH / 2);
+
+      // Equals
+      ctx.fillStyle = muted;
+      ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+      ctx.fillText('=', bx + 2 * boxW + 74, rowY + boxH / 2);
+
+      // Sum box (highlighted)
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.18);
+      ctx.strokeStyle = accent;
+      ctx.fillRect(bx + 2 * boxW + 100, rowY, boxW, boxH);
+      ctx.strokeRect(bx + 2 * boxW + 100, rowY, boxW, boxH);
+      ctx.fillStyle = text;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.fillText(r.sum, bx + 2 * boxW + 100 + boxW / 2, rowY + boxH / 2);
+    }
+
+    // Final calculation note (right side or below)
+    var noteY = by + rows.length * (boxH + gap) + 16;
+    ctx.fillStyle = text;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('40 parova × 1100 = 44 000;   srednji clan = 550', W / 2, noteY);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.fillText('Ukupno:  44 000 + 550 = 44 550', W / 2, noteY + 22);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Zbir trocifrenih brojeva deljivih sa 11",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["aritmetička progresija", "suma niza", "deljivost", "Gausov trik", "brojanje"]
+}
+BRAINSPARK_META-->

@@ -1,0 +1,609 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Zbir kvadrata svih realnih resenja jednacine x^2 - |x - 2| - 4 = 0.
+
+Strategija: razloziti |x-2| po znaku argumenta x-2.
+
+Slucaj 1: x - 2 >= 0, tj. x >= 2.
+  |x-2| = x - 2.
+  Jednacina: x^2 - (x-2) - 4 = 0
+            x^2 - x + 2 - 4 = 0
+            x^2 - x - 2 = 0.
+  Diskriminanta: 1 + 8 = 9. Koreni:
+    x = (1 +/- 3)/2 = 2 ili -1.
+  Provera uslova x >= 2:
+    x = 2: 2 >= 2 ✓ (granicni — pripada).
+    x = -1: -1 >= 2 ✗ (odbacujemo).
+  Iz slucaja 1: x = 2.
+
+Slucaj 2: x - 2 < 0, tj. x < 2.
+  |x-2| = -(x-2) = 2 - x.
+  Jednacina: x^2 - (2 - x) - 4 = 0
+            x^2 - 2 + x - 4 = 0
+            x^2 + x - 6 = 0.
+  Diskriminanta: 1 + 24 = 25. Koreni:
+    x = (-1 +/- 5)/2 = 2 ili -3.
+  Provera uslova x < 2:
+    x = 2: 2 < 2 ✗ (odbacujemo — nije strogo manje).
+    x = -3: -3 < 2 ✓.
+  Iz slucaja 2: x = -3.
+
+Sva resenja: x = 2 i x = -3.
+Zbir kvadrata: 2^2 + (-3)^2 = 4 + 9 = 13.
+
+Provera u originalnoj jednacini:
+  x = 2: 4 - |0| - 4 = 4 - 0 - 4 = 0 ✓
+  x = -3: 9 - |-5| - 4 = 9 - 5 - 4 = 0 ✓
+
+Tacan odgovor: 13, opcija (B).
+
+Eliminacija ostalih:
+  (A) 10 — neki distraktor (mozda x = 1, 3 zbog pogresne kazuistike).
+  (E) 14 — moglo bi biti ako se uzme x = 2 dvaput.
+  (G) 15 — proizvoljan.
+  (I) 16 — npr. ako se uzme x^2 + |x-2|^2.
+
+Vizualno (2 kanvasa, statika):
+  1) Graf y = x^2 - |x-2| - 4 na intervalu [-4, 3]. Vidi se da ima
+     "lom" u x = 2 (gde |x-2| menja oblik). Funkcija je:
+       y = x^2 - x - 2 za x >= 2 (parabola otvorena nagore),
+       y = x^2 + x - 6 za x < 2 (parabola otvorena nagore).
+     Nule funkcije: -3 i 2.
+  2) Brojevna prava sa x = -3 i x = 2; zatim "pretvaranje":
+     (-3)^2 = 9, 2^2 = 4. Zbir 13.
+
+Pitfalls:
+  - Ne proveriti pripadnost slucaju — npr. uzeti i x = -1 iz prvog slucaja
+    iako -1 < 2. Tako bi se dobilo 4 + 1 + 9 = 14 (pogresan odgovor (E)).
+  - Pomesati znakove: |x-2| = x-2 ako x-2 < 0 (pogresno).
+  - Racunati zbir resenja umesto zbira kvadrata: 2 + (-3) = -1.
+  - Pomesati x^2 + |x-2|^2 sa x^2 - |x-2|.
+</script>
+
+<h1 data-card="problem-title">Jednačina sa apsolutnom vrednošću — zbir kvadrata rešenja</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — kvadratna jednačina, apsolutna vrednost, rad po slučajevima</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Zbir kvadrata svih realnih rešenja jednačine</p>
+  <div class="math-block">\[ x^2 - |x - 2| - 4 = 0 \]</div>
+  <p>je:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">jednačina</span>
+      <span class="given-value">\( x^2 - |x-2| - 4 = 0 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">tražimo</span>
+      <span class="given-value">\( \displaystyle \sum_{i} x_i^2 \) za sva realna \( x_i \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 10 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 13 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 14 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 15 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 16 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Rastavićemo \( |x-2| \) po znaku argumenta na dva slučaja: \( x \ge 2 \) i \( x < 2 \). U svakom slučaju jednačina postaje obična kvadratna; rešićemo je i <em>obavezno proveriti</em> da li dobijena rešenja pripadaju domenu tog slučaja. Konačan skup rešenja daje zbir kvadrata.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Apsolutna vrednost i kvadratna jednačina</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Definicija</span> \[ |a| = \begin{cases} a, & a \ge 0,\\ -a, & a < 0. \end{cases} \] Specijalno, \( |x - c| = x - c \) ako \( x \ge c \), a \( |x - c| = c - x \) ako \( x < c \).</li>
+        <li><span class="formula-label">Strategija po slučajevima</span> Za jednačinu sa \( |f(x)| \), uvedi dva slučaja: \( f(x) \ge 0 \) i \( f(x) < 0 \). U svakom slučaju jednačina postaje "obična" (bez modula). <strong>Ključno: dobijena rešenja moraju zadovoljiti uslov tog slučaja</strong> — inače se odbacuju.</li>
+        <li><span class="formula-label">Kvadratna jednačina</span> \( ax^2 + bx + c = 0 \) ima rešenja \[ x_{1,2} = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}. \] Ako su koreni \( p \) i \( q \), onda je \( ax^2 + bx + c = a(x-p)(x-q) \).</li>
+        <li><span class="formula-label">Faktorizacija "po oku"</span> \( x^2 + bx + c = (x - p)(x - q) \) gde je \( p + q = -b \) i \( p \cdot q = c \) (Vietove formule).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — graf jednačine">
+  <h2>📐 Graf funkcije \( y = x^2 - |x-2| - 4 \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diag-graph" width="700" height="540"></canvas>
+  </div>
+  <p class="canvas-caption">Graf je sastavljen od dva luka parabole, koji se susreću u tački \( (2, 0) \) (gde \( |x-2| \) menja oblik). Funkcija seče \( x \)-osu u \( x = -3 \) i \( x = 2 \) — to su tražena rešenja.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — zbir kvadrata">
+  <h2>📐 Brojevna prava i zbir kvadrata</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diag-sum" width="700" height="380"></canvas>
+  </div>
+  <p class="canvas-caption">Realna rešenja \( x = -3 \) i \( x = 2 \) na brojevnoj pravoj; kvadrati \( 9 \) i \( 4 \) sabiraju se u \( 13 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Razdvajanje po znaku izraza pod modulom</h3>
+      <p>Modul \( |x - 2| \) menja oblik u tački \( x = 2 \). Razlikujemo dva slučaja, na osnovu znaka argumenta \( x - 2 \):</p>
+      <div class="math-block">\[ |x-2| = \begin{cases} x - 2, & x \ge 2,\\ 2 - x, & x < 2. \end{cases} \]</div>
+      <p>Rešavamo jednačinu posebno u svakom od ova dva intervala, a zatim se vraćamo da proverimo pripadnost.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je granična tačka \( x = 2 \) uvrštena u prvi slučaj?</summary>
+          <div class="detail-content"><p>U \( x = 2 \) je \( |x - 2| = 0 \). I formula \( x - 2 \) i formula \( 2 - x \) tu daju \( 0 \), pa može da pripada bilo kojem od dva slučaja (granična tačka). Ovde je smeštamo u prvi (\( x \ge 2 \)) — bitno je samo da je <em>ne</em> ispustimo i <em>ne</em> uračunamo dvaput. Drugi slučaj uzimamo strogo \( x < 2 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj 1: \( x \ge 2 \)</h3>
+      <p>Tu je \( |x - 2| = x - 2 \), pa jednačina postaje:</p>
+      <div class="math-block">\[ x^2 - (x - 2) - 4 = 0 \;\Longleftrightarrow\; x^2 - x + 2 - 4 = 0 \;\Longleftrightarrow\; x^2 - x - 2 = 0. \]</div>
+      <p>Faktorizacija: tražimo brojeve čiji je proizvod \( -2 \) i zbir \( -1 \) — to su \( -2 \) i \( 1 \), tj. \( x^2 - x - 2 = (x - 2)(x + 1) \). Dakle</p>
+      <div class="math-block">\[ x = 2 \quad \text{ili} \quad x = -1. \]</div>
+      <p>Sada <strong>proveravamo uslov \( x \ge 2 \)</strong>:</p>
+      <ul>
+        <li>\( x = 2 \): \( 2 \ge 2 \) ✓ — prihvatamo.</li>
+        <li>\( x = -1 \): \( -1 \ge 2 \) ✗ — <span class="crossed">odbacujemo</span>.</li>
+      </ul>
+      <p>Iz prvog slučaja imamo samo \( x = 2 \).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto se \( x = -1 \) <em>mora</em> odbaciti?</summary>
+          <div class="detail-content"><p>U slučaju 1 smo zamenili \( |x - 2| \) sa \( x - 2 \). Ta zamena je <em>tačna samo za \( x \ge 2 \)</em>. Za \( x = -1 \), \( x - 2 = -3 \) nije pozitivno, pa važi druga formula \( |x-2| = 2 - x = 3 \), a ne \( x - 2 = -3 \). Vrati \( x = -1 \) u <em>originalnu</em> jednačinu: \( 1 - 3 - 4 = -6 \neq 0 \). Nije rešenje.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj 2: \( x < 2 \)</h3>
+      <p>Tu je \( |x - 2| = -(x - 2) = 2 - x \), pa jednačina postaje:</p>
+      <div class="math-block">\[ x^2 - (2 - x) - 4 = 0 \;\Longleftrightarrow\; x^2 - 2 + x - 4 = 0 \;\Longleftrightarrow\; x^2 + x - 6 = 0. \]</div>
+      <p>Faktorizacija: tražimo brojeve čiji je proizvod \( -6 \) i zbir \( 1 \) — to su \( 3 \) i \( -2 \), tj. \( x^2 + x - 6 = (x + 3)(x - 2) \). Dakle</p>
+      <div class="math-block">\[ x = -3 \quad \text{ili} \quad x = 2. \]</div>
+      <p>Sada <strong>proveravamo uslov \( x < 2 \)</strong>:</p>
+      <ul>
+        <li>\( x = -3 \): \( -3 < 2 \) ✓ — prihvatamo.</li>
+        <li>\( x = 2 \): \( 2 < 2 \) ✗ — <span class="crossed">odbacujemo</span> (nije strogo manje; ali ovaj koren smo već uzeli iz slučaja 1).</li>
+      </ul>
+      <p>Iz drugog slučaja imamo samo \( x = -3 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Skup svih realnih rešenja i provera</h3>
+      <p>Spajanjem oba slučaja:</p>
+      <div class="math-block">\[ x \in \{ -3,\; 2 \}. \]</div>
+      <p>Provera u originalnoj jednačini \( x^2 - |x-2| - 4 \):</p>
+      <ul>
+        <li>\( x = 2 \): \( 4 - |0| - 4 = 4 - 0 - 4 = 0 \) ✓.</li>
+        <li>\( x = -3 \): \( 9 - |-5| - 4 = 9 - 5 - 4 = 0 \) ✓.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Zbir kvadrata</h3>
+      <p>Konačno:</p>
+      <div class="math-block">\[ x_1^2 + x_2^2 = (-3)^2 + 2^2 = 9 + 4 = 13. \]</div>
+      <p>Dakle <span class="result">\( \displaystyle \sum x_i^2 = 13 \)</span> — opcija (B).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: da li je zbir kvadrata isto što i kvadrat zbira?</summary>
+          <div class="detail-content"><p>Ne. Ovde je zbir kvadrata \( 9 + 4 = 13 \), dok je kvadrat zbira \( (-3 + 2)^2 = (-1)^2 = 1 \). Razlika je član \( 2x_1 x_2 = 2 \cdot (-3) \cdot 2 = -12 \) — naime, \( (x_1 + x_2)^2 = x_1^2 + x_2^2 + 2x_1 x_2 = 13 - 12 = 1 \) ✓. Pažljivo: traži se zbir kvadrata, ne kvadrat zbira.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kod jednačina sa apsolutnom vrednošću dva su koraka jednako važna: (1) razložiti modul po znaku argumenta, što daje dve "lokalne" jednačine, i (2) <em>obavezno proveriti</em> da svaki dobijeni koren pripada svom slučaju. Ako se proverava samo u originalnoj jednačini, lažni koreni iz pojedinog slučaja mogu izgledati kao dvostruka rešenja jer kvadratne jednačine deli isti faktor \( (x-2) \) — ovde se on pojavljuje u obe slučaja, ali važi samo iz prvog. <strong>Provera pripadnosti, ne samo zamene</strong>.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ x_1^2 + x_2^2 = (-3)^2 + 2^2 = 13. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 10 \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( 13 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 14 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 15 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 16 \)</span>
+  </div>
+  <p class="verification">Verifikacija u originalu: \( 2^2 - |2-2| - 4 = 4 - 0 - 4 = 0 \) ✓ i \( (-3)^2 - |-3-2| - 4 = 9 - 5 - 4 = 0 \) ✓. Lažni koreni \( x = -1 \) (iz slučaja 1) i \( x = 2 \) (iz slučaja 2 — ali već uzet iz slučaja 1) ne dodaju nova rešenja.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Ne proveriti pripadnost slučaju:</strong> najveća greška. Iz slučaja 1 se dobiju \( x = 2 \) i \( x = -1 \); ako se uzme i \( -1 \) (koje ne zadovoljava \( x \ge 2 \)), zbir kvadrata postaje \( 4 + 1 + 9 = 14 \) — pogrešan odgovor (C). Provera u originalu odmah otkriva da \( x = -1 \) nije rešenje: \( 1 - 3 - 4 = -6 \neq 0 \).</li>
+    <li><strong>Brojati \( x = 2 \) dvaput:</strong> i prvi slučaj i drugi slučaj formalno daju \( x = 2 \) kao koren kvadratne jednačine, ali to je <em>jedno</em> rešenje, ne dva. Zbir kvadrata broji svako rešenje samo jednom.</li>
+    <li><strong>Pogrešan znak u modulu:</strong> za \( x < 2 \) je \( |x-2| = 2 - x \), a ne \( x - 2 \) (jer bi to bio negativan broj, a \( |.| \) je uvek nenegativan). Greška daje obrnutu jednačinu i pogrešna rešenja.</li>
+    <li><strong>Računati zbir umesto zbira kvadrata:</strong> \( x_1 + x_2 = -3 + 2 = -1 \) nije ono što se traži. Pažljivo čitati: <em>zbir kvadrata</em> = \( x_1^2 + x_2^2 \), <em>kvadrat zbira</em> = \( (x_1 + x_2)^2 \) — različito.</li>
+    <li><strong>Pomešati \( |x-2| \) i \( |x-2|^2 \):</strong> \( |x-2|^2 = (x-2)^2 \) je polinom drugog stepena, dok je \( |x-2| \) komadno-linearna funkcija. Ako se pogreši i piše \( (x-2)^2 \), ceo problem se trivijalizuje (svodi na običnu kvadratnu).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Reši uopšteni problem: za parametar \( c \in \mathbb{R} \), reši jednačinu \( x^2 - |x - 2| - c = 0 \). Za koje vrednosti \( c \) jednačina ima dva, tri ili četiri realna rešenja?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Razloži po slučajevima isto kao u glavnom rešenju:</p>
+      <ul>
+        <li>\( x \ge 2 \): \( x^2 - x - (c-2) = 0 \), tj. \( x^2 - x + (2 - c) = 0 \). Diskriminanta \( D_1 = 1 - 4(2 - c) = 4c - 7 \).</li>
+        <li>\( x < 2 \): \( x^2 + x - (c+2) = 0 \). Diskriminanta \( D_2 = 1 + 4(c+2) = 4c + 9 \).</li>
+      </ul>
+      <p>Za \( c = 4 \) (naš zadatak), \( D_1 = 9 \), \( D_2 = 25 \) — oba pozitivna. Treba još proveriti pripadnost slučajevima. Geometrijski, problem se može tumačiti kao presek parabole \( y = x^2 \) sa funkcijom \( y = |x-2| + c \) — V-oblik koji se kreće gore-dole. Broj preseka zavisi od \( c \): mali \( c \) — možda nijedno (ako je V iznad parabole), srednji \( c \) — dva preseka, veliki \( c \) — može biti i četiri.</p>
+      <p>Tehnički odgovor: za \( c < -\tfrac{9}{4} \) nema rešenja; za \( -\tfrac{9}{4} \le c < \tfrac{7}{4} \) jedno ili dva rešenja iz slučaja 2 (treba još uslov \( x < 2 \)); za \( c \ge \tfrac{7}{4} \) može biti i rešenja iz slučaja 1. Tačan broj zavisi od preseka s granicom \( x = 2 \). Skiciraj graf da vidiš.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  // ── Graph y = x^2 - |x-2| - 4 ──
+  var canvas = document.getElementById('diag-graph');
+  if (canvas) {
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, H = canvas.height;
+
+    var xMin = -4.5, xMax = 3.5, yMin = -8, yMax = 6;
+    var marginL = 60, marginR = 40, marginT = 60, marginB = 70;
+    var plotW = W - marginL - marginR;
+    var plotH = H - marginT - marginB;
+    var sx = plotW / (xMax - xMin);
+    var sy = plotH / (yMax - yMin);
+
+    function toCanvas(x, y) {
+      return { x: marginL + (x - xMin) * sx, y: marginT + (yMax - y) * sy };
+    }
+
+    function f(x) { return x*x - Math.abs(x - 2) - 4; }
+
+    function drawGraph() {
+      var bg = cv('--sol-canvas-bg');
+      var grid = cv('--sol-canvas-grid');
+      var axis = cv('--sol-canvas-axis');
+      var primary = cv('--sol-canvas-primary');
+      var accent = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text = cv('--sol-canvas-text');
+      var muted = cv('--sol-canvas-muted');
+      var warning = cv('--sol-canvas-warning');
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      // Title
+      ctx.fillStyle = text;
+      ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('y = x² − |x − 2| − 4', W/2, 26);
+
+      // Grid
+      ctx.strokeStyle = grid;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (var gx = Math.ceil(xMin); gx <= Math.floor(xMax); gx++) {
+        var p1 = toCanvas(gx, yMin); var p2 = toCanvas(gx, yMax);
+        ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
+      }
+      for (var gy = Math.ceil(yMin); gy <= Math.floor(yMax); gy++) {
+        var q1 = toCanvas(xMin, gy); var q2 = toCanvas(xMax, gy);
+        ctx.moveTo(q1.x, q1.y); ctx.lineTo(q2.x, q2.y);
+      }
+      ctx.stroke();
+
+      // Axes
+      ctx.strokeStyle = axis;
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      var ax1 = toCanvas(xMin, 0); var ax2 = toCanvas(xMax, 0);
+      ctx.moveTo(ax1.x, ax1.y); ctx.lineTo(ax2.x, ax2.y);
+      var ay1 = toCanvas(0, yMin); var ay2 = toCanvas(0, yMax);
+      ctx.moveTo(ay1.x, ay1.y); ctx.lineTo(ay2.x, ay2.y);
+      ctx.stroke();
+
+      // Axis tick labels
+      ctx.fillStyle = text;
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      for (var lx = Math.ceil(xMin); lx <= Math.floor(xMax); lx++) {
+        if (lx === 0) continue;
+        var pl = toCanvas(lx, 0);
+        ctx.fillText(String(lx), pl.x, pl.y + 16);
+      }
+      ctx.textAlign = 'right';
+      for (var ly = Math.ceil(yMin); ly <= Math.floor(yMax); ly++) {
+        if (ly === 0) continue;
+        var ql = toCanvas(0, ly);
+        ctx.fillText(String(ly), ql.x - 6, ql.y + 4);
+      }
+      ctx.textAlign = 'left';
+      var O = toCanvas(0, 0);
+      ctx.fillText('O', O.x + 5, O.y + 14);
+      ctx.fillText('x', toCanvas(xMax, 0).x + 6, toCanvas(xMax, 0).y + 4);
+      ctx.textAlign = 'center';
+      ctx.fillText('y', toCanvas(0, yMax).x, toCanvas(0, yMax).y - 8);
+
+      // Plot piece x < 2 (parabola y = x^2 + x - 6)
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      var first = true;
+      for (var x = xMin; x <= 2; x += 0.02) {
+        var y = f(x);
+        if (y < yMin || y > yMax) { first = true; continue; }
+        var p = toCanvas(x, y);
+        if (first) { ctx.moveTo(p.x, p.y); first = false; }
+        else ctx.lineTo(p.x, p.y);
+      }
+      ctx.stroke();
+
+      // Plot piece x >= 2 (parabola y = x^2 - x - 2)
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      first = true;
+      for (var x = 2; x <= xMax; x += 0.02) {
+        var y = f(x);
+        if (y < yMin || y > yMax) { first = true; continue; }
+        var p = toCanvas(x, y);
+        if (first) { ctx.moveTo(p.x, p.y); first = false; }
+        else ctx.lineTo(p.x, p.y);
+      }
+      ctx.stroke();
+
+      // Mark zeros: x = -3, x = 2
+      var zeros = [-3, 2];
+      zeros.forEach(function(z){
+        var pz = toCanvas(z, 0);
+        // halo
+        ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.25);
+        ctx.beginPath(); ctx.arc(pz.x, pz.y, 11, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = cv('--sol-canvas-highlight');
+        ctx.beginPath(); ctx.arc(pz.x, pz.y, 6, 0, Math.PI*2); ctx.fill();
+        // label
+        ctx.fillStyle = text;
+        ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('x = ' + z, pz.x, pz.y - 14);
+      });
+
+      // Mark "join point" (2, 0) with special note
+      var join = toCanvas(2, 0);
+      ctx.strokeStyle = warning;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([3, 3]);
+      ctx.beginPath();
+      ctx.moveTo(toCanvas(2, yMin).x, toCanvas(2, yMin).y);
+      ctx.lineTo(toCanvas(2, yMax).x, toCanvas(2, yMax).y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = warning;
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('lom u x = 2', toCanvas(2, yMax).x + 6, toCanvas(2, yMax).y + 14);
+
+      // Mark vertex of left parabola: y = x^2 + x - 6 -> vertex at x = -1/2, y = -25/4
+      var Lvx = -0.5, Lvy = -6.25;
+      var Lvp = toCanvas(Lvx, Lvy);
+      ctx.fillStyle = primary;
+      ctx.beginPath(); ctx.arc(Lvp.x, Lvp.y, 4, 0, Math.PI*2); ctx.fill();
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('teme: (−½, −25/4)', Lvp.x + 7, Lvp.y + 4);
+
+      // Legend
+      var legY = H - 36;
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      // primary segment label
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(40, legY); ctx.lineTo(75, legY);
+      ctx.stroke();
+      ctx.fillStyle = text;
+      ctx.fillText('x < 2:  y = x² + x − 6', 82, legY + 4);
+
+      ctx.strokeStyle = accent;
+      ctx.beginPath();
+      ctx.moveTo(330, legY); ctx.lineTo(365, legY);
+      ctx.stroke();
+      ctx.fillText('x ≥ 2:  y = x² − x − 2', 372, legY + 4);
+
+      ctx.fillStyle = muted;
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Nule (rešenja jednačine f(x) = 0): x = −3 i x = 2.', W/2, H - 14);
+    }
+
+    drawGraph();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() { styles = getComputedStyle(root); drawGraph(); }, 50);
+      }
+    });
+  }
+
+  // ── Number line + sum of squares ──
+  var canvas2 = document.getElementById('diag-sum');
+  if (canvas2) {
+    var ctx2 = canvas2.getContext('2d');
+    var W2 = canvas2.width, H2 = canvas2.height;
+
+    function drawSum() {
+      var bg = cv('--sol-canvas-bg');
+      var axis = cv('--sol-canvas-axis');
+      var primary = cv('--sol-canvas-primary');
+      var accent = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text = cv('--sol-canvas-text');
+      var muted = cv('--sol-canvas-muted');
+
+      ctx2.clearRect(0, 0, W2, H2);
+      ctx2.fillStyle = bg;
+      ctx2.fillRect(0, 0, W2, H2);
+
+      ctx2.fillStyle = text;
+      ctx2.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx2.textAlign = 'center';
+      ctx2.fillText('Realna rešenja na brojevnoj pravoj', W2/2, 28);
+
+      // Number line from x = -5 to x = 4
+      var nxMin = -5, nxMax = 4;
+      var leftPad = 60, rightPad = 60;
+      var lineY = 130;
+      var unit = (W2 - leftPad - rightPad) / (nxMax - nxMin);
+      function tx(v) { return leftPad + (v - nxMin) * unit; }
+
+      // Line
+      ctx2.strokeStyle = axis;
+      ctx2.lineWidth = 2;
+      ctx2.beginPath();
+      ctx2.moveTo(leftPad - 10, lineY);
+      ctx2.lineTo(W2 - rightPad + 10, lineY);
+      ctx2.stroke();
+      // Arrow caps
+      ctx2.beginPath();
+      ctx2.moveTo(W2 - rightPad + 10, lineY);
+      ctx2.lineTo(W2 - rightPad + 2, lineY - 5);
+      ctx2.moveTo(W2 - rightPad + 10, lineY);
+      ctx2.lineTo(W2 - rightPad + 2, lineY + 5);
+      ctx2.stroke();
+
+      // Ticks
+      ctx2.fillStyle = text;
+      ctx2.font = '12px Inter, system-ui, sans-serif';
+      ctx2.textAlign = 'center';
+      for (var v = nxMin; v <= nxMax; v++) {
+        var px = tx(v);
+        ctx2.beginPath();
+        ctx2.moveTo(px, lineY - 5);
+        ctx2.lineTo(px, lineY + 5);
+        ctx2.strokeStyle = axis;
+        ctx2.stroke();
+        ctx2.fillStyle = (v === 0) ? muted : text;
+        ctx2.fillText(String(v), px, lineY + 22);
+      }
+
+      // Solutions: -3 and 2
+      var sols = [{ x: -3, label: 'x₁ = −3', sq: '(−3)² = 9', color: 'highlight' },
+                  { x: 2,  label: 'x₂ = 2',  sq: '2² = 4',    color: 'accent' }];
+
+      sols.forEach(function(s) {
+        var px = tx(s.x);
+        var col = s.color === 'highlight' ? cv('--sol-canvas-highlight') : cv('--sol-canvas-accent');
+        // halo
+        ctx2.fillStyle = (s.color === 'highlight'
+          ? cvAlpha('--sol-canvas-highlight', 0.25)
+          : cvAlpha('--sol-canvas-accent', 0.25));
+        ctx2.beginPath();
+        ctx2.arc(px, lineY, 12, 0, Math.PI*2);
+        ctx2.fill();
+        // dot
+        ctx2.fillStyle = col;
+        ctx2.beginPath();
+        ctx2.arc(px, lineY, 7, 0, Math.PI*2);
+        ctx2.fill();
+        // label above
+        ctx2.fillStyle = text;
+        ctx2.font = 'bold 14px Inter, system-ui, sans-serif';
+        ctx2.textAlign = 'center';
+        ctx2.fillText(s.label, px, lineY - 22);
+        // square below
+        ctx2.fillStyle = col;
+        ctx2.font = 'bold 13px Inter, system-ui, sans-serif';
+        ctx2.fillText(s.sq, px, lineY + 50);
+      });
+
+      // Sum equation at bottom
+      ctx2.fillStyle = text;
+      ctx2.font = 'bold 18px Inter, system-ui, sans-serif';
+      ctx2.textAlign = 'center';
+      ctx2.fillText('x₁² + x₂² = 9 + 4 = 13', W2/2, H2 - 40);
+
+      // Caption
+      ctx2.fillStyle = muted;
+      ctx2.font = '12px Inter, system-ui, sans-serif';
+      ctx2.fillText('Tačno jedan kvadrat za svako rešenje (ne dva za x = 2 iako se javlja u oba slučaja).', W2/2, H2 - 16);
+    }
+
+    drawSum();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() { styles = getComputedStyle(root); drawSum(); }, 50);
+      }
+    });
+  }
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Zbir kvadrata realnih rešenja jednačine sa apsolutnom vrednošću",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["apsolutna vrednost", "kvadratna jednačina", "rad po slučajevima", "realna rešenja"]
+}
+BRAINSPARK_META-->

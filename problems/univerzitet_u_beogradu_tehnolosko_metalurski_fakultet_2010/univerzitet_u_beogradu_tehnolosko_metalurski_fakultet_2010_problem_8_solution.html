@@ -1,0 +1,657 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+PROBLEM:
+P(x) = ax^2 + bx + c.
+Dato: P(0) = 4, P(1) = 5, P(-1) = 9.
+Naci skup {a, b, c}.
+
+POSTAVKA:
+P(0) = a*0 + b*0 + c = c = 4.
+P(1) = a + b + c = 5 → a + b = 5 - c = 5 - 4 = 1.
+P(-1) = a - b + c = 9 → a - b = 9 - c = 9 - 4 = 5.
+
+SISTEM:
+  a + b = 1
+  a - b = 5
+Sabiranje: 2a = 6 → a = 3.
+Oduzimanje: 2b = -4 → b = -2.
+
+REZULTAT:
+a = 3, b = -2, c = 4.
+{a, b, c} = {3, -2, 4} = {-2, 3, 4} = {-2, 4, 3}.
+
+PROVERA:
+P(x) = 3x^2 - 2x + 4.
+P(0) = 4 ✓
+P(1) = 3 - 2 + 4 = 5 ✓
+P(-1) = 3 + 2 + 4 = 9 ✓
+
+ELIMINACIJA:
+(A) {1, 2, 4}: a=3 nije u skupu, b=-2 nije, samo c=4 je. NE.
+(B) {4, 5, 6}: a=3 nije. NE.
+(C) {-2, 4, 3}: a=3, b=-2, c=4 — svi pripadaju. DA.
+(D) {0, -1, -2}: a=3 nije. NE.
+(E) {8, 9, -1}: a=3 nije. NE.
+
+ODGOVOR: (C).
+
+KLJUCNI UVID:
+- "Skok" P(1) i P(-1) ima posebnu strukturu:
+   P(1) + P(-1) = 2a + 2c = 2(a + c) → a + c = (5 + 9)/2 = 7 → a = 3.
+   P(1) - P(-1) = 2b → b = (5 - 9)/2 = -2.
+   P(0) = c = 4.
+   To je takozvana "polarizacija" — parna i neparna komponenta polinoma.
+
+DIJAGRAM:
+- Plot P(x) = 3x^2 - 2x + 4 sa istaknute tri tacke:
+   (0, 4), (1, 5), (-1, 9).
+- Pokazi da parabola ima minimum u x = -b/(2a) = 2/6 = 1/3, P(1/3) = 1/3 - 2/3 + 4 = 4 - 1/3 = 11/3 ≈ 3.667.
+- Iste boje za interpolacione tacke, kontekst za to da ax^2+bx+c je pravo "uklapanje" tri tacke.
+</script>
+
+<h1 data-card="problem-title">Određivanje koeficijenata kvadratnog polinoma iz tri tačke</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra &mdash; sistem linearnih jednačina, polinomska interpolacija, parna i neparna dekompozicija</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>Tekst zadatka</h2>
+  <p>
+    Neka je \( P(x) = ax^2 + bx + c \). Ako je
+  </p>
+  <div class="math-block">
+    \[ P(0) = 4, \quad P(1) = 5, \quad P(-1) = 9, \]
+  </div>
+  <p>
+    tada je skup \( \{a, b, c\} \) jednak:
+  </p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">Polinom</span>
+      <span class="given-value">\( P(x) = ax^2 + bx + c \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Uslov 1</span>
+      <span class="given-value">\( P(0) = 4 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Uslov 2</span>
+      <span class="given-value">\( P(1) = 5 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Uslov 3</span>
+      <span class="given-value">\( P(-1) = 9 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Tražimo</span>
+      <span class="given-value">skup \( \{a, b, c\} \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \{1, 2, 4\} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \{4, 5, 6\} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \{-2, 4, 3\} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \{0, -1, -2\} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \{8, 9, -1\} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>Plan rešavanja</h2>
+  <p class="plan-text">
+    Tri uslova \( P(0), P(1), P(-1) \) daju tri linearne jednačine sa tri nepoznate \( a, b, c \).
+    Pametan izbor tačaka (\( 0 \) i simetričnih \( \pm 1 \)) drastično pojednostavljuje sistem:
+    \( P(0) \) odmah daje \( c \), a sabiranje i oduzimanje \( P(1) \pm P(-1) \) razdvaja
+    \( a \) i \( b \). Na kraju proveravamo polinom u sve tri zadate tačke.
+  </p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>Podsetnik iz teorije</h2>
+  <details>
+    <summary>Vrednosti polinoma u \( 0 \) i \( \pm 1 \) i parna/neparna dekompozicija</summary>
+    <div class="detail-content">
+      <ul>
+        <li>
+          <strong>Vrednost u nuli:</strong> za \( P(x) = ax^2 + bx + c \) važi
+          \( P(0) = c \). Slobodan član se "očita" iz \( P(0) \).
+        </li>
+        <li>
+          <strong>Vrednosti u \( \pm 1 \):</strong>
+          \( P(1) = a + b + c \) i \( P(-1) = a - b + c \).
+        </li>
+        <li>
+          <strong>Polarizacija (parna + neparna):</strong>
+          \[ \frac{P(1) + P(-1)}{2} = a + c, \qquad \frac{P(1) - P(-1)}{2} = b. \]
+          Ovo je opšti princip: zbir izoluje parne članove (\( c, a x^2 \) u nuli),
+          razlika izoluje neparne (\( b x \)).
+        </li>
+        <li>
+          <strong>Polinomska interpolacija:</strong> kroz tri tačke (sa različitim
+          \( x \)-koordinatama) prolazi tačno jedan polinom stepena najviše \( 2 \). Tri uslova
+          jednoznačno određuju \( a, b, c \).
+        </li>
+        <li>
+          <strong>Skup vs. uređena trojka:</strong> rezultat se traži kao <em>skup</em>
+          \( \{a, b, c\} \) &mdash; redosled elemenata nije bitan, ali se elementi ne ponavljaju.
+          Uvek možemo prepoznati skup nezavisno od redosleda navođenja.
+        </li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Parabola kroz tri zadate tačke">
+  <h2>Parabola kroz tri zadate tačke</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-parabola" width="760" height="540"></canvas>
+  </div>
+  <p class="canvas-caption">
+    Parabola \( P(x) = 3x^2 - 2x + 4 \) prolazi kroz sve tri tačke
+    \( (-1, 9) \), \( (0, 4) \), \( (1, 5) \). Teme parabole je u
+    \( x = \tfrac{1}{3} \), gde \( P \) dostiže minimum \( \tfrac{11}{3} \approx 3{,}67 \).
+    Vizuelno se vidi da je parabola "sabijenija" u temenu i strmo raste kako se udaljavamo od
+    njega &mdash; tačno tri uzorka su dovoljna da je jednoznačno odrede.
+  </p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Iz \( P(0) \) čitamo slobodan član \( c \)</h3>
+      <p>Uvrstimo \( x = 0 \) u polinom:</p>
+      <div class="math-block">
+        \[ P(0) = a \cdot 0^2 + b \cdot 0 + c = c. \]
+      </div>
+      <p>
+        Pošto je dato \( P(0) = 4 \), odmah dobijamo
+        <span class="result">c = 4</span>. Time smo eliminisali jednu nepoznatu praktično bez
+        rada.
+      </p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš \( P(0) = c \)?</summary>
+          <div class="detail-content">
+            <p>
+              Svi članovi sa \( x \) (kao \( ax^2 \) i \( bx \)) imaju faktor \( x \), pa kad je
+              \( x = 0 \), oni postaju nula. Ostaje samo slobodan član \( c \). Ovo je univerzalna
+              osobina: za bilo koji polinom \( P \), \( P(0) \) je upravo njegov slobodan član.
+            </p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Iz \( P(1) \) i \( P(-1) \) postavljamo dve linearne jednačine</h3>
+      <p>Uvrštavamo \( x = 1 \):</p>
+      <div class="math-block">
+        \[ P(1) = a \cdot 1^2 + b \cdot 1 + c = a + b + c. \]
+      </div>
+      <p>I \( x = -1 \) (oprez sa znakom kod \( bx \)):</p>
+      <div class="math-block">
+        \[ P(-1) = a \cdot (-1)^2 + b \cdot (-1) + c = a - b + c. \]
+      </div>
+      <p>Sa zadanim vrednostima:</p>
+      <div class="math-block">
+        \[ \begin{aligned}
+          a + b + c &amp;= 5, \\
+          a - b + c &amp;= 9.
+        \end{aligned} \]
+      </div>
+      <p>Pošto već znamo \( c = 4 \), oduzmemo \( c \) sa obe strane:</p>
+      <div class="math-block">
+        \[ \begin{aligned}
+          a + b &amp;= 1, \\
+          a - b &amp;= 5.
+        \end{aligned} \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Sabiranjem i oduzimanjem razdvajamo \( a \) i \( b \)</h3>
+      <p>Saberemo dve jednačine &mdash; \( b \) se poništava:</p>
+      <div class="math-block">
+        \[ (a + b) + (a - b) = 1 + 5 \;\Longrightarrow\; 2a = 6 \;\Longrightarrow\; a = 3. \]
+      </div>
+      <p>Oduzmemo &mdash; \( a \) se poništava:</p>
+      <div class="math-block">
+        \[ (a + b) - (a - b) = 1 - 5 \;\Longrightarrow\; 2b = -4 \;\Longrightarrow\; b = -2. \]
+      </div>
+      <p>Dakle <span class="result">a = 3</span>, <span class="result">b = -2</span>, <span class="result">c = 4</span>.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: alternativa preko polarizacije</summary>
+          <div class="detail-content">
+            <p>
+              Možemo direktno iskoristiti \( P(1) + P(-1) = 2(a + c) \) i
+              \( P(1) - P(-1) = 2b \). Tu su:
+              \( 5 + 9 = 14 = 2(a + c) \), pa \( a + c = 7 \), a sa \( c = 4 \) je \( a = 3 \).
+              Slično \( 5 - 9 = -4 = 2b \), pa \( b = -2 \). Dva različita puta &mdash; isti odgovor.
+            </p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera u sve tri zadate tačke</h3>
+      <p>Polinom je \( P(x) = 3x^2 - 2x + 4 \). Računamo:</p>
+      <div class="math-block">
+        \[ P(0) = 0 - 0 + 4 = 4. \;\checkmark \]
+      </div>
+      <div class="math-block">
+        \[ P(1) = 3 - 2 + 4 = 5. \;\checkmark \]
+      </div>
+      <div class="math-block">
+        \[ P(-1) = 3 + 2 + 4 = 9. \;\checkmark \]
+      </div>
+      <p>Sva tri uslova su zadovoljena.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Formiranje skupa i poređenje sa ponuđenim opcijama</h3>
+      <p>
+        Kao <em>skup</em>, redosled nije bitan, pa
+      </p>
+      <div class="math-block">
+        \[ \{a, b, c\} = \{3, -2, 4\} = \{-2, 3, 4\} = \{-2, 4, 3\}. \]
+      </div>
+      <p>Poredimo sa ponuđenim:</p>
+      <div class="math-block">
+        \[ \begin{array}{c|c|c}
+          \text{Opcija} & \text{Skup} & \text{Poklapanje?} \\
+          \hline
+          \text{(A)} & \{1, 2, 4\} & \times \\
+          \text{(B)} & \{4, 5, 6\} & \times \\
+          \text{(C)} & \{-2, 4, 3\} & \checkmark \\
+          \text{(D)} & \{0, -1, -2\} & \times \\
+          \text{(E)} & \{8, 9, -1\} & \times \\
+        \end{array} \]
+      </div>
+      <p>Tačan odgovor je <span class="result">(C) \{-2, 4, 3\}</span>.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>Ključni uvid</h2>
+  <p>
+    Izbor uzorkovanih tačaka ima ogroman uticaj na "težinu" sistema. Vrednosti u
+    \( 0 \) i u <em>simetričnim</em> tačkama \( \pm 1 \) cepaju polinom na parnu komponentu
+    (\( ax^2 + c \), preživljava preslikavanje \( x \mapsto -x \)) i neparnu (\( bx \), menja
+    znak):
+  </p>
+  <div class="math-block">
+    \[ \frac{P(x) + P(-x)}{2} = a x^2 + c, \qquad \frac{P(x) - P(-x)}{2} = b x. \]
+  </div>
+  <p>
+    Za \( x = 1 \) ovo direktno postaje \( a + c \) i \( b \). Tehnika se zove
+    <em>polarizacija</em> i radi za bilo koji polinom: parni stepeni odu u prvi sabirak, neparni
+    u drugi. U domaćim zadacima (interpolacija, koeficijenti, dokazi identiteta) to skrati
+    proračun na nekoliko sekundi.
+  </p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">
+      \[ a = 3, \quad b = -2, \quad c = 4 \;\Longrightarrow\; \{a, b, c\} = \{-2, 4, 3\}. \]
+    </p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( \{1, 2, 4\} \)</span>
+    <span class="answer-option" data-option="B">(B) \( \{4, 5, 6\} \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( \{-2, 4, 3\} \)</span>
+    <span class="answer-option" data-option="D">(D) \( \{0, -1, -2\} \)</span>
+    <span class="answer-option" data-option="E">(E) \( \{8, 9, -1\} \)</span>
+  </div>
+  <p class="verification">
+    Provera: \( P(x) = 3x^2 - 2x + 4 \) daje \( P(0) = 4 \), \( P(1) = 3 - 2 + 4 = 5 \),
+    \( P(-1) = 3 + 2 + 4 = 9 \) &mdash; sva tri uslova su zadovoljena.
+  </p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>
+      <strong>Pogrešno čitanje znaka kod \( P(-1) \):</strong> kvadratni član postaje
+      \( a \cdot (-1)^2 = +a \) (ne \( -a \)), a linearni \( b \cdot (-1) = -b \). Najčešća
+      greška je negde "zaboraviti" da je \( (-1)^2 = +1 \) i napisati \( P(-1) = -a - b + c \).
+    </li>
+    <li>
+      <strong>Brkanje uređene trojke i skupa:</strong> ako vam izađe \( a = 3, b = -2, c = 4 \),
+      to je <em>uređena</em> trojka. U skupu \( \{a, b, c\} \) redosled nije važan, pa
+      \( \{3, -2, 4\} = \{-2, 3, 4\} = \{-2, 4, 3\} \). Ne treba odbacivati ispravnu opciju samo
+      zato što nije navedena u "očekivanom" redosledu.
+    </li>
+    <li>
+      <strong>Mešanje opcija sa "blizim" brojevima:</strong> opcija (A) \( \{1, 2, 4\} \) sadrži
+      \( 4 \), pa se može stvoriti utisak da je tačna jer se broj \( 4 \) pojavljuje u rešenju.
+      Ali u skupu mora biti i \( -2 \) i \( 3 \), kojih u (A) nema.
+    </li>
+    <li>
+      <strong>Aritmetička greška u sabiranju jednačina:</strong> \( a + b = 1 \) i \( a - b = 5 \)
+      sabrano daje \( 2a = 6 \), a oduzeto \( 2b = -4 \). Greška se najčešće dešava u znaku kod
+      oduzimanja \( -b - (-(-b)) = -2b \).
+    </li>
+    <li>
+      <strong>Ne raditi proveru:</strong> sa tri uslova i tri nepoznate provera u sve tri tačke
+      je gotovo besplatna i otkriva svaku računsku grešku. Uvek je sprovedite.
+    </li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>Dodatni izazov</h2>
+  <p>
+    Pretpostavimo da je polinom kubni: \( Q(x) = ax^3 + bx^2 + cx + d \), i znamo
+    \( Q(0) = 4 \), \( Q(1) = 5 \), \( Q(-1) = 9 \). Sa samo tri uslova, polinom <em>nije</em>
+    jednoznačno određen. Možeš li napisati opštu formu svih kubnih polinoma koji ispunjavaju ove
+    uslove? I koliki uslov nedostaje da bi se polinom potpuno fiksirao?
+  </p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>
+        Za kubni polinom imamo četiri nepoznate \( a, b, c, d \), ali samo tri jednačine. Po
+        polarizaciji: \( Q(0) = d = 4 \). \( Q(1) + Q(-1) = 2(b + d) = 14 \), pa \( b = 3 \).
+        \( Q(1) - Q(-1) = 2(a + c) = -4 \), pa \( a + c = -2 \) &mdash; <em>jedan stepen
+        slobode</em>. Opšta forma:
+        \( Q(x) = a x^3 + 3 x^2 + (-2 - a) x + 4 \) za bilo koje \( a \in \mathbb{R} \).
+        Da bi se polinom fiksirao, treba dodatni uslov &mdash; npr. još jedna vrednost
+        \( Q(2) \) ili izvod \( Q'(0) \), ili koeficijent uz \( x^3 \). Generalno, polinom
+        stepena \( n \) zahteva \( n + 1 \) nezavisnih uslova.
+      </p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-parabola');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    styles = getComputedStyle(root);
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var secondary = cv('--sol-canvas-secondary');
+    var tertiary  = cv('--sol-canvas-tertiary');
+
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = '600 17px system-ui, sans-serif';
+    ctx.fillText('Parabola P(x) = 3x² - 2x + 4 kroz tri zadate tačke', 24, 30);
+
+    ctx.fillStyle = muted;
+    ctx.font = '12px system-ui, sans-serif';
+    ctx.fillText('Tri tačke jednoznačno određuju kvadratni polinom (a, b, c).', 24, 52);
+
+    // Plot region
+    var plotL = 70, plotR = W - 50;
+    var plotT = 80, plotB = H - 100;
+    var xMin = -2, xMax = 2.5;
+    var yMin = -1, yMax = 14;
+    function pxX(x) { return plotL + (x - xMin) / (xMax - xMin) * (plotR - plotL); }
+    function pxY(y) { return plotB - (y - yMin) / (yMax - yMin) * (plotB - plotT); }
+
+    // Grid
+    ctx.strokeStyle = grid; ctx.lineWidth = 1;
+    for (var xi = -2; xi <= 2; xi += 0.5) {
+      ctx.beginPath();
+      ctx.moveTo(pxX(xi), plotT); ctx.lineTo(pxX(xi), plotB);
+      ctx.stroke();
+    }
+    for (var yi = 0; yi <= 14; yi += 2) {
+      ctx.beginPath();
+      ctx.moveTo(plotL, pxY(yi)); ctx.lineTo(plotR, pxY(yi));
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis; ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(plotL, pxY(0)); ctx.lineTo(plotR, pxY(0));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(pxX(0), plotT); ctx.lineTo(pxX(0), plotB);
+    ctx.stroke();
+
+    // Arrowheads on axes
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(plotR, pxY(0));
+    ctx.lineTo(plotR - 8, pxY(0) - 4);
+    ctx.lineTo(plotR - 8, pxY(0) + 4);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(pxX(0), plotT);
+    ctx.lineTo(pxX(0) - 4, plotT + 8);
+    ctx.lineTo(pxX(0) + 4, plotT + 8);
+    ctx.closePath();
+    ctx.fill();
+
+    // Tick labels
+    ctx.fillStyle = muted;
+    ctx.font = '11px system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var xj = -2; xj <= 2; xj += 1) {
+      if (xj === 0) continue;
+      ctx.fillText(xj.toString(), pxX(xj), pxY(0) + 14);
+    }
+    ctx.textAlign = 'right';
+    for (var yj = 2; yj <= 14; yj += 2) {
+      ctx.fillText(yj.toString(), plotL - 5, pxY(yj) + 4);
+    }
+    ctx.textAlign = 'left';
+    ctx.fillStyle = text;
+    ctx.font = '600 12px system-ui, sans-serif';
+    ctx.fillText('x', plotR - 4, pxY(0) + 18);
+    ctx.fillText('y', pxX(0) + 8, plotT + 4);
+
+    // Plot parabola
+    ctx.strokeStyle = primary; ctx.lineWidth = 3.5;
+    ctx.beginPath();
+    var first = true;
+    for (var x = xMin; x <= xMax; x += 0.02) {
+      var y = 3 * x * x - 2 * x + 4;
+      if (y > yMax + 1) {
+        if (!first) {
+          ctx.stroke();
+          ctx.beginPath();
+          first = true;
+        }
+        continue;
+      }
+      var X = pxX(x), Y = pxY(y);
+      if (first) { ctx.moveTo(X, Y); first = false; }
+      else ctx.lineTo(X, Y);
+    }
+    ctx.stroke();
+
+    // Vertex: x = 1/3, y = 11/3
+    var xV = 1 / 3, yV = 11 / 3;
+    ctx.beginPath();
+    ctx.arc(pxX(xV), pxY(yV), 12, 0, Math.PI * 2);
+    ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.20);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(pxX(xV), pxY(yV), 5, 0, Math.PI * 2);
+    ctx.fillStyle = secondary;
+    ctx.fill();
+    ctx.fillStyle = secondary;
+    ctx.font = '600 11px system-ui, sans-serif';
+    ctx.fillText('teme (1/3, 11/3)', pxX(xV) + 10, pxY(yV) + 16);
+
+    // Three special points: (-1, 9), (0, 4), (1, 5)
+    var pts = [
+      { x: -1, y: 9, label: '(-1, 9)', color: accent, dx: -76, dy: -16 },
+      { x:  0, y: 4, label: '(0, 4)',  color: accent, dx:  10, dy: -12 },
+      { x:  1, y: 5, label: '(1, 5)',  color: accent, dx:  10, dy: -12 }
+    ];
+    for (var i = 0; i < pts.length; i++) {
+      var p = pts[i];
+      // Drop lines to axes
+      ctx.strokeStyle = muted; ctx.lineWidth = 1;
+      ctx.setLineDash([4, 3]);
+      ctx.beginPath();
+      ctx.moveTo(pxX(p.x), pxY(p.y));
+      ctx.lineTo(pxX(p.x), pxY(0));
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(pxX(p.x), pxY(p.y));
+      ctx.lineTo(pxX(0), pxY(p.y));
+      ctx.stroke();
+      ctx.setLineDash([]);
+      // Glow
+      ctx.beginPath();
+      ctx.arc(pxX(p.x), pxY(p.y), 12, 0, Math.PI * 2);
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.30);
+      ctx.fill();
+      // Solid dot
+      ctx.beginPath();
+      ctx.arc(pxX(p.x), pxY(p.y), 6, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.fill();
+      ctx.strokeStyle = bg; ctx.lineWidth = 2;
+      ctx.stroke();
+      // Label
+      ctx.fillStyle = p.color;
+      ctx.font = '700 13px system-ui, sans-serif';
+      ctx.fillText(p.label, pxX(p.x) + p.dx, pxY(p.y) + p.dy);
+    }
+
+    // Annotation box
+    var annX = plotL + 10, annY = plotT + 10;
+    ctx.fillStyle = bg;
+    ctx.fillRect(annX - 4, annY - 4, 188, 60);
+    ctx.strokeStyle = grid; ctx.lineWidth = 1;
+    ctx.strokeRect(annX - 4, annY - 4, 188, 60);
+    ctx.fillStyle = text;
+    ctx.font = '700 12px system-ui, sans-serif';
+    ctx.fillText('a = 3, b = -2, c = 4', annX, annY + 14);
+    ctx.fillStyle = muted;
+    ctx.font = '11px system-ui, sans-serif';
+    ctx.fillText('P(x) = 3x² − 2x + 4', annX, annY + 32);
+    ctx.fillText('teme: x = -b/(2a) = 1/3', annX, annY + 48);
+
+    // Legend
+    var legX = plotR - 200, legY = plotT + 12;
+    ctx.fillStyle = bg;
+    ctx.fillRect(legX - 6, legY - 4, 200, 76);
+    ctx.strokeStyle = grid; ctx.lineWidth = 1;
+    ctx.strokeRect(legX - 6, legY - 4, 200, 76);
+
+    function legItem(color, label, y, isPoint) {
+      if (isPoint) {
+        ctx.beginPath();
+        ctx.arc(legX + 12, y, 6, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+      } else {
+        ctx.strokeStyle = color; ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(legX, y);
+        ctx.lineTo(legX + 26, y);
+        ctx.stroke();
+      }
+      ctx.fillStyle = text;
+      ctx.font = '12px system-ui, sans-serif';
+      ctx.fillText(label, legX + 32, y + 4);
+    }
+    legItem(primary, 'P(x) = 3x² - 2x + 4', legY + 12);
+    legItem(accent, 'Zadate tačke', legY + 36, true);
+    legItem(secondary, 'Teme parabole', legY + 60, true);
+
+    // Bottom caption strip
+    ctx.fillStyle = muted;
+    ctx.font = '11px system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Tri uslova → tri jednačine → jedinstveno rešenje (a, b, c) = (3, -2, 4).',
+      W / 2, H - 30);
+    ctx.textAlign = 'left';
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Određivanje koeficijenata kvadratnog polinoma iz P(0), P(1), P(-1)",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["polinomi", "interpolacija", "sistem linearnih jednačina", "parna i neparna funkcija", "kvadratni polinom"]
+}
+BRAINSPARK_META-->

@@ -1,0 +1,478 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: U geometrijskom nizu je a_1 = 3 i a_6 = 96. Naci S_10 (zbir prvih deset clanova).
+
+Strategija:
+1) Iz a_n = a_1 * q^(n-1) odrediti kolicnik q.
+2) Primeniti formulu za zbir prvih n clanova S_n = a_1 * (q^n - 1) / (q - 1).
+
+Korak 1 — odredjivanje kolicnika:
+  a_6 = a_1 * q^5
+  96 = 3 * q^5
+  q^5 = 96 / 3 = 32
+  q = 32^(1/5) = 2 (jer je 2^5 = 32)
+
+Provera niza: 3, 6, 12, 24, 48, 96, 192, 384, 768, 1536. Sesti clan = 96. ✓
+
+Korak 2 — zbir prvih deset clanova:
+  S_10 = a_1 * (q^10 - 1) / (q - 1)
+       = 3 * (2^10 - 1) / (2 - 1)
+       = 3 * (1024 - 1) / 1
+       = 3 * 1023
+       = 3069
+
+Provera direktnim sabiranjem:
+  3 + 6 = 9
+  9 + 12 = 21
+  21 + 24 = 45
+  45 + 48 = 93
+  93 + 96 = 189
+  189 + 192 = 381
+  381 + 384 = 765
+  765 + 768 = 1533
+  1533 + 1536 = 3069 ✓
+
+Odgovor: C) 3069.
+
+Vizuelni prikaz: stubicni dijagram clanova niza i tekuci (kumulativni) zbir koji konvergira ka 3069. Geometrijski rast je vidljiv kao eksponencijalni "skok" stubica.
+</script>
+
+<h1 data-card="problem-title">Zbir prvih deset članova geometrijskog niza</h1>
+<p data-card="problem-subtitle" class="subtitle">Određivanje količnika i primena formule za parcijalni zbir</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Prvi član geometrijskog niza je \( 3 \), a šesti član je \( 96 \). Zbir prvih deset članova je:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">\( a_1 \)</span>
+      <span class="given-value">\( 3 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">\( a_6 \)</span>
+      <span class="given-value">\( 96 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Traži se</span>
+      <span class="given-value">\( S_{10} \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 3080 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 6160 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 3069 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 1023 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">
+    Iz odnosa \( a_6 = a_1 \cdot q^5 \) odredićemo količnik \( q \), zatim primeniti formulu za zbir prvih \( n \) članova geometrijskog niza \( S_n = a_1 \cdot \dfrac{q^n - 1}{q - 1} \) za \( n = 10 \).
+  </p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Geometrijski niz — opšti član i zbir</summary>
+    <div class="detail-content">
+      <ul>
+        <li>
+          <span class="formula-label">Opšti član</span>
+          \( a_n = a_1 \cdot q^{n-1} \), gde je \( q \) količnik (odnos dva uzastopna člana, \( q = a_{n+1}/a_n \)).
+        </li>
+        <li>
+          <span class="formula-label">Zbir prvih n članova</span>
+          \( \displaystyle S_n = a_1 \cdot \frac{q^n - 1}{q - 1} \), za \( q \neq 1 \).
+        </li>
+        <li>
+          <span class="formula-label">Specijalan slučaj</span>
+          Ako je \( q = 1 \), niz je konstantan i \( S_n = n \cdot a_1 \).
+        </li>
+        <li>
+          <span class="formula-label">Odnos članova</span>
+          \( \dfrac{a_m}{a_k} = q^{\,m - k} \), korisno za eliminaciju \( a_1 \) kada se daju dva člana.
+        </li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="760" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Plavi stubići: vrednosti članova \( a_n = 3 \cdot 2^{\,n-1} \). Zelena izlomljena linija: tekući zbir \( S_n \), koji posle desetog člana doseže \( 3069 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavi vezu šestog i prvog člana</h3>
+      <p>Iz formule opšteg člana \( a_n = a_1 \cdot q^{n-1} \) za \( n = 6 \) imamo:</p>
+      <div class="math-block">\[ a_6 = a_1 \cdot q^{5} \quad \Longrightarrow \quad 96 = 3 \cdot q^{5}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je eksponent \( 5 \), a ne \( 6 \)?</summary>
+          <div class="detail-content"><p>Zato što između prvog i šestog člana ima tačno pet „koraka" množenja sa \( q \): \( a_1 \to a_2 \to a_3 \to a_4 \to a_5 \to a_6 \). Eksponent je uvek \( n - 1 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunaj količnik \( q \)</h3>
+      <p>Podelimo obe strane sa \( 3 \):</p>
+      <div class="math-block">\[ q^{5} = \frac{96}{3} = 32. \]</div>
+      <p>Pošto je \( 2^{5} = 32 \), zaključujemo:</p>
+      <div class="math-block">\[ q = \sqrt[5]{32} = 2. \]</div>
+      <p>Niz je dakle: \( 3,\ 6,\ 12,\ 24,\ 48,\ 96,\ 192,\ 384,\ 768,\ 1536,\ \ldots \) — i zaista, šesti član je \( 96 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Primeni formulu za zbir \( S_{10} \)</h3>
+      <p>Sa \( a_1 = 3 \), \( q = 2 \) i \( n = 10 \):</p>
+      <div class="math-block">\[ S_{10} \;=\; a_1 \cdot \frac{q^{10} - 1}{q - 1} \;=\; 3 \cdot \frac{2^{10} - 1}{2 - 1}. \]</div>
+      <p>Izračunavamo \( 2^{10} = 1024 \), pa je:</p>
+      <div class="math-block">\[ S_{10} \;=\; 3 \cdot \frac{1024 - 1}{1} \;=\; 3 \cdot 1023 \;=\; 3069. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto se imenilac \( q - 1 = 1 \) tako lepo „pojede"?</summary>
+          <div class="detail-content"><p>Zato što je \( q = 2 \). Tada formula postaje izuzetno čista: \( S_n = a_1 \cdot (2^n - 1) \). Ovaj oblik se često sreće kod problema „udvostručavanja".</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera direktnim sabiranjem</h3>
+      <p>Saberimo prvih deset članova „peške":</p>
+      <div class="math-block">\[ 3 + 6 + 12 + 24 + 48 + 96 + 192 + 384 + 768 + 1536. \]</div>
+      <p>Grupisanjem u parove dobijamo:</p>
+      <div class="math-block">\[ \underbrace{(3 + 6)}_{9} + \underbrace{(12 + 24)}_{36} + \underbrace{(48 + 96)}_{144} + \underbrace{(192 + 384)}_{576} + \underbrace{(768 + 1536)}_{2304}. \]</div>
+      <div class="math-block">\[ 9 + 36 + 144 + 576 + 2304 = 3069. \quad \checkmark \]</div>
+      <p>Rezultat se slaže sa onim iz formule.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>
+    Kada je \( q = 2 \), zbir prvih \( n \) članova geometrijskog niza pretvara se u poznati izraz \( S_n = a_1 \cdot (2^n - 1) \). To je razlog zašto se broj \( 1023 = 2^{10} - 1 \) tako jasno pojavljuje u rezultatu — a množenje sa \( a_1 = 3 \) daje upravo \( 3069 \).
+  </p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ S_{10} \;=\; 3 \cdot (2^{10} - 1) \;=\; 3 \cdot 1023 \;=\; 3069. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 3080 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 6160 \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( 3069 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 1023 \)</span>
+  </div>
+  <p class="verification">Provera: \( a_6 = 3 \cdot 2^5 = 96 \) ✓; sabiranje članova \( 3,6,12,\ldots,1536 \) daje \( 3069 \) ✓.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>
+      Pogrešan eksponent: pisati \( a_6 = a_1 \cdot q^{6} \) umesto \( q^{5} \). Uvek je \( q^{n-1} \), broj „koraka" između prvog i \( n \)-tog člana.
+    </li>
+    <li>
+      Mešanje formula sa aritmetičkim nizom: koristiti \( S_n = \tfrac{n}{2}(a_1 + a_n) \). Ona važi samo za aritmetički, ne za geometrijski niz.
+    </li>
+    <li>
+      Zaboravljanje da se izraz \( q^n - 1 \) deli sa \( q - 1 \). Za \( q = 2 \) imenilac je \( 1 \) i lako se izgubi iz vida, ali se mora pisati u opštoj formuli.
+    </li>
+    <li>
+      Greška \( 2^{10} = 1000 \). Tačno je \( 2^{10} = 1024 \) (jedna od standardnih „bombona" koje se isplati znati napamet).
+    </li>
+    <li>
+      Odgovor \( 1023 \) je „skoro tačan" ali bez množenja sa \( a_1 = 3 \). Ne preskočite poslednji korak.
+    </li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>
+    Šta ako se pita: „Koliko najmanje članova ovog istog niza treba sabrati da bi zbir prešao \( 1\,000\,000 \)?" Pokušaj da nađeš najmanji prirodan broj \( n \) za koji važi \( 3 \cdot (2^n - 1) > 10^6 \).
+  </p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>
+        Treba rešiti \( 2^n > \tfrac{10^6}{3} + 1 \approx 333\,334{,}33 \). Logaritmovanjem (npr. po osnovi \( 2 \)) dobijaš \( n > \log_2(333\,334) \approx 18{,}35 \), pa je traženo \( n = 19 \). Provera: \( S_{19} = 3 \cdot (2^{19} - 1) = 3 \cdot 524\,287 = 1\,572\,861 > 10^6 \), dok je \( S_{18} = 3 \cdot 262\,143 = 786\,429 < 10^6 \). ✓
+      </p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  // Niz: a_n = 3 * 2^(n-1)
+  var terms = [];
+  var partial = [];
+  var sum = 0;
+  for (var i = 1; i <= 10; i++) {
+    var t = 3 * Math.pow(2, i - 1);
+    terms.push(t);
+    sum += t;
+    partial.push(sum);
+  }
+  // sum = 3069, max term = 1536
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    var W = canvas.width;
+    var H = canvas.height;
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Layout
+    var marginLeft = 70;
+    var marginRight = 40;
+    var marginTop = 60;
+    var marginBottom = 90;
+    var plotW = W - marginLeft - marginRight;
+    var plotH = H - marginTop - marginBottom;
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Članovi niza a_n i tekući zbir S_n  (a_1 = 3, q = 2)', marginLeft, 28);
+
+    // Y axis: log-ish? We'll use linear with max 3069 (sum) so terms and sum share scale
+    var yMax = 3200;
+    function xPos(n) {
+      // n from 1..10; place 10 bars across plotW
+      var step = plotW / 10;
+      return marginLeft + (n - 1) * step + step * 0.5;
+    }
+    function yPos(v) {
+      return marginTop + plotH - (v / yMax) * plotH;
+    }
+
+    // Grid lines (horizontal)
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    var gridVals = [0, 500, 1000, 1500, 2000, 2500, 3000];
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'right';
+    for (var g = 0; g < gridVals.length; g++) {
+      var y = yPos(gridVals[g]);
+      ctx.beginPath();
+      ctx.moveTo(marginLeft, y);
+      ctx.lineTo(W - marginRight, y);
+      ctx.stroke();
+      ctx.fillText(String(gridVals[g]), marginLeft - 8, y + 4);
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(marginLeft, marginTop);
+    ctx.lineTo(marginLeft, marginTop + plotH);
+    ctx.lineTo(W - marginRight, marginTop + plotH);
+    ctx.stroke();
+
+    // Bars (a_n)
+    var barWidth = (plotW / 10) * 0.55;
+    for (var i = 0; i < 10; i++) {
+      var n = i + 1;
+      var v = terms[i];
+      var x = xPos(n) - barWidth / 2;
+      var yTop = yPos(v);
+      var yBot = yPos(0);
+      // Bar fill
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.75);
+      ctx.fillRect(x, yTop, barWidth, yBot - yTop);
+      // Bar outline
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(x, yTop, barWidth, yBot - yTop);
+
+      // x-axis label (n)
+      ctx.fillStyle = text;
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('n=' + n, xPos(n), marginTop + plotH + 18);
+      // value (a_n) above bar
+      ctx.fillStyle = muted;
+      ctx.font = '10px Inter, system-ui, sans-serif';
+      var label = String(v);
+      // Avoid overlap on tall bar
+      var labelY = yTop - 6;
+      if (labelY < marginTop + 12) labelY = yTop + 12;
+      ctx.fillText(label, xPos(n), labelY);
+    }
+
+    // Tekući zbir line (S_n)
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    for (var i = 0; i < 10; i++) {
+      var n = i + 1;
+      var x = xPos(n);
+      var y = yPos(partial[i]);
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+
+    // Points on the S_n line
+    for (var i = 0; i < 10; i++) {
+      var n = i + 1;
+      var x = xPos(n);
+      var y = yPos(partial[i]);
+      ctx.beginPath();
+      ctx.arc(x, y, 4.5, 0, Math.PI * 2);
+      ctx.fillStyle = accent;
+      ctx.fill();
+    }
+
+    // Final S_10 callout
+    var xFinal = xPos(10);
+    var yFinal = yPos(partial[9]);
+    ctx.beginPath();
+    ctx.arc(xFinal, yFinal, 8, 0, Math.PI * 2);
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.25);
+    ctx.fill();
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(xFinal, yFinal, 8, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('S₁₀ = 3069', xFinal - 14, yFinal - 4);
+
+    // Axis titles
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Indeks člana n', marginLeft + plotW / 2, H - 50);
+    ctx.save();
+    ctx.translate(20, marginTop + plotH / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('Vrednost', 0, 0);
+    ctx.restore();
+
+    // Legend (bottom)
+    var legY = H - 22;
+    var legX = marginLeft;
+
+    // Bar swatch
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.75);
+    ctx.fillRect(legX, legY - 10, 18, 12);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(legX, legY - 10, 18, 12);
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('a_n  (član niza)', legX + 24, legY);
+
+    // Line swatch
+    var lx = legX + 200;
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(lx, legY - 4);
+    ctx.lineTo(lx + 22, legY - 4);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(lx + 11, legY - 4, 3.5, 0, Math.PI * 2);
+    ctx.fillStyle = accent;
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.fillText('S_n  (tekući zbir)', lx + 30, legY);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Zbir prvih deset članova geometrijskog niza",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["geometrijski niz", "zbir niza", "kolicnik niza", "eksponencijalni rast"]
+}
+BRAINSPARK_META-->

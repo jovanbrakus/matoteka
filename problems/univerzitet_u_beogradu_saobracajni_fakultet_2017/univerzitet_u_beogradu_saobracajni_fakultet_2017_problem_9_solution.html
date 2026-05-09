@@ -1,0 +1,541 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Problem: Sum of integer solutions of sqrt(x + 1) <= 1 - x.
+
+Step 1 — Domain: x + 1 >= 0, i.e. x >= -1.
+
+Step 2 — Square only after ensuring both sides are nonnegative. LHS >= 0 always. We need RHS >= 0:
+  1 - x >= 0  ⇒  x <= 1.
+  Combined with domain: -1 <= x <= 1.
+
+(Note: if 1 - x < 0, i.e. x > 1, the inequality sqrt(...) <= negative cannot hold since LHS >= 0.)
+
+Step 3 — On -1 <= x <= 1, square:
+  x + 1 <= (1 - x)^2 = 1 - 2x + x^2
+  0 <= x^2 - 3x  ⇒  x(x - 3) >= 0
+  ⇒  x <= 0  or  x >= 3.
+
+Intersect with -1 <= x <= 1:
+  x in [-1, 0].
+
+Step 4 — Integer solutions in [-1, 0]: x = -1 and x = 0. Sum: -1 + 0 = -1.
+
+Verification:
+  x = -1: sqrt(0) = 0 <= 1 - (-1) = 2. ✓
+  x = 0:  sqrt(1) = 1 <= 1 - 0 = 1.   ✓
+  x = 1:  sqrt(2) ≈ 1.414 <= 0?       ✗ (boundary x = 1 fails the original strictly because RHS would have to be 0 but LHS sqrt(2) > 0)
+  Wait — at x = 1, we squared and got 0 <= 1·(-2) = -2, false. So x = 1 not a solution.
+  x = -2: not in domain.
+
+Answer: B) -1.
+
+Note on key: the official answer key seems to mark D) -2. That's wrong by direct verification: x = -2 is not even in the domain (sqrt(-1) is not real). The math-honest answer is B) -1.
+
+Visual: graph y = sqrt(x + 1) (defined x >= -1, slowly rising from origin (-1, 0)) and y = 1 - x (descending line). Solution region is where sqrt curve is BELOW the line, i.e. between -1 and the intersection point. Find intersection: sqrt(x + 1) = 1 - x ⇒ x + 1 = 1 - 2x + x^2 ⇒ x^2 - 3x = 0 ⇒ x = 0 or x = 3. x = 3 is extraneous (RHS = -2 < 0), so x = 0 is the meeting point.
+
+So the inequality holds for x in [-1, 0]. Integer points: -1 and 0. Sum = -1.
+
+Pitfalls:
+- Squaring without checking RHS sign — leads to including x = 3 as solution.
+- Forgetting domain x >= -1.
+- Including x = 1 (boundary RHS = 0) — but then LHS = sqrt(2) > 0, so x = 1 fails.
+- Confusing sum with count: count is 2 but sum is -1.
+</script>
+
+<h1 data-card="problem-title">Zbir celobrojnih rešenja nejednačine \( \sqrt{x + 1} \le 1 - x \)</h1>
+<p data-card="problem-subtitle" class="subtitle">Iracionalne nejednačine, domen, kvadriranje uz uslov</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Zbir celobrojnih rešenja nejednačine</p>
+  <div class="math-block">\[ \sqrt{x + 1} \;\le\; 1 - x \]</div>
+  <p>je:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 0 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( -1 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( -2 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Prvo postavljamo domen \( x \ge -1 \), pa zahtev da je desna strana nenegativna (\( 1 - x \ge 0 \)) jer leva strana, kao kvadratni koren, već je nenegativna. Tek pod tim uslovima sme da se kvadrira. Posle kvadriranja dobijamo kvadratnu nejednačinu, presečemo je sa \( -1 \le x \le 1 \), izdvojimo cele brojeve i saberemo ih. Sve granice proveravamo direktnom zamenom u original.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Pravila za iracionalne nejednačine \( \sqrt{f(x)} \le g(x) \)</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Domen</span> Mora biti \( f(x) \ge 0 \) — pod korenom samo nenegativni izrazi.</li>
+        <li><span class="formula-label">Uslov za desnu stranu</span> Pošto je \( \sqrt{f(x)} \ge 0 \), nejednakost \( \sqrt{f(x)} \le g(x) \) može da važi <em>samo</em> ako je \( g(x) \ge 0 \).</li>
+        <li><span class="formula-label">Kvadriranje</span> Kada su obe strane \( \ge 0 \), kvadriranje čuva nejednakost: \( \sqrt{f(x)} \le g(x) \iff f(x) \le g(x)^{2} \) (uz domen i uslov).</li>
+        <li><span class="formula-label">Zamka</span> Bezuslovno kvadriranje uvodi „lažna“ rešenja kada je \( g(x) < 0 \) — takve vrednosti uvek treba isključiti.</li>
+        <li><span class="formula-label">Kvadratna nejednakost</span> \( x(x - 3) \ge 0 \iff x \le 0 \;\text{ili}\; x \ge 3 \) — primeniti tabelu znaka ili prikaz korena.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz: grafici i oblast rešenja">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="720" height="600"></canvas>
+  </div>
+  <p class="canvas-caption">Crtamo \( y = \sqrt{x + 1} \) (definisano za \( x \ge -1 \)) i pravu \( y = 1 - x \). Nejednakost važi tamo gde je koren <em>ispod ili na</em> pravoj. Krive se seku u \( x = 0 \). Oblast rešenja je segment \( [-1,\ 0] \) (zeleno osenčen). Celobrojne tačke u njemu su \( -1 \) i \( 0 \), pa je zbir \( -1 + 0 = -1 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Određujemo domen</h3>
+      <p>Pod kvadratnim korenom mora biti nenegativan izraz:</p>
+      <div class="math-block">\[ x + 1 \ge 0 \;\Longleftrightarrow\; x \ge -1. \]</div>
+      <p>Ovo isključuje, na primer, \( x = -2 \) — broj koji nije ni u domenu, pa ne može biti rešenje.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto \( x = -2 \) odmah ne može?</summary>
+          <div class="detail-content"><p>\( \sqrt{-2 + 1} = \sqrt{-1} \) nije realan broj. Svako rešenje mora pre svega ležati u domenu izraza koji se javlja u nejednačini.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavljamo uslov \( 1 - x \ge 0 \)</h3>
+      <p>Leva strana \( \sqrt{x + 1} \) je uvek \( \ge 0 \). Da bi nejednakost \( \sqrt{x + 1} \le 1 - x \) uopšte mogla da važi, desna strana ne sme biti negativna:</p>
+      <div class="math-block">\[ 1 - x \ge 0 \;\Longleftrightarrow\; x \le 1. \]</div>
+      <p>Spojeno sa domenom dobijamo opseg u kome smemo da kvadriramo:</p>
+      <div class="math-block">\[ -1 \le x \le 1. \]</div>
+      <div class="callout callout-warning">
+        <p><strong>Bez ovog uslova javlja se klasična greška:</strong> ako kvadriramo „naslepo“, kvadrat negativnog broja se mehanički poredi sa kvadratom korena i pojavljuju se lažna rešenja (npr. \( x = 3 \) u koraku 4). Uvek prvo ograniči desnu stranu na nenegativnu.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Kvadriramo nejednakost</h3>
+      <p>Pod uslovima iz koraka 1 i 2 obe strane su \( \ge 0 \), pa kvadriranje čuva smer nejednakosti:</p>
+      <div class="math-block">\[ x + 1 \le (1 - x)^{2} = 1 - 2x + x^{2}. \]</div>
+      <p>Sve prebacujemo na desnu stranu i sređujemo:</p>
+      <div class="math-block">\[ 0 \le x^{2} - 2x - x + 1 - 1 = x^{2} - 3x \;\Longrightarrow\; x^{2} - 3x \ge 0. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Rešavamo kvadratnu nejednakost</h3>
+      <p>Faktorišemo:</p>
+      <div class="math-block">\[ x^{2} - 3x = x (x - 3) \ge 0. \]</div>
+      <p>Proizvod je \( \ge 0 \) kada su oba činioca istog znaka (ili je bar jedan jednak \( 0 \)):</p>
+      <div class="math-block">\[ x \le 0 \quad \text{ili} \quad x \ge 3. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto „ili“, ne „i“?</summary>
+          <div class="detail-content"><p>Funkcija \( y = x(x - 3) \) je parabola sa nulama \( 0 \) i \( 3 \) i otvorom naviše. Iznad ili na \( x \)-osi je <em>spolja</em> od korena, tj. \( x \le 0 \) ili \( x \ge 3 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Presek sa \( [-1, 1] \)</h3>
+      <p>Rešenja se moraju nalaziti i u skupu \( [-1, 1] \) (iz koraka 2):</p>
+      <div class="math-block">\[ \big(\,(-\infty, 0] \cup [3, \infty)\,\big) \cap [-1, 1] = [-1, 0]. \]</div>
+      <p>Deo \( [3, \infty) \) je <strong>lažno rešenje</strong> kvadrirane nejednačine — pri \( x = 3 \) je \( 1 - x = -2 < 0 \), a koren ne može biti \( \le -2 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Direktna provera granica</h3>
+      <p>Za sigurnost zamenjujemo karakteristične vrednosti u original \( \sqrt{x + 1} \le 1 - x \):</p>
+      <div class="math-block">\[ \begin{array}{c|c|c|c}
+        x & \sqrt{x + 1} & 1 - x & \text{nejednakost} \\ \hline
+        -1 & 0 & 2 & 0 \le 2 \;\checkmark \\
+         0 & 1 & 1 & 1 \le 1 \;\checkmark \\
+         1 & \sqrt{2} & 0 & \sqrt{2} \le 0 \;\times \\
+         3 & 2 & -2 & 2 \le -2 \;\times
+      \end{array} \]</div>
+      <p>Tabela potvrđuje: rešenja su tačno \( x \in [-1, 0] \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="7">
+    <div class="step-badge">7</div>
+    <div class="step-content">
+      <h3 class="step-title">Celobrojna rešenja i zbir</h3>
+      <p>U intervalu \( [-1, 0] \) celi brojevi su:</p>
+      <div class="math-block">\[ x \in \{ -1,\ 0 \}. \]</div>
+      <p>Njihov zbir je:</p>
+      <div class="math-block">\[ -1 + 0 = -1. \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Iracionalna nejednačina oblika \( \sqrt{f(x)} \le g(x) \) ekvivalentna je sistemu <em>tri</em> uslova: \( f(x) \ge 0 \), \( g(x) \ge 0 \) i \( f(x) \le g(x)^{2} \). Najopasnija greška je preskočiti drugi uslov i naslepo kvadrirati — tako se uvodi „lažni“ skup \( x \ge 3 \) koji u originalnoj nejednačini ne važi (jer je tu \( 1 - x \) negativno). Grafički: rešenje je deo \( x \)-ose gde je krivulja \( y = \sqrt{x + 1} \) ispod ili na pravoj \( y = 1 - x \).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ x \in [-1, 0] \;\Longrightarrow\; \text{celi brojevi: } -1, 0 \;\Longrightarrow\; \text{zbir} = -1. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 0 \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( -1 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 1 \)</span>
+    <span class="answer-option" data-option="D">(D) \( -2 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 2 \)</span>
+  </div>
+  <p class="verification">Provera: \( x = -1 \): \( 0 \le 2 \) ✓; \( x = 0 \): \( 1 \le 1 \) ✓; \( x = 1 \): \( \sqrt{2} \approx 1{,}41 \le 0 \) — ne važi; \( x = -2 \): nije u domenu. Dakle skup celih rešenja je tačno \( \{-1, 0\} \), zbir \( -1 \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Bezuslovno kvadriranje:</strong> ne proveriti \( 1 - x \ge 0 \) i prihvatiti i grupu \( x \ge 3 \) kao deo rešenja. Pri \( x = 3 \): \( \sqrt{4} = 2 \), \( 1 - 3 = -2 \); \( 2 \le -2 \) je netačno.</li>
+    <li><strong>Zaboravljanje domena:</strong> uključivanje \( x = -2 \) u rešenje. \( \sqrt{-1} \) nije realan broj — \( x = -2 \) odmah otpada.</li>
+    <li><strong>Brkanje broja rešenja i zbira:</strong> celobrojnih rešenja ima \( 2 \) (\(-1\) i \(0\)), ali se traži <em>zbir</em>, koji je \( -1 \) — ne broj \( 2 \).</li>
+    <li><strong>Pogrešno tumačenje granica:</strong> ulključivanje \( x = 1 \) jer „je u presečenom intervalu \( [-1, 1] \)“. \( x = 1 \) je granica koju je <em>kvadrirana</em> nejednakost odbacila (\( x \le 0 \) ili \( x \ge 3 \), a \( 1 \) ne ispunjava nijedan uslov).</li>
+    <li><strong>Smer kvadratne nejednakosti:</strong> \( x^{2} - 3x \ge 0 \) ima rešenje <em>spolja</em> od korena (\( x \le 0 \) ili \( x \ge 3 \)), ne između — parabola ide nadole između korena.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Reši nejednačinu \( \sqrt{x + 1} \ge 1 - x \) (sa <strong>obrnutim</strong> znakom) i pronađi sva celobrojna rešenja iz \( [-1, 5] \). Da li se postupak razlikuje?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Slučaj 1: \( 1 - x < 0 \), tj. \( x > 1 \). Tada je leva strana \( \ge 0 \), desna \( < 0 \), pa nejednakost <em>automatski</em> važi (uz domen) — svaki \( x > 1 \) je rešenje.</p>
+      <p>Slučaj 2: \( 1 - x \ge 0 \), tj. \( -1 \le x \le 1 \). Obe strane \( \ge 0 \), kvadriramo: \( x + 1 \ge x^{2} - 2x + 1 \Rightarrow x^{2} - 3x \le 0 \Rightarrow x(x - 3) \le 0 \Rightarrow 0 \le x \le 3 \). Presek sa \( [-1, 1] \): \( [0, 1] \).</p>
+      <p>Sve zajedno: \( x \in [0, +\infty) \), uz domen \( x \ge -1 \). U \( [-1, 5] \) celobrojna rešenja su \( 0, 1, 2, 3, 4, 5 \) — šest brojeva, zbir \( 15 \). Originalna i obrnuta nejednakost se „smenjuju“ na \( [-1, 0] \) (znak jednakosti se javlja na \( x = 0 \)).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var W = canvas.width, H = canvas.height;
+    var marginLeft = 70, marginRight = 50, marginTop = 60, marginBottom = 140;
+    var plotW = W - marginLeft - marginRight;
+    var plotH = H - marginTop - marginBottom;
+
+    var xMin = -2, xMax = 4;
+    var yMin = -1.5, yMax = 3.5;
+    function X(x) { return marginLeft + (x - xMin) / (xMax - xMin) * plotW; }
+    function Y(y) { return marginTop + (yMax - y) / (yMax - yMin) * plotH; }
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Grafici  y = √(x + 1)  i  y = 1 − x', W / 2, 28);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillText('Zelena oblast: gde je koren ≤ pravoj  →  rešenje x ∈ [−1, 0]', W / 2, 46);
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 4]);
+    for (var gx = Math.ceil(xMin); gx <= Math.floor(xMax); gx++) {
+      ctx.beginPath();
+      ctx.moveTo(X(gx), marginTop);
+      ctx.lineTo(X(gx), marginTop + plotH);
+      ctx.stroke();
+    }
+    for (var gy = Math.ceil(yMin); gy <= Math.floor(yMax); gy++) {
+      ctx.beginPath();
+      ctx.moveTo(marginLeft, Y(gy));
+      ctx.lineTo(marginLeft + plotW, Y(gy));
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Solution band: x in [-1, 0], full vertical
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.18);
+    ctx.fillRect(X(-1), marginTop, X(0) - X(-1), plotH);
+
+    // Domain shadow: x < -1 (outside domain)
+    ctx.fillStyle = cvAlpha('--sol-canvas-danger', 0.10);
+    ctx.fillRect(X(xMin), marginTop, X(-1) - X(xMin), plotH);
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(marginLeft, Y(0));
+    ctx.lineTo(marginLeft + plotW, Y(0));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(X(0), marginTop);
+    ctx.lineTo(X(0), marginTop + plotH);
+    ctx.stroke();
+
+    // Tick labels
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui';
+    ctx.textAlign = 'center';
+    for (var tx = Math.ceil(xMin); tx <= Math.floor(xMax); tx++) {
+      if (tx === 0) continue;
+      ctx.fillText(String(tx), X(tx), Y(0) + 14);
+    }
+    ctx.textAlign = 'right';
+    for (var ty = Math.ceil(yMin); ty <= Math.floor(yMax); ty++) {
+      if (ty === 0) continue;
+      ctx.fillText(String(ty), X(0) - 6, Y(ty) + 4);
+    }
+    ctx.fillStyle = text;
+    ctx.font = 'bold 12px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText('x', marginLeft + plotW - 4, Y(0) - 8);
+    ctx.fillText('y', X(0) + 8, marginTop + 12);
+
+    // Plot y = sqrt(x + 1) for x >= -1
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    var first = true;
+    for (var px = 0; px <= plotW; px += 1) {
+      var xv = xMin + px / plotW * (xMax - xMin);
+      if (xv < -1) continue;
+      var yv = Math.sqrt(xv + 1);
+      if (yv > yMax) continue;
+      var cxp = X(xv);
+      var cyp = Y(yv);
+      if (first) { ctx.moveTo(cxp, cyp); first = false; }
+      else ctx.lineTo(cxp, cyp);
+    }
+    ctx.stroke();
+
+    // Endpoint at x = -1 (open of domain, but valid)
+    ctx.fillStyle = primary;
+    ctx.beginPath();
+    ctx.arc(X(-1), Y(0), 5, 0, 2 * Math.PI);
+    ctx.fill();
+
+    // Plot y = 1 - x
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(X(xMin), Y(1 - xMin));
+    ctx.lineTo(X(xMax), Y(1 - xMax));
+    ctx.stroke();
+
+    // Intersection point at (0, 1)
+    var ixp = X(0), iyp = Y(1);
+    ctx.fillStyle = highlight;
+    ctx.beginPath();
+    ctx.arc(ixp, iyp, 7, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.strokeStyle = text;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText('presek (0, 1)', ixp + 12, iyp - 8);
+
+    // Endpoint at x = -1: y = 0 on sqrt, y = 2 on line
+    var em1 = X(-1), em1Y = Y(0);
+    ctx.fillStyle = highlight;
+    ctx.beginPath();
+    ctx.arc(em1, em1Y, 6, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.strokeStyle = text;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.textAlign = 'right';
+    ctx.fillText('početak domena (−1, 0)', em1 - 8, em1Y - 8);
+
+    // Mark integer solutions x = -1 and x = 0 with thick green markers below
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 12px Inter, system-ui';
+    ctx.textAlign = 'center';
+    var integers = [-1, 0];
+    for (var i = 0; i < integers.length; i++) {
+      var xv = integers[i];
+      ctx.beginPath();
+      ctx.arc(X(xv), Y(0), 7, 0, 2 * Math.PI);
+      ctx.fillStyle = accent;
+      ctx.fill();
+      ctx.strokeStyle = text;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = accent;
+      ctx.fillText('x = ' + xv, X(xv), Y(0) + 30);
+    }
+
+    // Mark x = 1 (NOT a solution) with red X
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 2.5;
+    var rx = X(1), ry = Y(0);
+    ctx.beginPath();
+    ctx.moveTo(rx - 6, ry - 6);
+    ctx.lineTo(rx + 6, ry + 6);
+    ctx.moveTo(rx + 6, ry - 6);
+    ctx.lineTo(rx - 6, ry + 6);
+    ctx.stroke();
+    ctx.fillStyle = danger;
+    ctx.font = '11px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('x = 1: nije rešenje', rx, ry + 30);
+    ctx.fillText('(√2 > 0)', rx, ry + 44);
+
+    // Mark x = 3 (extraneous from squaring) with red X
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 2.5;
+    var rx3 = X(3), ry3 = Y(0);
+    ctx.beginPath();
+    ctx.moveTo(rx3 - 6, ry3 - 6);
+    ctx.lineTo(rx3 + 6, ry3 + 6);
+    ctx.moveTo(rx3 + 6, ry3 - 6);
+    ctx.lineTo(rx3 - 6, ry3 + 6);
+    ctx.stroke();
+    ctx.fillStyle = danger;
+    ctx.font = '11px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('x = 3: lažno rešenje', rx3, ry3 + 30);
+    ctx.fillText('(2 ≤ −2 ✗)', rx3, ry3 + 44);
+
+    // Mark x = -2 (out of domain)
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 2.5;
+    var rxm2 = X(-2), rym2 = Y(0);
+    ctx.beginPath();
+    ctx.moveTo(rxm2 - 6, rym2 - 6);
+    ctx.lineTo(rxm2 + 6, rym2 + 6);
+    ctx.moveTo(rxm2 + 6, rym2 - 6);
+    ctx.lineTo(rxm2 - 6, rym2 + 6);
+    ctx.stroke();
+    ctx.fillStyle = danger;
+    ctx.font = '11px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('x = −2: van domena', rxm2, rym2 + 30);
+
+    // Curve labels
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText('y = √(x + 1)', X(2.4), Y(Math.sqrt(3.4)) - 8);
+
+    ctx.fillStyle = secondary;
+    ctx.fillText('y = 1 − x', X(-1.7), Y(1 - (-1.7)) - 4);
+
+    // Solution interval label
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('rešenje: x ∈ [−1, 0]', (X(-1) + X(0)) / 2, marginTop + 18);
+
+    // Footer / legend
+    var legY = H - 90;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.14);
+    ctx.fillRect(40, legY - 10, W - 80, 76);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(40, legY - 10, W - 80, 76);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Celobrojna rešenja: x = −1 i x = 0  →  zbir = −1 + 0 = −1', W / 2, legY + 10);
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillStyle = muted;
+    ctx.fillText('Lažni „kandidati“ (kvadriranjem): x = 3 ne važi jer je tu 1 − x = −2 < 0.', W / 2, legY + 32);
+    ctx.fillText('Domen zahteva x ≥ −1, pa x = −2 nije ni u igri.', W / 2, legY + 50);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Iracionalna nejednačina √(x + 1) ≤ 1 − x — zbir celobrojnih rešenja",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["iracionalne nejednačine", "kvadriranje", "domen", "kvadratna nejednačina", "celobrojna rešenja"]
+}
+BRAINSPARK_META-->

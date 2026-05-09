@@ -1,0 +1,509 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Rešenje jednačine 6 * 3^(x+1) = 1350 + 12 * 3^(x-2) pripada intervalu?
+Opcije: A) (-1, 5), B) (-5, -1), C) (5, 9), D) (-9, -5). Tačno: A.
+
+Strategija: Smena t = 3^x da svedemo eksponencijalnu jednačinu na linearnu po t.
+
+Korak 1: Razlažemo eksponente koristeći a^(m+n) = a^m * a^n.
+6 * 3^(x+1) = 6 * 3 * 3^x = 18 * 3^x
+12 * 3^(x-2) = 12 * 3^x / 3^2 = 12/9 * 3^x = (4/3) * 3^x
+
+Korak 2: Smena t = 3^x (gde je t > 0).
+18 t = 1350 + (4/3) t
+
+Korak 3: Eliminišemo razlomak — pomnožimo sa 3.
+54 t = 4050 + 4 t
+50 t = 4050
+t = 81
+
+Korak 4: Vraćanje smene.
+3^x = 81 = 3^4
+=> x = 4
+
+Korak 5: Provera.
+LHS: 6 * 3^5 = 6 * 243 = 1458
+RHS: 1350 + 12 * 3^2 = 1350 + 12 * 9 = 1350 + 108 = 1458 ✓
+
+Korak 6: Pripadnost intervalu. 4 ∈ (-1, 5). Tačan odgovor: (A).
+
+Visualization plan: Static canvas. Plot two functions f(x) = 6 * 3^(x+1) and g(x) = 1350 + 12 * 3^(x-2)
+on x ∈ [0, 6] but values get huge fast. Better: plot on a smaller range, maybe with y-axis logarithmic
+visually scaled, to show the intersection at x = 4. Alternatively, show a nice "substitution flow" diagram
+with three boxes: (1) original equation, (2) substitution t = 3^x giving linear equation 18t = 1350 + (4/3)t,
+(3) solution t = 81, then x = log_3 81 = 4. Plus number line with 4 in (-1, 5).
+I'll do: split into legend + linear equation in t (graph two lines y = 18t and y = 1350 + (4/3)t)
+intersecting at t = 81. Then number line for x.
+</script>
+
+<h1 data-card="problem-title">Eksponencijalna jednačina \( 6 \cdot 3^{x+1} = 1350 + 12 \cdot 3^{x-2} \)</h1>
+<p data-card="problem-subtitle" class="subtitle">Eksponencijalne jednačine — rastavljanje stepena i smena \( t = 3^x \)</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Rešenje jednačine \( 6 \cdot 3^{x+1} = 1350 + 12 \cdot 3^{x-2} \) pripada intervalu:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( (-1,\ 5) \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( (-5,\ -1) \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( (5,\ 9) \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( (-9,\ -5) \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Eksponente oblika \( x \pm k \) rastavićemo pomoću pravila \( a^{m+n} = a^m \cdot a^n \), pa će se na obe strane izdvojiti zajednički faktor \( 3^x \). Smenom \( t = 3^x \) (uz \( t > 0 \)) jednačina postaje obična linearna po \( t \). Iz dobijenog \( t \) određujemo \( x \) kao logaritam, pa proveravamo kojem od ponuđenih intervala pripada.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Pravila stepenovanja i osnovni stepeni broja 3</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Pravila stepenovanja:</strong> \( a^{m+n} = a^m \cdot a^n \) i \( a^{m-n} = \dfrac{a^m}{a^n} \) (za \( a > 0 \)).</li>
+        <li><strong>Smena za bazu \( a \):</strong> ako u jednačini ima samo stepena oblika \( a^{x \pm k} \), uvedi \( t = a^x \) (gde \( t > 0 \)). Tako se eksponencijalna jednačina svodi na algebarsku po \( t \).</li>
+        <li><strong>Stepeni broja 3:</strong> \( 3^0 = 1,\ 3^1 = 3,\ 3^2 = 9,\ 3^3 = 27,\ 3^4 = 81,\ 3^5 = 243 \). Najlakše je 81 prepoznati kao \( 3^4 \).</li>
+        <li><strong>Vraćanje smene:</strong> ako je \( 3^x = c \), onda \( x = \log_3 c \). Kada je \( c \) čist stepen trojke, dobijamo ceo broj direktno.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="expEqChart" width="700" height="580"></canvas>
+  </div>
+  <p class="canvas-caption">Posle smene \( t = 3^x \) jednačina postaje linearna: \( y = 18t \) (plavi) i \( y = 1350 + \tfrac{4}{3} t \) (zeleni). Prave se seku u tački \( (81,\ 1458) \), pa je \( t = 81 \), tj. \( 3^x = 81 = 3^4 \), odakle je \( x = 4 \). Brojevna prava ispod pokazuje da \( 4 \) pripada intervalu \( (-1,\ 5) \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Rastavljamo eksponente</h3>
+      <p>Koristimo pravilo \( a^{m+n} = a^m \cdot a^n \) (i, dualno, \( a^{m-n} = a^m / a^n \)):</p>
+      <div class="math-block">\[ 6 \cdot 3^{x+1} = 6 \cdot 3 \cdot 3^{x} = 18 \cdot 3^{x}, \qquad 12 \cdot 3^{x-2} = \dfrac{12}{3^{2}} \cdot 3^{x} = \dfrac{12}{9} \cdot 3^{x} = \dfrac{4}{3} \cdot 3^{x}. \]</div>
+      <p>Polazna jednačina dobija oblik:</p>
+      <div class="math-block">\[ 18 \cdot 3^{x} = 1350 + \dfrac{4}{3} \cdot 3^{x}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( 12/9 = 4/3 \)?</summary>
+          <div class="detail-content"><p>I brojilac i imenilac dele se sa \( 3 \): \( \dfrac{12}{9} = \dfrac{12 : 3}{9 : 3} = \dfrac{4}{3} \). Najveći zajednički delilac brojeva \( 12 \) i \( 9 \) je \( 3 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Uvodimo smenu \( t = 3^x \)</h3>
+      <p>Pošto je \( 3^x > 0 \) za svako realno \( x \), nova promenljiva mora zadovoljavati \( t > 0 \). Jednačina postaje:</p>
+      <div class="math-block">\[ 18\,t = 1350 + \dfrac{4}{3}\,t. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Rešavamo linearnu jednačinu po \( t \)</h3>
+      <p>Pomnožimo obe strane sa \( 3 \) da se oslobodimo razlomka:</p>
+      <div class="math-block">\[ 54\,t = 4050 + 4\,t \quad\Longrightarrow\quad 50\,t = 4050 \quad\Longrightarrow\quad t = 81. \]</div>
+      <p>Provera uslova \( t > 0 \): \( 81 > 0 \) ✓.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto bismo množili sa \( 3 \)?</summary>
+          <div class="detail-content"><p>Da bismo razlomak \( \tfrac{4}{3} \) pretvorili u ceo broj. Ako pomnožimo obe strane jednačine istim brojem (različitim od nule), skup rešenja se ne menja, ali računi postaju lakši.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Vraćamo smenu i nalazimo \( x \)</h3>
+      <p>Iz \( t = 3^x = 81 \) prepoznajemo \( 81 \) kao stepen broja \( 3 \):</p>
+      <div class="math-block">\[ 81 = 3^{4} \quad\Longrightarrow\quad 3^{x} = 3^{4} \quad\Longrightarrow\quad x = 4. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kako bismo izračunali \( x \) bez prepoznavanja stepena?</summary>
+          <div class="detail-content"><p>Logaritmovanjem: \( x = \log_{3} 81 \). Pošto je \( 3^4 = 81 \), izlazi \( x = 4 \). Ako broj nije čist stepen baze, koristi se kalkulator i formula \( \log_3 c = \dfrac{\ln c}{\ln 3} \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera u polaznoj jednačini</h3>
+      <div class="math-block">\[ 6 \cdot 3^{4+1} = 6 \cdot 3^{5} = 6 \cdot 243 = 1458, \]</div>
+      <div class="math-block">\[ 1350 + 12 \cdot 3^{4-2} = 1350 + 12 \cdot 9 = 1350 + 108 = 1458. \]</div>
+      <p>Obe strane su jednake \( 1458 \) — rešenje je tačno.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Određujemo interval</h3>
+      <p>Pošto je \( -1 < 4 < 5 \), zaključujemo:</p>
+      <div class="math-block">\[ 4 \in (-1,\ 5). \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Trik je u tome što su eksponenti samo „pomereni za konstantu“ u odnosu na \( x \): \( x + 1 \) i \( x - 2 \). Rastavljanjem stepena svaka strana se zapravo svede na <strong>konstantu puta \( 3^x \)</strong>, što znači da je celokupna jednačina linearna po \( 3^x \). Smena \( t = 3^x \) je samo formalan način da se to jasno vidi i da se reši kao osnovna jednačina prvog stepena.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ x = 4 \in (-1,\ 5) \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( (-1,\ 5) \)</span>
+    <span class="answer-option" data-option="B">(B) \( (-5,\ -1) \)</span>
+    <span class="answer-option" data-option="C">(C) \( (5,\ 9) \)</span>
+    <span class="answer-option" data-option="D">(D) \( (-9,\ -5) \)</span>
+  </div>
+  <p class="verification">Provera: \( 6 \cdot 3^{5} = 1458 \) i \( 1350 + 12 \cdot 3^{2} = 1458 \). Polazna jednačina je tačna, a \( 4 \in (-1,\ 5) \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešno tumačenje \( 3^{x-2} \).</strong> Često se napiše \( 3^{x} - 2 \) (oduzimanje), umesto \( 3^{x} \cdot 3^{-2} = 3^{x}/9 \) (deljenje stepenom).</li>
+    <li><strong>Zaboravljanje da pomnožimo i \( 1350 \) sa \( 3 \).</strong> Pri množenju jednačine konstantnom množi se <em>svaki</em> sabirak na obe strane, ne samo razlomak.</li>
+    <li><strong>Mešanje sabiraka i faktora.</strong> Iz \( 18t - \tfrac{4}{3}t \) ne sme se napisati \( \tfrac{18 - 4}{3}\,t \). Tačno je \( \big(18 - \tfrac{4}{3}\big)t = \tfrac{54 - 4}{3}\,t = \tfrac{50}{3}\,t \), pa onda množenje sa \( 3 \) daje \( 50\,t \).</li>
+    <li><strong>Prepoznavanje stepena.</strong> Ako se \( 81 \) ne prepozna kao \( 3^4 \), neki nepotrebno crtaju ili koriste kalkulator. Korisno je memorisati prvih nekoliko stepena baza \( 2, 3, 5 \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Reši jednačinu \( 5 \cdot 2^{x+2} - 2^{x+3} = 96 \) i odredi vrednost \( x \). Pokušaj zatim da pažljivo razmisliš: kog je oblika opšte rešenje jednačine \( A \cdot a^{x+m} - B \cdot a^{x+n} = C \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Rastavi stepene: \( 2^{x+2} = 4 \cdot 2^x \), \( 2^{x+3} = 8 \cdot 2^x \). Onda je \( 5 \cdot 4 \cdot 2^x - 8 \cdot 2^x = (20 - 8)\,2^x = 12 \cdot 2^x = 96 \), pa \( 2^x = 8 = 2^3 \), tj. \( x = 3 \). Generalno: \( (A a^m - B a^n)\,a^x = C \), pa \( a^x = \dfrac{C}{A a^m - B a^n} \) i \( x = \log_a \! \dfrac{C}{A a^m - B a^n} \) (uz uslov da je razlomak pozitivan).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('expEqChart');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var secondary = cv('--sol-canvas-secondary');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var W = canvas.width;
+
+    // ===== TOP: substitution flow =====
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Smena t = 3ˣ pretvara eksponencijalnu jednačinu u linearnu', W / 2, 26);
+
+    var flowY = 50;
+    var flowH = 56;
+    var rows = [
+      { color: primary,   text: '6 · 3ˣ⁺¹ = 1350 + 12 · 3ˣ⁻²',                sub: 'polazna eksponencijalna jednačina' },
+      { color: secondary, text: '18 · 3ˣ = 1350 + (4/3) · 3ˣ',                  sub: 'rastavljanje stepena: 3ˣ⁺¹ = 3 · 3ˣ, 3ˣ⁻² = 3ˣ / 9' },
+      { color: accent,    text: '18 t = 1350 + (4/3) t,   t = 3ˣ > 0',          sub: 'smena t = 3ˣ — linearna jednačina po t' }
+    ];
+    for (var i = 0; i < rows.length; i++) {
+      var y = flowY + i * (flowH + 14);
+      ctx.fillStyle = cvAlpha(
+        i === 0 ? '--sol-canvas-primary' :
+        i === 1 ? '--sol-canvas-secondary' :
+                  '--sol-canvas-accent', 0.10);
+      ctx.fillRect(40, y, W - 80, flowH);
+      ctx.strokeStyle = rows[i].color;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(40, y, W - 80, flowH);
+      ctx.fillStyle = text;
+      ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      ctx.fillText(rows[i].text, 56, y + 8);
+      ctx.fillStyle = muted;
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.fillText(rows[i].sub, 56, y + 32);
+    }
+    ctx.textBaseline = 'alphabetic';
+
+    // ===== MIDDLE: Linear plot in t =====
+    var plotLeft = 80, plotRight = W - 30;
+    var plotTop = 260, plotBottom = 460;
+    var tMin = 0, tMax = 100;
+    var yMin = 0, yMax = 1800;
+
+    function px(t) { return plotLeft + (t - tMin) / (tMax - tMin) * (plotRight - plotLeft); }
+    function py(y) { return plotBottom - (y - yMin) / (yMax - yMin) * (plotBottom - plotTop); }
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Linearne prave po t i njihov presek', W / 2, plotTop - 16);
+
+    // Grid lines
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var gt = 0; gt <= 100; gt += 20) {
+      ctx.beginPath();
+      ctx.moveTo(px(gt), plotTop);
+      ctx.lineTo(px(gt), plotBottom);
+      ctx.stroke();
+    }
+    for (var gy = 0; gy <= 1800; gy += 300) {
+      ctx.beginPath();
+      ctx.moveTo(plotLeft, py(gy));
+      ctx.lineTo(plotRight, py(gy));
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(plotLeft, plotBottom);
+    ctx.lineTo(plotRight, plotBottom);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(plotLeft, plotTop);
+    ctx.lineTo(plotLeft, plotBottom);
+    ctx.stroke();
+
+    // x-axis labels
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var ttx = 0; ttx <= 100; ttx += 20) {
+      ctx.fillText(String(ttx), px(ttx), plotBottom + 14);
+    }
+    ctx.textAlign = 'right';
+    for (var tty = 0; tty <= 1800; tty += 300) {
+      ctx.fillText(String(tty), plotLeft - 6, py(tty) + 4);
+    }
+    ctx.fillStyle = text;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('t', plotRight - 12, plotBottom - 6);
+    ctx.fillText('y', plotLeft + 6, plotTop + 12);
+
+    // Line y = 18 t
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(px(0), py(0));
+    ctx.lineTo(px(100), py(1800));
+    ctx.stroke();
+
+    // Line y = 1350 + (4/3) t
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(px(0), py(1350));
+    ctx.lineTo(px(100), py(1350 + 400 / 3));
+    ctx.stroke();
+
+    // Intersection at (81, 1458)
+    var ipx = px(81), ipy = py(1458);
+    // Drop lines
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(ipx, ipy);
+    ctx.lineTo(ipx, plotBottom);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(ipx, ipy);
+    ctx.lineTo(plotLeft, ipy);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Point
+    ctx.beginPath();
+    ctx.arc(ipx, ipy, 12, 0, Math.PI * 2);
+    ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.30);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(ipx, ipy, 6, 0, Math.PI * 2);
+    ctx.fillStyle = highlight;
+    ctx.fill();
+
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('(81, 1458)', ipx + 12, ipy - 8);
+
+    // t = 81 label on x-axis
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('t = 81', ipx, plotBottom + 28);
+
+    // Mini legend
+    var legX = plotLeft + 14, legY = plotTop + 8;
+    ctx.fillStyle = cvAlpha('--sol-canvas-bg', 0.85);
+    ctx.fillRect(legX - 6, legY - 10, 200, 50);
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(legX - 6, legY - 10, 200, 50);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(legX, legY + 4);
+    ctx.lineTo(legX + 26, legY + 4);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('y = 18 t', legX + 32, legY + 8);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(legX, legY + 24);
+    ctx.lineTo(legX + 26, legY + 24);
+    ctx.stroke();
+    ctx.fillText('y = 1350 + (4/3) t', legX + 32, legY + 28);
+
+    // ===== BOTTOM: Number line for x =====
+    var nlY = 510;
+    var nlLeft = 80, nlRight = W - 60;
+    var nlMin = -10, nlMax = 10;
+    function nx(v) { return nlLeft + (v - nlMin) / (nlMax - nlMin) * (nlRight - nlLeft); }
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('x = log₃ 81 = 4  →  pripadnost intervalu', W / 2, nlY - 20);
+
+    // Highlighted interval (-1, 5)
+    var ix1 = nx(-1), ix2 = nx(5);
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.28);
+    ctx.fillRect(ix1, nlY - 14, ix2 - ix1, 28);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(ix1, nlY - 14, ix2 - ix1, 28);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('(-1, 5)', (ix1 + ix2) / 2, nlY - 18);
+
+    // Axis line
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(nlLeft, nlY);
+    ctx.lineTo(nlRight, nlY);
+    ctx.stroke();
+
+    // Ticks
+    var ticks = [-10, -5, -1, 0, 5, 10];
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    for (var t = 0; t < ticks.length; t++) {
+      var pxt = nx(ticks[t]);
+      ctx.strokeStyle = axis;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(pxt, nlY - 6);
+      ctx.lineTo(pxt, nlY + 6);
+      ctx.stroke();
+      ctx.fillStyle = muted;
+      ctx.fillText(String(ticks[t]), pxt, nlY + 20);
+    }
+
+    // x = 4 highlighted point
+    var px4 = nx(4);
+    ctx.beginPath();
+    ctx.arc(px4, nlY, 11, 0, Math.PI * 2);
+    ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.35);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(px4, nlY, 5, 0, Math.PI * 2);
+    ctx.fillStyle = highlight;
+    ctx.fill();
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('x = 4', px4, nlY + 40);
+
+    // Footer
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Rešenje x = 4 leži u intervalu (-1, 5) — odgovor (A).', W / 2, canvas.height - 14);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Eksponencijalna jednačina 6·3^(x+1) = 1350 + 12·3^(x-2)",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["eksponencijalne jednačine", "stepenovanje", "smena promenljive", "linearne jednačine"]
+}
+BRAINSPARK_META-->

@@ -1,0 +1,668 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+PROBLEM:
+Petocifren prirodan broj se pravi od cifara skupa S = {1,2,3,4,5,6,7,8,9}
+(devet razlicitih cifara, nema nule!) BEZ PONAVLJANJA.
+Koliko ima takvih brojeva?
+
+KORAK 1 — Tip kombinatorike:
+"Razmestiti 5 razlicitih elemenata iz 9-clanog skupa, u uredjenom rasporedu"
+=> permutacije bez ponavljanja, broj = V(9,5) = P(9,5) = 9!/(9-5)! = 9!/4!
+
+KORAK 2 — Direktno mnozenje (princip mnozenja):
+- Cifra hiljada: 9 izbora (bilo koja od 1..9 — nije nula u skupu, pa
+  nije problem za "ne pocinje nulom")
+- Cifra desetina hiljada... wait. Petocifren broj ima 5 mesta:
+  d1 d2 d3 d4 d5
+  d1 = desetohiljada, d2 = hiljada, d3 = stotina, d4 = desetica, d5 = jedinica
+- Za d1 (najlevije): 9 mogucnosti (1..9)
+- Za d2: 8 (jedna cifra je iskorišćena)
+- Za d3: 7
+- Za d4: 6
+- Za d5: 5
+Ukupno: 9 * 8 * 7 * 6 * 5 = ?
+
+KORAK 3 — Racun:
+9 * 8 = 72
+72 * 7 = 504
+504 * 6 = 3024
+3024 * 5 = 15120
+
+KORAK 4 — Provera preko faktorijela:
+9!/4! = (9·8·7·6·5·4!)/4! = 9·8·7·6·5 = 15120  ✓
+
+KORAK 5 — Provera redom velicine:
+Svih petocifrenih prirodnih brojeva (sa nulom dozvoljenom, pa ima i ponavljanja) je
+9 * 10^4 = 90000. Nas broj 15120 je oko 1/6 toga. Razumno?
+- Bez ponavljanja: 9*9*8*7*6 = 27216 (kad bismo imali i 0 ali ne na pocetku)
+- Bez 0 i bez ponavljanja: 9*8*7*6*5 = 15120  ✓
+
+Sve cifre razlicite & sve iz {1..9}: 15120
+
+NAPOMENA: Da je dozvoljena i nula, racun bi bio drugaciji:
+Ukupno cifara: 10. Mesta: 5. Bez ponavljanja, ali d1 != 0:
+P(10,5) - (broj kod kojih d1 = 0)
+= 10!/5! - 9!/5!
+= 30240 - 3024
+= 27216
+Ali nase pitanje koristi {1..9}, nema 0 uopste, pa je odgovor 9*8*7*6*5 = 15120.
+
+ANSWER: E) 15120
+
+DIJAGRAMI:
+1) Slot diagram: 5 mesta za cifre, sa brojevima 9, 8, 7, 6, 5 ispod svake.
+2) Stablo nekoliko prvih cifara — pokazati granjanje.
+3) Vizuelizacija formule P(n,k) = n!/(n-k)!.
+</script>
+
+<h1 data-card="problem-title">Brojanje petocifrenih brojeva bez ponavljanja cifara</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika &mdash; permutacije bez ponavljanja, princip množenja</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>Tekst zadatka</h2>
+  <p>
+    Broj različitih petocifrenih prirodnih brojeva koji se mogu zapisati pomoću cifara
+    \( 1, 2, 3, 4, 5, 6, 7, 8, 9 \), bez ponavljanja cifara, iznosi:
+  </p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">Skup cifara</span>
+      <span class="given-value">\( \{1, 2, 3, 4, 5, 6, 7, 8, 9\} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Veličina skupa</span>
+      <span class="given-value">\( n = 9 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Broj mesta</span>
+      <span class="given-value">\( k = 5 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Pravilo</span>
+      <span class="given-value">cifre se ne smeju ponavljati</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 12300 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 13240 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 10560 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 14400 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 15120 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>Plan rešavanja</h2>
+  <p class="plan-text">
+    Iz skupa od \( 9 \) različitih cifara biramo i raspoređujemo \( 5 \) na pet mesta. Pošto skup ne sadrži nulu,
+    nema posebnog uslova "prva cifra ne sme biti \( 0 \)". Primenićemo <strong>princip množenja</strong>:
+    za prvo mesto \( 9 \) izbora, zatim \( 8, 7, 6, 5 \) za naredna mesta. Konačno:
+    \( 9 \cdot 8 \cdot 7 \cdot 6 \cdot 5 = V_5^9 = \dfrac{9!}{4!} \).
+  </p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>Podsetnik iz teorije</h2>
+  <details>
+    <summary>Permutacije bez ponavljanja i princip množenja</summary>
+    <div class="detail-content">
+      <ul>
+        <li>
+          <strong>Princip množenja:</strong> ako se izbor sastoji od \( k \) <em>nezavisnih</em> koraka, a broj
+          opcija u koraku \( i \) je \( n_i \), ukupan broj ishoda je \( n_1 \cdot n_2 \cdots n_k \).
+        </li>
+        <li>
+          <strong>Varijacije bez ponavljanja</strong> (uređene k-torke različitih elemenata iz \( n \)):
+          \[ V_k^n = \frac{n!}{(n-k)!} = n \cdot (n-1) \cdots (n - k + 1). \]
+        </li>
+        <li>
+          <strong>Ne mešaj</strong> sa kombinacijama \( \binom{n}{k} = \dfrac{n!}{k!(n-k)!} \) (uređaj nije bitan).
+          Kod brojeva uređaj <em>jeste</em> bitan: \( 12345 \neq 54321 \).
+        </li>
+        <li>
+          <strong>Specifičnost ovog zadatka:</strong> nula <em>nije</em> u skupu, pa nema dodatnog uslova
+          "vodeća cifra različita od \( 0 \)". Kad bismo radili sa skupom \( \{0,1,\ldots,9\} \), morali bismo
+          da oduzmemo brojeve sa \( 0 \) na čelu.
+        </li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Pet mesta i broj izbora po mestu">
+  <h2>Pet mesta i broj izbora po mestu</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-slots" width="760" height="460"></canvas>
+  </div>
+  <p class="canvas-caption">
+    Pet praznih mesta za cifre. Iznad svake kućice je broj raspoloživih cifara <em>posle</em> izbora prethodnih.
+    Princip množenja daje
+    \( 9 \cdot 8 \cdot 7 \cdot 6 \cdot 5 = 15\,120 \).
+  </p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Identifikujemo tip prebrajanja</h3>
+      <p>
+        Petocifren broj je <em>uređena</em> petorka cifara \( (d_1, d_2, d_3, d_4, d_5) \). Cifre su iz
+        skupa \( \{1, 2, \ldots, 9\} \) (devet elemenata) i ne smeju se ponavljati. Ovo je upravo definicija
+        varijacija bez ponavljanja \( V_5^9 \).
+      </p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto ne računamo \( \binom{9}{5} \)?</summary>
+          <div class="detail-content">
+            <p>
+              Zato što kod brojeva uređaj cifara <em>menja</em> broj: \( 12345 \) i \( 54321 \) su različiti
+              brojevi iako čine isti skup cifara. Kombinacije \( \binom{9}{5} = 126 \) broje samo skupove,
+              što ovde nije adekvatno.
+            </p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Princip množenja po mestima</h3>
+      <p>Brojimo izbore po mestima sleva nadesno:</p>
+      <div class="math-block">
+        \[ \begin{array}{|c|c|c|c|c|}
+          \hline
+          d_1 & d_2 & d_3 & d_4 & d_5 \\
+          \hline
+          9 & 8 & 7 & 6 & 5 \\
+          \hline
+        \end{array} \]
+      </div>
+      <ul>
+        <li>Za \( d_1 \): bilo koja od \( 9 \) cifara &mdash; <strong>9</strong> mogućnosti.</li>
+        <li>Za \( d_2 \): preostalo je \( 9 - 1 = 8 \) cifara &mdash; <strong>8</strong> mogućnosti.</li>
+        <li>Za \( d_3 \): preostalo je \( 7 \).</li>
+        <li>Za \( d_4 \): preostalo je \( 6 \).</li>
+        <li>Za \( d_5 \): preostalo je \( 5 \).</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Računanje proizvoda</h3>
+      <div class="math-block">
+        \[ N = 9 \cdot 8 \cdot 7 \cdot 6 \cdot 5. \]
+      </div>
+      <p>Pažljivo, korak po korak:</p>
+      <div class="math-block">
+        \[ \begin{aligned}
+          9 \cdot 8 &= 72, \\
+          72 \cdot 7 &= 504, \\
+          504 \cdot 6 &= 3\,024, \\
+          3\,024 \cdot 5 &= 15\,120.
+        \end{aligned} \]
+      </div>
+      <p>Dakle <span class="result">N = 15 120</span>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Alternativni zapis preko faktorijela</h3>
+      <p>Po formuli za varijacije bez ponavljanja:</p>
+      <div class="math-block">
+        \[ V_5^9 = \frac{9!}{(9-5)!} = \frac{9!}{4!} = \frac{9 \cdot 8 \cdot 7 \cdot 6 \cdot 5 \cdot 4!}{4!}
+        = 9 \cdot 8 \cdot 7 \cdot 6 \cdot 5 = 15\,120. \]
+      </div>
+      <p>Isti rezultat &mdash; faktorijal je samo kompaktan zapis istog množenja.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliko bi bio odgovor da je dozvoljeno ponavljanje cifara?</summary>
+          <div class="detail-content">
+            <p>
+              \( 9^5 = 59\,049 \). Svaka od pet pozicija ima <em>svih</em> \( 9 \) izbora, jer cifra može
+              da se ponovi. Naš slučaj je drastično manji jer izbori smanjuju zalihu.
+            </p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera redom veličine</h3>
+      <p>
+        Svih petocifrenih prirodnih brojeva ukupno (sa svim ciframa \( 0\text{–}9 \), s ponavljanjem) ima
+        \( 9 \cdot 10^4 = 90\,000 \). Naš rezultat \( 15\,120 \) iznosi oko \( 17\% \) toga &mdash; razumno
+        s obzirom na dva ograničenja:
+      </p>
+      <ul>
+        <li>nema cifre \( 0 \) (gubimo \( ~10\% \) prostora),</li>
+        <li>nema ponavljanja (gubimo dodatno).</li>
+      </ul>
+      <p>
+        Konkretno, brojeva sa svih \( 9 \) cifara \( 1\text{–}9 \) i s mogućim ponavljanjem ima
+        \( 9^5 = 59\,049 \), a od toga \( 15\,120 \) (oko \( 25{,}6\% \)) ima sve cifre različite. Realno.
+      </p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>Ključni uvid</h2>
+  <p>
+    <strong>Cifra \( 0 \) se ne pojavljuje u skupu</strong> &mdash; zato nema posebnog uslova za vodeću cifru.
+    Da je nula prisutna, morali bismo ili da posebno brojimo \( d_1 \neq 0 \), ili da od ukupnog broja
+    permutacija oduzmemo one koje počinju nulom. Pažljivo pročitati skup cifara &mdash; razlika između
+    \( \{1,\ldots,9\} \) i \( \{0,1,\ldots,9\} \) je suštinska za ovu klasu zadataka!
+  </p>
+</div>
+
+<div data-card="visual-aid" data-title="Stablo prvih izbora (deo prostora)">
+  <h2>Stablo prvih izbora (deo prostora)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-tree" width="760" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">
+    Princip množenja vizualizovan kao stablo: iz korena izlaze \( 9 \) grana za \( d_1 \), iz svake po
+    \( 8 \) grana za \( d_2 \), itd. Ukupan broj listova posle \( 5 \) nivoa je \( 9 \cdot 8 \cdot 7 \cdot 6 \cdot 5
+    = 15\,120 \).
+  </p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ N = V_5^9 = \frac{9!}{4!} = 9 \cdot 8 \cdot 7 \cdot 6 \cdot 5 = 15\,120. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 12\,300 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 13\,240 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 10\,560 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 14\,400 \)</span>
+    <span class="answer-option correct" data-option="E">(E) \( 15\,120 \)</span>
+  </div>
+  <p class="verification">
+    Provera dimenzionalno: za \( n = 9, k = 5 \) imamo \( V_5^9 = 9 \cdot 8 \cdot 7 \cdot 6 \cdot 5 \). Proizvod
+    pet uzastopnih opadajućih celih brojeva &mdash; nikada nije ni \( 12\,300 \), ni \( 13\,240 \), ni \( 14\,400 \).
+    Tačan rezultat je \( 15\,120 \), distraktor (D) \( 14\,400 = 9 \cdot 8 \cdot 8 \cdot 5 \cdot 5 \) je samo blizu.
+  </p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>
+      Računati \( \binom{9}{5} = 126 \) (kombinacije) &mdash; pogrešno, jer kod brojeva uređaj cifara <em>jeste</em>
+      bitan. Tražimo varijacije.
+    </li>
+    <li>
+      Računati \( 9^5 = 59\,049 \) &mdash; pogrešno za bez ponavljanja; ta formula važi samo ako su cifre
+      smele da se ponavljaju.
+    </li>
+    <li>
+      Zaboraviti da pomnožimo sve faktore: \( 9 \cdot 8 = 72 \), pa stati. Treba sve do \( 5 \) (pet mesta).
+    </li>
+    <li>
+      Veštački oduzimati "brojeve s nulom na čelu" iako u skupu uopšte nema \( 0 \) &mdash; to bi davalo
+      pogrešan odgovor.
+    </li>
+    <li>
+      Pomešati \( 9!/4! \) sa \( 9!/(5!\cdot 4!) \) (kombinacije) &mdash; pažljivo s deliocem.
+    </li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>Dodatni izazov</h2>
+  <p>
+    Koliko od ovih \( 15\,120 \) brojeva je <strong>parno</strong>? Drugim rečima, koliko petocifrenih brojeva
+    iz cifara \( \{1,\ldots,9\} \) bez ponavljanja se završava parnom cifrom?
+  </p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>
+        Parne cifre u skupu \( \{1,\ldots,9\} \) su \( \{2, 4, 6, 8\} \) &mdash; ima ih \( 4 \). Broj zaključujemo
+        sa zadnjeg mesta:
+      </p>
+      <ul>
+        <li>za \( d_5 \): \( 4 \) izbora (parne),</li>
+        <li>za \( d_1, d_2, d_3, d_4 \): popunjavamo iz preostalih \( 8 \) cifara &mdash;
+          \( 8 \cdot 7 \cdot 6 \cdot 5 \).</li>
+      </ul>
+      <p>Ukupno: \( 4 \cdot 8 \cdot 7 \cdot 6 \cdot 5 = 4 \cdot 1\,680 = 6\,720 \) parnih brojeva.</p>
+      <p>
+        Provera odnosom: \( 6720 / 15120 = 4/9 \), što je tačno udeo parnih cifara u skupu \( \{1,\ldots,9\} \).
+        Lepa simetrija &mdash; verovatnoća da poslednja cifra bude parna je upravo \( 4/9 \).
+      </p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-slots');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var W = canvas.width, H = canvas.height;
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Pet mesta — princip množenja', W/2, 28);
+
+    // Five slots
+    var n = 5;
+    var slotW = 100, slotH = 110;
+    var gap = 22;
+    var totalW = n * slotW + (n - 1) * gap;
+    var startX = (W - totalW) / 2;
+    var slotY = 95;
+
+    var counts = [9, 8, 7, 6, 5];
+    var labels = ['d₁', 'd₂', 'd₃', 'd₄', 'd₅'];
+    var subLabels = ['10000', '1000', '100', '10', '1'];
+
+    // Draw "x" between slots
+    ctx.fillStyle = muted;
+    ctx.font = 'bold 26px Inter, system-ui';
+    ctx.textAlign = 'center';
+    for (var i = 0; i < n - 1; i++) {
+      var xPos = startX + (i + 1) * slotW + i * gap + gap / 2;
+      ctx.fillText('×', xPos, slotY + slotH / 2 + 9);
+    }
+
+    // Draw each slot
+    for (var k = 0; k < n; k++) {
+      var x = startX + k * (slotW + gap);
+
+      // Count above slot
+      ctx.fillStyle = primary;
+      ctx.font = 'bold 30px Inter, system-ui';
+      ctx.fillText(String(counts[k]), x + slotW / 2, slotY - 12);
+
+      // Slot frame
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.08);
+      ctx.fillRect(x, slotY, slotW, slotH);
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x, slotY, slotW, slotH);
+
+      // Position label inside
+      ctx.fillStyle = text;
+      ctx.font = 'bold 24px Inter, system-ui';
+      ctx.fillText(labels[k], x + slotW / 2, slotY + slotH / 2 + 2);
+
+      // Position weight
+      ctx.fillStyle = muted;
+      ctx.font = '12px Inter, system-ui';
+      ctx.fillText(subLabels[k], x + slotW / 2, slotY + slotH / 2 + 28);
+
+      // "izbora" caption
+      ctx.fillStyle = secondary;
+      ctx.font = '12px Inter, system-ui';
+      ctx.fillText('izbora', x + slotW / 2, slotY + slotH + 22);
+    }
+
+    // Multiplication formula at bottom
+    ctx.fillStyle = text;
+    ctx.font = 'bold 20px Inter, system-ui';
+    ctx.fillText('9 × 8 × 7 × 6 × 5  =  15 120', W/2, slotY + slotH + 80);
+
+    // Step-by-step computation row
+    ctx.fillStyle = muted;
+    ctx.font = '13px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('72 × 7 = 504,  504 × 6 = 3 024,  3 024 × 5 = 15 120', W/2, slotY + slotH + 110);
+
+    // "Bez 0" badge
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 12px Inter, system-ui';
+    ctx.textAlign = 'right';
+    ctx.fillText('Skup cifara: {1,2,3,4,5,6,7,8,9} — bez nule!', W - 20, H - 12);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-tree');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var W = canvas.width, H = canvas.height;
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Stablo izbora (samo prva tri nivoa, neke grane)', W/2, 28);
+
+    // We will draw a partial tree: root → 9 d1 nodes (we'll show 5: 1,2,3,...,9 with ellipsis)
+    // For each shown d1 node, draw 4 d2 children (with ellipsis)
+    // For one d2 node, draw 3 d3 children
+    var rootX = W / 2, rootY = 60;
+    ctx.fillStyle = primary;
+    ctx.beginPath();
+    ctx.arc(rootX, rootY, 14, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = bg;
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.fillText('•', rootX, rootY + 4);
+
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillText('start', rootX, rootY - 22);
+
+    // Level 1 — 9 d1 nodes, show as positions across width
+    var lvl1Y = 150;
+    var d1values = [1, 2, 3, '...', 9];
+    var lvl1Xs = [];
+    var spread1 = 600;
+    for (var i = 0; i < d1values.length; i++) {
+      var x = rootX - spread1/2 + spread1 * i / (d1values.length - 1);
+      lvl1Xs.push(x);
+
+      // Edge from root
+      ctx.strokeStyle = cvAlpha('--sol-canvas-primary', 0.5);
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(rootX, rootY + 14);
+      ctx.lineTo(x, lvl1Y - 14);
+      ctx.stroke();
+
+      // Node
+      ctx.fillStyle = secondary;
+      ctx.beginPath();
+      ctx.arc(x, lvl1Y, 16, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = bg;
+      ctx.font = 'bold 14px Inter, system-ui';
+      ctx.fillText(String(d1values[i]), x, lvl1Y + 5);
+    }
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.fillText('d₁: 9 izbora', rootX, lvl1Y + 38);
+
+    // Level 2 — for each d1, 8 children. Show 4 (with "...") under d1=1.
+    var lvl2Y = 260;
+    var focus = 0; // index of d1 = 1
+    var d2sample = [2, 3, 4, '...', 9]; // 5 visual children under d1=1 (label only)
+    var spread2 = 280;
+    var baseX = lvl1Xs[focus];
+    var lvl2Xs = [];
+    for (var j = 0; j < d2sample.length; j++) {
+      var x2 = baseX - spread2/2 + spread2 * j / (d2sample.length - 1);
+      lvl2Xs.push(x2);
+
+      ctx.strokeStyle = cvAlpha('--sol-canvas-secondary', 0.6);
+      ctx.lineWidth = 1.1;
+      ctx.beginPath();
+      ctx.moveTo(baseX, lvl1Y + 16);
+      ctx.lineTo(x2, lvl2Y - 12);
+      ctx.stroke();
+
+      ctx.fillStyle = accent;
+      ctx.beginPath();
+      ctx.arc(x2, lvl2Y, 13, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = bg;
+      ctx.font = 'bold 12px Inter, system-ui';
+      ctx.fillText(String(d2sample[j]), x2, lvl2Y + 4);
+    }
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.fillText('d₂: 8 izbora (po svakom d₁)', baseX, lvl2Y + 32);
+
+    // Level 3 — show 3 children under d2 = 2
+    var lvl3Y = 360;
+    var d3sample = [3, 4, '...', 9];
+    var baseX3 = lvl2Xs[0];
+    var spread3 = 140;
+    for (var p = 0; p < d3sample.length; p++) {
+      var x3 = baseX3 - spread3/2 + spread3 * p / (d3sample.length - 1);
+
+      ctx.strokeStyle = cvAlpha('--sol-canvas-accent', 0.6);
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(baseX3, lvl2Y + 13);
+      ctx.lineTo(x3, lvl3Y - 10);
+      ctx.stroke();
+
+      ctx.fillStyle = primary;
+      ctx.beginPath();
+      ctx.arc(x3, lvl3Y, 11, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = bg;
+      ctx.font = 'bold 11px Inter, system-ui';
+      ctx.fillText(String(d3sample[p]), x3, lvl3Y + 4);
+    }
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 12px Inter, system-ui';
+    ctx.fillText('d₃: 7 izbora …', baseX3, lvl3Y + 28);
+
+    // ... continuing
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillText('… i tako d₄: 6 izbora,  d₅: 5 izbora.', W/2, lvl3Y + 70);
+
+    // Bottom formula box
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 18px Inter, system-ui';
+    ctx.fillText('Ukupno listova:  9 · 8 · 7 · 6 · 5 = 15 120', W/2, H - 40);
+
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillText('(svaki list = jedan različit petocifren broj)', W/2, H - 16);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Petocifreni brojevi iz cifara 1-9 bez ponavljanja",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["permutacije", "varijacije", "princip množenja", "prebrajanje cifara"]
+}
+BRAINSPARK_META-->

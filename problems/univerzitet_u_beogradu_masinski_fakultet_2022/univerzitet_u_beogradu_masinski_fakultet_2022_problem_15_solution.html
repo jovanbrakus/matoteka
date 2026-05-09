@@ -1,0 +1,759 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Zadatak: Osnovice jednakokrakog trapeza su a i b (a > b), površina P. Naći tg(oštri ugao trapeza).
+
+Postavka:
+  Trapez ABCD, AB = a (donja, duža), DC = b (gornja, kraća), gde je trapez jednakokrak.
+  Spuštanjem visine iz D na AB, neka je noga DE. Slično iz C na AB neka je noga CF.
+  EF = DC = b (jer je DECF pravougaonik). Po simetriji jednakokrakog trapeza,
+    AE = FB = (a − b)/2.
+  Visina h = DE = CF.
+
+Oštri ugao u A (ili B) — neka je α. U pravouglom trouglu ADE (prav ugao u E):
+  tan α = DE / AE = h / ((a − b)/2) = 2h / (a − b).
+
+Površina trapeza:
+  P = (a + b) · h / 2  ⇒  h = 2P / (a + b).
+
+Spajanje:
+  tan α = 2h / (a − b) = 2 · (2P/(a + b)) / (a − b) = 4P / [(a + b)(a − b)] = 4P / (a² − b²).
+
+Tačan odgovor: (E) 4P / (a² − b²).
+
+Provera (jedinice/dimenzionalnost):
+  P ima dimenzije dužine², a² − b² takođe dužine², pa 4P/(a²−b²) je dimenzionalno bezdimenziono — što je ispravno za tan α.
+
+Numerička provera (test sa specijalnim slučajem):
+  Uzmi a = 4, b = 2, h = 3. Tada AE = (4-2)/2 = 1, tan α = 3/1 = 3.
+  Površina P = (4+2)*3/2 = 9. Po formuli: 4*9 / (16 - 4) = 36/12 = 3. ✓
+
+Drugi specijalni primer (jednakostranični 60°):
+  Uzmi a = 3, b = 1, jednakokrak sa kracima 2 (AE = 1). Onda h² = 4 - 1 = 3, h = √3.
+  tan α = √3 / 1 = √3. To znači α = 60°.
+  Površina P = (3+1)*√3/2 = 2√3. Po formuli: 4*2√3 / (9 - 1) = 8√3/8 = √3. ✓
+
+Eliminacija drugih opcija — kratko:
+  (A) 8P/(ab): nema smisla — proizvod osnovica nije šta meri trapez „po širini“.
+  (B) 4P/(a+b) = 2h: to je „dvostruka visina“, nije tg α.
+  (C) 4P/(ab): isto, ne odgovara geometriji.
+  (D) 2P/(a²−b²) = h/(a−b)... taj broj je tan(α/?) — nije tan α; nedostaje faktor 2.
+  (E) 4P/(a²−b²) — TAČNO.
+
+Vizuelni materijal:
+  Canvas 1: jednakokrak trapez ABCD sa osnovicama a, b i oštrim uglovima α u A i B.
+  Canvas 2: spuštanje visina DE i CF; označavanje EF = b i AE = FB = (a−b)/2.
+  Canvas 3: izolovan pravougli trougao ADE sa h i (a−b)/2; pokazuje tan α direktno.
+  Canvas 4: INTERAKTIVAN — vučenje gornje osnovice b ili visine h, prikaz P i tan α; kako se menja ugao kad smanjuje b.
+</script>
+
+<h1 data-card="problem-title">Tangens oštrog ugla jednakokrakog trapeza</h1>
+<p data-card="problem-subtitle" class="subtitle">Planimetrija — jednakokraki trapez, pomoćna visina, pravougli trougao i veza sa površinom</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Osnovice jednakokrakog trapeza su \( a \) i \( b \) (\( a > b \)), a njegova površina \( P \). Koliki je tangens oštrog ugla tog trapeza?</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">Duža osnovica</span>
+      <span class="given-value">\( a \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Kraća osnovica</span>
+      <span class="given-value">\( b \) (\( a > b \))</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Površina</span>
+      <span class="given-value">\( P \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Tip trapeza</span>
+      <span class="given-value">jednakokrak</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \dfrac{8P}{ab} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \dfrac{4P}{a + b} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \dfrac{4P}{ab} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \dfrac{2P}{a^2 - b^2} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \dfrac{4P}{a^2 - b^2} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Spustićemo dve visine iz vrhova kraće osnovice na dužu osnovicu — dobijamo srednji <strong>pravougaonik</strong> i dva <strong>kongruentna pravougla trougla</strong> sa svake strane (zbog jednakokrakosti). U tom pravouglom trouglu kateta uz osnovicu je \( (a - b)/2 \), a kateta uz krak je visina \( h \). Tako odmah vidimo \( \operatorname{tg}\alpha = \dfrac{2h}{a - b} \). Zatim iz formule za površinu \( P = h(a+b)/2 \) izračunamo \( h \) i sve sastavimo.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Trapez, jednakokrakost i tangens oštrog ugla</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Površina trapeza:</strong> \( P = \dfrac{(a + b)\,h}{2} \), gde je \( h \) visina (rastojanje između osnovica), a \( a, b \) osnovice.</li>
+        <li><strong>Jednakokrak trapez — simetrija:</strong> ima osu simetrije normalnu na osnovice; krakovi su jednaki, oštri uglovi uz dužu osnovicu jednaki, kao i oštri uglovi uz kraću.</li>
+        <li><strong>Visina iz krajeva kraće osnovice:</strong> spuštanjem dve normale na dužu osnovicu, trapez se razlaže na <em>pravougaonik</em> u sredini i <em>dva kongruentna pravougla trougla</em>; svaki pravougli trougao ima horizontalnu katetu \( (a-b)/2 \) i vertikalnu katetu \( h \).</li>
+        <li><strong>Tangens oštrog ugla:</strong> u pravouglom trouglu, \( \operatorname{tg}\theta = \dfrac{\text{naspramna kateta}}{\text{susedna kateta}} \). Kod oštrog ugla uz dužu osnovicu, naspramna kateta je \( h \), susedna \( (a-b)/2 \).</li>
+        <li><strong>Razlika kvadrata:</strong> \( a^2 - b^2 = (a + b)(a - b) \) — ovaj identitet pojednostavljuje konačan razlomak.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz: trapez i ugao α">
+  <h2>📐 Vizuelni prikaz 1: jednakokrak trapez i oštar ugao</h2>
+  <div class="canvas-wrapper">
+    <canvas id="trapBase" width="780" height="480"></canvas>
+  </div>
+  <p class="canvas-caption">Jednakokrak trapez \( ABCD \) sa osnovicama \( AB = a \) (donja, duža) i \( DC = b \) (gornja, kraća). Oštri uglovi uz dužu osnovicu su jednaki i obeleženi sa \( \alpha \). Krakovi \( AD \) i \( BC \) su jednaki. Cilj: izračunati \( \operatorname{tg}\alpha \) preko datih veličina \( a, b, P \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz: konstrukcija visine">
+  <h2>📐 Vizuelni prikaz 2: spuštanje visina i razlaganje na pravougli trougao</h2>
+  <div class="canvas-wrapper">
+    <canvas id="trapDecomp" width="780" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Iz \( D \) i \( C \) spuštamo normale na \( AB \); noge nazovi \( E \) i \( F \). Tada je \( DEFC \) <em>pravougaonik</em> (sve strane upravne, dve naspramne strane jednake), pa \( EF = DC = b \). Po simetriji jednakokrakog trapeza, \( AE = FB = \dfrac{a - b}{2} \). Oba isenčena pravougla trougla \( \triangle ADE \) i \( \triangle BCF \) su <strong>kongruentna</strong> i u njima ćemo čitati \( \operatorname{tg}\alpha \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz: izolovani pravougli trougao">
+  <h2>📐 Vizuelni prikaz 3: izolovani pravougli trougao \( \triangle ADE \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="rightTri" width="780" height="460"></canvas>
+  </div>
+  <p class="canvas-caption">Pravougli trougao \( \triangle ADE \) sa pravim uglom u \( E \): horizontalna kateta \( AE = (a - b)/2 \), vertikalna kateta \( DE = h \) (visina trapeza), hipotenuza \( AD \) je krak. Oštri ugao u \( A \) je upravo \( \alpha \). Direktno: \[ \operatorname{tg}\alpha \;=\; \dfrac{DE}{AE} \;=\; \dfrac{h}{(a - b)/2} \;=\; \dfrac{2h}{a - b}. \]</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Konstrukcija — spuštanje dve visine</h3>
+      <p>Označimo trapez \( ABCD \) tako da je \( AB \) donja (duža) osnovica, \( DC \) gornja (kraća), pri čemu \( DC \parallel AB \). Zbog jednakokrakosti, \( AD = BC \) i \( \angle DAB = \angle CBA = \alpha \) (oštri uglovi uz dužu osnovicu).</p>
+      <p>Spustimo iz \( D \) i \( C \) normale na \( AB \); neka su noge \( E \) i \( F \). Tada:</p>
+      <ul>
+        <li>\( DE \perp AB \) i \( CF \perp AB \), pa \( DE = CF = h \) (visina trapeza),</li>
+        <li>\( DEFC \) je pravougaonik (dva para naspramnih paralelnih i jednakih stranica), pa \( EF = DC = b \).</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Simetrija određuje \( AE \) i \( FB \)</h3>
+      <p>Pošto je \( AB = AE + EF + FB = AE + b + FB \) i, po simetriji jednakokrakog trapeza, \( AE = FB \), sledi:</p>
+      <div class="math-block">\[ 2\,AE \;=\; a - b \quad\Longrightarrow\quad AE \;=\; FB \;=\; \dfrac{a - b}{2}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš jednakokraki traži \( AE = FB \)?</summary>
+          <div class="detail-content"><p>Jednakokraki trapez ima osu simetrije normalnu na osnovice (prolazi kroz sredine \( AB \) i \( DC \)). Ta osa preslikava \( D \) u \( C \), pa i \( E \) u \( F \). Stoga \( AE \) (rastojanje od \( A \) do \( E \)) jednako \( BF \) (rastojanje od \( B \) do \( F \)). Bez jednakokrakosti, \( AE \) i \( FB \) bi mogli biti različiti.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Tangens iz pravouglog trougla \( \triangle ADE \)</h3>
+      <p>U \( \triangle ADE \) je pravi ugao u \( E \), oštri ugao u \( A \) je \( \alpha \). Kateta naspram \( \alpha \) je \( DE = h \), kateta uz \( \alpha \) (susedna) je \( AE = (a - b)/2 \). Stoga</p>
+      <div class="math-block">\[ \operatorname{tg}\alpha \;=\; \dfrac{DE}{AE} \;=\; \dfrac{h}{\,\tfrac{a - b}{2}\,} \;=\; \dfrac{2h}{a - b}. \tag{$\ast$} \]</div>
+      <p>Sada još treba izraziti \( h \) preko \( P \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Visina preko površine</h3>
+      <p>Površina trapeza je</p>
+      <div class="math-block">\[ P \;=\; \dfrac{(a + b)\,h}{2} \quad\Longrightarrow\quad h \;=\; \dfrac{2P}{a + b}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kako se izvodi formula \( P = (a+b)h/2 \)?</summary>
+          <div class="detail-content"><p>Razlaganje na pravougaonik \( DEFC \) (površina \( bh \)) i dva pravougla trougla (svaki sa katetama \( h \) i \( (a-b)/2 \), pa površinom \( h(a-b)/4 \) — dvojica ukupno \( h(a-b)/2 \)). Zbir: \( bh + h(a-b)/2 = h\,(b + (a-b)/2) = h\,(a+b)/2 \). Lepo se slaže.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Spajanje — finalni izraz</h3>
+      <p>Zameni \( h \) iz koraka 4 u (\( \ast \)):</p>
+      <div class="math-block">\[ \operatorname{tg}\alpha \;=\; \dfrac{2h}{a - b} \;=\; \dfrac{2 \cdot \dfrac{2P}{a + b}}{a - b} \;=\; \dfrac{4P}{(a + b)(a - b)}. \]</div>
+      <p>Iskoristi razliku kvadrata \( (a + b)(a - b) = a^2 - b^2 \):</p>
+      <div class="math-block">\[ \boxed{\;\operatorname{tg}\alpha \;=\; \dfrac{4P}{a^2 - b^2}\;} \]</div>
+      <p>To je opcija <strong>(E)</strong>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera na specifičnom primeru</h3>
+      <p>Uzmi \( a = 4,\ b = 2,\ h = 3 \). Tada</p>
+      <ul>
+        <li>\( AE = (4-2)/2 = 1 \), pa \( \operatorname{tg}\alpha = h/AE = 3/1 = 3 \) (direktno).</li>
+        <li>\( P = (4+2)\cdot 3/2 = 9 \).</li>
+        <li>Po formuli (E): \( \dfrac{4P}{a^2 - b^2} = \dfrac{4 \cdot 9}{16 - 4} = \dfrac{36}{12} = 3 \). \( \checkmark \)</li>
+      </ul>
+      <p>Drugi primer (\( \alpha = 60^{\circ} \)): \( a = 3,\ b = 1,\ \) krak \( = 2 \). Onda \( AE = 1 \), \( h = \sqrt{4 - 1} = \sqrt{3} \), \( P = (3+1)\sqrt{3}/2 = 2\sqrt{3} \).</p>
+      <div class="math-block">\[ \dfrac{4P}{a^2 - b^2} \;=\; \dfrac{8\sqrt{3}}{9 - 1} \;=\; \dfrac{8\sqrt{3}}{8} \;=\; \sqrt{3} \;=\; \operatorname{tg} 60^{\circ}. \;\checkmark \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz: interaktivno">
+  <h2>📐 Vizuelni prikaz 4: interaktivni jednakokrak trapez</h2>
+  <div class="canvas-wrapper">
+    <canvas id="trapInter" width="780" height="500"></canvas>
+  </div>
+  <div class="canvas-controls">
+    <label>Kraća osnovica \( b \): <input type="range" id="sliderB" min="0.5" max="4.5" step="0.05" value="2.5"></label>
+    <label>Visina \( h \): <input type="range" id="sliderH" min="0.5" max="4" step="0.05" value="2"></label>
+  </div>
+  <p class="canvas-caption">Promenom kraće osnovice \( b \) i visine \( h \) (\( a = 5 \) fiksirano) menja se i površina \( P \) i ugao \( \alpha \). Posmatraj kako se vrednost \( \operatorname{tg}\alpha = 4P/(a^2 - b^2) \) podudara sa direktno izmerenim odnosom \( 2h/(a - b) \). Kada se \( b \) bliži \( a \), \( a - b \to 0 \) — krakovi se dižu vertikalno i \( \operatorname{tg}\alpha \to \infty \) (ugao se približava \( 90^{\circ} \)).</p>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Faktor <em>razlike kvadrata</em> \( a^2 - b^2 = (a+b)(a-b) \) nije slučajan: \( (a+b) \) potiče iz formule za površinu (poluzbir osnovica), a \( (a-b) \) iz simetrične dekompozicije (svaka strana doprinosi po \( (a-b)/2 \)). Ova kombinacija „prirodno“ izlazi iz svake klasične trapezne identifikacije i vredna je pamćenja.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pomenuti \( (a+b)/2 \) umesto \( (a-b)/2 \) za horizontalnu katetu.</strong> Polovina <em>razlike</em>, NE polovina <em>zbira</em>! Ako se napiše \( AE = (a+b)/2 \), to bi bilo veće od \( a/2 \), što je nemoguće za noge unutar \( AB \).</li>
+    <li><strong>Zaboravljanje dvojke u tangensu.</strong> Greška: pisati \( \operatorname{tg}\alpha = h / (a-b) \). Pravilno: \( h / ((a-b)/2) = 2h/(a-b) \) — dvojka dolazi od deljenja sa polovinom razlike. Ako se to izgubi, dobijaš opciju (D), \( 2P/(a^2-b^2) \), upravo polovinu pravog odgovora.</li>
+    <li><strong>Pretpostavka da je \( \alpha = 45^{\circ} \) ili neki specifični ugao.</strong> Zadatak traži <em>opštu</em> formulu po \( a, b, P \). Ne treba zameniti konkretne brojeve.</li>
+    <li><strong>Mešanje oštrih i tupih uglova.</strong> Trapez ima dva oštra ugla (uz dužu osnovicu) i dva tupa (uz kraću) — bar u jednakokrakom slučaju. Tangens tupog ugla je negativan; ovde se traži tangens <em>oštrog</em>.</li>
+    <li><strong>Zaboravljanje da je trapez <em>jednakokrak</em>.</strong> U opštem trapezu \( AE \neq FB \) i visina ne deli simetrično; formula za tangens dobija drugačiji oblik.</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \operatorname{tg}\alpha \;=\; \dfrac{4P}{a^2 - b^2} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( \dfrac{8P}{ab} \)</span>
+    <span class="answer-option" data-option="B">(B) \( \dfrac{4P}{a + b} \)</span>
+    <span class="answer-option" data-option="C">(C) \( \dfrac{4P}{ab} \)</span>
+    <span class="answer-option" data-option="D">(D) \( \dfrac{2P}{a^2 - b^2} \)</span>
+    <span class="answer-option correct" data-option="E">(E) \( \dfrac{4P}{a^2 - b^2} \)</span>
+  </div>
+  <p class="verification">Provera (\( a = 4, b = 2, h = 3 \)): direktno \( \operatorname{tg}\alpha = h/AE = 3 \); površina \( P = 9 \); formula \( 4 \cdot 9 / (16 - 4) = 3 \). ✓ Drugi test (\( a = 3, b = 1, h = \sqrt{3} \), poznato \( \alpha = 60^{\circ} \)): formula daje \( 8\sqrt{3}/8 = \sqrt{3} = \operatorname{tg} 60^{\circ} \). ✓ Tačan odgovor je (E).</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta ako trapez nije jednakokrak — recimo, ima dva različita kraka \( c_1 \) i \( c_2 \)? Pokaži da tangensi oštrih uglova kod osnovice \( a \) više nisu jednaki, i izrazi ih preko \( a, b, P \) i razlike krakova \( c_1, c_2 \). Postoji li sličan kompaktan izraz?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>U opštem trapezu, neka su noge na \( AB \) iz \( D \) i \( C \) tačke \( E \) i \( F \), sa \( AE = p,\ FB = q \), pa \( p + q = a - b \). Pravougli trougli \( \triangle ADE \) i \( \triangle BCF \) imaju zajedničku vertikalnu katetu \( h \), pa</p>
+      <div class="math-block">\[ \operatorname{tg}\angle A \;=\; \dfrac{h}{p}, \qquad \operatorname{tg}\angle B \;=\; \dfrac{h}{q}. \]</div>
+      <p>Iz Pitagore: \( p = \sqrt{c_1^2 - h^2},\ q = \sqrt{c_2^2 - h^2} \). Površina: \( P = h(a+b)/2 \), pa \( h = 2P/(a+b) \). Ako je trapez jednakokrak (\( c_1 = c_2 \)), \( p = q = (a-b)/2 \) i oba tangensa se svode na \( 4P/(a^2-b^2) \) — kao u našem zadatku. Ako nije jednakokrak, oštri uglovi se razlikuju i nema kompaktne formule samo preko \( a, b, P \) — bitan je još bar jedan podatak (npr. razlika krakova).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16), g = parseInt(c.slice(3,5), 16), b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  // ============ CANVAS 1: Trapezoid base diagram ============
+  var canvas1 = document.getElementById('trapBase');
+  if (canvas1) {
+    var ctx = canvas1.getContext('2d');
+
+    function draw1() {
+      var bg = cv('--sol-canvas-bg');
+      var primary = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var text = cv('--sol-canvas-text');
+      var muted = cv('--sol-canvas-muted');
+      var warning = cv('--sol-canvas-warning');
+      var accent = cv('--sol-canvas-accent');
+
+      var W = canvas1.width, H = canvas1.height;
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      ctx.fillStyle = text;
+      ctx.font = 'bold 17px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Jednakokrak trapez ABCD', W/2, 32);
+
+      // Pixel sizes for display
+      var aL = 480, bL = 280, hL = 200;
+      var Ax = (W - aL) / 2, By = H - 90;
+      var Ay = By, Bx = Ax + aL;
+      var Dx = Ax + (aL - bL)/2, Dy = By - hL;
+      var Cx = Dx + bL, Cy = Dy;
+
+      // Trapezoid fill
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.10);
+      ctx.beginPath();
+      ctx.moveTo(Ax, Ay); ctx.lineTo(Bx, By); ctx.lineTo(Cx, Cy); ctx.lineTo(Dx, Dy); ctx.closePath();
+      ctx.fill();
+
+      // Edges
+      ctx.strokeStyle = primary; ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(Ax, Ay); ctx.lineTo(Bx, By); ctx.lineTo(Cx, Cy); ctx.lineTo(Dx, Dy); ctx.closePath();
+      ctx.stroke();
+
+      // Vertices
+      function vertex(x, y, label, lx, ly) {
+        ctx.fillStyle = text; ctx.font = 'bold 16px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(label, x + lx, y + ly);
+      }
+      vertex(Ax, Ay, 'A', -16, 6);
+      vertex(Bx, By, 'B', 16, 6);
+      vertex(Cx, Cy, 'C', 16, 0);
+      vertex(Dx, Dy, 'D', -16, 0);
+
+      // Side labels
+      ctx.fillStyle = primary; ctx.font = 'bold 16px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('a', (Ax + Bx)/2, By + 26);
+      ctx.fillText('b', (Dx + Cx)/2, Dy - 12);
+
+      // Krak labels (legs AD and BC)
+      ctx.fillStyle = secondary; ctx.font = 'bold 14px sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText('krak', (Ax + Dx)/2 - 12, (Ay + Dy)/2 + 4);
+      ctx.textAlign = 'left';
+      ctx.fillText('krak', (Bx + Cx)/2 + 12, (By + Cy)/2 + 4);
+
+      // Angle arcs at A and B (acute angles α)
+      ctx.strokeStyle = warning; ctx.lineWidth = 2.5;
+      // angle at A: between AB (rightward) and AD (up-right)
+      var angAB = Math.atan2(By - Ay, Bx - Ax); // = 0
+      var angAD = Math.atan2(Dy - Ay, Dx - Ax); // up-right
+      ctx.beginPath();
+      ctx.arc(Ax, Ay, 40, angAD, angAB);
+      ctx.stroke();
+      ctx.fillStyle = warning; ctx.font = 'bold 16px sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('α', Ax + 32, Ay - 10);
+
+      // angle at B: between BA (leftward) and BC (up-left)
+      var angBA = Math.atan2(Ay - By, Ax - Bx); // = π
+      var angBC = Math.atan2(Cy - By, Cx - Bx); // up-left
+      ctx.beginPath();
+      ctx.arc(Bx, By, 40, angBC, angBA);
+      ctx.stroke();
+      ctx.fillStyle = warning;
+      ctx.textAlign = 'right';
+      ctx.fillText('α', Bx - 32, By - 10);
+
+      // Caption: P at center
+      ctx.fillStyle = accent; ctx.font = 'bold 16px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Površina = P', (Ax + Bx)/2, (Ay + Dy)/2 + 5);
+
+      ctx.fillStyle = muted; ctx.font = '13px sans-serif';
+      ctx.fillText('a > b. Krakovi AD i BC su jednaki (jednakokrak). Ugao α je oštar.', W/2, 60);
+    }
+
+    draw1();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() { styles = getComputedStyle(root); draw1(); }, 50);
+      }
+    });
+  }
+
+  // ============ CANVAS 2: Trapezoid with heights dropped ============
+  var canvas2 = document.getElementById('trapDecomp');
+  if (canvas2) {
+    var ctx2 = canvas2.getContext('2d');
+
+    function draw2() {
+      var bg = cv('--sol-canvas-bg');
+      var primary = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var text = cv('--sol-canvas-text');
+      var muted = cv('--sol-canvas-muted');
+      var warning = cv('--sol-canvas-warning');
+      var accent = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+
+      var W = canvas2.width, H = canvas2.height;
+      ctx2.clearRect(0, 0, W, H);
+      ctx2.fillStyle = bg;
+      ctx2.fillRect(0, 0, W, H);
+
+      ctx2.fillStyle = text;
+      ctx2.font = 'bold 17px sans-serif';
+      ctx2.textAlign = 'center';
+      ctx2.fillText('Konstrukcija visina: razlaganje na pravougaonik + 2 trougla', W/2, 30);
+
+      var aL = 480, bL = 280, hL = 220;
+      var Ax = (W - aL) / 2, By = H - 90;
+      var Ay = By, Bx = Ax + aL;
+      var Dx = Ax + (aL - bL)/2, Dy = By - hL;
+      var Cx = Dx + bL, Cy = Dy;
+      var Ex = Dx, Ey = By;
+      var Fx = Cx, Fy = By;
+
+      // Highlight rectangle DEFC
+      ctx2.fillStyle = cvAlpha('--sol-canvas-highlight', 0.18);
+      ctx2.beginPath();
+      ctx2.moveTo(Dx, Dy); ctx2.lineTo(Cx, Cy); ctx2.lineTo(Fx, Fy); ctx2.lineTo(Ex, Ey); ctx2.closePath();
+      ctx2.fill();
+
+      // Highlight left right triangle ADE
+      ctx2.fillStyle = cvAlpha('--sol-canvas-warning', 0.22);
+      ctx2.beginPath();
+      ctx2.moveTo(Ax, Ay); ctx2.lineTo(Dx, Dy); ctx2.lineTo(Ex, Ey); ctx2.closePath();
+      ctx2.fill();
+
+      // Highlight right right triangle BCF
+      ctx2.fillStyle = cvAlpha('--sol-canvas-warning', 0.22);
+      ctx2.beginPath();
+      ctx2.moveTo(Bx, By); ctx2.lineTo(Cx, Cy); ctx2.lineTo(Fx, Fy); ctx2.closePath();
+      ctx2.fill();
+
+      // Outer trapezoid edges
+      ctx2.strokeStyle = primary; ctx2.lineWidth = 3;
+      ctx2.beginPath();
+      ctx2.moveTo(Ax, Ay); ctx2.lineTo(Bx, By); ctx2.lineTo(Cx, Cy); ctx2.lineTo(Dx, Dy); ctx2.closePath();
+      ctx2.stroke();
+
+      // Heights (dashed)
+      ctx2.strokeStyle = secondary; ctx2.lineWidth = 2;
+      ctx2.setLineDash([6, 4]);
+      ctx2.beginPath();
+      ctx2.moveTo(Dx, Dy); ctx2.lineTo(Ex, Ey); ctx2.stroke();
+      ctx2.beginPath();
+      ctx2.moveTo(Cx, Cy); ctx2.lineTo(Fx, Fy); ctx2.stroke();
+      ctx2.setLineDash([]);
+
+      // Right angle markers at E and F
+      ctx2.strokeStyle = text; ctx2.lineWidth = 1.5;
+      ctx2.beginPath();
+      ctx2.moveTo(Ex + 10, Ey); ctx2.lineTo(Ex + 10, Ey - 10); ctx2.lineTo(Ex, Ey - 10);
+      ctx2.stroke();
+      ctx2.beginPath();
+      ctx2.moveTo(Fx - 10, Fy); ctx2.lineTo(Fx - 10, Fy - 10); ctx2.lineTo(Fx, Fy - 10);
+      ctx2.stroke();
+
+      // Vertex/foot labels
+      ctx2.fillStyle = text; ctx2.font = 'bold 15px sans-serif';
+      ctx2.textAlign = 'center';
+      ctx2.fillText('A', Ax - 16, Ay + 6);
+      ctx2.fillText('E', Ex, Ey + 18);
+      ctx2.fillText('F', Fx, Fy + 18);
+      ctx2.fillText('B', Bx + 16, By + 6);
+      ctx2.fillText('C', Cx + 16, Cy);
+      ctx2.fillText('D', Dx - 16, Dy);
+
+      // Segment labels along bottom: AE, EF, FB
+      ctx2.fillStyle = warning; ctx2.font = 'bold 13px sans-serif';
+      ctx2.fillText('(a−b)/2', (Ax + Ex)/2, By + 28);
+      ctx2.fillStyle = highlight;
+      ctx2.fillText('b', (Ex + Fx)/2, By + 28);
+      ctx2.fillStyle = warning;
+      ctx2.fillText('(a−b)/2', (Fx + Bx)/2, By + 28);
+
+      // Height label
+      ctx2.fillStyle = secondary; ctx2.font = 'bold 14px sans-serif';
+      ctx2.textAlign = 'right';
+      ctx2.fillText('h', Ex - 8, (Dy + Ey)/2 + 5);
+      ctx2.textAlign = 'left';
+      ctx2.fillText('h', Fx + 8, (Cy + Fy)/2 + 5);
+
+      // Top: b
+      ctx2.fillStyle = primary; ctx2.font = 'bold 14px sans-serif';
+      ctx2.textAlign = 'center';
+      ctx2.fillText('b', (Dx + Cx)/2, Dy - 12);
+
+      // Caption
+      ctx2.fillStyle = muted; ctx2.font = '12px sans-serif';
+      ctx2.fillText('Pravougaonik DEFC ima stranice b i h. Trougli ADE i BCF su kongruentni (po SAS).', W/2, 56);
+    }
+
+    draw2();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() { styles = getComputedStyle(root); draw2(); }, 50);
+      }
+    });
+  }
+
+  // ============ CANVAS 3: Isolated right triangle ============
+  var canvas3 = document.getElementById('rightTri');
+  if (canvas3) {
+    var ctx3 = canvas3.getContext('2d');
+
+    function draw3() {
+      var bg = cv('--sol-canvas-bg');
+      var primary = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var text = cv('--sol-canvas-text');
+      var muted = cv('--sol-canvas-muted');
+      var warning = cv('--sol-canvas-warning');
+      var accent = cv('--sol-canvas-accent');
+
+      var W = canvas3.width, H = canvas3.height;
+      ctx3.clearRect(0, 0, W, H);
+      ctx3.fillStyle = bg;
+      ctx3.fillRect(0, 0, W, H);
+
+      ctx3.fillStyle = text;
+      ctx3.font = 'bold 17px sans-serif';
+      ctx3.textAlign = 'center';
+      ctx3.fillText('Pravougli trougao △ADE — jezgro problema', W/2, 32);
+
+      // Triangle: A bottom-left, E bottom-right (right angle), D top
+      var horizL = 220, vertL = 240;
+      var Ax = (W - horizL)/2 - 80, Ay = H - 100;
+      var Ex = Ax + horizL, Ey = Ay;
+      var Dx = Ex, Dy = Ey - vertL;
+
+      // Filled triangle
+      ctx3.fillStyle = cvAlpha('--sol-canvas-warning', 0.18);
+      ctx3.beginPath();
+      ctx3.moveTo(Ax, Ay); ctx3.lineTo(Ex, Ey); ctx3.lineTo(Dx, Dy); ctx3.closePath();
+      ctx3.fill();
+
+      // Edges
+      ctx3.strokeStyle = primary; ctx3.lineWidth = 3;
+      ctx3.beginPath();
+      ctx3.moveTo(Ax, Ay); ctx3.lineTo(Ex, Ey); ctx3.lineTo(Dx, Dy); ctx3.closePath();
+      ctx3.stroke();
+
+      // Right angle marker at E
+      ctx3.strokeStyle = text; ctx3.lineWidth = 1.5;
+      ctx3.beginPath();
+      ctx3.moveTo(Ex - 14, Ey); ctx3.lineTo(Ex - 14, Ey - 14); ctx3.lineTo(Ex, Ey - 14);
+      ctx3.stroke();
+
+      // Angle α at A
+      ctx3.strokeStyle = warning; ctx3.lineWidth = 2.5;
+      var angAE = Math.atan2(Ey - Ay, Ex - Ax); // = 0
+      var angAD = Math.atan2(Dy - Ay, Dx - Ax); // up-right
+      ctx3.beginPath();
+      ctx3.arc(Ax, Ay, 50, angAD, angAE);
+      ctx3.stroke();
+      ctx3.fillStyle = warning; ctx3.font = 'bold 18px sans-serif';
+      ctx3.textAlign = 'left';
+      ctx3.fillText('α', Ax + 42, Ay - 14);
+
+      // Vertex labels
+      ctx3.fillStyle = text; ctx3.font = 'bold 16px sans-serif';
+      ctx3.textAlign = 'center';
+      ctx3.fillText('A', Ax - 18, Ay + 6);
+      ctx3.fillText('E', Ex + 14, Ey + 18);
+      ctx3.fillText('D', Dx + 14, Dy);
+
+      // Side labels
+      ctx3.fillStyle = primary; ctx3.font = 'bold 16px sans-serif';
+      ctx3.textAlign = 'center';
+      ctx3.fillText('AE = (a − b) / 2', (Ax + Ex)/2, Ey + 28);
+      ctx3.textAlign = 'left';
+      ctx3.fillText('DE = h', Ex + 14, (Dy + Ey)/2 + 5);
+
+      // Hypotenuse label
+      ctx3.fillStyle = secondary; ctx3.font = 'bold 14px sans-serif';
+      var midX = (Ax + Dx)/2, midY = (Ay + Dy)/2;
+      ctx3.textAlign = 'right';
+      ctx3.fillText('krak (AD)', midX - 10, midY + 5);
+
+      // Equation box
+      ctx3.fillStyle = accent; ctx3.font = 'bold 18px sans-serif';
+      ctx3.textAlign = 'center';
+      ctx3.fillText('tg α = h / ((a − b)/2) = 2h / (a − b)', W/2, 70);
+
+      ctx3.fillStyle = muted; ctx3.font = '13px sans-serif';
+      ctx3.fillText('Naspramna kateta : susedna kateta — definicija tangensa.', W/2, H - 18);
+    }
+
+    draw3();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() { styles = getComputedStyle(root); draw3(); }, 50);
+      }
+    });
+  }
+
+  // ============ CANVAS 4: Interactive trapezoid ============
+  var canvas4 = document.getElementById('trapInter');
+  var sliderB = document.getElementById('sliderB');
+  var sliderH = document.getElementById('sliderH');
+  if (canvas4 && sliderB && sliderH) {
+    var ctx4 = canvas4.getContext('2d');
+
+    function draw4(b, h) {
+      var bg = cv('--sol-canvas-bg');
+      var primary = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var text = cv('--sol-canvas-text');
+      var muted = cv('--sol-canvas-muted');
+      var warning = cv('--sol-canvas-warning');
+      var accent = cv('--sol-canvas-accent');
+
+      var W = canvas4.width, H = canvas4.height;
+      ctx4.clearRect(0, 0, W, H);
+      ctx4.fillStyle = bg;
+      ctx4.fillRect(0, 0, W, H);
+
+      // Math values: a = 5 fixed, b and h are inputs
+      var a = 5;
+      var P = (a + b) * h / 2;
+      var tanAlpha = 2 * h / (a - b); // also = 4P/(a²-b²)
+      var alphaDeg = Math.atan(tanAlpha) * 180 / Math.PI;
+
+      // Title
+      ctx4.fillStyle = text;
+      ctx4.font = 'bold 17px sans-serif';
+      ctx4.textAlign = 'center';
+      ctx4.fillText('Interaktivno: a = 5,  b ∈ (0,5; 4,5),  h ∈ (0,5; 4)', W/2, 30);
+
+      // Display geometry
+      var scale = 75; // px per math unit
+      var aL = a * scale, bL = b * scale, hL = h * scale;
+      var Ax = (W - aL) / 2;
+      var By = H - 110;
+      var Ay = By, Bx = Ax + aL;
+      var Dx = Ax + (aL - bL)/2;
+      var Dy = By - hL;
+      var Cx = Dx + bL, Cy = Dy;
+
+      // Trapezoid fill
+      ctx4.fillStyle = cvAlpha('--sol-canvas-primary', 0.10);
+      ctx4.beginPath();
+      ctx4.moveTo(Ax, Ay); ctx4.lineTo(Bx, By); ctx4.lineTo(Cx, Cy); ctx4.lineTo(Dx, Dy); ctx4.closePath();
+      ctx4.fill();
+
+      // Edges
+      ctx4.strokeStyle = primary; ctx4.lineWidth = 3;
+      ctx4.beginPath();
+      ctx4.moveTo(Ax, Ay); ctx4.lineTo(Bx, By); ctx4.lineTo(Cx, Cy); ctx4.lineTo(Dx, Dy); ctx4.closePath();
+      ctx4.stroke();
+
+      // Heights (dashed)
+      ctx4.strokeStyle = secondary; ctx4.lineWidth = 2;
+      ctx4.setLineDash([5, 4]);
+      ctx4.beginPath();
+      ctx4.moveTo(Dx, Dy); ctx4.lineTo(Dx, By); ctx4.stroke();
+      ctx4.beginPath();
+      ctx4.moveTo(Cx, Cy); ctx4.lineTo(Cx, By); ctx4.stroke();
+      ctx4.setLineDash([]);
+
+      // Vertices
+      ctx4.fillStyle = text; ctx4.font = 'bold 15px sans-serif';
+      ctx4.textAlign = 'center';
+      ctx4.fillText('A', Ax - 15, Ay + 5);
+      ctx4.fillText('B', Bx + 15, By + 5);
+      ctx4.fillText('C', Cx + 15, Cy - 4);
+      ctx4.fillText('D', Dx - 15, Dy - 4);
+
+      // Side labels
+      ctx4.fillStyle = primary; ctx4.font = 'bold 14px sans-serif';
+      ctx4.fillText('a = 5', (Ax + Bx)/2, By + 26);
+      ctx4.fillText('b = ' + b.toFixed(2), (Dx + Cx)/2, Dy - 10);
+
+      // h label
+      ctx4.fillStyle = secondary; ctx4.font = 'bold 13px sans-serif';
+      ctx4.textAlign = 'left';
+      ctx4.fillText('h = ' + h.toFixed(2), Cx + 8, (Cy + By)/2 + 5);
+
+      // Angle alpha at A
+      ctx4.strokeStyle = warning; ctx4.lineWidth = 2;
+      var angAB = 0;
+      var angAD = Math.atan2(Dy - Ay, Dx - Ax);
+      ctx4.beginPath();
+      ctx4.arc(Ax, Ay, 30, angAD, angAB);
+      ctx4.stroke();
+      ctx4.fillStyle = warning; ctx4.font = 'bold 14px sans-serif';
+      ctx4.textAlign = 'left';
+      ctx4.fillText('α', Ax + 18, Ay - 6);
+
+      // Stats panel (top)
+      var panelX = 24, panelY = 50;
+      ctx4.fillStyle = cvAlpha('--sol-canvas-accent', 0.10);
+      ctx4.fillRect(panelX, panelY, W - 48, 70);
+      ctx4.strokeStyle = accent; ctx4.lineWidth = 1;
+      ctx4.strokeRect(panelX, panelY, W - 48, 70);
+
+      ctx4.fillStyle = text; ctx4.font = 'bold 14px sans-serif';
+      ctx4.textAlign = 'left';
+      ctx4.fillText('Površina  P = (a+b)h/2 = ' + P.toFixed(3), panelX + 16, panelY + 22);
+      ctx4.fillText('Direktno: 2h/(a−b) = ' + tanAlpha.toFixed(4), panelX + 16, panelY + 44);
+      var formulaVal = 4 * P / (a*a - b*b);
+      ctx4.fillStyle = accent; ctx4.font = 'bold 14px sans-serif';
+      ctx4.fillText('Formula: 4P/(a²−b²) = ' + formulaVal.toFixed(4) + '  →  α ≈ ' + alphaDeg.toFixed(1) + '°', panelX + 16, panelY + 64);
+
+      // Caption
+      ctx4.fillStyle = muted; ctx4.font = '12px sans-serif';
+      ctx4.textAlign = 'center';
+      ctx4.fillText('Obe formule se uvek slažu — to je matematička provera identiteta.', W/2, H - 18);
+    }
+
+    function update() {
+      var b = parseFloat(sliderB.value);
+      var h = parseFloat(sliderH.value);
+      draw4(b, h);
+    }
+
+    sliderB.addEventListener('input', update);
+    sliderH.addEventListener('input', update);
+    update();
+
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() { styles = getComputedStyle(root); update(); }, 50);
+      }
+    });
+  }
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Tangens oštrog ugla jednakokrakog trapeza preko a, b, P",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["jednakokrak trapez", "visina trapeza", "tangens", "razlika kvadrata"]
+}
+BRAINSPARK_META-->

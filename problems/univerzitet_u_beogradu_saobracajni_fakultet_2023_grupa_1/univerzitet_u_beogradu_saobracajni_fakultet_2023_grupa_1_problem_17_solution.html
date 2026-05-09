@@ -1,0 +1,955 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: U loptu R = 3 cm upisana je prava kupa sa omotačem maksimalne površine. Površina omotača?
+
+Postavka:
+  Centar lopte O, vrh kupe V na sferi, baza kupe je krug u nekoj ravni paralelnoj.
+  Centar baze S leži na pravoj OV.
+  Visina h = OV + OS, ali pošto je V na sferi, OV = R.
+  Stoga h = R + d, gde d = OS ∈ [0, R].
+  Poluprečnik baze r: trougao OAS pravougli (gde A na rubu baze i sferi),
+    OA = R, OS = d, pa AS² = R² − d² ⇒ r = √(R² − d²).
+  Izvodnica s = √(r² + h²) = √((R² − d²) + (R + d)²).
+    = √(R² − d² + R² + 2Rd + d²) = √(2R² + 2Rd) = √(2R(R + d)).
+
+Površina omotača: M = π · r · s = π · √(R² − d²) · √(2R(R + d))
+    = π · √((R − d)(R + d) · 2R(R + d))
+    = π · √(2R(R + d)² (R − d))
+    = π · (R + d) · √(2R(R − d)).
+
+Optimizacija. Smena u = R − d, u ∈ [0, R], R + d = 2R − u.
+  M = π (2R − u) √(2R u).
+  M² = π² (2R − u)² · 2R · u.
+  Za R = 3: M² = π² · 6 · u · (6 − u)².
+
+Maksimizujemo g(u) = u(6 − u)².
+  g'(u) = (6 − u)² + u · 2(6 − u)(−1)
+        = (6 − u)[(6 − u) − 2u]
+        = (6 − u)(6 − 3u).
+  Nule: u = 6 (granica, daje M = 0) ili u = 2.
+  Max u u = 2: g(2) = 2 · 16 = 32.
+  M² = π² · 6 · 32 = 192 π².
+  M = √192 · π = 8√3 · π.
+
+Provera: d = R − u = 3 − 2 = 1.
+  h = R + d = 4.
+  r² = R² − d² = 9 − 1 = 8, r = 2√2.
+  s² = r² + h² = 8 + 16 = 24, s = 2√6.
+  M = π · r · s = π · 2√2 · 2√6 = 4π · √12 = 4π · 2√3 = 8π√3. ✓
+
+Tačan odgovor: (B) 8√3 π cm².
+
+Vizuelni prikaz (3 platna):
+  1) Presek: lopta + upisana kupa, oznake R, d, h, r, s. INTERAKTIVNO — slider menja d, prikazuje M(d) na živo.
+  2) Grafik M(d) za R = 3, sa maksimumom u d = 1.
+  3) Konačna kupa: h = 4, r = 2√2, s = 2√6.
+</script>
+
+<h1 data-card="problem-title">Kupa sa omotačem maksimalne površine upisana u loptu</h1>
+<p data-card="problem-subtitle" class="subtitle">Stereometrija — optimizacija površine omotača kupe upisane u loptu</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>U loptu poluprečnika \( R = 3\,\text{cm} \) upisana je prava kupa sa omotačem maksimalne površine. Površina omotača te kupe iznosi:</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">poluprečnik lopte</span>
+      <span class="given-value">\( R = 3\,\text{cm} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">tip kupe</span>
+      <span class="given-value">prava kupa upisana u loptu</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">cilj</span>
+      <span class="given-value">\( M = \pi r s \to \max \)</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 3\sqrt{3}\,\pi\,\text{cm}^2 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 8\sqrt{3}\,\pi\,\text{cm}^2 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 12\,\pi\,\text{cm}^2 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \dfrac{8\pi}{3}\,\text{cm}^2 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 4\,\pi\,\text{cm}^2 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Posmatramo presek kroz osu kupe — dobijamo jednakokraki trougao upisan u krug poluprečnika \( R \). Uvedemo parametar \( d = OS \in [0, R] \) (rastojanje centra lopte od baze) i izrazimo \( r, h, s \) i \( M = \pi r s \) preko \( d \). Posle smene \( u = R - d \) dobijamo \( M^2 = 2\pi^2 R \cdot u (2R - u)^2 \) — kubnu funkciju koju lako diferenciramo. Stacionarna tačka \( u = \tfrac{2}{3} \cdot 2R = \tfrac{4R}{3} \cdot \ldots \) (za naš \( R = 3 \) ispada \( u = 2 \)) daje maksimum \( M = 8\sqrt{3}\,\pi \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Geometrija lopte i kupe + alati za optimizaciju</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Površina omotača kupe:</strong> \( M = \pi r s \), gde je \( r \) poluprečnik baze a \( s \) izvodnica.</li>
+        <li><strong>Izvodnica i visina:</strong> \( s^2 = r^2 + h^2 \) (Pitagorina teorema u osnom preseku).</li>
+        <li><strong>Kupa upisana u loptu:</strong> ako su vrh \( V \) i ceo rub baze na sferi, onda su simetrijska osa kupe i centar lopte \( O \) na pravoj kroz vrh i centar baze \( S \). Vrh leži na sferi, pa \( |OV| = R \). Označimo \( d = |OS| \). Pošto je \( V \) na suprotnoj strani od \( S \) u odnosu na \( O \) (tako da je kupa „što veća”), visina je \( h = R + d \).</li>
+        <li><strong>Poluprečnik baze:</strong> proizvoljna tačka \( A \) na rubu baze leži i na sferi, pa u pravouglom trouglu \( OAS \) važi \( OA = R, OS = d \), \( AS = r \), te \( r^2 = R^2 - d^2 \).</li>
+        <li><strong>Optimizacija:</strong> za diferencijabilnu funkciju \( f \) na zatvorenom intervalu, ekstremi se nalaze ili u nulama prvog izvoda ili na krajevima intervala.</li>
+        <li><strong>Maks vs maks kvadrata:</strong> ako je \( f(x) \geq 0 \), onda je \( f \) maksimalno tačno tamo gde je \( f^2 \) maksimalno. Često je lakše maksimizovati \( M^2 \) jer eliminišemo koren.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — interaktivni osni presek">
+  <h2>📐 Osni presek lopte sa upisanom kupom</h2>
+  <p>Presek kroz simetrijsku osu kupe daje krug (presek lopte) i upisani jednakokraki trougao (presek kupe). Pomeraj klizač da promeniš parametar \( d = |OS| \) i posmatraj kako se menja površina omotača \( M(d) \).</p>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-cross-section" width="720" height="560"></canvas>
+  </div>
+  <div class="canvas-controls">
+    <label for="slider-d" id="slider-label">d = 1,00 cm</label>
+    <input type="range" id="slider-d" min="0" max="300" value="100" step="1">
+  </div>
+  <p class="canvas-caption">Tačka \( V \) je vrh kupe (na sferi), \( S \) je centar baze, \( O \) je centar lopte. Visina \( h = R + d \), poluprečnik baze \( r = \sqrt{R^2 - d^2} \). Maksimum se dostiže pri \( d = 1\,\text{cm} \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Grafik površine omotača M(d)">
+  <h2>📈 Površina omotača kao funkcija parametra \( d \)</h2>
+  <p>Funkcija \( M(d) = \pi (R + d)\sqrt{2R(R - d)} \) za \( R = 3 \) ima jasan maksimum unutrašnjosti intervala:</p>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-graph" width="720" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Krajevi: u \( d = -3 \) je \( M = 0 \) (kupa se „uvuče” u vrh), u \( d = 3 \) je \( M = 0 \) (baza se skupi u tačku). Maksimum \( M = 8\sqrt{3}\,\pi \approx 43{,}53 \) je u \( d = 1 \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Optimalna kupa">
+  <h2>🏆 Optimalna kupa: dimenzije</h2>
+  <p>Pri \( d = 1 \) dobijamo:</p>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-optimal" width="720" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">\( h = 4\,\text{cm} \), \( r = 2\sqrt{2}\,\text{cm} \), \( s = 2\sqrt{6}\,\text{cm} \). Površina omotača: \( \pi \cdot 2\sqrt{2} \cdot 2\sqrt{6} = 4\pi \sqrt{12} = 8\sqrt{3}\,\pi\,\text{cm}^2 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavka i parametrizacija</h3>
+      <p>Označimo centar lopte sa \( O \), vrh kupe sa \( V \), centar baze sa \( S \). Pošto je kupa upisana u loptu, vrh \( V \) leži na sferi, dakle \( |OV| = R \). Centar baze \( S \) leži na osi simetrije, pa je \( O \) na duži \( VS \).</p>
+      <p>Uvedimo parametar \( d = |OS| \) sa \( 0 \leq d \leq R \). Tada je visina kupe:</p>
+      <div class="math-block">
+        \[ h = |VS| = |OV| + |OS| = R + d. \]
+      </div>
+      <p>Bilo koja tačka \( A \) sa ruba baze leži i na sferi, pa u pravouglom trouglu \( OAS \) (\( \angle S = 90^\circ \)) važi \( |OA| = R \), \( |OS| = d \), \( |AS| = r \). Pitagorina teorema daje:</p>
+      <div class="math-block">
+        \[ r^2 = R^2 - d^2 \quad \Longrightarrow \quad r = \sqrt{R^2 - d^2}. \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( h = R + d \), a ne \( h = R - d \) ili \( h = 2R - d \)?</summary>
+          <div class="detail-content">
+            <p>Centar lopte \( O \) leži <em>između</em> vrha \( V \) i centra baze \( S \) onda kad je kupa „većinski” na suprotnoj strani od vrha. Tada \( h = |VS| = |VO| + |OS| = R + d \). Ako bi \( O \) bio sa iste strane kao \( V \) u odnosu na \( S \), kupa bi bila „kratka” i ne bi bila kandidat za maksimum.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Izvodnica preko Pitagorine teoreme</h3>
+      <p>U osnom preseku, izvodnica kupe je hipotenuza pravouglog trougla sa katetama \( r \) i \( h \):</p>
+      <div class="math-block">
+        \[ s^2 = r^2 + h^2 = (R^2 - d^2) + (R + d)^2. \]
+      </div>
+      <p>Razvijemo \( (R + d)^2 = R^2 + 2Rd + d^2 \) i sredimo:</p>
+      <div class="math-block">
+        \[ s^2 = R^2 - d^2 + R^2 + 2Rd + d^2 = 2R^2 + 2Rd = 2R(R + d). \]
+      </div>
+      <p>Dakle <span class="result">\( s = \sqrt{2R(R + d)} \)</span>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Površina omotača kao funkcija od \( d \)</h3>
+      <p>Po formuli \( M = \pi r s \):</p>
+      <div class="math-block">
+        \[ M(d) = \pi \sqrt{R^2 - d^2} \cdot \sqrt{2R(R + d)}. \]
+      </div>
+      <p>Pod jedan koren skupljamo: \( R^2 - d^2 = (R - d)(R + d) \). Zato:</p>
+      <div class="math-block">
+        \[ M(d) = \pi \sqrt{(R - d)(R + d) \cdot 2R(R + d)} = \pi \sqrt{2R \, (R + d)^2 \, (R - d)}. \]
+      </div>
+      <p>Pošto je \( R + d \geq 0 \), izvlačimo van korena:</p>
+      <div class="math-block">
+        \[ \boxed{\; M(d) = \pi (R + d) \sqrt{2R(R - d)}\;} \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Pametna smena: \( u = R - d \)</h3>
+      <p>Da bismo izbegli izvod izraza sa korenom, maksimizujmo umesto \( M \) kvadrat \( M^2 \) (smemo, jer \( M \geq 0 \)):</p>
+      <div class="math-block">
+        \[ M^2 = \pi^2 (R + d)^2 \cdot 2R(R - d). \]
+      </div>
+      <p>Uvedimo smenu \( u = R - d \), pa \( d = R - u \) i \( R + d = 2R - u \), gde \( u \in [0, R] \). Tada:</p>
+      <div class="math-block">
+        \[ M^2 = 2\pi^2 R \cdot u \cdot (2R - u)^2. \]
+      </div>
+      <p>Za naše \( R = 3 \):</p>
+      <div class="math-block">
+        \[ \frac{M^2}{\pi^2} = 6 \cdot u \cdot (6 - u)^2 \equiv 6\, g(u), \qquad g(u) = u(6 - u)^2. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Tražimo maksimum funkcije \( g(u) \)</h3>
+      <p>Diferenciramo proizvodno pravilo:</p>
+      <div class="math-block">
+        \[ \begin{aligned}
+        g'(u) &= 1 \cdot (6 - u)^2 + u \cdot 2(6 - u)(-1) \\
+              &= (6 - u)\big[(6 - u) - 2u\big] \\
+              &= (6 - u)(6 - 3u).
+        \end{aligned} \]
+      </div>
+      <p>Nule prvog izvoda: \( u = 6 \) (granica intervala — daje \( g = 0 \), tj. \( M = 0 \)) ili</p>
+      <div class="math-block">
+        \[ 6 - 3u = 0 \quad \Longrightarrow \quad u = 2. \]
+      </div>
+      <p>Provera prirode tačke: kod \( u = 2 \), \( g'(u) = (6 - u)(6 - 3u) \). Za \( u < 2 \) oba faktora pozitivna ⇒ \( g' > 0 \). Za \( 2 < u < 6 \) prvi faktor pozitivan, drugi negativan ⇒ \( g' < 0 \). Funkcija raste pa pada — \( u = 2 \) je <strong>maksimum</strong>.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kako bismo isti maksimum našli bez izvoda?</summary>
+          <div class="detail-content">
+            <p>Možemo upotrebiti AM–GM nejednakost. Pišemo \( g(u) = u(6-u)^2 = 4 \cdot \tfrac{u}{2} \cdot \tfrac{6-u}{1} \cdot (6-u) \). Bolje: \( 6 g(u) = 6u(6-u)^2 \). Tri faktora \( 3u, (6-u), (6-u) \) imaju zbir \( 3u + 2(6-u) = 12 + u \) — nije konstantan, pa direktni AM–GM ne radi. Ali sa težinama: \( g(u) \) maks pri \( u : (6-u)/2 = 1 : 1 \), tj. \( 2u = 6 - u \), \( u = 2 \). Ipak, izvod je ovde sigurniji.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunavanje maksimuma</h3>
+      <p>U \( u = 2 \):</p>
+      <div class="math-block">
+        \[ g(2) = 2 \cdot (6 - 2)^2 = 2 \cdot 16 = 32. \]
+      </div>
+      <p>Stoga:</p>
+      <div class="math-block">
+        \[ M^2 = 6\pi^2 \cdot g(2) = 6\pi^2 \cdot 32 = 192\,\pi^2. \]
+      </div>
+      <p>Korenujemo (uzimamo pozitivan koren, jer je površina pozitivna):</p>
+      <div class="math-block">
+        \[ M = \pi \sqrt{192} = \pi \sqrt{64 \cdot 3} = 8\sqrt{3}\,\pi\,\text{cm}^2. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="7">
+    <div class="step-badge">7</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera kroz dimenzije optimalne kupe</h3>
+      <p>Iz \( u = 2 \) imamo \( d = R - u = 3 - 2 = 1 \). Onda:</p>
+      <div class="math-block">
+        \[ h = R + d = 4, \qquad r^2 = R^2 - d^2 = 9 - 1 = 8 \;\Rightarrow\; r = 2\sqrt{2}. \]
+      </div>
+      <p>Izvodnica:</p>
+      <div class="math-block">
+        \[ s^2 = r^2 + h^2 = 8 + 16 = 24 \;\Rightarrow\; s = 2\sqrt{6}. \]
+      </div>
+      <p>Površina omotača:</p>
+      <div class="math-block">
+        \[ M = \pi r s = \pi \cdot 2\sqrt{2} \cdot 2\sqrt{6} = 4\pi \sqrt{12} = 4\pi \cdot 2\sqrt{3} = 8\sqrt{3}\,\pi\,\text{cm}^2. \;\checkmark \]
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Trik je u dva poteza: (1) <strong>jedan parametar</strong> — ne pokušavaj da nezavisno menjaš \( r \) i \( h \), jer su vezani uslovom „upisana u loptu”; uzmi <em>jedan</em> parametar (\( d \)) i izrazi sve preko njega. (2) <strong>Optimizacija na \( M^2 \), ne na \( M \)</strong> — kvadriranje eliminiše koren i pretvara \( M(d) \) u polinomsku funkciju \( g(u) = u(R + d)^2 \), čiji se maksimum nalazi standardnim diferencijalnim računom. Smena \( u = R - d \) dodatno simetrizuje izraz.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ M_{\max} = 8\sqrt{3}\,\pi\,\text{cm}^2 \approx 43{,}53\,\text{cm}^2 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 3\sqrt{3}\,\pi\,\text{cm}^2 \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( 8\sqrt{3}\,\pi\,\text{cm}^2 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 12\,\pi\,\text{cm}^2 \)</span>
+    <span class="answer-option" data-option="D">(D) \( \dfrac{8\pi}{3}\,\text{cm}^2 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 4\,\pi\,\text{cm}^2 \)</span>
+  </div>
+  <p class="verification">Provera: optimalna kupa ima \( h = 4 \), \( r = 2\sqrt{2} \), \( s = 2\sqrt{6} \). Lako se vidi da \( h^2 + r^2 = 16 + 8 = 24 = s^2 \) ✓ i \( \pi r s = \pi \cdot 2\sqrt{2} \cdot 2\sqrt{6} = 4\pi \sqrt{12} = 8\sqrt{3}\,\pi \). Tačan odgovor je (B). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešan oblik visine:</strong> učenici koji uzmu \( h = R \) (vrh u „severu”, baza kroz centar) dobijaju \( h = 3, r = 0 \) za \( d = R \), a to je degenerisana kupa (površina nula). Visina je \( h = R + d \), promenljiva!</li>
+    <li><strong>Maksimizovanje zapremine umesto omotača:</strong> kod zapremine \( V = \tfrac{1}{3}\pi r^2 h \) optimum je u drugoj tački. Ovaj zadatak traži <em>omotač</em>, ne zapreminu.</li>
+    <li><strong>Promašen znak izvoda:</strong> \( g'(u) = (6 - u)(6 - 3u) \) — često se napiše \( (6 - u)(6 + 3u) \) (pogrešan znak srednjeg člana). Pažljivo: derivat \( (6 - u)^2 \) je \( -2(6 - u) \), ne \( +2(6 - u) \).</li>
+    <li><strong>Korenovanje \( \sqrt{192} \):</strong> često se piše \( \sqrt{192} = \sqrt{16 \cdot 12} = 4\sqrt{12} \) i tu se zaustavi. Ali \( \sqrt{12} = 2\sqrt{3} \), pa krajnji odgovor je \( 8\sqrt{3} \) — proveri da nisi izgubio jedan korak.</li>
+    <li><strong>Granični slučajevi:</strong> ako se previdi da \( d = R \) i \( d = -R \) daju \( M = 0 \), može se pomisliti da je optimum na granici, što je grubo pogrešno.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Ako bi tražili kupu upisanu u loptu poluprečnika \( R \) sa <em>maksimalnom zapreminom</em> umesto omotača, koje su tada dimenzije? Da li je optimalan parametar \( d \) isti?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Zapremina kupe je \( V = \tfrac{1}{3}\pi r^2 h = \tfrac{1}{3}\pi (R^2 - d^2)(R + d) \). Smenom \( d = R \cos t \) ili direktnim izvodom dobija se:</p>
+      <div class="math-block">
+        \[ V'(d) = \tfrac{\pi}{3}\big[(-2d)(R + d) + (R^2 - d^2)\big] = \tfrac{\pi}{3}(R - d)(R - 3d) \cdot (\ldots) \]
+      </div>
+      <p>preciznije, \( V(d) = \tfrac{\pi}{3}(R-d)(R+d)^2 \), pa \( V'(d) = \tfrac{\pi}{3}(R+d)(R - 3d) \cdot (-1)... \) — sredeno: stacionarna tačka je \( d = R/3 \). Tada \( h = R + R/3 = 4R/3 \), \( r^2 = R^2 - R^2/9 = 8R^2/9 \). Maksimalna zapremina: \( V_{\max} = \tfrac{32 \pi R^3}{81} \). Različito od optimalnog \( d = R/3 \) za omotač (kod koga je za \( R = 3 \) bilo \( d = 1 = R/3 \)? — Da, ispostavlja se isto \( d = R/3 \)! Slučajna podudarnost ili pravilo? Razmisli.)</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  // Canvas 1: interaktivni osni presek
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-cross-section');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+  var slider = document.getElementById('slider-d');
+  var sliderLabel = document.getElementById('slider-label');
+
+  var R = 3; // cm
+
+  function fmt(x, n) {
+    return x.toFixed(n).replace('.', ',');
+  }
+
+  function compute(d) {
+    var h = R + d;
+    var rr2 = R*R - d*d;
+    var rr = rr2 > 0 ? Math.sqrt(rr2) : 0;
+    var s2 = 2 * R * (R + d);
+    var s = s2 > 0 ? Math.sqrt(s2) : 0;
+    var M = Math.PI * rr * s;
+    return { h: h, r: rr, s: s, M: M };
+  }
+
+  function draw(d) {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var secondary = cv('--sol-canvas-secondary');
+    var tertiary = cv('--sol-canvas-tertiary');
+    var warning = cv('--sol-canvas-warning');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Osni presek: lopta i upisana kupa', W / 2, 28);
+
+    var ox = W / 2 - 100;
+    var oy = H / 2 - 10;
+    var scale = 55; // px per cm
+
+    // Sphere (circle in cross-section)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.arc(ox, oy, R * scale, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Axis line
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(ox, oy - R * scale - 30);
+    ctx.lineTo(ox, oy + R * scale + 30);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Triangle (axial cross-section of cone)
+    var Vy = oy - R * scale;
+    var Sy = oy + d * scale;
+    var rr2 = R*R - d*d;
+    var rr = rr2 > 0 ? Math.sqrt(rr2) : 0;
+
+    // Cone fill
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.18);
+    ctx.beginPath();
+    ctx.moveTo(ox, Vy);
+    ctx.lineTo(ox - rr * scale, Sy);
+    ctx.lineTo(ox + rr * scale, Sy);
+    ctx.closePath();
+    ctx.fill();
+
+    // Cone outline
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.moveTo(ox, Vy);
+    ctx.lineTo(ox - rr * scale, Sy);
+    ctx.lineTo(ox + rr * scale, Sy);
+    ctx.closePath();
+    ctx.stroke();
+
+    // Base circle (ellipse to suggest 3D)
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.ellipse(ox, Sy, rr * scale, rr * scale * 0.22, 0, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Points: O, V, S
+    function dot(x, y, color, label, dx, dy) {
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, x + dx, y + dy);
+    }
+    dot(ox, oy, secondary, 'O', 14, 5);
+    dot(ox, Vy, highlight, 'V', 14, 0);
+    dot(ox, Sy, tertiary, 'S', 14, 5);
+
+    // h label (along axis)
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(ox + R * scale + 18, Vy);
+    ctx.lineTo(ox + R * scale + 18, Sy);
+    ctx.stroke();
+    // arrowheads
+    ctx.fillStyle = warning;
+    ctx.beginPath();
+    ctx.moveTo(ox + R * scale + 18, Vy);
+    ctx.lineTo(ox + R * scale + 14, Vy + 6);
+    ctx.lineTo(ox + R * scale + 22, Vy + 6);
+    ctx.closePath(); ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(ox + R * scale + 18, Sy);
+    ctx.lineTo(ox + R * scale + 14, Sy - 6);
+    ctx.lineTo(ox + R * scale + 22, Sy - 6);
+    ctx.closePath(); ctx.fill();
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('h = R + d', ox + R * scale + 28, (Vy + Sy) / 2 + 4);
+
+    // r label (along base)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(ox, Sy + 22);
+    ctx.lineTo(ox + rr * scale, Sy + 22);
+    ctx.stroke();
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('r = √(R² − d²)', ox + (rr * scale) / 2, Sy + 38);
+
+    // d label (between O and S)
+    ctx.fillStyle = tertiary;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('d', ox + 6, (oy + Sy) / 2 + 5);
+
+    // R indicator: from O to V
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('R', ox - 6, (oy + Vy) / 2 + 5);
+
+    // Side panel: live readout
+    var panelX = ox + R * scale + 90;
+    var panelY = oy - 100;
+    ctx.fillStyle = cvAlpha('--sol-canvas-grid', 0.5);
+    ctx.fillRect(panelX, panelY, 180, 220);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Trenutne vrednosti', panelX + 12, panelY + 22);
+
+    var s2 = 2 * R * (R + d);
+    var s = s2 > 0 ? Math.sqrt(s2) : 0;
+    var M = Math.PI * rr * s;
+
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('R = ' + fmt(R, 2) + ' cm', panelX + 12, panelY + 46);
+    ctx.fillStyle = tertiary;
+    ctx.fillText('d = ' + fmt(d, 2) + ' cm', panelX + 12, panelY + 66);
+    ctx.fillStyle = warning;
+    ctx.fillText('h = ' + fmt(R + d, 2) + ' cm', panelX + 12, panelY + 86);
+    ctx.fillStyle = primary;
+    ctx.fillText('r = ' + fmt(rr, 3) + ' cm', panelX + 12, panelY + 106);
+    ctx.fillStyle = highlight;
+    ctx.fillText('s = ' + fmt(s, 3) + ' cm', panelX + 12, panelY + 126);
+
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = accent;
+    ctx.fillText('M = π r s', panelX + 12, panelY + 156);
+    ctx.fillText('     = ' + fmt(M, 2) + ' cm²', panelX + 12, panelY + 174);
+
+    // Optimum reminder
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Optimum:', panelX + 12, panelY + 200);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+    ctx.fillText('d = 1, M = 8√3 π ≈ 43,53', panelX + 12, panelY + 215);
+  }
+
+  function getD() {
+    var v = parseFloat(slider.value);
+    return (v / 300) * R; // 0 to 3
+  }
+
+  function update() {
+    var d = getD();
+    sliderLabel.textContent = 'd = ' + fmt(d, 2) + ' cm';
+    draw(d);
+  }
+
+  slider.addEventListener('input', update);
+  update();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); update(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  // Canvas 2: graph M(d)
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-graph');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('M(d) = π (R + d) √(2R(R − d)),  za R = 3', W / 2, 28);
+
+    var padL = 70, padR = 40, padT = 60, padB = 80;
+    var plotW = W - padL - padR;
+    var plotH = H - padT - padB;
+
+    var dMin = 0, dMax = 3;
+    var yMin = 0, yMax = 50;
+
+    function tx(x) { return padL + (x - dMin) / (dMax - dMin) * plotW; }
+    function ty(y) { return padT + plotH - (y - yMin) / (yMax - yMin) * plotH; }
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var gx = 0; gx <= 3; gx += 1) {
+      ctx.beginPath();
+      ctx.moveTo(tx(gx), ty(yMin));
+      ctx.lineTo(tx(gx), ty(yMax));
+      ctx.stroke();
+    }
+    for (var gy = 0; gy <= 50; gy += 10) {
+      ctx.beginPath();
+      ctx.moveTo(tx(dMin), ty(gy));
+      ctx.lineTo(tx(dMax), ty(gy));
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(tx(dMin), ty(0));
+    ctx.lineTo(tx(dMax) + 12, ty(0));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(tx(0), ty(yMin));
+    ctx.lineTo(tx(0), ty(yMax) - 12);
+    ctx.stroke();
+
+    // Arrows
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(tx(dMax) + 12, ty(0));
+    ctx.lineTo(tx(dMax) + 4, ty(0) - 5);
+    ctx.lineTo(tx(dMax) + 4, ty(0) + 5);
+    ctx.closePath(); ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(tx(0), ty(yMax) - 12);
+    ctx.lineTo(tx(0) - 5, ty(yMax) - 4);
+    ctx.lineTo(tx(0) + 5, ty(yMax) - 4);
+    ctx.closePath(); ctx.fill();
+
+    // Labels
+    ctx.fillStyle = text;
+    ctx.font = 'italic 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('d (cm)', tx(dMax) + 18, ty(0) + 5);
+    ctx.textAlign = 'right';
+    ctx.fillText('M (cm²)', tx(0) - 8, ty(yMax) - 6);
+
+    // Tick labels
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var ix = 0; ix <= 3; ix++) {
+      ctx.fillText(String(ix), tx(ix), ty(0) + 18);
+    }
+    ctx.textAlign = 'right';
+    for (var iy = 10; iy <= 50; iy += 10) {
+      ctx.fillText(String(iy), tx(0) - 6, ty(iy) + 4);
+    }
+    ctx.fillText('0', tx(0) - 6, ty(0) + 4);
+
+    // Plot M(d)
+    var R = 3;
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    var first = true;
+    for (var k = 0; k <= 600; k++) {
+      var d = dMin + (k / 600) * (dMax - dMin);
+      if (R - d < 0) continue;
+      var rr = Math.sqrt(R*R - d*d);
+      var s = Math.sqrt(2 * R * (R + d));
+      var M = Math.PI * rr * s;
+      var X = tx(d);
+      var Y = ty(M);
+      if (first) { ctx.moveTo(X, Y); first = false; }
+      else { ctx.lineTo(X, Y); }
+    }
+    ctx.stroke();
+
+    // Maximum point at d = 1, M = 8√3 π
+    var dStar = 1;
+    var Mstar = 8 * Math.sqrt(3) * Math.PI;
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 5]);
+    ctx.beginPath();
+    ctx.moveTo(tx(dStar), ty(0));
+    ctx.lineTo(tx(dStar), ty(Mstar));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(tx(0), ty(Mstar));
+    ctx.lineTo(tx(dStar), ty(Mstar));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Big dot
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.25);
+    ctx.beginPath();
+    ctx.arc(tx(dStar), ty(Mstar), 13, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(tx(dStar), ty(Mstar), 6.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('M_max = 8√3 π ≈ 43,53', tx(dStar) + 14, ty(Mstar) - 8);
+    ctx.fillText('u tački d = 1', tx(dStar) + 14, ty(Mstar) + 10);
+
+    // Tick highlights
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('1', tx(dStar), ty(0) + 18);
+
+    // Bottom legend
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('M(0) = π · 3 · √18 = 3π√18 ≈ 39,99       M(3) = 0       M(1) = 8√3 π ≈ 43,53', W / 2, H - 30);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  // Canvas 3: optimal cone
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-optimal');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var primary = cv('--sol-canvas-primary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var warning = cv('--sol-canvas-warning');
+    var tertiary = cv('--sol-canvas-tertiary');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Optimalna kupa: h = 4, r = 2√2, s = 2√6', W / 2, 28);
+
+    var R = 3, d = 1;
+    var ox = W / 2 - 60, oy = H / 2 + 30;
+    var scale = 60;
+
+    // Sphere
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.arc(ox, oy, R * scale, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Vertices
+    var Vy = oy - R * scale;
+    var Sy = oy + d * scale;
+    var rr = Math.sqrt(R*R - d*d); // 2√2
+
+    // Cone fill
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.22);
+    ctx.beginPath();
+    ctx.moveTo(ox, Vy);
+    ctx.lineTo(ox - rr * scale, Sy);
+    ctx.lineTo(ox + rr * scale, Sy);
+    ctx.closePath();
+    ctx.fill();
+
+    // Cone outline
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.moveTo(ox, Vy);
+    ctx.lineTo(ox - rr * scale, Sy);
+    ctx.lineTo(ox + rr * scale, Sy);
+    ctx.closePath();
+    ctx.stroke();
+
+    // Base ellipse
+    ctx.beginPath();
+    ctx.ellipse(ox, Sy, rr * scale, rr * scale * 0.22, 0, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Slant labels
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('s = 2√6', ox - rr * scale / 2 - 8, (Vy + Sy) / 2);
+
+    // h label
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(ox + rr * scale + 36, Vy);
+    ctx.lineTo(ox + rr * scale + 36, Sy);
+    ctx.stroke();
+    ctx.fillStyle = warning;
+    ctx.beginPath();
+    ctx.moveTo(ox + rr * scale + 36, Vy);
+    ctx.lineTo(ox + rr * scale + 32, Vy + 7);
+    ctx.lineTo(ox + rr * scale + 40, Vy + 7);
+    ctx.closePath(); ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(ox + rr * scale + 36, Sy);
+    ctx.lineTo(ox + rr * scale + 32, Sy - 7);
+    ctx.lineTo(ox + rr * scale + 40, Sy - 7);
+    ctx.closePath(); ctx.fill();
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('h = 4 cm', ox + rr * scale + 46, (Vy + Sy) / 2 + 5);
+
+    // r label
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(ox, Sy + 32);
+    ctx.lineTo(ox + rr * scale, Sy + 32);
+    ctx.stroke();
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('r = 2√2 cm', ox + (rr * scale) / 2, Sy + 50);
+
+    // R indicator
+    ctx.strokeStyle = tertiary;
+    ctx.lineWidth = 1.4;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(ox - 20, oy);
+    ctx.lineTo(ox - 20, Vy);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = tertiary;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('R = 3', ox - 26, (oy + Vy) / 2 + 5);
+
+    // Final result panel
+    var px = W - 220, py = 60;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.12);
+    ctx.fillRect(px, py, 200, 200);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(px, py, 200, 200);
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Površina omotača', px + 100, py + 26);
+
+    ctx.fillStyle = text;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('M = π r s', px + 16, py + 60);
+    ctx.fillText('   = π · 2√2 · 2√6', px + 16, py + 84);
+    ctx.fillText('   = 4π · √12', px + 16, py + 108);
+    ctx.fillText('   = 4π · 2√3', px + 16, py + 132);
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('M = 8√3 π cm²', px + 100, py + 168);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('≈ 43,53 cm²', px + 100, py + 188);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Maksimalan omotač kupe upisane u loptu poluprečnika R = 3 cm",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["stereometrija", "lopta", "kupa", "omotač", "optimizacija", "izvod", "ekstrem", "upisane figure"]
+}
+BRAINSPARK_META-->

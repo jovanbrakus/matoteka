@@ -1,0 +1,377 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+ZADATAK: Različitih petocifrenih brojeva u čijem se zapisu koriste DVE cifre 2
+i po jedna cifra 3, 4 i 5, ima koliko?
+
+Cifre koje raspoređujemo: 2, 2, 3, 4, 5  (ukupno 5 cifara, od kojih su dve iste).
+Nema nule, pa svaki raspored automatski daje validan petocifreni broj
+(prva cifra ne može biti 0 — ali kod nas 0 ni nema, tako da je sve u redu).
+
+NAČIN 1 — Permutacije sa ponavljanjem:
+  Broj rasporeda 5 cifara, gde se cifra 2 ponavlja 2 puta, a ostale po jednom:
+    P = 5! / (2! · 1! · 1! · 1!) = 120 / 2 = 60.
+
+NAČIN 2 — Slot-pristup (kombinacije + permutacije):
+  Korak 1: izaberemo 2 od 5 pozicija za dvojke: C(5, 2) = 10.
+  Korak 2: u preostale 3 pozicije rasporedimo različite cifre 3, 4, 5: 3! = 6.
+  Ukupno: 10 · 6 = 60.
+
+NAČIN 3 — Ručno prebrojavanje malih primera (sanity check):
+  Brojevi koji počinju sa 22: rasporedimo 3, 4, 5 na 3 mesta: 3! = 6 brojeva
+    (22345, 22354, 22435, 22453, 22534, 22543).
+  Brojevi koji imaju jedan 2 na prvom mestu: drugi 2 može biti na pozicijama 2,3,4,5 (4 izbora).
+    Preostala 3 mesta popunjavamo sa 3, 4, 5: 3! = 6. → 4 · 6 = 24.
+  Brojevi koji nemaju 2 na prvom mestu: prva cifra ∈ {3, 4, 5} (3 izbora).
+    Preostale 4 pozicije imaju cifre {2, 2, i preostale 2 od {3,4,5}}.
+    Permutacija: 4!/2! = 12. → 3 · 12 = 36.
+  Provera: 6 + 24 + 36 = 66? Hmm, treba da bude 60. Pregled...
+
+  Greška u slučaju "jedan 2 na prvom mestu": ako je prva = 2, drugi 2 je na nekoj od 4 pozicije.
+  Preostale 3 cifre su {3, 4, 5}, raspored 3! = 6. Ukupno 4 · 6 = 24. ✓
+
+  "Brojevi koji POČINJU sa 2 a drugi 2 takođe negde": tj. svi sa prvom 2.
+  To su zapravo SVI sa 2 na prvom mestu. To uključuje i one koji počinju sa 22.
+  → broj sa prvom cifrom 2 = (1 izbor za prvu) · (broj rasporeda preostale {2,3,4,5} na 4 mesta) = 4! = 24.
+  → broj sa prvom cifrom NIJE 2 (tj. ∈ {3,4,5}) = 3 · (broj rasporeda {2,2, ostale dve}) = 3 · (4!/2!) = 3 · 12 = 36.
+  Ukupno = 24 + 36 = 60. ✓
+
+  (Prvi pokušaj sam dvostruko brojao "počinju sa 22", što je već uključeno u "počinje sa 2".)
+
+ODGOVOR: 60.
+
+VIZUELNI PRIKAZ:
+  Slot-dijagram od 5 kvadrata. Prvo: izaberi 2 mesta za 22 — C(5,2) = 10 mogućnosti.
+  Zatim: rasporedi 3, 4, 5 na preostala 3 mesta — 3! = 6.
+  Ukupno: 10 · 6 = 60.
+  Statički prikaz; uz kratku tabelu i nekoliko primera brojeva.
+</script>
+
+<h1 data-card="problem-title">Permutacije sa ponavljanjem: dve dvojke i tri različite cifre</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika: prebrojavanje petocifrenih brojeva sastavljenih iz multiseta cifara.</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Različitih petocifrenih brojeva, u čijem se zapisu koriste dve cifre \(2\) i po jedna cifra \(3, 4\) i \(5\), ima:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">cifre</span>
+      <span class="given-value">\( \{2, 2, 3, 4, 5\} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">broj cifara</span>
+      <span class="given-value">\( 5 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">ponavljanja</span>
+      <span class="given-value">\( 2 \) se javlja \(2\) puta</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">tražimo</span>
+      <span class="given-value">broj različitih brojeva</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 120 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 60 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 30 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 36 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 24 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Imamo \(5\) cifara od kojih je \(2\) ponovljeno dva puta. Najjednostavnije je primeniti formulu za <em>permutacije sa ponavljanjem</em>: \( \tfrac{5!}{2!} \). Drugi (slikovniji) put: izaberemo dve od pet pozicija za par dvojki — \( \binom{5}{2} \) — pa preostale tri cifre rasporedimo na tri preostala mesta na \(3!\) načina.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Permutacije bez ponavljanja</span>: broj uređenja \(n\) različitih elemenata je \( n! \).</li>
+        <li><span class="formula-label">Permutacije sa ponavljanjem</span>: ako se element \(a_i\) ponavlja \(k_i\) puta i \(k_1 + k_2 + \dots = n\), broj različitih uređenja je \( \dfrac{n!}{k_1!\, k_2! \cdots} \).</li>
+        <li><span class="formula-label">Binomni koeficijent</span>: \( \binom{n}{k} = \dfrac{n!}{k!\,(n-k)!} \) — broj načina da se izabere \(k\) pozicija od \(n\).</li>
+        <li><span class="formula-label">Veza dva pristupa</span>: \( \dfrac{n!}{k_1!\, k_2!} = \binom{n}{k_1} \cdot k_2! \) kada su \(k_1\) elemenata istih i preostalih \(k_2\) različitih.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Slot-dijagram brojeva">
+  <h2>📐 Slot-dijagram brojeva</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="700" height="540"></canvas>
+  </div>
+  <p class="canvas-caption">Pet pozicija za pet cifara. Najpre biramo \(2\) od \(5\) mesta za par dvojki (\(\binom{5}{2}=10\)), a zatim rasporedimo \(3, 4, 5\) u preostala tri (\(3!=6\)). Ukupno \(10 \cdot 6 = 60\).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Šta tačno raspoređujemo?</h3>
+      <p>Imamo multiskup cifara \( \{2, 2, 3, 4, 5\} \) — pet znakova, dva ista. Treba ih rasporediti u niz dužine \(5\) (jer je broj petocifren), a različiti rasporedi daju različite brojeve.</p>
+      <p>Bitno: <em>nema cifre \(0\)</em>, pa nam ne preti situacija da dobijemo „broj“ koji počinje nulom — svaki raspored ovih pet cifara je validan petocifren broj.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto bi nula bila problem?</summary>
+          <div class="detail-content"><p>Petocifren broj po definiciji ne sme da počinje nulom (jer onda zapravo ima manje od pet cifara). Pošto nule nema u našem multiskupu, ovaj uslov je automatski ispunjen.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Pristup A — formula za permutacije sa ponavljanjem</h3>
+      <p>Kad se u nizu od \(n\) elemenata jedan element ponavlja \(k\) puta, broj različitih rasporeda je \( \tfrac{n!}{k!} \). Kod nas \(n = 5\) i \(k = 2\) (zbog dve dvojke):</p>
+      <div class="math-block">\[ \frac{5!}{2!} = \frac{120}{2} = 60. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Pristup B — preko slot-dijagrama (provera)</h3>
+      <p>Najpre izaberemo dve od pet pozicija na koje ćemo upisati dvojke:</p>
+      <div class="math-block">\[ \binom{5}{2} = \frac{5!}{2!\,3!} = \frac{5\cdot 4}{2} = 10. \]</div>
+      <p>Zatim na preostale tri pozicije rasporedimo cifre \(3, 4, 5\) (sve različite):</p>
+      <div class="math-block">\[ 3! = 6. \]</div>
+      <p>Po pravilu množenja:</p>
+      <div class="math-block">\[ \binom{5}{2} \cdot 3! = 10 \cdot 6 = 60. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto kombinacije, a ne permutacije za izbor mesta?</summary>
+          <div class="detail-content"><p>Dva mesta za dvojke su <em>međusobno neuredjena</em>: dvojka u poziciji 1 i dvojka u poziciji 3 daje isti broj kao dvojka u poziciji 3 i dvojka u poziciji 1. Zato koristimo \( \binom{5}{2} \), a ne \(5 \cdot 4\).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera kroz prebrojavanje po prvoj cifri</h3>
+      <p>Razmišljanjem po prvoj cifri:</p>
+      <div class="math-block">\[ \begin{aligned} \text{prva cifra} = 2: \quad &\text{preostalo rasporediti } \{2,3,4,5\} \text{ na } 4 \text{ mesta: } 4! = 24, \\ \text{prva cifra} \in \{3,4,5\}: \quad &3 \cdot \frac{4!}{2!} = 3 \cdot 12 = 36. \end{aligned} \]</div>
+      <p>Ukupno \(24 + 36 = 60\) — slaže se sa pristupom A i B.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kad se cifre <em>ponavljaju</em>, naivnih \(n!\) je previše: jednostavno je „dvostruko prebrojavanje“ za svaki par istih elemenata. Deljenje sa \(k!\) za svako ponavljanje uklanja taj višak. U našem zadatku se zato \(120\) (sve permutacije) deli sa \(2!\) (zbog dve identične dvojke) i dobijemo \(60\).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \frac{5!}{2!} = 60 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 120 \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( 60 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 30 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 36 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 24 \)</span>
+  </div>
+  <p class="verification">Tri različita pristupa (formula, slot-dijagram, podela po prvoj cifri) svi daju \(60\).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pisanje \(5! = 120\) i propust deljenja sa \(2!\) — kao da su dve dvojke različite. Tako se dobija pogrešnih \(120\).</li>
+    <li>Korišćenje \(\binom{5}{2}\) bez množenja sa \(3!\): tada se broji samo izbor mesta za dvojke, a ne i raspored cifara \(3, 4, 5\) na ostala mesta. To daje pogrešnih \(10\) ili \(30\) (ako se uz to još i deli).</li>
+    <li>Deljenje sa \(3!\) zbog cifara \(3, 4, 5\) — one su <em>različite</em>, pa se ne ponavljaju i ne treba deliti.</li>
+    <li>Zaključivanje da prva cifra ne sme biti \(2\) i pogrešno isključivanje slučajeva. Cifra \(2\) je sasvim regularna prva cifra petocifrenog broja.</li>
+    <li>Mešanje sa varijacijama: \( V_5^5 = 5! / 0! = 120 \) važi za <em>različite</em> elemente; ovde dva elementa nisu različita.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koliko različitih petocifrenih brojeva ima ako se koriste cifre \(0, 0, 1, 2, 3\) (dakle dve nule i tri različite ne-nulte cifre)? Pažnja: prva cifra ne sme biti \(0\)!</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Sve permutacije sa ponavljanjem: \( \tfrac{5!}{2!} = 60 \). Oduzmi one koji počinju nulom: ako je prva cifra \(0\), preostalo je \(\{0, 1, 2, 3\}\) — \(4!\) permutacija je \(24\), ali pošto su sad sve preostale cifre različite, deljenje sa \(2!\) ne treba — ali samo jedna nula je preostala. Dakle \(4! = 24\) pogrešnih (počinju nulom). Konačno \(60 - 24 = 36\) važećih petocifrenih brojeva.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var tertiary  = cv('--sol-canvas-tertiary');
+    var warning   = cv('--sol-canvas-warning');
+    var secondary = cv('--sol-canvas-secondary');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 17px Inter, system-ui';
+    ctx.fillText('Slot-dijagram: 5 cifara, dve dvojke + {3, 4, 5}', 24, 32);
+    ctx.fillStyle = muted;
+    ctx.font = '13px Inter, system-ui';
+    ctx.fillText('Korak 1 — izaberi 2 od 5 mesta za dvojke. Korak 2 — popuni ostala tri sa 3, 4, 5.', 24, 54);
+
+    // ============ Korak 1: 5 slots, choose 2 ============
+    var slotW = 80, slotH = 80, gap = 14;
+    var startX = (canvas.width - 5 * slotW - 4 * gap) / 2;
+    var rowY = 100;
+
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.fillText('Korak 1: izaberi 2 mesta za par dvojki  →  C(5,2) = 10', startX, rowY - 14);
+
+    // Pick example: positions 1 and 4 (0-indexed: 0 and 3)
+    var picked = [0, 3];
+    for (var i = 0; i < 5; i++) {
+      var x = startX + i * (slotW + gap);
+      var isPicked = picked.indexOf(i) !== -1;
+      // box
+      ctx.fillStyle = isPicked ? cvAlpha('--sol-canvas-accent', 0.18) : cvAlpha('--sol-canvas-primary', 0.06);
+      ctx.fillRect(x, rowY, slotW, slotH);
+      ctx.strokeStyle = isPicked ? accent : primary;
+      ctx.lineWidth = isPicked ? 3 : 2;
+      ctx.strokeRect(x, rowY, slotW, slotH);
+      // content
+      if (isPicked) {
+        ctx.fillStyle = accent;
+        ctx.font = 'bold 36px Inter, system-ui';
+        ctx.fillText('2', x + slotW/2 - 11, rowY + slotH/2 + 13);
+      } else {
+        ctx.fillStyle = muted;
+        ctx.font = '28px Inter, system-ui';
+        ctx.fillText('?', x + slotW/2 - 8, rowY + slotH/2 + 10);
+      }
+      // position label
+      ctx.fillStyle = muted;
+      ctx.font = '12px Inter, system-ui';
+      ctx.fillText('poz. ' + (i + 1), x + 18, rowY + slotH + 18);
+    }
+
+    // ============ Korak 2: fill the rest with 3,4,5 ============
+    var rowY2 = rowY + slotH + 70;
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.fillText('Korak 2: rasporedi 3, 4, 5 u preostala tri mesta  →  3! = 6', startX, rowY2 - 14);
+
+    // Filled with 2's at picked positions, then 3,4,5 in some order in the others
+    var fill = ['2', '3', '4', '2', '5'];
+    for (var j = 0; j < 5; j++) {
+      var x2 = startX + j * (slotW + gap);
+      var isPicked2 = picked.indexOf(j) !== -1;
+      ctx.fillStyle = isPicked2 ? cvAlpha('--sol-canvas-accent', 0.18) : cvAlpha('--sol-canvas-primary', 0.18);
+      ctx.fillRect(x2, rowY2, slotW, slotH);
+      ctx.strokeStyle = isPicked2 ? accent : primary;
+      ctx.lineWidth = 2.5;
+      ctx.strokeRect(x2, rowY2, slotW, slotH);
+      ctx.fillStyle = isPicked2 ? accent : primary;
+      ctx.font = 'bold 36px Inter, system-ui';
+      ctx.fillText(fill[j], x2 + slotW/2 - 11, rowY2 + slotH/2 + 13);
+    }
+
+    // Resulting number
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.fillText('Primer dobijenog broja: 2 3 4 2 5  →  23425', startX, rowY2 + slotH + 28);
+
+    // ============ Total formula at bottom ============
+    var fy = rowY2 + slotH + 70;
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(24, fy - 14);
+    ctx.lineTo(canvas.width - 24, fy - 14);
+    ctx.stroke();
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui';
+    ctx.fillText('Ukupno:', 24, fy + 14);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 18px Inter, system-ui';
+    ctx.fillText('C(5, 2) · 3!  =  10 · 6  =  60', 110, fy + 14);
+
+    ctx.fillStyle = muted;
+    ctx.font = '13px Inter, system-ui';
+    ctx.fillText('Ekvivalentno preko permutacija sa ponavljanjem:  5! / 2! = 120 / 2 = 60.', 24, fy + 38);
+
+    // Mini-list of a few sample numbers (visual nudge)
+    ctx.fillStyle = secondary;
+    ctx.font = '13px Inter, system-ui';
+    ctx.fillText('Nekoliko primera:  22345, 23254, 32524, 53224, 45322, 22534, …', 24, fy + 60);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Broj petocifrenih brojeva sa dve dvojke i ciframa 3, 4, 5",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["permutacije sa ponavljanjem", "kombinatorika", "binomni koeficijent", "prebrojavanje"]
+}
+BRAINSPARK_META-->

@@ -1,0 +1,497 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Find ax^2 + bx + c = remainder when dividing
+  P(x) = x^5 + x^4 + 2x^3 + 3x^2 + 3x + 2
+by D(x) = x^3 + x + 1.
+Then compute a - 2b + 3c.
+
+Polynomial long division:
+
+P(x) = x^5 + x^4 + 2x^3 + 3x^2 + 3x + 2
+D(x) = x^3 + x + 1
+
+Step 1: leading term x^5 / x^3 = x^2.  Quotient so far: x^2.
+  Subtract x^2 * D(x) = x^5 + x^3 + x^2 from P(x):
+  P - x^2*D = (x^5 + x^4 + 2x^3 + 3x^2 + 3x + 2) - (x^5 + x^3 + x^2)
+            = x^4 + (2-1)x^3 + (3-1)x^2 + 3x + 2
+            = x^4 + x^3 + 2x^2 + 3x + 2
+
+Step 2: leading term x^4 / x^3 = x.  Quotient so far: x^2 + x.
+  Subtract x * D(x) = x^4 + x^2 + x from previous remainder:
+  (x^4 + x^3 + 2x^2 + 3x + 2) - (x^4 + x^2 + x)
+  = x^3 + (2-1)x^2 + (3-1)x + 2
+  = x^3 + x^2 + 2x + 2
+
+Step 3: leading term x^3 / x^3 = 1.  Quotient so far: x^2 + x + 1.
+  Subtract 1 * D(x) = x^3 + x + 1 from previous:
+  (x^3 + x^2 + 2x + 2) - (x^3 + x + 1)
+  = x^2 + (2-1)x + (2-1)
+  = x^2 + x + 1
+
+The degree of x^2 + x + 1 is 2, less than deg(D) = 3, so we stop.
+
+Remainder R(x) = x^2 + x + 1.
+So a = 1, b = 1, c = 1.
+
+a - 2b + 3c = 1 - 2 + 3 = 2.
+
+Sanity check via reconstruction:
+Q(x) = x^2 + x + 1
+Q(x)*D(x) = (x^2 + x + 1)(x^3 + x + 1)
+  = x^5 + x^3 + x^2 + x^4 + x^2 + x + x^3 + x + 1
+  = x^5 + x^4 + (1+1)x^3 + (1+1)x^2 + (1+1)x + 1
+  = x^5 + x^4 + 2x^3 + 2x^2 + 2x + 1
+Add R(x) = x^2 + x + 1:
+  = x^5 + x^4 + 2x^3 + 3x^2 + 3x + 2  ✓ matches P.
+
+ANSWER: (A) 2.
+</script>
+
+<h1 data-card="problem-title">Deljenje polinoma — ostatak i linearna kombinacija koeficijenata</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra polinoma — algoritam dugog deljenja</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Neka je \( ax^2 + bx + c \) ostatak pri deljenju polinoma</p>
+  <div class="math-block">\[ P(x) = x^5 + x^4 + 2x^3 + 3x^2 + 3x + 2 \]</div>
+  <p>polinomom</p>
+  <div class="math-block">\[ D(x) = x^3 + x + 1. \]</div>
+  <p>Tada izraz \( a - 2b + 3c \) ima vrednost:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 0 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( -2 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( -3 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Sprovodimo algoritam dugog deljenja polinoma. U svakom koraku delimo vodeći član trenutnog ostatka vodećim članom delitelja, dobijeni član dodajemo količniku, a delitelj množimo tim članom i oduzimamo. Proces se zaustavlja kada stepen ostatka padne ispod stepena delitelja. Konačan ostatak \( R(x) = ax^2 + bx + c \) daje koeficijente \( a, b, c \), iz kojih lako izračunamo traženi izraz.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Deljenje sa ostatkom (Euklidov algoritam za polinome):</strong> za bilo koja dva polinoma \( P(x) \) i \( D(x) \) (\( D \neq 0 \)) postoje jedinstveni \( Q(x) \) i \( R(x) \) takvi da
+          \[ P(x) = Q(x) \cdot D(x) + R(x), \qquad \deg R < \deg D. \]
+        </li>
+        <li><strong>Stepen ostatka:</strong> ako je \( \deg D = 3 \), onda je \( \deg R \le 2 \), pa \( R \) ima oblik \( ax^2 + bx + c \). Vodeći koeficijent ostatka može biti i \( 0 \) (tada je stepen niži).</li>
+        <li><strong>Algoritam dugog deljenja</strong> (analog dugog deljenja brojeva):
+          <ol>
+            <li>Vodeći član trenutnog ostatka podelimo vodećim članom delitelja → sledeći član količnika.</li>
+            <li>Delitelj pomnožen tim članom oduzmemo od trenutnog ostatka.</li>
+            <li>Ponavljamo dok stepen ostatka ne postane manji od stepena delitelja.</li>
+          </ol>
+        </li>
+        <li><strong>Provera:</strong> \( Q(x) \cdot D(x) + R(x) \) mora biti identički jednako \( P(x) \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz dugog deljenja">
+  <h2>📐 Vizuelni prikaz dugog deljenja</h2>
+  <div class="canvas-wrapper">
+    <canvas id="divisionTable" width="760" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Tabela dugog deljenja: u svakom redu prikazan je tekući ostatak, oduzeti proizvod \( q_i \cdot D(x) \) i novi ostatak. Količnik \( Q(x) = x^2 + x + 1 \) raste s desne strane, a poslednji red ostatka — \( x^2 + x + 1 \) — ima stepen \( 2 < 3 \), pa je to traženi ostatak.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavimo deljenje</h3>
+      <p>Tražimo \( Q(x) \) i \( R(x) \) takve da:</p>
+      <div class="math-block">\[ \underbrace{x^5 + x^4 + 2x^3 + 3x^2 + 3x + 2}_{P(x)} = Q(x)\cdot \underbrace{(x^3 + x + 1)}_{D(x)} + R(x), \quad \deg R < 3. \]</div>
+      <p>Pošto je \( \deg P = 5 \) i \( \deg D = 3 \), količnik je stepena \( 5 - 3 = 2 \). Očekujemo \( Q(x) = q_2 x^2 + q_1 x + q_0 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Prvi korak: podelimo vodeće članove</h3>
+      <p>Vodeći član \( P \) je \( x^5 \), vodeći član \( D \) je \( x^3 \):</p>
+      <div class="math-block">\[ \frac{x^5}{x^3} = x^2 \quad\Rightarrow\quad q_2 = x^2. \]</div>
+      <p>Pomnožimo \( D(x) \) sa \( x^2 \):</p>
+      <div class="math-block">\[ x^2 \cdot (x^3 + x + 1) = x^5 + x^3 + x^2. \]</div>
+      <p>Oduzmemo od \( P(x) \):</p>
+      <div class="math-block">\[ \begin{aligned}
+        &(x^5 + x^4 + 2x^3 + 3x^2 + 3x + 2) - (x^5 + x^3 + x^2) \\
+        &= x^4 + (2-1)x^3 + (3-1)x^2 + 3x + 2 \\
+        &= x^4 + x^3 + 2x^2 + 3x + 2.
+      \end{aligned} \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto se nije pojavio član sa \( x^4 \) u proizvodu?</summary>
+          <div class="detail-content">
+            <p>Delitelj \( D(x) = x^3 + 0 \cdot x^2 + x + 1 \) <em>nema</em> član sa \( x^2 \). Kada ga pomnožimo sa \( x^2 \), dobijamo \( x^5, x^3, x^2 \) — nijedan od njih nije \( x^4 \). Zato član \( x^4 \) iz \( P(x) \) prolazi netaknut.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Drugi korak: nastavimo sa novim ostatkom</h3>
+      <p>Trenutni ostatak: \( x^4 + x^3 + 2x^2 + 3x + 2 \). Vodeći član \( x^4 \) podelimo sa \( x^3 \):</p>
+      <div class="math-block">\[ \frac{x^4}{x^3} = x \quad\Rightarrow\quad q_1 = x. \]</div>
+      <p>Pomnožimo \( D(x) \) sa \( x \):</p>
+      <div class="math-block">\[ x \cdot (x^3 + x + 1) = x^4 + x^2 + x. \]</div>
+      <p>Oduzmemo:</p>
+      <div class="math-block">\[ \begin{aligned}
+        &(x^4 + x^3 + 2x^2 + 3x + 2) - (x^4 + x^2 + x) \\
+        &= x^3 + (2-1)x^2 + (3-1)x + 2 \\
+        &= x^3 + x^2 + 2x + 2.
+      \end{aligned} \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Treći korak: poslednje deljenje</h3>
+      <p>Trenutni ostatak: \( x^3 + x^2 + 2x + 2 \). Stepen je \( 3 \), još uvek nije manji od \( \deg D = 3 \). Nastavljamo:</p>
+      <div class="math-block">\[ \frac{x^3}{x^3} = 1 \quad\Rightarrow\quad q_0 = 1. \]</div>
+      <p>Pomnožimo \( D(x) \) sa \( 1 \): to je \( x^3 + x + 1 \). Oduzmemo:</p>
+      <div class="math-block">\[ \begin{aligned}
+        &(x^3 + x^2 + 2x + 2) - (x^3 + x + 1) \\
+        &= x^2 + (2-1)x + (2-1) \\
+        &= x^2 + x + 1.
+      \end{aligned} \]</div>
+      <p>Sada je stepen ostatka \( 2 < 3 \), pa <strong>stajemo</strong>.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kada tačno prestajemo s deljenjem?</summary>
+          <div class="detail-content">
+            <p>Onog trenutka kada stepen tekućeg ostatka postane <em>strogo manji</em> od stepena delitelja. Ovde \( \deg R = 2 < 3 = \deg D \), pa nemamo više vodećeg člana za podeliti.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Pročitajmo rezultat i izračunajmo izraz</h3>
+      <p>Količnik je</p>
+      <div class="math-block">\[ Q(x) = x^2 + x + 1, \]</div>
+      <p>a ostatak</p>
+      <div class="math-block">\[ R(x) = x^2 + x + 1, \quad\text{tj.}\quad a = 1,\; b = 1,\; c = 1. \]</div>
+      <p>Konačno:</p>
+      <div class="math-block">\[ a - 2b + 3c = 1 - 2\cdot 1 + 3\cdot 1 = 1 - 2 + 3 = 2. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera: rekonstrukcija \( P(x) \)</h3>
+      <p>Pomnožimo \( Q \cdot D \) i dodajmo \( R \):</p>
+      <div class="math-block">\[ (x^2 + x + 1)(x^3 + x + 1) = x^5 + x^4 + 2x^3 + 2x^2 + 2x + 1. \]</div>
+      <p>Dodavanjem ostatka \( R(x) = x^2 + x + 1 \):</p>
+      <div class="math-block">\[ x^5 + x^4 + 2x^3 + (2+1)x^2 + (2+1)x + (1+1) = x^5 + x^4 + 2x^3 + 3x^2 + 3x + 2. \]</div>
+      <p>Tačno \( P(x) \) — provera prolazi. ✓</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kako brzo izračunati \( (x^2 + x + 1)(x^3 + x + 1) \)?</summary>
+          <div class="detail-content">
+            <p>Distribuiramo: \( x^2(x^3 + x + 1) + x(x^3 + x + 1) + 1\cdot(x^3 + x + 1) \).</p>
+            <p>\( = (x^5 + x^3 + x^2) + (x^4 + x^2 + x) + (x^3 + x + 1) \).</p>
+            <p>Saberemo iste stepene: \( x^5 + x^4 + (1+1)x^3 + (1+1)x^2 + (1+1)x + 1 = x^5 + x^4 + 2x^3 + 2x^2 + 2x + 1 \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Dugo deljenje polinoma je istog duha kao deljenje brojeva — u svakom koraku „skinemo" vodeći stepen tekućeg ostatka. Trik koji često zbunjuje: delitelj \( x^3 + x + 1 \) <em>nema</em> član sa \( x^2 \), pa kada ga množimo sa \( x^2 \) ne stvara se \( x^4 \). Zato član \( x^4 \) iz \( P(x) \) opstaje do drugog koraka. Pažljivo poravnavanje stepena u redovima je više od pola posla — sve ostalo je obično računanje.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ R(x) = x^2 + x + 1 \;\Rightarrow\; a = b = c = 1 \;\Rightarrow\; a - 2b + 3c = 2. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 2 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 0 \)</span>
+    <span class="answer-option" data-option="C">(C) \( -2 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 3 \)</span>
+    <span class="answer-option" data-option="E">(E) \( -3 \)</span>
+  </div>
+  <p class="verification">Provera identiteta: \( (x^2 + x + 1)(x^3 + x + 1) + (x^2 + x + 1) = x^5 + x^4 + 2x^3 + 3x^2 + 3x + 2 \) — tačno polazni \( P(x) \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Loše poravnavanje stepena.</strong> Pošto delitelj nema član sa \( x^2 \), učenik ponekad „doda" lažni član \( x^4 \) ili \( x^2 \) u proizvod. Pomaže da se \( D(x) \) zapiše sa <em>svim</em> stepenima: \( x^3 + 0\cdot x^2 + x + 1 \).</li>
+    <li><strong>Rano zaustavljanje.</strong> Posle drugog koraka stepen ostatka je \( 3 \), što je <em>jednako</em>, ne manje od \( \deg D \). Treba još jedan korak deljenja.</li>
+    <li><strong>Pogrešan znak pri oduzimanju.</strong> Sve članove \( q_i \cdot D \) treba oduzeti, a ne sabrati. Posebno se desi greška na slobodnom članu (npr. \( 2 - 1 = 1 \), ne \( 3 \)).</li>
+    <li><strong>Greška u finalnom računanju.</strong> \( a - 2b + 3c \) sa \( a=b=c=1 \) je \( 1 - 2 + 3 = 2 \), a ne \( 1 + 2 + 3 = 6 \). Pažljivo sa znakovima.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Bez ponavljanja celog dugog deljenja, izračunaj <em>vrednost</em> \( P(\alpha) \) ako je \( \alpha \) takvo da \( \alpha^3 + \alpha + 1 = 0 \) (tj. \( \alpha \) je koren delitelja). Šta time potvrđuješ o ostatku \( R(x) \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Pošto je \( P(x) = Q(x) \cdot D(x) + R(x) \), za svako \( \alpha \) sa \( D(\alpha) = 0 \) važi:</p>
+      <p>\( P(\alpha) = 0 + R(\alpha) = R(\alpha) = \alpha^2 + \alpha + 1 \).</p>
+      <p>Direktno: iz \( \alpha^3 = -\alpha - 1 \) sledi \( \alpha^4 = \alpha\cdot\alpha^3 = -\alpha^2 - \alpha \), \( \alpha^5 = \alpha^2\cdot\alpha^3 = -\alpha^3 - \alpha^2 = (\alpha+1) - \alpha^2 = -\alpha^2 + \alpha + 1 \). Kad sve uvrstimo u \( P(\alpha) \), posle skraćivanja zaista dobijamo \( \alpha^2 + \alpha + 1 \). To potvrđuje ostatak <em>bez deljenja</em>.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('divisionTable');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+    var danger    = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Grid: 8 columns for powers x^5..x^0 plus padding for divider
+    // We will lay out coefficients column-by-column in a monospace-style grid.
+    var cols = ['x⁵', 'x⁴', 'x³', 'x²', 'x¹', 'x⁰'];
+    var nCols = cols.length;
+    var leftMargin = 60;
+    var rightMargin = 220; // reserve right side for quotient panel
+    var topMargin = 70;
+    var rowHeight = 38;
+    var tableW = W - leftMargin - rightMargin;
+    var colW = tableW / nCols;
+
+    function colX(i) { return leftMargin + i * colW + colW / 2; }
+    function rowY(r) { return topMargin + r * rowHeight; }
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 17px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Algoritam dugog deljenja polinoma', W / 2, 28);
+    ctx.font = '13px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('P(x) ÷ D(x),   D(x) = x³ + x + 1', W / 2, 50);
+
+    // Column headers (powers of x)
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 13px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var i = 0; i < nCols; i++) {
+      ctx.fillText(cols[i], colX(i), topMargin - 6);
+    }
+
+    // Faint vertical column guides
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 0.5;
+    for (var c1 = 1; c1 < nCols; c1++) {
+      var gx = leftMargin + c1 * colW;
+      ctx.beginPath();
+      ctx.moveTo(gx, topMargin - 4);
+      ctx.lineTo(gx, topMargin + rowHeight * 9);
+      ctx.stroke();
+    }
+
+    // Rows definition: each row = { type, label, coeffs, color }
+    // Coeffs index: [x5, x4, x3, x2, x1, x0]
+    var rows = [
+      { kind: 'P',   label: 'P(x):',         coeffs: [1, 1, 2, 3, 3, 2], color: text,    bold: true },
+      { kind: 'sub', label: 'x²·D(x):',      coeffs: [1, 0, 1, 1, 0, 0], color: warning },
+      { kind: 'rem', label: 'ostatak ①:',    coeffs: [0, 1, 1, 2, 3, 2], color: text },
+      { kind: 'sub', label: 'x·D(x):',       coeffs: [0, 1, 0, 1, 1, 0], color: warning },
+      { kind: 'rem', label: 'ostatak ②:',    coeffs: [0, 0, 1, 1, 2, 2], color: text },
+      { kind: 'sub', label: '1·D(x):',       coeffs: [0, 0, 1, 0, 1, 1], color: warning },
+      { kind: 'fin', label: 'ostatak R(x):', coeffs: [0, 0, 0, 1, 1, 1], color: accent,  bold: true }
+    ];
+
+    // Draw rows
+    ctx.font = '13px ui-monospace, SFMono-Regular, Consolas, monospace';
+    for (var r = 0; r < rows.length; r++) {
+      var row = rows[r];
+      var y = rowY(r);
+
+      // Row label on the left
+      ctx.fillStyle = muted;
+      ctx.textAlign = 'right';
+      ctx.font = '12px Inter, Segoe UI, system-ui, sans-serif';
+      ctx.fillText(row.label, leftMargin - 8, y + 18);
+
+      // Highlight final remainder row with a colored band
+      if (row.kind === 'fin') {
+        ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.18);
+        ctx.fillRect(leftMargin - 4, y + 2, tableW + 8, rowHeight - 6);
+      }
+      if (row.kind === 'sub') {
+        ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.10);
+        ctx.fillRect(leftMargin - 4, y + 2, tableW + 8, rowHeight - 6);
+      }
+
+      // Coefficients in monospace
+      for (var k = 0; k < nCols; k++) {
+        var v = row.coeffs[k];
+        var s;
+        if (v === 0) {
+          // Display lighter zero (or empty for non-significant)
+          s = '0';
+          ctx.fillStyle = muted;
+        } else {
+          s = (row.kind === 'sub' ? '−' : '+') + (Math.abs(v) === 1 ? '1' : Math.abs(v).toString());
+          // For P (the very first row) show without sign except if needed
+          if (row.kind === 'P') s = v.toString();
+          if (row.kind === 'rem' || row.kind === 'fin') s = v.toString();
+          ctx.fillStyle = row.color;
+          if (row.bold) ctx.font = 'bold 14px ui-monospace, SFMono-Regular, Consolas, monospace';
+          else ctx.font = '14px ui-monospace, SFMono-Regular, Consolas, monospace';
+        }
+        ctx.textAlign = 'center';
+        ctx.fillText(s, colX(k), y + 22);
+      }
+
+      // Subtraction underline (a thin horizontal line below subtract rows)
+      if (row.kind === 'sub') {
+        ctx.strokeStyle = warning;
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(leftMargin - 4, y + rowHeight - 4);
+        ctx.lineTo(leftMargin + tableW + 4, y + rowHeight - 4);
+        ctx.stroke();
+      }
+    }
+
+    // Vertical separator between table and quotient panel
+    var sepX = leftMargin + tableW + 18;
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(sepX, topMargin - 14);
+    ctx.lineTo(sepX, rowY(rows.length) + 6);
+    ctx.stroke();
+
+    // Quotient panel
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 14px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Količnik Q(x):', sepX + 12, topMargin + 4);
+
+    var qSteps = [
+      { y: rowY(0) + 22, txt: 'x²',  color: primary },
+      { y: rowY(2) + 22, txt: '+ x', color: primary },
+      { y: rowY(4) + 22, txt: '+ 1', color: primary }
+    ];
+    ctx.font = 'bold 16px ui-monospace, SFMono-Regular, Consolas, monospace';
+    for (var qi = 0; qi < qSteps.length; qi++) {
+      ctx.fillStyle = qSteps[qi].color;
+      ctx.textAlign = 'left';
+      ctx.fillText(qSteps[qi].txt, sepX + 18, qSteps[qi].y);
+    }
+
+    // Final quotient summary box
+    var finBoxY = rowY(rows.length) + 24;
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.12);
+    ctx.fillRect(sepX + 8, finBoxY, rightMargin - 36, 38);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(sepX + 8, finBoxY, rightMargin - 36, 38);
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 14px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Q(x) = x² + x + 1', sepX + (rightMargin - 36) / 2 + 8, finBoxY + 24);
+
+    // Bottom annotation: highlight the final remainder
+    var noteY = rowY(rows.length) + 76;
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 15px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('R(x) = x² + x + 1     →     a = 1, b = 1, c = 1', W / 2, noteY);
+
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 17px Inter, Segoe UI, system-ui, sans-serif';
+    ctx.fillText('a − 2b + 3c = 1 − 2 + 3 = 2', W / 2, noteY + 28);
+  }
+
+  draw();
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Deljenje polinoma — pronalaženje ostatka i izraza a − 2b + 3c",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["polinomi", "deljenje polinoma", "ostatak", "Bezuova teorema", "algoritam"]
+}
+BRAINSPARK_META-->

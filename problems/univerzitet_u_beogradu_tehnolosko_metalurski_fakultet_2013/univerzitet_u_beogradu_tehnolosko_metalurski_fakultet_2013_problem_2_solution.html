@@ -1,0 +1,461 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Izračunati vrednost numeričkog izraza
+N = [ 4 4/7 : 2 - (1 : 1/25 - 2,5 : 1/10) * 8 8/17 ] / [ 1 1/3 : 0,5 + 13 1/3 ] + 6/7
+
+Strategija: Pretvoriti sve mešovite brojeve i decimale u proste razlomke, a zatim izračunati brojilac i imenilac „spoljašnjeg” razlomka odvojeno.
+
+Brojilac:
+4 4/7 = 32/7
+4 4/7 : 2 = 32/7 : 2 = 32/14 = 16/7
+
+Unutrašnja zagrada:
+1 : 1/25 = 1 * 25/1 = 25
+2,5 : 1/10 = 2,5 * 10 = 25
+Razlika 25 - 25 = 0
+Ceo proizvod sa 8 8/17 jeste 0 * 8 8/17 = 0
+Dakle brojilac = 16/7 - 0 = 16/7.
+
+Imenilac:
+1 1/3 = 4/3
+0,5 = 1/2
+1 1/3 : 0,5 = 4/3 : 1/2 = 4/3 * 2 = 8/3
+13 1/3 = 40/3
+Imenilac = 8/3 + 40/3 = 48/3 = 16
+
+„Spoljni” razlomak:
+(16/7) / 16 = 16/(7 * 16) = 1/7
+
+Konačno:
+N = 1/7 + 6/7 = 7/7 = 1
+
+Odgovor: (D) 1
+</script>
+
+<h1 data-card="problem-title">Vrednost složenog brojnog izraza</h1>
+<p data-card="problem-subtitle" class="subtitle">Mešoviti brojevi, deljenje razlomcima i prepoznavanje nule kao činioca</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Vrednost brojevnog izraza</p>
+  <div class="math-block">
+    \[ \dfrac{4\tfrac{4}{7}:2 \;-\; \left(1:\tfrac{1}{25} \;-\; 2{,}5:\tfrac{1}{10}\right)\cdot 8\tfrac{8}{17}}{1\tfrac{1}{3}:0{,}5 \;+\; 13\tfrac{1}{3}} \;+\; \dfrac{6}{7} \]
+  </div>
+  <p>je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \dfrac{8}{7} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 0{,}7 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 0 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \dfrac{17}{27} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Pretvorićemo svaki mešoviti broj i svaku decimalu u običan razlomak. Posebno ćemo izračunati brojilac „velikog” razlomka (gde se zbog nule jedan deo lepo skrati), zatim imenilac, i tek onda dodati \( \tfrac{6}{7} \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i pravila</summary>
+    <div class="detail-content">
+      <ul>
+        <li>Mešoviti broj u prost razlomak: \( a\tfrac{b}{c} = \dfrac{a\cdot c + b}{c} \).</li>
+        <li>Decimala u razlomak: \( 2{,}5 = \dfrac{25}{10} = \dfrac{5}{2} \), \( 0{,}5 = \dfrac{1}{2} \).</li>
+        <li>Deljenje razlomkom: \( \dfrac{p}{q} : \dfrac{r}{s} = \dfrac{p}{q}\cdot \dfrac{s}{r} \) (množenje recipročnim).</li>
+        <li>Specijalan slučaj: \( 1 : \dfrac{1}{n} = n \), jer je deljenje recipročnim brojem isto što i množenje sa \( n \).</li>
+        <li>Nula u proizvodu: ako je bilo koji činilac jednak \( 0 \), ceo proizvod je \( 0 \) — ne treba dalje da računate ostatak.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="numeric-canvas" width="700" height="540"></canvas>
+  </div>
+  <p class="canvas-caption">Mapa izračunavanja: brojilac (gore), imenilac (dole), zatim deljenje i sabiranje sa \( \tfrac{6}{7} \) — sa istaknutim trenutkom kada se unutrašnja razlika \( 25-25 \) zameni nulom.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Pretvorimo mešovite brojeve u proste razlomke</h3>
+      <p>Prema formuli \( a\tfrac{b}{c} = \dfrac{a c + b}{c} \):</p>
+      <div class="math-block">
+        \[ 4\tfrac{4}{7} = \dfrac{4\cdot 7 + 4}{7} = \dfrac{32}{7}, \quad 1\tfrac{1}{3} = \dfrac{4}{3}, \quad 8\tfrac{8}{17} = \dfrac{144}{17}, \quad 13\tfrac{1}{3} = \dfrac{40}{3} \]
+      </div>
+      <p>Decimalne brojeve takodje pretvaramo: \( 2{,}5 = \dfrac{5}{2} \), \( 0{,}5 = \dfrac{1}{2} \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunajmo prvi sabirak brojioca</h3>
+      <p>To je \( 4\tfrac{4}{7} : 2 \):</p>
+      <div class="math-block">
+        \[ \dfrac{32}{7} : 2 = \dfrac{32}{7} \cdot \dfrac{1}{2} = \dfrac{32}{14} = \dfrac{16}{7} \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Sredimo unutrašnju zagradu</h3>
+      <p>Računamo svako deljenje pojedinačno:</p>
+      <div class="math-block">
+        \[ 1 : \dfrac{1}{25} = 1 \cdot 25 = 25, \qquad 2{,}5 : \dfrac{1}{10} = \dfrac{5}{2} \cdot 10 = 25 \]
+      </div>
+      <p>Razlika je</p>
+      <div class="math-block">
+        \[ 25 - 25 = 0 \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( 1 : \tfrac{1}{25} = 25 \)?</summary>
+          <div class="detail-content">
+            <p>Deljenje razlomkom je množenje njegovim recipročnim brojem: \( 1 : \tfrac{1}{25} = 1 \cdot \tfrac{25}{1} = 25 \). Geometrijski: u jednoj celini staje \( 25 \) komadića veličine \( \tfrac{1}{25} \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Pomnožimo zagradu sa \( 8\tfrac{8}{17} \)</h3>
+      <p>Pošto je razlika u zagradi \( 0 \), ceo proizvod je nula — bez obzira koliko je \( 8\tfrac{8}{17} \):</p>
+      <div class="math-block">
+        \[ 0 \cdot \dfrac{144}{17} = 0 \]
+      </div>
+      <p>Zato je brojilac jednak prvom sabirku iz koraka 2:</p>
+      <div class="math-block">
+        \[ \text{brojilac} = \dfrac{16}{7} - 0 = \dfrac{16}{7} \]
+      </div>
+      <div class="callout callout-info">
+        <p>Ovo je glavni „trik” zadatka: ne treba da množite \( 8\tfrac{8}{17} \) sa bilo čim — dovoljno je primetiti da je drugi činilac \( 0 \).</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunajmo imenilac</h3>
+      <p>Prvi sabirak: \( 1\tfrac{1}{3} : 0{,}5 = \dfrac{4}{3} : \dfrac{1}{2} = \dfrac{4}{3} \cdot 2 = \dfrac{8}{3} \).</p>
+      <p>Drugi sabirak: \( 13\tfrac{1}{3} = \dfrac{40}{3} \).</p>
+      <div class="math-block">
+        \[ \text{imenilac} = \dfrac{8}{3} + \dfrac{40}{3} = \dfrac{48}{3} = 16 \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( \tfrac{4}{3} : \tfrac{1}{2} = \tfrac{8}{3} \)?</summary>
+          <div class="detail-content">
+            <p>Recipročan broj od \( \tfrac{1}{2} \) je \( 2 \). Deljenje postaje množenje: \( \tfrac{4}{3} \cdot 2 = \tfrac{8}{3} \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunajmo „veliki” razlomak</h3>
+      <p>Delimo brojilac sa imeniocem:</p>
+      <div class="math-block">
+        \[ \dfrac{16/7}{16} = \dfrac{16}{7} \cdot \dfrac{1}{16} = \dfrac{16}{7\cdot 16} = \dfrac{1}{7} \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="7">
+    <div class="step-badge">7</div>
+    <div class="step-content">
+      <h3 class="step-title">Dodajmo poslednji sabirak</h3>
+      <p>Konačno:</p>
+      <div class="math-block">
+        \[ \dfrac{1}{7} + \dfrac{6}{7} = \dfrac{1+6}{7} = \dfrac{7}{7} = 1 \]
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Pre nego što krenete da množite svaki broj, pogledajte da li se neki činilac u proizvodu može svesti na \( 0 \). Ovde je razlika \( 1:\tfrac{1}{25} \) i \( 2{,}5:\tfrac{1}{10} \) baš jednaka \( 0 \), pa cela duga zagrada nestaje. Drugi važan uvid je da sve „komplikovane” brojeve (mešovite, decimalne) prevodimo u proste razlomke odmah na početku — tada svi koraci postaju mehaničko deljenje i sabiranje.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \dfrac{4\tfrac{4}{7}:2 - \left(1:\tfrac{1}{25} - 2{,}5:\tfrac{1}{10}\right)\cdot 8\tfrac{8}{17}}{1\tfrac{1}{3}:0{,}5 + 13\tfrac{1}{3}} + \dfrac{6}{7} = 1 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( \dfrac{8}{7} \)</span>
+    <span class="answer-option" data-option="B">(B) \( 0{,}7 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 0 \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 1 \)</span>
+    <span class="answer-option" data-option="E">(E) \( \dfrac{17}{27} \)</span>
+  </div>
+  <p class="verification">Provera: brojilac \( = \tfrac{16}{7} \approx 2{,}286 \); imenilac \( = 16 \); razlomak \( \approx 0{,}1429 = \tfrac{1}{7} \); plus \( \tfrac{6}{7} \approx 0{,}857 \) daje ukupno \( 1{,}000 \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Računati \( 8\tfrac{8}{17} \) bez razloga:</strong> Studenti često automatski pretvore taj mešoviti broj u \( \tfrac{144}{17} \) i pomnože, ne primećujući da je drugi činilac \( 0 \). Time gube vreme i lako pogreše u računu.</li>
+    <li><strong>Pogrešno tumačenje deljenja razlomkom:</strong> \( 1 : \tfrac{1}{25} \) nije \( \tfrac{1}{25} \) niti \( 0{,}04 \) — to je \( 25 \). Recipročnu vrednost uvek treba uzeti za onaj činilac koji je iza znaka „:”.</li>
+    <li><strong>Sabiranje razlomaka različitih imenioca:</strong> \( \tfrac{8}{3} + \tfrac{40}{3} \) je \( \tfrac{48}{3} \), a ne \( \tfrac{48}{6} \). Imenilac se ne sabira — sabiramo samo brojioce kada su imenioci isti.</li>
+    <li><strong>Dvostruko deljenje:</strong> Kada delimo \( \tfrac{16/7}{16} \), neki upišu \( \tfrac{16}{7\cdot 16} \) i ne skrate \( 16 \). Skraćivanje brojevog faktora je dozvoljeno i daje \( \tfrac{1}{7} \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Pretpostavimo da broj \( 2{,}5 \) u izrazu zamenimo sa \( 2{,}4 \). Da li će rezultat i dalje biti \( 1 \)? Izračunajte vrednost izraza u tom slučaju i objasnite zašto se ceo račun „vidno produžio”.</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Tada \( 2{,}4 : \tfrac{1}{10} = 24 \), pa razlika u zagradi postaje \( 25 - 24 = 1 \). Sada moramo zaista pomnožiti \( 1 \cdot \tfrac{144}{17} = \tfrac{144}{17} \), i taj broj uneti u brojilac. Brojilac postaje \( \tfrac{16}{7} - \tfrac{144}{17} \). Imenilac ostaje \( 16 \). Vidite kako je „nestala” lepa nula koja je sve uprostila — bez nje ceo izraz postaje znatno glomazniji.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('numeric-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function roundedRect(x, y, w, h, r, fill, stroke, strokeWidth) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+    if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+    if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = strokeWidth || 2; ctx.stroke(); }
+  }
+
+  function arrow(x1, y1, x2, y2, color) {
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    var ang = Math.atan2(y2 - y1, x2 - x1);
+    var ah = 8;
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - ah * Math.cos(ang - 0.4), y2 - ah * Math.sin(ang - 0.4));
+    ctx.lineTo(x2 - ah * Math.cos(ang + 0.4), y2 - ah * Math.sin(ang + 0.4));
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Mapa računa: brojilac, imenilac, finale', W / 2, 30);
+
+    // Brojilac group
+    var nx = 40, ny = 60, nw = 620;
+    ctx.fillStyle = muted;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('BROJILAC velikog razlomka', nx, ny + 14);
+
+    // First piece: 4 4/7 : 2
+    roundedRect(nx, ny + 24, 200, 56, 8, cvAlpha('--sol-canvas-primary', 0.10), primary);
+    ctx.fillStyle = text;
+    ctx.font = '13px "Times New Roman", serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('4 4/7 : 2', nx + 100, ny + 46);
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 14px "Times New Roman", serif';
+    ctx.fillText('= 16/7', nx + 100, ny + 68);
+
+    // Minus sign
+    ctx.fillStyle = text;
+    ctx.font = 'bold 26px "Times New Roman", serif';
+    ctx.fillText('−', nx + 230, ny + 60);
+
+    // Inner parens (highlighted)
+    roundedRect(nx + 260, ny + 24, 360, 56, 8, cvAlpha('--sol-canvas-warning', 0.14), warning);
+    ctx.fillStyle = text;
+    ctx.font = '13px "Times New Roman", serif';
+    ctx.fillText('(1 : 1/25  −  2,5 : 1/10) · 8 8/17', nx + 440, ny + 46);
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 14px "Times New Roman", serif';
+    ctx.fillText('(25 − 25) · 8 8/17 = 0', nx + 440, ny + 68);
+
+    // Result of brojilac
+    var brBoxX = nx + 230, brBoxY = ny + 100;
+    roundedRect(brBoxX, brBoxY, 160, 36, 8, cvAlpha('--sol-canvas-accent', 0.16), accent);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 16px "Times New Roman", serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('brojilac = 16/7', brBoxX + 80, brBoxY + 24);
+
+    // Down arrows from pieces to brojilac
+    arrow(nx + 100, ny + 80, brBoxX + 50, brBoxY, muted);
+    arrow(nx + 440, ny + 80, brBoxX + 110, brBoxY, muted);
+
+    // Imenilac group
+    var iy = 180;
+    ctx.fillStyle = muted;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('IMENILAC velikog razlomka', nx, iy + 14);
+
+    // 1 1/3 : 0.5
+    roundedRect(nx, iy + 24, 280, 56, 8, cvAlpha('--sol-canvas-secondary', 0.10), secondary);
+    ctx.fillStyle = text;
+    ctx.font = '13px "Times New Roman", serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('1 1/3 : 0,5', nx + 140, iy + 46);
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 14px "Times New Roman", serif';
+    ctx.fillText('= 8/3', nx + 140, iy + 68);
+
+    // plus sign
+    ctx.fillStyle = text;
+    ctx.font = 'bold 26px "Times New Roman", serif';
+    ctx.fillText('+', nx + 305, iy + 60);
+
+    // 13 1/3
+    roundedRect(nx + 340, iy + 24, 280, 56, 8, cvAlpha('--sol-canvas-secondary', 0.10), secondary);
+    ctx.fillStyle = text;
+    ctx.font = '13px "Times New Roman", serif';
+    ctx.fillText('13 1/3', nx + 480, iy + 46);
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 14px "Times New Roman", serif';
+    ctx.fillText('= 40/3', nx + 480, iy + 68);
+
+    // Imenilac result
+    var imBoxX = nx + 230, imBoxY = iy + 100;
+    roundedRect(imBoxX, imBoxY, 160, 36, 8, cvAlpha('--sol-canvas-accent', 0.16), accent);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 16px "Times New Roman", serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('imenilac = 16', imBoxX + 80, imBoxY + 24);
+
+    arrow(nx + 140, iy + 80, imBoxX + 60, imBoxY, muted);
+    arrow(nx + 480, iy + 80, imBoxX + 100, imBoxY, muted);
+
+    // Big fraction step
+    var fy = 348;
+    ctx.fillStyle = muted;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('VELIKI RAZLOMAK', nx, fy + 14);
+
+    roundedRect(nx + 100, fy + 24, 460, 60, 10, cvAlpha('--sol-canvas-highlight', 0.14), highlight);
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 18px "Times New Roman", serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('(16/7) : 16  =  16 / (7 · 16)  =  1/7', nx + 330, fy + 60);
+
+    // Plus 6/7
+    var py = 444;
+    ctx.fillStyle = muted;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('FINALNI ZBIR', nx, py + 14);
+
+    roundedRect(nx + 100, py + 24, 460, 60, 10, cvAlpha('--sol-canvas-accent', 0.18), accent, 3);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 22px "Times New Roman", serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('1/7  +  6/7  =  7/7  =  1', nx + 330, py + 64);
+
+    // Bottom note
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.fillText('Trik: u brojiocu, razlika 25−25 = 0 čini ceo proizvod sa 8 8/17 ravan nuli.', W / 2, 530);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Vrednost složenog brojnog izraza sa razlomcima",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["razlomci", "mešoviti brojevi", "deljenje razlomaka", "decimalni brojevi", "redosled operacija"]
+}
+BRAINSPARK_META-->

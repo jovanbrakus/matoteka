@@ -1,0 +1,453 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Problem: Count four-digit naturals divisible by 2 but NOT by 5, with all digits distinct, digits from S = {0, 1, 2, 4, 5, 6}.
+
+Logic:
+- 4-digit number: thousands digit ≠ 0.
+- Divisible by 2: last digit is even ⇒ last ∈ {0, 2, 4, 6}.
+- NOT divisible by 5: last digit ≠ 0 and ≠ 5.
+- Combining: last digit ∈ {2, 4, 6}.
+- All digits distinct, all from S, |S| = 6.
+
+Counting (place-by-place):
+1) Choose last digit (units): 3 ways (2, 4, or 6).
+2) Choose first digit (thousands): cannot be 0 and cannot equal the last digit.
+   From S minus the chosen last digit, we have 5 digits left. Of those 5, exactly one is 0,
+   which is forbidden in the first position. So 5 - 1 = 4 valid choices.
+3) Choose middle two digits (hundreds and tens) from the remaining 4 digits in order:
+   4 · 3 = 12 ways.
+
+Total = 3 · 4 · 12 = 144.
+
+Sanity check (alternative count):
+Total 4-digit arrangements from S (no leading zero, distinct):
+  first: 5 choices (S\{0}), then 5·4·3 = 60 for the rest → 5 · 60 = 300.
+Of these, count those with last digit in {2,4,6} (good).
+By symmetry on last digit:
+  - last = 0: first ∈ S\{0} = 5, middle = 4·3 = 12 ⇒ 5·12 = 60
+  - last = 2 (similarly 4, 6): first ∈ {1,4,5,6} (excluding 0 and 2) = 4, middle = 4·3 = 12 ⇒ 4·12 = 48
+  - last = 5: first ∈ {1,2,4,6} = 4, middle = 4·3 = 12 ⇒ 48
+  - last = 1: first ∈ {2,4,5,6} = 4, middle = 4·3 = 12 ⇒ 48
+Total = 60 + 3·48 + 48 + 48 = 60 + 144 + 48 + 48 = 300 ✓
+Good (last ∈ {2,4,6}) count = 3·48 = 144 ✓
+
+Answer: (E) 144.
+
+Visual: a tree-like / grid diagram showing the counting structure:
+position [thousands][hundreds][tens][units]
+Highlight last position with allowed digits {2, 4, 6}, branching to multiplication: 3 · 4 · 4 · 3 = 144.
+Static visual is appropriate.
+</script>
+
+<h1 data-card="problem-title">Brojanje četvorocifrenih brojeva sa uslovima deljivosti</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika, pravilo proizvoda, deljivost i različite cifre</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Četvorocifrenih prirodnih brojeva koji su deljivi sa \( 2 \), a nisu sa \( 5 \), a čije su sve cifre različite i pripadaju skupu \( \{0, 1, 2, 4, 5, 6\} \), ima:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 114 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 66 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 84 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 156 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 144 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Prevodimo uslove deljivosti na jezik cifara: deljiv sa \( 2 \) znači parna poslednja cifra, a uslov da nije deljiv sa \( 5 \) isključuje \( 0 \) i \( 5 \) na poslednjem mestu. Zatim brojimo birajući poslednju cifru, pa prvu (ne sme biti \( 0 \)), pa preostale dve, koristeći pravilo proizvoda.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Pravila deljivosti i pravilo proizvoda</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Deljivost sa 2</span> Broj je deljiv sa \( 2 \) ako i samo ako mu je <em>poslednja cifra</em> parna, tj. iz \( \{0, 2, 4, 6, 8\} \).</li>
+        <li><span class="formula-label">Deljivost sa 5</span> Broj je deljiv sa \( 5 \) ako i samo ako mu je <em>poslednja cifra</em> \( 0 \) ili \( 5 \). „Nije deljiv sa \( 5 \)“ znači poslednja cifra \( \notin \{0, 5\} \).</li>
+        <li><span class="formula-label">Pravilo proizvoda</span> Ako neki izbor pravimo u \( k \) uzastopnih nezavisnih koraka, sa \( n_1, n_2, \ldots, n_k \) mogućnosti, ukupno ima \( n_1 \cdot n_2 \cdots n_k \) izbora.</li>
+        <li><span class="formula-label">Različite cifre</span> Kad su cifre različite, posle svakog izbora skup raspoloživih cifara se smanjuje za jedan.</li>
+        <li><span class="formula-label">Broj ne počinje nulom</span> Cifra hiljada \( a_3 \) mora biti različita od \( 0 \) (inače broj ne bi bio četvorocifren).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="720" height="540"></canvas>
+  </div>
+  <p class="canvas-caption">Šema brojanja po pozicijama: prvo se bira poslednja cifra (mora biti iz \( \{2, 4, 6\} \)), zatim prva (ne sme biti \( 0 \) ni jednaka poslednjoj), pa stotice i desetice. Proizvod \( 3 \cdot 4 \cdot 4 \cdot 3 = 144 \) daje konačan odgovor.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Prevod uslova na jezik poslednje cifre</h3>
+      <p>Označimo cifre traženog broja sa \( a_3 a_2 a_1 a_0 \) (sleva nadesno). Iz uslova deljivosti:</p>
+      <ul>
+        <li>Deljiv sa \( 2 \) \( \Rightarrow \) \( a_0 \in \{0, 2, 4, 6\} \) (parna).</li>
+        <li>Nije deljiv sa \( 5 \) \( \Rightarrow \) \( a_0 \notin \{0, 5\} \).</li>
+      </ul>
+      <p>Spajanjem oba uslova:</p>
+      <div class="math-block">\[ a_0 \in \{0, 2, 4, 6\} \setminus \{0, 5\} = \{2, 4, 6\}. \]</div>
+      <p>Dakle, poslednja cifra mora biti iz skupa \( \{2, 4, 6\} \) — \( 3 \) mogućnosti.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš ova tri broja?</summary>
+          <div class="detail-content"><p>Iz polaznog skupa \( S = \{0, 1, 2, 4, 5, 6\} \) parne cifre su \( 0, 2, 4, 6 \). Od njih moramo izbaciti \( 0 \) (da bi broj bio deljiv sa \( 2 \), ali ne sa \( 5 \)). Cifra \( 5 \) je već neparna, pa je neće ni biti na poslednjem mestu zbog uslova deljivosti sa \( 2 \). Ostaju \( \{2, 4, 6\} \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Izbor cifre hiljada \( a_3 \)</h3>
+      <p>Cifra \( a_3 \) mora biti iz skupa \( S = \{0, 1, 2, 4, 5, 6\} \), ali sa dva ograničenja:</p>
+      <ul>
+        <li>\( a_3 \neq 0 \) (broj je četvorocifren).</li>
+        <li>\( a_3 \neq a_0 \) (sve cifre su različite).</li>
+      </ul>
+      <p>Kada smo izabrali \( a_0 \), u \( S \) ostaje \( 6 - 1 = 5 \) cifara. Tačno jedna od tih pet je \( 0 \), pa je za \( a_3 \) zabranjena. Ostaje:</p>
+      <div class="math-block">\[ \#\{\text{izbori za } a_3\} = 5 - 1 = 4. \]</div>
+      <p>Napomena: pošto je \( a_0 \in \{2, 4, 6\} \), nikad nismo „potrošili“ \( 0 \) na poslednjem mestu, pa \( 0 \) zaista ostaje u rezervnom skupu i mora biti eksplicitno isključena za prvo mesto.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Izbor cifara stotica \( a_2 \) i desetica \( a_1 \)</h3>
+      <p>Posle dva izbora ( \( a_0 \) i \( a_3 \) ), u skupu \( S \) ostaju još \( 6 - 2 = 4 \) cifre. Cifre \( a_2 \) i \( a_1 \) biramo redom (poredak je bitan, jer su to različite pozicije), bez ponavljanja:</p>
+      <div class="math-block">\[ \#\{a_2\} = 4, \qquad \#\{a_1\} = 3. \]</div>
+      <p>Za ovo nema nikakvog dodatnog ograničenja: pošto \( a_2 \) i \( a_1 \) nisu na prvom mestu, smeju biti i \( 0 \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliko ukupno daje izbor srednje dve cifre?</summary>
+          <div class="detail-content"><p>Po pravilu proizvoda: \( 4 \cdot 3 = 12 \). Ovo je broj načina da se iz \( 4 \) preostale cifre poređaju dve na pozicijama stotica i desetica.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Spajanje izbora — pravilo proizvoda</h3>
+      <p>Sve četiri pozicije se biraju nezavisno (uz već uračunata ograničenja), pa po pravilu proizvoda dobijamo:</p>
+      <div class="math-block">\[ N = \underbrace{3}_{a_0} \cdot \underbrace{4}_{a_3} \cdot \underbrace{4}_{a_2} \cdot \underbrace{3}_{a_1} = 144. \]</div>
+      <p>Tačno \( \boxed{144} \) četvorocifrenih brojeva ispunjava sve zadate uslove.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Kontrolna provera kroz drugu strategiju</h3>
+      <p>Drugačijim brojanjem dobijamo isti rezultat. Ukupan broj četvorocifrenih brojeva sa različitim ciframa iz \( S \): prvi položaj \( 5 \) (sve sem \( 0 \)), pa redom \( 5, 4, 3 \): \( 5 \cdot 5 \cdot 4 \cdot 3 = 300 \).</p>
+      <p>Razdvojimo ih po poslednjoj cifri (\( a_0 \)):</p>
+      <ul>
+        <li>\( a_0 = 0 \): prvi \( a_3 \) može svaka od preostalih \( 5 \) (sve sem \( 0 \)), pa \( 4 \cdot 3 \) za sredinu \( \Rightarrow 5 \cdot 12 = 60 \).</li>
+        <li>\( a_0 \in \{1, 2, 4, 5, 6\} \) (5 vrednosti, niti je \( 0 \), niti se ponavlja): \( a_3 \) ima \( 4 \) izbora (sve sem \( 0 \) i sem \( a_0 \)), pa sredina \( 4 \cdot 3 = 12 \) \( \Rightarrow 5 \cdot 4 \cdot 12 = 240 \).</li>
+      </ul>
+      <p>Dakle \( 60 + 240 = 300 \). „Dobri“ slučajevi su oni sa \( a_0 \in \{2, 4, 6\} \): \( 3 \cdot 4 \cdot 12 = 144 \). \( \checkmark \)</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Glavna lekcija: <strong>počni od najvezanijeg mesta</strong>. U ovom zadatku je to <em>poslednja cifra</em> (deljivost diktira njen mali skup), a odmah zatim <em>prva cifra</em> (zabranjena nula). Tek kada su krajnje pozicije popunjene, srednje pozicije su slobodne i biraju se u 4 \( \cdot \) 3 = 12 načina iz preostalih cifara. Ovo je generalna strategija za probleme tipa „broji brojeve sa različitim ciframa i nekim uslovima“.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ N = 3 \cdot 4 \cdot 4 \cdot 3 = 144. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 114 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 66 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 84 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 156 \)</span>
+    <span class="answer-option correct" data-option="E">(E) \( 144 \)</span>
+  </div>
+  <p class="verification">Provera kroz nezavisno brojanje: ukupno \( 300 \) četvorocifrenih sa različitim ciframa iz \( S \), od kojih onih sa \( a_0 \in \{2, 4, 6\} \) ima \( 144 \). Slaže se sa direktnim računom \( 3 \cdot 4 \cdot 4 \cdot 3 \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Zaboravlja se uslov da \( a_3 \neq 0 \) i pomnoži se naivno \( 4 \cdot 5 \cdot 4 \cdot 3 = 240 \) — to broji i „brojeve“ koji počinju sa \( 0 \).</li>
+    <li>Mešanje uslova: pretpostavlja se da \( a_0 \in \{0, 2, 4, 6\} \), pa se zaboravi izbacivanje \( 0 \). To daje \( 4 \cdot 4 \cdot 4 \cdot 3 = 192 \) (ili sličan broj), ali takvi brojevi su deljivi i sa \( 5 \) (kad je \( a_0 = 0 \)).</li>
+    <li>Računanje \( 3 \cdot 5 \cdot 4 \cdot 3 = 180 \) — ne uračunava se da je \( 0 \) zabranjena za \( a_3 \) i kada se \( 0 \) već <em>nije</em> potrošila na zadnjem mestu.</li>
+    <li>Korišćenje permutacija \( P(6, 4) = 360 \) bez ikakve restrikcije, ili dvostruko brojanje slučajeva po vrsti poslednje cifre.</li>
+    <li>Mešanje skupa \( S \) sa skupom svih cifara \( \{0, 1, \ldots, 9\} \) — pažljivo: \( 3, 7, 8, 9 \) <em>nisu</em> dozvoljene.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Iz istog skupa \( S = \{0, 1, 2, 4, 5, 6\} \), koliko ima četvorocifrenih brojeva sa različitim ciframa koji su <em>istovremeno</em> deljivi i sa \( 2 \) i sa \( 5 \) (tj. deljivi sa \( 10 \))?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Deljiv sa \( 10 \) znači \( a_0 = 0 \). Onda je \( a_3 \neq 0 \) automatski zadovoljeno (jer je \( 0 \) već potrošena), pa imamo \( 5 \) izbora za \( a_3 \) iz preostalih \( \{1, 2, 4, 5, 6\} \), zatim \( 4 \cdot 3 = 12 \) za \( a_2 a_1 \). Ukupno \( 1 \cdot 5 \cdot 4 \cdot 3 = 60 \). Dakle takvih brojeva ima \( 60 \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+    var danger    = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var W = canvas.width, H = canvas.height;
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Šema brojanja po pozicijama', W / 2, 28);
+
+    // Subtitle: skup S
+    ctx.fillStyle = muted;
+    ctx.font = '13px Inter, system-ui';
+    ctx.fillText('Skup dozvoljenih cifara:  S = { 0, 1, 2, 4, 5, 6 }', W / 2, 50);
+
+    // Four position boxes
+    var labels = ['hiljade  a₃', 'stotice  a₂', 'desetice  a₁', 'jedinice  a₀'];
+    var counts = [4, 4, 3, 3];
+    var allowed = [
+      '≠ 0  i  ≠ a₀',
+      'iz preostalih  4',
+      'iz preostalih  3',
+      'iz { 2, 4, 6 }'
+    ];
+    var colors = [primary, secondary, secondary, accent];
+
+    var boxW = 130, boxH = 90, gap = 30;
+    var totalW = 4 * boxW + 3 * gap;
+    var startX = (W - totalW) / 2;
+    var boxY = 90;
+
+    // Draw boxes
+    for (var i = 0; i < 4; i++) {
+      var x = startX + i * (boxW + gap);
+      // Box background
+      ctx.fillStyle = cvAlpha(colors[i] === primary ? '--sol-canvas-primary'
+                          : colors[i] === secondary ? '--sol-canvas-secondary'
+                          : '--sol-canvas-accent', 0.10);
+      ctx.fillRect(x, boxY, boxW, boxH);
+      // Box border
+      ctx.strokeStyle = colors[i];
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x, boxY, boxW, boxH);
+
+      // Label (position name)
+      ctx.fillStyle = text;
+      ctx.font = 'bold 13px Inter, system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText(labels[i], x + boxW / 2, boxY + 22);
+
+      // Count (large)
+      ctx.fillStyle = colors[i];
+      ctx.font = 'bold 32px Inter, system-ui';
+      ctx.fillText(String(counts[i]), x + boxW / 2, boxY + 60);
+
+      // Allowed (small)
+      ctx.fillStyle = muted;
+      ctx.font = '11px Inter, system-ui';
+      ctx.fillText(allowed[i], x + boxW / 2, boxY + 80);
+    }
+
+    // Multiplication signs between boxes
+    ctx.fillStyle = text;
+    ctx.font = 'bold 22px Inter, system-ui';
+    ctx.textAlign = 'center';
+    for (var j = 0; j < 3; j++) {
+      var mx = startX + (j + 1) * boxW + j * gap + gap / 2;
+      ctx.fillText('×', mx, boxY + boxH / 2 + 8);
+    }
+
+    // Bracket-style note above last box: forced from divisibility
+    var lastX = startX + 3 * (boxW + gap);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(lastX, boxY - 12);
+    ctx.lineTo(lastX, boxY - 20);
+    ctx.lineTo(lastX + boxW, boxY - 20);
+    ctx.lineTo(lastX + boxW, boxY - 12);
+    ctx.stroke();
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 12px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('parna,  ali  ≠ 0  i  ≠ 5', lastX + boxW / 2, boxY - 26);
+
+    // Bracket above first box: cannot be zero
+    var firstX = startX;
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(firstX, boxY - 12);
+    ctx.lineTo(firstX, boxY - 20);
+    ctx.lineTo(firstX + boxW, boxY - 20);
+    ctx.lineTo(firstX + boxW, boxY - 12);
+    ctx.stroke();
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 12px Inter, system-ui';
+    ctx.fillText('vodeća,  ≠ 0', firstX + boxW / 2, boxY - 26);
+
+    // Section: Filtering of S — show subsets visually
+    var sy = 230;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText('Korak 1.  Filtriranje skupa za poslednju cifru', 40, sy);
+
+    // Row of digits with strikethroughs
+    var digits = [0, 1, 2, 4, 5, 6];
+    var dx0 = 70;
+    var dxStep = 80;
+    var dy = sy + 40;
+    for (var k = 0; k < digits.length; k++) {
+      var d = digits[k];
+      var dx = dx0 + k * dxStep;
+      // Circle background
+      var color, status;
+      if (d === 2 || d === 4 || d === 6) { color = accent; status = 'OK'; }
+      else if (d === 0) { color = danger; status = 'deljiv 5'; }
+      else if (d === 5) { color = danger; status = 'deljiv 5'; }
+      else { color = warning; status = 'neparna'; }
+
+      ctx.fillStyle = cvAlpha(
+        color === accent ? '--sol-canvas-accent' :
+        color === danger ? '--sol-canvas-danger' :
+        '--sol-canvas-warning', 0.18);
+      ctx.beginPath();
+      ctx.arc(dx, dy, 24, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Digit
+      ctx.fillStyle = text;
+      ctx.font = 'bold 20px Inter, system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText(String(d), dx, dy + 7);
+
+      // Strike if not OK
+      if (status !== 'OK') {
+        ctx.strokeStyle = danger;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(dx - 18, dy + 18);
+        ctx.lineTo(dx + 18, dy - 18);
+        ctx.stroke();
+      }
+
+      // Status label below
+      ctx.fillStyle = color;
+      ctx.font = 'bold 11px Inter, system-ui';
+      ctx.fillText(status, dx, dy + 44);
+    }
+
+    // Note for filtering
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText('Poslednja cifra mora biti parna  ali  ≠ 0  i  ≠ 5    ⟹   a₀ ∈ { 2, 4, 6 }', 40, sy + 95);
+
+    // Final formula at bottom
+    var fy = H - 80;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 18px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Po pravilu proizvoda:', W / 2, fy);
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 22px Inter, system-ui';
+    ctx.fillText('N  =  3  ×  4  ×  4  ×  3  =  144', W / 2, fy + 32);
+
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillText('(jedinice)  ×  (hiljade)  ×  (stotice)  ×  (desetice)', W / 2, fy + 52);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Brojanje četvorocifrenih brojeva — različite cifre, deljiv sa 2 ali ne sa 5",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["kombinatorika", "pravilo proizvoda", "deljivost", "permutacije", "cifre"]
+}
+BRAINSPARK_META-->

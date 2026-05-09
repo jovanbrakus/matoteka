@@ -1,0 +1,387 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: U binomnom razvoju (x^3 + 1/x)^12, naci redni broj clana koji ne sadrzi x.
+
+Opsti clan razvoja (a + b)^n je T_{k+1} = C(n, k) * a^(n-k) * b^k.
+Ovde a = x^3, b = 1/x = x^(-1), n = 12.
+
+T_{k+1} = C(12, k) * (x^3)^(12-k) * (x^(-1))^k
+       = C(12, k) * x^(3(12-k)) * x^(-k)
+       = C(12, k) * x^(36 - 3k - k)
+       = C(12, k) * x^(36 - 4k)
+
+Trazimo k tako da je x^0, tj. 36 - 4k = 0, dakle k = 9.
+
+Indeks clana: T_{k+1} = T_{9+1} = T_10. Dakle, deseti clan.
+
+Numericka vrednost: C(12, 9) = C(12, 3) = (12*11*10)/(3*2*1) = 220.
+T_10 = 220 * x^0 = 220.
+
+Tacan odgovor: (V) deseti.
+
+Provera: za k = 0 stepen je 36, k = 1 -> 32, k = 2 -> 28, ..., svaki naredni je 4 manji. Lista (k, eksponent): (0,36), (1,32), (2,28), (3,24), (4,20), (5,16), (6,12), (7,8), (8,4), (9,0), (10,-4), (11,-8), (12,-12). Eksponent 0 se javlja kod k=9, sto je T_10.
+
+Vizuelizacija: linearan grafikon eksponenta 36 - 4k u funkciji k, sa istaknutim presekom sa x-osom u (9, 0). Mozemo da pokazemo i bar chart eksponenata sa istaknutim k=9 stubicem koji je 0. Najbolje: linearan grafikon eksponenta sa svim k = 0..12 oznacenim kao tacke, sa zelenom oznakom za k=9 gde je eksponent 0. Ovo je staticka algebra, interaktivnost nije potrebna.
+</script>
+
+<h1 data-card="problem-title">Član bez \( x \) u binomnom razvoju</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — binomni obrazac, opšti član razvoja</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>U binomnom razvoju izraza \( \left(x^3 + \dfrac{1}{x}\right)^{12} \), član koji ne sadrži \( x \) je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">peti</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">sedmi</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(V)</span>
+      <span class="answer-value">deseti</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(G)</span>
+      <span class="answer-value">jedanaesti</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Napisaćemo opšti član \( T_{k+1} \) binomnog razvoja, sabrati eksponente za \( x \) i postaviti ih jednakim nuli da bismo našli \( k \), pa ćemo redni broj člana izračunati kao \( k+1 \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Binomni obrazac i opšti član</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Binomni obrazac</span> \( (a+b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \).</li>
+        <li><span class="formula-label">Opšti član</span> \( T_{k+1} = \binom{n}{k} a^{n-k} b^k \), gde \( k \) ide od \( 0 \) do \( n \), pa razvoj ima \( n+1 \) članova.</li>
+        <li><span class="formula-label">Indeksiranje</span> \( T_1 \) odgovara \( k = 0 \), \( T_2 \) odgovara \( k = 1 \), itd.</li>
+        <li><span class="formula-label">Stepeni \( x \)</span> \( x^a \cdot x^b = x^{a+b} \) i \( (x^a)^b = x^{ab} \). Član „bez \( x \)" znači \( x^0 = 1 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="exp-line" width="760" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Eksponent \( 36 - 4k \) je linearna funkcija od \( k \). Svaka tačka odgovara jednom članu razvoja \( T_{k+1} \). Tačka seče nulu pri \( k = 9 \), što je deseti član — tu nestaje \( x \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Identifikuj \( a \), \( b \) i \( n \)</h3>
+      <p>U izrazu \( \left(x^3 + \tfrac{1}{x}\right)^{12} \) prepoznajemo:</p>
+      <div class="math-block">\[ a = x^3, \qquad b = \tfrac{1}{x} = x^{-1}, \qquad n = 12. \]</div>
+      <p>Razvoj će imati ukupno \( n + 1 = 13 \) članova: \( T_1, T_2, \dots, T_{13} \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Napiši opšti član \( T_{k+1} \)</h3>
+      <p>Po binomnom obrascu:</p>
+      <div class="math-block">\[ T_{k+1} = \binom{12}{k} \cdot \bigl(x^3\bigr)^{12-k} \cdot \bigl(x^{-1}\bigr)^{k}. \]</div>
+      <p>Sada sabiramo eksponente korišćenjem \( (x^a)^b = x^{ab} \) i \( x^a \cdot x^b = x^{a+b} \):</p>
+      <div class="math-block">\[ T_{k+1} = \binom{12}{k} \cdot x^{\,3(12-k)} \cdot x^{-k} = \binom{12}{k} \cdot x^{\,36 - 3k - k} = \binom{12}{k} \cdot x^{\,36 - 4k}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavi uslov da \( x \) iščezne</h3>
+      <p>Član „ne sadrži \( x \)" znači da je stepen \( x \) jednak nuli, tj. \( x^0 = 1 \). Eksponent mora biti nula:</p>
+      <div class="math-block">\[ 36 - 4k = 0. \]</div>
+      <p>Rešavanjem po \( k \):</p>
+      <div class="math-block">\[ 4k = 36 \;\Longrightarrow\; k = 9. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: da li je \( k = 9 \) u dozvoljenom opsegu?</summary>
+          <div class="detail-content"><p>Indeks \( k \) ide od \( 0 \) do \( n = 12 \). Vrednost \( k = 9 \) je u opsegu \( [0,\,12] \), pa rešenje postoji i jedinstveno je.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Pretvori \( k \) u redni broj člana</h3>
+      <p>Pošto je opšti član \( T_{k+1} \), za \( k = 9 \) dobijamo:</p>
+      <div class="math-block">\[ T_{k+1} = T_{9+1} = T_{10}. \]</div>
+      <p>Dakle, traženi je <strong>deseti</strong> član razvoja.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koja je vrednost tog člana?</summary>
+          <div class="detail-content"><p>\( T_{10} = \binom{12}{9} = \binom{12}{3} = \dfrac{12 \cdot 11 \cdot 10}{3 \cdot 2 \cdot 1} = 220 \). Dakle, \( T_{10} = 220 \) (slobodan član razvoja).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Najčešća greška je mešanje indeksa \( k \) i rednog broja člana. Pravilo: <strong>\( k \) počinje od nule, ali članovi se broje od jedan</strong>, zato je \( T_{k+1} \). Kada postaviš eksponent \( = 0 \) i dobiješ \( k = 9 \), dodaj jedinicu da nađeš redni broj — \( T_{10} \), deseti.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ T_{10} = \binom{12}{9} \cdot x^{0} = 220 \quad (\text{deseti član}) \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) peti</span>
+    <span class="answer-option" data-option="B">(B) sedmi</span>
+    <span class="answer-option correct" data-option="C">(V) deseti</span>
+    <span class="answer-option" data-option="D">(G) jedanaesti</span>
+  </div>
+  <p class="verification">Provera: \( 36 - 4 \cdot 9 = 0 \), pa je \( x^{36-4k} = x^0 = 1 \). Član bez \( x \) je upravo \( T_{10} = 220 \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pisanje \( T_k \) umesto \( T_{k+1} \) — onda se za \( k = 9 \) dobije „deveti" umesto „deseti".</li>
+    <li>Pogrešan eksponent: računanje \( (x^3)^{12-k} \cdot x^{-k} \) kao \( x^{3 \cdot 12 - k} = x^{36-k} \) (zaboravljanje da treba i \( -k \) iz drugog faktora).</li>
+    <li>Tumačenje \( \dfrac{1}{x} \) kao \( x^{1} \) ili \( -x \) — uvek se zapisuje kao \( x^{-1} \).</li>
+    <li>Ako bi se dobilo necelo \( k \) (npr. \( 36 - 4k = 0 \to k = 9 \) je celo, ali u opštem slučaju treba proveriti) — tada član bez \( x \) <em>ne postoji</em>.</li>
+    <li>Mešanje \( \binom{12}{9} \) sa \( \binom{12}{10} \) — koristi simetriju \( \binom{n}{k} = \binom{n}{n-k} \): \( \binom{12}{9} = \binom{12}{3} = 220 \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>U razvoju \( \left(x^2 + \dfrac{1}{x^3}\right)^{15} \), postoji li član koji ne sadrži \( x \)? Ako da, koji je po redu i koliko vrednost?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Opšti član: \( T_{k+1} = \binom{15}{k} (x^2)^{15-k} (x^{-3})^k = \binom{15}{k} x^{\,30 - 2k - 3k} = \binom{15}{k} x^{\,30 - 5k} \). Za \( x^0 \): \( 30 - 5k = 0 \Rightarrow k = 6 \). Redni broj: \( T_7 \), sedmi član. Vrednost: \( \binom{15}{6} = 5005 \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('exp-line');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var warning   = cv('--sol-canvas-warning');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Eksponent od x u T_(k+1):  E(k) = 36 − 4k', canvas.width / 2, 28);
+
+    // Plot dimensions
+    var marginLeft = 80;
+    var marginRight = 60;
+    var topY = 70;
+    var bottomY = 410;
+    var plotW = canvas.width - marginLeft - marginRight;
+    var plotH = bottomY - topY;
+
+    // x range: k from 0 to 12
+    var xMin = 0, xMax = 12;
+    // y range: E(k) = 36 - 4k, from 36 down to 36 - 48 = -12
+    var yMin = -14, yMax = 38;
+
+    function toX(k) { return marginLeft + (k - xMin) / (xMax - xMin) * plotW; }
+    function toY(e) { return bottomY - (e - yMin) / (yMax - yMin) * plotH; }
+
+    // Grid lines (horizontal, every 5 in y)
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    var yTicks = [-10, -5, 0, 5, 10, 15, 20, 25, 30, 35];
+    for (var i = 0; i < yTicks.length; i++) {
+      var yv = yTicks[i];
+      var py = toY(yv);
+      ctx.beginPath();
+      ctx.moveTo(marginLeft, py);
+      ctx.lineTo(marginLeft + plotW, py);
+      ctx.stroke();
+      ctx.fillStyle = muted;
+      ctx.fillText(String(yv), marginLeft - 8, py + 4);
+    }
+
+    // Vertical grid (every 1 in k)
+    ctx.textAlign = 'center';
+    for (var k = 0; k <= 12; k++) {
+      var px = toX(k);
+      ctx.strokeStyle = grid;
+      ctx.beginPath();
+      ctx.moveTo(px, topY);
+      ctx.lineTo(px, bottomY);
+      ctx.stroke();
+      ctx.fillStyle = muted;
+      ctx.fillText(String(k), px, bottomY + 18);
+    }
+
+    // X-axis (y = 0 line) emphasized
+    var y0 = toY(0);
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(marginLeft, y0);
+    ctx.lineTo(marginLeft + plotW, y0);
+    ctx.stroke();
+
+    // Y-axis (k = 0 line) emphasized
+    ctx.beginPath();
+    ctx.moveTo(marginLeft, topY);
+    ctx.lineTo(marginLeft, bottomY);
+    ctx.stroke();
+
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('k  (indeks od 0 do 12, ima 13 članova)', marginLeft + plotW / 2, bottomY + 38);
+    ctx.save();
+    ctx.translate(marginLeft - 50, topY + plotH / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center';
+    ctx.fillText('eksponent E(k)', 0, 0);
+    ctx.restore();
+
+    // Plot the line E(k) = 36 - 4k
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(toX(0), toY(36));
+    ctx.lineTo(toX(12), toY(-12));
+    ctx.stroke();
+
+    // Plot points for each k = 0..12
+    for (var k2 = 0; k2 <= 12; k2++) {
+      var ek = 36 - 4 * k2;
+      var px2 = toX(k2);
+      var py2 = toY(ek);
+      var isZero = (ek === 0);
+      ctx.beginPath();
+      ctx.arc(px2, py2, isZero ? 8 : 4.5, 0, Math.PI * 2);
+      ctx.fillStyle = isZero ? accent : primary;
+      ctx.fill();
+      if (isZero) {
+        ctx.strokeStyle = accent;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(px2, py2, 13, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      // small label of exponent value above point (skip every other to reduce clutter)
+      if (k2 % 2 === 0 || isZero) {
+        ctx.fillStyle = isZero ? accent : muted;
+        ctx.font = (isZero ? 'bold ' : '') + '11px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(String(ek), px2, py2 - 14);
+      }
+    }
+
+    // Highlight the k = 9 case with vertical dashed line
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(toX(9), toY(0));
+    ctx.lineTo(toX(9), bottomY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Annotation: "k = 9, T_10" near the highlighted point
+    var pxK = toX(9), pyK = toY(0);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('k = 9  →  T_10  (deseti)', pxK + 14, pyK - 14);
+
+    // Side legend / summary panel
+    var panelY = bottomY + 60;
+    var panelH = 80;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.15);
+    ctx.fillRect(marginLeft, panelY, plotW, panelH);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(marginLeft, panelY, plotW, panelH);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Opšti član: T_(k+1) = C(12, k) · x^(36 − 4k)', marginLeft + 14, panelY + 24);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('Uslov bez x:  36 − 4k = 0  ⇒  k = 9', marginLeft + 14, panelY + 46);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillText('Redni broj člana = k + 1 = 10  →  T_10 = C(12, 9) = 220', marginLeft + 14, panelY + 68);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Binomni razvoj — član bez x u (x^3 + 1/x)^12 (deseti, T_10 = 220)",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["binomni obrazac", "opšti član razvoja", "stepeni promenljive", "binomni koeficijent"]
+}
+BRAINSPARK_META-->

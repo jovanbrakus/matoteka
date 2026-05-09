@@ -1,0 +1,817 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Zadatak: Tačka M(x, y) leži na pravoj p: y = 2x + 1. Tražimo M za koje je
+    f = MA^2 + MB^2  minimalno,
+  gde su A(-3, 0) i B(-1, 3). Onda dati x + y.
+  Ponuđeni: (A) -1, (B) 1, (C) 3, (D) -2/5, (E) 2/5.
+
+  Strategija — direktna optimizacija (kvadratna funkcija po x):
+    M = (x, 2x + 1).
+    MA^2 = (x - (-3))^2 + (2x + 1 - 0)^2 = (x + 3)^2 + (2x + 1)^2
+    MB^2 = (x - (-1))^2 + (2x + 1 - 3)^2 = (x + 1)^2 + (2x - 2)^2
+
+    Razvijemo:
+      (x + 3)^2 = x^2 + 6x + 9
+      (2x + 1)^2 = 4x^2 + 4x + 1
+      → MA^2 = 5x^2 + 10x + 10
+
+      (x + 1)^2 = x^2 + 2x + 1
+      (2x - 2)^2 = 4x^2 - 8x + 4
+      → MB^2 = 5x^2 - 6x + 5
+
+    f(x) = MA^2 + MB^2 = 10x^2 + 4x + 15.
+
+  Ovo je parabola po x otvorena nagore (a = 10 > 0), pa minimum u temenu:
+    x* = -b/(2a) = -4/(2·10) = -1/5.
+
+  y* = 2(-1/5) + 1 = -2/5 + 5/5 = 3/5.
+
+  Zbir koordinata: x* + y* = -1/5 + 3/5 = 2/5.
+
+  Tačan odgovor: (E) 2/5.
+
+  Provera (računamo f(x*)):
+    f(-1/5) = 10·(1/25) + 4·(-1/5) + 15 = 10/25 - 4/5 + 15
+             = 2/5 - 4/5 + 75/5 = (2 - 4 + 75)/5 = 73/5 = 14,6.
+    f(0)   = 0 + 0 + 15 = 15. (15 > 14,6 ✓)
+    f(-1)  = 10 - 4 + 15 = 21.
+
+  GEOMETRIJSKA INTUICIJA (alternativna):
+    f(M) = MA^2 + MB^2.
+    Koristimo identitet (paralelogramska):
+      MA^2 + MB^2 = 2·MS^2 + (1/2) · AB^2,
+    gde je S sredina duži AB.
+    S = ((-3 + -1)/2, (0 + 3)/2) = (-2, 3/2).
+    AB^2 = (-1 - (-3))^2 + (3 - 0)^2 = 4 + 9 = 13.
+    Konstanta (1/2)·AB^2 = 13/2 ne zavisi od M.
+    Dakle MIN(MA^2 + MB^2) je MIN(MS^2), tj. M je podnožje normale iz S na pravu p.
+
+    Provera: tačka (-1/5, 3/5) je projekcija S = (-2, 3/2) na pravu p: y = 2x + 1?
+    Pravac p: smer (1, 2). Vektor od S do M: (-1/5 - (-2), 3/5 - 3/2) = (9/5, -9/10).
+    Treba da je normalan na (1, 2): skalarni proizvod
+       (9/5)·1 + (-9/10)·2 = 9/5 - 18/10 = 9/5 - 9/5 = 0. ✓
+    Takođe M leži na p: 2·(-1/5) + 1 = -2/5 + 5/5 = 3/5. ✓
+
+  Pitfalls:
+    - Pogrešno razviti (2x + 1)^2 ili (2x - 2)^2.
+    - Pomešati MA^2 + MB^2 (zbir kvadrata) sa MA + MB (zbir; minimum bi bio drugačiji
+      problem — refleksija!).
+    - Zaboraviti da iz y = 2x + 1 sledi (2x - 3 + 1)^2 = (2x - 2)^2 za MB y-deo.
+    - Pogrešno x* = b/(2a) (zaboraviti minus).
+
+  Vizuelni prikaz (statičan):
+    1) Glavna tabla — koordinatni sistem sa A, B, sredina S, prava p,
+       normala iz S na p, podnožje M = (-1/5, 3/5).
+    2) Mali graf — parabola f(x) = 10x^2 + 4x + 15 sa istaknutim temenom.
+
+  Kategorija: analitička geometrija; optimizacija kvadratne funkcije; rastojanje tačke od prave.
+</script>
+
+<h1 data-card="problem-title">Tačka na pravoj koja minimizuje zbir kvadrata rastojanja</h1>
+<p data-card="problem-subtitle" class="subtitle">Analitička geometrija &mdash; optimizacija kvadratne funkcije, podnožje normale, sredina duži</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>
+    Zbir koordinata tačke \( M(x, y) \) na pravoj \( y = 2x + 1 \), takve da je zbir kvadrata
+    njenih rastojanja od tačaka \( A(-3,\,0) \) i \( B(-1,\,3) \) najmanji, jednak je:
+  </p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">prava \(p\)</span>
+      <span class="given-value">\( y = 2x + 1 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">tačka \(A\)</span>
+      <span class="given-value">\( (-3,\,0) \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">tačka \(B\)</span>
+      <span class="given-value">\( (-1,\,3) \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">cilj</span>
+      <span class="given-value">\( \min\ MA^2 + MB^2 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">traži se</span>
+      <span class="given-value">\( x_M + y_M \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( -1 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( -\dfrac{2}{5} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \dfrac{2}{5} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Pošto \( M \) leži na pravoj \( y = 2x + 1 \), izrazićemo \( y \) preko \( x \) i napisati \( f(x) = MA^2 + MB^2 \) kao kvadratnu funkciju samo po \( x \). Vodeći koeficijent je pozitivan, pa minimum dobijamo u temenu parabole \( x^* = -\tfrac{b}{2a} \). Iz \( x^* \) izračunamo \( y^* = 2x^* + 1 \) i konačno \( x^* + y^* \). Geometrijski, traženo \( M \) je <em>podnožje normale</em> iz sredine duži \( AB \) na pravu &mdash; to ćemo iskoristiti za potvrdu.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Rastojanje tačaka, sredina duži, ekstremi parabole</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Kvadrat rastojanja</strong> tačaka \( P(x_1, y_1) \) i \( Q(x_2, y_2) \): \( PQ^2 = (x_2 - x_1)^2 + (y_2 - y_1)^2 \). Radimo direktno sa kvadratima da izbegnemo kvadratne korene.</li>
+        <li><strong>Teme parabole</strong> \( f(x) = ax^2 + bx + c \) (\( a \neq 0 \)): \( x^* = -\dfrac{b}{2a} \). Ako je \( a > 0 \), to je minimum; ako \( a < 0 \), maksimum.</li>
+        <li><strong>Sredina duži</strong> \( AB \): \( S = \left(\dfrac{x_A + x_B}{2},\ \dfrac{y_A + y_B}{2}\right) \).</li>
+        <li><strong>Paralelogramski identitet</strong> (medijalni): za proizvoljnu tačku \( M \) važi \( MA^2 + MB^2 = 2\,MS^2 + \dfrac{1}{2}\,AB^2 \), gde je \( S \) sredina \( AB \). Pošto je drugi sabirak konstanta, minimum levog izraza je u tački koja minimizuje \( MS^2 \), tj. najbliža \( S \) na zadatom skupu &mdash; <em>podnožje normale</em>.</li>
+        <li><strong>Normala na pravu</strong> \( y = kx + n \): smerni vektor je \( (1, k) \), normala ima koeficijent pravca \( -\dfrac{1}{k} \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Geometrijski prikaz">
+  <h2>📐 Geometrija: tačke A, B, sredina S, prava p, podnožje M</h2>
+  <div class="canvas-wrapper">
+    <canvas id="geom" width="700" height="600"></canvas>
+  </div>
+  <p class="canvas-caption">Plava prava je \( p\colon y = 2x + 1 \). Crvene tačke su \( A(-3, 0) \) i \( B(-1, 3) \). Žuta tačka \( S(-2,\,\tfrac{3}{2}) \) je sredina duži \( AB \). Zelena isprekidana linija je normala iz \( S \) na \( p \). Narandžasta tačka \( M\!\left(-\tfrac{1}{5},\,\tfrac{3}{5}\right) \) je podnožje te normale &mdash; tačka prave koja minimizuje \( MA^2 + MB^2 \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Parabola f(x) = 10x² + 4x + 15">
+  <h2>📐 Parabola \( f(x) = 10x^2 + 4x + 15 \) i njeno teme</h2>
+  <div class="canvas-wrapper">
+    <canvas id="parabola-fx" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Funkcija \( f(x) = MA^2 + MB^2 \) sa \( y = 2x + 1 \) postaje kvadratna po \( x \): \( f(x) = 10x^2 + 4x + 15 \). Otvorena nagore (\( a = 10 > 0 \)), pa minimum u temenu \( x^* = -\tfrac{1}{5} \), sa minimalnom vrednošću \( f(x^*) = \tfrac{73}{5} = 14{,}6 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Parametrizujemo tačku \( M \) jednom promenljivom</h3>
+      <p>Pošto \( M \) leži na pravoj \( y = 2x + 1 \), možemo zapisati:</p>
+      <div class="math-block">\[ M = (x,\,2x + 1), \qquad x \in \mathbb{R}. \]</div>
+      <p>Ovim smo dvodimenzionalnu &bdquo;potragu&rdquo; sveli na <em>jednu</em> promenljivu \( x \) &mdash; jedini nepoznat parametar.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo \( MA^2 \)</h3>
+      <p>\( A = (-3, 0) \), pa:</p>
+      <div class="math-block">\[ MA^2 = (x - (-3))^2 + (2x + 1 - 0)^2 = (x + 3)^2 + (2x + 1)^2. \]</div>
+      <p>Razvijamo:</p>
+      <div class="math-block">\[ \begin{aligned}
+        (x + 3)^2 &= x^2 + 6x + 9, \\
+        (2x + 1)^2 &= 4x^2 + 4x + 1, \\[2pt]
+        MA^2 &= 5x^2 + 10x + 10.
+      \end{aligned} \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo \( MB^2 \)</h3>
+      <p>\( B = (-1, 3) \), pa:</p>
+      <div class="math-block">\[ MB^2 = (x - (-1))^2 + (2x + 1 - 3)^2 = (x + 1)^2 + (2x - 2)^2. \]</div>
+      <p>Razvijamo:</p>
+      <div class="math-block">\[ \begin{aligned}
+        (x + 1)^2 &= x^2 + 2x + 1, \\
+        (2x - 2)^2 &= 4x^2 - 8x + 4, \\[2pt]
+        MB^2 &= 5x^2 - 6x + 5.
+      \end{aligned} \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Sabiramo</h3>
+      <div class="math-block">\[ f(x) = MA^2 + MB^2 = (5x^2 + 10x + 10) + (5x^2 - 6x + 5) = 10x^2 + 4x + 15. \]</div>
+      <p>Dobili smo kvadratnu funkciju po \( x \) sa pozitivnim vodećim koeficijentom (\( a = 10 > 0 \)) &mdash; parabola otvorena nagore, minimum u temenu.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je vodeći koeficijent pozitivan?</summary>
+          <div class="detail-content"><p>Oba sabirka, \( MA^2 \) i \( MB^2 \), sadrže \( 5x^2 \) (jer iz \( y = 2x + 1 \) imamo \( y^2 \)-deo \( (2x + \dots)^2 \) sa \( 4x^2 \), plus \( x^2 \) iz \( x \)-dela = \( 5x^2 \)). Njihov zbir je \( 10x^2 \). Pozitivnost je geometrijski očigledna: kvadrat rastojanja je nenegativan, zbir teži ka \( +\infty \) kad \( |x| \to \infty \) &mdash; mora postojati globalni minimum.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Tražimo teme parabole</h3>
+      <div class="math-block">\[ x^* = -\dfrac{b}{2a} = -\dfrac{4}{2 \cdot 10} = -\dfrac{4}{20} = -\dfrac{1}{5}. \]</div>
+      <p>Minimum se postiže za \( x_M = -\tfrac{1}{5} \). Računamo \( y_M \) iz jednačine prave:</p>
+      <div class="math-block">\[ y_M = 2x_M + 1 = 2\!\left(-\tfrac{1}{5}\right) + 1 = -\tfrac{2}{5} + \tfrac{5}{5} = \tfrac{3}{5}. \]</div>
+      <div class="callout callout-success">
+        <p><span class="formula-label">Optimalna tačka</span>&nbsp; \( M\!\left(-\tfrac{1}{5},\ \tfrac{3}{5}\right) \).</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo zbir koordinata</h3>
+      <div class="math-block">\[ x_M + y_M = -\dfrac{1}{5} + \dfrac{3}{5} = \dfrac{2}{5}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="7">
+    <div class="step-badge">7</div>
+    <div class="step-content">
+      <h3 class="step-title">Geometrijska potvrda preko sredine duži</h3>
+      <p>Po paralelogramskom identitetu, za bilo koju tačku \( M \) i tačke \( A, B \) važi:</p>
+      <div class="math-block">\[ MA^2 + MB^2 = 2\,MS^2 + \tfrac{1}{2}\,AB^2, \qquad S = \tfrac{A + B}{2}. \]</div>
+      <p>Pošto je \( \tfrac{1}{2}AB^2 \) konstanta (ne zavisi od \( M \)), minimum se postiže kad je \( MS^2 \) najmanje &mdash; tj. \( M \) je <strong>podnožje normale</strong> iz \( S \) na pravu \( p \).</p>
+      <p>Računamo \( S = \left(\dfrac{-3 + (-1)}{2},\ \dfrac{0 + 3}{2}\right) = \left(-2,\ \dfrac{3}{2}\right) \).</p>
+      <p>Vektor od \( S \) do naše \( M \): \( \vec{SM} = \left(-\tfrac{1}{5} - (-2),\ \tfrac{3}{5} - \tfrac{3}{2}\right) = \left(\tfrac{9}{5},\ -\tfrac{9}{10}\right) \). Smerni vektor prave \( p \) (sa koeficijentom \( k = 2 \)) je \( (1, 2) \). Skalarni proizvod:</p>
+      <div class="math-block">\[ \vec{SM} \cdot (1, 2) = \tfrac{9}{5} \cdot 1 + \left(-\tfrac{9}{10}\right)\cdot 2 = \tfrac{9}{5} - \tfrac{9}{5} = 0. \]</div>
+      <p>\( \vec{SM} \perp p \) &mdash; potvrđuje da je \( M \) baš podnožje normale iz \( S \) na \( p \). ✓</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>&bdquo;Minimum zbira <em>kvadrata</em> rastojanja od dve tačke&rdquo; je suštinski <strong>jedan</strong> problem &mdash; minimum rastojanja od <em>sredine</em> tih tačaka. To je posledica paralelogramskog identiteta. Otud trik: zameni dva &bdquo;polja&rdquo; jednim, i geometrija postaje trivijalna (najbliža tačka na pravoj &mdash; to je podnožje normale). Pažnja: ovo se ne odnosi na zbir <em>samih</em> rastojanja \( MA + MB \) &mdash; tu se koristi <em>refleksija</em> (Heronov problem), drugačija ideja. Ako vidite kvadrate, mislite na sredinu; ako vidite obične rastojanja, mislite na refleksiju.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ x_M + y_M = -\dfrac{1}{5} + \dfrac{3}{5} = \dfrac{2}{5} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( -1 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 1 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 3 \)</span>
+    <span class="answer-option" data-option="D">(D) \( -\dfrac{2}{5} \)</span>
+    <span class="answer-option correct" data-option="E">(E) \( \dfrac{2}{5} \)</span>
+  </div>
+  <p class="verification">Provera: za \( M\!\left(-\tfrac{1}{5},\,\tfrac{3}{5}\right) \) imamo \( MA^2 = \left(\tfrac{14}{5}\right)^2 + \left(\tfrac{3}{5}\right)^2 = \tfrac{196 + 9}{25} = \tfrac{205}{25} \) i \( MB^2 = \left(\tfrac{4}{5}\right)^2 + \left(-\tfrac{12}{5}\right)^2 = \tfrac{16 + 144}{25} = \tfrac{160}{25} \). Zbir \( = \tfrac{365}{25} = \tfrac{73}{5} = 14{,}6 \), što se poklapa sa \( f(-\tfrac{1}{5}) = 10 \cdot \tfrac{1}{25} + 4 \cdot \!\left(-\tfrac{1}{5}\right) + 15 = \tfrac{2}{5} - \tfrac{4}{5} + 15 = \tfrac{73}{5} \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pomešati \( MA^2 + MB^2 \) sa \( MA + MB \).</strong> Prvo se rešava preko sredine duži, drugo preko refleksije (Heronov problem). Daju različite tačke i različite minimumalne vrednosti. Pažljivo čitati: &bdquo;zbir <em>kvadrata</em> rastojanja&rdquo;.</li>
+    <li><strong>Greška u razvoju \( (2x - 2)^2 \).</strong> Pravilno: \( 4x^2 - 8x + 4 \). Tipične greške: \( 4x^2 + 4 \) (zaboraviti srednji član) ili \( 4x^2 - 4x + 4 \) (faktor 2 pri srednjem članu).</li>
+    <li><strong>Zaboraviti minus u temenu.</strong> Pisati \( x^* = \tfrac{b}{2a} = \tfrac{4}{20} = \tfrac{1}{5} \) (POGREŠAN ZNAK). Tada bi \( y^* = 2 \cdot \tfrac{1}{5} + 1 = \tfrac{7}{5} \), a \( x^* + y^* = \tfrac{8}{5} \) &mdash; čega nema u ponudi. Crvena zastava!</li>
+    <li><strong>Pomešati ulogu \( y \) u kvadratu rastojanja.</strong> Za \( MB^2 \) je \( y \)-koordinata razlike \( y_M - y_B = (2x + 1) - 3 = 2x - 2 \), a ne \( 2x + 3 \) niti \( 2x - 3 \).</li>
+    <li><strong>Tražiti zbir koordinata sredine \( S \).</strong> \( S = (-2, \tfrac{3}{2}) \), pa bi \( x_S + y_S = -\tfrac{1}{2} \) &mdash; pogrešno, jer \( S \) ne leži na pravoj \( p \). Tražena tačka je <em>projekcija</em> \( S \) na \( p \), a ne sama \( S \).</li>
+    <li><strong>Lažna intuicija &bdquo;najbliža tačka na pravoj jednom od \( A \) i \( B \)&rdquo;.</strong> Minimum nije podnožje normale iz \( A \) niti iz \( B \), nego iz <em>sredine</em> \( S \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Kako biste rešili sličan problem ali sa <em>tri</em> tačke: \( MA^2 + MB^2 + MC^2 \rightarrow \min \), gde \( M \) leži na zadatoj pravoj? Pokušajte da uopštite paralelogramski identitet za ovaj slučaj. Koja tačka igra ulogu &bdquo;sredine&rdquo;?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Za \( n \) tačaka važi: \( \sum_{i=1}^{n} MP_i^2 = n \cdot MG^2 + \sum_{i=1}^{n} GP_i^2 \), gde je \( G \) <em>centroid</em> (težište): \( G = \tfrac{1}{n}\sum P_i \). Drugi zbir ne zavisi od \( M \), pa minimum dobijamo kad je \( MG \) najmanje &mdash; podnožje normale iz centroida \( G \) na pravu. Za naš slučaj sa \( n = 2 \), centroid je sredina duži, pa se pravilo svodi na ono što smo koristili. Generalno, optimizacija sume kvadrata rastojanja od skupa tačaka je <em>uvek</em> centrirana na centroidu &mdash; to je razlog zbog kojeg metoda najmanjih kvadrata u statistici daje srednju vrednost.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('geom');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('A(−3, 0),  B(−1, 3),  S = sredina AB,  prava p: y = 2x + 1', W / 2, 28);
+
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Tačka M koja minimizuje MA² + MB² je podnožje normale iz S na p', W / 2, 48);
+
+    // Plot region
+    var plotLeft = 60;
+    var plotRight = W - 40;
+    var plotTop = 75;
+    var plotBottom = 500;
+    var plotWidth = plotRight - plotLeft;
+    var plotHeight = plotBottom - plotTop;
+
+    // Math coords: x in [-5, 3], y in [-3, 5]
+    var xMin = -5, xMax = 3;
+    var yMin = -3, yMax = 5;
+
+    // Use uniform scale
+    var sx = plotWidth / (xMax - xMin);
+    var sy = plotHeight / (yMax - yMin);
+    var scale = Math.min(sx, sy);
+    var originX = plotLeft + (-xMin) * scale + (plotWidth - (xMax - xMin) * scale) / 2;
+    var originY = plotBottom - (-yMin) * scale - (plotHeight - (yMax - yMin) * scale) / 2;
+
+    function tx(x) { return originX + x * scale; }
+    function ty(y) { return originY - y * scale; }
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 4]);
+    ctx.font = '10px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    for (var xv = xMin; xv <= xMax; xv++) {
+      ctx.beginPath();
+      ctx.moveTo(tx(xv), plotTop);
+      ctx.lineTo(tx(xv), plotBottom);
+      ctx.stroke();
+    }
+    for (var yv = yMin; yv <= yMax; yv++) {
+      ctx.beginPath();
+      ctx.moveTo(plotLeft, ty(yv));
+      ctx.lineTo(plotRight, ty(yv));
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    // x-axis
+    ctx.beginPath();
+    ctx.moveTo(plotLeft, ty(0));
+    ctx.lineTo(plotRight, ty(0));
+    ctx.stroke();
+    // y-axis
+    ctx.beginPath();
+    ctx.moveTo(tx(0), plotTop);
+    ctx.lineTo(tx(0), plotBottom);
+    ctx.stroke();
+
+    // Tick labels
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    ctx.font = '10px Segoe UI, system-ui, sans-serif';
+    for (var xv2 = xMin; xv2 <= xMax; xv2++) {
+      if (xv2 !== 0) ctx.fillText(String(xv2), tx(xv2), ty(0) + 14);
+    }
+    ctx.textAlign = 'right';
+    for (var yv2 = yMin; yv2 <= yMax; yv2++) {
+      if (yv2 !== 0) ctx.fillText(String(yv2), tx(0) - 5, ty(yv2) + 4);
+    }
+    ctx.textAlign = 'left';
+    ctx.fillText('0', tx(0) + 4, ty(0) + 14);
+
+    ctx.fillStyle = text;
+    ctx.font = 'italic 13px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('x', plotRight - 14, ty(0) - 6);
+    ctx.fillText('y', tx(0) + 8, plotTop + 14);
+
+    // Plot the line p: y = 2x + 1
+    ctx.strokeStyle = cv('--sol-canvas-primary');
+    ctx.lineWidth = 2.5;
+    // Find intersection with plot bounds
+    function lineY(x) { return 2 * x + 1; }
+    var pX1 = xMin, pY1 = lineY(pX1);
+    var pX2 = xMax, pY2 = lineY(pX2);
+    // Clip if y out of range
+    if (pY1 < yMin) { pX1 = (yMin - 1) / 2; pY1 = yMin; }
+    if (pY1 > yMax) { pX1 = (yMax - 1) / 2; pY1 = yMax; }
+    if (pY2 < yMin) { pX2 = (yMin - 1) / 2; pY2 = yMin; }
+    if (pY2 > yMax) { pX2 = (yMax - 1) / 2; pY2 = yMax; }
+    ctx.beginPath();
+    ctx.moveTo(tx(pX1), ty(pY1));
+    ctx.lineTo(tx(pX2), ty(pY2));
+    ctx.stroke();
+
+    // Label for line p
+    ctx.fillStyle = cv('--sol-canvas-primary');
+    ctx.font = 'bold 12px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('p:  y = 2x + 1', tx(1.3) + 5, ty(lineY(1.3)) - 8);
+
+    // Points A, B
+    var A = { x: -3, y: 0 };
+    var B = { x: -1, y: 3 };
+    var S = { x: -2, y: 1.5 };
+    var M = { x: -1/5, y: 3/5 };
+
+    // Segment AB (light)
+    ctx.strokeStyle = cvAlpha('--sol-canvas-danger', 0.5);
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(tx(A.x), ty(A.y));
+    ctx.lineTo(tx(B.x), ty(B.y));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Segments MA and MB (showing the distances being optimized)
+    ctx.strokeStyle = cvAlpha('--sol-canvas-secondary', 0.65);
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(tx(M.x), ty(M.y));
+    ctx.lineTo(tx(A.x), ty(A.y));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(tx(M.x), ty(M.y));
+    ctx.lineTo(tx(B.x), ty(B.y));
+    ctx.stroke();
+
+    // Mid label MA, MB
+    ctx.fillStyle = cv('--sol-canvas-secondary');
+    ctx.font = 'italic 11px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    var maMidX = (M.x + A.x) / 2, maMidY = (M.y + A.y) / 2;
+    var mbMidX = (M.x + B.x) / 2, mbMidY = (M.y + B.y) / 2;
+    ctx.fillText('MA', tx(maMidX), ty(maMidY) - 4);
+    ctx.fillText('MB', tx(mbMidX) + 8, ty(mbMidY) - 4);
+
+    // Normal line from S through M (perpendicular to p, slope = -1/2)
+    // Normal: y - 1.5 = -1/2 (x - (-2))  →  y = -x/2 + 1/2
+    function normalY(x) { return -x / 2 + 0.5; }
+    ctx.strokeStyle = cv('--sol-canvas-accent');
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    // Extend a bit beyond S and M for visibility
+    var nX1 = -3.5, nY1 = normalY(nX1);
+    var nX2 = 1.5,  nY2 = normalY(nX2);
+    ctx.beginPath();
+    ctx.moveTo(tx(nX1), ty(nY1));
+    ctx.lineTo(tx(nX2), ty(nY2));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = cv('--sol-canvas-accent');
+    ctx.font = 'bold 11px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('normala iz S', tx(nX2) - 10, ty(nY2) + 16);
+
+    // Right-angle marker at M
+    var ang = 0.18;
+    var sz = 10;
+    // direction along p
+    var dpx = 1, dpy = 2;
+    var dpLen = Math.hypot(dpx, dpy);
+    var ux = dpx / dpLen, uy = dpy / dpLen;
+    // perpendicular direction (toward S)
+    var vx = -uy, vy = ux;
+    // The right-angle square at M
+    var Mpx = tx(M.x), Mpy = ty(M.y);
+    var s1x = Mpx + ux * sz, s1y = Mpy - uy * sz;
+    var s2x = s1x + vx * sz, s2y = s1y - vy * sz;
+    var s3x = Mpx + vx * sz, s3y = Mpy - vy * sz;
+    ctx.strokeStyle = cv('--sol-canvas-accent');
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(s1x, s1y);
+    ctx.lineTo(s2x, s2y);
+    ctx.lineTo(s3x, s3y);
+    ctx.stroke();
+
+    // Plot points
+    function plotPoint(x, y, color, label, lx, ly, ringRadius) {
+      ringRadius = ringRadius || 0;
+      if (ringRadius) {
+        ctx.fillStyle = cvAlpha(color.replace('var', 'var'), 0.0);
+        ctx.strokeStyle = cvAlpha('--sol-canvas-highlight', 0.45);
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(tx(x), ty(y), ringRadius, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(tx(x), ty(y), 7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = cv('--sol-canvas-text');
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      ctx.fillStyle = color;
+      ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(label, tx(x) + lx, ty(y) + ly);
+    }
+
+    plotPoint(A.x, A.y,    cv('--sol-canvas-danger'),    'A(−3, 0)',         10, -10);
+    plotPoint(B.x, B.y,    cv('--sol-canvas-danger'),    'B(−1, 3)',         10, -10);
+    plotPoint(S.x, S.y,    cv('--sol-canvas-warning'),   'S(−2, 3/2)',       10, 18);
+    plotPoint(M.x, M.y,    cv('--sol-canvas-highlight'), 'M(−1/5, 3/5)',     12, 22, 14);
+
+    // Bottom info
+    var iry = 540;
+    ctx.textAlign = 'center';
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('x_M + y_M  =  −1/5  +  3/5  =  2/5', W / 2, iry);
+
+    ctx.font = 'italic 11px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('M je presek prave p i normale iz S na p — podnožje normale.', W / 2, iry + 22);
+
+    // Legend at top right
+    var lgX = W - 195, lgY = 78;
+    ctx.font = '11px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+
+    ctx.fillStyle = cv('--sol-canvas-danger');
+    ctx.beginPath(); ctx.arc(lgX, lgY, 5, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = text; ctx.fillText('A, B (date tačke)', lgX + 12, lgY + 4);
+
+    ctx.fillStyle = cv('--sol-canvas-warning');
+    ctx.beginPath(); ctx.arc(lgX, lgY + 18, 5, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = text; ctx.fillText('S — sredina AB', lgX + 12, lgY + 22);
+
+    ctx.fillStyle = cv('--sol-canvas-highlight');
+    ctx.beginPath(); ctx.arc(lgX, lgY + 36, 5, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = text; ctx.fillText('M — optimalna tačka', lgX + 12, lgY + 40);
+
+    ctx.strokeStyle = cv('--sol-canvas-primary');
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(lgX - 6, lgY + 56); ctx.lineTo(lgX + 8, lgY + 56); ctx.stroke();
+    ctx.fillStyle = text; ctx.fillText('prava p', lgX + 12, lgY + 60);
+
+    ctx.strokeStyle = cv('--sol-canvas-accent');
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath(); ctx.moveTo(lgX - 6, lgY + 74); ctx.lineTo(lgX + 8, lgY + 74); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = text; ctx.fillText('normala iz S', lgX + 12, lgY + 78);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('parabola-fx');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var highlight = cv('--sol-canvas-highlight');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('f(x) = MA² + MB² = 10x² + 4x + 15', W / 2, 30);
+
+    ctx.font = '12px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('parabola otvorena nagore;  teme u x* = −1/5,  f(x*) = 73/5 = 14,6', W / 2, 50);
+
+    var plotLeft = 70;
+    var plotRight = W - 40;
+    var plotTop = 80;
+    var plotBottom = 410;
+    var plotWidth = plotRight - plotLeft;
+    var plotHeight = plotBottom - plotTop;
+
+    // x range: [-1.5, 1.2], y range: [13, 25]
+    var xMin = -1.5, xMax = 1.2;
+    var yMin = 13, yMax = 25;
+
+    function tx(x) { return plotLeft + (x - xMin) / (xMax - xMin) * plotWidth; }
+    function ty(y) { return plotBottom - (y - yMin) / (yMax - yMin) * plotHeight; }
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 4]);
+    ctx.font = '10px Segoe UI, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+
+    var xTicks = [-1.5, -1, -0.5, -0.2, 0, 0.5, 1];
+    var xLabels = ['−1,5', '−1', '−0,5', '−1/5', '0', '0,5', '1'];
+    for (var i = 0; i < xTicks.length; i++) {
+      ctx.beginPath();
+      ctx.moveTo(tx(xTicks[i]), plotTop);
+      ctx.lineTo(tx(xTicks[i]), plotBottom);
+      ctx.stroke();
+      ctx.fillText(xLabels[i], tx(xTicks[i]), plotBottom + 16);
+    }
+
+    var yTicks = [14, 14.6, 16, 18, 20, 22, 24];
+    var yLabels = ['14', '73/5', '16', '18', '20', '22', '24'];
+    ctx.textAlign = 'right';
+    for (var j = 0; j < yTicks.length; j++) {
+      ctx.beginPath();
+      ctx.moveTo(plotLeft, ty(yTicks[j]));
+      ctx.lineTo(plotRight, ty(yTicks[j]));
+      ctx.stroke();
+      ctx.fillText(yLabels[j], plotLeft - 6, ty(yTicks[j]) + 4);
+    }
+    ctx.setLineDash([]);
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(plotLeft, ty(yMin));
+    ctx.lineTo(plotRight, ty(yMin));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(tx(xMin), plotTop);
+    ctx.lineTo(tx(xMin), plotBottom);
+    ctx.stroke();
+
+    ctx.fillStyle = text;
+    ctx.font = 'italic 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('f(x)', plotLeft - 6, plotTop + 12);
+    ctx.textAlign = 'left';
+    ctx.fillText('x', plotRight - 14, ty(yMin) + 14);
+
+    // Plot parabola
+    function f(x) { return 10 * x * x + 4 * x + 15; }
+
+    ctx.strokeStyle = cv('--sol-canvas-primary');
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    var first = true;
+    for (var k = 0; k <= 400; k++) {
+      var xv = xMin + (xMax - xMin) * k / 400;
+      var X = tx(xv), Y = ty(f(xv));
+      if (first) { ctx.moveTo(X, Y); first = false; }
+      else ctx.lineTo(X, Y);
+    }
+    ctx.stroke();
+
+    // Mark vertex (-0.2, 14.6)
+    var vx = -0.2, vy = 14.6;
+
+    // Dashed projection lines
+    ctx.strokeStyle = cv('--sol-canvas-accent');
+    ctx.setLineDash([5, 4]);
+    ctx.lineWidth = 1.3;
+    ctx.beginPath();
+    ctx.moveTo(tx(vx), ty(vy));
+    ctx.lineTo(tx(vx), ty(yMin));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(tx(vx), ty(vy));
+    ctx.lineTo(tx(xMin), ty(vy));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Vertex point
+    ctx.fillStyle = cv('--sol-canvas-accent');
+    ctx.beginPath();
+    ctx.arc(tx(vx), ty(vy), 9, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = cv('--sol-canvas-text');
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Glow ring
+    ctx.strokeStyle = cvAlpha('--sol-canvas-accent', 0.4);
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(tx(vx), ty(vy), 16, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Vertex label
+    ctx.fillStyle = cv('--sol-canvas-accent');
+    ctx.font = 'bold 13px Segoe UI, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('teme: (−1/5, 73/5)', tx(vx) + 14, ty(vy) - 10);
+    ctx.font = '11px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('MIN: f(x*) = 14,6', tx(vx) + 14, ty(vy) + 8);
+
+    // Comparison points
+    function comparisonPoint(x, label, off) {
+      ctx.fillStyle = cv('--sol-canvas-highlight');
+      ctx.beginPath();
+      ctx.arc(tx(x), ty(f(x)), 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = cv('--sol-canvas-highlight');
+      ctx.font = '11px Segoe UI, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, tx(x), ty(f(x)) + off);
+    }
+    comparisonPoint(0,  'f(0) = 15',   -10);
+    comparisonPoint(-1, 'f(−1) = 21',  -10);
+
+    // Bottom info
+    var iry = 460;
+    ctx.textAlign = 'center';
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Segoe UI, system-ui, sans-serif';
+    ctx.fillText('x* = −b/(2a) = −4/(2·10) = −1/5  ⇒  y* = 2x* + 1 = 3/5  ⇒  x* + y* = 2/5', W / 2, iry);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Tačka na pravoj koja minimizuje zbir kvadrata rastojanja",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["analitička geometrija", "rastojanje tačaka", "optimizacija", "kvadratna funkcija", "podnožje normale", "sredina duži", "paralelogramski identitet"]
+}
+BRAINSPARK_META-->

@@ -1,0 +1,695 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+PROBLEM: Neka je a najveci ceo broj za koji je nejednakost (x^2 + ax + 4)/(x^2 - x + 4) < 2 zadovoljena za svako realno x.
+Broj celih brojeva x za koje vazi log_x sqrt(63 - 2x) <= a jednak je: A) 22, B) 25, C) 23, D) 24, E) 0.
+
+DEO A — najveci ceo a:
+Imenilac x^2 - x + 4: D = 1 - 16 = -15 < 0, vodeci koeficijent +1, pa je >0 za sve x.
+Mozemo pomnoziti sa imeniocem bez okretanja:
+  x^2 + ax + 4 < 2(x^2 - x + 4)
+  0 < 2x^2 - 2x + 8 - x^2 - ax - 4
+  0 < x^2 - (a+2)x + 4
+Vazi za svako x iff diskriminanta < 0 (jer je vodeci koef +):
+  (a+2)^2 - 16 < 0
+  -4 < a + 2 < 4
+  -6 < a < 2
+Najveci ceo broj a u (-6, 2) je a = 1.
+
+DEO B — broj celih x sa log_x sqrt(63 - 2x) <= 1:
+Domen:
+  baza: x > 0 i x != 1.
+  argument: 63 - 2x > 0  ⇒ x < 31.5  ⇒ za cele: x ≤ 31. Takodje moramo sqrt(...) > 0, tj. argument > 0 (ne >=0, jer log od 0 nije def). Dakle 63 - 2x > 0.
+  Stoga ceo x ∈ {1,...} ali x != 1 i x ≤ 31 i x > 0. Tj. ceo x ∈ {2,3,...,31} (pretpostavka x>0, jer je baza >0).
+
+Dva slucaja po bazi:
+
+Slucaj 1: x > 1 (baza > 1, log rasta).
+  log_x sqrt(63-2x) <= 1  ⇔  sqrt(63-2x) <= x^1 = x  (zato sto je log_x rastuca i log_x x = 1)
+  Obe strane >= 0 (sqrt >= 0, x > 1 > 0), pa kvadriramo:
+    63 - 2x <= x^2
+    x^2 + 2x - 63 >= 0
+    (x+9)(x-7) >= 0
+    x <= -9 ili x >= 7.
+  Sa uslovom x > 1 i x ceo i x ≤ 31: x ∈ {7, 8, ..., 31}.
+  Broj: 31 - 7 + 1 = 25.
+
+Slucaj 2: 0 < x < 1 (baza < 1, log opadajuca).
+  log_x sqrt(63-2x) <= 1  ⇔  sqrt(63-2x) >= x  (smer se okrece jer je log opadajuca)
+  Obe strane >= 0, kvadriramo:
+    63 - 2x >= x^2
+    x^2 + 2x - 63 <= 0
+    -9 <= x <= 7.
+  Sa uslovom 0 < x < 1 ovo je trivijalno tacno, ali NEMA celih u (0,1).
+
+Provera granica:
+  x = 7:  sqrt(63 - 14) = sqrt(49) = 7. log_7 7 = 1 <= 1 ✓
+  x = 31: sqrt(63 - 62) = sqrt(1) = 1. log_31 1 = 0 <= 1 ✓
+  x = 6:  sqrt(63 - 12) = sqrt(51) ≈ 7.14. log_6 7.14 ≈ log(7.14)/log(6) = 1.967/1.792 ≈ 1.098 > 1 ✗
+  x = 32: 63-64 = -1 < 0, nije u domenu ✗
+  x = 1: nije u domenu (baza ne sme biti 1) ✗
+  x = 0: nije u domenu ✗
+
+Ukupno: 25 celih.
+
+Odgovor: (B) 25.
+
+VIZUEL 1: graf y = (x^2 + ax + 4)/(x^2 - x + 4) za nekoliko vrednosti a (npr. a=1, 2, 0, -6) i prava y=2.
+   Za a=1: kriva ostaje strogo ispod y=2 (uslov ispunjen).
+   Za a=2: kriva dodiruje y=2 (granica, nije <).
+   Za a=-6: kriva dodiruje y=2 sa druge strane.
+   Za a=0,-1: takodje ispod y=2.
+
+VIZUEL 2: brojevna prava sa celim brojevima 1..32, oznaceni:
+   x=1 izbacen (nije baza), x=2..6 odbaceno (log > 1), x=7..31 prihvaceno (zeleno, 25 brojeva), x=32 izbacen (van domena).
+
+ZAMKE:
+- Pomnoziti nejednakost sa imeniocem bez provere znaka — ovde je ok jer je >0, ali bi inace bila greska.
+- Zaboraviti slucaj 0 < x < 1 (gde se smer okrece) — slucajno bi se moglo dobiti dodatne resenja, ali ovde nema celih u tom intervalu.
+- log_x je definisan samo za x > 0, x != 1 — i argument > 0.
+- Neuracunati x = 7 (granica) ili x = 31 (gornja granica domena).
+- Pogresno tumacenje "najveci ceo broj a" — ne najveci u {-5,...,1} nego najveci ceo unutar otvorenog intervala (-6,2), to je 1, ne 2.
+</script>
+
+<h1 data-card="problem-title">Racionalna nejednakost sa parametrom i logaritamska nejednakost</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — uvek pozitivan imenilac, diskriminanta, logaritamske nejednakosti zavisne od baze</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Neka je \( a \) najveći ceo broj za koji je nejednakost</p>
+  <div class="math-block">\[ \frac{x^2 + ax + 4}{x^2 - x + 4} < 2 \]</div>
+  <p>zadovoljena za svako realno \( x \). Broj celih brojeva \( x \) za koje važi</p>
+  <div class="math-block">\[ \log_x \sqrt{63 - 2x} \leq a \]</div>
+  <p>jednak je:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 22 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 25 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 23 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 24 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 0 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Zadatak razdvajamo na <strong>dva dela</strong>: (1) odredimo najveći ceo \( a \) za koji racionalna nejednakost važi za svaki realan \( x \) — koristeći činjenicu da je imenilac uvek pozitivan, svodimo na uslov da diskriminanta bude negativna; (2) sa tim \( a \) rešavamo logaritamsku nejednakost po dva slučaja u zavisnosti od toga da li je baza \( x > 1 \) ili \( 0 < x < 1 \), pa brojimo cele \( x \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Kvadratni trinomi, diskriminanta i logaritmi</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Trinom uvek pozitivan</span> Za \( ax^2 + bx + c \) sa \( a > 0 \) i \( D = b^2 - 4ac < 0 \), trinom je strogo pozitivan za sve realne \( x \).</li>
+        <li><span class="formula-label">Množenje pozitivnim</span> Ako je \( g(x) > 0 \) za sve \( x \), tada \( \dfrac{f(x)}{g(x)} < 2 \iff f(x) < 2g(x) \) bez obrtanja smera.</li>
+        <li><span class="formula-label">Domen logaritma</span> \( \log_x y \) je definisan akko \( x > 0,\ x \neq 1,\ y > 0 \).</li>
+        <li><span class="formula-label">Smer logaritma</span> Ako je baza \( x > 1 \), \( \log_x \) je rastuća, pa \( \log_x A \leq B \iff A \leq x^B \). Ako je \( 0 < x < 1 \), \( \log_x \) je opadajuća, pa \( \log_x A \leq B \iff A \geq x^B \) — smer se obrće.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Familija krivih y = (x²+ax+4)/(x²−x+4)">
+  <h2>📐 Kriva u zavisnosti od parametra a — kada ostaje ispod prave y = 2</h2>
+  <div class="canvas-wrapper">
+    <canvas id="curveFamily" width="760" height="540"></canvas>
+  </div>
+  <p class="canvas-caption">Plave krive su \( y = \dfrac{x^2 + ax + 4}{x^2 - x + 4} \) za vrednosti \( a \in \{-6, -3, 0, 1, 2\} \). Prava \( y = 2 \) označava granicu. Za \( a = 1 \) (zelena, podebljana) cela kriva je <em>strogo</em> ispod \( y = 2 \). Za \( a = 2 \) ili \( a = -6 \) kriva dodiruje pravu — uslov nije ispunjen. Najveći ceo \( a \) iz otvorenog intervala \( (-6, 2) \) je \( \boxed{a = 1} \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Imenilac \( x^2 - x + 4 \) je uvek pozitivan</h3>
+      <p>Diskriminanta imenioca je \( D = (-1)^2 - 4\cdot 1\cdot 4 = 1 - 16 = -15 < 0 \), a vodeći koeficijent \( 1 > 0 \). Dakle \( x^2 - x + 4 > 0 \) za svako realno \( x \).</p>
+      <div class="callout callout-info">
+        <p>Posledica: pri množenju nejednakosti sa imeniocem <strong>smer se ne menja</strong>, što čini analizu mnogo lakšom.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Svodimo na kvadratnu nejednakost po \( x \)</h3>
+      <p>Pomnožimo sa \( x^2 - x + 4 > 0 \):</p>
+      <div class="math-block">\[ x^2 + ax + 4 < 2\bigl(x^2 - x + 4\bigr). \]</div>
+      <p>Sređujemo:</p>
+      <div class="math-block">\[ 0 < 2x^2 - 2x + 8 - x^2 - ax - 4 = x^2 - (a+2)x + 4. \]</div>
+      <p>Treba dakle da kvadratni trinom \( x^2 - (a+2)x + 4 \) bude <strong>strogo pozitivan</strong> za svako realno \( x \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Uslov: diskriminanta negativna</h3>
+      <p>Vodeći koeficijent je \( 1 > 0 \). Trinom je strogo pozitivan za svako \( x \) akko diskriminanta je strogo negativna:</p>
+      <div class="math-block">\[ D = (a+2)^2 - 4\cdot 1\cdot 4 = (a+2)^2 - 16 < 0. \]</div>
+      <p>Iz \( (a+2)^2 < 16 \) sledi \( |a+2| < 4 \), tj.</p>
+      <div class="math-block">\[ -4 < a + 2 < 4 \quad\Longrightarrow\quad -6 < a < 2. \]</div>
+      <p>Najveći <em>ceo</em> broj koji strogo zadovoljava \( a < 2 \) (i \( a > -6 \)) je \( a = 1 \). <span class="result">a = 1</span></p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto ne \( a = 2 \)?</summary>
+          <div class="detail-content"><p>Za \( a = 2 \) je \( (a+2)^2 - 16 = 16 - 16 = 0 \). Tada trinom \( x^2 - 4x + 4 = (x-2)^2 \) ima nulu u \( x = 2 \), pa nije <em>strogo</em> pozitivan svuda. Polazna nejednakost u \( x = 2 \) postaje jednakost \( 2 = 2 \), a traženo je \( < 2 \) — pa \( a = 2 \) ne radi.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Druga nejednakost: domen i razdvajanje po bazi</h3>
+      <p>Sa \( a = 1 \) treba rešiti</p>
+      <div class="math-block">\[ \log_x \sqrt{63 - 2x} \leq 1. \]</div>
+      <p><strong>Domen.</strong> Logaritam zahteva:</p>
+      <ul>
+        <li>baza \( x > 0 \) i \( x \neq 1 \),</li>
+        <li>argument \( \sqrt{63-2x} > 0 \), tj. \( 63 - 2x > 0 \), pa \( x < 31{,}5 \).</li>
+      </ul>
+      <p>Za cele \( x \) zato je \( x \in \{2, 3, 4, \dots, 31\} \) (uz \( x > 0,\ x \neq 1,\ x \leq 31 \)). Sada razdvajamo dva slučaja po bazi.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj \( x > 1 \) — log je rastuća</h3>
+      <div class="substep" data-substep="a)">
+        <p><strong>(a)</strong> Pošto je \( \log_x x = 1 \), nejednakost \( \log_x \sqrt{63-2x} \leq 1 = \log_x x \) postaje (rastuća funkcija čuva smer):</p>
+        <div class="math-block">\[ \sqrt{63 - 2x} \leq x. \]</div>
+      </div>
+      <div class="substep" data-substep="b)">
+        <p><strong>(b)</strong> Obe strane su nenegativne (leva \( \geq 0 \) jer je koren, desna \( > 0 \) jer je \( x > 1 \)), pa smemo da kvadriramo:</p>
+        <div class="math-block">\[ 63 - 2x \leq x^2 \quad\Longleftrightarrow\quad x^2 + 2x - 63 \geq 0. \]</div>
+      </div>
+      <div class="substep" data-substep="c)">
+        <p><strong>(c)</strong> Faktorizacija: \( x^2 + 2x - 63 = (x - 7)(x + 9) \). Nejednakost \( (x-7)(x+9) \geq 0 \) važi za</p>
+        <div class="math-block">\[ x \leq -9 \quad\text{ili}\quad x \geq 7. \]</div>
+      </div>
+      <div class="substep" data-substep="d)">
+        <p><strong>(d)</strong> Presek sa uslovima \( x > 1 \), \( x \leq 31 \), \( x \) ceo: dobijamo \( x \in \{7, 8, 9, \dots, 31\} \). Broj celih: \( 31 - 7 + 1 = \mathbf{25} \).</p>
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: \( x = 7 \) i \( x = 31 \) graničnih slučajeva</summary>
+          <div class="detail-content">
+            <p>\( x = 7 \): \( \sqrt{63 - 14} = \sqrt{49} = 7 \). Tada \( \log_7 7 = 1 \leq 1 \). ✓</p>
+            <p>\( x = 31 \): \( \sqrt{63 - 62} = \sqrt{1} = 1 \). Tada \( \log_{31} 1 = 0 \leq 1 \). ✓</p>
+            <p>\( x = 6 \): \( \sqrt{63 - 12} = \sqrt{51} \approx 7{,}14 \). Tada \( \log_6 7{,}14 \approx 1{,}10 > 1 \). ✗ (Ne ispunjava — pravilno isključen.)</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj \( 0 < x < 1 \) — log je opadajuća</h3>
+      <p>Smer se <strong>obrće</strong>: \( \log_x \sqrt{63-2x} \leq 1 = \log_x x \) daje</p>
+      <div class="math-block">\[ \sqrt{63 - 2x} \geq x. \]</div>
+      <p>Obe strane su nenegativne, kvadriramo: \( 63 - 2x \geq x^2 \), tj. \( x^2 + 2x - 63 \leq 0 \), tj. \( -9 \leq x \leq 7 \). To je trivijalno tačno na celom \( (0, 1) \), ali u \( (0, 1) \) <strong>nema celih brojeva</strong>. Ovaj slučaj <em>ne donosi nove cele \( x \)</em>.</p>
+      <div class="callout callout-warning">
+        <p>Pažnja: ne sme se zaboraviti ovaj slučaj — kod drugih zadataka može doneti nove cele rešenja. Ovde slučajno ne donosi.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="7">
+    <div class="step-badge">7</div>
+    <div class="step-content">
+      <h3 class="step-title">Spajamo i prebrojavamo</h3>
+      <p>Skup celih \( x \) koji zadovoljavaju polaznu logaritamsku nejednakost je</p>
+      <div class="math-block">\[ \{7, 8, 9, \ldots, 31\}, \]</div>
+      <p>što sadrži tačno \( 31 - 7 + 1 = 25 \) celih brojeva. <span class="result">Odgovor: 25</span></p>
+    </div>
+  </div>
+</div>
+
+<div data-card="visual-aid" data-title="Brojevna prava — celobrojna rešenja">
+  <h2>📐 Celi brojevi koji zadovoljavaju \( \log_x\sqrt{63-2x}\leq 1 \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="numberLine" width="760" height="380"></canvas>
+  </div>
+  <p class="canvas-caption">Zelene tačke (\( 7, 8, \dots, 31 \)) zadovoljavaju nejednakost; crveni krugovi (\( 1 \) — nedopuštena baza, \( 2, \dots, 6 \) — log prelazi \( 1 \), \( 32+ \) — van domena \( \sqrt{63-2x} \)) ne zadovoljavaju. Ukupno: \( 25 \) celih.</p>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Problem prepliće dva trika koji se kombinuju jednom: (1) <strong>uvek pozitivan imenilac</strong> pretvara racionalnu nejednakost u običnu kvadratnu — bez okretanja znaka — i svodi parametar na uslov \( D < 0 \); (2) <strong>baza logaritma</strong> određuje smer nejednakosti. Kad je \( \log_x x = 1 \), uslov \( \log_x A \leq 1 \) prirodno postaje \( A \leq x \) (za \( x>1 \)) odnosno \( A \geq x \) (za \( 0<x<1 \)).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ a = 1,\quad x \in \{7, 8, 9, \ldots, 31\},\quad |\,\cdot\,| = 25. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 22 \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( 25 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 23 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 24 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 0 \)</span>
+  </div>
+  <p class="verification">Provera krajeva: \( x=7 \Rightarrow \log_7 7 = 1 \leq 1 \) ✓, \( x=31 \Rightarrow \log_{31} 1 = 0 \leq 1 \) ✓, \( x=6 \Rightarrow \log_6\sqrt{51}\approx 1{,}10 > 1 \) ✗, \( x=32 \Rightarrow 63-64<0 \) van domena ✗.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Uzimanje \( a = 2 \) kao odgovor.</strong> Pravi uslov je \( -6 < a < 2 \), <em>strogo</em>, jer je traženo \( D < 0 \). Najveći ceo strogo manji od \( 2 \) je \( 1 \).</li>
+    <li><strong>Ignorisanje slučaja \( 0 < x < 1 \) u logaritamskoj nejednakosti.</strong> Iako ovde nema celih, kod sličnih zadataka može doneti nove rešenja — uvek razmotriti oba.</li>
+    <li><strong>Zaborav uslova \( x \neq 1 \) za bazu logaritma.</strong> \( \log_1 \) nije definisan; \( x = 1 \) treba isključiti čak i ako bi „algebarski“ prošao.</li>
+    <li><strong>Korišćenje \( 63 - 2x \geq 0 \) umesto \( > 0 \).</strong> \( x = 31{,}5 \) bi dao \( \sqrt{0} = 0 \), a \( \log_x 0 \) nije definisan. Cela rešenja \( x = 31 \) prolaze tek granično jer je \( 63 - 62 = 1 > 0 \).</li>
+    <li><strong>Greška u faktorizaciji \( x^2 + 2x - 63 \).</strong> Ispravno: \( (x-7)(x+9) \), ne \( (x-9)(x+7) \).</li>
+    <li><strong>Brojanje \( 31 - 7 = 24 \) umesto \( 31 - 7 + 1 = 25 \).</strong> Klasična off-by-one zamka pri prebrojavanju celih u zatvorenom intervalu.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Da je u prvoj nejednakosti tražen <em>najmanji</em> ceo broj \( a \) za koji važi za svako \( x \), koje je \( a \) i koliko bi tada bilo celih rešenja druge nejednakosti? Šta ako u drugoj nejednakosti zamenimo \( \leq a \) sa \( \leq a^2 \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Iz \( -6 < a < 2 \) sledi da je najmanji ceo \( a = -5 \). Tada se traži \( \log_x\sqrt{63-2x} \leq -5 \), tj. \( \sqrt{63-2x} \leq x^{-5} = \dfrac{1}{x^5} \) (za \( x > 1 \)). Pošto je \( \sqrt{63-2x} \geq 1 \) za \( x \leq 31 \) (jer je \( 63-2x \geq 1 \)) a \( 1/x^5 \) je <em>jako malen</em> za \( x \geq 2 \), nejednakost neće biti zadovoljena ni u jednom celom \( x > 1 \). Slučaj \( 0<x<1 \) opet nema celih. Dakle, broj rešenja bi bio \( 0 \). Za \( a^2 = 1 \) (kvadrat od \( 1 \)) odgovor je isti — \( 25 \).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, a) {
+    var c = cv(name);
+    if (c.charAt(0) === '#') {
+      var r = parseInt(c.slice(1,3),16), g = parseInt(c.slice(3,5),16), b = parseInt(c.slice(5,7),16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('curveFamily');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function f(x, a) {
+    return (x*x + a*x + 4) / (x*x - x + 4);
+  }
+
+  // Plot range
+  var xMin = -8, xMax = 8;
+  var yMin = -1, yMax = 4;
+
+  var padL = 70, padR = 30, padT = 60, padB = 80;
+  var W, H;
+
+  function toCanvas(x, y) {
+    return {
+      cx: padL + (x - xMin) / (xMax - xMin) * W,
+      cy: padT + (yMax - y) / (yMax - yMin) * H
+    };
+  }
+
+  function draw() {
+    styles = getComputedStyle(root);
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var danger    = cv('--sol-canvas-danger');
+    var warning   = cv('--sol-canvas-warning');
+    var tertiary  = cv('--sol-canvas-tertiary');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    W = canvas.width - padL - padR;
+    H = canvas.height - padT - padB;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('y = (x² + a·x + 4) / (x² − x + 4)  za razne vrednosti a', canvas.width/2, 28);
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var gx = Math.ceil(xMin); gx <= Math.floor(xMax); gx++) {
+      var p = toCanvas(gx, 0);
+      ctx.beginPath();
+      ctx.moveTo(p.cx, padT);
+      ctx.lineTo(p.cx, padT + H);
+      ctx.stroke();
+    }
+    for (var gy = Math.ceil(yMin); gy <= Math.floor(yMax); gy++) {
+      var q = toCanvas(0, gy);
+      ctx.beginPath();
+      ctx.moveTo(padL, q.cy);
+      ctx.lineTo(padL + W, q.cy);
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.6;
+    var origin = toCanvas(0, 0);
+    // x-axis
+    ctx.beginPath();
+    ctx.moveTo(padL, origin.cy);
+    ctx.lineTo(padL + W, origin.cy);
+    ctx.stroke();
+    // y-axis
+    ctx.beginPath();
+    ctx.moveTo(origin.cx, padT);
+    ctx.lineTo(origin.cx, padT + H);
+    ctx.stroke();
+
+    // Axis labels
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var lx = Math.ceil(xMin); lx <= Math.floor(xMax); lx += 2) {
+      if (lx === 0) continue;
+      var lp = toCanvas(lx, 0);
+      ctx.fillText(String(lx), lp.cx, origin.cy + 14);
+    }
+    ctx.textAlign = 'right';
+    for (var ly = Math.ceil(yMin); ly <= Math.floor(yMax); ly++) {
+      if (ly === 0) continue;
+      var lq = toCanvas(0, ly);
+      ctx.fillText(String(ly), origin.cx - 6, lq.cy + 4);
+    }
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    var xax = toCanvas(xMax, 0);
+    ctx.fillText('x', xax.cx + 12, origin.cy + 4);
+    var yax = toCanvas(0, yMax);
+    ctx.fillText('y', origin.cx - 14, yax.cy - 6);
+
+    // Line y = 2 (boundary)
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    var lineY = toCanvas(xMin, 2).cy;
+    ctx.beginPath();
+    ctx.moveTo(padL, lineY);
+    ctx.lineTo(padL + W, lineY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = danger;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('y = 2  (granica)', padL + 8, lineY - 6);
+
+    // Plot curves
+    function plot(a, color, lineWidth) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineWidth;
+      ctx.beginPath();
+      var first = true;
+      var N = 600;
+      for (var i = 0; i <= N; i++) {
+        var x = xMin + (xMax - xMin) * i / N;
+        var y = f(x, a);
+        if (!isFinite(y)) { first = true; continue; }
+        if (y < yMin - 1 || y > yMax + 1) { first = true; continue; }
+        var p = toCanvas(x, y);
+        if (first) { ctx.moveTo(p.cx, p.cy); first = false; }
+        else ctx.lineTo(p.cx, p.cy);
+      }
+      ctx.stroke();
+    }
+
+    // a = -6 (touches y=2 from one side)
+    plot(-6, secondary, 1.5);
+    // a = -3
+    plot(-3, tertiary, 1.5);
+    // a = 0
+    plot(0, warning, 1.5);
+    // a = 1 (the answer — bold green)
+    plot(1, accent, 3);
+    // a = 2 (touches y=2)
+    plot(2, primary, 1.5);
+
+    // Legend
+    var lx0 = padL + W - 170, ly0 = padT + 12;
+    ctx.fillStyle = cvAlpha('--sol-canvas-bg', 0.92);
+    ctx.fillRect(lx0 - 8, ly0 - 8, 170, 110);
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(lx0 - 8, ly0 - 8, 170, 110);
+
+    var legend = [
+      { col: secondary, lab: 'a = −6  (dodir y=2)' },
+      { col: tertiary,  lab: 'a = −3  (ispod)' },
+      { col: warning,   lab: 'a =  0  (ispod)' },
+      { col: accent,    lab: 'a =  1  ✓  najveći', bold: true },
+      { col: primary,   lab: 'a =  2  (dodir y=2)' }
+    ];
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    for (var i = 0; i < legend.length; i++) {
+      var item = legend[i];
+      ctx.strokeStyle = item.col;
+      ctx.lineWidth = item.bold ? 3 : 1.8;
+      ctx.beginPath();
+      ctx.moveTo(lx0, ly0 + i*18 + 6);
+      ctx.lineTo(lx0 + 24, ly0 + i*18 + 6);
+      ctx.stroke();
+      ctx.fillStyle = item.bold ? accent : text;
+      ctx.font = item.bold ? 'bold 12px Inter, system-ui, sans-serif' : '12px Inter, system-ui, sans-serif';
+      ctx.fillText(item.lab, lx0 + 30, ly0 + i*18 + 10);
+    }
+
+    // Bottom caption
+    ctx.fillStyle = text;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Uslov: kriva strogo ispod y = 2  ⇔  −6 < a < 2  ⇒  najveći ceo a = 1.', canvas.width/2, canvas.height - 22);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, a) {
+    var c = cv(name);
+    if (c.charAt(0) === '#') {
+      var r = parseInt(c.slice(1,3),16), g = parseInt(c.slice(3,5),16), b = parseInt(c.slice(5,7),16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('numberLine');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    styles = getComputedStyle(root);
+    var bg        = cv('--sol-canvas-bg');
+    var axis      = cv('--sol-canvas-axis');
+    var accent    = cv('--sol-canvas-accent');
+    var danger    = cv('--sol-canvas-danger');
+    var warning   = cv('--sol-canvas-warning');
+    var muted     = cv('--sol-canvas-muted');
+    var text      = cv('--sol-canvas-text');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Celi brojevi x koji zadovoljavaju  log_x √(63 − 2x) ≤ 1', canvas.width/2, 30);
+
+    // Number line from 0 to 33
+    var xLeft = 0, xRight = 33;
+    var padL = 50, padR = 30;
+    var lineY = 200;
+    var W = canvas.width - padL - padR;
+
+    function px(n) { return padL + (n - xLeft) / (xRight - xLeft) * W; }
+
+    // Main line
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(padL, lineY);
+    ctx.lineTo(padL + W, lineY);
+    ctx.stroke();
+
+    // Arrow
+    ctx.beginPath();
+    ctx.moveTo(padL + W, lineY);
+    ctx.lineTo(padL + W - 10, lineY - 5);
+    ctx.lineTo(padL + W - 10, lineY + 5);
+    ctx.closePath();
+    ctx.fillStyle = axis;
+    ctx.fill();
+
+    // Tick marks and labels every 5
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var n = 0; n <= 33; n++) {
+      var x = px(n);
+      var tickLen = (n % 5 === 0) ? 8 : 4;
+      ctx.strokeStyle = axis;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x, lineY - tickLen);
+      ctx.lineTo(x, lineY + tickLen);
+      ctx.stroke();
+      if (n % 5 === 0) {
+        ctx.fillStyle = muted;
+        ctx.fillText(String(n), x, lineY + 22);
+      }
+    }
+
+    // Mark each integer x with appropriate dot
+    for (var k = 1; k <= 32; k++) {
+      var px_ = px(k);
+      var col, ring, label;
+      if (k === 1) {
+        // Excluded: base = 1
+        col = danger; ring = false;
+      } else if (k >= 2 && k <= 6) {
+        // Excluded: log > 1
+        col = warning; ring = false;
+      } else if (k >= 7 && k <= 31) {
+        // Solution
+        col = accent; ring = true;
+      } else if (k === 32) {
+        // Excluded: out of domain
+        col = danger; ring = false;
+      }
+
+      if (ring) {
+        // Glow ring
+        ctx.beginPath();
+        ctx.arc(px_, lineY, 9, 0, Math.PI*2);
+        ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.25);
+        ctx.fill();
+      }
+      ctx.beginPath();
+      ctx.arc(px_, lineY, 5, 0, Math.PI*2);
+      ctx.fillStyle = col;
+      ctx.fill();
+      ctx.strokeStyle = col;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+
+    // Brackets / zone labels
+    ctx.font = '12px Inter, system-ui, sans-serif';
+
+    // Zone "x = 1, x = 32: domen"
+    ctx.fillStyle = danger;
+    ctx.textAlign = 'center';
+    ctx.fillText('x = 1: baza', px(1), lineY - 18);
+    ctx.fillText('= 1, ne važi', px(1), lineY - 6);
+    ctx.fillText('x = 32: 63 − 2x < 0', px(32), lineY - 18);
+    ctx.fillText('van domena', px(32), lineY - 6);
+
+    // Zone 2..6: log > 1
+    ctx.fillStyle = warning;
+    ctx.textAlign = 'center';
+    var midL = (px(2) + px(6))/2;
+    ctx.fillText('x ∈ {2,…,6}: log_x √(63−2x) > 1', midL, lineY + 50);
+
+    // Bracket below for {7..31}
+    var b7 = px(7), b31 = px(31);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(b7, lineY + 70);
+    ctx.lineTo(b7, lineY + 78);
+    ctx.lineTo(b31, lineY + 78);
+    ctx.lineTo(b31, lineY + 70);
+    ctx.stroke();
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('x ∈ {7, 8, …, 31}  →  ukupno 25 celih brojeva', (b7 + b31)/2, lineY + 100);
+
+    // Verification box
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.12);
+    ctx.fillRect(padL, canvas.height - 52, canvas.width - padL - padR, 36);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(padL, canvas.height - 52, canvas.width - padL - padR, 36);
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Provera krajeva: x = 7 daje √49 = 7, log_7 7 = 1 ✓     x = 31 daje √1 = 1, log_31 1 = 0 ✓', canvas.width/2, canvas.height - 28);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Racionalna nejednakost sa parametrom + log nejednakost",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["nejednačine", "diskriminanta", "logaritamske nejednačine", "domen logaritma", "parametarska analiza", "celobrojna rešenja"]
+}
+BRAINSPARK_META-->

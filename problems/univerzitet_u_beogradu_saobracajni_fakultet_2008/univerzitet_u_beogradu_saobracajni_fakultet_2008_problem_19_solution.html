@@ -1,0 +1,514 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Naci broj celih brojeva x za koje vazi 6 - x < 3*sqrt(4 - x).
+
+Korak po korak:
+1) Domen: 4 - x >= 0  => x <= 4.
+2) Smena: t = sqrt(4 - x), t >= 0. Tada je 4 - x = t^2, pa x = 4 - t^2.
+   Levo: 6 - x = 6 - (4 - t^2) = t^2 + 2.
+   Desno: 3 * sqrt(4 - x) = 3t.
+3) Nejednakost postaje t^2 + 2 < 3t  <=>  t^2 - 3t + 2 < 0  <=>  (t - 1)(t - 2) < 0  =>  1 < t < 2.
+4) Vracanje na x:  1 < sqrt(4 - x) < 2.  Posto su sve velicine pozitivne, kvadriramo:
+   1 < 4 - x < 4.  Iz prve: 4 - x > 1 => x < 3.  Iz druge: 4 - x < 4 => x > 0.
+   Dakle 0 < x < 3 (i x <= 4 je automatski).
+5) Celi brojevi u (0, 3): x ∈ {1, 2}. Ima ih 2.
+
+Provera (rucno za x = 1, 2, 3, 0):
+- x = 0: LHS = 6, RHS = 3*sqrt(4) = 6. 6 < 6 NIJE tacno (strogo manje), ne ulazi.
+- x = 1: LHS = 5, RHS = 3*sqrt(3) ≈ 3*1{,}732 = 5{,}196. 5 < 5{,}196 ✓.
+- x = 2: LHS = 4, RHS = 3*sqrt(2) ≈ 3*1{,}414 = 4{,}243. 4 < 4{,}243 ✓.
+- x = 3: LHS = 3, RHS = 3*sqrt(1) = 3. 3 < 3 NIJE tacno.
+- x = 4: LHS = 2, RHS = 0. 2 < 0 NIJE tacno.
+- x < 0 (npr. x = -1): LHS = 7, RHS = 3*sqrt(5) ≈ 6{,}708. 7 < 6{,}708 NIJE.
+Sve poklapa: tacno 2 celobrojna resenja {1, 2}.
+
+Tacan odgovor: (A) 2.
+
+Mapiranje opcija PDF (А, Ц, Е, Г, И) -> (A, B, C, D, E):
+- А (2) -> A  ← TACAN
+- Ц (4) -> B
+- Е (1) -> C
+- Г (5) -> D
+- И (3) -> E
+
+Vizuelni prikaz: staticki — graf y = 6 - x (prava) i y = 3*sqrt(4 - x) (deformisani luk korenske krive,
+pad sa rasta od x → -∞ ka x = 4 gde y = 0). Senciti vertikalnu trakicu 0 < x < 3 gde je sqrt-kriva
+iznad prave. Istaci celobrojne tacke x = 1 i x = 2 na x-osi. Domen x <= 4 oznacen krug i strelicu.
+
+Zasto staticki: glavna stvar je algebarska smena i kvadriranje; graf samo potvrdjuje. Nema slobodnog
+parametra koji student treba prevuci. Staticki dijagram sa jasno obelezenim integerima i regionom je
+vise nego dovoljan i bolji od interaktivnog.
+
+Pitfalls:
+- Direktno kvadriranje obe strane bez provere znaka 6 - x: ako je 6 - x < 0, smer nejednakosti se ne
+  cuva pa moramo zasebno tretirati taj slucaj (ovde se ipak ispostavi prazan jer x <= 4 znaci 6 - x >= 2 > 0).
+- Zaboravljanje na domen 4 - x >= 0.
+- Greska pri vracanju iz t-promenljive: kvadriranje 1 < t < 2 daje 1 < t^2 < 4 = 1 < 4 - x < 4, ne 4 - x ∈ {1,4}.
+- Pogresno racunanje da je x = 0 ili x = 3 ulazi (ali tu je jednakost, ne strogo manje).
+- Brojanje x = 4 kao resenja (taj slucaj daje 2 < 0 — netacno).
+</script>
+
+<h1 data-card="problem-title">Iracionalna nejednakost — koliko celih rešenja?</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — iracionalne nejednakosti, smena promenljive, kvadrati i kvadratni koren</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Celih brojeva \( x \), za koje važi nejednakost</p>
+  <div class="math-block">
+    \[ 6 - x \;<\; 3\sqrt{4 - x}, \]
+  </div>
+  <p>ima:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 4 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 5 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Prvo definišemo domen iz uslova \( 4 - x \ge 0 \). Zatim uvodimo smenu \( t = \sqrt{4 - x} \ge 0 \), čime nejednakost prelazi u jednostavnu kvadratnu \( t^2 - 3t + 2 < 0 \). Rešenje \( 1 < t < 2 \) vraćamo u \( x \) i prebrojimo cele brojeve u dobijenom intervalu.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Iracionalne nejednakosti i smena promenljive</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Domen korena</span> Izraz \( \sqrt{A} \) ima smisla samo ako je \( A \ge 0 \). Pre svakog rada — proveri domen.</li>
+        <li><span class="formula-label">Smena \( t = \sqrt{f(x)} \)</span> Uvek \( t \ge 0 \). Tada je \( f(x) = t^2 \), pa polinom u \( \sqrt{\,\cdot\,} \) postaje polinom u \( t \).</li>
+        <li><span class="formula-label">Kvadratna nejednakost</span> \( (t - r_1)(t - r_2) < 0 \) važi tačno za \( t \) između korena: \( r_1 < t < r_2 \) (uz \( r_1 < r_2 \)).</li>
+        <li><span class="formula-label">Kvadriranje očuva smer</span> Ako su \( a, b \ge 0 \), tada \( a < b \iff a^2 < b^2 \). Za pozitivne brojeve kvadriranje je „bezopasno“.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz nejednakosti">
+  <h2>📐 Vizuelni prikaz nejednakosti</h2>
+  <div class="canvas-wrapper">
+    <canvas id="ineq-canvas" width="720" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Plava prava \( y = 6 - x \) i ljubičasta kriva \( y = 3\sqrt{4 - x} \). Kriva je iznad prave tačno na intervalu \( (0,\ 3) \) — to je rešenje nejednakosti. Celobrojne vrednosti \( x = 1 \) i \( x = 2 \) (zelene tačke) leže u tom intervalu, dok \( x = 0 \) i \( x = 3 \) (crvene tačke) daju jednakost \( 6 - x = 3\sqrt{4 - x} \) i ne ulaze.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Određujemo domen</h3>
+      <p>Pošto se ispod korena pojavljuje izraz \( 4 - x \), zahtevamo</p>
+      <div class="math-block">
+        \[ 4 - x \;\ge\; 0 \;\Longrightarrow\; x \;\le\; 4. \]
+      </div>
+      <p>Sva traženja rešenja moramo držati u poluintervalu \( (-\infty,\ 4] \).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto ne pišemo \( 4 - x > 0 \) sa strogim znakom?</summary>
+          <div class="detail-content"><p>Kvadratni koren je definisan i u \( 0 \): \( \sqrt{0} = 0 \). Strogo \( > 0 \) bi nepotrebno isključilo \( x = 4 \), iako je \( \sqrt{0} \) sasvim regularno. Domen je \( x \le 4 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Smena \( t = \sqrt{4 - x} \)</h3>
+      <p>Uvodimo \( t = \sqrt{4 - x} \), gde je \( t \ge 0 \). Tada je</p>
+      <div class="math-block">
+        \[ t^2 \;=\; 4 - x, \qquad x \;=\; 4 - t^2. \]
+      </div>
+      <p>Leva strana nejednakosti se sređuje na</p>
+      <div class="math-block">
+        \[ 6 - x \;=\; 6 - (4 - t^2) \;=\; t^2 + 2. \]
+      </div>
+      <p>Desna strana je naprosto \( 3t \). Polazna nejednakost postaje:</p>
+      <div class="math-block">
+        \[ t^2 + 2 \;<\; 3t. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Rešavamo kvadratnu nejednakost po \( t \)</h3>
+      <p>Sve prebacujemo na jednu stranu:</p>
+      <div class="math-block">
+        \[ t^2 - 3t + 2 \;<\; 0 \;\;\Longleftrightarrow\;\; (t - 1)(t - 2) \;<\; 0. \]
+      </div>
+      <p>Proizvod dva linearna člana je negativan tačno između nula, pa je</p>
+      <div class="math-block">
+        \[ 1 \;<\; t \;<\; 2. \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( (t - 1)(t - 2) < 0 \) tačno za \( 1 < t < 2 \)?</summary>
+          <div class="detail-content"><p>Faktori menjaju znak u tačkama \( t = 1 \) i \( t = 2 \). Za \( t < 1 \) oba su negativna (proizvod \( + \)); za \( 1 < t < 2 \) prvi je \( + \), drugi \( - \) (proizvod \( - \)); za \( t > 2 \) oba su \( + \) (proizvod \( + \)). Tražimo upravo srednji intervalu — strogo između korena.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Vraćamo se na \( x \)</h3>
+      <p>Pošto je \( t = \sqrt{4 - x} \ge 0 \), nejednakost \( 1 < t < 2 \) ima sve pozitivne članove, pa smemo da kvadriramo bez promene smera:</p>
+      <div class="math-block">
+        \[ 1^2 \;<\; t^2 \;<\; 2^2 \;\Longrightarrow\; 1 \;<\; 4 - x \;<\; 4. \]
+      </div>
+      <p>Razdvojimo na dve jednostavne nejednakosti:</p>
+      <div class="math-block">
+        \[ \begin{aligned} 4 - x &> 1 \;\Longleftrightarrow\; x < 3,\\[2pt] 4 - x &< 4 \;\Longleftrightarrow\; x > 0. \end{aligned} \]
+      </div>
+      <p>Spajamo: <span class="result">\( 0 < x < 3 \)</span>. Uslov \( x \le 4 \) iz domena je automatski ispunjen.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Brojimo cele brojeve u \( (0,\ 3) \)</h3>
+      <p>Strogo veće od \( 0 \) i strogo manje od \( 3 \): jedini celi brojevi su</p>
+      <div class="math-block">
+        \[ x \in \{\, 1,\ 2 \,\}. \]
+      </div>
+      <p>Ima ih <strong>tačno \( 2 \)</strong>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Numerička provera</h3>
+      <p>Da budemo sigurni, uvrstimo „granične“ vrednosti i kandidate:</p>
+      <div class="math-block">
+        \[ \begin{array}{c|c|c|c} x & 6 - x & 3\sqrt{4 - x} & \text{LHS} < \text{RHS}? \\ \hline 0 & 6 & 6 & \text{ne (jednako)} \\ 1 & 5 & 3\sqrt{3} \approx 5{,}196 & \text{da} \\ 2 & 4 & 3\sqrt{2} \approx 4{,}243 & \text{da} \\ 3 & 3 & 3 & \text{ne (jednako)} \\ 4 & 2 & 0 & \text{ne} \end{array} \]
+      </div>
+      <p>Sve se slaže: jedino \( x = 1 \) i \( x = 2 \) zadovoljavaju strogu nejednakost. ✓</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Smena \( t = \sqrt{4 - x} \) je „magični trik“ za iracionalne nejednakosti gde se isti potkorenski izraz javlja i pod korenom i van njega. Polinom u \( x \) sa korenskim članom postaje običan polinom u \( t \) — kvadratna nejednakost \( t^2 - 3t + 2 < 0 \) se rešava trenutno. Pošto je \( t \ge 0 \), kvadriranje \( 1 < t < 2 \) ne menja smer, pa se vraćanje na \( x \) odvija bez ikakvih dodatnih slučajeva.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Direktno kvadriranje obe strane.</strong> Ako bismo bez razmišljanja kvadrirali \( 6 - x < 3\sqrt{4 - x} \), moramo se uveriti da je \( 6 - x \ge 0 \), inače smer nejednakosti zavisi od znaka. Smena \( t = \sqrt{4 - x} \) tu komplikaciju potpuno zaobilazi.</li>
+    <li><strong>Zaboravljanje domena \( x \le 4 \).</strong> Ako se zanemari, riskira se „rešenje“ koje uopšte nije u domenu (gde \( \sqrt{4 - x} \) nije realan).</li>
+    <li><strong>Pogrešno kvadriranje \( 1 < t < 2 \).</strong> Ne sme se napisati \( 1 < t^2 < 2 \) — to je greška. Kvadriranje pozitivnih granica daje \( 1 < t^2 < 4 \), tj. \( 1 < 4 - x < 4 \).</li>
+    <li><strong>Brojanje krajnjih celih.</strong> Tačke \( x = 0 \) i \( x = 3 \) daju jednakost \( 6 - x = 3\sqrt{4 - x} \), a tražimo strogu nejednakost — ne ulaze. Ne treba ih brojati.</li>
+    <li><strong>Uključivanje \( x = 4 \).</strong> Tu je leva strana \( 2 \) a desna \( 0 \): \( 2 < 0 \) je netačno.</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \text{Skup celih rešenja:}\;\; \{\, 1,\ 2 \,\},\quad \text{broj rešenja} = 2. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 2 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 4 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 1 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 5 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 3 \)</span>
+  </div>
+  <p class="verification">Provera: \( x = 1 \Rightarrow 5 < 3\sqrt{3} \approx 5{,}196 \) ✓; \( x = 2 \Rightarrow 4 < 3\sqrt{2} \approx 4{,}243 \) ✓. Susedi \( x = 0 \) i \( x = 3 \) daju tačno jednakost (ne stroga \( < \)). Dakle tačno \( 2 \) celobrojna rešenja.</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koliko celih brojeva \( x \) zadovoljava nejednakost \( 8 - x \le 4\sqrt{5 - x} \)? Pokušaj istom metodom — uvedi smenu \( t = \sqrt{5 - x} \) i pažljivo prati i znak jednakosti.</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Domen: \( x \le 5 \). Smena \( t = \sqrt{5 - x} \ge 0 \) daje \( 8 - x = 8 - (5 - t^2) = t^2 + 3 \). Nejednakost: \( t^2 + 3 \le 4t \Leftrightarrow t^2 - 4t + 3 \le 0 \Leftrightarrow (t-1)(t-3) \le 0 \Rightarrow 1 \le t \le 3 \). Kvadrirajući: \( 1 \le 5 - x \le 9 \Rightarrow -4 \le x \le 4 \). Celi brojevi: \( \{-4,-3,-2,-1,0,1,2,3,4\} \) — ukupno \( 9 \). Mali test: \( x = 4 \Rightarrow 4 \le 4 \) ✓; \( x = -4 \Rightarrow 12 \le 4\sqrt{9} = 12 \) ✓.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('ineq-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('y = 6 − x  i  y = 3·√(4 − x)', canvas.width / 2, 14);
+
+    // Plot area
+    var plotLeft = 60, plotRight = canvas.width - 30;
+    var plotTop = 50, plotBottom = canvas.height - 80;
+    var xMin = -3, xMax = 5;
+    var yMin = -1, yMax = 11;
+
+    function tx(x) { return plotLeft + (x - xMin) / (xMax - xMin) * (plotRight - plotLeft); }
+    function ty(y) { return plotBottom - (y - yMin) / (yMax - yMin) * (plotBottom - plotTop); }
+
+    // Shaded solution band 0 < x < 3
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.18);
+    ctx.fillRect(tx(0), plotTop, tx(3) - tx(0), plotBottom - plotTop);
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var gx = Math.ceil(xMin); gx <= Math.floor(xMax); gx++) {
+      ctx.beginPath();
+      ctx.moveTo(tx(gx), plotTop);
+      ctx.lineTo(tx(gx), plotBottom);
+      ctx.stroke();
+    }
+    for (var gy = Math.ceil(yMin); gy <= Math.floor(yMax); gy += 1) {
+      ctx.beginPath();
+      ctx.moveTo(plotLeft, ty(gy));
+      ctx.lineTo(plotRight, ty(gy));
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    // x-axis (y = 0)
+    ctx.beginPath();
+    ctx.moveTo(plotLeft, ty(0));
+    ctx.lineTo(plotRight, ty(0));
+    ctx.stroke();
+    // y-axis (x = 0)
+    ctx.beginPath();
+    ctx.moveTo(tx(0), plotTop);
+    ctx.lineTo(tx(0), plotBottom);
+    ctx.stroke();
+
+    // Axis tick labels
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (var tk = Math.ceil(xMin); tk <= Math.floor(xMax); tk++) {
+      if (tk === 0) continue;
+      ctx.fillText(String(tk), tx(tk), ty(0) + 4);
+    }
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (var ty2 = Math.ceil(yMin); ty2 <= Math.floor(yMax); ty2 += 2) {
+      if (ty2 === 0) continue;
+      ctx.fillText(String(ty2), tx(0) - 5, ty(ty2));
+    }
+    // O label
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'top';
+    ctx.fillText('O', tx(0) - 4, ty(0) + 3);
+
+    // Domain boundary x = 4 (vertical dashed)
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(tx(4), plotTop);
+    ctx.lineTo(tx(4), plotBottom);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = warning;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('domen: x ≤ 4', tx(4) + 6, plotTop + 4);
+
+    // Plot the line y = 6 - x  (primary, blue)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    var first = true;
+    for (var px = xMin; px <= xMax; px += 0.05) {
+      var py = 6 - px;
+      if (py < yMin || py > yMax) { first = true; continue; }
+      var X = tx(px), Y = ty(py);
+      if (first) { ctx.moveTo(X, Y); first = false; } else { ctx.lineTo(X, Y); }
+    }
+    ctx.stroke();
+
+    // Plot the curve y = 3*sqrt(4 - x)  (secondary, purple) — only for x <= 4
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    first = true;
+    for (var qx = xMin; qx <= 4; qx += 0.02) {
+      var qy = 3 * Math.sqrt(4 - qx);
+      if (qy < yMin || qy > yMax) { first = true; continue; }
+      var X2 = tx(qx), Y2 = ty(qy);
+      if (first) { ctx.moveTo(X2, Y2); first = false; } else { ctx.lineTo(X2, Y2); }
+    }
+    ctx.stroke();
+
+    // Crossing points: x = 0 (y = 6) and x = 3 (y = 3) — equality
+    ctx.fillStyle = danger;
+    var cps = [{x:0, y:6, label:'(0, 6)'}, {x:3, y:3, label:'(3, 3)'}];
+    for (var i = 0; i < cps.length; i++) {
+      var cp = cps[i];
+      ctx.beginPath();
+      ctx.arc(tx(cp.x), ty(cp.y), 5.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.fillStyle = danger;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('(0, 6) — jednako', tx(0) + 8, ty(6));
+    ctx.fillText('(3, 3) — jednako', tx(3) + 8, ty(3));
+
+    // Integer solutions x = 1, 2 marked on x-axis as green dots with values shown
+    ctx.fillStyle = accent;
+    var sols = [
+      {x:1, lhs:5, rhs:3*Math.sqrt(3)},
+      {x:2, lhs:4, rhs:3*Math.sqrt(2)}
+    ];
+    for (var k = 0; k < sols.length; k++) {
+      var s = sols[k];
+      // line value
+      ctx.beginPath();
+      ctx.arc(tx(s.x), ty(s.lhs), 4.5, 0, Math.PI * 2);
+      ctx.fill();
+      // curve value
+      ctx.beginPath();
+      ctx.arc(tx(s.x), ty(s.rhs), 4.5, 0, Math.PI * 2);
+      ctx.fill();
+      // vertical connector dashed
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 1.2;
+      ctx.setLineDash([3, 3]);
+      ctx.beginPath();
+      ctx.moveTo(tx(s.x), ty(s.lhs));
+      ctx.lineTo(tx(s.x), ty(s.rhs));
+      ctx.stroke();
+      ctx.setLineDash([]);
+      // x-label below axis
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText('x = ' + s.x, tx(s.x), ty(0) + 22);
+    }
+
+    // Function labels near the curves
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = primary;
+    ctx.fillText('y = 6 − x', tx(-2.6), ty(8.5));
+    ctx.fillStyle = secondary;
+    ctx.fillText('y = 3·√(4 − x)', tx(-2.8), ty(10.3));
+
+    // Solution interval label
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('rešenje: 0 < x < 3', tx(1.5), ty(-0.5));
+
+    // Bottom legend / caption
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    var legY = canvas.height - 56;
+    var legX = plotLeft;
+    // green swatch
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.35);
+    ctx.fillRect(legX, legY, 16, 12);
+    ctx.fillStyle = muted;
+    ctx.fillText('zelena traka: kriva iznad prave  (rešenje nejednakosti)', legX + 22, legY);
+    // red dot swatch
+    ctx.fillStyle = danger;
+    ctx.beginPath();
+    ctx.arc(legX + 8, legY + 28, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = muted;
+    ctx.fillText('crvene tačke: jednakost (granične, ne ulaze)', legX + 22, legY + 22);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Iracionalna nejednakost 6 − x < 3√(4 − x): broj celih rešenja",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["iracionalne nejednakosti", "smena promenljive", "kvadratna nejednakost", "celobrojna rešenja"]
+}
+BRAINSPARK_META-->

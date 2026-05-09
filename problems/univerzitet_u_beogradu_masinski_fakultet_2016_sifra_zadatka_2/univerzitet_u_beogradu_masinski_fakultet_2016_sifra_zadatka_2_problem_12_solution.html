@@ -1,0 +1,1073 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: A rhombus of area 15 rotates 360° around one of its sides. Find the surface area
+  of the resulting solid of revolution.
+
+  Setup:
+  Let the rhombus have side a and altitude (height between two parallel sides) h.
+  The area of a rhombus is base × height: P = a · h = 15.
+  Place side AB on the x-axis as the rotation axis: A = (0,0), B = (a,0).
+  Let α be the interior angle at A. Then:
+    D = (a·cosα, a·sinα) = (a·cosα, h)   (since h = a·sinα)
+    C = B + (a·cosα, h) = (a + a·cosα, h)
+  Sides:
+    AB on axis (length a)
+    AD: from A(0,0) to D(a·cosα, h), length a, NOT on axis (slants away from axis)
+    DC: from D to C, length a, parallel to AB at height h
+    CB: from C(a + a·cosα, h) to B(a, 0), vector (-a·cosα, -h), length a
+
+  Rotation around line AB (x-axis):
+  Each side traces a surface of revolution.
+  - AB lies on axis → traces nothing (zero area).
+  - AD: a slanted line from y=0 (at A) to y=h (at D) → traces a CONE.
+       Slant length = a (length of AD), base radius = h (max distance from axis).
+       Lateral cone area = π · r · slant = π · h · a.
+  - DC: horizontal segment at height y=h, length a → traces a CYLINDRICAL SURFACE.
+       Radius = h, length = a.
+       Lateral area = 2π · h · a.
+  - CB: a slanted line from y=h (at C) to y=0 (at B) → traces another CONE (reverse direction).
+       Same dimensions: slant a, base radius h. Area = π · h · a.
+
+  Total surface area = π·a·h + 2π·a·h + π·a·h = 4π·a·h = 4π · 15 = 60π.
+
+  IMPORTANT: This assumes 0 < α < π/2 (the rhombus is "above" AB and doesn't fold back).
+  For α between 0 and π/2, the cone from AD has its apex at A and opens to the right.
+  The cone from CB has its apex at B and opens to the left.
+  These cones extend from the axis up to the cylinder.
+
+  But wait — the angle α at A. If α is acute, then cosα > 0, so D's x-coordinate a·cosα > 0,
+  meaning D is to the right of A. C = (a + a·cosα, h) is to the right of B.
+  Then AD-cone opens away from A toward x = a·cosα.
+  CB-cone goes from C (above and right of B) down to B; it opens from B toward x = a + a·cosα.
+  These two cones are in opposite "directions" but both are full cones.
+
+  Actually, for α obtuse, cosα < 0, so D is to the LEFT of A. The cone from AD now
+  has its apex at A and opens to the left (negative x). The geometry differs but the
+  formulas (slant=a, radius=h) remain. Total surface still equals 4πah = 60π.
+
+  Note: there are no "caps" / disks at the bases because:
+  - AB is on the axis, no area there.
+  - The endpoints A, B, C, D rotate to form circles, but the surfaces meet along these circles.
+  - The cone from AD ends at the circle at height h (radius h), which is the same circle the cylinder starts on. So they share boundary; no extra cap.
+  - Similarly the cone from CB shares its top boundary with the cylinder.
+  - So the solid is "closed" without extra disks.
+
+  Answer: 4 · 15 · π = 60π → (B).
+</script>
+
+<h1 data-card="problem-title">Površina rotacionog tela dobijenog rotacijom romba oko stranice</h1>
+<p data-card="problem-subtitle" class="subtitle">Geometrija — rotaciono telo, omotač konusa i cilindra</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Romb površine \( 15 \) rotira oko jedne svoje stranice. Površina tako dobijenog tela je:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">\( P_{\text{romb}} \)</span>
+      <span class="given-value">\( 15 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">osa rotacije</span>
+      <span class="given-value">jedna stranica romba</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 30\pi \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 60\pi \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( (60 + 15\sqrt{3})\pi \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \left(60 + \dfrac{15\sqrt{3}}{2}\right)\pi \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 90\pi \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Postavimo stranicu rotacije kao osu i identifikujemo šta svaka od preostale tri stranice romba „crta" pri rotaciji. Dobijamo dve konuse i jedan cilindar — sabraćemo njihove omotače. Pokazaćemo da je zbir uvek jednak \( 4\pi \cdot P_{\text{romb}} \), bez obzira na ugao romba.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Površina romba:</strong> \( P = a \cdot h \), gde je \( a \) stranica, a \( h \) visina (rastojanje između dve paralelne stranice).</li>
+        <li><strong>Omotač cilindra:</strong> ako rotiramo duž paralelnu osi (rastojanja \( r \) od ose, dužine \( \ell \)) oko ose, dobijamo bočnu površinu cilindra \( M_{\text{cil}} = 2\pi r \ell \).</li>
+        <li><strong>Omotač konusa:</strong> ako rotiramo kosu duž oko ose (jedan kraj na osi, drugi na rastojanju \( r \), dužina duži je \( s \) — izvodnica), dobijamo bočnu površinu konusa \( M_{\text{kon}} = \pi r s \).</li>
+        <li><strong>Stranica na osi:</strong> ne crta površinu (njena rotacija je sama osa).</li>
+        <li><strong>Bez „kapica":</strong> pošto su krugovi na granicama konusa i cilindra istog poluprečnika \( h \), oni se savršeno spajaju — nema dodatnih ravnih površina.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Romb pre rotacije">
+  <h2>📐 Romb \( ABCD \) sa osom rotacije \( AB \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-rhomb" width="700" height="480"></canvas>
+  </div>
+  <p class="canvas-caption">Stranica \( AB \) leži na osi rotacije (biće „zaleđena" tokom okretanja). Stranica \( DC \) je paralelna sa \( AB \) i nalazi se na visini \( h \). Stranice \( AD \) i \( BC \) su kose i spajaju ova dva nivoa.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Rotaciono telo: konus + cilindar + konus">
+  <h2>📐 Dobijeno rotaciono telo</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-solid" width="700" height="480"></canvas>
+  </div>
+  <p class="canvas-caption">Pri rotaciji za \( 360° \): stranica \( AD \) crta omotač konusa (vrh u \( A \)), \( DC \) crta omotač cilindra poluprečnika \( h \), a \( BC \) crta još jedan konus (vrh u \( B \)). Površina svake od tri komponente sadrži zajednički množilac \( a \cdot h \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Razlaganje površine">
+  <h2>📐 Tri doprinosa u zbiru</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-decomp" width="700" height="430"></canvas>
+  </div>
+  <p class="canvas-caption">Svaka od tri površine se izražava preko \( a \) i \( h \). Sabiranjem dobijamo \( 4\pi a h = 4\pi \cdot P_{\text{romb}} \) — rezultat <em>ne zavisi</em> od ugla romba.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Označimo stranicu i visinu romba</h3>
+      <p>Neka je \( a \) stranica romba, a \( h \) njegova visina (rastojanje između dve paralelne stranice). Površina romba je:</p>
+      <div class="math-block">\[ P = a \cdot h = 15 \]</div>
+      <p>Veza sa uglom: ako je \( \alpha \) unutrašnji ugao romba, onda \( h = a\sin\alpha \). Vrednost \( a\cdot h = 15 \) je <em>jedini</em> podatak koji ćemo koristiti — pokazaće se da rezultat ne zavisi od \( \alpha \) posebno.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavimo osu rotacije</h3>
+      <p>Neka stranica \( AB \) leži na osi rotacije. Tada:</p>
+      <ul>
+        <li>\( AB \) je <strong>na osi</strong>, dužine \( a \), na visini \( 0 \).</li>
+        <li>\( DC \) je <strong>paralelna</strong> sa \( AB \) (jer je romb paralelogram), dužine \( a \), na visini \( h \).</li>
+        <li>\( AD \) ide od \( A \) (na osi) do \( D \) (na visini \( h \)) — <strong>kosa duž</strong>.</li>
+        <li>\( BC \) ide od \( B \) (na osi) do \( C \) (na visini \( h \)) — <strong>kosa duž</strong>.</li>
+      </ul>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( DC \) na visini tačno \( h \)?</summary>
+          <div class="detail-content"><p>Visina romba je definisana kao rastojanje između paralelnih stranica \( AB \) i \( DC \). Ako \( AB \) leži na osi (visina \( 0 \)), onda \( DC \) leži na rastojanju \( h \) — to je upravo definicija visine.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Šta crta svaka stranica pri rotaciji?</h3>
+      <p>Kada se romb okrene za \( 360° \) oko \( AB \), svaka stranica crta neku površinu:</p>
+      <div class="substep" data-substep="a)">
+        <p><strong>Stranica \( AB \):</strong> leži na osi, pa pri rotaciji ostaje na osi. <em>Ne crta površinu.</em></p>
+      </div>
+      <div class="substep" data-substep="b)">
+        <p><strong>Stranica \( AD \):</strong> jedan kraj (\( A \)) je na osi (\( y = 0 \)), drugi kraj (\( D \)) je na rastojanju \( h \). Pri rotaciji crta <strong>omotač konusa</strong> sa vrhom u \( A \), poluprečnikom osnove \( h \) i izvodnicom \( a \) (dužina \( AD \)).</p>
+        <div class="math-block">\[ M_1 = \pi \cdot h \cdot a \]</div>
+      </div>
+      <div class="substep" data-substep="c)">
+        <p><strong>Stranica \( DC \):</strong> paralelna je osi, na rastojanju \( h \). Pri rotaciji crta <strong>omotač cilindra</strong> poluprečnika \( h \) i visine (dužine duž ose) \( a \).</p>
+        <div class="math-block">\[ M_2 = 2\pi \cdot h \cdot a \]</div>
+      </div>
+      <div class="substep" data-substep="d)">
+        <p><strong>Stranica \( BC \):</strong> simetrična ulozi \( AD \) — jedan kraj (\( B \)) je na osi, drugi (\( C \)) na rastojanju \( h \). Crta <strong>još jedan omotač konusa</strong>, identičnih dimenzija kao prvi.</p>
+        <div class="math-block">\[ M_3 = \pi \cdot h \cdot a \]</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Da li ima „kapica" (ravnih disk-površina)?</h3>
+      <p>Konus iz \( AD \) završava se kružnicom poluprečnika \( h \) (krug koji opisuje tačka \( D \)). Cilindar iz \( DC \) <em>počinje</em> upravo tom istom kružnicom (krug koji opisuje \( D \)). Granice se savršeno spajaju — nema potrebe za dodatnim diskom.</p>
+      <p>Slično, cilindar se završava kružnicom (krug tačke \( C \)), a konus iz \( BC \) počinje istom kružnicom. Ponovo nema kapice.</p>
+      <p>Stranica \( AB \), iako je na osi, ne ostavlja „rupu" — telo je između tačaka \( A \) i \( B \) zatvoreno samim konusima koji u tim tačkama imaju svoje vrhove.</p>
+      <div class="callout callout-info">
+        <p><strong>Zaključak:</strong> ukupna površina je samo zbir tri omotača — bez dodatnih ravnih površina.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Sabiramo doprinose</h3>
+      <div class="math-block">\[ M = M_1 + M_2 + M_3 = \pi a h + 2\pi a h + \pi a h = 4\pi a h \]</div>
+      <p>Iskoristimo dato \( a h = 15 \):</p>
+      <div class="math-block">\[ M = 4\pi \cdot 15 = 60\pi \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto rezultat ne zavisi od ugla \( \alpha \)?</summary>
+          <div class="detail-content"><p>Iz veze \( h = a\sin\alpha \) i \( P = ah = 15 \) vidimo da \( a \) i \( h \) <em>zajedno</em> definišu površinu. Za isti romb različitog oblika (npr. „spljošten" sa malim \( \alpha \) ili „uspravljen" sa \( \alpha \) blizu \( 90° \)) menjaju se i \( a \) i \( h \), ali tako da im proizvod ostane \( 15 \). Pošto se cela formula \( 4\pi a h \) izražava kroz taj proizvod, rezultat je <em>invarijantan</em>.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Iznenađujuće elegantno: <em>oblik</em> romba uopšte nije bitan — samo njegova površina! Tri komponente (konus + cilindar + konus) imaju koeficijente \( 1 + 2 + 1 = 4 \), pa je ukupan omotač uvek \( 4\pi \cdot a h = 4\pi \cdot P_{\text{romb}} \). Trik je u tome da svaka stranica romba ima istu dužinu \( a \) i da je njena udaljenost od ose (gde nije na osi) jednaka punoj visini \( h \). To su upravo zajednički množioci u sve tri formule.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ M = 4\pi \cdot P_{\text{romb}} = 4\pi \cdot 15 = 60\pi \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 30\pi \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( 60\pi \)</span>
+    <span class="answer-option" data-option="C">(C) \( (60 + 15\sqrt{3})\pi \)</span>
+    <span class="answer-option" data-option="D">(D) \( \left(60 + \dfrac{15\sqrt{3}}{2}\right)\pi \)</span>
+    <span class="answer-option" data-option="E">(E) \( 90\pi \)</span>
+  </div>
+  <p class="verification">Provera za specijalan slučaj: kvadrat stranice \( a = \sqrt{15} \) (\( \alpha = 90° \)) ima visinu \( h = a = \sqrt{15} \). Rotacijom oko stranice dobija se cilindar visine \( a \) i poluprečnika \( h = a \), bez konusa (jer su \( AD \) i \( BC \) okomite na osu i rotacijom daju ravne diskove poluprečnika \( a \)). Površina = \( 2\pi a^2 + 2 \cdot \pi a^2 = 4\pi a^2 = 4\pi \cdot 15 = 60\pi \). ✓ Konzistentno čak i u graničnom slučaju!</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Računanje pretpostavkom da je romb kvadrat:</strong> ako se uzme \( \alpha = 90° \), greška se „srećno" ne desi (dobija se isti rezultat \( 60\pi \)), ali tehnički je rešenje nepotpuno — odgovor mora važiti <em>za svaki</em> ugao.</li>
+    <li><strong>Dodavanje ravnih kapica:</strong> neko može greškom dodati dva disk-a poluprečnika \( h \) (\( 2\pi h^2 \)) misleći da rotaciono telo mora biti „zatvoreno". Ali konus i cilindar dele istu graničnu kružnicu — kapice ne treba dodavati.</li>
+    <li><strong>Pogrešan omotač konusa:</strong> formula je \( \pi r s \), ne \( 2\pi r s \) — koeficijent \( 2 \) važi samo za cilindar (jer cilindar ima dva ruba, dok konus „ide u špic").</li>
+    <li><strong>Korišćenje pogrešne izvodnice konusa:</strong> izvodnica je dužina kose stranice \( AD = a \), a ne hipotenuza nekog drugog trougla. Bilo bi pogrešno staviti \( s = \sqrt{a^2 + h^2} \).</li>
+    <li><strong>Mešanje sa rotacijom oko dijagonale:</strong> da je romb rotirao oko dijagonale (a ne stranice), dobio bi se drugačiji solid (dva spojena konusa) i drugačija formula. Pažljivo pročitati postavku!</li>
+    <li><strong>Pretpostavka da \( \alpha \) mora biti \( 60° \) ili \( 30° \):</strong> da bi se „odgovor zaokružio", neko može pretpostaviti specifičan ugao i dobiti odgovor sa \( \sqrt{3} \) — to su zamke (C) i (D).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta ako bi romb rotirao oko jedne svoje <em>dijagonale</em> (umesto oko stranice)? Da li bi i tada rezultat bio nezavisan od ugla romba? Pokušaj da izvedeš formulu za površinu rotacionog tela u tom slučaju i uporedi je sa rezultatom \( 60\pi \).</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Kad romb rotira oko dijagonale, dobija se telo sastavljeno od <em>dva</em> konusa spojena bazama (jedan iznad ose, drugi ispod — ili tačnije, dvostruki konus). Omotač = \( 2 \cdot \pi r s \), gde je \( r \) polovina druge dijagonale, a \( s \) je stranica romba. Ako su dijagonale \( d_1 \) i \( d_2 \), onda \( r = d_2/2 \), \( s = a \). Pošto \( a^2 = (d_1/2)^2 + (d_2/2)^2 \) (Pitagora u rombu), formula <em>zavisi</em> od oblika romba — ne pojavljuje se zgodno skraćivanje kao kod rotacije oko stranice. Konkretno: \( M = 2\pi(d_2/2)\sqrt{(d_1/2)^2 + (d_2/2)^2} = \pi d_2 \cdot a \). Pa za istu površinu \( P = d_1 d_2/2 = 15 \) možeš dobiti različite \( M \) zavisno od izbora \( d_1, d_2 \).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-rhomb');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var textC = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var warning = cv('--sol-canvas-warning');
+    var danger = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = textC;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Romb pre rotacije:  AB je osa rotacije', W / 2, 26);
+
+    // Choose representative angle α = 60° (just for visualization). Side a chosen for nice display.
+    var alpha = Math.PI / 3;
+    var a = 4;
+    var h = a * Math.sin(alpha); // = 4·(√3/2) ≈ 3.46
+    // dx = a·cos α
+    var ax = 0, ay = 0;
+    var bx = a, by = 0;
+    var dx = a * Math.cos(alpha), dy = h;
+    var cx = bx + dx, cy = h;
+
+    // Map math coords to canvas. Place origin near left, y-axis up.
+    var padL = 80, padR = 80, padT = 60, padB = 90;
+    var availW = W - padL - padR;
+    var availH = H - padT - padB;
+    var totalW = a + dx; // total horizontal span
+    var totalH = h;
+    var scale = Math.min(availW / totalW, availH / totalH) * 0.85;
+
+    var bottomY = padT + availH * 0.85;
+    var leftX = padL + (availW - totalW * scale) / 2;
+    function toCx(x) { return leftX + x * scale; }
+    function toCy(y) { return bottomY - y * scale; }
+
+    // Axis line (extended)
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([8, 5]);
+    ctx.beginPath();
+    ctx.moveTo(40, toCy(0));
+    ctx.lineTo(W - 40, toCy(0));
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = danger;
+    ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('osa rotacije', W - 50, toCy(0) - 8);
+
+    // Filled rhombus
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.1);
+    ctx.beginPath();
+    ctx.moveTo(toCx(ax), toCy(ay));
+    ctx.lineTo(toCx(bx), toCy(by));
+    ctx.lineTo(toCx(cx), toCy(cy));
+    ctx.lineTo(toCx(dx), toCy(dy));
+    ctx.closePath();
+    ctx.fill();
+
+    // Sides — different colors per role
+    // AB on axis - thick red
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 3.5;
+    ctx.beginPath();
+    ctx.moveTo(toCx(ax), toCy(ay));
+    ctx.lineTo(toCx(bx), toCy(by));
+    ctx.stroke();
+
+    // AD - left slanted (will become cone) - primary
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(toCx(ax), toCy(ay));
+    ctx.lineTo(toCx(dx), toCy(dy));
+    ctx.stroke();
+
+    // DC top - parallel to axis (will become cylinder) - secondary
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(toCx(dx), toCy(dy));
+    ctx.lineTo(toCx(cx), toCy(cy));
+    ctx.stroke();
+
+    // CB - right slanted (will become cone) - accent
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(toCx(cx), toCy(cy));
+    ctx.lineTo(toCx(bx), toCy(by));
+    ctx.stroke();
+
+    // Height marker (vertical dashed from D' = projection of D onto axis to D)
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 1.3;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(toCx(dx), toCy(0));
+    ctx.lineTo(toCx(dx), toCy(dy));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Right angle marker for height
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 1.5;
+    var sq = 8;
+    ctx.beginPath();
+    ctx.moveTo(toCx(dx), toCy(0) - sq);
+    ctx.lineTo(toCx(dx) + sq, toCy(0) - sq);
+    ctx.lineTo(toCx(dx) + sq, toCy(0));
+    ctx.stroke();
+
+    // Vertices
+    function dot(mx, my, label, ldx, ldy) {
+      ctx.fillStyle = textC;
+      ctx.beginPath();
+      ctx.arc(toCx(mx), toCy(my), 5, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.fillStyle = textC;
+      ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx.fillText(label, toCx(mx) + ldx, toCy(my) + ldy);
+    }
+    dot(ax, ay, 'A', -16, 18);
+    dot(bx, by, 'B', 8, 18);
+    dot(cx, cy, 'C', 8, -8);
+    dot(dx, dy, 'D', -18, -8);
+
+    // Side labels
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+
+    // AB label below
+    ctx.fillStyle = danger;
+    ctx.fillText('AB = a   (na osi)', (toCx(ax) + toCx(bx))/2, toCy(0) + 22);
+
+    // AD label
+    ctx.fillStyle = primary;
+    ctx.fillText('AD = a', (toCx(ax) + toCx(dx))/2 - 24, (toCy(0) + toCy(dy))/2);
+
+    // CB label
+    ctx.fillStyle = accent;
+    ctx.fillText('BC = a', (toCx(bx) + toCx(cx))/2 + 28, (toCy(0) + toCy(cy))/2);
+
+    // DC label
+    ctx.fillStyle = secondary;
+    ctx.fillText('DC = a   (paralelna sa AB)', (toCx(dx) + toCx(cx))/2, toCy(dy) - 12);
+
+    // Height label
+    ctx.fillStyle = warning;
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('h', toCx(dx) + 6, (toCy(0) + toCy(dy))/2);
+
+    // Angle alpha at A
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.arc(toCx(ax), toCy(ay), 22, -alpha, 0);
+    ctx.stroke();
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('α', toCx(ax) + 24, toCy(0) - 6);
+
+    // Bottom legend
+    var legY = H - 38;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+
+    ctx.strokeStyle = danger; ctx.lineWidth = 3.5;
+    ctx.beginPath(); ctx.moveTo(60, legY); ctx.lineTo(82, legY); ctx.stroke();
+    ctx.fillStyle = muted;
+    ctx.fillText('AB: na osi (ne crta)', 88, legY + 4);
+
+    ctx.strokeStyle = primary; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(230, legY); ctx.lineTo(252, legY); ctx.stroke();
+    ctx.fillText('AD → konus', 258, legY + 4);
+
+    ctx.strokeStyle = secondary; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(360, legY); ctx.lineTo(382, legY); ctx.stroke();
+    ctx.fillText('DC → cilindar', 388, legY + 4);
+
+    ctx.strokeStyle = accent; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(490, legY); ctx.lineTo(512, legY); ctx.stroke();
+    ctx.fillText('BC → konus', 518, legY + 4);
+
+    // Note about area
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('a · h = 15  (povrsina romba)', W / 2, H - 14);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-solid');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var textC = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var warning = cv('--sol-canvas-warning');
+    var danger = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = textC;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Rotaciono telo: konus + cilindar + konus  (presek u xz-ravni)', W / 2, 26);
+
+    // Geometry: same as before
+    var alpha = Math.PI / 3;
+    var a = 4;
+    var h = a * Math.sin(alpha);
+    var dx0 = a * Math.cos(alpha);
+    // x-coordinates of A, D, C, B (axis x-positions)
+    var Ax = 0, Bx = a;
+    var Dax = dx0;       // x of D (top of left cone)
+    var Cax = a + dx0;   // x of C (top of right cone)
+
+    // Layout
+    var padL = 80, padR = 80, padT = 60, padB = 90;
+    var availW = W - padL - padR;
+    var availH = H - padT - padB;
+    var totalW = a + 2 * dx0; // from x=0 (A) extends? Actually only extends [0, a+dx0] but cone reaches back to A=0 from D=dx0; and another cone from B=a to C=a+dx0
+    // x ranges: [0, a+dx0]
+    var totalH = 2 * h; // top half + reflected bottom half
+    var scale = Math.min(availW / totalW, availH / totalH) * 0.78;
+
+    var midY = padT + availH / 2 + 10;
+    var leftX = padL + (availW - totalW * scale) / 2;
+    function toCx(x) { return leftX + x * scale; }
+    function toCyTop(y) { return midY - y * scale; }
+    function toCyBot(y) { return midY + y * scale; }
+
+    // Axis (rotation axis)
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 1.8;
+    ctx.setLineDash([8, 5]);
+    ctx.beginPath();
+    ctx.moveTo(40, midY);
+    ctx.lineTo(W - 40, midY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = danger;
+    ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('osa', W - 50, midY - 6);
+
+    // Draw left cone (from AD): apex at A(0,0), base circle at x=dx0, radius h
+    // Profile: top half line from A(0,0) up-right to D(dx0,h);  bottom half: A(0,0) down-right to D'(dx0,-h)
+    // Filled cone region:
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.18);
+    ctx.beginPath();
+    ctx.moveTo(toCx(Ax), midY);
+    ctx.lineTo(toCx(Dax), toCyTop(h));
+    ctx.lineTo(toCx(Dax), toCyBot(h));
+    ctx.closePath();
+    ctx.fill();
+
+    // Cone outline
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(toCx(Ax), midY);
+    ctx.lineTo(toCx(Dax), toCyTop(h));
+    ctx.moveTo(toCx(Ax), midY);
+    ctx.lineTo(toCx(Dax), toCyBot(h));
+    ctx.stroke();
+    // Base circle of left cone (drawn as ellipse)
+    ctx.beginPath();
+    ctx.ellipse(toCx(Dax), midY, 6, h * scale, 0, 0, 2 * Math.PI);
+    ctx.stroke();
+
+    // Cylinder (from DC): from x=dx0 to x=a+dx0... wait.
+    // Actually D is at x=dx0, height h. DC from D(dx0,h) to C(a+dx0,h). So cylinder goes from x=dx0 to x=a+dx0, radius h.
+    // But wait: we also need to check where the apex of the right cone (B) is at x=a, NOT at x=a+dx0.
+    // Right cone (from BC): apex B(a, 0), top point C at (a+dx0, h). So slant from (a,0) to (a+dx0, h).
+    // The cylinder spans from D (dx0,h) to C (a+dx0, h) — its x-range is [dx0, a+dx0].
+    // Right cone has apex at B (x=a) which is INSIDE that range. So we have overlap on x∈[dx0, a].
+    // Actually, looking again — the cone from CB extends from B(a,0) up-and-right to C(a+dx0, h). So cone is on x∈[a, a+dx0]. No overlap with cylinder if we look only at the cone's actual extent x∈[a, a+dx0]. The cylinder extends x∈[dx0, a+dx0]. The cone extends x∈[a, a+dx0]. So cone ENDS at x=a+dx0 (matches end of cylinder).
+    // The apex of right cone is B(a,0), which is not inside cylinder volume (cylinder is on radius=h above axis, but B is on axis at x=a — within axis-range of cylinder but interior of cylinder is solid).
+
+    // For drawing, just show the silhouette of the SOLID. The solid is the union.
+    // Actually let's just draw the OUTLINE of the resulting solid:
+    //   from A(0,0): slant up to D(dx0, h)
+    //   then horizontal across to C(a+dx0, h)
+    //   then slant down to B(a, 0)
+    //   then bottom mirror.
+    // Wait — but B is INSIDE the cylinder volume (cylinder occupies x∈[dx0, a+dx0]).
+    // The right cone has apex at B(a,0). When you union cone+cylinder+cone, the cylinder fills everything between dx0 and a+dx0 up to radius h. The right cone (apex at a, opening rightward to radius h at x=a+dx0) is INSIDE the cylinder for x∈[a, a+dx0].
+    // So the OUTER surface visible is just: cone(left) at x∈[0, dx0], then cylinder on x∈[dx0, a+dx0]. The right cone is hidden INSIDE the cylinder!
+
+    // Hmm — but that's only true if cylinder has the same radius as cone tops. Yes it does (both = h).
+    // So actually the solid's outer surface is just the LEFT cone (from x=0 to x=dx0) + cylinder (from x=dx0 to x=a+dx0). The right cone is INTERIOR.
+
+    // But wait — what does "the solid" mean here? The problem asks for surface area of the rotation.
+    // The surface is generated by the BOUNDARY of the rhombus rotating. The boundary consists of all 4 sides.
+    // Each side generates a surface — but those surfaces, when combined, may overlap!
+
+    // Hmm let me think again. The area swept by the rhombus is not just the boundary's surface — it's the boundary of the volume swept by the rhombus.
+    // The volume swept = union of all positions of the rhombus as it rotates.
+    // The surface = boundary of that volume.
+
+    // For a rhombus with α between 0 and π/2:
+    // Each point in the rhombus, when rotated, traces a circle.
+    // The volume is determined by the (x, distance-from-axis) values that the rhombus covers.
+    // For each x-coordinate, find max distance from axis attained.
+    // - For x ∈ [0, dx0]: only the left part of rhombus (between AD slant and bottom AB) covers this x. Max distance = (x/dx0)*h (along AD slant).
+    // - For x ∈ [dx0, a]: the full vertical extent of rhombus. Max distance = h (along DC top).
+    // - For x ∈ [a, a+dx0]: only right part of rhombus. Max distance = ((a+dx0)-x)/dx0 * h (along BC slant going down).
+
+    // So the volume profile is: linear up to h on [0,dx0], constant h on [dx0, a], linear down to 0 on [a, a+dx0].
+    // This is a TRAPEZOID-like profile when revolved → a frustum/cone-cylinder-cone shape with the cones at the ENDS, not in the middle!
+
+    // I had it right initially. The right cone has apex at... wait no!
+    // The right cone apex is at x=a (where BC starts on axis), going to x=a+dx0 (where it reaches height h at C).
+    // So right cone: apex at x=a, base at x=a+dx0. NOT inside cylinder.
+    // The cylinder spans x∈[dx0, a]? Or x∈[dx0, a+dx0]?
+    // DC goes from D(dx0, h) to C(a+dx0, h). So the segment DC at y=h spans x∈[dx0, a+dx0].
+    // But that's outside the volume! The volume only exists where the rhombus actually occupies.
+
+    // Recompute volume profile more carefully:
+    // Rhombus vertices: A(0,0), B(a,0), C(a+dx0, h), D(dx0, h)
+    // For each x in some range, what y's are in the rhombus (assuming α acute, so dx0 > 0)?
+    // The rhombus is bounded by 4 sides:
+    //   AB: y=0, x∈[0,a]
+    //   AD: from (0,0) to (dx0, h). Line: y = (h/dx0)·x for x∈[0, dx0]
+    //   DC: y=h, x∈[dx0, a+dx0]
+    //   BC: from (a, 0) to (a+dx0, h). Line: y = (h/dx0)·(x - a) for x∈[a, a+dx0]
+
+    // A point (x,y) is in rhombus if:
+    //   - x ∈ [0, dx0]: y ∈ [0, (h/dx0)·x]  (between AB below, AD above)
+    //   - x ∈ [dx0, a]: y ∈ [0, h]  (between AB and DC)
+    //   - x ∈ [a, a+dx0]: y ∈ [(h/dx0)·(x-a), h]  (between BC below, DC above)
+
+    // Wait the third range — is bottom y > 0? Yes, BC goes from (a,0) to (a+dx0, h). So for x∈[a, a+dx0], BC is the lower boundary. And DC (y=h) is the upper boundary.
+
+    // When rotating around x-axis, the swept volume at each x is an annulus: min |y| to max |y|... no wait, we rotate the 2D region.
+    // The set of points (x, R cosθ, R sinθ) where (x, R) ∈ rhombus and R≥0.
+    // So at each x, R ∈ [y_min(x), y_max(x)] where y_min is the lower boundary and y_max is upper.
+
+    // For x ∈ [0, dx0]: R ∈ [0, (h/dx0)x]  → solid disk of radius (h/dx0)x
+    // For x ∈ [dx0, a]: R ∈ [0, h]  → solid disk of radius h (cylinder!)
+    // For x ∈ [a, a+dx0]: R ∈ [(h/dx0)(x-a), h]  → ANNULUS! Inner radius (h/dx0)(x-a), outer radius h.
+
+    // Hmm! So at x∈[a, a+dx0] the solid is hollow!? An annular cross-section.
+    // That means the solid has an INTERIOR cavity (a cone cut out from the right end).
+
+    // Let me verify with α=π/3, a=4: dx0 = 4·1/2 = 2, h = 4·(√3/2)≈3.46.
+    // x=5 (which is in [4, 6]): on rhombus, y_min = (h/2)(5-4) = h/2 ≈ 1.73, y_max = h ≈ 3.46. So at x=5 the rhombus is the strip y∈[1.73, 3.46]. Rotating this gives an annulus.
+
+    // YES — so the resulting solid actually has a CONICAL CAVITY on the right end! The cone from BC creates the inner surface of a hollow.
+
+    // Surface count:
+    // - AB on axis → 0
+    // - AD outer surface: cone (apex A, opens outward), exterior of solid. Lateral = π·h·a.
+    // - DC outer surface: cylinder, exterior. Lateral = 2π·h·a.
+    // - BC inner surface: cone (apex B, opens toward right, inside the cylindrical envelope). This is the inner wall of the cavity. Lateral = π·h·a.
+    // - Open boundaries? The cavity on the right side is open at x = a+dx0 (where it meets the right end of the cylinder DC). Wait, actually DC's right end is at C(a+dx0, h). At that x, the cylinder has y_max = h. But the cone BC extends from B(a, 0) opening to (a+dx0, h). At x = a+dx0, the cone has reached y = h, meeting the cylinder. So the cavity opens... actually no, at x = a+dx0, the cavity has y_min = h, y_max = h — single point, the cavity narrows to a circle. The volume at x = a+dx0 is the single circle of radius h.
+    // Wait — y_min at x=a+dx0 is (h/dx0)(dx0) = h. y_max is h. So it's the circle.
+
+    // At x slightly less, y_min < h, y_max = h. So we have a thin annulus.
+    // The cylinder wall (y=h) is present for ALL x ∈ [dx0, a+dx0].
+    // The inner cone (BC's surface) is present for x ∈ [a, a+dx0].
+
+    // Let me re-examine: the boundary of the solid:
+    // - LEFT outer cone surface: x∈[0, dx0], outer (cone apex at A, radius (h/dx0)x at x). [Generated by AD]
+    // - TOP cylinder: x∈[dx0, a+dx0], outer at y=h. [Generated by DC]
+    // - BOTTOM AT x∈[0, dx0]: y_min = 0, this is on axis, no surface.
+    // - BOTTOM AT x∈[dx0, a]: y_min = 0, on axis, no surface.
+    // - BOTTOM AT x∈[a, a+dx0]: y_min = (h/dx0)(x-a), inner surface (cone with apex at B, radius (h/dx0)(x-a) at x). [Generated by BC]
+
+    // So total surface = AD-cone (πha) + DC-cylinder (2πha) + BC-inner-cone (πha) = 4πha = 60π.
+
+    // EXCEPT: there's the "left vertical face" of the cylinder where the cone meets... wait no, at x = dx0 the cone reaches radius h, then the cylinder continues at radius h. They match perfectly.
+    // What about at x = a+dx0 where the cylinder ends? The cylinder's right end is the CIRCLE at (a+dx0, h). The cone (inner) reaches the same circle. They meet — closing the solid.
+
+    // OK so the result IS 4πha = 60π — same answer, but the geometry is more subtle than I described.
+
+    // For drawing purposes: show 2D cross-section (x, R) with R = distance from axis, both positive and negative (mirrored).
+    // Profile:
+    //   Top side: A(0,0) → D(dx0, h) → C(a+dx0, h)  [outer surface]
+    //   Bottom from C: down to B'(a+dx0, ...)... wait
+
+    // Actually the cross-section in the (x, R) plane (R = abs distance from axis) is:
+    //   The set of (x, R) such that (x, R) or (x, -R) is in the rhombus.
+    // For our rhombus (entirely in y > 0 except on AB):
+    //   = the rhombus itself.
+    // Mirrored across the x-axis to y < 0 gives the bottom half.
+    // So the cross-section in the (x,y) plane is: rhombus + reflection of rhombus.
+    // For α = π/3, a = 4:
+    //   Top rhombus: vertices A(0,0), B(4,0), C(6, h), D(2, h)
+    //   Bottom (reflection): A(0,0), B(4,0), C'(6,-h), D'(2,-h)
+
+    // Combined: octagon with vertices A(0,0), D'(2,-h), C'(6,-h), B(4,0)... hmm this is getting complicated.
+
+    // Actually that's not quite right. Let me reconsider.
+    // The 3D solid of revolution: for each x, the cross-section perpendicular to the x-axis is a disk or annulus.
+    // The 2D profile in the (x, R) half-plane (R > 0) shows the OUTLINE of this disk/annulus.
+    // For x ∈ [0, dx0]: disk from R=0 to R=(h/dx0)x. Profile: triangle A(0,0)→D(dx0,h)→(dx0,0)→A.
+    // For x ∈ [dx0, a]: disk from R=0 to R=h. Profile: rectangle [dx0,a]×[0,h].
+    // For x ∈ [a, a+dx0]: annulus from R=(h/dx0)(x-a) to R=h. Profile: trapezoid bounded by [a, a+dx0]×{h} (top), the slant from (a,0) to (a+dx0,h) (left lower→right upper), but... wait
+
+    // Profile region for x∈[a, a+dx0]: y∈[(h/dx0)(x-a), h]. This is a triangle with vertices (a,0), (a+dx0, h), (a, h). Hmm wait — at x=a, y∈[0,h], so it's the full strip. At x=a+dx0, y∈[h,h], single point.
+
+    // Combined profile (in upper half-plane R≥0):
+    // Vertices: A(0,0), D(dx0, h), C(a+dx0, h), then DOWN along BC to B(a,0), then LEFT along axis to A(0,0).
+    // So profile = pentagon: A(0,0)→D(dx0,h)→C(a+dx0,h)→B(a,0)→back to A along axis.
+    // This is just the original rhombus!
+
+    // Good — the rhombus IS the cross-section. So the 2D outline of the solid in the (x,R) half-plane is exactly the rhombus.
+    // To draw the 3D solid's silhouette (looking from the front, with axis horizontal), we draw the rhombus + its reflection across the axis.
+
+    // The reflection across axis: A(0,0)→D'(dx0,-h)→C'(a+dx0,-h)→B(a,0).
+    // Combined: A(0,0)→D(dx0,h)→C(a+dx0,h)→B(a,0)→C'(a+dx0,-h)→D'(dx0,-h)→A(0,0).
+    // This is a hexagon (well, two rhombuses joined).
+
+    // I'll draw both halves connected.
+
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.06);
+    ctx.beginPath();
+    ctx.moveTo(toCx(0), midY);                  // A
+    ctx.lineTo(toCx(Dax), toCyTop(h));          // D top
+    ctx.lineTo(toCx(Cax), toCyTop(h));          // C top
+    ctx.lineTo(toCx(a), midY);                  // B
+    ctx.lineTo(toCx(Cax), toCyBot(h));          // C bottom
+    ctx.lineTo(toCx(Dax), toCyBot(h));          // D bottom
+    ctx.closePath();
+    ctx.fill();
+
+    // Outline strokes by component:
+    // AD top (cone)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(toCx(0), midY);
+    ctx.lineTo(toCx(Dax), toCyTop(h));
+    ctx.stroke();
+    // AD bottom mirror
+    ctx.beginPath();
+    ctx.moveTo(toCx(0), midY);
+    ctx.lineTo(toCx(Dax), toCyBot(h));
+    ctx.stroke();
+
+    // DC top (cylinder)
+    ctx.strokeStyle = secondary;
+    ctx.beginPath();
+    ctx.moveTo(toCx(Dax), toCyTop(h));
+    ctx.lineTo(toCx(Cax), toCyTop(h));
+    ctx.stroke();
+    // DC bottom mirror
+    ctx.beginPath();
+    ctx.moveTo(toCx(Dax), toCyBot(h));
+    ctx.lineTo(toCx(Cax), toCyBot(h));
+    ctx.stroke();
+
+    // BC top (inner cone — part of right end)
+    ctx.strokeStyle = accent;
+    ctx.beginPath();
+    ctx.moveTo(toCx(Cax), toCyTop(h));
+    ctx.lineTo(toCx(a), midY);
+    ctx.stroke();
+    // BC bottom mirror
+    ctx.beginPath();
+    ctx.moveTo(toCx(Cax), toCyBot(h));
+    ctx.lineTo(toCx(a), midY);
+    ctx.stroke();
+
+    // Circles indicating bases (drawn as ellipses for 3D feel)
+    ctx.strokeStyle = cvAlpha('--sol-canvas-muted', 0.5);
+    ctx.lineWidth = 1.2;
+    // Left base circle of cone (at x=Dax, radius h)
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.ellipse(toCx(Dax), midY, 5, h * scale, 0, 0, 2 * Math.PI);
+    ctx.stroke();
+    // Right base circle of cylinder (at x=Cax)
+    ctx.beginPath();
+    ctx.ellipse(toCx(Cax), midY, 5, h * scale, 0, 0, 2 * Math.PI);
+    ctx.stroke();
+    // Inner cone apex circle (at x=a) — singular point, just a dot
+    ctx.setLineDash([]);
+
+    // Axis line
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 1.6;
+    ctx.setLineDash([8, 5]);
+    ctx.beginPath();
+    ctx.moveTo(40, midY);
+    ctx.lineTo(W - 40, midY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Labels for the three components
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('konus 1', toCx(Dax/2), toCyTop(h) - 12);
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 10px Inter, system-ui, sans-serif';
+    ctx.fillText('M_1 = πah', toCx(Dax/2), toCyTop(h) + 4);
+
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.fillText('cilindar', toCx((Dax+Cax)/2), toCyTop(h) - 12);
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 10px Inter, system-ui, sans-serif';
+    ctx.fillText('M_2 = 2πah', toCx((Dax+Cax)/2), toCyTop(h) + 4);
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.fillText('konus 2', toCx((a + Cax)/2), toCyTop(h/2) - 4);
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 10px Inter, system-ui, sans-serif';
+    ctx.fillText('M_3 = πah', toCx((a + Cax)/2), toCyTop(h/2) + 12);
+
+    // Vertex markers and labels
+    function dot2(mx, mYy, label, ldx, ldy, color) {
+      ctx.fillStyle = color || textC;
+      ctx.beginPath();
+      ctx.arc(mx, mYy, 4, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.fillStyle = textC;
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.fillText(label, mx + ldx, mYy + ldy);
+    }
+    dot2(toCx(0), midY, 'A', -16, 18, danger);
+    dot2(toCx(a), midY, 'B', -4, 18, danger);
+    dot2(toCx(Dax), toCyTop(h), 'D', -16, -8);
+    dot2(toCx(Cax), toCyTop(h), 'C', 6, -8);
+
+    // Radius indicator at cylinder
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([3, 3]);
+    var rxIndic = (Dax + Cax) / 2 + (Cax - Dax) * 0.15;
+    ctx.beginPath();
+    ctx.moveTo(toCx(rxIndic), midY);
+    ctx.lineTo(toCx(rxIndic), toCyTop(h));
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = warning;
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('h', toCx(rxIndic) + 4, toCyTop(h/2));
+
+    // Bottom annotation
+    ctx.fillStyle = textC;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('M = M_1 + M_2 + M_3 = 4πah = 4π · 15 = 60π', W / 2, H - 22);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-decomp');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var textC = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var warning = cv('--sol-canvas-warning');
+    var danger = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = textC;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Tri komponente i njihovi koeficijenti pri ah = 15', W / 2, 28);
+
+    // Three small panels horizontally
+    var slotW = W / 3;
+    var titles = ['Konus iz AD', 'Cilindar iz DC', 'Konus iz BC'];
+    var formulas = ['π · h · a = πah', '2π · h · a = 2πah', 'π · h · a = πah'];
+    var values = ['15π', '30π', '15π'];
+    var colors = [primary, secondary, accent];
+    var startY = 70;
+    var midY = startY + 110;
+    var labelY = midY + 100;
+
+    for (var i = 0; i < 3; i++) {
+      var cx = slotW * i + slotW / 2;
+
+      // Title
+      ctx.fillStyle = colors[i];
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(titles[i], cx, startY);
+
+      // Sketch
+      if (i === 0 || i === 2) {
+        // Cone
+        var apexX = (i === 0) ? cx - 50 : cx + 50;
+        var baseX = (i === 0) ? cx + 50 : cx - 50;
+        var coneR = 35;
+        ctx.fillStyle = cvAlpha((i === 0 ? '--sol-canvas-primary' : '--sol-canvas-accent'), 0.15);
+        ctx.beginPath();
+        ctx.moveTo(apexX, midY);
+        ctx.lineTo(baseX, midY - coneR);
+        ctx.lineTo(baseX, midY + coneR);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = colors[i];
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(apexX, midY);
+        ctx.lineTo(baseX, midY - coneR);
+        ctx.moveTo(apexX, midY);
+        ctx.lineTo(baseX, midY + coneR);
+        ctx.stroke();
+        // Base circle
+        ctx.beginPath();
+        ctx.ellipse(baseX, midY, 4, coneR, 0, 0, 2 * Math.PI);
+        ctx.stroke();
+        // Axis line
+        ctx.strokeStyle = danger;
+        ctx.lineWidth = 1;
+        ctx.setLineDash([4,3]);
+        ctx.beginPath();
+        ctx.moveTo(cx - 70, midY);
+        ctx.lineTo(cx + 70, midY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      } else {
+        // Cylinder
+        var cylY = 35;
+        var cylX = 50;
+        ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.15);
+        ctx.fillRect(cx - cylX, midY - cylY, 2 * cylX, 2 * cylY);
+        ctx.strokeStyle = colors[i];
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(cx - cylX, midY - cylY);
+        ctx.lineTo(cx + cylX, midY - cylY);
+        ctx.moveTo(cx - cylX, midY + cylY);
+        ctx.lineTo(cx + cylX, midY + cylY);
+        ctx.stroke();
+        // End ellipses
+        ctx.beginPath();
+        ctx.ellipse(cx - cylX, midY, 4, cylY, 0, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.ellipse(cx + cylX, midY, 4, cylY, 0, 0, 2 * Math.PI);
+        ctx.stroke();
+        // Axis
+        ctx.strokeStyle = danger;
+        ctx.lineWidth = 1;
+        ctx.setLineDash([4,3]);
+        ctx.beginPath();
+        ctx.moveTo(cx - 70, midY);
+        ctx.lineTo(cx + 70, midY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      // Formula
+      ctx.fillStyle = textC;
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.fillText(formulas[i], cx, labelY);
+
+      // Value
+      ctx.fillStyle = colors[i];
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.fillText('= ' + values[i], cx, labelY + 22);
+    }
+
+    // Sum at bottom
+    var sumY = labelY + 70;
+    ctx.fillStyle = textC;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Ukupno:  M  =  πah  +  2πah  +  πah  =  4πah  =  4π · 15  =  60π', W / 2, sumY);
+
+    ctx.fillStyle = highlight;
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.fillText('Rezultat ne zavisi od ugla romba — sve je u proizvodu  a · h = 15.', W / 2, sumY + 22);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Površina rotacionog tela: romb rotira oko stranice",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["rotaciono telo", "omotač konusa", "omotač cilindra", "romb", "površina", "invarijantnost po uglu"]
+}
+BRAINSPARK_META-->

@@ -1,0 +1,1012 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Maksimalna zapremina uspravnog valjka cija je povrsina jednaka P.
+
+Setup:
+  P = 2πr^2 + 2πrh   (zatvoren cilindar: dve kruzne baze + omotac)
+  V = πr^2 h
+
+Iz prve jednacine izrazimo h:
+  2πrh = P - 2πr^2
+  h = (P - 2πr^2) / (2πr)        (uz r > 0)
+  Domen za r: h > 0 → P > 2πr^2 → r < sqrt(P/(2π)) = r_max.
+
+Stavimo u V:
+  V(r) = πr^2 · (P - 2πr^2)/(2πr)
+       = r · (P - 2πr^2)/2
+       = (Pr - 2πr^3)/2
+       = (P/2)·r - πr^3.
+
+Diferenciramo po r:
+  dV/dr = P/2 - 3πr^2.
+  dV/dr = 0  →  3πr^2 = P/2  →  r^2 = P/(6π)  →  r* = sqrt(P/(6π)).
+
+Drugi izvod: d2V/dr2 = -6πr < 0 (za r > 0), pa je to maksimum.
+
+Provera da r* < r_max:
+  r* = sqrt(P/(6π)) < sqrt(P/(2π)) = r_max  ✓ (jer 6π > 2π).
+
+Visina pri optimalnom r:
+  h* = (P - 2π·r*^2)/(2π·r*)
+     = (P - 2π·P/(6π))/(2π·r*)
+     = (P - P/3)/(2π·r*)
+     = (2P/3)/(2π·r*)
+     = P/(3π·r*)
+
+  Vidimo: r*·(2π·r*) + 2π·r*·h* = P, pa je 2πr*h* = P - 2πr*^2 = P - P/3 = 2P/3,
+  tj. πr*h* = P/3, tj. h* = P/(3πr*).
+
+  Numericki h* preko r*: r* = sqrt(P/(6π)), pa
+  h* = P/(3π · sqrt(P/(6π))) = P/(3π) · sqrt(6π/P) = sqrt(P · 6π)/(3π) = sqrt(6πP)/(3π).
+
+  Drugi nacin: h* = 2r* (?). Proverimo:
+  2r* = 2·sqrt(P/(6π)).
+  h* = sqrt(6πP)/(3π) = sqrt(6πP) · 1/(3π).
+
+  Da li je 2 sqrt(P/(6π)) = sqrt(6πP)/(3π)?
+  LHS^2 = 4 · P/(6π) = 2P/(3π).
+  RHS^2 = 6πP/(9π^2) = 6P/(9π) = 2P/(3π).  ✓
+
+  Dakle h* = 2r*. (Maksimalni cilindar je "kvadratni" — visina je dvostruki precnik baze? Ne — h = 2r znaci h jednako precniku.)
+  Zapravo: precnik = 2r, pa h = 2r znaci h = precnik. To je standardni rezultat: optimalan cilindar po datoj povrsini ima h = 2r.
+
+V_max = πr*^2 · h* = πr*^2 · 2r* = 2πr*^3.
+  r*^3 = (P/(6π))^(3/2) = P^(3/2)/(6π)^(3/2).
+  V_max = 2π · P^(3/2)/(6π)^(3/2)
+        = 2π · P sqrt(P) / ((6π)·sqrt(6π))
+        = 2π · P sqrt(P) / (6π · sqrt(6π))
+        = (2π/(6π)) · P sqrt(P)/sqrt(6π)
+        = (1/3) · P sqrt(P)/sqrt(6π)
+        = P sqrt(P) / (3 sqrt(6π)).
+
+Drugi nacin (preko V(r)):
+  V(r*) = (P/2)·r* - π·r*^3 = (P/2)·r* - π·r*^3.
+  S obzirom da je 3πr*^2 = P/2, dakle πr*^2 = P/6, pa πr*^3 = (P/6)·r*.
+  V(r*) = (P/2)·r* - (P/6)·r* = (3P/6 - P/6)·r* = (2P/6)·r* = (P/3)·r*.
+  Dakle V_max = (P/3) · sqrt(P/(6π)) = (P/3) · sqrt(P)/sqrt(6π) = P·sqrt(P)/(3·sqrt(6π)). ✓
+
+Odgovor: (D) P sqrt(P) / (3 sqrt(6π)).
+
+Numericka provera za P = 6π (pa r* = 1, h* = 2, V_max = 2π):
+  V_max formula = (6π) · sqrt(6π) / (3 sqrt(6π)) = 6π/3 = 2π. ✓
+
+Vizualizacija:
+1. 3D-stilizovan presek cilindra sa labelama r i h (staticki). Bocni i u perspektivi.
+2. INTERAKTIVNO: slider za r u dozvoljenom rasponu (0, sqrt(P/(2π))), prikaz krive V(r) sa istaknutom optimumom. Fixed P (npr. P = 1).
+3. Plot funkcije h(r) (constraint), pokazuje kako visina opada sa rastom r.
+
+Plan: tri canvasa, jedan od njih interaktivan.
+
+Za interaktivnu vizuelizaciju: P = 1 jedinica. Tada
+  r_max = sqrt(1/(2π)) ≈ 0.3989.
+  r*  = sqrt(1/(6π)) ≈ 0.2303.
+  V_max = (1)·sqrt(1)/(3·sqrt(6π)) = 1/(3·sqrt(6π)) ≈ 1/(3·4.3416) ≈ 0.0768.
+
+Numericki tabela V(r) za P=1:
+  r = 0.10: V = 0.5·0.1 - π·0.001 = 0.05 - 0.00314 = 0.04686
+  r = 0.15: V = 0.5·0.15 - π·0.003375 = 0.075 - 0.01060 = 0.0644
+  r = 0.20: V = 0.5·0.20 - π·0.008 = 0.10 - 0.0251 = 0.0749
+  r = 0.23: V = 0.5·0.23 - π·0.012167 = 0.115 - 0.03822 = 0.07678 ← blizu maksa
+  r = 0.25: V = 0.5·0.25 - π·0.015625 = 0.125 - 0.04909 = 0.0759
+  r = 0.30: V = 0.5·0.30 - π·0.027 = 0.15 - 0.08482 = 0.0652
+  r = 0.35: V = 0.5·0.35 - π·0.042875 = 0.175 - 0.13468 = 0.0403
+  r = 0.39: V ≈ 0.5·0.39 - π·0.05932 = 0.195 - 0.18634 ≈ 0.00866 (skoro nula)
+
+Ekvalijent. r_max je 0.3989 (gde h = 0).
+
+Pri sliderom prikazom: izaberemo P=1 zbog jednostavnosti.
+</script>
+
+<h1 data-card="problem-title">Maksimalna zapremina cilindra pri datoj površini</h1>
+<p data-card="problem-subtitle" class="subtitle">Optimizacija — izvod, vezana ekstremalna funkcija jedne promenljive, geometrija cilindra</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Maksimalna zapremina uspravnog valjka čija je površina jednaka \( P \) iznosi:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \dfrac{P \sqrt{P}}{\sqrt{\pi}} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \dfrac{P \sqrt{P}}{8 \sqrt{\pi}} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \dfrac{P^2}{2 \pi} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \dfrac{P \sqrt{P}}{3 \sqrt{6 \pi}} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \dfrac{P \sqrt{P}}{\sqrt{27 \pi}} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Koristimo formulu za ukupnu površinu zatvorenog cilindra \( P = 2\pi r^2 + 2\pi r h \) da izrazimo \( h \) preko \( r \) (uz fiksno \( P \)). Time zapremina \( V = \pi r^2 h \) postaje funkcija samo od \( r \). Izvodom \( dV/dr \) i izjednačavanjem s nulom dobijemo optimalan poluprečnik \( r^\star = \sqrt{P/(6\pi)} \), a zatim i maksimalnu zapreminu.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Ukupna površina zatvorenog cilindra:</strong> \( P = 2\pi r^2 + 2\pi r h \) (dve baze \( + \) omotač).</li>
+        <li><strong>Zapremina cilindra:</strong> \( V = \pi r^2 h \).</li>
+        <li><strong>Lokalni ekstremum:</strong> ako je \( f \) glatka funkcija na otvorenom intervalu, ekstrem se nalazi tamo gde je \( f'(r) = 0 \). Drugi izvod \( f''(r) < 0 \) potvrđuje maksimum.</li>
+        <li><strong>Optimalan oblik (zlatno pravilo):</strong> kod cilindra konstantne površine, maksimalna zapremina nastupa kada je \( h = 2r \) — visina jednaka prečniku baze.</li>
+        <li><strong>Korisni račun sa korenima:</strong> \( \sqrt{a/b} = \sqrt{a}/\sqrt{b} \) i \( a^{3/2} = a \sqrt{a} \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — geometrija cilindra">
+  <h2>📐 Vizuelni prikaz — geometrija cilindra</h2>
+  <div class="canvas-wrapper">
+    <canvas id="cyl-geom-canvas" width="700" height="460"></canvas>
+  </div>
+  <p class="canvas-caption">Levo — perspektivna skica cilindra sa označenim poluprečnikom \( r \) i visinom \( h \). Desno — razvijena površina: dva kruga (baze) i pravougaonik (omotač) sa stranicama \( h \) i \( 2\pi r \). Zbir površina: \( P = 2\pi r^2 + 2\pi r h \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Interaktivno: zapremina kao funkcija od r">
+  <h2>📐 Interaktivno: \( V(r) \) za fiksno \( P = 1 \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="vr-canvas" width="700" height="520"></canvas>
+  </div>
+  <div class="canvas-controls">
+    <label for="r-slider">Poluprečnik \( r \) (u jedinicama \( \sqrt{P} \)): <output id="r-out">0,230</output></label>
+    <input type="range" id="r-slider" min="0.02" max="0.395" step="0.001" value="0.230" />
+  </div>
+  <p class="canvas-caption">Pomeri klizač i prati kako se menja \( V(r) = \tfrac{1}{2} P r - \pi r^3 \). Vrh krive je u \( r^\star = \sqrt{P/(6\pi)} \approx 0{,}230\sqrt{P} \), gde \( V \) dostiže maksimum \( V_{\max} = \tfrac{P\sqrt{P}}{3\sqrt{6\pi}} \approx 0{,}0768\, P^{3/2} \). Krajnja desna granica \( r_{\max} = \sqrt{P/(2\pi)} \approx 0{,}399\sqrt{P} \) je ona gde \( h \to 0 \) (cilindar se „splošti&ldquo; u disk).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — visina kao funkcija od r">
+  <h2>📐 Vizuelni prikaz — visina \( h(r) \) (uslov \( P = \text{const} \))</h2>
+  <div class="canvas-wrapper">
+    <canvas id="hr-canvas" width="700" height="430"></canvas>
+  </div>
+  <p class="canvas-caption">Pri fiksnom \( P \), visina \( h(r) = \dfrac{P - 2\pi r^2}{2\pi r} \) pada od \( +\infty \) (kad \( r \to 0^+ \)) do \( 0 \) (kad \( r \to r_{\max} \)). Optimum zapremine je u tački gde je \( h = 2r \) — tada visina baš dvostruko premašuje poluprečnik.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavi vezu između \( r \) i \( h \) iz uslova površine</h3>
+      <p>Ukupna površina (dve baze + omotač):</p>
+      <div class="math-block">
+        \[ P = 2\pi r^2 + 2\pi r h. \]
+      </div>
+      <p>Izrazimo \( h \):</p>
+      <div class="math-block">
+        \[ 2\pi r h = P - 2\pi r^2 \;\;\Longrightarrow\;\; h = \frac{P - 2\pi r^2}{2\pi r}. \]
+      </div>
+      <p>Da bi \( h > 0 \), potrebno je \( r < r_{\max} = \sqrt{\dfrac{P}{2\pi}} \). Pa je domen \( r \in \left(0, \sqrt{P/(2\pi)}\right) \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Svedi zapreminu na funkciju jedne promenljive</h3>
+      <p>Uvrstimo \( h(r) \) u zapreminu \( V = \pi r^2 h \):</p>
+      <div class="math-block">
+        \[ V(r) = \pi r^2 \cdot \frac{P - 2\pi r^2}{2\pi r} = \frac{r \,(P - 2\pi r^2)}{2} = \frac{P}{2} r - \pi r^3. \]
+      </div>
+      <p>Sada je \( V(r) \) glatka kubna funkcija od \( r \) na \( (0, r_{\max}) \). Spremni smo za izvod.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto se izrazi tako lepo skraćuju?</summary>
+          <div class="detail-content">
+            <p>U \( V = \pi r^2 \cdot h \) imenilac \( 2\pi r \) deli brojilac \( \pi r^2 \) na \( r/2 \). Pi se gubi u istom potezu, ostavlja nas s polinomskim izrazom — bez razlomaka, bez korenâ. Optimizacija polinoma je daleko lakša od optimizacije razlomka.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Diferenciraj i nađi kritičnu tačku</h3>
+      <p>Izvod:</p>
+      <div class="math-block">
+        \[ V'(r) = \frac{P}{2} - 3\pi r^2. \]
+      </div>
+      <p>Postavimo \( V'(r) = 0 \):</p>
+      <div class="math-block">
+        \[ \frac{P}{2} - 3\pi r^2 = 0 \;\Longrightarrow\; r^2 = \frac{P}{6\pi} \;\Longrightarrow\; r^\star = \sqrt{\frac{P}{6\pi}}. \]
+      </div>
+      <p>Drugi izvod \( V''(r) = -6\pi r < 0 \) za \( r > 0 \), pa je \( r^\star \) zaista <em>maksimum</em> (a ne minimum).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: da li je \( r^\star \) u dozvoljenom intervalu?</summary>
+          <div class="detail-content">
+            <p>\( r^\star = \sqrt{P/(6\pi)} \) i \( r_{\max} = \sqrt{P/(2\pi)} \). Pošto je \( 6\pi > 2\pi \), važi \( P/(6\pi) < P/(2\pi) \), pa \( r^\star < r_{\max} \). Optimum je dakle <em>u unutrašnjosti</em> domena — uobičajen scenarij za zatvorene optimizacije.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Geometrijski uvid — provera \( h^\star = 2 r^\star \)</h3>
+      <p>U optimalnoj tački možemo pojednostaviti \( h \). Iz \( r^{\star 2} = P/(6\pi) \) sledi \( 2\pi r^{\star 2} = P/3 \), pa</p>
+      <div class="math-block">
+        \[ 2\pi r^\star h^\star = P - 2\pi r^{\star 2} = P - \frac{P}{3} = \frac{2P}{3}. \]
+      </div>
+      <p>Dakle \( \pi r^\star h^\star = P/3 \), tj. \( h^\star = \dfrac{P}{3 \pi r^\star} \). Uporedimo to sa \( 2 r^\star \):</p>
+      <div class="math-block">
+        \[ (h^\star)^2 = \frac{P^2}{9\pi^2 \, r^{\star 2}} = \frac{P^2}{9\pi^2 \cdot \tfrac{P}{6\pi}} = \frac{6 P}{9 \pi} = \frac{2P}{3\pi}, \quad (2 r^\star)^2 = \frac{4P}{6\pi} = \frac{2P}{3\pi}. \]
+      </div>
+      <p>Oba kvadrata daju \( \tfrac{2P}{3\pi} \), što potvrđuje <span class="result">\( h^\star = 2 r^\star \)</span>. Optimalan cilindar ima visinu jednaku prečniku baze — ravnoteža između „uskih&ldquo; i „spljoštenih&ldquo; oblika.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunaj \( V_{\max} \)</h3>
+      <p>Najlakše je iskoristiti \( V(r) = \tfrac{P}{2} r - \pi r^3 \) i činjenicu \( \pi r^{\star 2} = P/6 \), pa \( \pi r^{\star 3} = (P/6) \cdot r^\star \):</p>
+      <div class="math-block">
+        \[ V_{\max} = V(r^\star) = \frac{P}{2} r^\star - \pi r^{\star 3} = \frac{P}{2} r^\star - \frac{P}{6} r^\star = \left( \frac{3P - P}{6} \right) r^\star = \frac{P}{3} \, r^\star. \]
+      </div>
+      <p>Konačno, ubacimo \( r^\star = \sqrt{P/(6\pi)} = \sqrt{P}/\sqrt{6\pi} \):</p>
+      <div class="math-block">
+        \[ V_{\max} = \frac{P}{3} \cdot \frac{\sqrt{P}}{\sqrt{6\pi}} = \frac{P \sqrt{P}}{3 \sqrt{6\pi}}. \]
+      </div>
+      <p>To je tačno opcija (D).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Numerička provera za \( P = 6\pi \)</h3>
+      <p>Za pogodan izbor \( P = 6\pi \) imamo:</p>
+      <div class="math-block">
+        \[ r^\star = \sqrt{\frac{6\pi}{6\pi}} = 1, \quad h^\star = 2 r^\star = 2, \quad V_{\max} = \pi \cdot 1^2 \cdot 2 = 2\pi. \]
+      </div>
+      <p>Iz formule:</p>
+      <div class="math-block">
+        \[ V_{\max} = \frac{(6\pi)\sqrt{6\pi}}{3 \sqrt{6\pi}} = \frac{6\pi}{3} = 2\pi. \]
+      </div>
+      <p>Slaganje je perfektno. ✓</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kontroliši i površinu</summary>
+          <div class="detail-content">
+            <p>\( P = 2\pi r^{\star 2} + 2\pi r^\star h^\star = 2\pi \cdot 1 + 2\pi \cdot 1 \cdot 2 = 2\pi + 4\pi = 6\pi \). ✓ Sve veze ostaju konzistentne.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>U optimizaciji sa <em>vezom</em> (constraint) trik je svesti dva nepoznata parametra na jedan, pa zatim diferencirati. Veza \( P = 2\pi r(r + h) \) nas „zaključava&ldquo; u jedan parametar — recimo \( r \). Tada zapremina \( V(r) \) postaje obična kubna funkcija, i izvod direktno otkriva optimum. Lepa „simetrija&ldquo; je da u optimumu površine baza (\( 2\pi r^2 \)) i površina omotača (\( 2\pi r h \)) stoje u odnosu \( 1 : 2 \) — baze nose trećinu, omotač dve trećine ukupne površine.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ V_{\max} = \dfrac{P \sqrt{P}}{3 \sqrt{6 \pi}} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( \dfrac{P\sqrt{P}}{\sqrt{\pi}} \)</span>
+    <span class="answer-option" data-option="B">(B) \( \dfrac{P\sqrt{P}}{8\sqrt{\pi}} \)</span>
+    <span class="answer-option" data-option="C">(C) \( \dfrac{P^2}{2\pi} \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( \dfrac{P\sqrt{P}}{3\sqrt{6\pi}} \)</span>
+    <span class="answer-option" data-option="E">(E) \( \dfrac{P\sqrt{P}}{\sqrt{27\pi}} \)</span>
+  </div>
+  <p class="verification">Provera (numerička): za \( P = 6\pi \), formula daje \( V_{\max} = 6\pi/3 = 2\pi \), što se poklapa sa direktnim računom \( \pi \cdot 1^2 \cdot 2 = 2\pi \) (jer \( r^\star = 1, h^\star = 2 \)). ✓ Opcija (E) \( P\sqrt{P}/\sqrt{27\pi} \) je „blizu&ldquo; ali nije ista: \( \sqrt{27\pi} = 3\sqrt{3\pi} \neq 3\sqrt{6\pi} \). Geometrijski uvid: optimalan cilindar zadovoljava \( h = 2r \) (visina = prečnik).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Korišćenje formule za otvoren cilindar (samo omotač):</strong> \( P = 2\pi r h \) bi davala drugačiji rezultat. Zadatak govori o ukupnoj „površini cilindra&ldquo;, što po konvenciji uključuje obe baze.</li>
+    <li><strong>Greška u izvodu:</strong> \( \dfrac{d}{dr}(\pi r^3) = 3\pi r^2 \), ne \( \pi r^2 \) (zaboravljen faktor \( 3 \)). Bez tog \( 3 \) dobio bi se pogrešan \( r^\star \) i izgubila bi se cela 1/3 u rezultatu.</li>
+    <li><strong>Mešanje \( h \) i \( s \) (izvodnice / kose stranice):</strong> kod cilindra je \( h \) prosto visina (vertikalna), nema kose hipotenuze. Kupa ima izvodnicu \( s = \sqrt{r^2 + h^2} \), cilindar ne.</li>
+    <li><strong>Pogrešna manipulacija korenima:</strong> \( \sqrt{P/(6\pi)} \neq \sqrt{P}/(6\pi) \). Treba \( \sqrt{P}/\sqrt{6\pi} \).</li>
+    <li><strong>Zaboravljanje da se proveri da li je tačka maksimum:</strong> bez znaka \( V''(r^\star) \) ili bez geometrijske argumentacije, kritična tačka može biti i minimum ili prevoj.</li>
+    <li><strong>Pretpostavka da cilindar mora imati \( h = r \) ili \( h = 2r \) bez dokaza:</strong> rezultat \( h = 2r \) je <em>posledica</em> optimizacije — ne smemo ga uzeti zdravo za gotovo na samom početku.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Postavi obrnut problem: za fiksnu zapreminu \( V \), koliki je <em>minimum</em> ukupne površine cilindra? Pokaži da je odgovor \( P_{\min} = 3 \sqrt[3]{2 \pi V^2} \) i da i u toj situaciji važi \( h = 2r \). Probaj samostalno (slobodan parametar je sad \( r \), a h se dobija iz \( V = \pi r^2 h \)).</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Iz \( V = \pi r^2 h \) sledi \( h = V/(\pi r^2) \). Ubaci u \( P = 2\pi r^2 + 2\pi r h \): \( P(r) = 2\pi r^2 + 2V/r \). Izvod: \( P'(r) = 4\pi r - 2V/r^2 \). Postavi \( P'(r) = 0 \): \( 4\pi r^3 = 2V \), tj. \( r^3 = V/(2\pi) \), pa \( r^\star = \sqrt[3]{V/(2\pi)} \). Tada \( h^\star = V/(\pi r^{\star 2}) \), i posle direktnog računa proizilazi \( h^\star = 2 r^\star \) — ista lepa simetrija. Minimum: \( P_{\min} = 6 \pi r^{\star 2} = 6\pi \cdot (V/(2\pi))^{2/3} = 6\pi \cdot V^{2/3}/(2\pi)^{2/3} = 3 \cdot (2\pi)^{1/3} V^{2/3} = 3 \sqrt[3]{2\pi V^2} \). „Dvostruka&ldquo; priroda problema (V uz fiksno P, ili P uz fiksno V) deli isti optimalan oblik — princip dualiteta u optimizaciji.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('cyl-geom-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var textCol = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var warning = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.fillStyle = textCol;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Cilindar: poluprečnik r, visina h, ukupna površina P', W / 2, 28);
+
+    // ── Left: 3D-style cylinder ──
+    var cx = 180, cyTop = 110, cyBot = 320;
+    var rx = 70, ry = 22; // ellipse axes
+    var H_cyl = cyBot - cyTop;
+
+    // Side faces (rectangle in perspective)
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.18);
+    ctx.beginPath();
+    ctx.moveTo(cx - rx, cyTop);
+    ctx.lineTo(cx - rx, cyBot);
+    ctx.lineTo(cx + rx, cyBot);
+    ctx.lineTo(cx + rx, cyTop);
+    ctx.closePath();
+    ctx.fill();
+
+    // Bottom ellipse (full)
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.30);
+    ctx.beginPath();
+    ctx.ellipse(cx, cyBot, rx, ry, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.ellipse(cx, cyBot, rx, ry, 0, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Side edges
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cx - rx, cyTop);
+    ctx.lineTo(cx - rx, cyBot);
+    ctx.moveTo(cx + rx, cyTop);
+    ctx.lineTo(cx + rx, cyBot);
+    ctx.stroke();
+
+    // Top ellipse (full, on top)
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.45);
+    ctx.beginPath();
+    ctx.ellipse(cx, cyTop, rx, ry, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.ellipse(cx, cyTop, rx, ry, 0, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Radius marker on top ellipse (from center to right edge)
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(cx, cyTop);
+    ctx.lineTo(cx + rx, cyTop);
+    ctx.stroke();
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(cx, cyTop, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('r', cx + rx / 2, cyTop - 8);
+
+    // Height marker (vertical line on the right outside)
+    var hMarkX = cx + rx + 25;
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(hMarkX, cyTop);
+    ctx.lineTo(hMarkX, cyBot);
+    // small caps
+    ctx.moveTo(hMarkX - 6, cyTop); ctx.lineTo(hMarkX + 6, cyTop);
+    ctx.moveTo(hMarkX - 6, cyBot); ctx.lineTo(hMarkX + 6, cyBot);
+    ctx.stroke();
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('h', hMarkX + 8, (cyTop + cyBot) / 2 + 5);
+
+    // Center line (axis)
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(cx, cyTop);
+    ctx.lineTo(cx, cyBot);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Title under
+    ctx.fillStyle = textCol;
+    ctx.font = '14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('V = π r² h', cx, cyBot + 50);
+    ctx.fillText('P = 2π r² + 2π r h', cx, cyBot + 72);
+
+    // ── Right: net (razvijena povrsina) ──
+    var nx = 450;
+    var ny = 110;
+    // bases (two circles)
+    ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.30);
+    ctx.beginPath(); ctx.arc(nx, ny + 30, 30, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(nx, ny + 100, 30, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(nx, ny + 30, 30, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(nx, ny + 100, 30, 0, Math.PI * 2); ctx.stroke();
+
+    // labels for bases
+    ctx.fillStyle = secondary;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('baza π r²', nx, ny + 32);
+    ctx.fillText('baza π r²', nx, ny + 102);
+
+    // rectangle (omotač)
+    var rx2 = nx + 60;
+    var ry2 = ny + 5;
+    var rW = 175;
+    var rH = 130;
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.30);
+    ctx.fillRect(rx2, ry2, rW, rH);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(rx2, ry2, rW, rH);
+
+    // Width = 2πr (label below rectangle)
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(rx2, ry2 + rH + 14);
+    ctx.lineTo(rx2 + rW, ry2 + rH + 14);
+    ctx.moveTo(rx2, ry2 + rH + 8); ctx.lineTo(rx2, ry2 + rH + 20);
+    ctx.moveTo(rx2 + rW, ry2 + rH + 8); ctx.lineTo(rx2 + rW, ry2 + rH + 20);
+    ctx.stroke();
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('2π r  (obim baze)', rx2 + rW / 2, ry2 + rH + 32);
+
+    // Height = h (label on right)
+    ctx.strokeStyle = highlight;
+    ctx.beginPath();
+    ctx.moveTo(rx2 + rW + 14, ry2);
+    ctx.lineTo(rx2 + rW + 14, ry2 + rH);
+    ctx.moveTo(rx2 + rW + 8, ry2); ctx.lineTo(rx2 + rW + 20, ry2);
+    ctx.moveTo(rx2 + rW + 8, ry2 + rH); ctx.lineTo(rx2 + rW + 20, ry2 + rH);
+    ctx.stroke();
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('h', rx2 + rW + 22, ry2 + rH / 2 + 4);
+
+    // Label for omotač
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('omotač  2π r · h', rx2 + rW / 2, ry2 + rH / 2 + 4);
+
+    // Title for right side
+    ctx.fillStyle = textCol;
+    ctx.font = '14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Razvijena površina', rx2 - 30, 70);
+
+    // Bottom caption
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Iz date površine P i polazne veze, h se izrazava preko r — ostaje optimizacija po jednoj promenljivoj.', W / 2, H - 16);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('vr-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  // P = 1 (units)
+  var P_FIXED = 1;
+  var R_OPT = Math.sqrt(P_FIXED / (6 * Math.PI));   // ≈ 0.2303
+  var R_MAX = Math.sqrt(P_FIXED / (2 * Math.PI));   // ≈ 0.3989
+  var V_OPT = (P_FIXED * Math.sqrt(P_FIXED)) / (3 * Math.sqrt(6 * Math.PI)); // ≈ 0.0768
+
+  var slider = document.getElementById('r-slider');
+  var output = document.getElementById('r-out');
+  if (slider) {
+    slider.min = '0.02';
+    slider.max = R_MAX.toFixed(3);
+    slider.step = '0.001';
+  }
+  var rNow = parseFloat(slider ? slider.value : '0.230');
+
+  function vAt(r) { return 0.5 * P_FIXED * r - Math.PI * r * r * r; }
+  function hAt(r) { return (P_FIXED - 2 * Math.PI * r * r) / (2 * Math.PI * r); }
+
+  function draw(rVal) {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var textCol = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var warning = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = textCol;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('V(r) = (P/2)·r − π r³  ,  P = 1', W / 2, 28);
+
+    // Plot area
+    var pad = { l: 70, r: 40, t: 60, b: 90 };
+    var plotW = W - pad.l - pad.r;
+    var plotH = H - pad.t - pad.b;
+    var x0 = pad.l, y0 = pad.t + plotH;
+
+    var xMin = 0, xMax = R_MAX * 1.05;
+    var yMin = 0, yMax = V_OPT * 1.20;
+
+    function tx(x) { return x0 + (x - xMin) / (xMax - xMin) * plotW; }
+    function ty(y) { return y0 - (y - yMin) / (yMax - yMin) * plotH; }
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    var xticks = [0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35];
+    for (var i = 0; i < xticks.length; i++) {
+      ctx.beginPath();
+      ctx.moveTo(tx(xticks[i]), pad.t);
+      ctx.lineTo(tx(xticks[i]), y0);
+      ctx.stroke();
+    }
+    var yticks = [0.02, 0.04, 0.06, 0.08];
+    for (var j = 0; j < yticks.length; j++) {
+      ctx.beginPath();
+      ctx.moveTo(x0, ty(yticks[j]));
+      ctx.lineTo(x0 + plotW, ty(yticks[j]));
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+    ctx.lineTo(x0 + plotW, y0);
+    ctx.moveTo(x0, pad.t);
+    ctx.lineTo(x0, y0);
+    ctx.stroke();
+
+    // Tick labels
+    ctx.fillStyle = textCol;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var i = 0; i < xticks.length; i++) {
+      ctx.fillText(String(xticks[i]).replace('.', ','), tx(xticks[i]), y0 + 18);
+    }
+    ctx.textAlign = 'right';
+    for (var j = 0; j < yticks.length; j++) {
+      ctx.fillText(String(yticks[j]).replace('.', ','), x0 - 8, ty(yticks[j]) + 4);
+    }
+    // Axis names
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('r', x0 + plotW + 6, y0 + 4);
+    ctx.fillText('V', x0 - 4, pad.t - 12);
+
+    // Plot V(r) curve
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    var N = 200;
+    for (var k = 0; k <= N; k++) {
+      var x = xMin + (R_MAX - xMin) * k / N;
+      var y = vAt(x);
+      var px = tx(x), py = ty(y);
+      if (k === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+
+    // Mark optimum vertical line
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(tx(R_OPT), pad.t);
+    ctx.lineTo(tx(R_OPT), y0);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Optimum point
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(tx(R_OPT), ty(V_OPT), 7, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(tx(R_OPT), ty(V_OPT), 7, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('r* ≈ 0,230 ; V_max ≈ 0,0768', tx(R_OPT) + 12, ty(V_OPT) - 12);
+
+    // Right boundary r_max
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(tx(R_MAX), pad.t);
+    ctx.lineTo(tx(R_MAX), y0);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = warning;
+    ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('r_max ≈ 0,399', tx(R_MAX) - 4, pad.t + 14);
+
+    // Current r marker (interactive)
+    var rClamp = Math.max(0.001, Math.min(R_MAX, rVal));
+    var vCur = vAt(rClamp);
+    var hCur = Math.max(0, hAt(rClamp));
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(tx(rClamp), y0);
+    ctx.lineTo(tx(rClamp), ty(vCur));
+    ctx.lineTo(x0, ty(vCur));
+    ctx.stroke();
+
+    ctx.fillStyle = highlight;
+    ctx.beginPath();
+    ctx.arc(tx(rClamp), ty(vCur), 9, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(tx(rClamp), ty(vCur), 9, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Live readout
+    ctx.fillStyle = textCol;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    var rt = rClamp.toFixed(3).replace('.', ',');
+    var vt = vCur.toFixed(4).replace('.', ',');
+    var ht = hCur.toFixed(3).replace('.', ',');
+    ctx.fillText('r = ' + rt + '   h = ' + ht + '   V = ' + vt, x0 + 8, pad.t + 18);
+
+    // Bottom caption
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Roza tačka prati klizač; zelena tačka je teorijski maksimum r* = √(P/(6π)).', W / 2, H - 30);
+    ctx.fillText('Pri r → 0 cilindar postaje tanko-i-dugačko, pri r → r_max splošti se u disk — V → 0 na oba kraja.', W / 2, H - 14);
+  }
+
+  draw(rNow);
+
+  if (slider && output) {
+    slider.addEventListener('input', function() {
+      rNow = parseFloat(slider.value);
+      output.textContent = rNow.toFixed(3).replace('.', ',');
+      draw(rNow);
+    });
+  }
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(rNow); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('hr-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  var P_FIXED = 1;
+  var R_OPT = Math.sqrt(P_FIXED / (6 * Math.PI));
+  var R_MAX = Math.sqrt(P_FIXED / (2 * Math.PI));
+  function hAt(r) { return (P_FIXED - 2 * Math.PI * r * r) / (2 * Math.PI * r); }
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var textCol = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var warning = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.fillStyle = textCol;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Constraint: h(r) = (P − 2π r²)/(2π r),  P = 1', W / 2, 28);
+
+    var pad = { l: 70, r: 40, t: 60, b: 70 };
+    var plotW = W - pad.l - pad.r;
+    var plotH = H - pad.t - pad.b;
+    var x0 = pad.l, y0 = pad.t + plotH;
+
+    var xMin = 0.04, xMax = R_MAX * 1.02;
+    var yMin = 0, yMax = 1.2;
+
+    function tx(x) { return x0 + (x - xMin) / (xMax - xMin) * plotW; }
+    function ty(y) { return y0 - (y - yMin) / (yMax - yMin) * plotH; }
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    var xticks = [0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35];
+    for (var i = 0; i < xticks.length; i++) {
+      ctx.beginPath();
+      ctx.moveTo(tx(xticks[i]), pad.t);
+      ctx.lineTo(tx(xticks[i]), y0);
+      ctx.stroke();
+    }
+    var yticks = [0.2, 0.4, 0.6, 0.8, 1.0];
+    for (var j = 0; j < yticks.length; j++) {
+      ctx.beginPath();
+      ctx.moveTo(x0, ty(yticks[j]));
+      ctx.lineTo(x0 + plotW, ty(yticks[j]));
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+    ctx.lineTo(x0 + plotW, y0);
+    ctx.moveTo(x0, pad.t);
+    ctx.lineTo(x0, y0);
+    ctx.stroke();
+
+    ctx.fillStyle = textCol;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var i = 0; i < xticks.length; i++) {
+      ctx.fillText(String(xticks[i]).replace('.', ','), tx(xticks[i]), y0 + 18);
+    }
+    ctx.textAlign = 'right';
+    for (var j = 0; j < yticks.length; j++) {
+      ctx.fillText(String(yticks[j]).replace('.', ','), x0 - 8, ty(yticks[j]) + 4);
+    }
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('r', x0 + plotW + 6, y0 + 4);
+    ctx.fillText('h', x0 - 4, pad.t - 12);
+
+    // Plot h(r) curve
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    var N = 240;
+    var first = true;
+    for (var k = 0; k <= N; k++) {
+      var x = xMin + (R_MAX - xMin) * k / N;
+      var y = hAt(x);
+      if (y < yMin || y > yMax * 1.5) { first = true; continue; }
+      var px = tx(x), py = ty(y);
+      if (first) { ctx.moveTo(px, py); first = false; }
+      else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+
+    // Plot h = 2r line (to show intersection at optimum)
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(tx(xMin), ty(2 * xMin));
+    ctx.lineTo(tx(0.6), ty(2 * 0.6));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Intersection point: optimum
+    var hOpt = hAt(R_OPT);
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(tx(R_OPT), ty(hOpt), 7, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(tx(R_OPT), ty(hOpt), 7, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('h* = 2r* (optimum)', tx(R_OPT) + 12, ty(hOpt) - 12);
+
+    // Mark r_max on x-axis
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(tx(R_MAX), pad.t);
+    ctx.lineTo(tx(R_MAX), y0);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = warning;
+    ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('r_max  (h → 0)', tx(R_MAX) - 4, pad.t + 14);
+
+    // Legend lines
+    var lx = x0 + plotW - 200, ly = pad.t + 8;
+    ctx.fillStyle = bg;
+    ctx.fillRect(lx - 6, ly - 4, 200, 50);
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(lx - 6, ly - 4, 200, 50);
+
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(lx, ly + 6); ctx.lineTo(lx + 28, ly + 6);
+    ctx.stroke();
+    ctx.fillStyle = textCol;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('h(r) — vezni uslov', lx + 36, ly + 10);
+
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(lx, ly + 30); ctx.lineTo(lx + 28, ly + 30);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = textCol;
+    ctx.fillText('h = 2 r', lx + 36, ly + 34);
+
+    // Bottom caption
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Optimum se nalazi tamo gde se kriva uslova h(r) seče sa pravom h = 2r.', W / 2, H - 16);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Maksimalna zapremina cilindra pri datoj površini",
+  "subject": "math",
+  "unit": "calculus",
+  "topic_tags": ["optimizacija", "izvod", "cilindar", "geometrija", "maksimum funkcije", "constraint"]
+}
+BRAINSPARK_META-->

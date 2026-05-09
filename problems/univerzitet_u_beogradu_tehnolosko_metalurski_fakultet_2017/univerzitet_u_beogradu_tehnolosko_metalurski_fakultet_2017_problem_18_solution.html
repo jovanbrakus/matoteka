@@ -1,0 +1,887 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Problem: Jednakostranicni trougao ABC stranice a = 2 cm. Rotira oko prave p koja je normalna na osnovicu AB i sadrzi teme A. Naci zapreminu nastalog tela.
+
+Postavka u koord: A = (0,0), B = (2,0), C = (1, sqrt(3)). Osa rotacije p prolazi kroz A i normalna je na AB; AB lezi na x-osi, pa je osa p y-osa.
+
+Rastojanja temena od ose:
+- A: 0
+- B: 2
+- C: 1
+Visine:
+- A i B: y=0
+- C: y=sqrt(3)
+
+Pristup 1 — Pappus-Guldin (preporuceno za srednju skolu):
+V = 2*pi * x_centroid * Povrsina_trougla
+- Povrsina jednakostranicnog trougla stranice 2: P = (sqrt(3)/4) * 4 = sqrt(3).
+- Centroid: ((0+2+1)/3, (0+0+sqrt(3))/3) = (1, sqrt(3)/3).
+- Rastojanje centroida od y-ose: x_c = 1.
+- V = 2*pi * 1 * sqrt(3) = 2*sqrt(3)*pi cm^3.
+
+Tacan odgovor: (D) 2*sqrt(3)*pi.
+
+Provera kroz integraciju (metod prstenova):
+Telo: za svaku visinu y u [0, sqrt(3)], poprecni presek je prsten.
+- Spoljasnja granica: stranica BC od (2,0) do (1, sqrt(3)). Param: (2-s, s*sqrt(3)), s u [0,1]. Pri visini y = s*sqrt(3), x = 2 - s = 2 - y/sqrt(3). Tako R_spolj(y) = 2 - y/sqrt(3).
+- Unutrasnja granica: stranica AC od (0,0) do (1, sqrt(3)). Param: (t, t*sqrt(3)), t u [0,1]. Pri y = t*sqrt(3), x = y/sqrt(3). R_unutr(y) = y/sqrt(3).
+
+V = pi * integral_0^sqrt(3) [R_spolj^2 - R_unutr^2] dy
+= pi * integral_0^sqrt(3) [(2 - y/sqrt(3))^2 - (y/sqrt(3))^2] dy
+= pi * integral_0^sqrt(3) [4 - 4y/sqrt(3) + y^2/3 - y^2/3] dy
+= pi * integral_0^sqrt(3) [4 - 4y/sqrt(3)] dy
+= pi * [4y - 2y^2/sqrt(3)]_0^sqrt(3)
+= pi * [4*sqrt(3) - 2*3/sqrt(3)]
+= pi * [4*sqrt(3) - 6/sqrt(3)]
+= pi * [4*sqrt(3) - 2*sqrt(3)]
+= 2*sqrt(3)*pi. OK.
+
+Provera kroz "razlika dva tela":
+- Pravougaonik OABB' gde O=(0,0), A=(0,0)? Hmm, pravougaonik bi bio (0,0)-(2,0)-(2, sqrt(3))-(0, sqrt(3)). Ali nije to direktno povezano.
+Bolja decompozicija:
+Posmatraj trougao ABC. Rotacijom oko y-ose:
+- Stranica AB (od (0,0) do (2,0)): rotira u disk poluprecnika 2 na y=0. (Beznacajno za zapreminu.)
+- Stranica BC (od (2,0) do (1,sqrt(3))): rotira u kosi konus / frustum (donji deo cilindrican, gornji koniran). Tacnije: BC je kosa duz sa x-koordinatom koja se smanjuje od 2 do 1 dok y raste od 0 do sqrt(3). To opisuje konus-frustum sa donjim radijusom 2, gornjim radijusom 1, visinom sqrt(3).
+- Stranica AC (od (0,0) do (1,sqrt(3))): rotira u konus sa vrhom u A=(0,0), bazom poluprecnika 1 na visini sqrt(3).
+
+Telo dobijeno rotacijom trougla ABC = (frustum opisan duzinom BC) MINUS (konus opisan duzinom AC).
+- Frustum: V_f = (pi*h/3) * (R^2 + R*r + r^2) = (pi*sqrt(3)/3) * (4 + 2 + 1) = (pi*sqrt(3)/3) * 7 = 7*sqrt(3)*pi/3.
+- Konus: V_c = (1/3)*pi*r^2*h = (1/3)*pi*1*sqrt(3) = sqrt(3)*pi/3.
+- Razlika: 7*sqrt(3)*pi/3 - sqrt(3)*pi/3 = 6*sqrt(3)*pi/3 = 2*sqrt(3)*pi. OK!
+
+Ovo je elegantno i NE zahteva integral. Koristim ovo kao GLAVNI pristup u Step Solution (jer je srednja skola), ali pomenucu Pappus-Guldin.
+
+KEY INSIGHT: rotacijom trougla nastaje "kruna" — frustum (od stranice BC) sa konusnom rupom u sredini (od stranice AC). Vrh A je na osi, pa je rupa konus sa vrhom na osi.
+
+Vizuelna pomocna sredstva:
+1. 2D trougao sa osom rotacije (y-osa) i centroidom — orijentacija u xy-ravni.
+2. 3D obrtno telo (frustum minus konus) — krunolika sluga, izometrijski pogled.
+3. Poprecni presek na visini y — prsten sa formulama R_spolj = 2 - y/sqrt(3), R_unutr = y/sqrt(3).
+4. Decompozicija: frustum = "veliki konus zapremine V_b" minus "mali konus zapremine V_m" (ako produzimo BC do vrha na osi).
+
+Spojicu dijagrame: prikazati cetiri canvasa.
+
+PITFALL: zaboraviti da je telo "supljo" u sredini (zbog AC); zameniti spoljasnji i unutrasnji radijus; pomesati Pappus za zapreminu (V=2*pi*x*P) sa Pappus za povrsinu (S=2*pi*x*L); zaboraviti da centroid jednakostraicnog trougla koristi sve tri x-koordinate temena.
+</script>
+
+<h1 data-card="problem-title">Zapremina obrtnog tela jednakostraničnog trougla</h1>
+<p data-card="problem-subtitle" class="subtitle">Stereometrija: rotacija ravne figure oko ose, frustum minus konus, Pappus-Guldinova teorema</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Jednakostranični trougao \( ABC \) stranice \( a = 2 \) cm rotira oko prave \( p \) koja je normalna na osnovicu \( AB \) trougla i sadrži teme \( A \) tog trougla. Zapremina nastalog obrtnog tela jednaka je:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \pi \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 7\pi\sqrt{3} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 3\sqrt{2}\,\pi \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 2\sqrt{3}\,\pi \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 2\pi\sqrt{5} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Postavimo trougao u ravni tako da osa rotacije bude vertikalna kroz teme \( A \). Telo nastalo rotacijom rastavimo na <strong>frustum</strong> (od stranice \( BC \), koja je dalje od ose) <em>minus</em> <strong>konus</strong> (od stranice \( AC \), koja seče ravan ka osi). Sabiranjem-oduzimanjem standardnih formula dobijamo zapreminu, a Pappus-Guldinova teorema poslužiće kao elegantna nezavisna provera.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Konus, frustum, Pappus-Guldin</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Konus</strong> visine \( h \) i osnove poluprečnika \( r \): \( V_{\text{kon}} = \tfrac{1}{3}\pi r^2 h \).</li>
+        <li><strong>Frustum (zarubljeni konus)</strong> sa donjim poluprečnikom \( R \), gornjim \( r \) i visinom \( h \):
+          \[ V_{\text{fr}} = \tfrac{\pi h}{3}\bigl(R^2 + Rr + r^2\bigr). \]
+        </li>
+        <li><strong>Jednakostranični trougao</strong> stranice \( a \): visina \( h_\triangle = \tfrac{a\sqrt{3}}{2} \), površina \( P = \tfrac{a^2\sqrt{3}}{4} \), centroid (težište) deli visinu u odnosu \( 2{:}1 \) iz temena.</li>
+        <li><strong>Pappus-Guldin (zapremina):</strong> ako ravna figura površine \( P \) rotira za pun krug oko prave koja je ne seče (može je tangirati), nastalo obrtno telo ima zapreminu \( V = 2\pi \, \bar{x} \, P \), gde je \( \bar{x} \) rastojanje težišta figure od ose.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — trougao i osa rotacije">
+  <h2>📐 Trougao i osa rotacije</h2>
+  <div class="canvas-wrapper">
+    <canvas id="triangleAxis" width="720" height="600"></canvas>
+  </div>
+  <p class="canvas-caption">Jednakostranični trougao \( ABC \) sa osom rotacije \( p \) (vertikalna prava kroz \( A \), normalna na \( AB \)). Označena su rastojanja temena od ose: \( A \to 0,\ B \to 2,\ C \to 1 \). Težište \( T \) je na rastojanju \( 1 \) od ose.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — obrtno telo">
+  <h2>📐 Obrtno telo: frustum sa konusnom rupom</h2>
+  <div class="canvas-wrapper">
+    <canvas id="solidIso" width="720" height="620"></canvas>
+  </div>
+  <p class="canvas-caption">Telo dobijeno rotacijom: <strong>spoljašnja površ</strong> je frustum (zarubljeni konus) generisan stranicom \( BC \), <strong>unutrašnja</strong> je konus generisan stranicom \( AC \). Telo izgleda kao kruna sa konusnim udubljenjem koje se sužava ka temenu \( A \) na osi.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — poprečni presek na visini y">
+  <h2>📐 Poprečni presek (prsten)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="crossSection" width="720" height="600"></canvas>
+  </div>
+  <p class="canvas-caption">Na proizvoljnoj visini \( y \in [0, \sqrt{3}] \) presek tela ravni \( z = y \) je <strong>prsten</strong>: spoljašnji poluprečnik \( R(y) = 2 - \tfrac{y}{\sqrt{3}} \) (od stranice \( BC \)), unutrašnji \( r(y) = \tfrac{y}{\sqrt{3}} \) (od stranice \( AC \)). Pri \( y = 0 \): prsten od \( 0 \) do \( 2 \) (pun disk). Pri \( y = \sqrt{3} \): obe granice se „izjednačuju“ na \( 1 \) (prsten degeneriše u tačku-kružnicu).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavi koordinatni sistem i očitaj rastojanja od ose</h3>
+      <p>Postavimo \( A = (0, 0) \), \( B = (2, 0) \), \( C = (1, \sqrt{3}) \). Tada je osa \( p \) — koja je <em>normalna na \( AB \)</em> i prolazi kroz \( A \) — upravo \( y \)-osa. Visina trougla je \( \tfrac{a\sqrt{3}}{2} = \sqrt{3} \), jer \( a = 2 \).</p>
+      <p>Rastojanja temena od ose \( p \) (njihove \( x \)-koordinate):</p>
+      <div class="math-block">\[ A \to 0, \qquad B \to 2, \qquad C \to 1. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto \( C = (1, \sqrt{3}) \)?</summary>
+          <div class="detail-content"><p>U jednakostraničnom trouglu \( C \) je iznad sredine \( AB \) (na \( x = 1 \)), na visini \( \tfrac{a\sqrt{3}}{2} = \tfrac{2\sqrt{3}}{2} = \sqrt{3} \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Identifikuj telo: frustum minus konus</h3>
+      <p>Pri rotaciji oko \( y \)-ose, svaka stranica trougla generiše po jednu površ:</p>
+      <ul>
+        <li><strong>Stranica \( BC \)</strong> (od \( (2,0) \) do \( (1, \sqrt{3}) \)) generiše <em>frustum</em> sa donjim poluprečnikom \( R = 2 \), gornjim \( r = 1 \) i visinom \( h = \sqrt{3} \).</li>
+        <li><strong>Stranica \( AC \)</strong> (od \( (0,0) \) do \( (1, \sqrt{3}) \)) generiše <em>konus</em> sa vrhom u \( A \) (na osi), bazom poluprečnika \( 1 \) na visini \( \sqrt{3} \).</li>
+        <li><strong>Stranica \( AB \)</strong> (od \( (0,0) \) do \( (2,0) \)) generiše disk u ravni \( y = 0 \) — to je donja baza frustuma, ne dodaje zapreminu.</li>
+      </ul>
+      <p>Telo dobijeno rotacijom trougla je zato:</p>
+      <div class="math-block">\[ V = V_{\text{frustum}} - V_{\text{konus}}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunaj zapreminu frustuma (od stranice \( BC \))</h3>
+      <p>Sa \( R = 2 \), \( r = 1 \), \( h = \sqrt{3} \):</p>
+      <div class="math-block">\[ V_{\text{frustum}} = \frac{\pi h}{3}\bigl(R^2 + Rr + r^2\bigr) = \frac{\pi \sqrt{3}}{3}\bigl(4 + 2 + 1\bigr) = \frac{7\pi\sqrt{3}}{3}. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kako se izvodi formula za frustum?</summary>
+          <div class="detail-content"><p>Frustum se može videti kao razlika dva sličnih konusa: produžiš \( BC \) do vrha na osi (negde gore na \( y \)-osi). Veliki konus minus mali konus daje formulu \( \tfrac{\pi h}{3}(R^2 + Rr + r^2) \) posle algebarskog uprošćavanja. Ona radi i kada je \( r = 0 \): vraća običan konus \( \tfrac{1}{3}\pi R^2 h \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunaj zapreminu konusa (od stranice \( AC \))</h3>
+      <p>Konus ima vrh u \( A \) (na osi), bazu poluprečnika \( 1 \) na visini \( \sqrt{3} \):</p>
+      <div class="math-block">\[ V_{\text{konus}} = \tfrac{1}{3}\pi \cdot 1^2 \cdot \sqrt{3} = \frac{\pi\sqrt{3}}{3}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Oduzmi i pojednostavi</h3>
+      <div class="math-block">\[ V = \frac{7\pi\sqrt{3}}{3} - \frac{\pi\sqrt{3}}{3} = \frac{6\pi\sqrt{3}}{3} = 2\pi\sqrt{3}. \]</div>
+      <p>Dakle <span class="result">\( V = 2\sqrt{3}\,\pi \) cm\(^3\)</span>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Nezavisna provera Pappus-Guldinovom teoremom</h3>
+      <p>Površina jednakostraničnog trougla stranice \( 2 \):</p>
+      <div class="math-block">\[ P = \frac{a^2 \sqrt{3}}{4} = \frac{4\sqrt{3}}{4} = \sqrt{3}. \]</div>
+      <p>Težište \( T \) je u tački \( \left(\tfrac{0+2+1}{3},\ \tfrac{0+0+\sqrt{3}}{3}\right) = \left(1,\ \tfrac{\sqrt{3}}{3}\right) \). Rastojanje težišta od ose \( y \) je \( \bar{x} = 1 \).</p>
+      <p>Po Pappus-Guldinu:</p>
+      <div class="math-block">\[ V = 2\pi \, \bar{x} \, P = 2\pi \cdot 1 \cdot \sqrt{3} = 2\sqrt{3}\,\pi. \quad \checkmark \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( \bar{x} = 1 \) baš po simetriji?</summary>
+          <div class="detail-content"><p>U jednakostraničnom trouglu težište je na presekanju tri težišne duži; po simetriji ono leži na vertikalnoj osi simetrije trougla, koja prolazi kroz \( C \) i sredinu \( AB \) — to je vertikalna prava \( x = 1 \). Otud \( \bar{x} = 1 \) bez ikakvog računa.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kada figura rotira oko ose koja je <em>tangira</em> ali ne preseca, najbrži put do zapremine je <strong>Pappus-Guldinova teorema</strong>: \( V = 2\pi \, \bar{x} \, P \). Težište prelazi krug poluprečnika \( \bar{x} \), pa „prosečan disk“ ima radijus \( \bar{x} \) i zapremina je obim te putanje puta površina figure. Ovde \( \bar{x} = 1 \), \( P = \sqrt{3} \), pa \( V = 2\pi\sqrt{3} \) — bez integrala, bez decomposicije, samo iz simetrije i površine.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ V \;=\; V_{\text{frustum}} - V_{\text{konus}} \;=\; \frac{7\pi\sqrt{3}}{3} - \frac{\pi\sqrt{3}}{3} \;=\; 2\sqrt{3}\,\pi \ \text{cm}^3 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( \pi \)</span>
+    <span class="answer-option" data-option="B">(B) \( 7\pi\sqrt{3} \)</span>
+    <span class="answer-option" data-option="C">(C) \( 3\sqrt{2}\,\pi \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 2\sqrt{3}\,\pi \)</span>
+    <span class="answer-option" data-option="E">(E) \( 2\pi\sqrt{5} \)</span>
+  </div>
+  <p class="verification">Trostruka provera: (1) frustum minus konus daje \( \tfrac{6\pi\sqrt{3}}{3} = 2\sqrt{3}\pi \); (2) Pappus-Guldin sa \( \bar{x} = 1 \), \( P = \sqrt{3} \) daje \( 2\pi\sqrt{3} \); (3) integral metode prstenova \( \pi\!\int_0^{\sqrt{3}}\!\bigl[(2 - y/\sqrt{3})^2 - (y/\sqrt{3})^2\bigr]\,dy = \pi[4y - 2y^2/\sqrt{3}]_0^{\sqrt{3}} = 2\sqrt{3}\,\pi \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Zaboraviti da je telo „šuplje“ u sredini. Pošto je teme \( B \) dalje od ose nego \( C \) (\( 2 > 1 \)), spoljašnja površ je frustum, a iznutra ostaje konusna rupa od stranice \( AC \). Ako bi se zaboravio konus za oduzimanje, dobio bi se \( \tfrac{7\pi\sqrt{3}}{3} \) — odgovor (B) skaliran, čest rezultat greške.</li>
+    <li>Zameniti spoljašnji i unutrašnji poluprečnik (\( R \leftrightarrow r \)). Veće rastojanje \( B \) (\( =2 \)) je <em>spolja</em>, manje rastojanje \( C \) (\( =1 \)) je gore.</li>
+    <li>Pomešati Pappus za zapreminu (\( V = 2\pi\bar{x}\,P \)) sa Pappus za površinu (\( S = 2\pi\bar{x}\,L \)). Prva koristi <em>površinu</em> figure, druga <em>obim</em>.</li>
+    <li>Pri Pappus-Guldinu uzeti pogrešnu koordinatu težišta. Težište jednakostraničnog trougla je <em>aritmetička sredina</em> sve tri x-koordinate temena: \( \tfrac{0+2+1}{3} = 1 \).</li>
+    <li>Misliti da Pappus ne važi jer trougao „dodiruje“ osu u temenu \( A \). Pappus dozvoljava dodir, samo ne dozvoljava da figura <em>prelazi</em> osu na drugu stranu.</li>
+    <li>Računati zapreminu dvocika kao da je telo običan konus (samo \( BC \) bez „rupe“ od \( AC \)) ili obrnuto — bez razumevanja koja stranica čini koju površ.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Uzmi isti jednakostraničan trougao \( ABC \) (stranice \( a = 2 \)), ali ga rotiraj oko prave koja sadrži <em>stranicu</em> \( AB \) (umesto normale kroz \( A \)). Kolika je zapremina sada? Probaj prvo Pappus-Guldinom, zatim proverom kroz „dva konusa“.</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Sada je osa rotacije \( x \)-osa. Težište je na visini \( \tfrac{\sqrt{3}}{3} \), pa \( V = 2\pi \cdot \tfrac{\sqrt{3}}{3} \cdot \sqrt{3} = 2\pi \). Provera „dva konusa“: dva konusa visine \( 1 \) i poluprečnika \( \sqrt{3} \), spojena bazama, pa \( 2 \cdot \tfrac{1}{3}\pi \cdot 3 \cdot 1 = 2\pi \). ✓</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  // ─────────────── CANVAS 1: triangle + axis (2D) ───────────────
+  (function () {
+    var canvas = document.getElementById('triangleAxis');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+
+    function draw() {
+      var bg        = cv('--sol-canvas-bg');
+      var grid      = cv('--sol-canvas-grid');
+      var primary   = cv('--sol-canvas-primary');
+      var accent    = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text      = cv('--sol-canvas-text');
+      var muted     = cv('--sol-canvas-muted');
+      var warning   = cv('--sol-canvas-warning');
+      var danger    = cv('--sol-canvas-danger');
+
+      var W = canvas.width, H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      // Title
+      ctx.fillStyle = text;
+      ctx.font = 'bold 16px Inter, system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText('Trougao ABC u xy-ravni; osa rotacije p je y-osa', W / 2, 28);
+
+      // Math window: x in [-0.6, 2.6], y in [-0.6, 2.4]
+      var xMin = -0.6, xMax = 2.8;
+      var yMin = -0.5, yMax = 2.4;
+      var marginL = 70, marginR = 30, marginT = 60, marginB = 110;
+      var plotW = W - marginL - marginR;
+      var plotH = H - marginT - marginB;
+      var sx = function(x) { return marginL + (x - xMin) / (xMax - xMin) * plotW; };
+      var sy = function(y) { return marginT + (yMax - y) / (yMax - yMin) * plotH; };
+
+      // Grid
+      ctx.strokeStyle = grid;
+      ctx.lineWidth = 1;
+      for (var gx = 0; gx <= 2; gx++) {
+        ctx.beginPath();
+        ctx.moveTo(sx(gx), marginT);
+        ctx.lineTo(sx(gx), marginT + plotH);
+        ctx.stroke();
+      }
+      for (var gy = 0; gy <= 2; gy++) {
+        ctx.beginPath();
+        ctx.moveTo(marginL, sy(gy));
+        ctx.lineTo(marginL + plotW, sy(gy));
+        ctx.stroke();
+      }
+
+      // Axes
+      ctx.strokeStyle = muted;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(marginL, sy(0));
+      ctx.lineTo(marginL + plotW, sy(0));
+      ctx.stroke();
+
+      // y-axis = osa rotacije p (highlighted)
+      ctx.strokeStyle = warning;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(sx(0), marginT);
+      ctx.lineTo(sx(0), marginT + plotH);
+      ctx.stroke();
+      // Arrow
+      ctx.beginPath();
+      ctx.moveTo(sx(0) - 6, marginT + 10);
+      ctx.lineTo(sx(0), marginT);
+      ctx.lineTo(sx(0) + 6, marginT + 10);
+      ctx.fillStyle = warning;
+      ctx.fill();
+
+      // Label "p" near top of axis
+      ctx.fillStyle = warning;
+      ctx.font = 'bold 16px Inter, system-ui';
+      ctx.textAlign = 'left';
+      ctx.fillText('p (osa rotacije)', sx(0) + 8, marginT + 18);
+
+      // Triangle vertices
+      var Ax = sx(0), Ay = sy(0);
+      var Bx = sx(2), By = sy(0);
+      var Cx = sx(1), Cy = sy(Math.sqrt(3));
+
+      // Triangle fill
+      ctx.beginPath();
+      ctx.moveTo(Ax, Ay);
+      ctx.lineTo(Bx, By);
+      ctx.lineTo(Cx, Cy);
+      ctx.closePath();
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.18);
+      ctx.fill();
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      // Vertices
+      function vertex(x, y, color, label, dx, dy) {
+        ctx.beginPath();
+        ctx.arc(x, y, 5.5, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.fillStyle = text;
+        ctx.font = 'bold 15px Inter, system-ui';
+        ctx.textAlign = 'left';
+        ctx.fillText(label, x + dx, y + dy);
+      }
+      vertex(Ax, Ay, primary, 'A (0, 0)', -56, 18);
+      vertex(Bx, By, primary, 'B (2, 0)', 8, 18);
+      vertex(Cx, Cy, primary, 'C (1, √3)', 10, -8);
+
+      // Centroid T = (1, √3/3)
+      var Tx = sx(1), Ty = sy(Math.sqrt(3) / 3);
+      ctx.beginPath();
+      ctx.arc(Tx, Ty, 6, 0, Math.PI * 2);
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.3);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(Tx, Ty, 4, 0, Math.PI * 2);
+      ctx.fillStyle = accent;
+      ctx.fill();
+
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 14px Inter, system-ui';
+      ctx.textAlign = 'left';
+      ctx.fillText('T (1, √3/3)', Tx + 10, Ty + 5);
+
+      // Distance from centroid to axis: dashed horizontal line
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(sx(0), Ty);
+      ctx.lineTo(Tx, Ty);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 12px Inter, system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText('x̄ = 1', (sx(0) + Tx) / 2, Ty - 8);
+
+      // Distances from each vertex to axis (small dashed lines)
+      ctx.strokeStyle = highlight;
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 3]);
+      // B to axis
+      ctx.beginPath();
+      ctx.moveTo(sx(0), By + 18);
+      ctx.lineTo(Bx, By + 18);
+      ctx.stroke();
+      // C to axis
+      ctx.beginPath();
+      ctx.moveTo(sx(0), Cy);
+      ctx.lineTo(Cx, Cy);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = highlight;
+      ctx.font = 'bold 12px Inter, system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText('|B| = 2', (sx(0) + Bx) / 2, By + 14);
+      ctx.fillText('|C| = 1', (sx(0) + Cx) / 2, Cy - 8);
+
+      // Axis labels
+      ctx.fillStyle = muted;
+      ctx.font = '12px Inter, system-ui';
+      ctx.textAlign = 'center';
+      for (var lx = 1; lx <= 2; lx++) {
+        ctx.fillText(String(lx), sx(lx), sy(0) + 32);
+      }
+      ctx.textAlign = 'right';
+      ctx.fillText('1', marginL - 6, sy(1) + 4);
+      ctx.fillText('√3 ≈ 1{,}73', marginL - 6, sy(Math.sqrt(3)) + 4);
+
+      // x-axis label (AB lies on it)
+      ctx.fillStyle = primary;
+      ctx.font = 'bold 13px Inter, system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText('AB leži na x-osi', (Ax + Bx) / 2, By + 36);
+
+      // Bottom caption: equation
+      ctx.fillStyle = text;
+      ctx.font = '13px Inter, system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText('Površina trougla: P = (a²√3)/4 = √3   ·   Težište: T = (1, √3/3)', W / 2, H - 50);
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 14px Inter, system-ui';
+      ctx.fillText('Pappus-Guldin:  V = 2π · x̄ · P = 2π · 1 · √3 = 2√3·π', W / 2, H - 24);
+    }
+
+    draw();
+
+    window.addEventListener('message', function (e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function () {
+          styles = getComputedStyle(root);
+          draw();
+        }, 50);
+      }
+    });
+  })();
+
+  // ─────────────── CANVAS 2: 3D solid (isometric) ───────────────
+  (function () {
+    var canvas = document.getElementById('solidIso');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+
+    function draw() {
+      var bg        = cv('--sol-canvas-bg');
+      var primary   = cv('--sol-canvas-primary');
+      var accent    = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text      = cv('--sol-canvas-text');
+      var muted     = cv('--sol-canvas-muted');
+      var warning   = cv('--sol-canvas-warning');
+      var tertiary  = cv('--sol-canvas-tertiary');
+
+      var W = canvas.width, H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      ctx.fillStyle = text;
+      ctx.font = 'bold 16px Inter, system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText('Obrtno telo (3D): frustum sa konusnom rupom', W / 2, 28);
+
+      // 3D-ish projection. Axes vertical (y up). Use ellipses for top/bottom circles.
+      // Solid:
+      // - bottom disk: radius 2, at y=0
+      // - top circle: radius 1, at y=√3
+      // - inner cone apex at (0,0), base radius 1 at y=√3
+      var cx = W / 2;
+      var groundY = 460; // y position of bottom disk on canvas
+      var topY = 180;    // y position of top
+      var hPx = groundY - topY; // height in pixels = represents √3 in math
+
+      // Scale: 1 math unit horizontally = ?
+      // Bottom radius 2 → choose radius pixel = 130 for x-radius.
+      var rxBot = 150; // bottom horizontal radius
+      var ryBot = 38;  // bottom vertical (ellipse) radius
+      var rxTop = 75;  // top horizontal radius (1/2 of bottom since math 1 vs 2)
+      var ryTop = 19;
+
+      // ── Step A: draw inner cone (behind, will be partially hidden by frustum) ──
+      // Inner cone goes from apex (cx, groundY) at A — but A is at y=0, the bottom!
+      // Wait: The inner cone has apex at (0,0) i.e. at the bottom (on axis). Its base is at top, radius 1.
+      // So the apex is at (cx, groundY) and base ellipse is at (cx, topY) with rx=rxTop, ry=ryTop.
+
+      // Inner cone — drawn first as background (we'll see only its top opening through the "well")
+      // Skip drawing because it will be hidden inside the frustum lateral.
+
+      // ── Frustum exterior ──
+      // Draw bottom ellipse (back half) lighter
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.15);
+      ctx.beginPath();
+      ctx.ellipse(cx, groundY, rxBot, ryBot, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Frustum lateral surface — quadrilateral approximated by sides
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.25);
+      ctx.beginPath();
+      ctx.moveTo(cx - rxBot, groundY);
+      ctx.lineTo(cx - rxTop, topY);
+      ctx.lineTo(cx + rxTop, topY);
+      ctx.lineTo(cx + rxBot, groundY);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      // left slant
+      ctx.moveTo(cx - rxBot, groundY);
+      ctx.lineTo(cx - rxTop, topY);
+      // top ellipse front half
+      // right slant
+      ctx.moveTo(cx + rxBot, groundY);
+      ctx.lineTo(cx + rxTop, topY);
+      ctx.stroke();
+
+      // Bottom ellipse outline (full)
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.ellipse(cx, groundY, rxBot, ryBot, 0, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Top ellipse — outer ring of frustum top
+      ctx.strokeStyle = primary;
+      ctx.beginPath();
+      ctx.ellipse(cx, topY, rxTop, ryTop, 0, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // ── Inner cone (the "rupa") ──
+      // The inner cone has apex at center bottom (on axis at y=0, but A is on the rotation axis at y=0,
+      // so apex is at canvas point (cx, groundY)) and base radius 1 at top (y=√3).
+      // The inner cone opens upward — its silhouette inside the frustum top.
+
+      // Draw the cone interior (visible through the top opening).
+      // The cone's lateral surface as triangle from apex to top ellipse.
+      ctx.fillStyle = cvAlpha('--sol-canvas-tertiary', 0.35);
+      ctx.beginPath();
+      ctx.moveTo(cx, groundY);
+      ctx.lineTo(cx - rxTop, topY);
+      // top ellipse front half (visible)
+      // We want to fill the cone shape; do upper half (visible from above)
+      // Approximate: just fill triangle, then ring-cap.
+      ctx.lineTo(cx + rxTop, topY);
+      ctx.closePath();
+      ctx.fill();
+
+      // Cone slant lines (showing the rupa)
+      ctx.strokeStyle = tertiary;
+      ctx.lineWidth = 1.8;
+      ctx.setLineDash([5, 4]);
+      ctx.beginPath();
+      ctx.moveTo(cx, groundY);
+      ctx.lineTo(cx - rxTop, topY);
+      ctx.moveTo(cx, groundY);
+      ctx.lineTo(cx + rxTop, topY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Top ring of frustum (annulus): outer = rxTop, inner = 0 since cone meets top ring at radius 1.
+      // Actually, the top ring is degenerate: outer radius and inner radius are both 1.
+      // The top of the frustum and the base of the inner cone coincide at radius 1.
+      // So the top is a single circle (not an annulus).
+
+      // Mark important points on axis
+      // A = bottom on axis
+      ctx.beginPath();
+      ctx.arc(cx, groundY, 5, 0, Math.PI * 2);
+      ctx.fillStyle = warning;
+      ctx.fill();
+      ctx.fillStyle = text;
+      ctx.font = 'bold 14px Inter, system-ui';
+      ctx.textAlign = 'left';
+      ctx.fillText('A (na osi)', cx + 10, groundY + 5);
+
+      // Top center
+      ctx.beginPath();
+      ctx.arc(cx, topY, 4, 0, Math.PI * 2);
+      ctx.fillStyle = warning;
+      ctx.fill();
+
+      // Axis (vertical dashed)
+      ctx.strokeStyle = warning;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(cx, topY - 30);
+      ctx.lineTo(cx, groundY + 30);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = warning;
+      ctx.font = 'bold 13px Inter, system-ui';
+      ctx.textAlign = 'left';
+      ctx.fillText('osa p', cx + 8, topY - 38);
+
+      // Outer rim labels
+      ctx.fillStyle = primary;
+      ctx.font = 'bold 13px Inter, system-ui';
+      ctx.textAlign = 'right';
+      ctx.fillText('R = 2 (od B)', cx + rxBot - 8, groundY + 56);
+      ctx.fillText('r = 1 (od C)', cx + rxTop - 8, topY - 28);
+
+      // Height label
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(cx + rxBot + 26, groundY);
+      ctx.lineTo(cx + rxBot + 26, topY);
+      ctx.stroke();
+      // Tick marks
+      ctx.beginPath();
+      ctx.moveTo(cx + rxBot + 22, groundY);
+      ctx.lineTo(cx + rxBot + 30, groundY);
+      ctx.moveTo(cx + rxBot + 22, topY);
+      ctx.lineTo(cx + rxBot + 30, topY);
+      ctx.stroke();
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 13px Inter, system-ui';
+      ctx.textAlign = 'left';
+      ctx.fillText('h = √3', cx + rxBot + 36, (groundY + topY) / 2 + 4);
+
+      // Legend
+      ctx.fillStyle = bg;
+      ctx.fillRect(40, H - 110, W - 80, 90);
+      ctx.strokeStyle = muted;
+      ctx.lineWidth = 1;
+      ctx.strokeRect(40, H - 110, W - 80, 90);
+
+      ctx.fillStyle = primary;
+      ctx.fillRect(60, H - 95, 16, 16);
+      ctx.fillStyle = text;
+      ctx.font = '13px Inter, system-ui';
+      ctx.textAlign = 'left';
+      ctx.fillText('Spoljašnji frustum: stranica BC rotira oko ose (V_fr = 7π√3/3)', 84, H - 82);
+
+      ctx.fillStyle = tertiary;
+      ctx.fillRect(60, H - 70, 16, 16);
+      ctx.fillStyle = text;
+      ctx.fillText('Unutrašnji konus (rupa): stranica AC rotira oko ose (V_kon = π√3/3)', 84, H - 57);
+
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 13px Inter, system-ui';
+      ctx.fillText('V = V_fr − V_kon = 7π√3/3 − π√3/3 = 6π√3/3 = 2√3·π cm³', 60, H - 32);
+    }
+
+    draw();
+
+    window.addEventListener('message', function (e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function () {
+          styles = getComputedStyle(root);
+          draw();
+        }, 50);
+      }
+    });
+  })();
+
+  // ─────────────── CANVAS 3: cross-section (annulus) ───────────────
+  (function () {
+    var canvas = document.getElementById('crossSection');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+
+    function draw() {
+      var bg        = cv('--sol-canvas-bg');
+      var primary   = cv('--sol-canvas-primary');
+      var accent    = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text      = cv('--sol-canvas-text');
+      var muted     = cv('--sol-canvas-muted');
+      var warning   = cv('--sol-canvas-warning');
+      var tertiary  = cv('--sol-canvas-tertiary');
+
+      var W = canvas.width, H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      ctx.fillStyle = text;
+      ctx.font = 'bold 16px Inter, system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText('Poprečni presek na visini y: prsten (annulus)', W / 2, 28);
+
+      // Choose y_demo = √3/2 (midway): R(y) = 2 - 1/2 = 3/2, r(y) = 1/2.
+      var yDemo = Math.sqrt(3) / 2;
+      var Router = 2 - yDemo / Math.sqrt(3);
+      var Rinner = yDemo / Math.sqrt(3);
+
+      // Draw on canvas: center at (cx, cy), scale 1 math unit = 110 px.
+      var cx = W / 2 - 50;
+      var cy = 280;
+      var scale = 110;
+
+      // Outer ring (annulus fill)
+      ctx.beginPath();
+      ctx.arc(cx, cy, Router * scale, 0, Math.PI * 2);
+      ctx.arc(cx, cy, Rinner * scale, 0, Math.PI * 2, true);
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.3);
+      ctx.fill();
+
+      // Outer circle outline
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.arc(cx, cy, Router * scale, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Inner circle outline
+      ctx.strokeStyle = tertiary;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.arc(cx, cy, Rinner * scale, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Center
+      ctx.beginPath();
+      ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+      ctx.fillStyle = warning;
+      ctx.fill();
+      ctx.fillStyle = text;
+      ctx.font = 'bold 13px Inter, system-ui';
+      ctx.textAlign = 'right';
+      ctx.fillText('osa', cx - 8, cy + 5);
+
+      // Radii labels: outer
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + Router * scale, cy);
+      ctx.stroke();
+      ctx.fillStyle = primary;
+      ctx.font = 'bold 13px Inter, system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText('R(y) = 2 − y/√3', cx + (Router * scale) / 2, cy - 10);
+
+      // Inner radius label
+      ctx.strokeStyle = tertiary;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx, cy - Rinner * scale);
+      ctx.stroke();
+      ctx.fillStyle = tertiary;
+      ctx.font = 'bold 13px Inter, system-ui';
+      ctx.textAlign = 'left';
+      ctx.fillText('r(y) = y/√3', cx + 8, cy - Rinner * scale / 2);
+
+      // Side panel: formulas
+      var px = W - 290;
+      ctx.fillStyle = bg;
+      ctx.fillRect(px - 10, 70, 280, 380);
+      ctx.strokeStyle = muted;
+      ctx.lineWidth = 1;
+      ctx.strokeRect(px - 10, 70, 280, 380);
+
+      ctx.fillStyle = text;
+      ctx.font = 'bold 14px Inter, system-ui';
+      ctx.textAlign = 'left';
+      ctx.fillText('Granice u zavisnosti od y:', px, 95);
+
+      ctx.font = '13px Inter, system-ui';
+      ctx.fillStyle = primary;
+      ctx.fillText('Stranica BC (od (2,0) do (1,√3))', px, 122);
+      ctx.fillStyle = text;
+      ctx.fillText('  → R(y) = 2 − y/√3', px, 142);
+
+      ctx.fillStyle = tertiary;
+      ctx.fillText('Stranica AC (od (0,0) do (1,√3))', px, 168);
+      ctx.fillStyle = text;
+      ctx.fillText('  → r(y) = y/√3', px, 188);
+
+      ctx.font = 'bold 13px Inter, system-ui';
+      ctx.fillStyle = accent;
+      ctx.fillText('Površina prstena:', px, 222);
+      ctx.font = '13px Inter, system-ui';
+      ctx.fillStyle = text;
+      ctx.fillText('A(y) = π[R² − r²]', px, 244);
+      ctx.fillText('     = π[(2−y/√3)² − (y/√3)²]', px, 264);
+      ctx.fillText('     = π[4 − 4y/√3]', px, 284);
+
+      ctx.font = 'bold 13px Inter, system-ui';
+      ctx.fillStyle = accent;
+      ctx.fillText('V = ∫₀^√3 A(y) dy', px, 320);
+      ctx.font = '13px Inter, system-ui';
+      ctx.fillStyle = text;
+      ctx.fillText('  = π[4y − 2y²/√3]₀^√3', px, 342);
+      ctx.fillText('  = π[4√3 − 2√3]', px, 362);
+      ctx.font = 'bold 14px Inter, system-ui';
+      ctx.fillStyle = accent;
+      ctx.fillText('  = 2√3 · π   ✓', px, 388);
+
+      // Annotation: y value used in this snapshot
+      ctx.fillStyle = muted;
+      ctx.font = '12px Inter, system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText('Trenutni snimak: y = √3/2  ⇒  R = 3/2, r = 1/2', cx, cy + Router * scale + 26);
+
+      // Bottom note
+      ctx.fillStyle = text;
+      ctx.font = '13px Inter, system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText('Prsten degeneriše u tačku-kružnicu pri y = √3 (R = r = 1) — vrh frustuma.', W / 2, H - 24);
+    }
+
+    draw();
+
+    window.addEventListener('message', function (e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function () {
+          styles = getComputedStyle(root);
+          draw();
+        }, 50);
+      }
+    });
+  })();
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Zapremina obrtnog tela jednakostraničnog trougla oko normale kroz teme",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["obrtno telo", "frustum", "konus", "Pappus-Guldin", "jednakostranični trougao"]
+}
+BRAINSPARK_META-->

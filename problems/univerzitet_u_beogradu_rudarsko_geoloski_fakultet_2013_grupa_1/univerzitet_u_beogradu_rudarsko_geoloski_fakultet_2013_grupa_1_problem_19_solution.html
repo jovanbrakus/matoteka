@@ -1,0 +1,539 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Geometrijska progresija sa pozitivnim članovima. Dato: a_1 = 2, a_5 = 162. Naći zbir prvih deset članova S_10.
+
+Korak 1 — naći količnik q:
+Opšti član GP: a_n = a_1 · q^(n-1).
+Za n = 5: a_5 = a_1 · q^4 = 2 · q^4 = 162.
+Dakle q^4 = 81 = 3^4.
+Pošto su svi članovi pozitivni i a_1 = 2 > 0, mora biti q > 0, pa q = 3.
+(Negativni koren q = -3 bi davao naizmenične znake, što kontradiktira pozitivnosti.)
+
+Korak 2 — formula za zbir prvih n članova GP:
+S_n = a_1 · (q^n - 1) / (q - 1)  za q ≠ 1.
+
+Korak 3 — izračun:
+S_10 = 2 · (3^10 - 1) / (3 - 1)
+     = 2 · (3^10 - 1) / 2
+     = 3^10 - 1.
+
+3^10 = 59049 (provera: 3^5 = 243, 243 · 243 = 59049).
+S_10 = 59049 - 1 = 59048.
+
+Provera: prvih deset članova: 2, 6, 18, 54, 162, 486, 1458, 4374, 13122, 39366.
+Zbir = 2 + 6 + 18 + 54 + 162 + 486 + 1458 + 4374 + 13122 + 39366
+     = 8 + 18 = 26; 26 + 54 = 80; 80 + 162 = 242; 242 + 486 = 728;
+       728 + 1458 = 2186; 2186 + 4374 = 6560; 6560 + 13122 = 19682;
+       19682 + 39366 = 59048. ✓
+
+Tačan odgovor: A) 59048.
+
+Vizuelni prikaz: bar chart deset stubova rastućih eksponencijalno (visine logaritamski skalirane), uz istaknut peti član 162. Drugi canvas može prikazati formulu zbira sa popunjavanjem.
+</script>
+
+<h1 data-card="problem-title">Zbir prvih deset članova geometrijske progresije</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — geometrijska progresija, količnik, zbir prvih \( n \) članova</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Prvi član geometrijske progresije sa pozitivnim članovima je \( a_1 = 2 \), a peti \( a_5 = 162 \). Zbir prvih deset članova je:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">prvi član</span>
+      <span class="given-value">\( a_1 = 2 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">peti član</span>
+      <span class="given-value">\( a_5 = 162 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">znak</span>
+      <span class="given-value">svi članovi \( > 0 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">traži se</span>
+      <span class="given-value">\( S_{10} \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 59048 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 45828 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 36348 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 60218 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Iz uslova \( a_5 = a_1 \cdot q^4 \) odredićemo količnik \( q \) (uzimajući pozitivan koren), a zatim primenom formule za zbir prvih \( n \) članova izračunati \( S_{10} \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule o geometrijskoj progresiji</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Opšti član</span> \( a_n = a_1 \cdot q^{\,n-1} \).</li>
+        <li><span class="formula-label">Količnik</span> \( q = \dfrac{a_{n+1}}{a_n} \) je isti za svaka dva susedna člana.</li>
+        <li><span class="formula-label">Zbir prvih \(n\) članova</span> Za \( q \neq 1 \): \( S_n = a_1 \cdot \dfrac{q^n - 1}{q - 1} \).</li>
+        <li><span class="formula-label">Pozitivnost</span> Ako je \( a_1 > 0 \) i svi članovi su pozitivni, onda je \( q > 0 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz članova">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="gp-bars" width="760" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Prvih deset članova progresije rastu kao stepeni broja \( 3 \): \( 2, 6, 18, \ldots, 39366 \). Visine stubaca su prikazane logaritamski jer se inače poslednji član ne bi video pored prvog.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Formula zbira">
+  <h2>📐 Sažimanje zbira</h2>
+  <div class="canvas-wrapper">
+    <canvas id="gp-sum" width="760" height="460"></canvas>
+  </div>
+  <p class="canvas-caption">Zbir \( S_{10} = a_1 \cdot \dfrac{q^{10}-1}{q-1} \) — ovde se zgodno krati: \( \dfrac{2}{q-1} = \dfrac{2}{2} = 1 \), pa ostaje \( q^{10} - 1 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Veza između prvog i petog člana</h3>
+      <p>Po formuli opšteg člana geometrijske progresije imamo:</p>
+      <div class="math-block">\[ a_5 = a_1 \cdot q^{\,5-1} = a_1 \cdot q^{4}. \]</div>
+      <p>Ubacivanjem podataka \( a_1 = 2 \) i \( a_5 = 162 \):</p>
+      <div class="math-block">\[ 2 \cdot q^{4} = 162 \quad\Longrightarrow\quad q^{4} = 81. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliko je \( 81 \) izraženo kao stepen broja \( 3 \)?</summary>
+          <div class="detail-content"><p>\( 81 = 3 \cdot 3 \cdot 3 \cdot 3 = 3^{4} \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Odredi količnik \( q \)</h3>
+      <p>Iz \( q^{4} = 81 = 3^{4} \) algebarski sledi \( q = \pm 3 \). Međutim, u zadatku je rečeno da su <em>svi</em> članovi pozitivni; pošto je \( a_1 = 2 > 0 \), nemoguće je da članovi naizmenično menjaju znak — ostaje samo:</p>
+      <div class="math-block">\[ q = 3. \]</div>
+      <p>Brza provera: \( a_2 = 2 \cdot 3 = 6 \), \( a_3 = 18 \), \( a_4 = 54 \), \( a_5 = 162 \). <span class="result">Tačno!</span></p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavi formulu za zbir prvih deset članova</h3>
+      <p>Za \( q \neq 1 \) važi:</p>
+      <div class="math-block">\[ S_{n} = a_{1} \cdot \frac{q^{n} - 1}{q - 1}. \]</div>
+      <p>Za \( n = 10 \), \( a_1 = 2 \), \( q = 3 \):</p>
+      <div class="math-block">\[ S_{10} = 2 \cdot \frac{3^{10} - 1}{3 - 1} = 2 \cdot \frac{3^{10} - 1}{2}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Skrati i izračunaj</h3>
+      <p>Dvojka u brojiocu i imeniocu se krati:</p>
+      <div class="math-block">\[ S_{10} = 3^{10} - 1. \]</div>
+      <p>Računamo \( 3^{10} \) preko \( 3^{5} = 243 \):</p>
+      <div class="math-block">\[ 3^{10} = (3^{5})^{2} = 243^{2} = 59049. \]</div>
+      <div class="math-block">\[ S_{10} = 59049 - 1 = 59048. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliko je \( 243^{2} \)?</summary>
+          <div class="detail-content"><p>\( 243 \cdot 243 = 243 \cdot 200 + 243 \cdot 43 = 48600 + 10449 = 59049 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera direktnim sabiranjem</h3>
+      <p>Pišemo svih deset članova i sabiramo:</p>
+      <div class="math-block">\[ 2 + 6 + 18 + 54 + 162 + 486 + 1458 + 4374 + 13122 + 39366 = 59048. \]</div>
+      <p>Rezultat se poklapa sa formulom — količnik i izračun su tačni.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kada je \( a_1 = 2 \) i \( q = 3 \), faktor \( \dfrac{a_1}{q-1} = \dfrac{2}{2} = 1 \) — formula za zbir se elegantno svodi na čistu razliku stepena: \( S_{n} = q^{n} - 1 \). Ovo je posledica srećnog izbora podataka, ali ilustruje moć skraćivanja pre numeričkog računanja.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ S_{10} = 3^{10} - 1 = 59048. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 59048 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 45828 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 36348 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 60218 \)</span>
+  </div>
+  <p class="verification">Provera: direktno sabiranje članova \( 2,6,18,54,162,486,1458,4374,13122,39366 \) takođe daje \( 59048 \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pisati \( a_5 = a_1 \cdot q^{5} \) umesto ispravne formule \( a_5 = a_1 \cdot q^{4} \). Eksponent je \( n-1 \), ne \( n \).</li>
+    <li>Uzeti \( q = -3 \) iz \( q^{4} = 81 \) — to bi narušilo uslov da su svi članovi pozitivni.</li>
+    <li>Pomešati formulu za zbir aritmetičke progresije \( S_n = \dfrac{n(a_1+a_n)}{2} \) sa formulom za GP.</li>
+    <li>Računati \( 3^{10} \) napamet i napraviti grešku — bezbednije je razložiti kao \( (3^{5})^{2} = 243^{2} \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Ako bi peti član bio \( a_5 = 162 \), ali bismo dozvolili da članovi mogu biti i negativni (samo \( a_1 = 2 \)), kakav bi tada bio zbir prvih deset članova za \( q = -3 \)? Da li bi se po apsolutnoj vrednosti razlikovao od slučaja \( q = 3 \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Formula \( S_{n} = a_1 \cdot \dfrac{q^{n}-1}{q-1} \) važi i za \( q = -3 \). Kako je \( (-3)^{10} = 59049 \), brojilac je isti, ali imenilac \( q-1 = -4 \), pa \( S_{10} = 2 \cdot \dfrac{59048}{-4} = -29524 \). Apsolutna vrednost je manja (jer se \( q-1 \) duplira), a znak je negativan zbog naizmeničnog smenjivanja članova.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.indexOf('#') === 0) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('gp-bars');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  var values = [2, 6, 18, 54, 162, 486, 1458, 4374, 13122, 39366];
+
+  function draw() {
+    styles = getComputedStyle(root);
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.fillText('Geometrijska progresija: a_n = 2 · 3^(n-1)', canvas.width / 2, 28);
+
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('(visine stubaca su logaritamski skalirane)', canvas.width / 2, 48);
+
+    // Plot area
+    var leftPad = 60;
+    var rightPad = 30;
+    var topPad = 70;
+    var bottomPad = 90;
+    var plotW = canvas.width - leftPad - rightPad;
+    var plotH = canvas.height - topPad - bottomPad;
+    var plotBottom = topPad + plotH;
+
+    // Logarithmic vertical scale
+    var maxLog = Math.log10(values[values.length - 1]) + 0.2;
+    var minLog = 0; // log10(1) = 0
+
+    function yFor(value) {
+      var t = (Math.log10(value) - minLog) / (maxLog - minLog);
+      return plotBottom - t * plotH;
+    }
+
+    // Horizontal axis
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(leftPad, plotBottom);
+    ctx.lineTo(leftPad + plotW, plotBottom);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(leftPad, topPad);
+    ctx.lineTo(leftPad, plotBottom);
+    ctx.stroke();
+
+    // Grid lines for powers of 10
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'right';
+    for (var p = 0; p <= 4; p++) {
+      var v = Math.pow(10, p);
+      var y = yFor(v);
+      ctx.beginPath();
+      ctx.setLineDash([3, 3]);
+      ctx.moveTo(leftPad, y);
+      ctx.lineTo(leftPad + plotW, y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillText('10^' + p, leftPad - 8, y + 4);
+    }
+
+    // Bars
+    var n = values.length;
+    var barGap = 10;
+    var barWidth = (plotW - barGap * (n - 1)) / n;
+
+    for (var i = 0; i < n; i++) {
+      var x = leftPad + i * (barWidth + barGap);
+      var y = yFor(values[i]);
+      var h = plotBottom - y;
+
+      // Bar fill — highlight n=5 (a_5 = 162)
+      if (i === 4) {
+        ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.55);
+        ctx.strokeStyle = highlight;
+      } else if (i === 0) {
+        ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.55);
+        ctx.strokeStyle = accent;
+      } else {
+        ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.45);
+        ctx.strokeStyle = primary;
+      }
+      ctx.lineWidth = 1.5;
+      ctx.fillRect(x, y, barWidth, h);
+      ctx.strokeRect(x, y, barWidth, h);
+
+      // Value label above bar
+      ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+      ctx.fillStyle = text;
+      ctx.textAlign = 'center';
+      ctx.fillText(values[i].toString(), x + barWidth / 2, y - 6);
+
+      // Index label below bar
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.fillStyle = muted;
+      ctx.fillText('a' + (i + 1), x + barWidth / 2, plotBottom + 18);
+    }
+
+    // x-axis title
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.fillText('redni broj člana n', leftPad + plotW / 2, plotBottom + 42);
+
+    // Legend
+    var legY = canvas.height - 18;
+    ctx.textAlign = 'left';
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillStyle = accent;
+    ctx.fillRect(leftPad, legY - 9, 12, 12);
+    ctx.fillStyle = muted;
+    ctx.fillText('a₁ = 2 (početak)', leftPad + 18, legY);
+
+    ctx.fillStyle = highlight;
+    ctx.fillRect(leftPad + 170, legY - 9, 12, 12);
+    ctx.fillStyle = muted;
+    ctx.fillText('a₅ = 162 (dato)', leftPad + 188, legY);
+
+    ctx.fillStyle = primary;
+    ctx.fillRect(leftPad + 340, legY - 9, 12, 12);
+    ctx.fillStyle = muted;
+    ctx.fillText('ostali članovi (q = 3)', leftPad + 358, legY);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(draw, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.indexOf('#') === 0) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('gp-sum');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    styles = getComputedStyle(root);
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.fillText('Skraćivanje formule za zbir', canvas.width / 2, 36);
+
+    var cx = canvas.width / 2;
+    var lineH = 60;
+
+    // Step 1
+    var y1 = 100;
+    ctx.font = '20px "Latin Modern Math", "Cambria Math", serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.fillText('S₁₀ = 2 · ( 3¹⁰ − 1 ) / ( 3 − 1 )', cx, y1);
+
+    // Arrow
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(cx, y1 + 14);
+    ctx.lineTo(cx, y1 + 38);
+    ctx.stroke();
+    // arrow head
+    ctx.beginPath();
+    ctx.moveTo(cx - 6, y1 + 32);
+    ctx.lineTo(cx, y1 + 40);
+    ctx.lineTo(cx + 6, y1 + 32);
+    ctx.stroke();
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('imenilac 3 − 1 = 2', cx + 110, y1 + 30);
+
+    // Step 2 — show cancellation with strikethroughs
+    var y2 = y1 + lineH + 30;
+    ctx.font = '20px "Latin Modern Math", "Cambria Math", serif';
+    ctx.fillStyle = text;
+    ctx.fillText('S₁₀ = 2 · ( 3¹⁰ − 1 ) / 2', cx, y2);
+
+    // Strikethrough on the two 2's
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2.5;
+    var textWidth = ctx.measureText('S₁₀ = 2 · ( 3¹⁰ − 1 ) / 2').width;
+    var startX = cx - textWidth / 2;
+    // first "2" position approx
+    ctx.beginPath();
+    ctx.moveTo(startX + 62, y2 - 6);
+    ctx.lineTo(startX + 76, y2 + 4);
+    ctx.stroke();
+    // last "2" position
+    ctx.beginPath();
+    ctx.moveTo(startX + textWidth - 14, y2 - 6);
+    ctx.lineTo(startX + textWidth, y2 + 4);
+    ctx.stroke();
+
+    // Arrow
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(cx, y2 + 14);
+    ctx.lineTo(cx, y2 + 38);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(cx - 6, y2 + 32);
+    ctx.lineTo(cx, y2 + 40);
+    ctx.lineTo(cx + 6, y2 + 32);
+    ctx.stroke();
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'left';
+    ctx.fillText('skratiti', cx + 12, y2 + 30);
+
+    // Step 3 — final
+    ctx.textAlign = 'center';
+    var y3 = y2 + lineH + 30;
+    ctx.font = '24px "Latin Modern Math", "Cambria Math", serif';
+    ctx.fillStyle = accent;
+    ctx.fillText('S₁₀ = 3¹⁰ − 1 = 59049 − 1 = 59048', cx, y3);
+
+    // Box around final
+    var boxW = ctx.measureText('S₁₀ = 3¹⁰ − 1 = 59049 − 1 = 59048').width + 40;
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(cx - boxW / 2, y3 - 28, boxW, 44);
+
+    // Footer note
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = warning;
+    ctx.textAlign = 'center';
+    ctx.fillText('Trik: kada je a₁ = q − 1, formula se reducira na q^n − 1.', cx, y3 + 60);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(draw, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Zbir prvih deset članova geometrijske progresije",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["geometrijska progresija", "zbir niza", "količnik", "stepenovanje"]
+}
+BRAINSPARK_META-->

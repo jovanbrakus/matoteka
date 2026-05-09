@@ -1,0 +1,835 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+PROBLEM: Paralelogram sa susednim ivicama duzine a i b i ostrim uglom alpha = ugao izmedju njih. Rotiramo paralelogram oko stranice duzine a, dobijamo telo zapremine V_a. Zatim rotiramo isti paralelogram oko stranice duzine b, dobijamo telo zapremine V_b. Naci odnos V_a : V_b.
+
+KLJUCNI ALAT — Papova (Guldinova) teorema o zapremini:
+Zapremina tela koje nastaje rotacijom ravnog lika oko prave (koja ne sece taj lik) jednaka je proizvodu povrsine lika i obima kruznice koju opise teziste lika:
+V = 2*pi * d * S,
+gde je S povrsina lika, a d rastojanje od tezista lika do ose rotacije.
+
+PARALELOGRAM:
+Povrsina paralelograma: S = a*b*sin(alpha)
+Visina na stranicu a: h_a = b*sin(alpha) (rastojanje izmedju paralelnih stranica duzine a)
+Visina na stranicu b: h_b = a*sin(alpha)
+
+POLOŽAJ TEZISTA:
+Teziste paralelograma je u preseku dijagonala. Ono je tacno na sredini paralelograma. Rastojanje od tezista do stranice a iznosi h_a/2 = (b*sin(alpha))/2. Rastojanje od tezista do stranice b iznosi h_b/2 = (a*sin(alpha))/2.
+
+ROTACIJA OKO STRANICE a:
+d_a = h_a/2 = b*sin(alpha)/2
+V_a = 2*pi * d_a * S = 2*pi * (b*sin(alpha)/2) * (a*b*sin(alpha)) = pi * a * b^2 * sin^2(alpha)
+
+ROTACIJA OKO STRANICE b:
+d_b = h_b/2 = a*sin(alpha)/2
+V_b = 2*pi * d_b * S = 2*pi * (a*sin(alpha)/2) * (a*b*sin(alpha)) = pi * b * a^2 * sin^2(alpha)
+
+ODNOS:
+V_a : V_b = (pi * a * b^2 * sin^2(alpha)) : (pi * b * a^2 * sin^2(alpha))
+         = (a * b^2) : (b * a^2)
+         = b : a
+
+ALTERNATIVNI PRISTUP — direktan racun (kao provera):
+Postavi koordinatni sistem tako da stranica a lezi na x-osi: A = (0,0), B = (a, 0), pa C = (a + b*cos(alpha), b*sin(alpha)), D = (b*cos(alpha), b*sin(alpha)).
+Rotacija oko x-ose: telo nastaje rotacijom paralelograma. Telo je razlika dva kosa cilindra, ali komplikovano. Lakse je koristiti Papovu teoremu.
+
+Papova teorema je *tacno* takva alatka: za bilo koji oblik koji se rotira, V = 2*pi * d * S.
+
+DOKAZ TEZISTA PARALELOGRAMA:
+Paralelogram je centralno simetrican u odnosu na presek dijagonala. Tako je teziste mase u tom preseku, koji je sredina svake dijagonale. Ako stranica a lezi na x-osi (od (0,0) do (a,0)), pa C = (a + b*cos(alpha), b*sin(alpha)), D = (b*cos(alpha), b*sin(alpha)), tada teziste = ((0+a+a+b*cos(alpha)+b*cos(alpha))/4, (0+0+b*sin(alpha)+b*sin(alpha))/4) = ((2a+2b*cos(alpha))/4, 2b*sin(alpha)/4) = ((a+b*cos(alpha))/2, b*sin(alpha)/2).
+y-koordinata = b*sin(alpha)/2 = h_a/2 ✓
+
+PROVERA — specijalan slucaj alpha=90 (pravougaonik), a=2, b=3:
+V_a (oko stranice a duzine 2): rotacijom pravougaonika 2x3 oko strane duzine 2 dobijamo cilindar visine 2 i poluprecnika 3.
+V_a = pi*r^2*h = pi*9*2 = 18pi
+Po formuli: pi * a * b^2 * sin^2(90°) = pi * 2 * 9 * 1 = 18pi ✓
+
+V_b (oko stranice b duzine 3): cilindar visine 3 i poluprecnika 2.
+V_b = pi*4*3 = 12pi
+Po formuli: pi * b * a^2 = pi * 3 * 4 = 12pi ✓
+
+V_a : V_b = 18pi : 12pi = 3:2 = b:a (gde je b=3, a=2). ✓
+
+ODGOVOR: (B) b : a.
+
+OPCIJE:
+- (A) a : b — zamka, mnogi misle da veca strana → veca zapremina
+- (B) b : a — TACAN
+- (C) a^2 : b^2 — pomesati formule, ako bi se zaboravila inverzija
+- (D) b^2 : a^2 — slicno
+- (E) 1:1 — pogresno, da je telo isto bez obzira na osu rotacije
+
+VIZUELNI PRIKAZ — 3 statična canvasa:
+1) Paralelogram ABCD sa stranicama a, b i uglom alpha; visine h_a, h_b
+2) Telo nastalo rotacijom oko stranice a — vidi se "kosi cilindar" (zarezana cilindricna ljuska)
+3) Telo nastalo rotacijom oko stranice b — slicno, ali drugacije proporcije
+</script>
+
+<h1 data-card="problem-title">Odnos zapremina rotacionih tela paralelograma</h1>
+<p data-card="problem-subtitle" class="subtitle">Stereometrija: Papova (Guldinova) teorema, rotaciona tela, težište paralelograma</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Odnos zapremina tela nastalih rotacijom paralelograma oko svojih dveju susednih ivica dužina \( a \) i \( b \), redom, iznosi:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">stranice</span>
+      <span class="given-value">\( a \) i \( b \) (susedne)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">ugao</span>
+      <span class="given-value">\( \alpha \) između njih</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">tražimo</span>
+      <span class="given-value">\( V_a : V_b \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( a : b \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( b : a \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( a^2 : b^2 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( b^2 : a^2 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 1 : 1 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Primenićemo Papovu (Guldinovu) teoremu o zapremini rotacionog tela: \( V = 2\pi d \cdot S \), gde je \( S \) površina lika, a \( d \) rastojanje od težišta lika do ose rotacije. Pošto težište paralelograma leži tačno na pola visine, oba rastojanja \( d_a \) i \( d_b \) lako izračunamo. Odnos zapremina onda postaje vrlo jednostavan.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Papova (Guldinova) teorema i osobine paralelograma</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Papova teorema o zapremini</span> Ako se ravan lik površine \( S \) okreće oko prave \( \ell \) koja se ne seče sa likom, dobijeno rotaciono telo ima zapreminu \( V = 2\pi d \cdot S \), gde je \( d \) rastojanje težišta lika od ose \( \ell \).</li>
+        <li><span class="formula-label">Težište paralelograma</span> Težište leži u preseku dijagonala — tačno na sredini lika. Rastojanje težišta od bilo koje stranice je polovina visine na tu stranicu.</li>
+        <li><span class="formula-label">Površina paralelograma</span> \( S = ab\sin\alpha \), gde je \( \alpha \) ugao između stranica \( a \) i \( b \).</li>
+        <li><span class="formula-label">Visine paralelograma</span> Visina na stranicu \( a \) je \( h_a = b\sin\alpha \), a visina na stranicu \( b \) je \( h_b = a\sin\alpha \).</li>
+        <li><span class="formula-label">Provera za pravougaonik</span> Ako je \( \alpha = 90^\circ \), rotacijom pravougaonika \( a \times b \) oko stranice \( a \) dobijamo cilindar visine \( a \) i poluprečnika \( b \): \( V_a = \pi b^2 a \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Dijagram 1 — paralelogram i njegove visine">
+  <h2>📐 Dijagram 1 — paralelogram i njegove visine</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram1" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Paralelogram \( ABCD \) sa susednim stranicama \( |AB| = a \), \( |AD| = b \) i uglom \( \alpha \) kod temena \( A \). Visine: \( h_a = b\sin\alpha \) (na stranicu \( a \)) i \( h_b = a\sin\alpha \) (na stranicu \( b \)). Težište \( T \) leži u preseku dijagonala, na visini \( h_a/2 \) iznad \( AB \) i na rastojanju \( h_b/2 \) od stranice \( AD \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Dijagram 2 — rotacija oko stranice a">
+  <h2>📐 Dijagram 2 — rotacija oko stranice \( a \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram2" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Rotacijom paralelograma oko stranice \( AB \) (dužine \( a \)) dobijamo telo \( T_a \). Težište \( T \) opisuje krug poluprečnika \( h_a/2 = \dfrac{b\sin\alpha}{2} \), pa po Papovoj teoremi: \( V_a = 2\pi \cdot \dfrac{h_a}{2} \cdot S = \pi a b^2 \sin^2\alpha \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Dijagram 3 — rotacija oko stranice b">
+  <h2>📐 Dijagram 3 — rotacija oko stranice \( b \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram3" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Rotacijom istog paralelograma oko stranice \( AD \) (dužine \( b \)) dobijamo telo \( T_b \). Težište sada opisuje krug poluprečnika \( h_b/2 = \dfrac{a\sin\alpha}{2} \), pa: \( V_b = 2\pi \cdot \dfrac{h_b}{2} \cdot S = \pi b a^2 \sin^2\alpha \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Površina paralelograma</h3>
+      <p>Označimo paralelogram \( ABCD \) sa stranicama \( |AB| = a \), \( |AD| = b \) i uglom \( \alpha \) između njih (kod temena \( A \)). Površina paralelograma je</p>
+      <div class="math-block">\[ S = a \cdot b \cdot \sin\alpha. \]</div>
+      <p>Ona <em>ne</em> zavisi od toga koja je stranica „osnova" — biramo formulu „stranica × susedna stranica × sinus ugla".</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Visine paralelograma</h3>
+      <p>Visina na stranicu \( a \) je rastojanje između paralelnih pravih koje sadrže \( AB \) i \( DC \). Pošto je krak \( AD \) dužine \( b \) i nagiba \( \alpha \) prema \( AB \), dobijamo</p>
+      <div class="math-block">\[ h_a = b\sin\alpha. \]</div>
+      <p>Slično, visina na stranicu \( b \):</p>
+      <div class="math-block">\[ h_b = a\sin\alpha. \]</div>
+      <p>Provera kroz površinu: \( S = a \cdot h_a = a \cdot b\sin\alpha \) ✓ i \( S = b \cdot h_b = b \cdot a\sin\alpha \) ✓.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš \( h_a = b\sin\alpha \), a ne \( a\sin\alpha \)?</summary>
+          <div class="detail-content"><p>Visina na stranicu \( a \) se „spušta" sa krajeva stranice \( b \): krajnja tačka stranice \( b \) leži na visini \( b\sin\alpha \) iznad linije \( AB \). To je ujedno i visina paralelograma za bazu \( a \). Logika: visina je „komponenta krakovne stranice okomita na osnovu".</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Težište paralelograma</h3>
+      <p>Težište paralelograma je u preseku njegovih dijagonala — to je centar simetrije lika. Stoga ono leži tačno na pola puta između stranica \( AB \) i \( DC \), tj. na rastojanju \( h_a/2 \) od svake od njih. Slično, težište je na rastojanju \( h_b/2 \) od stranica \( AD \) i \( BC \).</p>
+      <div class="math-block">\[ d_a = \dfrac{h_a}{2} = \dfrac{b\sin\alpha}{2}, \qquad d_b = \dfrac{h_b}{2} = \dfrac{a\sin\alpha}{2}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Papova (Guldinova) teorema</h3>
+      <p>Kada se ravan lik površine \( S \) okreće oko prave \( \ell \) (koja ga ne seče), zapremina dobijenog rotacionog tela iznosi</p>
+      <div class="math-block">\[ V = 2\pi d \cdot S, \]</div>
+      <p>gde je \( d \) rastojanje težišta lika od ose \( \ell \). Ideja je jednostavna: težište opisuje kružnicu obima \( 2\pi d \), pa je „prosečan put" površine baš taj obim.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo \( V_a \) i \( V_b \)</h3>
+      <p>Rotacijom oko stranice \( a \) (osa \( = AB \)):</p>
+      <div class="math-block">\[ V_a = 2\pi \cdot d_a \cdot S = 2\pi \cdot \dfrac{b\sin\alpha}{2} \cdot ab\sin\alpha = \pi a b^2 \sin^2\alpha. \]</div>
+      <p>Rotacijom oko stranice \( b \) (osa \( = AD \)):</p>
+      <div class="math-block">\[ V_b = 2\pi \cdot d_b \cdot S = 2\pi \cdot \dfrac{a\sin\alpha}{2} \cdot ab\sin\alpha = \pi a^2 b \sin^2\alpha. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: provera za pravougaonik (\( \alpha = 90^\circ \), \( a = 2 \), \( b = 3 \)).</summary>
+          <div class="detail-content"><p>Rotacijom pravougaonika \( 2 \times 3 \) oko stranice \( a = 2 \) dobijamo cilindar visine \( a = 2 \) i poluprečnika \( b = 3 \): \( V_a = \pi \cdot 9 \cdot 2 = 18\pi \). Naša formula daje \( \pi \cdot 2 \cdot 9 \cdot 1 = 18\pi \) ✓. Slično \( V_b = \pi \cdot 4 \cdot 3 = 12\pi \). Odnos \( V_a : V_b = 18 : 12 = 3 : 2 = b : a \) ✓.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Odnos \( V_a : V_b \)</h3>
+      <p>Količnik:</p>
+      <div class="math-block">\[ \dfrac{V_a}{V_b} = \dfrac{\pi a b^2 \sin^2\alpha}{\pi a^2 b \sin^2\alpha} = \dfrac{ab^2}{a^2 b} = \dfrac{b}{a}. \]</div>
+      <p>Dakle \( V_a : V_b = b : a \) — ne zavisi od ugla \( \alpha \) (sve dok je \( \alpha \neq 0,\pi \), tj. paralelogram zaista postoji).</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Ovo je tipičan primer gde Papova teorema brzo zaobilazi komplikovani direktan integral. Telo nastalo rotacijom paralelograma nije ni cilindar ni stožac — ono je <em>razlika dva kosa cilindra</em>, što je teško računati direktno. Ali težište je veoma „stabilno" — uvek tačno na pola visine — pa formula \( V = 2\pi d S \) postaje samo množenje. Ključ je: <em>kada rotiramo oko duže stranice, težište je bliže osi, pa zapremina <strong>opada</strong>.</em> Otud \( V_a/V_b = b/a \), tj. obrnuto proporcionalno ulazima.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ V_a : V_b = b : a \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( a : b \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( b : a \)</span>
+    <span class="answer-option" data-option="C">(C) \( a^2 : b^2 \)</span>
+    <span class="answer-option" data-option="D">(D) \( b^2 : a^2 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 1 : 1 \)</span>
+  </div>
+  <p class="verification">Provera za pravougaonik \( a = 2, b = 3, \alpha = 90^\circ \): rotacijom oko \( a \) dobijamo cilindar visine \( 2 \), poluprečnika \( 3 \), zapremine \( V_a = 18\pi \). Rotacijom oko \( b \) dobijamo cilindar visine \( 3 \), poluprečnika \( 2 \), zapremine \( V_b = 12\pi \). Odnos \( 18\pi : 12\pi = 3 : 2 = b : a \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pretpostaviti odgovor \( a : b \) (opcija A): „veća stranica – veća zapremina" zvuči razumno, ali je obrnuto. Veća osnova-osa znači da je težište bliže njoj, pa je obim opisanog kruga manji.</li>
+    <li>Pomešati visine: napisati \( h_a = a\sin\alpha \) umesto \( h_a = b\sin\alpha \). Visina <em>na</em> stranicu \( a \) zavisi od <em>druge</em> stranice (\( b \)), a ne od same \( a \).</li>
+    <li>Zaboraviti da je rastojanje težišta od stranice paralelograma <em>polovina</em> visine, a ne cela visina. Bez polovljenja, pojavio bi se faktor 2 koji ne pripada konačnom rezultatu.</li>
+    <li>Pokušati direktan integralni račun zapremine — moguće, ali komplikovano (telo je razlika dva kosa cilindra). Papova teorema je brži put.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Pretpostavi da paralelogram <em>nije</em> uniformno gust, ali se rotira oko stranice \( a \). Da li Papova teorema i dalje važi? A šta ako rotaciju izvedemo oko prave koja prolazi kroz paralelogram (npr. dijagonale)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Papova teorema o zapremini ne traži da je lik uniformno gust — ona je čisto geometrijska tvrdnja o zapremini koju opisuju tačke lika pri rotaciji. Ali traži da osa <em>ne seče lik</em>. Ako osa seče paralelogram (npr. dijagonala), formula \( V = 2\pi d S \) se ne primenjuje direktno: jedan deo lika daje zapreminu sa jedne strane ose, drugi deo s druge strane, pa bi morali odvojeno računati svaki deo (i može doći do preklapanja). Tačnije, težište cele figure može da leži na osi, što daje \( d = 0 \) — naivno bi reklo \( V = 0 \), što je netačno. Otud uslov: <em>osa ne sme da seče lik</em>.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram1');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var grid      = cv('--sol-canvas-grid');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Paralelogram ABCD
+    // A na (cx, cy), B = A + (a, 0), D = A + (b*cos(alpha), b*sin(alpha)) (ali u canvas y-osa pokazuje dolje, pa stavljamo -)
+    var alpha = 65 * Math.PI / 180;
+    var aLen = 280;
+    var bLen = 200;
+    var Ax = 110, Ay = 360;
+    var Bx = Ax + aLen, By = Ay;
+    var Dx = Ax + bLen * Math.cos(alpha), Dy = Ay - bLen * Math.sin(alpha);
+    var Cx = Bx + (Dx - Ax), Cy = By + (Dy - Ay);
+
+    // Popuna paralelograma
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.12);
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay);
+    ctx.lineTo(Bx, By);
+    ctx.lineTo(Cx, Cy);
+    ctx.lineTo(Dx, Dy);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.4;
+    ctx.stroke();
+
+    // Visina h_a — od D na duz AB (vertikalno)
+    var Hx = Dx, Hy = Ay; // noga normale
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(Dx, Dy);
+    ctx.lineTo(Hx, Hy);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Visina h_b — od B normala na duz AD
+    // Pravac AD: (cos(alpha), -sin(alpha)). Normala: (sin(alpha), cos(alpha)) ili (-sin(alpha), -cos(alpha))
+    // Tacka na pravoj AD: A + t*(cos(alpha), -sin(alpha)). Projekcija B na pravu AD:
+    var ABx = Bx - Ax, ABy = By - Ay;
+    var dx = Math.cos(alpha), dy = -Math.sin(alpha);
+    var t = ABx*dx + ABy*dy;
+    var Px = Ax + t*dx, Py = Ay + t*dy;
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(Bx, By);
+    ctx.lineTo(Px, Py);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Teziste T (presek dijagonala)
+    var Tx = (Ax + Cx) / 2;
+    var Ty = (Ay + Cy) / 2;
+    // Dijagonale (svetlo)
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([3, 4]);
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay); ctx.lineTo(Cx, Cy);
+    ctx.moveTo(Bx, By); ctx.lineTo(Dx, Dy);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Tacka T
+    ctx.fillStyle = secondary;
+    ctx.beginPath();
+    ctx.arc(Tx, Ty, 6, 0, Math.PI*2);
+    ctx.fill();
+    ctx.strokeStyle = text;
+    ctx.lineWidth = 1.2;
+    ctx.stroke();
+
+    // Ugao alpha — luk kod A
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.arc(Ax, Ay, 38, -alpha, 0, false);
+    ctx.stroke();
+
+    // Mali kvadratici za pravi ugao na nogama normala
+    function rightAngleMark(P1, P2, P3, size) {
+      // pravi ugao u tacki P2 izmedju P2-P1 i P2-P3
+      var v1x = P1[0]-P2[0], v1y = P1[1]-P2[1];
+      var v2x = P3[0]-P2[0], v2y = P3[1]-P2[1];
+      var n1 = Math.hypot(v1x, v1y), n2 = Math.hypot(v2x, v2y);
+      v1x /= n1; v1y /= n1; v2x /= n2; v2y /= n2;
+      ctx.strokeStyle = text;
+      ctx.lineWidth = 1.3;
+      ctx.beginPath();
+      ctx.moveTo(P2[0]+v1x*size, P2[1]+v1y*size);
+      ctx.lineTo(P2[0]+v1x*size+v2x*size, P2[1]+v1y*size+v2y*size);
+      ctx.lineTo(P2[0]+v2x*size, P2[1]+v2y*size);
+      ctx.stroke();
+    }
+    rightAngleMark([Dx,Dy], [Hx, Hy], [Bx, By], 10);
+    rightAngleMark([Ax,Ay], [Px, Py], [Bx, By], 10);
+
+    // Oznake temena
+    ctx.font = 'bold 17px sans-serif';
+    ctx.fillStyle = text;
+    ctx.fillText('A', Ax - 18, Ay + 22);
+    ctx.fillText('B', Bx + 8, By + 22);
+    ctx.fillText('C', Cx + 6, Cy - 6);
+    ctx.fillText('D', Dx - 18, Dy - 6);
+
+    // Oznaka T
+    ctx.fillStyle = secondary;
+    ctx.fillText('T', Tx + 10, Ty - 8);
+
+    // Oznake stranica
+    ctx.font = 'bold italic 17px sans-serif';
+    ctx.fillStyle = primary;
+    ctx.fillText('a', (Ax+Bx)/2 - 6, Ay + 24);
+    ctx.fillText('b', (Ax+Dx)/2 - 22, (Ay+Dy)/2);
+
+    // Oznaka ugla alpha
+    ctx.fillStyle = accent;
+    ctx.font = 'bold italic 16px sans-serif';
+    ctx.fillText('α', Ax + 44, Ay - 14);
+
+    // Oznake visina
+    ctx.fillStyle = accent;
+    ctx.font = 'italic 14px sans-serif';
+    ctx.fillText('h_a = b sin α', (Dx + Hx)/2 + 6, (Dy + Hy)/2);
+    ctx.fillStyle = highlight;
+    ctx.fillText('h_b = a sin α', (Bx + Px)/2 - 60, (By + Py)/2 - 10);
+
+    // Naslov
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px sans-serif';
+    ctx.fillText('Paralelogram ABCD: stranice a, b, ugao α, težište T u preseku dijagonala', 20, 28);
+
+    ctx.fillStyle = muted;
+    ctx.font = '13px sans-serif';
+    ctx.fillText('Površina S = ab sin α. Težište deli svaku dijagonalu napola.', 20, 50);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram2');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Paralelogram (ravni profil) sa osom rotacije AB (horizontalna)
+    // Telo nastalo rotacijom oko AB: zacrtacemo siluetu
+    var alpha = 65 * Math.PI / 180;
+    var aLen = 320;
+    var bLen = 180;
+    var Ax = 180, Ay = 320;
+    var Bx = Ax + aLen, By = Ay;
+    var Dx = Ax + bLen * Math.cos(alpha), Dy = Ay - bLen * Math.sin(alpha);
+    var Cx = Bx + (Dx - Ax), Cy = By + (Dy - Ay);
+
+    // Osa rotacije: linija kroz A i B, prosirena
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2.2;
+    ctx.setLineDash([10, 6]);
+    ctx.beginPath();
+    ctx.moveTo(Ax - 80, Ay);
+    ctx.lineTo(Bx + 80, By);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Telo nastalo rotacijom: simetrija u odnosu na osu AB.
+    // Odraz paralelograma u odnosu na osu AB: D' = (Dx, 2*Ay - Dy), C' = (Cx, 2*Ay - Cy)
+    var D2x = Dx, D2y = 2*Ay - Dy;
+    var C2x = Cx, C2y = 2*Ay - Cy;
+
+    // Nacrtaj sferno-cilindricno popunjenje (silueta tela)
+    // Telo je rotacija paralelograma: izgleda kao "cilindrobaza" sa nagnutim ravnima na krajevima
+    // Silueta = paralelogram + njegova zrcalna slika oko AB
+    ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.20);
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay);
+    ctx.lineTo(Dx, Dy);
+    ctx.lineTo(Cx, Cy);
+    ctx.lineTo(Bx, By);
+    ctx.lineTo(C2x, C2y);
+    ctx.lineTo(D2x, D2y);
+    ctx.closePath();
+    ctx.fill();
+
+    // Elipticne "okrugle" linije na krajevima — predstavljaju krajnje krugove
+    // Maksimalni poluprecnik na nivou x = Dx (na strani D): od (Dx, Dy) do (Dx, D2y), centar (Dx, Ay), poluprecnik = bLen*sin(alpha)
+    var rEnd = bLen * Math.sin(alpha);
+    // Na vrhu: krug poluprecnika rEnd u ravni okomitoj na osu, koji u 2D vidimo kao elipsu (visoku 2*rEnd, sirinu malo manju zbog perspektive)
+    var ellRy_d = rEnd, ellRx_d = rEnd * 0.25;
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.ellipse(Dx, Ay, ellRx_d, ellRy_d, 0, 0, Math.PI*2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.ellipse(Cx, Ay, ellRx_d, ellRy_d, 0, 0, Math.PI*2);
+    ctx.stroke();
+
+    // Spoljasnji omotac (najveca rotaciona linija) izmedju D i C — gornja iv. paralelograma; rotacija stvara cilindricnu povrs (omotac)
+    // Za vizuelnu jasnost, crtacemo paralelogram ABCD ostatak (kontura) preko silhuete
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay);
+    ctx.lineTo(Dx, Dy);
+    ctx.lineTo(Cx, Cy);
+    ctx.lineTo(Bx, By);
+    ctx.lineTo(Ax, Ay);
+    ctx.stroke();
+
+    // Zrcalo (svetlije, isprekidano)
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay);
+    ctx.lineTo(D2x, D2y);
+    ctx.lineTo(C2x, C2y);
+    ctx.lineTo(Bx, By);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Teziste i krug koji opisuje
+    var Tx = (Ax + Cx) / 2;
+    var Ty = (Ay + Cy) / 2;
+    var dT = Math.abs(Ty - Ay); // rastojanje od ose
+    // krug koji opisuje teziste — kao elipsa (jer je u prostoru)
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.4;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.ellipse(Tx, Ay, dT * 0.25, dT, 0, 0, Math.PI*2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Tacka T
+    ctx.fillStyle = secondary;
+    ctx.beginPath();
+    ctx.arc(Tx, Ty, 6, 0, Math.PI*2);
+    ctx.fill();
+    ctx.strokeStyle = text;
+    ctx.lineWidth = 1.2;
+    ctx.stroke();
+
+    // Linija od T do ose (rastojanje d_a)
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(Tx, Ty);
+    ctx.lineTo(Tx, Ay);
+    ctx.stroke();
+
+    // Oznake
+    ctx.font = 'bold 17px sans-serif';
+    ctx.fillStyle = text;
+    ctx.fillText('A', Ax - 16, Ay + 22);
+    ctx.fillText('B', Bx + 8, By + 22);
+    ctx.fillText('C', Cx + 6, Cy - 6);
+    ctx.fillText('D', Dx - 18, Dy - 6);
+
+    ctx.fillStyle = secondary;
+    ctx.fillText('T', Tx + 10, Ty - 8);
+
+    // Oznaka 'a' na osi
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold italic 16px sans-serif';
+    ctx.fillText('a (osa rotacije)', (Ax+Bx)/2 - 50, Ay + 24);
+
+    // Oznaka d_a
+    ctx.fillStyle = accent;
+    ctx.font = 'italic 14px sans-serif';
+    ctx.fillText('d_a = h_a/2', Tx + 8, (Ty + Ay)/2);
+
+    // Naslov
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px sans-serif';
+    ctx.fillText('Telo nastalo rotacijom paralelograma oko stranice a', 20, 28);
+
+    ctx.fillStyle = muted;
+    ctx.font = '13px sans-serif';
+    ctx.fillText('V_a = 2π · (h_a/2) · S = π a b² sin² α', 20, 50);
+    ctx.fillText('Težište opisuje krug poluprečnika d_a = (b sin α)/2.', 20, 68);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram3');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Sada osa rotacije = AD (uspravna stranica). Paralelogram okrenemo da AD bude vertikalna
+    // A = (cx, cy_bottom), D = (cx, cy_top), B = A + (a*sin(alpha_horizontal), -a*cos(alpha_horizontal))
+    // Pojednostavljenje: postavi AD vertikalno
+    var alpha = 65 * Math.PI / 180;
+    var aLen = 280;
+    var bLen = 240;
+    var Ax = 350, Ay = 410;
+    var Dx = Ax, Dy = Ay - bLen;
+    // B je odmaknuto od A za a, pod uglom (90° - alpha) od vertikalne (jer ugao izmedju AB i AD je alpha)
+    var Bx = Ax + aLen * Math.sin(alpha);
+    var By = Ay - aLen * Math.cos(alpha);
+    var Cx = Bx + (Dx - Ax);
+    var Cy = By + (Dy - Ay);
+
+    // Osa rotacije = AD (vertikalna prava x = Ax)
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2.2;
+    ctx.setLineDash([10, 6]);
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay + 60);
+    ctx.lineTo(Ax, Dy - 60);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Odraz paralelograma u odnosu na osu x = Ax
+    var B2x = 2*Ax - Bx, B2y = By;
+    var C2x = 2*Ax - Cx, C2y = Cy;
+
+    // Silueta tela
+    ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.20);
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay);
+    ctx.lineTo(Bx, By);
+    ctx.lineTo(Cx, Cy);
+    ctx.lineTo(Dx, Dy);
+    ctx.lineTo(C2x, C2y);
+    ctx.lineTo(B2x, B2y);
+    ctx.closePath();
+    ctx.fill();
+
+    // Elipticne "okrugle" linije na krajevima
+    var rEnd = aLen * Math.sin(alpha);
+    var ellRx_d = rEnd, ellRy_d = rEnd * 0.25;
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.ellipse(Ax, By, ellRx_d, ellRy_d, 0, 0, Math.PI*2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.ellipse(Ax, Cy, ellRx_d, ellRy_d, 0, 0, Math.PI*2);
+    ctx.stroke();
+
+    // Paralelogram (puna kontura)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay);
+    ctx.lineTo(Bx, By);
+    ctx.lineTo(Cx, Cy);
+    ctx.lineTo(Dx, Dy);
+    ctx.closePath();
+    ctx.stroke();
+
+    // Zrcaljen (isprekidan)
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay);
+    ctx.lineTo(B2x, B2y);
+    ctx.lineTo(C2x, C2y);
+    ctx.lineTo(Dx, Dy);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Teziste
+    var Tx = (Ax + Cx) / 2;
+    var Ty = (Ay + Cy) / 2;
+    var dT = Math.abs(Tx - Ax);
+
+    // Krug koji opisuje teziste
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.4;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.ellipse(Ax, Ty, dT, dT * 0.25, 0, 0, Math.PI*2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Tacka T
+    ctx.fillStyle = secondary;
+    ctx.beginPath();
+    ctx.arc(Tx, Ty, 6, 0, Math.PI*2);
+    ctx.fill();
+    ctx.strokeStyle = text;
+    ctx.lineWidth = 1.2;
+    ctx.stroke();
+
+    // Linija od T do ose
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(Tx, Ty);
+    ctx.lineTo(Ax, Ty);
+    ctx.stroke();
+
+    // Oznake
+    ctx.font = 'bold 17px sans-serif';
+    ctx.fillStyle = text;
+    ctx.fillText('A', Ax - 18, Ay + 8);
+    ctx.fillText('B', Bx + 8, By + 8);
+    ctx.fillText('C', Cx + 8, Cy - 4);
+    ctx.fillText('D', Dx - 18, Dy);
+    ctx.fillStyle = secondary;
+    ctx.fillText('T', Tx + 10, Ty - 8);
+
+    // Oznaka 'b' na osi
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold italic 16px sans-serif';
+    ctx.fillText('b (osa rotacije)', Ax - 130, (Ay + Dy)/2);
+
+    // Oznaka d_b
+    ctx.fillStyle = accent;
+    ctx.font = 'italic 14px sans-serif';
+    ctx.fillText('d_b = h_b/2', (Tx + Ax)/2 - 20, Ty - 10);
+
+    // Naslov
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px sans-serif';
+    ctx.fillText('Telo nastalo rotacijom paralelograma oko stranice b', 20, 28);
+
+    ctx.fillStyle = muted;
+    ctx.font = '13px sans-serif';
+    ctx.fillText('V_b = 2π · (h_b/2) · S = π b a² sin² α', 20, 50);
+    ctx.fillText('Težište opisuje krug poluprečnika d_b = (a sin α)/2.', 20, 68);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Odnos zapremina tela rotacije paralelograma oko susednih ivica",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["stereometrija", "rotaciono telo", "Papova teorema", "Guldinova teorema", "paralelogram"]
+}
+BRAINSPARK_META-->

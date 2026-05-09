@@ -1,0 +1,875 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+PROBLEM:
+Maximum volume of a cylinder inscribed in a cone with R = 12 cm, H = 18 cm.
+
+SETUP (axial cross-section):
+- Cone has base radius R = 12, height H = 18, apex on top of axis.
+- Cylinder is coaxial; let its base radius be r (0 < r < R) and height h.
+- Look at the axial cross-section: an isosceles triangle with base 2R and height H.
+  Inside it, the cylinder appears as a rectangle 2r wide and h tall, with its base on
+  the cone's base.
+- Similar triangles: from the apex, the slant goes from radius 0 (height H) down to
+  radius R (height 0). At height h above the base, the cone's radius is R*(1 - h/H).
+  For the cylinder rim to touch the cone's lateral surface: r = R*(1 - h/H), so
+      h = H * (R - r) / R = H * (1 - r/R).
+
+VOLUME AS FUNCTION OF r:
+  V(r) = π r^2 h = π r^2 * H * (R - r) / R = (π H / R) * r^2 (R - r),  0 < r < R.
+
+OPTIMIZE:
+  Let f(r) = r^2 (R - r) = R r^2 - r^3.
+  f'(r) = 2 R r - 3 r^2 = r (2R - 3r).
+  f'(r) = 0  =>  r = 0 (boundary, V=0)  or  r = 2R/3.
+  f''(r) = 2R - 6r;  at r = 2R/3:  f'' = 2R - 4R = -2R < 0 → local max.
+
+PLUG IN R = 12, H = 18:
+  r* = 2R/3 = 8.
+  h* = H (R - r*) / R = 18 * (12 - 8)/12 = 18 * 4/12 = 6.
+  V* = π * 8^2 * 6 = π * 64 * 6 = 384 π   (cm^3).
+
+ALTERNATIVE (AM-GM):
+  V = (π H / R) * r * r * (R - r). Apply AM-GM to a balanced sum.
+  Use V^? ; cleaner:  consider V/π = (H/R) * r^2 (R - r) = (H/R) * (r/2)*(r/2)*(R - r) * 4
+  Let a = r/2, a, b = R - r. Then a + a + b = r + R - r = R (constant!).
+  By AM-GM, product a*a*b is maximal when a = b → r/2 = R - r → r = 2R/3.
+  Max product = (R/3)^3.
+  V_max/π = (H/R) * 4 * (R/3)^3 = 4H R^2 / 27.
+  V_max = (4 π H R^2) / 27 = (4 π * 18 * 144)/27 = (4 * 18 * 144)/27 * π
+         = (10368/27) * π = 384 π.  ✓
+
+VERIFY ANSWER OPTIONS:
+  A) 300π, B) 320π, C) 332π, D) 353π, E) 384π.
+  Correct: E) 384π cm^3.
+
+UNIT CHECK: r [cm], h [cm], V = π r^2 h has units cm^3. ✓
+
+VISUAL AIDS:
+1. Static axial cross-section showing cone, inscribed cylinder, similar triangles
+   reasoning (with R, H, r, h labels).
+2. INTERACTIVE: drag the cylinder radius r along the cone, see h, V(r) update live.
+   Optimum highlighted at r = 8.
+3. Volume curve V(r) vs r, showing maximum at r = 2R/3 = 8.
+</script>
+
+<h1 data-card="problem-title">Maksimalni valjak upisan u kupu</h1>
+<p data-card="problem-subtitle" class="subtitle">Stereometrija &mdash; ekstrem zapremine, sličnost trouglova, izvod</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>
+    Maksimalna zapremina valjka upisanog u kupu poluprečnika \( R = 12 \) cm i visine
+    \( H = 18 \) cm je:
+  </p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">poluprečnik kupe</span>
+      <span class="given-value">\( R = 12 \) cm</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">visina kupe</span>
+      <span class="given-value">\( H = 18 \) cm</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">traži se</span>
+      <span class="given-value">\( V_{\max} = ? \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 300\pi \) cm³</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 320\pi \) cm³</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 332\pi \) cm³</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 353\pi \) cm³</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 384\pi \) cm³</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">
+    Posmatramo osni presek: kupa postaje jednakokraki trougao, a upisani valjak — pravougaonik.
+    Iz sličnosti trouglova izrazimo visinu valjka \( h \) preko njegovog poluprečnika \( r \),
+    tako da zapremina postane funkcija jedne promenljive \( V(r) = \pi r^2 \cdot \dfrac{H(R - r)}{R} \).
+    Maksimum određujemo izvodom (ili AM&ndash;GM nejednakošću) i zaključujemo da je optimum u
+    \( r = \tfrac{2R}{3} \).
+  </p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Sličnost, zapremina valjka, lokalni ekstrem</summary>
+    <div class="detail-content">
+      <ul>
+        <li>
+          <strong>Zapremina valjka:</strong> \( V = B \cdot h = \pi r^{2} h \), gde je \( r \) poluprečnik osnove
+          a \( h \) visina valjka.
+        </li>
+        <li>
+          <strong>Osni presek kupe</strong> kroz vrh i prečnik osnove je jednakokraki trougao osnovice
+          \( 2R \) i visine \( H \). Upisani valjak (sa zajedničkom osom) seče se kao pravougaonik
+          dimenzija \( 2r \times h \).
+        </li>
+        <li>
+          <strong>Sličnost trouglova:</strong> rastojanje \( h \) od osnove „kupi" se prema vrhu pa važi
+          \( \dfrac{R - r}{h} = \dfrac{R}{H} \), odnosno \( h = \dfrac{H(R - r)}{R} \).
+        </li>
+        <li>
+          <strong>Lokalni ekstrem:</strong> u tački \( r_{*} \) gde je \( V'(r_{*}) = 0 \) i \( V''(r_{*}) < 0 \),
+          funkcija \( V(r) \) ima lokalni maksimum.
+        </li>
+        <li>
+          <strong>AM&ndash;GM (3 člana):</strong> za pozitivne brojeve \( a, b, c \) važi
+          \( \dfrac{a + b + c}{3} \ge \sqrt[3]{abc} \), uz jednakost samo ako \( a = b = c \).
+        </li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Osni presek: kupa i upisani valjak">
+  <h2>📐 Osni presek: kupa i upisani valjak</h2>
+  <div class="canvas-wrapper">
+    <canvas id="cross-section-canvas" width="720" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">
+    Trougao prikazuje osni presek kupe (osnovica \( 2R \), visina \( H \)). Plavi pravougaonik je
+    osni presek valjka (osnovica \( 2r \), visina \( h \)). Sličnost trougla \( \triangle SCB \) i
+    manjeg trougla \( \triangle SC_{1}B_{1} \) iznad valjka daje vezu \( \dfrac{R - r}{h} = \dfrac{R}{H} \).
+  </p>
+</div>
+
+<div data-card="visual-aid" data-title="Interaktivno: prevuci poluprečnik valjka">
+  <h2>📐 Interaktivno: prevuci poluprečnik valjka</h2>
+  <div class="canvas-wrapper">
+    <canvas id="interactive-canvas" width="720" height="540"></canvas>
+  </div>
+  <p class="canvas-caption">
+    Povuci tačku \( P \) duž osnove kupe da menjaš \( r \). Visina \( h \) se automatski prilagođava
+    da valjak ostaje upisan, a brojač iznad pokazuje trenutnu zapremininu \( V(r) = \pi r^{2} h \).
+    Probaj da rukom nađeš maksimum &mdash; pa proveri da li si „pao" tačno u \( r = 8 \).
+  </p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavi promenljive i geometriju osnog preseka</h3>
+      <p>
+        Označimo poluprečnik osnove valjka sa \( r \), a njegovu visinu sa \( h \). U osnom preseku
+        kupa je jednakokraki trougao osnovice \( 2R \) i visine \( H \), a valjak — pravougaonik
+        \( 2r \times h \) sa donjom stranicom na osnovi kupe i bočnim ivicama na omotaču.
+      </p>
+      <p>Domena promenljive: \( 0 < r < R \), tj. \( 0 < r < 12 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Iskoristi sličnost trouglova da izraziš \( h \) preko \( r \)</h3>
+      <p>
+        Iznad gornje ivice valjka ostaje manji trougao &mdash; sličan velikom (oba imaju istu vršnu osu i
+        paralelne osnove). Manji trougao ima osnovicu \( 2r \) i visinu \( H - h \). Iz odnosa
+        sličnih stranica:
+      </p>
+      <div class="math-block">
+        \[ \frac{r}{R} = \frac{H - h}{H}. \]
+      </div>
+      <p>Rešavanjem po \( h \) dobijamo:</p>
+      <div class="math-block">
+        \[ h = H\left(1 - \frac{r}{R}\right) = \frac{H\,(R - r)}{R}. \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: granični slučajevi</summary>
+          <div class="detail-content">
+            <p>
+              Ako \( r \to 0 \), valjak je tanak kao igla i \( h \to H \) (pruža se do vrha). Ako
+              \( r \to R \), valjak postaje sasvim plitak diskus i \( h \to 0 \). Oba ekstrema imaju
+              \( V = 0 \), pa maksimum mora biti negde unutra. ✓
+            </p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Napiši zapreminu kao funkciju jedne promenljive</h3>
+      <p>
+        Zamenom \( h \) u \( V = \pi r^{2} h \) dobijamo:
+      </p>
+      <div class="math-block">
+        \[ V(r) = \pi r^{2} \cdot \frac{H\,(R - r)}{R} = \frac{\pi H}{R}\,r^{2}(R - r),\qquad 0 < r < R. \]
+      </div>
+      <p>
+        Konstanta \( \dfrac{\pi H}{R} \) ne menja položaj maksimuma, pa je dovoljno tražiti maksimum
+        funkcije \( f(r) = r^{2}(R - r) = R r^{2} - r^{3} \).
+      </p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Nađi kritičnu tačku pomoću izvoda</h3>
+      <p>Izračunajmo prvi izvod funkcije \( f \):</p>
+      <div class="math-block">
+        \[ f'(r) = 2R r - 3r^{2} = r\,(2R - 3r). \]
+      </div>
+      <p>
+        Iz \( f'(r) = 0 \) sledi \( r = 0 \) (rubna tačka, \( V = 0 \)) ili \( 2R - 3r = 0 \), tj.
+      </p>
+      <div class="math-block">
+        \[ \boxed{\,r_{*} = \dfrac{2R}{3}.\,} \]
+      </div>
+      <p>Drugi izvod \( f''(r) = 2R - 6r \) u \( r_{*} \) iznosi:</p>
+      <div class="math-block">
+        \[ f''\!\left(\frac{2R}{3}\right) = 2R - 6\cdot\frac{2R}{3} = 2R - 4R = -2R < 0, \]
+      </div>
+      <p>
+        što potvrđuje da je \( r_{*} = \tfrac{2R}{3} \) tačka <em>lokalnog maksimuma</em>. Pošto je
+        \( V \) pozitivno samo na \( (0, R) \) i nula na rubovima, lokalni maksimum je ujedno i
+        globalni.
+      </p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: alternativa preko AM&ndash;GM</summary>
+          <div class="detail-content">
+            <p>
+              Pišimo \( r^{2}(R - r) = 4 \cdot \tfrac{r}{2}\cdot\tfrac{r}{2}\cdot(R - r) \).
+              Tri faktora \( \tfrac{r}{2},\ \tfrac{r}{2},\ R - r \) imaju zbir
+              \( \tfrac{r}{2} + \tfrac{r}{2} + (R - r) = R \) &mdash; konstantan! Po AM&ndash;GM, njihov proizvod
+              je maksimalan kad su sva tri jednaka: \( \tfrac{r}{2} = R - r \Rightarrow r = \tfrac{2R}{3} \).
+              Maksimum proizvoda je \( \left(\tfrac{R}{3}\right)^{3} \), pa
+              \( V_{\max} = \tfrac{\pi H}{R}\cdot 4 \cdot \tfrac{R^{3}}{27} = \tfrac{4\pi H R^{2}}{27} \).
+            </p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Uvrsti brojne vrednosti \( R = 12 \), \( H = 18 \)</h3>
+      <p>
+        Optimalni poluprečnik valjka:
+      </p>
+      <div class="math-block">
+        \[ r_{*} = \frac{2 \cdot 12}{3} = 8\ \text{cm}. \]
+      </div>
+      <p>Odgovarajuća visina valjka iz koraka 2:</p>
+      <div class="math-block">
+        \[ h_{*} = \frac{H\,(R - r_{*})}{R} = \frac{18 \cdot (12 - 8)}{12} = \frac{18 \cdot 4}{12} = 6\ \text{cm}. \]
+      </div>
+      <p>Maksimalna zapremina:</p>
+      <div class="math-block">
+        \[ V_{\max} = \pi r_{*}^{2}\,h_{*} = \pi \cdot 8^{2} \cdot 6 = \pi \cdot 64 \cdot 6 = 384\pi\ \text{cm}^{3}. \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: provera preko gotove formule</summary>
+          <div class="detail-content">
+            <p>
+              U opštem slučaju \( V_{\max} = \dfrac{4\pi H R^{2}}{27} \). Za \( R = 12 \), \( H = 18 \):
+              \( \dfrac{4\pi \cdot 18 \cdot 144}{27} = \dfrac{10368\,\pi}{27} = 384\pi \). ✓
+            </p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>
+    Ne zavisi od konkretnih brojeva &mdash; <strong>upisani valjak maksimalne zapremine zauzima
+    uvek dvije trećine poluprečnika osnove kupe i jednu trećinu njene visine</strong>:
+    \( r_{*} = \tfrac{2R}{3} \), \( h_{*} = \tfrac{H}{3} \). Pripadajuća zapremina je
+    \( V_{\max} = \tfrac{4}{27}\,\pi H R^{2} = \tfrac{4}{9}\cdot V_{\text{kupe}} \), tj. valjak
+    pokriva \( \tfrac{4}{9} \approx 44{,}4\% \) zapremine kupe. Trik koji se ponavlja: kad
+    fiksirate <em>zbir</em> dveju (ili tri) veličina, AM&ndash;GM kaže da je njihov <em>proizvod</em>
+    najveći u tački gde su sve jednake.
+  </p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">
+      \[ V_{\max} = \pi r_{*}^{2}\,h_{*} = \pi \cdot 8^{2} \cdot 6 = 384\pi\ \text{cm}^{3}. \]
+    </p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 300\pi \) cm³</span>
+    <span class="answer-option" data-option="B">(B) \( 320\pi \) cm³</span>
+    <span class="answer-option" data-option="C">(C) \( 332\pi \) cm³</span>
+    <span class="answer-option" data-option="D">(D) \( 353\pi \) cm³</span>
+    <span class="answer-option correct" data-option="E">(E) \( 384\pi \) cm³</span>
+  </div>
+  <p class="verification">
+    Zdravorazumska provera: zapremina cele kupe je \( V_{K} = \tfrac{1}{3}\pi R^{2} H =
+    \tfrac{1}{3}\pi \cdot 144 \cdot 18 = 864\pi \) cm³. Naš valjak ima
+    \( 384\pi / 864\pi = 4/9 \approx 44{,}4\% \) zapremine kupe — što je u savršenom skladu sa
+    teorijskim odnosom \( 4/9 \). Takođe, \( r_{*} = 8 \) i \( h_{*} = 6 \) leže unutar
+    dozvoljenih granica \( 0 < r < 12 \), \( 0 < h < 18 \). ✓
+  </p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>
+      <strong>Pogrešna sličnost.</strong> Veza \( h = \tfrac{H(R - r)}{R} \), a ne
+      \( h = \tfrac{H \cdot r}{R} \). Lako se promaši: gornji „šešir" iznad valjka ima
+      <em>poluprečnik \( r \)</em> (ne \( R - r \)) i <em>visinu \( H - h \)</em>.
+    </li>
+    <li>
+      <strong>Optimizacija pogrešne promenljive.</strong> Neki probaju da maksimalizuju \( h \)
+      umesto \( V \). Tada se dobije \( h \to H \) i valjak nestaje.
+    </li>
+    <li>
+      <strong>Mešanje \( \pi r^2 \) i \( 2\pi r \).</strong> Zapremina valjka je
+      \( \pi r^{2} h \) (površina osnove × visina), ne \( 2\pi r h \) (to je omotač).
+    </li>
+    <li>
+      <strong>Zaboravljen drugi izvod.</strong> \( V'(r) = 0 \) može značiti i minimum ili
+      prevoj. Bezbedno je ili proveriti \( V''(r_{*}) < 0 \), ili znak \( V'(r) \) sa obe strane
+      kritične tačke.
+    </li>
+    <li>
+      <strong>Krivo zaokruživanje.</strong> Odgovor je tačno \( 384\pi \) (ne približno).
+      Ako u kalkulator ukucaš \( 384 \cdot \pi \approx 1206{,}37 \), to je samo decimalna
+      vrednost — pravi izraz mora ostati \( 384\pi \) cm³.
+    </li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>
+    Pretpostavi da želiš upisati valjak <em>maksimalne <strong>površine omotača</strong></em>
+    (ne zapremine!) u istu kupu \( R = 12 \), \( H = 18 \). Površina omotača je
+    \( M(r) = 2\pi r h = \tfrac{2\pi H}{R}\,r(R - r) \). Gde je sada optimum, i koliko on iznosi?
+    Da li je to ista tačka kao maksimum zapremine?
+  </p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>
+        Sada je \( g(r) = r(R - r) = R r - r^{2} \), pa \( g'(r) = R - 2r = 0 \Rightarrow r_{*} = \tfrac{R}{2} \).
+        Za \( R = 12 \) je \( r_{*} = 6 \) cm i \( h_{*} = \tfrac{H}{2} = 9 \) cm. Maksimalan omotač:
+        \( M_{\max} = 2\pi \cdot 6 \cdot 9 = 108\pi \) cm². Optimum <em>nije</em> isti kao za zapreminu
+        (\( r = \tfrac{R}{2} \) naspram \( r = \tfrac{2R}{3} \)) — različite veličine ekstremiziraju
+        u različitim tačkama, čak i kad imaju isti tip ograničenja.
+      </p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('cross-section-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Osni presek: kupa (R = 12, H = 18) i upisani valjak (r = 8, h = 6)', W/2, 14);
+
+    // Geometry mapping (math units → pixels)
+    // Place apex S at top, base centered, baseline near bottom
+    var Rg = 12, Hg = 18;          // problem values
+    var rg = 8,  hg = 6;            // optimal cylinder
+    var pxPerUnit = 18;             // 18 px = 1 cm
+    var cx = W / 2;
+    var baseY = H - 80;
+    var apexY = baseY - Hg * pxPerUnit;
+
+    // Axis (vertical)
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(cx, apexY - 8);
+    ctx.lineTo(cx, baseY + 24);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Cone triangle
+    var leftBaseX  = cx - Rg * pxPerUnit;
+    var rightBaseX = cx + Rg * pxPerUnit;
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.10);
+    ctx.beginPath();
+    ctx.moveTo(cx, apexY);
+    ctx.lineTo(rightBaseX, baseY);
+    ctx.lineTo(leftBaseX, baseY);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    // Cylinder rectangle
+    var cylLeftX  = cx - rg * pxPerUnit;
+    var cylRightX = cx + rg * pxPerUnit;
+    var cylTopY   = baseY - hg * pxPerUnit;
+    ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.20);
+    ctx.fillRect(cylLeftX, cylTopY, (cylRightX - cylLeftX), (baseY - cylTopY));
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(cylLeftX, cylTopY, (cylRightX - cylLeftX), (baseY - cylTopY));
+
+    // Highlight the upper similar triangle
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.18);
+    ctx.beginPath();
+    ctx.moveTo(cx, apexY);
+    ctx.lineTo(cylRightX, cylTopY);
+    ctx.lineTo(cylLeftX, cylTopY);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(cylLeftX, cylTopY);
+    ctx.lineTo(cylRightX, cylTopY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Vertex labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('S', cx, apexY - 4);
+    ctx.textBaseline = 'top';
+    ctx.fillText('A', leftBaseX - 6, baseY + 4);
+    ctx.fillText('B', rightBaseX + 6, baseY + 4);
+
+    // Cylinder corner labels (top corners on the lateral side)
+    ctx.fillStyle = secondary;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('B₁', cylRightX + 12, cylTopY - 2);
+    ctx.fillText('A₁', cylLeftX  - 12, cylTopY - 2);
+
+    // Dimension annotations
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 13px sans-serif';
+
+    // R label (right half of base)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1.2;
+    var rDimY = baseY + 22;
+    ctx.beginPath();
+    ctx.moveTo(cx, rDimY); ctx.lineTo(rightBaseX, rDimY);
+    ctx.moveTo(cx, baseY + 8); ctx.lineTo(cx, rDimY + 6);
+    ctx.moveTo(rightBaseX, baseY + 8); ctx.lineTo(rightBaseX, rDimY + 6);
+    ctx.stroke();
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText('R = 12', (cx + rightBaseX) / 2, rDimY + 4);
+
+    // H label (left side)
+    var hDimX = leftBaseX - 36;
+    ctx.beginPath();
+    ctx.moveTo(hDimX, apexY); ctx.lineTo(hDimX, baseY);
+    ctx.moveTo(hDimX - 6, apexY); ctx.lineTo(hDimX + 6, apexY);
+    ctx.moveTo(hDimX - 6, baseY); ctx.lineTo(hDimX + 6, baseY);
+    ctx.stroke();
+    ctx.save();
+    ctx.translate(hDimX - 12, (apexY + baseY) / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+    ctx.fillText('H = 18', 0, 0);
+    ctx.restore();
+
+    // r label (right half of cylinder base)
+    ctx.fillStyle = secondary;
+    ctx.strokeStyle = secondary;
+    var rDim2Y = baseY - 8;
+    ctx.beginPath();
+    ctx.moveTo(cx, rDim2Y); ctx.lineTo(cylRightX, rDim2Y);
+    ctx.stroke();
+    ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+    ctx.fillText('r = 8', (cx + cylRightX) / 2, rDim2Y - 3);
+
+    // h label (right side of cylinder)
+    var hDim2X = cylRightX + 14;
+    ctx.beginPath();
+    ctx.moveTo(hDim2X, cylTopY); ctx.lineTo(hDim2X, baseY);
+    ctx.moveTo(hDim2X - 4, cylTopY); ctx.lineTo(hDim2X + 4, cylTopY);
+    ctx.moveTo(hDim2X - 4, baseY); ctx.lineTo(hDim2X + 4, baseY);
+    ctx.stroke();
+    ctx.save();
+    ctx.translate(hDim2X + 14, (cylTopY + baseY) / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('h = 6', 0, 0);
+    ctx.restore();
+
+    // (H - h) label inside the upper similar triangle
+    ctx.fillStyle = accent;
+    ctx.font = 'italic 12px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('H − h = 12', cx + 10, (apexY + cylTopY) / 2);
+
+    // Legend / formulas
+    ctx.fillStyle = text;
+    ctx.font = '13px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Sličnost trouglova △SA₁B₁ ~ △SAB:', 20, 50);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px sans-serif';
+    ctx.fillText('r / R = (H − h) / H   ⇒   h = H (R − r) / R', 20, 70);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('interactive-canvas');
+  if (!canvas) return;
+  canvas.style.touchAction = 'none';
+  var ctx = canvas.getContext('2d');
+
+  // Geometry constants
+  var Rg = 12, Hg = 18;
+  var pxPerUnit = 18;
+  var cx, baseY, apexY, leftBaseX, rightBaseX;
+
+  function recomputeGeometry() {
+    cx = canvas.width / 2;
+    baseY = canvas.height - 110;
+    apexY = baseY - Hg * pxPerUnit;
+    leftBaseX  = cx - Rg * pxPerUnit;
+    rightBaseX = cx + Rg * pxPerUnit;
+  }
+  recomputeGeometry();
+
+  // State: cylinder radius r in math units (start at optimum)
+  var dragR = 8;
+  var dragging = false;
+  var GRAB = 22;
+
+  function clampR(r) {
+    if (r < 0.4) r = 0.4;
+    if (r > Rg - 0.2) r = Rg - 0.2;
+    return r;
+  }
+
+  function getPos(e) {
+    var rect = canvas.getBoundingClientRect();
+    var evt = e.touches ? e.touches[0] : e;
+    var sx = canvas.width / rect.width;
+    var sy = canvas.height / rect.height;
+    return { x: (evt.clientX - rect.left) * sx, y: (evt.clientY - rect.top) * sy };
+  }
+
+  function rim() {
+    // Right rim (top-right corner of cylinder)
+    var hg = Hg * (Rg - dragR) / Rg;
+    return { x: cx + dragR * pxPerUnit, y: baseY - hg * pxPerUnit };
+  }
+
+  function isNear(pos) {
+    var p = rim();
+    return Math.hypot(pos.x - p.x, pos.y - p.y) < GRAB;
+  }
+
+  function rFromPos(pos) {
+    // Map x position back to radius (right half) — but allow the user to drag
+    // either the rim along the cone slant, or the right edge of the rectangle.
+    return (pos.x - cx) / pxPerUnit;
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    var W = canvas.width, Hpx = canvas.height;
+    ctx.clearRect(0, 0, W, Hpx);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, Hpx);
+
+    // Header values
+    var hg = Hg * (Rg - dragR) / Rg;
+    var V = Math.PI * dragR * dragR * hg;
+    var Vmax = 384 * Math.PI;
+
+    // Title and live readouts
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Prevuci tačku P (vrh ivice valjka) duž omotača kupe', W/2, 12);
+
+    ctx.font = '13px sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText(
+      'r = ' + dragR.toFixed(2) + ' cm    h = ' + hg.toFixed(2) + ' cm    V(r) = ' +
+      V.toFixed(2) + ' cm³  ≈  ' + (V / Math.PI).toFixed(2) + ' π cm³',
+      W/2, 34
+    );
+
+    // Progress bar comparing V to Vmax
+    var barX = 60, barY = 56, barW = W - 120, barH = 12;
+    ctx.fillStyle = cvAlpha('--sol-canvas-grid', 0.6);
+    ctx.fillRect(barX, barY, barW, barH);
+    var ratio = Math.max(0, Math.min(1, V / Vmax));
+    ctx.fillStyle = (V > 0.999 * Vmax) ? accent : secondary;
+    ctx.fillRect(barX, barY, barW * ratio, barH);
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(barX, barY, barW, barH);
+    ctx.fillStyle = muted;
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('0', barX, barY + barH + 2);
+    ctx.textAlign = 'right';
+    ctx.fillText('V_max = 384π ≈ 1206,37', barX + barW, barY + barH + 2);
+
+    // Vertical axis (dashed)
+    ctx.strokeStyle = cvAlpha('--sol-canvas-grid', 0.7);
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(cx, apexY - 6);
+    ctx.lineTo(cx, baseY + 18);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Cone (triangle)
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.10);
+    ctx.beginPath();
+    ctx.moveTo(cx, apexY);
+    ctx.lineTo(rightBaseX, baseY);
+    ctx.lineTo(leftBaseX, baseY);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    // Cylinder rectangle
+    var cylLeftX  = cx - dragR * pxPerUnit;
+    var cylRightX = cx + dragR * pxPerUnit;
+    var cylTopY   = baseY - hg * pxPerUnit;
+    ctx.fillStyle = (V > 0.999 * Vmax)
+      ? cvAlpha('--sol-canvas-accent', 0.30)
+      : cvAlpha('--sol-canvas-secondary', 0.22);
+    ctx.fillRect(cylLeftX, cylTopY, cylRightX - cylLeftX, baseY - cylTopY);
+    ctx.strokeStyle = (V > 0.999 * Vmax) ? accent : secondary;
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(cylLeftX, cylTopY, cylRightX - cylLeftX, baseY - cylTopY);
+
+    // Optimum marker on the slant
+    var optR = 8, optH = 6;
+    var optX = cx + optR * pxPerUnit, optY = baseY - optH * pxPerUnit;
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath();
+    ctx.arc(optX, optY, 14, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = accent;
+    ctx.font = 'italic 11px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('optimum (r=8, h=6)', optX + 18, optY - 6);
+
+    // Draggable point P (top-right corner of cylinder = on cone slant)
+    var p = rim();
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 14, 0, Math.PI * 2);
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.25);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 7, 0, Math.PI * 2);
+    ctx.fillStyle = primary;
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Hint text near point
+    ctx.fillStyle = muted;
+    ctx.font = '12px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('P (prevuci)', p.x + 16, p.y - 4);
+
+    // Vertex labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('S', cx, apexY - 4);
+    ctx.textBaseline = 'top';
+    ctx.fillText('A', leftBaseX - 6, baseY + 4);
+    ctx.fillText('B', rightBaseX + 6, baseY + 4);
+
+    // Caption inside canvas
+    ctx.fillStyle = muted;
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('Veza visine i poluprečnika valjka: h = H (R − r) / R = 18 (12 − r)/12.', W/2, Hpx - 8);
+  }
+
+  draw();
+
+  // Mouse events
+  canvas.addEventListener('mousedown', function(e) {
+    var pos = getPos(e);
+    if (isNear(pos)) {
+      dragging = true;
+      canvas.style.cursor = 'grabbing';
+    }
+  });
+  canvas.addEventListener('mousemove', function(e) {
+    var pos = getPos(e);
+    if (dragging) {
+      dragR = clampR(rFromPos(pos));
+      draw();
+    } else {
+      canvas.style.cursor = isNear(pos) ? 'grab' : 'default';
+    }
+  });
+  canvas.addEventListener('mouseup', function() {
+    dragging = false;
+    canvas.style.cursor = 'default';
+  });
+  canvas.addEventListener('mouseleave', function() {
+    dragging = false;
+    canvas.style.cursor = 'default';
+  });
+
+  // Touch
+  canvas.addEventListener('touchstart', function(e) {
+    var pos = getPos(e);
+    if (isNear(pos)) { dragging = true; e.preventDefault(); }
+  }, { passive: false });
+  canvas.addEventListener('touchmove', function(e) {
+    if (!dragging) return;
+    e.preventDefault();
+    var pos = getPos(e);
+    dragR = clampR(rFromPos(pos));
+    draw();
+  }, { passive: false });
+  canvas.addEventListener('touchend', function() { dragging = false; });
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Maksimalna zapremina valjka upisanog u kupu (R = 12, H = 18)",
+  "subject": "math",
+  "unit": "calculus",
+  "topic_tags": ["stereometrija", "ekstrem_funkcije", "izvod", "slicnost_trouglova", "valjak_u_kupi", "AM_GM"]
+}
+BRAINSPARK_META-->

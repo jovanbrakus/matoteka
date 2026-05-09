@@ -1,0 +1,502 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Aritmetički niz, a3 + a5 + a7 = 12, a2 + a6 = 12. Naći a1.
+
+Plan:
+Iskoristiti svojstvo aritmetičkog niza da je svaki član srednja vrednost dva člana koji su ravnomerno raspoređeni oko njega.
+- a3 + a7 = 2*a5 (jer je a5 srednji član), pa a3+a5+a7 = 3*a5
+- a2 + a6 = 2*a4 (jer je a4 srednji član)
+
+Korak 1:
+  3*a5 = 12  =>  a5 = 4
+
+Korak 2:
+  2*a4 = 12  =>  a4 = 6
+
+Korak 3:
+  d = a5 - a4 = 4 - 6 = -2
+
+Korak 4:
+  a1 = a4 - 3d = 6 - 3*(-2) = 6 + 6 = 12
+
+Provera:
+  a1 = 12, d = -2
+  a2 = 10, a3 = 8, a4 = 6, a5 = 4, a6 = 2, a7 = 0
+  a3 + a5 + a7 = 8 + 4 + 0 = 12  ✓
+  a2 + a6 = 10 + 2 = 12  ✓
+
+Odgovor: (C) 12.
+
+Vizualizacija: tačke aritmetičkog niza na brojevnoj pravoj sa konstantnim razmakom -2. Pokazati a1=12 na vrhu, a7=0 na dnu, sa istaknutim zbirovima a3+a5+a7 i a2+a6 (koji daju 12).
+</script>
+
+<h1 data-card="problem-title">Aritmetički niz — odredi prvi član iz dva uslova</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — svojstvo srednjeg člana aritmetičkog niza</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Ako za aritmetički niz važi \( a_3 + a_5 + a_7 = 12 \) i \( a_2 + a_6 = 12 \), onda je \( a_1 \) jednako:</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">Uslov 1</span>
+      <span class="given-value">\( a_3 + a_5 + a_7 = 12 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Uslov 2</span>
+      <span class="given-value">\( a_2 + a_6 = 12 \)</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 10 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 12 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 24 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( -2 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">U aritmetičkom nizu je svaki član <em>srednja vrednost</em> dva člana koji su mu simetrični po indeksu. Iz prvog uslova ćemo dobiti \( a_5 \), iz drugog \( a_4 \). Razlika \( d = a_5 - a_4 \) je razlika niza. Konačno, \( a_1 \) izračunavamo "spuštajući se" od \( a_4 \) za tri razlike unazad.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i pravila</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Opšti član</span> \( a_n = a_1 + (n-1)d \), gde je \( d \) razlika niza.</li>
+        <li><span class="formula-label">Svojstvo srednjeg člana</span> Za svako \( k \) i \( m \), ako su indeksi simetrični: \( a_{k-m} + a_{k+m} = 2a_k \). Posebno: \( a_3 + a_7 = 2a_5 \), a \( a_2 + a_6 = 2a_4 \).</li>
+        <li><span class="formula-label">Zbir tri uzastopna člana sa korakom 2</span> \( a_3 + a_5 + a_7 = 3a_5 \) — jer su \( a_3 \) i \( a_7 \) simetrični oko \( a_5 \).</li>
+        <li><span class="formula-label">Razlika i pomeranje</span> \( a_n = a_k + (n-k)d \). Ako znamo bilo koja dva člana, možemo izračunati \( d \) i sve ostale.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="780" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Aritmetički niz \( 12, 10, 8, 6, 4, 2, 0 \) na brojevnoj pravoj. Korak između susednih članova je \( d=-2 \). Plavi članovi zbirno daju \( 12 \) (tri člana sa srednjim \( a_5=4 \)); roze članovi takođe daju \( 12 \) (par sa srednjim \( a_4=6 \)).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Iskoristi simetriju oko \( a_5 \)</h3>
+      <p>Indeksi \( 3 \) i \( 7 \) su simetrični oko \( 5 \), pa je \( a_3 + a_7 = 2a_5 \). Otuda:</p>
+      <div class="math-block">
+        \[ a_3 + a_5 + a_7 = (a_3 + a_7) + a_5 = 2a_5 + a_5 = 3a_5 \]
+      </div>
+      <p>Iz uslova \( 3a_5 = 12 \), pa</p>
+      <div class="math-block">
+        \[ a_5 = \dfrac{12}{3} = 4. \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( a_3 + a_7 = 2a_5 \)?</summary>
+          <div class="detail-content">
+            <p>U aritmetičkom nizu \( a_3 = a_5 - 2d \) i \( a_7 = a_5 + 2d \). Sabiranjem dobijamo \( a_3 + a_7 = 2a_5 \) — \( d \)-ovi se poništavaju. Geometrijski: \( a_5 \) je tačno na sredini između \( a_3 \) i \( a_7 \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Iskoristi simetriju oko \( a_4 \)</h3>
+      <p>Indeksi \( 2 \) i \( 6 \) su simetrični oko \( 4 \), pa je \( a_2 + a_6 = 2a_4 \). Iz drugog uslova:</p>
+      <div class="math-block">
+        \[ 2a_4 = 12 \quad\Longrightarrow\quad a_4 = 6. \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliko je \( a_2 + a_8 \) ako znamo \( a_5 \)?</summary>
+          <div class="detail-content">
+            <p>\( 2 \) i \( 8 \) su simetrični oko \( 5 \), pa je \( a_2 + a_8 = 2a_5 = 8 \). Isti princip — birate centar između dva indeksa.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunaj razliku \( d \)</h3>
+      <p>Imamo dva susedna člana: \( a_4 = 6 \) i \( a_5 = 4 \). Po definiciji razlike:</p>
+      <div class="math-block">
+        \[ d = a_5 - a_4 = 4 - 6 = -2. \]
+      </div>
+      <p>Niz <em>opada</em> — svaki sledeći član je za \( 2 \) manji od prethodnog.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunaj \( a_1 \) "spuštanjem" od \( a_4 \)</h3>
+      <p>Od \( a_4 \) do \( a_1 \) ima tri koraka unazad, pa je</p>
+      <div class="math-block">
+        \[ a_1 = a_4 - 3d = 6 - 3 \cdot (-2) = 6 + 6 = 12. \]
+      </div>
+      <p>Alternativno: \( a_n = a_1 + (n-1)d \) za \( n=4 \) daje \( 6 = a_1 + 3 \cdot (-2) = a_1 - 6 \), pa je \( a_1 = 12 \). Isti rezultat.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: ispiši cele prve sedam članova niza.</summary>
+          <div class="detail-content">
+            <p>Sa \( a_1=12 \) i \( d=-2 \): \( 12,\ 10,\ 8,\ 6,\ 4,\ 2,\ 0 \). Proveri uslov: \( a_3+a_5+a_7 = 8+4+0 = 12 \) ✓ i \( a_2+a_6 = 10+2 = 12 \) ✓.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera</h3>
+      <p>Niz: <span class="result">\( 12, 10, 8, 6, 4, 2, 0, \ldots \)</span></p>
+      <div class="math-block">
+        \[ a_3 + a_5 + a_7 = 8 + 4 + 0 = 12 \quad \checkmark \]
+      </div>
+      <div class="math-block">
+        \[ a_2 + a_6 = 10 + 2 = 12 \quad \checkmark \]
+      </div>
+      <p>Oba uslova su zadovoljena. \( a_1 = 12 \).</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Umesto da postavljamo sistem dve jednačine sa \( a_1 \) i \( d \) i mučno ga rešavamo, iskorišćavamo <strong>svojstvo srednjeg člana</strong>: zbir simetričnih članova oko nekog centra jednak je dvostrukoj vrednosti tog centra. Time tri-člani uslov \( a_3+a_5+a_7 \) postaje \( 3a_5 \), a dvo-člani \( a_2+a_6 \) postaje \( 2a_4 \). Direktno čitamo \( a_5=4 \) i \( a_4=6 \), iz čega odmah znamo razliku \( d=-2 \) i prvi član. Klasičan trik za sve probleme sa zbirovima u aritmetičkim nizovima.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ a_1 = 12 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 10 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 2 \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( 12 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 24 \)</span>
+    <span class="answer-option" data-option="E">(E) \( -2 \)</span>
+  </div>
+  <p class="verification">Provera: niz \( 12, 10, 8, 6, 4, 2, 0 \) sa \( d=-2 \). \( a_3+a_5+a_7 = 8+4+0=12 \) i \( a_2+a_6 = 10+2=12 \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Postavljanje sistema "u rukavice".</strong> Možete pisati \( a_n = a_1+(n-1)d \) i dobiti dve jednačine \( 3a_1+12d=12 \) i \( 2a_1+6d=12 \), ali rešavanje sistema oduzima vreme. Trik sa srednjim članom rešava zadatak za 30 sekundi.</li>
+    <li><strong>Zaboravljen znak razlike.</strong> Iz \( a_5=4 \) i \( a_4=6 \) sledi \( d = a_5-a_4 = -2 \), a ne \( +2 \). Ako pogrešite znak, \( a_1 \) postaje \( 0 \) — netačno.</li>
+    <li><strong>Pogrešno svojstvo "srednjeg člana" za neravnomerne razmake.</strong> \( a_3+a_5+a_7 = 3a_5 \) važi jer su razmaci jednaki (po \( 2 \) indeksa). \( a_2+a_5+a_7 \) <em>ne</em> bi bilo \( 3a_5 \) — indeksi 2 i 7 nisu simetrični oko 5.</li>
+    <li><strong>Brojanje koraka u pogrešnom smeru.</strong> Od \( a_4 \) do \( a_1 \) ide se <em>tri</em> koraka unazad (4→3→2→1), pa je \( a_1 = a_4 - 3d \), a ne \( a_4 - 4d \).</li>
+    <li><strong>Brkanje broja članova i razlike indeksa.</strong> Razlika između \( a_4 \) i \( a_1 \) je \( 4-1=3 \) koraka, što daje \( a_1 = a_4 + (1-4)d \). Pažljivo sa znakom \( (n-k) \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>U istom nizu (sa \( a_1=12 \) i \( d=-2 \)) odredi koji je <em>prvi negativan</em> član i izračunaj zbir prvih \( 10 \) članova.</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Opšti član: \( a_n = 12 + (n-1)(-2) = 14 - 2n \). Uslov \( a_n < 0 \) daje \( 14 - 2n < 0 \), tj. \( n > 7 \). Prvi negativan član je \( a_8 = 14 - 16 = -2 \). Zbir prvih \( 10 \) članova: \( S_{10} = \dfrac{10}{2}(a_1 + a_{10}) = 5 \cdot (12 + (14-20)) = 5 \cdot (12 + (-6)) = 5 \cdot 6 = 30 \). Primeni formulu \( S_n = \dfrac{n}{2}(a_1 + a_n) \).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.indexOf('#') === 0) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Aritmetički niz: a₁=12, d=−2 — članovi a₁ do a₇ na brojevnoj pravoj', W / 2, 14);
+
+    // Layout: x-axis number line for values, members shown as dots above the line at their values
+    var values = [12, 10, 8, 6, 4, 2, 0]; // a1..a7
+    var labels = ['a₁', 'a₂', 'a₃', 'a₄', 'a₅', 'a₆', 'a₇'];
+
+    var minV = -2;
+    var maxV = 14;
+    var leftPad = 60;
+    var rightPad = 60;
+    var axisY = H - 110;
+
+    function tx(v) { return leftPad + (v - minV) / (maxV - minV) * (W - leftPad - rightPad); }
+
+    // Number line axis
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(tx(minV), axisY);
+    ctx.lineTo(tx(maxV), axisY);
+    ctx.stroke();
+    // arrow
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(tx(maxV) + 8, axisY);
+    ctx.lineTo(tx(maxV), axisY - 5);
+    ctx.lineTo(tx(maxV), axisY + 5);
+    ctx.closePath();
+    ctx.fill();
+
+    // Axis ticks for even values
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (var v = -2; v <= 14; v += 2) {
+      ctx.strokeStyle = axis;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(tx(v), axisY - 4);
+      ctx.lineTo(tx(v), axisY + 4);
+      ctx.stroke();
+      ctx.fillStyle = muted;
+      ctx.fillText(String(v), tx(v), axisY + 8);
+    }
+
+    // Plot each member as a circle on the axis with label above; use color codes:
+    // - primary for "regular" members (a1, a2, a4, a6)
+    // - actually highlight Plan-1 set {a3,a5,a7} blue, Plan-2 set {a2,a6} pink, others muted
+    var setBlue = [2, 4, 6]; // indices in values array (a3,a5,a7)
+    var setPink = [1, 5];    // a2, a6
+    var setAccent = [3];     // a4 (showed as middle of pair)
+    var setSpecialPrimary = [0]; // a1 — answer
+
+    function dot(v, color, size) {
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(tx(v), axisY, size || 7, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Connect members with a smooth chain showing it's a sequence (above the axis)
+    ctx.strokeStyle = cvAlpha('--sol-canvas-text', 0.2);
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    for (var i = 0; i < values.length; i++) {
+      var px = tx(values[i]);
+      var py = axisY - 60;
+      if (i === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Draw connectors from sequence label box to axis dot
+    for (var j = 0; j < values.length; j++) {
+      var color = muted;
+      if (setBlue.indexOf(j) >= 0) color = primary;
+      else if (setPink.indexOf(j) >= 0) color = highlight;
+      else if (setAccent.indexOf(j) >= 0) color = accent;
+      else if (setSpecialPrimary.indexOf(j) >= 0) color = secondary;
+
+      // vertical connector
+      ctx.strokeStyle = cvAlpha('--sol-canvas-text', 0.3);
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(tx(values[j]), axisY);
+      ctx.lineTo(tx(values[j]), axisY - 60);
+      ctx.stroke();
+
+      // dot on axis
+      dot(values[j], color, 7);
+
+      // label box above
+      var lx = tx(values[j]);
+      var ly = axisY - 60;
+      ctx.fillStyle = cvAlpha(
+        color === primary ? '--sol-canvas-primary' :
+        color === highlight ? '--sol-canvas-highlight' :
+        color === accent ? '--sol-canvas-accent' :
+        color === secondary ? '--sol-canvas-secondary' : '--sol-canvas-muted', 0.18);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      var bw = 56;
+      var bh = 36;
+      ctx.beginPath();
+      ctx.moveTo(lx - bw / 2 + 6, ly - bh);
+      ctx.lineTo(lx + bw / 2 - 6, ly - bh);
+      ctx.quadraticCurveTo(lx + bw / 2, ly - bh, lx + bw / 2, ly - bh + 6);
+      ctx.lineTo(lx + bw / 2, ly - 6);
+      ctx.quadraticCurveTo(lx + bw / 2, ly, lx + bw / 2 - 6, ly);
+      ctx.lineTo(lx - bw / 2 + 6, ly);
+      ctx.quadraticCurveTo(lx - bw / 2, ly, lx - bw / 2, ly - 6);
+      ctx.lineTo(lx - bw / 2, ly - bh + 6);
+      ctx.quadraticCurveTo(lx - bw / 2, ly - bh, lx - bw / 2 + 6, ly - bh);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // index label
+      ctx.fillStyle = color;
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(labels[j], lx, ly - bh + 12);
+      // value
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.fillText('= ' + values[j], lx, ly - bh + 26);
+    }
+
+    // Annotations: brackets showing sums
+    // Sum 1 (blue): a3 + a5 + a7 = 8 + 4 + 0 = 12 — bracket below axis spanning a3..a7
+    var blueY = axisY + 38;
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(tx(values[2]), blueY);
+    ctx.lineTo(tx(values[2]), blueY + 8);
+    ctx.lineTo(tx(values[6]), blueY + 8);
+    ctx.lineTo(tx(values[6]), blueY);
+    ctx.stroke();
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('a₃ + a₅ + a₇ = 8 + 4 + 0 = 12  →  3·a₅ = 12  →  a₅ = 4',
+                 (tx(values[2]) + tx(values[6])) / 2, blueY + 12);
+
+    // Sum 2 (pink): a2 + a6 = 10 + 2 = 12 — second bracket below
+    var pinkY = blueY + 50;
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(tx(values[1]), pinkY);
+    ctx.lineTo(tx(values[1]), pinkY + 8);
+    ctx.lineTo(tx(values[5]), pinkY + 8);
+    ctx.lineTo(tx(values[5]), pinkY);
+    ctx.stroke();
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('a₂ + a₆ = 10 + 2 = 12  →  2·a₄ = 12  →  a₄ = 6',
+                 (tx(values[1]) + tx(values[5])) / 2, pinkY + 12);
+
+    // Top callout: highlight the answer a1
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Odgovor: a₁ = 12  (od a₄=6 unazad za 3·d = 3·(−2) = −6, dakle a₁ = 6+6)', W / 2, 42);
+
+    // Step indicator (d arrows between consecutive members on axis)
+    ctx.strokeStyle = cvAlpha('--sol-canvas-warning', 0.85);
+    ctx.lineWidth = 1.5;
+    ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    var warning = cv('--sol-canvas-warning');
+    ctx.fillStyle = warning;
+    for (var k = 0; k < values.length - 1; k++) {
+      var x1 = tx(values[k]);
+      var x2 = tx(values[k + 1]);
+      var midY = axisY - 18;
+      ctx.beginPath();
+      ctx.moveTo(x1, midY);
+      ctx.lineTo(x2 + 6, midY);
+      ctx.stroke();
+      // arrow tip
+      ctx.beginPath();
+      ctx.moveTo(x2, midY);
+      ctx.lineTo(x2 + 6, midY - 4);
+      ctx.lineTo(x2 + 6, midY + 4);
+      ctx.closePath();
+      ctx.fillStyle = warning;
+      ctx.fill();
+    }
+    // single label "d = -2"
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('korak d = −2', (tx(values[3]) + tx(values[4])) / 2, axisY - 22);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Prvi član aritmetičkog niza iz dva uslova o zbirovima",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["aritmetički niz", "razlika niza", "svojstvo srednjeg člana", "opšti član", "sistem uslova"]
+}
+BRAINSPARK_META-->

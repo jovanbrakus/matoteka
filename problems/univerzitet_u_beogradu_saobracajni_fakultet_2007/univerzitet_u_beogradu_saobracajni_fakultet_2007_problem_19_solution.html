@@ -1,0 +1,540 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: x + 7 < sqrt(x + 9). Naci broj celih brojeva x.
+
+Domen: x + 9 >= 0  =>  x >= -9.
+
+Iracionalna nejednakost oblika A(x) < sqrt(B(x)) — moramo da razdvojimo na slucajeve, NE smemo
+direktno kvadrirati (kvadriranje ima smisla samo kad su obe strane istog znaka).
+
+Slucaj 1: A(x) = x + 7 < 0, tj. x < -7.
+  Tada je leva strana negativna, a desna strana sqrt(...) >= 0. Negativan < nenegativan — uvek tacno.
+  Uz domen x >= -9: dobijamo x ∈ [-9, -7). Celi brojevi: -9, -8.
+
+Slucaj 2: A(x) = x + 7 >= 0, tj. x >= -7.
+  Sada su obe strane nenegativne (LHS >= 0, RHS = sqrt(...) >= 0). Smemo da kvadriramo:
+    (x + 7)^2 < x + 9
+    x^2 + 14x + 49 < x + 9
+    x^2 + 13x + 40 < 0
+  Diskriminanta: 169 - 160 = 9, koreni: (-13 ± 3)/2 => x = -5, x = -8.
+  Faktorizacija: (x + 5)(x + 8) < 0 — vazi za -8 < x < -5.
+  Spojeno sa x >= -7: x ∈ [-7, -5). Celi brojevi: -7, -6.
+
+UKUPNO: {-9, -8, -7, -6}. Broj celih: 4.
+
+Provera (numericki):
+- x = -9: LHS = -2, RHS = sqrt(0) = 0.  -2 < 0  ✓
+- x = -8: LHS = -1, RHS = sqrt(1) = 1.  -1 < 1  ✓
+- x = -7: LHS = 0, RHS = sqrt(2) ≈ 1{,}414.  0 < 1{,}414  ✓
+- x = -6: LHS = 1, RHS = sqrt(3) ≈ 1{,}732.  1 < 1{,}732  ✓
+- x = -5: LHS = 2, RHS = sqrt(4) = 2.  2 < 2  NIJE (jednako).
+- x = -4: LHS = 3, RHS = sqrt(5) ≈ 2{,}236.  3 < 2{,}236  NIJE.
+- x = -10: van domena (x + 9 < 0), ne ulazi.
+
+Sve se poklapa: tacno 4 celobrojna resenja {-9, -8, -7, -6} -> odgovor (A) 4.
+
+Pitfalls:
+- Direktno kvadriranje obe strane bez razdvajanja po znaku LHS — gubi se Slucaj 1 ili dobija
+  pogresan rezultat.
+- Zaboravljanje domena x + 9 >= 0.
+- Granicna tacka x = -5 daje jednakost (2 = 2), strogo < ne ulazi.
+- Brkanje smera nejednakosti pri kvadriranju kad je LHS negativna.
+
+Vizuelni prikaz: STATIC graf y = x + 7 (prava) i y = sqrt(x + 9) (luk korenske krive
+pocinje u x = -9, y = 0). Zelena traka istice region x ∈ [-9, -5) gde je prava strogo
+ispod krive. Cele tacke -9, -8, -7, -6 su zeleni krugovi (resenja), a x = -5 crveni
+krug (jednakost — granicna tacka). Domen x >= -9 oznacen vertikalnom isprekidanom linijom.
+
+Mapiranje opcija (zadato): A=4 (tacno), B=8, C=7, D=5, E=6.
+</script>
+
+<h1 data-card="problem-title">Iracionalna nejednakost — koliko celih rešenja?</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — iracionalne nejednakosti, razdvajanje po znaku, kvadriranje uz uslove</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Celih brojeva \( x \) za koje važi nejednakost</p>
+  <div class="math-block">
+    \[ x + 7 \;<\; \sqrt{\,x + 9\,} \]
+  </div>
+  <p>ima:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 4 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 8 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 7 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 5 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 6 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Najpre određujemo domen: \( x + 9 \ge 0 \). Zatim razdvajamo na dva slučaja prema znaku leve strane \( x + 7 \): kada je negativna, nejednakost važi automatski (negativan broj je manji od nenegativnog korena); kada je nenegativna, smemo da kvadriramo i rešavamo dobijenu kvadratnu nejednakost. Na kraju spajamo rešenja i prebrojavamo cele brojeve.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Iracionalne nejednakosti tipa \( A(x) < \sqrt{B(x)} \)</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Domen korena</span> \( \sqrt{B(x)} \) ima smisla samo ako je \( B(x) \ge 0 \). Ovaj uslov je obavezan deo rešenja.</li>
+        <li><span class="formula-label">Vrednost korena</span> \( \sqrt{B(x)} \ge 0 \) za sve \( x \) iz domena. Glavna grana korena je nenegativna.</li>
+        <li><span class="formula-label">Kvadriranje sa znakom</span> Ako su \( a, b \ge 0 \), tada \( a < b \iff a^2 < b^2 \). Ako je \( a < 0 \) i \( b \ge 0 \), tada \( a < b \) važi automatski — bez kvadriranja.</li>
+        <li><span class="formula-label">Razdvajanje po znaku</span> Za \( A(x) < \sqrt{B(x)} \): razdvoji na \( A(x) < 0 \) (uvek važi u domenu) i \( A(x) \ge 0 \) (kvadriraj uz \( A(x)^2 < B(x) \)).</li>
+        <li><span class="formula-label">Kvadratna nejednakost</span> \( (x - r_1)(x - r_2) < 0 \) važi tačno za \( x \) između korena: \( r_1 < x < r_2 \) (uz \( r_1 < r_2 \)).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz nejednakosti">
+  <h2>📐 Vizuelni prikaz nejednakosti</h2>
+  <div class="canvas-wrapper">
+    <canvas id="ineq-canvas" width="720" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Plava prava \( y = x + 7 \) i ljubičasta kriva \( y = \sqrt{x + 9} \). Kriva je iznad prave tačno na intervalu \( [-9,\ -5) \) — to je rešenje nejednakosti. Celobrojne vrednosti \( x = -9, -8, -7, -6 \) (zeleni krugovi) leže u tom intervalu, dok \( x = -5 \) (crveni krug) daje jednakost \( x + 7 = \sqrt{x + 9} \) i ne ulazi.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Određujemo domen</h3>
+      <p>Pošto se ispod korena nalazi izraz \( x + 9 \), zahtevamo</p>
+      <div class="math-block">
+        \[ x + 9 \;\ge\; 0 \;\Longrightarrow\; x \;\ge\; -9. \]
+      </div>
+      <p>Sva rešenja moraju biti u poluintervalu \( [-9,\ +\infty) \).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( x = -9 \) dozvoljeno?</summary>
+          <div class="detail-content"><p>Za \( x = -9 \) imamo \( x + 9 = 0 \), a \( \sqrt{0} = 0 \) je sasvim regularno. Strogo \( x + 9 > 0 \) bi nepotrebno isključilo graničnu tačku. Sledi \( x \ge -9 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Razdvajamo po znaku leve strane</h3>
+      <p>Leva strana \( x + 7 \) menja znak u tački \( x = -7 \). Posmatramo dve mogućnosti — i to je suština: <em>direktno kvadriranje obe strane je opasno</em> jer kvadrirati smemo samo kad su obe strane istog (nenegativnog) znaka.</p>
+      <div class="math-block">
+        \[ \text{Slučaj 1: } x + 7 < 0,\;\;\text{tj.}\;\; x < -7. \]
+      </div>
+      <div class="math-block">
+        \[ \text{Slučaj 2: } x + 7 \ge 0,\;\;\text{tj.}\;\; x \ge -7. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj 1: \( x &lt; -7 \) (uz domen \( x \ge -9 \))</h3>
+      <p>Kada je leva strana <em>negativna</em>, a desna \( \sqrt{x + 9} \) — nenegativna (jer je glavna grana korena uvek \( \ge 0 \)), tada je</p>
+      <div class="math-block">
+        \[ \underbrace{x + 7}_{<\,0} \;<\; \underbrace{\sqrt{x + 9}}_{\ge\,0}\;\;\text{automatski važi.} \]
+      </div>
+      <p>Spajajući domen \( x \ge -9 \) sa uslovom slučaja \( x < -7 \), dobijamo</p>
+      <div class="math-block">
+        \[ x \in \bigl[-9,\ -7\bigr). \]
+      </div>
+      <p>Celi brojevi u ovom intervalu: <span class="result">\( -9,\ -8 \)</span>.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto u Slučaju 1 ne moramo da kvadriramo?</summary>
+          <div class="detail-content"><p>Kvadriranje je „nadogradnja“ koja se koristi samo kad su obe strane istog znaka. Ovde je leva strana negativna, a desna nenegativna — zaključak \( \text{negativan} < \text{nenegativan} \) sledi neposredno iz definicije znaka, bez ikakve algebre.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj 2: \( x \ge -7 \) — sad smemo da kvadriramo</h3>
+      <p>Sada su <em>obe</em> strane nenegativne (\( x + 7 \ge 0 \) i \( \sqrt{x + 9} \ge 0 \)), pa je kvadriranje ekvivalentna transformacija:</p>
+      <div class="math-block">
+        \[ (x + 7)^2 \;<\; x + 9. \]
+      </div>
+      <p>Razvijemo levu stranu i sve premestimo na jednu stranu:</p>
+      <div class="math-block">
+        \[ \begin{aligned} x^2 + 14x + 49 &< x + 9 \\[2pt] x^2 + 13x + 40 &< 0. \end{aligned} \]
+      </div>
+      <p>Diskriminanta je \( D = 13^2 - 4 \cdot 40 = 169 - 160 = 9 \), pa su koreni</p>
+      <div class="math-block">
+        \[ x_{1,2} \;=\; \frac{-13 \pm 3}{2} \;=\; -8,\;\; -5. \]
+      </div>
+      <p>Trinom \( x^2 + 13x + 40 = (x + 8)(x + 5) \). Pozitivan vodeći koeficijent znači <em>parabola otvorena nagore</em>, pa je trinom negativan strogo između korena:</p>
+      <div class="math-block">
+        \[ (x + 8)(x + 5) \;<\; 0 \;\Longleftrightarrow\; -8 \;<\; x \;<\; -5. \]
+      </div>
+      <p>Spajajući sa uslovom slučaja \( x \ge -7 \) (a domen \( x \ge -9 \) je automatski ispunjen):</p>
+      <div class="math-block">
+        \[ x \in \bigl[-7,\ -5\bigr). \]
+      </div>
+      <p>Celi brojevi u ovom intervalu: <span class="result">\( -7,\ -6 \)</span>. Granični \( x = -5 \) <span class="crossed">ne ulazi</span> (tu je jednakost, ne stroga nejednakost).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( (x + 8)(x + 5) < 0 \) tačno za \( -8 < x < -5 \)?</summary>
+          <div class="detail-content"><p>Faktori menjaju znak u tačkama \( x = -8 \) i \( x = -5 \). Za \( x < -8 \) oba su negativna (proizvod \( + \)); za \( -8 < x < -5 \) prvi je \( + \), drugi \( - \) (proizvod \( - \)); za \( x > -5 \) oba su \( + \) (proizvod \( + \)). Tražimo upravo srednji interval — strogo između korena.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Spajamo dva slučaja</h3>
+      <p>Konačno rešenje je unija rešenja iz oba slučaja:</p>
+      <div class="math-block">
+        \[ \bigl[-9,\ -7\bigr) \;\cup\; \bigl[-7,\ -5\bigr) \;=\; \bigl[-9,\ -5\bigr). \]
+      </div>
+      <p>Cela skupna rešenje je <span class="result">\( x \in [-9,\ -5) \)</span> — jedinstven interval, lepo i čisto.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Brojimo cele brojeve u \( [-9,\ -5) \)</h3>
+      <p>Veće ili jednako od \( -9 \), strogo manje od \( -5 \):</p>
+      <div class="math-block">
+        \[ x \in \{\,-9,\ -8,\ -7,\ -6\,\}. \]
+      </div>
+      <p>Ima ih <strong>tačno \( 4 \)</strong>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="7">
+    <div class="step-badge">7</div>
+    <div class="step-content">
+      <h3 class="step-title">Numerička provera</h3>
+      <p>Da budemo sigurni, uvrstimo „granične“ vrednosti i kandidate:</p>
+      <div class="math-block">
+        \[ \begin{array}{c|c|c|c} x & x + 7 & \sqrt{x + 9} & \text{LHS} < \text{RHS}? \\ \hline -9 & -2 & 0 & \text{da} \\ -8 & -1 & 1 & \text{da} \\ -7 & 0 & \sqrt{2} \approx 1{,}414 & \text{da} \\ -6 & 1 & \sqrt{3} \approx 1{,}732 & \text{da} \\ -5 & 2 & 2 & \text{ne (jednako)} \\ -4 & 3 & \sqrt{5} \approx 2{,}236 & \text{ne} \end{array} \]
+      </div>
+      <p>Sve se slaže: tačno \( 4 \) celobrojna rešenja \( \{-9,\ -8,\ -7,\ -6\} \). ✓</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kada je leva strana iracionalne nejednakosti polinom, a desna kvadratni koren, <em>razdvajanje po znaku leve strane</em> je sigurniji put nego direktno kvadriranje. U slučaju \( A(x) < 0 \) nejednakost \( A(x) < \sqrt{B(x)} \) važi <em>besplatno</em> u celom domenu, jer je nenegativan koren uvek veći od svake negativne vrednosti. Tek kada je \( A(x) \ge 0 \) imamo „pravu“ algebarsku nejednakost koju rešavamo kvadriranjem. Ova podela tipično donosi <em>više</em> celobrojnih rešenja nego što bi se naivnim kvadriranjem pojavilo.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Direktno kvadriranje obe strane.</strong> Najčešća zamka. Ako se piše \( (x + 7)^2 < x + 9 \) bez razmišljanja, gubi se ceo Slučaj 1 (\( x < -7 \)) gde nejednakost važi automatski. Tako se ne računaju \( x = -9 \) i \( x = -8 \), pa se dobija samo \( 2 \) cela rešenja umesto \( 4 \).</li>
+    <li><strong>Zaboravljanje domena \( x \ge -9 \).</strong> Ako se zanemari, mogu se „rešiti“ vrednosti \( x < -9 \) kojima koren nije ni definisan.</li>
+    <li><strong>Brojanje granične tačke \( x = -5 \).</strong> Tu je \( x + 7 = 2 \) i \( \sqrt{x + 9} = 2 \) — jednakost, ne strogo \( < \). Ne ulazi.</li>
+    <li><strong>Pogrešan smer pri kvadriranju.</strong> Kvadriranje očuva smer samo kada su obe strane istog znaka. Ako bi se zaboravilo da je \( x + 7 \ge 0 \) uslov, mogla bi se napraviti pogrešna ekvivalencija.</li>
+    <li><strong>Greška u faktorizaciji \( x^2 + 13x + 40 \).</strong> Koreni \( -8 \) i \( -5 \) (zbir \( -13 \), proizvod \( 40 \)). Brkanje znakova daje \( (x - 8)(x - 5) \) što vodi pogrešnom intervalu.</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \text{Skup celih rešenja:}\;\; \{\,-9,\ -8,\ -7,\ -6\,\},\quad \text{broj rešenja} = 4. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 4 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 8 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 7 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 5 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 6 \)</span>
+  </div>
+  <p class="verification">Provera: za \( x = -9, -8, -7, -6 \) važi \( x + 7 < \sqrt{x + 9} \); za \( x = -5 \) imamo jednakost \( 2 = 2 \) (ne ulazi); za \( x = -4 \) važi \( 3 > \sqrt{5} \approx 2{,}236 \) (ne važi). Tačno \( 4 \) celobrojna rešenja.</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koliko celih brojeva \( x \) zadovoljava nejednakost \( x + 5 < \sqrt{x + 11} \)? Pokušaj istom tehnikom — razdvoj po znaku leve strane.</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Domen: \( x \ge -11 \). Slučaj 1: \( x + 5 < 0 \Rightarrow x < -5 \), uz domen \( x \in [-11,\ -5) \). Slučaj 2: \( x + 5 \ge 0 \), kvadriraj: \( (x + 5)^2 < x + 11 \Rightarrow x^2 + 9x + 14 < 0 \Rightarrow (x + 2)(x + 7) < 0 \Rightarrow -7 < x < -2 \). Spojeno sa \( x \ge -5 \): \( x \in [-5,\ -2) \). Unija: \( [-11,\ -2) \). Celi brojevi: \( \{-11,\ -10,\ -9,\ -8,\ -7,\ -6,\ -5,\ -4,\ -3\} \) — ukupno \( 9 \). Brza provera: \( x = -3 \Rightarrow 2 < \sqrt{8} \approx 2{,}828 \) ✓; \( x = -2 \Rightarrow 3 < \sqrt{9} = 3 \) — jednakost, ne ulazi.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('ineq-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('y = x + 7  i  y = √(x + 9)', canvas.width / 2, 14);
+
+    // Plot area
+    var plotLeft = 60, plotRight = canvas.width - 30;
+    var plotTop = 50, plotBottom = canvas.height - 90;
+    var xMin = -10, xMax = -2;
+    var yMin = -3, yMax = 6;
+
+    function tx(x) { return plotLeft + (x - xMin) / (xMax - xMin) * (plotRight - plotLeft); }
+    function ty(y) { return plotBottom - (y - yMin) / (yMax - yMin) * (plotBottom - plotTop); }
+
+    // Shaded solution band x ∈ [-9, -5)
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.18);
+    ctx.fillRect(tx(-9), plotTop, tx(-5) - tx(-9), plotBottom - plotTop);
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var gx = Math.ceil(xMin); gx <= Math.floor(xMax); gx++) {
+      ctx.beginPath();
+      ctx.moveTo(tx(gx), plotTop);
+      ctx.lineTo(tx(gx), plotBottom);
+      ctx.stroke();
+    }
+    for (var gy = Math.ceil(yMin); gy <= Math.floor(yMax); gy++) {
+      ctx.beginPath();
+      ctx.moveTo(plotLeft, ty(gy));
+      ctx.lineTo(plotRight, ty(gy));
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    // x-axis (y = 0)
+    ctx.beginPath();
+    ctx.moveTo(plotLeft, ty(0));
+    ctx.lineTo(plotRight, ty(0));
+    ctx.stroke();
+    // y-axis at x = -2 (right edge has no zero, draw a vertical reference at xMax - 0.05? Use leftmost integer axis at x = xMax + 1? Better: axis at the visible left)
+    // We'll draw the y-axis at the rightmost integer where y matters. Since x = 0 is out of view, we use an in-view vertical mark at x = -2 (right edge). For clarity, draw y-axis at the LEFT side of the plot (x = xMin) only as label support. Skip y-axis line; rely on the left tick labels.
+
+    // Axis tick labels (x)
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (var tk = Math.ceil(xMin); tk <= Math.floor(xMax); tk++) {
+      ctx.fillText(String(tk), tx(tk), ty(0) + 4);
+    }
+    // Y-axis tick labels (left side)
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (var ty2 = Math.ceil(yMin); ty2 <= Math.floor(yMax); ty2++) {
+      if (ty2 === 0) continue;
+      ctx.fillText(String(ty2), plotLeft - 5, ty(ty2));
+    }
+
+    // Domain boundary x = -9 (vertical dashed)
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(tx(-9), plotTop);
+    ctx.lineTo(tx(-9), plotBottom);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = warning;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('domen: x ≥ −9', tx(-9) + 6, plotTop + 4);
+
+    // Plot the line y = x + 7  (primary, blue)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    var first = true;
+    for (var px = xMin; px <= xMax; px += 0.05) {
+      var py = px + 7;
+      if (py < yMin || py > yMax) { first = true; continue; }
+      var X = tx(px), Y = ty(py);
+      if (first) { ctx.moveTo(X, Y); first = false; } else { ctx.lineTo(X, Y); }
+    }
+    ctx.stroke();
+
+    // Plot the curve y = sqrt(x + 9)  (secondary, purple) — only for x >= -9
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    first = true;
+    for (var qx = -9; qx <= xMax; qx += 0.02) {
+      var qy = Math.sqrt(qx + 9);
+      if (qy < yMin || qy > yMax) { first = true; continue; }
+      var X2 = tx(qx), Y2 = ty(qy);
+      if (first) { ctx.moveTo(X2, Y2); first = false; } else { ctx.lineTo(X2, Y2); }
+    }
+    ctx.stroke();
+
+    // Crossing point: x = -5 (line: 2, curve: 2) — equality (the only intersection in the visible range)
+    ctx.fillStyle = danger;
+    ctx.beginPath();
+    ctx.arc(tx(-5), ty(2), 5.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = danger;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('(−5, 2) — jednako', tx(-5) + 8, ty(2) - 10);
+
+    // Integer solutions x = -9, -8, -7, -6 marked on x-axis as green dots
+    ctx.fillStyle = accent;
+    var sols = [
+      {x:-9, lhs:-2, rhs:0},
+      {x:-8, lhs:-1, rhs:1},
+      {x:-7, lhs:0,  rhs:Math.sqrt(2)},
+      {x:-6, lhs:1,  rhs:Math.sqrt(3)}
+    ];
+    for (var k = 0; k < sols.length; k++) {
+      var s = sols[k];
+      // line value
+      ctx.fillStyle = accent;
+      ctx.beginPath();
+      ctx.arc(tx(s.x), ty(s.lhs), 4.5, 0, Math.PI * 2);
+      ctx.fill();
+      // curve value
+      ctx.beginPath();
+      ctx.arc(tx(s.x), ty(s.rhs), 4.5, 0, Math.PI * 2);
+      ctx.fill();
+      // vertical connector dashed
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 1.2;
+      ctx.setLineDash([3, 3]);
+      ctx.beginPath();
+      ctx.moveTo(tx(s.x), ty(s.lhs));
+      ctx.lineTo(tx(s.x), ty(s.rhs));
+      ctx.stroke();
+      ctx.setLineDash([]);
+      // x-label below axis
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText(String(s.x), tx(s.x), ty(0) + 22);
+    }
+
+    // Function labels near the curves
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = primary;
+    ctx.fillText('y = x + 7', tx(-3.5), ty(3.7));
+    ctx.fillStyle = secondary;
+    ctx.fillText('y = √(x + 9)', tx(-3.5), ty(2.5));
+
+    // Solution interval label (centered above the green band)
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('rešenje: −9 ≤ x < −5', tx(-7), ty(5.4));
+
+    // Bottom legend / caption
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    var legY = canvas.height - 64;
+    var legX = plotLeft;
+    // green swatch
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.35);
+    ctx.fillRect(legX, legY, 16, 12);
+    ctx.fillStyle = muted;
+    ctx.fillText('zelena traka: prava ispod krive  (rešenje nejednakosti)', legX + 22, legY);
+    // green dot swatch
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(legX + 8, legY + 28, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = muted;
+    ctx.fillText('zelene tačke: celobrojna rešenja x = −9, −8, −7, −6', legX + 22, legY + 22);
+    // red dot swatch
+    ctx.fillStyle = danger;
+    ctx.beginPath();
+    ctx.arc(legX + 8, legY + 50, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = muted;
+    ctx.fillText('crvena tačka: granica x = −5 (jednakost — ne ulazi)', legX + 22, legY + 44);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Iracionalna nejednakost x + 7 < √(x + 9): broj celih rešenja",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["iracionalne nejednakosti", "razdvajanje po znaku", "kvadratna nejednakost", "celobrojna rešenja"]
+}
+BRAINSPARK_META-->

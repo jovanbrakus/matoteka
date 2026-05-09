@@ -1,0 +1,698 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: izracunati (1-i)^2016 / (1+i)^2014.
+
+Strategija A — preko kvadrata:
+  (1-i)^2 = 1 - 2i + i^2 = 1 - 2i - 1 = -2i.
+  (1+i)^2 = 1 + 2i + i^2 = 1 + 2i - 1 = 2i.
+
+Brojilac: (1-i)^2016 = ((1-i)^2)^1008 = (-2i)^1008 = (-1)^1008 * 2^1008 * i^1008.
+  (-1)^1008 = 1 (paran stepen).
+  i^1008 = (i^4)^252 = 1.
+  Pa je (1-i)^2016 = 2^1008.
+
+Imenilac: (1+i)^2014 = ((1+i)^2)^1007 = (2i)^1007 = 2^1007 * i^1007.
+  i^1007 = i^(1004) * i^3 = 1 * (-i) = -i.
+  Pa je (1+i)^2014 = 2^1007 * (-i) = -2^1007 * i.
+
+Kolicnik: 2^1008 / (-2^1007 * i) = -2 / i = -2 * (1/i) = -2 * (-i) = 2i.
+(jer je 1/i = -i, posto je i*(-i) = -i^2 = 1.)
+
+Strategija B — preko kolicnika (1-i)/(1+i):
+  (1-i)/(1+i) = (1-i)^2 / ((1+i)(1-i)) = (-2i)/2 = -i.
+  (1-i)^2014 = ((1-i)/(1+i))^2014 * (1+i)^2014 / (1+i)^2014... ovaj pristup nije bolji.
+
+Bolje: (1-i)^2016 / (1+i)^2014 = (1-i)^2 * (1-i)^2014 / (1+i)^2014 = (-2i) * ((1-i)/(1+i))^2014 = -2i * (-i)^2014.
+  (-i)^2014 = ((-i)^2)^1007 = (-1)^1007 = -1.
+  Pa je rezultat: -2i * (-1) = 2i. ✓
+
+Strategija C — modul i argument (Moivre):
+  1-i = √2 (cos(-π/4) + i sin(-π/4))
+  1+i = √2 (cos(π/4) + i sin(π/4))
+  (1-i)^2016 = 2^1008 * (cos(-2016π/4) + i sin(-2016π/4)) = 2^1008 * (cos(-504π) + i sin(-504π)) = 2^1008 * 1 = 2^1008.
+  (1+i)^2014 = 2^1007 * (cos(2014π/4) + i sin(2014π/4)) = 2^1007 * (cos(503,5π) + i sin(503,5π)).
+    503,5π mod 2π = ... 503,5/2 = 251,75 → 0,75 * 2π = 1,5π = 3π/2.
+    cos(3π/2) = 0, sin(3π/2) = -1.
+    Pa je (1+i)^2014 = 2^1007 * (0 - i) = -2^1007 * i. ✓
+  Kolicnik: 2^1008 / (-2^1007 * i) = -2/i = 2i. ✓
+
+Sve tri strategije daju 2i. Odgovor (B).
+
+Vizuelni prikaz: dva dijagrama
+  1) Argand-ova ravan sa 1-i, 1+i, kvadratima i poredjajem stepenovanja.
+  2) Tabela ciklusa stepena i (i^0 = 1, i^1 = i, i^2 = -1, i^3 = -i, period 4).
+</script>
+
+<h1 data-card="problem-title">Stepenovanje kompleksnih brojeva \( (1 \pm i) \)</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — kompleksni brojevi, ciklus stepena \( i \), trik sa \( (1\pm i)^2 \)</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Vrednost izraza</p>
+  <div class="math-block">
+    \[ \dfrac{(1-i)^{2016}}{(1+i)^{2014}} \]
+  </div>
+  <p>je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( -2i \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 2i \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 4i \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( i+1 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Iskoristićemo ključnu jednostavnu jednakost: \( (1-i)^2 = -2i \) i \( (1+i)^2 = 2i \). Pošto su stepeni \( 2016 \) i \( 2014 \) parni, oba se mogu napisati preko ovih kvadrata, a višestruki stepen broja \( i \) svodimo na ciklus dužine \( 4 \). Rezultat će biti čist imaginarni broj.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule za kompleksne brojeve</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Definicija</span> \( i^2 = -1 \). Iz toga sledi \( i^3 = -i \), \( i^4 = 1 \), i ciklus se ponavlja.</li>
+        <li><span class="formula-label">Ciklus stepena</span> \( i^n \) zavisi samo od \( n \bmod 4 \): \( i^{4k}=1,\; i^{4k+1}=i,\; i^{4k+2}=-1,\; i^{4k+3}=-i \).</li>
+        <li><span class="formula-label">Korisni kvadrati</span> \( (1+i)^2 = 1 + 2i + i^2 = 2i \) i \( (1-i)^2 = 1 - 2i + i^2 = -2i \). Pamti — pojavljuju se često.</li>
+        <li><span class="formula-label">Recipročna vrednost</span> \( \dfrac{1}{i} = -i \), jer je \( i \cdot (-i) = -i^2 = 1 \).</li>
+        <li><span class="formula-label">Moduli</span> \( |1+i| = |1-i| = \sqrt{2} \), pa je \( |(1+i)^n| = (\sqrt{2})^n = 2^{n/2} \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz brojeva u kompleksnoj ravni">
+  <h2>📐 Vizuelni prikaz brojeva u kompleksnoj ravni</h2>
+  <p>U Argand-ovoj (kompleksnoj) ravni, \( 1+i \) i \( 1-i \) su dijagonale jediničnog kvadrata: oba imaju modul \( \sqrt{2} \), a argumenti su \( +\dfrac{\pi}{4} \) i \( -\dfrac{\pi}{4} \). Kad se kvadriraju, modul postaje \( 2 \), a argumenti se udvostručuju na \( +\dfrac{\pi}{2} \) (tj. \( +2i \)) i \( -\dfrac{\pi}{2} \) (tj. \( -2i \)). Na ovoj slici vidiš geometrijsku interpretaciju.</p>
+  <div class="canvas-wrapper">
+    <canvas id="argand" width="700" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Vektori \( 1+i \) i \( 1-i \) u prvom i četvrtom kvadrantu, sa modulom \( \sqrt{2} \). Njihovi kvadrati \( (1+i)^2 = 2i \) i \( (1-i)^2 = -2i \) leže na imaginarnoj osi sa modulom \( 2 \). Argument se pri kvadriranju udvostručuje (Moavrova formula).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Ciklus stepena imaginarne jedinice">
+  <h2>📐 Ciklus stepena \( i^n \)</h2>
+  <p>Stepeni broja \( i \) prave krug i ponavljaju se sa periodom \( 4 \): \( 1 \to i \to -1 \to -i \to 1 \to \dots \). Kad u zadatku naletimo na \( i^{1007} \) ili \( i^{1008} \), samo gledamo ostatak pri deljenju sa \( 4 \).</p>
+  <div class="canvas-wrapper">
+    <canvas id="cycle" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Četiri tačke u jediničnom krugu: \( i^0=1 \) (desno), \( i^1=i \) (gore), \( i^2=-1 \) (levo), \( i^3=-i \) (dole). Strelica pokazuje smer rotacije za \( 90^\circ \) pri svakom množenju sa \( i \). Ispod je tabela koja sažima šta dobijamo za \( n = 1007 \) i \( n = 1008 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Računanje korisnih kvadrata</h3>
+      <p>Pošto su stepeni \( 2016 \) i \( 2014 \) parni, korisno je izračunati \( (1\pm i)^2 \):</p>
+      <div class="math-block">
+        \[ (1-i)^2 = 1 - 2i + i^2 = 1 - 2i - 1 = -2i, \]
+        \[ (1+i)^2 = 1 + 2i + i^2 = 1 + 2i - 1 = 2i. \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto rezultat nije realan?</summary>
+          <div class="detail-content">
+            <p>Realni delovi (\( 1 \) i \( -1 = i^2 \)) se ukidaju, a unakrsni član \( \pm 2i \) preživi. Geometrijski: argument se udvostruči iz \( \pm \pi/4 \) u \( \pm \pi/2 \), pa kvadrat leži tačno na imaginarnoj osi.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Brojilac \( (1-i)^{2016} \)</h3>
+      <p>Pošto je \( 2016 = 2 \cdot 1008 \), pišemo brojilac kao \( ((1-i)^2)^{1008} \):</p>
+      <div class="math-block">
+        \[ (1-i)^{2016} = \big((1-i)^2\big)^{1008} = (-2i)^{1008} = (-1)^{1008} \cdot 2^{1008} \cdot i^{1008}. \]
+      </div>
+      <p>Pošto je \( 1008 \) paran broj, \( (-1)^{1008} = 1 \). A pošto je \( 1008 = 4 \cdot 252 \), važi \( i^{1008} = (i^4)^{252} = 1 \). Dakle:</p>
+      <div class="math-block">
+        \[ (1-i)^{2016} = 2^{1008}. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Imenilac \( (1+i)^{2014} \)</h3>
+      <p>Slično, \( 2014 = 2 \cdot 1007 \), pa:</p>
+      <div class="math-block">
+        \[ (1+i)^{2014} = \big((1+i)^2\big)^{1007} = (2i)^{1007} = 2^{1007} \cdot i^{1007}. \]
+      </div>
+      <p>Sada \( 1007 = 4 \cdot 251 + 3 \), pa je \( i^{1007} = i^3 = -i \). Dakle:</p>
+      <div class="math-block">
+        \[ (1+i)^{2014} = 2^{1007} \cdot (-i) = -2^{1007}\,i. \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kako brzo naći \( i^{1007} \)?</summary>
+          <div class="detail-content">
+            <p>Podelimo \( 1007 \) sa \( 4 \): \( 1007 = 4 \cdot 251 + 3 \). Ostatak je \( 3 \), pa je \( i^{1007} = i^3 = -i \). Generalno: \( i^n \) zavisi samo od \( n \bmod 4 \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Količnik</h3>
+      <p>Sada delimo:</p>
+      <div class="math-block">
+        \[ \dfrac{(1-i)^{2016}}{(1+i)^{2014}} = \dfrac{2^{1008}}{-2^{1007}\,i} = \dfrac{-2}{i}. \]
+      </div>
+      <p>Da uklonimo \( i \) iz imenioca, množimo brojilac i imenilac sa \( i \):</p>
+      <div class="math-block">
+        \[ \dfrac{-2}{i} = \dfrac{-2 \cdot i}{i \cdot i} = \dfrac{-2i}{i^2} = \dfrac{-2i}{-1} = 2i. \]
+      </div>
+      <p>Alternativno, koristimo \( \dfrac{1}{i} = -i \), pa je \( \dfrac{-2}{i} = -2 \cdot (-i) = 2i \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Alternativni put — preko količnika \( (1-i)/(1+i) \)</h3>
+      <p>Drugi elegantan način: prvo izvučemo \( (1-i)^2 \) iz brojioca, pa preostaje \( (1-i)^{2014} \), što ide zajedno sa \( (1+i)^{2014} \) u količnik:</p>
+      <div class="math-block">
+        \[ \dfrac{(1-i)^{2016}}{(1+i)^{2014}} = (1-i)^2 \cdot \left(\dfrac{1-i}{1+i}\right)^{2014} = -2i \cdot \left(\dfrac{1-i}{1+i}\right)^{2014}. \]
+      </div>
+      <p>Računamo \( \dfrac{1-i}{1+i} \) racionalizacijom (množimo sa konjugatom \( 1-i \)):</p>
+      <div class="math-block">
+        \[ \dfrac{1-i}{1+i} = \dfrac{(1-i)^2}{(1+i)(1-i)} = \dfrac{-2i}{1 - i^2} = \dfrac{-2i}{2} = -i. \]
+      </div>
+      <p>Pa je \( (-i)^{2014} = ((-i)^2)^{1007} = (-1)^{1007} = -1 \). Krajnji rezultat: \( -2i \cdot (-1) = 2i \). ✓ Isti odgovor potvrđuje računicu.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Eksponenti \( 2016 \) i \( 2014 \) izgledaju zastrašujuće, ali su <em>oba parna</em>. Identitete \( (1\pm i)^2 = \pm 2i \) razbijaju problem: stepenovanje na pola, plus ciklus dužine \( 4 \) za \( i^n \) — i ostaje obična aritmetika sa stepenima dvojke. Ovo je zlatni trik za prijemne ispite: kad god vidiš \( (1+i)^{\text{paran}} \) ili \( (1-i)^{\text{paran}} \), prvo idi na kvadrat, pa onda na ciklus.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \dfrac{(1-i)^{2016}}{(1+i)^{2014}} = 2i. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( -2i \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( 2i \)</span>
+    <span class="answer-option" data-option="C">(C) \( 4i \)</span>
+    <span class="answer-option" data-option="D">(D) \( i+1 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 1 \)</span>
+  </div>
+  <p class="verification">Provera modula: \( |1-i|^{2016}/|1+i|^{2014} = (\sqrt{2})^{2016}/(\sqrt{2})^{2014} = (\sqrt{2})^2 = 2 \). Modul rezultata \( |2i| = 2 \). ✓ Argument: \( 2016 \cdot (-\pi/4) - 2014 \cdot (\pi/4) = -4030\pi/4 = -1007{,}5\pi \equiv \pi/2 \pmod{2\pi} \). \( \arg(2i) = \pi/2 \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešni kvadrati.</strong> Lako je napisati \( (1+i)^2 = 1 + i^2 = 0 \) (zaboravivši unakrsni član) — što je pogrešno. Tačno je \( 1 + 2i + i^2 = 2i \). Nikad ne preskači člen \( 2 \cdot 1 \cdot i = 2i \).</li>
+    <li><strong>Mešanje znaka u \( i^{1007} \).</strong> Ostatak pri deljenju sa \( 4 \) je \( 3 \), pa je \( i^{1007} = i^3 = -i \), <em>ne</em> \( i^1 = i \). Tabela ciklusa je obavezno proveriti pre nego što se zaključi.</li>
+    <li><strong>Loše rukovanje sa \( 1/i \).</strong> Mnogi kandidati napišu \( 1/i = i \) (pogrešno). Tačno: \( 1/i = -i \), jer \( i \cdot (-i) = 1 \). Ovo je čest izvor greške koji daje znak rezultata.</li>
+    <li><strong>Pokušaj da se eksponenti "iskrate".</strong> Razlika \( 2016 - 2014 = 2 \) <em>ne</em> znači da je rezultat \( (1-i)^2 / (1+i)^0 = -2i \). Pošto su brojilac i imenilac različiti brojevi, ne smemo "skratiti" eksponente kao kod istih osnova. To bi dalo pogrešan odgovor (A) \( -2i \).</li>
+    <li><strong>Zaboravljanje da je \( (-2)^{1008} = 2^{1008} \).</strong> Pošto je \( 1008 \) parno, znak \( -1 \) se anulira. Često se zaboravi i napiše negativan rezultat, što ide u (A).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Generalizuj zadatak: za prirodne brojeve \( m \ge n \), izračunaj</p>
+  <div class="math-block">
+    \[ \dfrac{(1-i)^{2m}}{(1+i)^{2n}}. \]
+  </div>
+  <p>Pokaži da rezultat zavisi samo od ostatka \( (m+n) \bmod 4 \) i od razlike \( m - n \). Konkretno, koliko iznosi izraz za \( m = 1010, n = 1008 \)? A za \( m = 5, n = 3 \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Brojilac: \( (-2i)^m = (-1)^m \, 2^m \, i^m \). Imenilac: \( (2i)^n = 2^n \, i^n \). Količnik: \( (-1)^m \, 2^{m-n} \, i^{m-n} \). Ako je \( m \) parno, predznak \( +1 \); ako je neparno, \( -1 \). Modul je uvek \( 2^{m-n} \). Argument je \( (m-n) \cdot 90^\circ \) (po modulu \( 360^\circ \)). Za \( m=1010, n=1008 \): \( m-n=2 \), \( m \) parno, pa rezultat je \( 2^2 \cdot i^2 = -4 \). Za \( m=5, n=3 \): \( m-n=2 \), \( m \) neparno, rezultat je \( -2^2 \cdot i^2 = -(-4) = 4 \).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.indexOf('#') === 0) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('argand');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Argand-ova ravan: 1±i i njihovi kvadrati', W / 2, 14);
+
+    // Coordinate system
+    var cx = W / 2;
+    var cy = H / 2 + 20;
+    var unit = 90; // 1 unit = 90 px
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var gx = -3; gx <= 3; gx++) {
+      ctx.beginPath();
+      ctx.moveTo(cx + gx * unit, cy - 3 * unit);
+      ctx.lineTo(cx + gx * unit, cy + 3 * unit);
+      ctx.stroke();
+    }
+    for (var gy = -3; gy <= 3; gy++) {
+      ctx.beginPath();
+      ctx.moveTo(cx - 3 * unit, cy + gy * unit);
+      ctx.lineTo(cx + 3 * unit, cy + gy * unit);
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cx - 3 * unit, cy);
+    ctx.lineTo(cx + 3 * unit, cy);
+    ctx.moveTo(cx, cy - 3 * unit);
+    ctx.lineTo(cx, cy + 3 * unit);
+    ctx.stroke();
+
+    // Axis labels
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Re', cx + 3 * unit + 8, cy);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('Im', cx, cy - 3 * unit - 8);
+
+    // Tick numbers
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    var ticks = [-2, -1, 1, 2];
+    for (var ti = 0; ti < ticks.length; ti++) {
+      var tv = ticks[ti];
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText(String(tv), cx + tv * unit, cy + 4);
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(tv + 'i', cx - 4, cy - tv * unit);
+    }
+
+    function P(re, im) { return { x: cx + re * unit, y: cy - im * unit }; }
+
+    // Vector helper
+    function vector(re, im, color, label, labelPos) {
+      var pt = P(re, im);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(pt.x, pt.y);
+      ctx.stroke();
+      // Arrowhead
+      var ang = Math.atan2(pt.y - cy, pt.x - cx);
+      var ah = 10;
+      ctx.beginPath();
+      ctx.moveTo(pt.x, pt.y);
+      ctx.lineTo(pt.x - ah * Math.cos(ang - 0.4), pt.y - ah * Math.sin(ang - 0.4));
+      ctx.lineTo(pt.x - ah * Math.cos(ang + 0.4), pt.y - ah * Math.sin(ang + 0.4));
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.fill();
+      // Dot
+      ctx.beginPath();
+      ctx.arc(pt.x, pt.y, 5, 0, Math.PI * 2);
+      ctx.fill();
+      // Label
+      ctx.fillStyle = color;
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      var lp = labelPos || { dx: 12, dy: -6 };
+      ctx.textAlign = lp.align || 'left';
+      ctx.textBaseline = lp.base || 'middle';
+      ctx.fillText(label, pt.x + lp.dx, pt.y + lp.dy);
+    }
+
+    // Vectors: 1+i, 1-i, (1+i)^2 = 2i, (1-i)^2 = -2i
+    vector(1, 1, primary, '1 + i', { dx: 10, dy: -10, align: 'left', base: 'middle' });
+    vector(1, -1, secondary, '1 − i', { dx: 10, dy: 10, align: 'left', base: 'middle' });
+    vector(0, 2, accent, '(1+i)² = 2i', { dx: 10, dy: 0, align: 'left', base: 'middle' });
+    vector(0, -2, highlight, '(1−i)² = −2i', { dx: 10, dy: 0, align: 'left', base: 'middle' });
+
+    // Angle arcs (small) at origin
+    function angleArc(rad, color, radius) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, -rad, true); // negative because canvas Y is down
+      ctx.stroke();
+    }
+    angleArc(Math.PI / 4, primary, 28);
+    angleArc(Math.PI / 2, accent, 42);
+
+    // Argument labels
+    ctx.fillStyle = primary;
+    ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('π/4', cx + 30, cy - 14);
+    ctx.fillStyle = accent;
+    ctx.fillText('π/2', cx + 8, cy - 50);
+
+    // Modulus radii (dashed circles)
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.arc(cx, cy, Math.SQRT2 * unit, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(cx, cy, 2 * unit, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Modulus labels along positive Re axis
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 10px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('|1±i| = √2', cx + Math.SQRT2 * unit, cy + 4);
+    ctx.fillText('|(1±i)²| = 2', cx + 2 * unit + 18, cy + 4);
+
+    // Bottom legend
+    var legY = H - 40;
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Pri kvadriranju: argument se udvostručuje, modul se kvadrira (Moavrova formula).', W / 2, legY);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.indexOf('#') === 0) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('cycle');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function roundedRect(x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Ciklus stepena imaginarne jedinice (period 4)', W / 2, 14);
+
+    // Circle
+    var cx = W / 2 - 130;
+    var cy = 200;
+    var R = 110;
+
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Axes through circle
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(cx - R - 20, cy);
+    ctx.lineTo(cx + R + 20, cy);
+    ctx.moveTo(cx, cy - R - 20);
+    ctx.lineTo(cx, cy + R + 20);
+    ctx.stroke();
+
+    // Four points
+    var points = [
+      { re: 1, im: 0, color: primary, label: 'i⁰ = 1', anchor: 'left' },
+      { re: 0, im: 1, color: accent, label: 'i¹ = i', anchor: 'top' },
+      { re: -1, im: 0, color: secondary, label: 'i² = −1', anchor: 'right' },
+      { re: 0, im: -1, color: highlight, label: 'i³ = −i', anchor: 'bottom' },
+    ];
+
+    // Draw rotation arrows between consecutive points
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 4]);
+    for (var k = 0; k < 4; k++) {
+      var a0 = (k * Math.PI) / 2;
+      var a1 = ((k + 1) * Math.PI) / 2;
+      ctx.beginPath();
+      // Arc on inner circle
+      ctx.arc(cx, cy, R - 28, -a0, -a1, true);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Mid-arc arrowheads (showing direction)
+    for (var k2 = 0; k2 < 4; k2++) {
+      var amid = (k2 * Math.PI) / 2 + Math.PI / 4;
+      var rArr = R - 28;
+      var ax = cx + rArr * Math.cos(-amid);
+      var ay = cy + rArr * Math.sin(-amid);
+      var dirAng = -amid + Math.PI / 2; // tangent direction (CCW)
+      var ah = 8;
+      ctx.fillStyle = warning;
+      ctx.beginPath();
+      ctx.moveTo(ax + ah * Math.cos(dirAng), ay + ah * Math.sin(dirAng));
+      ctx.lineTo(ax + ah * Math.cos(dirAng + 2.6), ay + ah * Math.sin(dirAng + 2.6));
+      ctx.lineTo(ax + ah * Math.cos(dirAng - 2.6), ay + ah * Math.sin(dirAng - 2.6));
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    // Mark points
+    for (var i = 0; i < points.length; i++) {
+      var p = points[i];
+      var px = cx + p.re * R;
+      var py = cy - p.im * R;
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(px, py, 8, 0, Math.PI * 2);
+      ctx.fill();
+      // Label
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.fillStyle = p.color;
+      var dx = 0, dy = 0, ta = 'center', tb = 'middle';
+      if (p.anchor === 'left')   { dx = 14; ta = 'left'; }
+      if (p.anchor === 'right')  { dx = -14; ta = 'right'; }
+      if (p.anchor === 'top')    { dy = -16; tb = 'bottom'; }
+      if (p.anchor === 'bottom') { dy = 16; tb = 'top'; }
+      ctx.textAlign = ta;
+      ctx.textBaseline = tb;
+      ctx.fillText(p.label, px + dx, py + dy);
+    }
+
+    // Center label
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('×i = rotacija za 90°', cx, cy);
+
+    // ── Right-side table: ostatak n mod 4 ──
+    var tx = W / 2 + 40;
+    var ty = 80;
+    var tw = 270;
+    var th = 240;
+
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.06);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1.5;
+    roundedRect(tx, ty, tw, th, 10);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Tabela: n mod 4 → iⁿ', tx + tw / 2, ty + 12);
+
+    var rows = [
+      { n: '4k',     val: '1',    color: primary },
+      { n: '4k+1',   val: 'i',    color: accent },
+      { n: '4k+2',   val: '−1',   color: secondary },
+      { n: '4k+3',   val: '−i',   color: highlight },
+    ];
+    var rowY0 = ty + 42;
+    var rowH = 28;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    for (var r = 0; r < rows.length; r++) {
+      var rr = rows[r];
+      ctx.fillStyle = text;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('n = ' + rr.n, tx + 16, rowY0 + r * rowH);
+      ctx.fillStyle = rr.color;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText('iⁿ = ' + rr.val, tx + tw - 16, rowY0 + r * rowH);
+      ctx.font = '13px Inter, system-ui, sans-serif';
+    }
+
+    // Concrete cases
+    var caseY = rowY0 + 4 * rowH + 14;
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Naš zadatak:', tx + 16, caseY);
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('1008 = 4·252 + 0 ⟹ i¹⁰⁰⁸ = 1', tx + 16, caseY + 18);
+    ctx.fillText('1007 = 4·251 + 3 ⟹ i¹⁰⁰⁷ = −i', tx + 16, caseY + 36);
+
+    // Bottom strip: final rezultat
+    var sY = H - 80;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.18);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    roundedRect(40, sY, W - 80, 50, 10);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Rezultat:  2¹⁰⁰⁸ ÷ (−2¹⁰⁰⁷ · i)  =  −2/i  =  2i', W / 2, sY + 25);
+
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('jer je 1/i = −i, pa −2/i = −2 · (−i) = 2i', W / 2, sY + 56);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Stepenovanje (1±i) na 2016 i 2014: vrednost količnika je 2i",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["kompleksni brojevi", "stepenovanje kompleksnog broja", "imaginarna jedinica i", "Argand-ova ravan", "Moavrova formula"]
+}
+BRAINSPARK_META-->

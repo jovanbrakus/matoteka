@@ -1,0 +1,618 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Compute S = sin(x) + sin(2x) + sin(3x) + ... + sin(10x).
+
+Standard trick: multiply by 2*sin(x/2) and use product-to-sum.
+2*sin(k*x)*sin(x/2) = cos((k - 1/2)*x) - cos((k + 1/2)*x).
+
+So 2*sin(x/2) * S = sum_{k=1..10} [cos((k - 1/2)*x) - cos((k + 1/2)*x)]
+This is a telescoping sum: cos(x/2) - cos(3x/2)
+                         + cos(3x/2) - cos(5x/2)
+                         + cos(5x/2) - cos(7x/2)
+                         + ...
+                         + cos(19x/2) - cos(21x/2)
+                       = cos(x/2) - cos(21x/2).
+
+Therefore S = (cos(x/2) - cos(21x/2)) / (2 sin(x/2)).
+That matches option (B).
+
+Alternative form (compact, useful sanity check):
+Using sum-to-product cos(A) - cos(B) = -2 sin((A+B)/2) sin((A-B)/2):
+cos(x/2) - cos(21x/2) = -2 sin((x/2 + 21x/2)/2) sin((x/2 - 21x/2)/2)
+                      = -2 sin(11x/2) sin(-5x)
+                      =  2 sin(11x/2) sin(5x).
+So S = (2 sin(5x) sin(11x/2)) / (2 sin(x/2)) = sin(5x) sin(11x/2) / sin(x/2).
+
+Quick sanity: x = pi/2.
+LHS: sin(pi/2)+sin(pi)+sin(3pi/2)+sin(2pi)+sin(5pi/2)+sin(3pi)+sin(7pi/2)+sin(4pi)+sin(9pi/2)+sin(5pi)
+   = 1 + 0 + (-1) + 0 + 1 + 0 + (-1) + 0 + 1 + 0 = 1.
+RHS (B): (cos(pi/4) - cos(21pi/4)) / (2 sin(pi/4))
+   cos(21pi/4) = cos(21pi/4 - 4pi) = cos(21pi/4 - 16pi/4) = cos(5pi/4) = -√2/2.
+   cos(pi/4) = √2/2.
+   numerator = √2/2 - (-√2/2) = √2.
+   denom = 2 * (√2/2) = √2.
+   S = √2/√2 = 1. ✓
+
+So answer is (B).
+
+Why other options fail:
+(A) sin(11x)/sin x — wrong; that doesn't even simplify to the right thing.
+(C) cos(11x)/cos x — wrong dimensionally for sums of sines.
+(D) (sin(x/2) - sin(21x/2)) / (2 sin(x/2)) — sum-to-product form was for cosines, not sines, and signs are wrong.
+(E) (sin(21x/2) - sin(x/2)) / cos(x/2) — wrong denominator structure.
+
+Sanity for (D) at x = pi/2:
+sin(pi/4) - sin(21pi/4) = √2/2 - sin(21pi/4) = √2/2 - sin(5pi/4) = √2/2 - (-√2/2) = √2.
+denom = 2 sin(pi/4) = √2.
+gives 1. Wait, this also gives 1.
+Test (D) at another point, x = pi/3:
+LHS: sin(k*pi/3) for k=1..10:
+k=1: sin(pi/3) = √3/2
+k=2: sin(2pi/3) = √3/2
+k=3: sin(pi) = 0
+k=4: sin(4pi/3) = -√3/2
+k=5: sin(5pi/3) = -√3/2
+k=6: sin(2pi) = 0
+k=7: sin(7pi/3) = sin(pi/3) = √3/2
+k=8: sin(8pi/3) = sin(2pi/3) = √3/2
+k=9: sin(3pi) = 0
+k=10: sin(10pi/3) = sin(4pi/3) = -√3/2
+Sum = √3/2 + √3/2 + 0 - √3/2 - √3/2 + 0 + √3/2 + √3/2 + 0 - √3/2 = √3/2.
+
+(B) at x = pi/3:
+cos(x/2) = cos(pi/6) = √3/2.
+cos(21x/2) = cos(21pi/6) = cos(7pi/2) = cos(7pi/2 - 4pi) = cos(-pi/2) = 0.
+numerator = √3/2 - 0 = √3/2.
+denom = 2 sin(pi/6) = 2 * 1/2 = 1.
+S = √3/2. ✓✓ matches.
+
+(D) at x = pi/3:
+sin(x/2) = sin(pi/6) = 1/2.
+sin(21x/2) = sin(7pi/2) = sin(7pi/2 - 2pi) = sin(3pi/2) = -1.
+numerator = 1/2 - (-1) = 3/2.
+denom = 2 sin(pi/6) = 1.
+S(D) = 3/2.
+But true S = √3/2 ≈ 0.866. 3/2 = 1.5. So (D) is wrong. ✓
+
+Conclusion: (B) is correct.
+</script>
+
+<h1 data-card="problem-title">Zbir sinusa u aritmetičkoj progresiji</h1>
+<p data-card="problem-subtitle" class="subtitle">Trigonometrija &mdash; teleskopska suma uz proizvod-suma identitet</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Čemu je jednako</p>
+  <div class="math-block">\[ \sin x + \sin 2x + \sin 3x + \cdots + \sin 10x \,? \]</div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \dfrac{\sin 11x}{\sin x} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \dfrac{\cos\frac{x}{2} - \cos\frac{21x}{2}}{2\sin\frac{x}{2}} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \dfrac{\cos 11x}{\cos x} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \dfrac{\sin\frac{x}{2} - \sin\frac{21x}{2}}{2\sin\frac{x}{2}} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \dfrac{\sin\frac{21x}{2} - \sin\frac{x}{2}}{\cos\frac{x}{2}} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Pomnožimo zbir sa \( 2\sin\frac{x}{2} \) i primenimo identitet \( 2\sin\alpha\sin\beta = \cos(\alpha-\beta) - \cos(\alpha+\beta) \) na svaki sabirak. Dobijaju se parovi kosinusa koji se međusobno potiru — <em>teleskopska suma</em> — pa preostaju samo prvi i poslednji član.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Proizvod sinusa kao razlika kosinusa:</strong> \( 2\sin\alpha\sin\beta = \cos(\alpha - \beta) - \cos(\alpha + \beta) \).</li>
+        <li><strong>Razlika kosinusa kao proizvod:</strong> \( \cos A - \cos B = -2\sin\frac{A+B}{2}\sin\frac{A-B}{2} \).</li>
+        <li><strong>Teleskopska suma:</strong> \( \displaystyle \sum_{k=1}^{n} \big[f(k) - f(k+1)\big] = f(1) - f(n+1) \). Većina članova se „pojede“.</li>
+        <li><strong>Sigurnosno pravilo:</strong> identitet važi pod uslovom \( \sin\frac{x}{2} \neq 0 \), tj. \( x \neq 2k\pi \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz teleskopske sume">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram17a" width="700" height="540"></canvas>
+  </div>
+  <p class="canvas-caption">Posle množenja sa \( 2\sin\frac{x}{2} \), svaki sinus daje razliku dva kosinusa. Susedni članovi se međusobno krate (teleskopska suma) — preostaju samo \( \cos\frac{x}{2} \) i \( -\cos\frac{21x}{2} \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Grafik funkcije zbira">
+  <h2>📐 Grafik zbira</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram17b" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Plava kriva je direktan zbir \( \sum_{k=1}^{10} \sin(kx) \), a narandžasta tačkasta kriva je formula iz odgovora (B). Krive se savršeno poklapaju, što potvrđuje rezultat.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Označimo zbir i pripremimo trik množenja</h3>
+      <p>Označimo:</p>
+      <div class="math-block">\[ S = \sin x + \sin 2x + \sin 3x + \cdots + \sin 10x = \sum_{k=1}^{10} \sin(kx). \]</div>
+      <p>Pretpostavimo \( \sin\tfrac{x}{2} \neq 0 \) (drugačije izraz nije ni definisan). Pomnožimo obe strane sa \( 2\sin\tfrac{x}{2} \):</p>
+      <div class="math-block">\[ 2\sin\tfrac{x}{2}\cdot S = \sum_{k=1}^{10} 2\sin(kx)\sin\tfrac{x}{2}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš \( 2\sin\frac{x}{2} \)?</summary>
+          <div class="detail-content"><p>Jer ćemo na svaki sabirak primeniti identitet \( 2\sin\alpha\sin\beta = \cos(\alpha-\beta) - \cos(\alpha+\beta) \), gde je \( \alpha = kx \), \( \beta = \tfrac{x}{2} \). To pretvara svaki sinus u <em>razliku</em> dva kosinusa, koji se onda potiru u parovima.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Primenimo identitet proizvod-suma na svaki član</h3>
+      <p>Sa \( \alpha = kx \) i \( \beta = \tfrac{x}{2} \) važi:</p>
+      <div class="math-block">\[ 2\sin(kx)\sin\tfrac{x}{2} = \cos\!\left(kx - \tfrac{x}{2}\right) - \cos\!\left(kx + \tfrac{x}{2}\right) = \cos\!\left(\tfrac{(2k-1)x}{2}\right) - \cos\!\left(\tfrac{(2k+1)x}{2}\right). \]</div>
+      <p>Prepišimo u pogodnijoj formi: <strong>razlika dva susedna kosinusa polustepena</strong>:</p>
+      <div class="math-block">\[ 2\sin(kx)\sin\tfrac{x}{2} = \cos\!\left(\tfrac{(2k-1)x}{2}\right) - \cos\!\left(\tfrac{(2k+1)x}{2}\right). \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Sumiramo — teleskopski efekat</h3>
+      <p>Sabirajući po \( k = 1, 2, \ldots, 10 \), dobijamo niz razlika:</p>
+      <div class="math-block">\[ \begin{aligned} 2\sin\tfrac{x}{2}\cdot S = &amp;\big(\cos\tfrac{x}{2} - \cos\tfrac{3x}{2}\big) + \big(\cos\tfrac{3x}{2} - \cos\tfrac{5x}{2}\big) \\[2pt] &amp;+ \big(\cos\tfrac{5x}{2} - \cos\tfrac{7x}{2}\big) + \cdots + \big(\cos\tfrac{19x}{2} - \cos\tfrac{21x}{2}\big). \end{aligned} \]</div>
+      <p>Svaki unutrašnji član se pojavljuje sa znakom \( + \) i sa znakom \( - \), pa se krati. Preostaju samo prvi (\( \cos\tfrac{x}{2} \)) i poslednji (\( -\cos\tfrac{21x}{2} \)):</p>
+      <div class="math-block">\[ 2\sin\tfrac{x}{2}\cdot S = \cos\tfrac{x}{2} - \cos\tfrac{21x}{2}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: odakle se uzima \( \tfrac{21x}{2} \)?</summary>
+          <div class="detail-content"><p>Iz formule \( \tfrac{(2k+1)x}{2} \) za \( k = 10 \): \( \tfrac{(2\cdot 10 + 1)x}{2} = \tfrac{21x}{2} \). Drugim rečima, poslednji „neunutrašnji“ kosinus je onaj iz desnog kraja desetog sabirka.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Izrazimo \( S \)</h3>
+      <p>Delimo obe strane sa \( 2\sin\tfrac{x}{2} \) (smemo, jer smo pretpostavili da je nenula):</p>
+      <div class="math-block">\[ \boxed{\; S = \dfrac{\cos\tfrac{x}{2} - \cos\tfrac{21x}{2}}{2\sin\tfrac{x}{2}}. \;} \]</div>
+      <p>To je upravo opcija <strong>(B)</strong>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">(Bonus) Kompaktan oblik kao proizvod sinusa</h3>
+      <p>Iz identiteta \( \cos A - \cos B = -2\sin\tfrac{A+B}{2}\sin\tfrac{A-B}{2} \) sa \( A = \tfrac{x}{2} \), \( B = \tfrac{21x}{2} \):</p>
+      <div class="math-block">\[ \cos\tfrac{x}{2} - \cos\tfrac{21x}{2} = -2\sin\tfrac{11x/2 \cdot 2}{2}\sin\tfrac{-5x \cdot 2}{2}\cdot\tfrac{1}{?} \]</div>
+      <p>Pažljivije:</p>
+      <div class="math-block">\[ \cos\tfrac{x}{2} - \cos\tfrac{21x}{2} = -2\sin\!\Big(\tfrac{x/2 + 21x/2}{2}\Big)\sin\!\Big(\tfrac{x/2 - 21x/2}{2}\Big) = -2\sin\tfrac{11x}{2}\sin(-5x) = 2\sin 5x \,\sin\tfrac{11x}{2}. \]</div>
+      <p>Pa je ekvivalentni <em>jednostavniji</em> oblik:</p>
+      <div class="math-block">\[ S = \dfrac{\sin 5x \,\sin\tfrac{11x}{2}}{\sin\tfrac{x}{2}}. \]</div>
+      <p>Ovaj oblik nije u listi odgovora, ali je odlična kontrola — i (B) i ova kompaktna formula daju iste numeričke vrednosti.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Numerička provera: \( x = \tfrac{\pi}{2} \).</summary>
+          <div class="detail-content"><p>Direktno: \( \sin(k\pi/2) \) za \( k = 1,\ldots,10 \) daje \( 1, 0, -1, 0, 1, 0, -1, 0, 1, 0 \), zbir \( = 1 \). U formuli (B): \( \cos\tfrac{\pi}{4} - \cos\tfrac{21\pi}{4} = \tfrac{\sqrt{2}}{2} - \cos\tfrac{5\pi}{4} = \tfrac{\sqrt{2}}{2} - (-\tfrac{\sqrt{2}}{2}) = \sqrt{2} \). Imenilac \( 2\sin\tfrac{\pi}{4} = \sqrt{2} \). Količnik \( = 1 \). ✓</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Cela ideja je u jednom potezu — pomnožiti sa \( 2\sin\tfrac{x}{2} \). Tim potezom pretvaramo „težak“ zbir sinusa u trivijalnu teleskopsku sumu razlika kosinusa, pa nam ostaju samo dva člana — početni i krajnji. Ovaj trik radi za <em>proizvoljnu</em> sumu \( \sum_{k=1}^{n}\sin(kx) \) i daje opštu formulu \( \dfrac{\cos\frac{x}{2} - \cos\frac{(2n+1)x}{2}}{2\sin\frac{x}{2}} \).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \sum_{k=1}^{10}\sin(kx) = \dfrac{\cos\tfrac{x}{2} - \cos\tfrac{21x}{2}}{2\sin\tfrac{x}{2}} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( \dfrac{\sin 11x}{\sin x} \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( \dfrac{\cos\frac{x}{2} - \cos\frac{21x}{2}}{2\sin\frac{x}{2}} \)</span>
+    <span class="answer-option" data-option="C">(C) \( \dfrac{\cos 11x}{\cos x} \)</span>
+    <span class="answer-option" data-option="D">(D) \( \dfrac{\sin\frac{x}{2} - \sin\frac{21x}{2}}{2\sin\frac{x}{2}} \)</span>
+    <span class="answer-option" data-option="E">(E) \( \dfrac{\sin\frac{21x}{2} - \sin\frac{x}{2}}{\cos\frac{x}{2}} \)</span>
+  </div>
+  <p class="verification">Provera za \( x = \tfrac{\pi}{3} \): direktan zbir je \( \tfrac{\sqrt{3}}{2} \). Formula (B): brojilac \( \cos\tfrac{\pi}{6} - \cos\tfrac{7\pi}{2} = \tfrac{\sqrt{3}}{2} - 0 = \tfrac{\sqrt{3}}{2} \), imenilac \( 2\sin\tfrac{\pi}{6} = 1 \). Količnik \( = \tfrac{\sqrt{3}}{2} \). ✓ Opcija (D) za isti \( x \) daje \( \tfrac{3}{2} \neq \tfrac{\sqrt{3}}{2} \), pa otpada.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Mešanje proizvod-suma identiteta:</strong> Lako je pomešati \( 2\sin\alpha\sin\beta = \cos(\alpha-\beta) - \cos(\alpha+\beta) \) sa \( 2\sin\alpha\cos\beta = \sin(\alpha+\beta) + \sin(\alpha-\beta) \). Drugi identitet bi nas vodio na sumu sinusa, što ne daje teleskopski efekat ovde.</li>
+    <li><strong>Greška u znaku iz \( -\cos \):</strong> Kada se prvi član \( + \cos \) i poslednji član \( -\cos \) razdvoje, lako se zaboravi minus ispred \( \cos\tfrac{21x}{2} \). Rezultat bi bio sa pogrešnim znakom.</li>
+    <li><strong>Brkanje sa odgovorom (D):</strong> Opcija (D) izgleda slično, ali su tamo <em>sinusi</em> u brojiocu umesto kosinusa. Numerička provera (npr. \( x = \tfrac{\pi}{3} \)) brzo pokaže da je (D) pogrešno.</li>
+    <li><strong>Domen:</strong> Formula nije definisana kada \( \sin\tfrac{x}{2} = 0 \), tj. \( x = 2k\pi \). U tim tačkama je svaki sinus jednak nuli, pa je zbir \( S = 0 \) (kao limes formule).</li>
+    <li><strong>Pogrešno brojanje članova:</strong> Suma ima \( 10 \) članova (od \( k=1 \) do \( k=10 \)), pa je „kraj“ na \( \tfrac{(2\cdot 10 + 1)x}{2} = \tfrac{21x}{2} \), a ne na \( \tfrac{19x}{2} \) ili \( \tfrac{20x}{2} \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Izvedi opštu formulu za \( \displaystyle\sum_{k=1}^{n}\cos(kx) \) — <em>kosinuse</em> umesto sinusa. Da li tu radi isti trik množenja sa \( 2\sin\tfrac{x}{2} \)? Koji se identitet u tom slučaju koristi?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Da, isti trik. Koristi se identitet \( 2\sin\beta\cos\alpha = \sin(\alpha+\beta) - \sin(\alpha-\beta) \) sa \( \alpha = kx \), \( \beta = \tfrac{x}{2} \). Posle teleskopiranja dobija se \[ \sum_{k=1}^{n}\cos(kx) = \dfrac{\sin\tfrac{(2n+1)x}{2} - \sin\tfrac{x}{2}}{2\sin\tfrac{x}{2}}. \] Primeti simetriju sa formulom za sinuse — uloge sinusa i kosinusa se zamene u brojiocu.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  // ====== Canvas A: telescoping illustration ======
+  var canvasA = document.getElementById('diagram17a');
+  if (canvasA) {
+    var ctx = canvasA.getContext('2d');
+    var W = canvasA.width;
+    var H = canvasA.height;
+
+    function drawA() {
+      var bg = cv('--sol-canvas-bg');
+      var text = cv('--sol-canvas-text');
+      var muted = cv('--sol-canvas-muted');
+      var primary = cv('--sol-canvas-primary');
+      var accent = cv('--sol-canvas-accent');
+      var danger = cv('--sol-canvas-danger');
+      var highlight = cv('--sol-canvas-highlight');
+      var grid = cv('--sol-canvas-grid');
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      // Title
+      ctx.fillStyle = text;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Teleskopska suma:  2·sin(x/2) · S = Σ [cos((2k-1)x/2) - cos((2k+1)x/2)]', W / 2, 28);
+
+      // Draw rows: each row k = 1..10 shows the difference cos(...)−cos(...)
+      var startY = 70;
+      var rowH = 38;
+      var labelX = 50;
+      var leftCx = 270;
+      var rightCx = 510;
+
+      // Header
+      ctx.fillStyle = muted;
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('+ cos((2k-1)x/2)', leftCx, startY - 14);
+      ctx.fillText('-  cos((2k+1)x/2)', rightCx, startY - 14);
+      ctx.textAlign = 'left';
+      ctx.fillText('k', labelX - 10, startY - 14);
+
+      ctx.font = '13px Inter, system-ui, sans-serif';
+      for (var k = 1; k <= 10; k++) {
+        var y = startY + (k - 1) * rowH;
+        // Row index
+        ctx.fillStyle = text;
+        ctx.textAlign = 'left';
+        ctx.fillText('k = ' + k, labelX - 10, y + 4);
+
+        // Left token: cos((2k-1)x/2)
+        var leftLabel = 'cos(' + (2 * k - 1) + 'x/2)';
+        // Right token: cos((2k+1)x/2)
+        var rightLabel = 'cos(' + (2 * k + 1) + 'x/2)';
+
+        // Decide colors:
+        // first row's left = preserved start (accent)
+        // last row's right = preserved end (danger)
+        // everything else: gets cancelled by neighbour (muted)
+        var leftIsKept = (k === 1);
+        var rightIsKept = (k === 10);
+
+        // Left pill
+        var leftColor = leftIsKept ? accent : muted;
+        roundedPill(ctx, leftCx - 70, y - 14, 140, 28, cvAlpha(leftIsKept ? '--sol-canvas-accent' : '--sol-canvas-muted', 0.18), leftColor);
+        ctx.fillStyle = leftColor;
+        ctx.font = leftIsKept ? 'bold 13px Inter, system-ui, sans-serif' : '13px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('+ ' + leftLabel, leftCx, y + 4);
+
+        // Right pill
+        var rightColor = rightIsKept ? danger : muted;
+        roundedPill(ctx, rightCx - 70, y - 14, 140, 28, cvAlpha(rightIsKept ? '--sol-canvas-danger' : '--sol-canvas-muted', 0.18), rightColor);
+        ctx.fillStyle = rightColor;
+        ctx.font = rightIsKept ? 'bold 13px Inter, system-ui, sans-serif' : '13px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('- ' + rightLabel, rightCx, y + 4);
+
+        // Cancellation arrow (right of row k connects to left of row k+1, both have (2k+1)x/2 = (2(k+1)-1)x/2)
+        if (k < 10) {
+          ctx.strokeStyle = cvAlpha('--sol-canvas-muted', 0.55);
+          ctx.lineWidth = 1.2;
+          ctx.setLineDash([3, 3]);
+          ctx.beginPath();
+          ctx.moveTo(rightCx + 70, y + 10);
+          ctx.bezierCurveTo(rightCx + 110, y + 28, leftCx - 110, y + rowH - 14, leftCx - 70, y + rowH - 4);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          // small "×" near midway
+          var midX = (rightCx + 70 + leftCx - 70) / 2 + 30;
+          var midY = y + rowH / 2 + 8;
+          ctx.fillStyle = cvAlpha('--sol-canvas-muted', 0.7);
+          ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('krati se', midX, midY);
+        }
+      }
+
+      // Bottom: collapsed result
+      var resY = H - 30;
+      ctx.fillStyle = text;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Ostaje:   cos(x/2)  -  cos(21x/2)', W / 2, resY);
+    }
+
+    function roundedPill(ctx, x, y, w, h, fill, stroke) {
+      var r = h / 2;
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
+      ctx.fillStyle = fill;
+      ctx.fill();
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth = 1.3;
+      ctx.stroke();
+    }
+
+    drawA();
+
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() { styles = getComputedStyle(root); drawA(); }, 50);
+      }
+    });
+  }
+
+  // ====== Canvas B: graph of S(x) ======
+  var canvasB = document.getElementById('diagram17b');
+  if (canvasB) {
+    var ctxB = canvasB.getContext('2d');
+    var Wb = canvasB.width;
+    var Hb = canvasB.height;
+
+    function drawB() {
+      var bg = cv('--sol-canvas-bg');
+      var grid = cv('--sol-canvas-grid');
+      var axis = cv('--sol-canvas-axis');
+      var primary = cv('--sol-canvas-primary');
+      var warning = cv('--sol-canvas-warning');
+      var muted = cv('--sol-canvas-muted');
+      var text = cv('--sol-canvas-text');
+
+      ctxB.clearRect(0, 0, Wb, Hb);
+      ctxB.fillStyle = bg;
+      ctxB.fillRect(0, 0, Wb, Hb);
+
+      ctxB.fillStyle = text;
+      ctxB.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctxB.textAlign = 'center';
+      ctxB.fillText('Direktan zbir vs. formula (B) — savršeno se poklapaju', Wb / 2, 24);
+
+      var marginL = 50, marginR = 30, marginT = 50, marginB = 90;
+      var plotW = Wb - marginL - marginR;
+      var plotH = Hb - marginT - marginB;
+
+      // x range: -2π .. 2π
+      var xMin = -2 * Math.PI;
+      var xMax = 2 * Math.PI;
+      // y range: -8 .. 8 (S can swing ±n/2 in magnitude near 0)
+      var yMin = -8, yMax = 8;
+
+      function X(x) { return marginL + (x - xMin) / (xMax - xMin) * plotW; }
+      function Y(y) { return marginT + (1 - (y - yMin) / (yMax - yMin)) * plotH; }
+
+      // Grid
+      ctxB.strokeStyle = grid;
+      ctxB.lineWidth = 1;
+      // vertical grid at multiples of pi/2
+      for (var v = -4; v <= 4; v++) {
+        var xv = v * Math.PI / 2;
+        ctxB.beginPath();
+        ctxB.moveTo(X(xv), marginT);
+        ctxB.lineTo(X(xv), marginT + plotH);
+        ctxB.stroke();
+      }
+      // horizontal grid
+      for (var h = -8; h <= 8; h += 2) {
+        ctxB.beginPath();
+        ctxB.moveTo(marginL, Y(h));
+        ctxB.lineTo(marginL + plotW, Y(h));
+        ctxB.stroke();
+      }
+
+      // Axes
+      ctxB.strokeStyle = axis;
+      ctxB.lineWidth = 1.5;
+      ctxB.beginPath();
+      ctxB.moveTo(marginL, Y(0));
+      ctxB.lineTo(marginL + plotW, Y(0));
+      ctxB.stroke();
+      ctxB.beginPath();
+      ctxB.moveTo(X(0), marginT);
+      ctxB.lineTo(X(0), marginT + plotH);
+      ctxB.stroke();
+
+      // Axis labels (x-axis: pi multiples)
+      ctxB.fillStyle = text;
+      ctxB.font = '11px Inter, system-ui, sans-serif';
+      ctxB.textAlign = 'center';
+      var ticks = [
+        { x: -2 * Math.PI, label: '-2π' },
+        { x: -Math.PI, label: '-π' },
+        { x: 0, label: '0' },
+        { x: Math.PI, label: 'π' },
+        { x: 2 * Math.PI, label: '2π' }
+      ];
+      ticks.forEach(function(t) {
+        ctxB.fillText(t.label, X(t.x), Y(0) + 16);
+      });
+      ctxB.textAlign = 'right';
+      [-6, -4, -2, 2, 4, 6].forEach(function(yv) {
+        ctxB.fillText(yv.toString(), marginL - 5, Y(yv) + 4);
+      });
+
+      // x-axis label
+      ctxB.font = 'italic 12px Inter, system-ui, sans-serif';
+      ctxB.textAlign = 'center';
+      ctxB.fillText('x', marginL + plotW - 10, Y(0) - 8);
+      ctxB.fillText('S(x)', X(0) + 18, marginT + 6);
+
+      function S_direct(x) {
+        var s = 0;
+        for (var k = 1; k <= 10; k++) s += Math.sin(k * x);
+        return s;
+      }
+      function S_formula(x) {
+        // (cos(x/2) - cos(21x/2)) / (2 sin(x/2))
+        var den = 2 * Math.sin(x / 2);
+        if (Math.abs(den) < 1e-9) return null; // skip singular point
+        return (Math.cos(x / 2) - Math.cos(21 * x / 2)) / den;
+      }
+
+      // Plot direct sum (solid blue)
+      ctxB.strokeStyle = primary;
+      ctxB.lineWidth = 2.4;
+      ctxB.beginPath();
+      var first = true;
+      var N = 1500;
+      for (var i = 0; i <= N; i++) {
+        var x = xMin + (xMax - xMin) * i / N;
+        var y = S_direct(x);
+        var py = Y(Math.max(yMin, Math.min(yMax, y)));
+        if (first) { ctxB.moveTo(X(x), py); first = false; }
+        else ctxB.lineTo(X(x), py);
+      }
+      ctxB.stroke();
+
+      // Plot formula (B) (dashed orange/warning)
+      ctxB.strokeStyle = warning;
+      ctxB.lineWidth = 2.0;
+      ctxB.setLineDash([6, 5]);
+      var pathOpen = false;
+      for (var i2 = 0; i2 <= N; i2++) {
+        var x2 = xMin + (xMax - xMin) * i2 / N;
+        var y2 = S_formula(x2);
+        if (y2 === null) {
+          if (pathOpen) { ctxB.stroke(); pathOpen = false; }
+          continue;
+        }
+        var py2 = Y(Math.max(yMin, Math.min(yMax, y2)));
+        if (!pathOpen) { ctxB.beginPath(); ctxB.moveTo(X(x2), py2); pathOpen = true; }
+        else ctxB.lineTo(X(x2), py2);
+      }
+      if (pathOpen) ctxB.stroke();
+      ctxB.setLineDash([]);
+
+      // Mark singularities x = 2kπ
+      ctxB.strokeStyle = muted;
+      ctxB.setLineDash([2, 4]);
+      ctxB.lineWidth = 1;
+      [-2 * Math.PI, 0, 2 * Math.PI].forEach(function(xv) {
+        ctxB.beginPath();
+        ctxB.moveTo(X(xv), marginT);
+        ctxB.lineTo(X(xv), marginT + plotH);
+        ctxB.stroke();
+      });
+      ctxB.setLineDash([]);
+
+      // Legend (clean, well below the plot)
+      var legY = Hb - 40;
+      // Solid line (blue)
+      ctxB.strokeStyle = primary;
+      ctxB.lineWidth = 2.4;
+      ctxB.beginPath();
+      ctxB.moveTo(60, legY);
+      ctxB.lineTo(110, legY);
+      ctxB.stroke();
+      ctxB.fillStyle = text;
+      ctxB.font = '12px Inter, system-ui, sans-serif';
+      ctxB.textAlign = 'left';
+      ctxB.fillText('S(x) = Σ sin(kx)  (k = 1..10)', 120, legY + 4);
+
+      // Dashed (warning)
+      ctxB.strokeStyle = warning;
+      ctxB.lineWidth = 2.0;
+      ctxB.setLineDash([6, 5]);
+      ctxB.beginPath();
+      ctxB.moveTo(380, legY);
+      ctxB.lineTo(430, legY);
+      ctxB.stroke();
+      ctxB.setLineDash([]);
+      ctxB.fillStyle = text;
+      ctxB.fillText('Formula (B):  (cos(x/2) - cos(21x/2)) / (2·sin(x/2))', 440, legY + 4);
+    }
+
+    drawB();
+
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() { styles = getComputedStyle(root); drawB(); }, 50);
+      }
+    });
+  }
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Zbir sinusa sin x + sin 2x + ... + sin 10x — teleskopska suma",
+  "subject": "math",
+  "unit": "trigonometry",
+  "topic_tags": ["zbir sinusa", "teleskopska suma", "proizvod-suma identitet", "trigonometrijski identiteti", "Dirichleova jezgra"]
+}
+BRAINSPARK_META-->

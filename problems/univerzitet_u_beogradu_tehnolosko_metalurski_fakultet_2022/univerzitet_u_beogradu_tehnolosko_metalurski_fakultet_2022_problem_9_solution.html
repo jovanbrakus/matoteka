@@ -1,0 +1,452 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Zbir svih resenja jednacine (2^x + 10)/4 = 9 / 2^(x-2).
+  Opcije: A) 1, B) 3, C) 2, D) 0, E) -1. Tacan odgovor: B) 3.
+
+  Strategija: smena t = 2^x (uvek t > 0). Jednacina postaje algebarska po t.
+
+  Polazna: (2^x + 10)/4 = 9 / 2^(x-2).
+  2^(x-2) = 2^x / 2^2 = 2^x / 4 = t/4.
+  Pa je 9 / 2^(x-2) = 9 / (t/4) = 36/t.
+  LHS: (t + 10)/4.
+  Jednacina: (t + 10)/4 = 36/t.
+  Pomnozimo sa 4t (uslov t != 0, sto vec imamo t > 0):
+    t(t + 10) = 144
+    t^2 + 10t - 144 = 0.
+  Diskriminanta: D = 100 + 576 = 676. sqrt(D) = 26.
+  t = (-10 ± 26)/2. Dakle t = 16/2 = 8 ili t = -36/2 = -18.
+  Pošto t > 0, samo t = 8 prolazi.
+  t = 8 = 2^3 → x = 3. Jedinstveno resenje, zbir = 3.
+
+  Provera (x = 3): LHS = (2^3 + 10)/4 = (8+10)/4 = 18/4 = 4.5.
+    RHS = 9 / 2^(3-2) = 9 / 2 = 4.5. OK.
+
+  Najceste greske:
+  - Zaboraviti uslov t > 0 i prihvatiti t = -18 (pa raditi log od negativnog).
+  - Pogresno smaniti 2^(x-2) (npr. uzeti 2^(x-2) = t - 4 umesto t/4).
+  - Greska u diskriminanti.
+  - Nepravilno mnozenje "krst-krst" sa razlomkom.
+</script>
+
+<h1 data-card="problem-title">Eksponencijalna jednačina sa smenom</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra &mdash; svođenje na kvadratnu jednačinu smenom \( t = 2^{x} \)</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Zbir svih rešenja jednačine</p>
+  <div class="math-block">\[ \frac{2^{x} + 10}{4} = \frac{9}{2^{x-2}} \]</div>
+  <p>je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 0 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( -1 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Uvešćemo smenu \( t = 2^{x} \) (uz uslov \( t &gt; 0 \)). Tada je \( 2^{x-2} = t/4 \), pa jednačina prelazi u algebarsku jednačinu po \( t \). Dobijenu kvadratnu jednačinu rešavamo, odbacujemo negativan koren, vraćamo se na \( x \) i sumiramo sva rešenja.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Eksponencijalne jednačine i smene &mdash; ključne osobine</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Pozitivnost eksponencijalne funkcije:</strong> za \( a &gt; 0 \) je \( a^{x} &gt; 0 \) za svako realno \( x \). Otud kod smene \( t = a^x \) uvek pišemo \( t &gt; 0 \) i odmah odbacujemo nepozitivne korene.</li>
+        <li><strong>Pravila stepena:</strong> \( a^{x-k} = \dfrac{a^{x}}{a^{k}} \) i \( a^{x+y} = a^{x} \cdot a^{y} \). Otud \( 2^{x-2} = \tfrac{2^x}{4} \).</li>
+        <li><strong>Kvadratna jednačina:</strong> \( At^2 + Bt + C = 0 \) ima rešenja \( t = \dfrac{-B \pm \sqrt{B^2 - 4AC}}{2A} \).</li>
+        <li><strong>Vraćanje smene:</strong> kada nađeš \( t \), reši \( a^{x} = t \) preko \( x = \log_a t \). Ako je \( t \) zgodan stepen od \( a \), možeš očitati \( x \) bez logaritma.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Grafička interpretacija">
+  <h2>📐 Grafička interpretacija</h2>
+  <div class="canvas-wrapper">
+    <canvas id="expGraph" width="700" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Leva strana \( f(x) = \tfrac{2^{x} + 10}{4} \) (rastuća) i desna strana \( g(x) = \tfrac{9}{2^{x-2}} = \tfrac{36}{2^{x}} \) (opadajuća). Kao monotonske funkcije suprotnih smerova, seku se u <em>tačno jednoj</em> tački &mdash; za \( x = 3 \), gde obe vrednosti iznose \( 4{,}5 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Uvedimo smenu</h3>
+      <p>Stavimo \( t = 2^{x} \). Pošto je eksponencijalna funkcija uvek pozitivna, imamo</p>
+      <div class="math-block">\[ t &gt; 0. \]</div>
+      <p>Iskoristimo pravilo stepena \( 2^{x-2} = \dfrac{2^{x}}{2^{2}} = \dfrac{t}{4} \). Polazna jednačina postaje</p>
+      <div class="math-block">\[ \frac{t + 10}{4} = \frac{9}{\tfrac{t}{4}} = \frac{9 \cdot 4}{t} = \frac{36}{t}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( \dfrac{9}{t/4} = \dfrac{36}{t} \)?</summary>
+          <div class="detail-content"><p>Deljenje razlomkom je množenje recipročnim: \( \dfrac{9}{\,t/4\,} = 9 \cdot \dfrac{4}{t} = \dfrac{36}{t} \). Drugim rečima, kad u imeniocu imamo razlomak, &bdquo;preokrenemo&rdquo; ga i pomnožimo.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Oslobodimo se razlomaka</h3>
+      <p>Pomnožimo obe strane sa \( 4t \) (sme se jer je \( t &gt; 0 \), pa \( 4t \neq 0 \)):</p>
+      <div class="math-block">\[ \frac{t + 10}{4} \cdot 4t = \frac{36}{t} \cdot 4t \;\Longrightarrow\; t\,(t + 10) = 144. \]</div>
+      <p>Razvijanjem leve strane:</p>
+      <div class="math-block">\[ t^{2} + 10t - 144 = 0. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Rešimo kvadratnu jednačinu</h3>
+      <p>Diskriminanta:</p>
+      <div class="math-block">\[ D = 10^{2} - 4 \cdot 1 \cdot (-144) = 100 + 576 = 676 = 26^{2}. \]</div>
+      <p>Dakle</p>
+      <div class="math-block">\[ t_{1,2} = \frac{-10 \pm 26}{2} \;\Longrightarrow\; t_{1} = 8,\quad t_{2} = -18. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( 676 = 26^2 \)?</summary>
+          <div class="detail-content"><p>\( 25^2 = 625 \) i \( 26^2 = 25^2 + 51 = 676 \) (proširenje \( (a+1)^2 = a^2 + 2a + 1 \) sa \( a = 25 \)). Ili direktno: \( 26 \cdot 26 = 676 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Odbacimo negativan koren</h3>
+      <p>Uslov smene zahteva \( t &gt; 0 \), pa je \( t_{2} = -18 \) <span class="crossed">odbačeno</span>. Ostaje</p>
+      <div class="math-block">\[ t = 8. \]</div>
+      <p>Zaista, \( 2^{x} = -18 \) <em>nikada</em> nema rešenje u realnim brojevima jer je \( 2^{x} &gt; 0 \) za svako \( x \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Vratimo smenu i sumiramo</h3>
+      <p>Iz \( 2^{x} = 8 = 2^{3} \) sledi (zbog injektivnosti eksponencijalne funkcije):</p>
+      <div class="math-block">\[ x = 3. \]</div>
+      <p>Pošto postoji <em>samo jedno</em> rešenje, traženi zbir svih rešenja je</p>
+      <div class="math-block">\[ \sum x = 3. \]</div>
+      <p>To odgovara opciji <strong>(B)</strong>.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: uvrsti \( x = 3 \) u polaznu jednačinu.</summary>
+          <div class="detail-content">
+            <p>LHS: \( \dfrac{2^{3} + 10}{4} = \dfrac{8 + 10}{4} = \dfrac{18}{4} = 4{,}5 \).</p>
+            <p>RHS: \( \dfrac{9}{2^{3-2}} = \dfrac{9}{2} = 4{,}5 \).</p>
+            <p>Obe strane su jednake \( 4{,}5 \). ✓</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Ovde je &bdquo;trik&rdquo; primetiti da se cela jednačina svodi na <em>jednu</em> nepoznatu \( t = 2^{x} \). Čim se uvede smena, eksponencijalni izraz nestaje &mdash; ostaje obična kvadratna jednačina po \( t \). Ne sme se zaboraviti da je \( t &gt; 0 \): negativan koren kvadratne jednačine ne odgovara nijednom realnom \( x \) i mora se odmah <em>odbaciti</em>. Pošto je leva strana rastuća, a desna opadajuća funkcija od \( x \), grafički je jasno da rešenje može biti samo jedno.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \text{Zbir svih rešenja} = 3 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 1 \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( 3 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 2 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 0 \)</span>
+    <span class="answer-option" data-option="E">(E) \( -1 \)</span>
+  </div>
+  <p class="verification">Provera: jedinstveno rešenje \( x = 3 \). LHS \( = (8+10)/4 = 4{,}5 \), RHS \( = 9/2 = 4{,}5 \). ✓ Pošto rešenje samo jedno, zbir je \( 3 \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zaboraviti uslov \( t &gt; 0 \).</strong> Učenik prihvati i \( t = -18 \), pa pokušava da nađe \( x \) iz \( 2^{x} = -18 \) &mdash; što nema realno rešenje. Zbir &bdquo;dva rešenja&rdquo; bi tada bio pogrešan.</li>
+    <li><strong>Pogrešno svesti \( 2^{x-2} \).</strong> Pisati \( 2^{x-2} = 2^{x} - 2^{2} = t - 4 \). Pravilo stepena za razliku eksponenata je <em>deljenje</em>, a ne oduzimanje: \( 2^{x-2} = \tfrac{2^{x}}{4} = \tfrac{t}{4} \).</li>
+    <li><strong>Greška u množenju &bdquo;unakrst&rdquo;.</strong> Iz \( \tfrac{t+10}{4} = \tfrac{36}{t} \) sledi \( t(t+10) = 4 \cdot 36 = 144 \), a ne \( t(t+10) = 36 \) ili \( 4(t+10) = 36 \).</li>
+    <li><strong>Brzopleta diskriminanta.</strong> Pišu \( D = 100 - 576 \) (kao da je \( c = +144 \)), pa zaključuju da nema rešenja. Ovde je \( c = -144 \), pa \( -4ac = -4 \cdot 1 \cdot (-144) = +576 \).</li>
+    <li><strong>Misliti da rešenje znači zbir od \( 3 + (-18) \).</strong> &bdquo;Zbir svih rešenja&rdquo; se odnosi na rešenja po \( x \), a ne po \( t \). Posle vraćanja smene ostaje samo \( x = 3 \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Reši jednačinu \( 4^{x} - 5 \cdot 2^{x} + 4 = 0 \) i nađi zbir <em>svih</em> rešenja. Zatim: za jednačinu \( 2^{x} + 2^{2-x} = 5 \), koliko rešenja ima i koliki je njihov zbir?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p><strong>(a)</strong> Smena \( t = 2^{x} &gt; 0 \), pa \( 4^{x} = t^2 \). Jednačina \( t^2 - 5t + 4 = 0 \) ima rešenja \( t = 1 \) i \( t = 4 \) (oba pozitivna!). Vraćanje: \( 2^{x} = 1 \Rightarrow x = 0 \), \( 2^{x} = 4 \Rightarrow x = 2 \). Zbir: \( 0 + 2 = 2 \).</p>
+      <p><strong>(b)</strong> Smena \( t = 2^{x} \), \( 2^{2-x} = 4/t \). Jednačina \( t + 4/t = 5 \), množenjem sa \( t \): \( t^2 - 5t + 4 = 0 \), \( t = 1 \) ili \( t = 4 \). Vraćanjem: \( x_1 = 0 \), \( x_2 = 2 \). Imamo dva rešenja, zbir \( 2 \). Primeti zanimljivu simetriju &mdash; jednačine se mogu rešiti istom kvadratnom jednačinom!</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('expGraph');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  // Math bounds
+  var xMin = -1, xMax = 6;
+  var yMin = 0, yMax = 16;
+
+  var marginL = 60, marginR = 40, marginT = 60, marginB = 100;
+
+  function toCanvas(x, y) {
+    var plotW = W - marginL - marginR;
+    var plotH = H - marginT - marginB;
+    return {
+      x: marginL + (x - xMin) / (xMax - xMin) * plotW,
+      y: marginT + (yMax - y) / (yMax - yMin) * plotH
+    };
+  }
+
+  function f(x) { return (Math.pow(2, x) + 10) / 4; }
+  function g(x) { return 36 / Math.pow(2, x); }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Presek leve i desne strane jednačine', W / 2, 30);
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillStyle = muted;
+    ctx.fillText('f(x) = (2^x + 10)/4   raste,   g(x) = 36/2^x   opada', W / 2, 50);
+
+    var plotLeft = marginL;
+    var plotRight = W - marginR;
+    var plotTop = marginT;
+    var plotBottom = H - marginB;
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 3]);
+    for (var gx = Math.ceil(xMin); gx <= Math.floor(xMax); gx++) {
+      var px = toCanvas(gx, 0).x;
+      ctx.beginPath();
+      ctx.moveTo(px, plotTop);
+      ctx.lineTo(px, plotBottom);
+      ctx.stroke();
+    }
+    for (var gy = 0; gy <= yMax; gy += 2) {
+      var py = toCanvas(0, gy).y;
+      ctx.beginPath();
+      ctx.moveTo(plotLeft, py);
+      ctx.lineTo(plotRight, py);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    var yAxis0 = toCanvas(0, 0).y;
+    var xAxis0 = toCanvas(0, 0).x;
+    ctx.beginPath();
+    ctx.moveTo(plotLeft, yAxis0);
+    ctx.lineTo(plotRight, yAxis0);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(xAxis0, plotTop);
+    ctx.lineTo(xAxis0, plotBottom);
+    ctx.stroke();
+
+    // Tick labels - x
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, system-ui';
+    ctx.textAlign = 'center';
+    for (var tx = Math.ceil(xMin); tx <= Math.floor(xMax); tx++) {
+      if (tx === 0) continue;
+      var tp = toCanvas(tx, 0);
+      ctx.strokeStyle = axis;
+      ctx.beginPath();
+      ctx.moveTo(tp.x, tp.y - 4);
+      ctx.lineTo(tp.x, tp.y + 4);
+      ctx.stroke();
+      ctx.fillText(String(tx), tp.x, tp.y + 18);
+    }
+    // y ticks
+    ctx.textAlign = 'right';
+    for (var ty = 2; ty <= yMax; ty += 2) {
+      var tp2 = toCanvas(0, ty);
+      ctx.beginPath();
+      ctx.moveTo(tp2.x - 4, tp2.y);
+      ctx.lineTo(tp2.x + 4, tp2.y);
+      ctx.stroke();
+      ctx.fillText(String(ty), tp2.x - 8, tp2.y + 4);
+    }
+    ctx.textAlign = 'right';
+    ctx.fillText('0', xAxis0 - 6, yAxis0 + 16);
+
+    // Plot helper
+    function plot(fn, color, lw) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lw;
+      ctx.beginPath();
+      var first = true;
+      var steps = 240;
+      for (var i = 0; i <= steps; i++) {
+        var x = xMin + (xMax - xMin) * i / steps;
+        var y = fn(x);
+        if (!isFinite(y)) continue;
+        if (y < yMin - 0.5 || y > yMax + 0.5) {
+          first = true;
+          continue;
+        }
+        var p = toCanvas(x, y);
+        if (first) { ctx.moveTo(p.x, p.y); first = false; }
+        else ctx.lineTo(p.x, p.y);
+      }
+      ctx.stroke();
+    }
+
+    plot(f, primary, 2.6);
+    plot(g, secondary, 2.6);
+
+    // Intersection at x = 3, y = 4.5
+    var P = toCanvas(3, 4.5);
+
+    // Dashed projections to axes
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.3;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(P.x, yAxis0);
+    ctx.lineTo(P.x, P.y);
+    ctx.lineTo(xAxis0, P.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Glow + dot at intersection
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.25);
+    ctx.beginPath();
+    ctx.arc(P.x, P.y, 13, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(P.x, P.y, 6.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Label intersection
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText('(3,  4,5)', P.x + 14, P.y - 12);
+
+    // Axis labels
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 13px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('x', plotRight - 8, yAxis0 - 8);
+    ctx.textAlign = 'left';
+    ctx.fillText('y', xAxis0 + 8, plotTop + 10);
+
+    // Function labels
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.textAlign = 'left';
+    var lp = toCanvas(4.6, f(4.6));
+    ctx.fillText('f(x) = (2^x + 10)/4', lp.x + 6, lp.y - 4);
+
+    ctx.fillStyle = secondary;
+    var lp2 = toCanvas(0.2, g(0.2));
+    ctx.fillText('g(x) = 36 / 2^x', lp2.x + 6, lp2.y - 4);
+
+    // Bottom summary
+    var legY = H - 60;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Smena t = 2^x  =>  t² + 10t − 144 = 0  =>  t = 8 (odbacujemo t = −18)', W / 2, legY);
+
+    ctx.fillStyle = cv('--sol-canvas-accent');
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.fillText('2^x = 8  =>  x = 3.   Zbir svih rešenja = 3.', W / 2, legY + 22);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Eksponencijalna jednačina sa smenom t = 2^x",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["eksponencijalne jednačine", "smena promenljive", "kvadratna jednačina", "uslov pozitivnosti"]
+}
+BRAINSPARK_META-->

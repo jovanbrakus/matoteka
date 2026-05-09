@@ -1,0 +1,339 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem: Broj permutacija skupa {1,2,3,4,5,6} koje počinju sa 345
+  (prve tri pozicije su redom 3, 4, 5).
+  Opcije: (A) 6, (B) 24, (C) 120, (D) 240, (E) 0.
+
+  Logika: prve tri pozicije fiksirane (3, 4, 5). Preostala 3 elementa {1, 2, 6} se
+  raspoređuju na preostale 3 pozicije slobodno => broj rasporeda = 3! = 6.
+
+  Eksplicitno nabrajanje permutacija {1,2,6} na pozicijama 4, 5, 6:
+   1. (1, 2, 6) -> 345126
+   2. (1, 6, 2) -> 345162
+   3. (2, 1, 6) -> 345216
+   4. (2, 6, 1) -> 345261
+   5. (6, 1, 2) -> 345612
+   6. (6, 2, 1) -> 345621
+
+  Tačno 6 permutacija.
+  Tačan odgovor: (A) 6.
+
+  Provera kroz pravilo proizvoda:
+  poz 1: jedna mogućnost (mora biti 3)
+  poz 2: jedna mogućnost (mora biti 4)
+  poz 3: jedna mogućnost (mora biti 5)
+  poz 4: tri mogućnosti (1, 2 ili 6)
+  poz 5: dve mogućnosti
+  poz 6: jedna mogućnost
+  Ukupno: 1*1*1*3*2*1 = 6. ✓
+
+  Vizuelizacija: 6 redova, svaki red prikazuje jednu konkretnu permutaciju
+  6-cifrenom "slot" trakom; prva tri slota fiksirana 3,4,5 (zaključana),
+  zadnja tri slota popunjena permutacijom skupa {1,2,6}.
+</script>
+
+<h1 data-card="problem-title">Permutacije sa fiksiranim prefiksom</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika &mdash; pravilo proizvoda i permutacije</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Broj permutacija elemenata skupa \( \{1, 2, 3, 4, 5, 6\} \) koje počinju sa \( 345 \) (tj. prve tri pozicije su redom \( 3 \), \( 4 \), \( 5 \)) jednak je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 6 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 24 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 120 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 240 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 0 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Prve tri pozicije su zaključane vrednostima \( 3, 4, 5 \), pa nemamo izbor za njih. Slobodan izbor postoji samo za preostale tri pozicije, koje treba popuniti elementima \( \{1, 2, 6\} \). Brojimo koliko ima permutacija tri elementa.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Permutacija</strong> skupa od \( n \) različitih elemenata: poredak svih \( n \) elemenata u nizu.</li>
+        <li><strong>Broj permutacija:</strong> \( P_n = n! = n \cdot (n-1) \cdot \ldots \cdot 2 \cdot 1 \).</li>
+        <li><strong>Pravilo proizvoda:</strong> ako neku odluku donosimo u koracima sa \( k_1, k_2, \ldots, k_m \) izbora, ukupno ima \( k_1 \cdot k_2 \cdots k_m \) ishoda.</li>
+        <li><strong>Specijalno:</strong> \( 3! = 6,\ 4! = 24,\ 5! = 120,\ 6! = 720 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="permList" width="720" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Svih \( 3! = 6 \) dozvoljenih permutacija. Prva tri polja (osenčena) su zaključana na \( 3, 4, 5 \), a poslednja tri polja prolaze kroz svih \( 3! \) rasporeda elemenata \( \{1, 2, 6\} \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Šta tačno znači uslov "počinje sa 345"</h3>
+      <p>Tražimo poredak svih šest elemenata u kome je na prvoj poziciji broj \( 3 \), na drugoj \( 4 \), a na trećoj \( 5 \). Te tri pozicije su, dakle, <strong>fiksirane</strong> &mdash; nemamo izbor.</p>
+      <div class="math-block">\[ \underbrace{3}_{\text{poz. 1}}\ \underbrace{4}_{\text{poz. 2}}\ \underbrace{5}_{\text{poz. 3}}\ \underbrace{?}_{\text{poz. 4}}\ \underbrace{?}_{\text{poz. 5}}\ \underbrace{?}_{\text{poz. 6}} \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Identifikuj slobodne elemente</h3>
+      <p>Već smo iskoristili \( 3 \), \( 4 \) i \( 5 \). Ostali su elementi:</p>
+      <div class="math-block">\[ \{1, 2, 3, 4, 5, 6\} \setminus \{3, 4, 5\} = \{1, 2, 6\}. \]</div>
+      <p>Njih treba rasporediti na preostale tri pozicije &mdash; svaka permutacija ovog tročlanog skupa daje po jednu dozvoljenu permutaciju ceo niz.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš \( \{1, 2, 6\} \)?</summary>
+          <div class="detail-content"><p>Permutacija mora da sadrži <em>sve</em> elemente skupa, svaki tačno jednom. Pošto su 3, 4 i 5 već "potrošeni" na prve tri pozicije, ostatak 1, 2, 6 mora popuniti preostale tri.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Prebroji rasporede &mdash; pravilo proizvoda</h3>
+      <p>Pozicije 4, 5, 6 popunjavamo redom:</p>
+      <ul>
+        <li>poz. 4: \( 3 \) izbora (bilo koji od \( 1, 2, 6 \));</li>
+        <li>poz. 5: \( 2 \) izbora (preostala dva);</li>
+        <li>poz. 6: \( 1 \) izbor (poslednji preostali).</li>
+      </ul>
+      <p>Po pravilu proizvoda:</p>
+      <div class="math-block">\[ N = 1 \cdot 1 \cdot 1 \cdot 3 \cdot 2 \cdot 1 = 3! = 6. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera nabrajanjem</h3>
+      <p>Ispiši svih šest permutacija &mdash; lepo se vidi da ih ima tačno toliko:</p>
+      <div class="math-block">\[ \begin{aligned}
+        &345\,\mathbf{126}, \quad 345\,\mathbf{162}, \\
+        &345\,\mathbf{216}, \quad 345\,\mathbf{261}, \\
+        &345\,\mathbf{612}, \quad 345\,\mathbf{621}.
+      \end{aligned} \]</div>
+      <p>Boldovani sufiks je permutacija skupa \( \{1, 2, 6\} \) &mdash; svaki redosled se pojavljuje tačno jednom.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kad u permutaciji <strong>fiksiraš deo</strong> (prefiks, sufiks ili bilo koje izabrane pozicije sa unapred zadatim vrednostima), zadatak se redukuje: potrebno je samo prebrojati permutacije onoga što je <em>preostalo</em>. Ovde je preostalo \( 3 \) elementa, pa rezultat nije \( 6! \), već \( 3! = 6 \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Računati \( 6! = 720 \) i odatle "deliti" sa nečim &mdash; ovde nema podele klasa, već čista redukcija. Najlakše: prebroj samo slobodan deo.</li>
+    <li>Pomešati sa formulom za permutacije sa ponavljanjima \( \dfrac{n!}{n_1!\,n_2!\,\cdots} \). Ta formula se koristi <em>samo</em> kada se neki elementi ponavljaju &mdash; ovde su svi elementi različiti.</li>
+    <li>Pogrešno protumačiti uslov: "počinje sa 345" znači <em>baš ti brojevi tim redom</em> na prve tri pozicije, ne "počinje cifrom 3, 4 ili 5".</li>
+    <li>Brojati \( 4! = 24 \) misleći da je slobodno još \( 4 \) pozicije. Slobodne su tačno tri pozicije: \( 4, 5, 6 \).</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ N = 3! = 6 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 6 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 24 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 120 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 240 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 0 \)</span>
+  </div>
+  <p class="verification">Provera: nabrojali smo svih šest permutacija (\( 345126, 345162, 345216, 345261, 345612, 345621 \)) &mdash; više od šest ne postoji jer su preostala tri elementa \( \{1, 2, 6\} \) i \( 3! = 6 \).</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koliko permutacija skupa \( \{1, 2, 3, 4, 5, 6\} \) <em>počinje sa parnom cifrom i završava se neparnom cifrom</em>? (Sad nije sve fiksirano &mdash; biramo koja parna cifra ide na početak i koja neparna na kraj.) Pokušaj sam, pa pogledaj nagoveštaj.</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Po pravilu proizvoda: prva pozicija &mdash; \( 3 \) parnih cifara (\( 2, 4, 6 \)); poslednja pozicija &mdash; \( 3 \) neparnih (\( 1, 3, 5 \)); preostala 4 elementa raspoređuju se po preostale 4 pozicije na \( 4! = 24 \) načina. Ukupno \( 3 \cdot 3 \cdot 24 = 216 \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var canvas = document.getElementById('permList');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.charAt(0) === '#') {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  function draw() {
+    var W = canvas.width, H = canvas.height;
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // permutations of {1,2,6} on positions 4,5,6, all 6 of them
+    var perms = [
+      [1, 2, 6],
+      [1, 6, 2],
+      [2, 1, 6],
+      [2, 6, 1],
+      [6, 1, 2],
+      [6, 2, 1]
+    ];
+
+    var fixed = [3, 4, 5];
+
+    // header
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Šest dozvoljenih permutacija (prefiks 3-4-5 zaključan):', 20, 28);
+
+    // legend bar
+    var legendY = 52;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = warning;
+    ctx.fillText('▣ zaključane pozicije', 20, legendY);
+    ctx.fillStyle = accent;
+    ctx.fillText('▣ slobodno popunjavanje skupom {1, 2, 6}', 200, legendY);
+
+    // layout: 6 rows, each row is 6 slots
+    var topY = 80;
+    var rowH = 60;
+    var slotsLeft = 90;
+    var slotsRight = W - 180;
+    var slotW = (slotsRight - slotsLeft) / 6;
+    var slotPad = 6;
+
+    for (var r = 0; r < perms.length; r++) {
+      var rowY = topY + r * rowH;
+      var values = fixed.concat(perms[r]);
+
+      // row index label
+      ctx.fillStyle = muted;
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText('#' + (r + 1), slotsLeft - 14, rowY + 30);
+
+      for (var c = 0; c < 6; c++) {
+        var sx = slotsLeft + c * slotW + slotPad / 2;
+        var sy = rowY + 8;
+        var sw = slotW - slotPad;
+        var sh = 44;
+        var isFixed = c < 3;
+
+        // background
+        ctx.fillStyle = isFixed ? cvAlpha('--sol-canvas-warning', 0.18) : cvAlpha('--sol-canvas-accent', 0.15);
+        ctx.fillRect(sx, sy, sw, sh);
+
+        // border
+        ctx.strokeStyle = isFixed ? warning : accent;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(sx, sy, sw, sh);
+
+        // value
+        ctx.fillStyle = isFixed ? warning : text;
+        ctx.font = 'bold 20px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(String(values[c]), sx + sw / 2, sy + sh / 2 + 1);
+        ctx.textBaseline = 'alphabetic';
+
+        // small position number above
+        if (r === 0) {
+          ctx.fillStyle = muted;
+          ctx.font = '11px Inter, system-ui, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('poz. ' + (c + 1), sx + sw / 2, sy - 4);
+        }
+      }
+
+      // concatenated number on the right
+      var concat = values.join('');
+      ctx.fillStyle = primary;
+      ctx.font = 'bold 15px ui-monospace, Menlo, monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText(concat, slotsRight + 16, rowY + 36);
+    }
+
+    // bottom summary
+    var byY = topY + perms.length * rowH + 20;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Ukupno: 1 · 1 · 1 · 3 · 2 · 1 = 3! = 6', 20, byY);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Permutacije sa fiksiranim prefiksom — koliko ih ima?",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["permutacije", "pravilo proizvoda", "fiksirani prefiks", "kombinatorika"]
+}
+BRAINSPARK_META-->

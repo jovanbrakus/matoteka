@@ -1,0 +1,487 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Problem 11 (TMF Beograd 2009): Ostatak deljenja polinoma
+    P(x) = 9x^4 + 7x^3 + 2x^2 + 12
+  binomom (x - 1) je:
+    (A) 32; (B) 35; (C) 30; (D) 28; (E) 27.
+
+  PRISTUP A — Bezuova teorema (NAJBRŽE):
+    Ostatak deljenja P(x) sa (x - a) je P(a). Ovde a = 1:
+      P(1) = 9·1 + 7·1 + 2·1 + 0·1 + 12 = 9 + 7 + 2 + 0 + 12 = 30.
+    Odgovor: (C) 30.
+
+  Napomena: u P(x) je koeficijent uz x^1 jednak NULI (nedostaje član sa x^1).
+    P(x) = 9x^4 + 7x^3 + 2x^2 + 0·x + 12.
+    Pri Hornerovoj šemi obavezno ubacujemo nulu kao "rezervno mesto".
+
+  PRISTUP B — Hornerova šema (potvrda + količnik):
+    Koeficijenti: 9 | 7 | 2 | 0 | 12, deljenik (x - 1), a = 1.
+
+    Pravilo: prvi koeficijent prepiši; svaki sledeći = prethodni rezultat * a + sledeći koeficijent.
+
+    Tablica:
+      |    | 9 | 7  | 2  | 0  | 12 |
+      | 1  | 9 | 16 | 18 | 18 | 30 |
+
+    Korak po korak:
+      9
+      9·1 + 7 = 16
+      16·1 + 2 = 18
+      18·1 + 0 = 18
+      18·1 + 12 = 30  ← OSTATAK
+
+    Količnik je 9x^3 + 16x^2 + 18x + 18, ostatak 30.
+    Provera: P(x) = (x - 1)(9x^3 + 16x^2 + 18x + 18) + 30.
+
+    Brza provera: postavimo x = 1: leva strana = P(1) = 30. Desna strana = 0 + 30 = 30. ✓
+
+  Visual aid: kanvas crta Hornerovu tablicu sa korak-po-korak strelicama
+    "pomnoži sa a, dodaj sledeći koef." Statično.
+
+  Pitfall: zaboraviti 0 u koloni za x^1 — dobija se pogrešna tablica i pogrešan ostatak.
+  Pitfall: pomešati znak — Bezu je P(a), a ne P(-a), za delitelj (x - a).
+  Pitfall: pisati "ostatak je polinom 30x^0" — ostatak je BROJ 30 (deljenik je linearan, pa
+    ostatak ima stepen < 1, znači konstanta).
+</script>
+
+<h1 data-card="problem-title">Bezuova teorema i Hornerova šema</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra &mdash; deljenje polinoma, ostatak deljenja, Hornerova šema</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Ostatak deljenja polinoma</p>
+  <div class="math-block">\[ P(x) = 9x^4 + 7x^3 + 2x^2 + 12 \]</div>
+  <p>binomom \( x - 1 \) je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 32 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 35 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 30 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 28 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 27 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Najkraći put je <strong>Bezuova teorema</strong>: ostatak deljenja \( P(x) \) sa \( x - a \) jednak je \( P(a) \). Stavimo \( a = 1 \) i izračunamo \( P(1) \). Za potvrdu i pedagoški efekat, isti rezultat dobijamo i <strong>Hornerovom šemom</strong>, koja uz ostatak otkriva i ceo količnik.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Bezuova teorema, Hornerova šema, teorema o deljenju</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Teorema o deljenju polinoma:</strong> za svaka dva polinoma \( P(x) \) i \( D(x) \neq 0 \), postoje jedinstveni \( Q(x) \) i \( R(x) \) sa
+          \[ P(x) = D(x) \cdot Q(x) + R(x), \quad \deg R < \deg D. \]
+          Kada je delilac linearan (\( \deg D = 1 \)), ostatak \( R \) je konstanta.</li>
+        <li><strong><span class="formula-label">Bezuova teorema</span>:</strong> ostatak deljenja \( P(x) \) sa \( (x - a) \) jednak je \( P(a) \). Posledica: \( P(a) = 0 \iff (x - a) \mid P(x) \).</li>
+        <li><strong>Hornerova šema</strong>: brz algoritam za deljenje sa \( (x - a) \). Niz koeficijenata \( a_n, a_{n-1}, \dots, a_0 \) se transformiše u niz \( b_n, b_{n-1}, \dots, b_0 \) gde je
+          \[ b_n = a_n, \quad b_k = b_{k+1} \cdot a + a_k. \]
+          Konačno \( b_0 \) je ostatak, a \( b_n, \dots, b_1 \) su koeficijenti količnika.</li>
+        <li><strong>Nedostajući članovi</strong>: ako u polinomu fali neki stepen (npr. \( x^1 \)), ne smemo &bdquo;preskočiti&ldquo; mesto &mdash; ubacujemo koeficijent \( 0 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-p11" width="780" height="540"></canvas>
+  </div>
+  <p class="canvas-caption">Hornerova šema za deljenje \( P(x) = 9x^4 + 7x^3 + 2x^2 + 0 \cdot x + 12 \) sa \( x - 1 \). Strelice pokazuju pravilo: <em>pomnoži prethodnu sumu sa</em> \( a = 1 \) <em>i dodaj sledeći koeficijent</em>. Poslednja ćelija (\( 30 \)) je ostatak; ostale daju količnik \( 9x^3 + 16x^2 + 18x + 18 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Identifikuj sve koeficijente — uključujući &bdquo;skriveni&ldquo; nula-koeficijent</h3>
+      <p>Polinom <em>napisan u potpunosti</em>:</p>
+      <div class="math-block">\[ P(x) = 9x^4 + 7x^3 + 2x^2 + \boxed{0} \cdot x + 12. \]</div>
+      <p>Član sa \( x^1 \) ne postoji, ali za sve postupke deljenja računamo ga sa koeficijentom <strong>0</strong>. Niz koeficijenata je dakle:</p>
+      <div class="math-block">\[ 9,\; 7,\; 2,\; 0,\; 12. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je važno ubaciti taj 0?</summary>
+          <div class="detail-content"><p>Hornerova šema (i klasično dugo deljenje) prati &bdquo;kolone&ldquo; po stepenima. Ako preskočimo \( x^1 \), pomerićemo sve sledeće koeficijente za jedno mesto i račun će dati pogrešan ostatak. Pravilo: u tablicu uvek uključi <em>sve</em> stepene od najvišeg do \( x^0 \), eventualno sa nulom.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Bezuova teorema &mdash; izračunaj \( P(1) \)</h3>
+      <p>Za delitelj \( x - a \), Bezu kaže: ostatak je \( P(a) \). Ovde je \( a = 1 \):</p>
+      <div class="math-block">\[ \begin{aligned} P(1) &= 9 \cdot 1^4 + 7 \cdot 1^3 + 2 \cdot 1^2 + 0 \cdot 1 + 12 \\ &= 9 + 7 + 2 + 0 + 12 \\ &= 30. \end{aligned} \]</div>
+      <p>Jednostavno zato što su sve sile jedinice jednake \( 1 \): <em>vrednost u jedinici je samo zbir koeficijenata</em>. Dakle ostatak je <span class="result">\( 30 \)</span>.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kako bi izgledao Bezu za delitelj \( x + 2 \)?</summary>
+          <div class="detail-content"><p>Pišemo \( x + 2 = x - (-2) \), pa je \( a = -2 \). Ostatak bi bio \( P(-2) \). Pravilo: znak \( a \) u Bezuu je <em>suprotan</em> od znaka konstante u \( x \pm c \). Greška je staviti \( a = +2 \) i dobiti \( P(2) \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera Hornerovom šemom (i bonus: dobijemo količnik)</h3>
+      <p>Pravilo Hornerove šeme: prvi koeficijent prepiši, a zatim svaki sledeći = (prethodna suma) \( \cdot a + \) sledeći koeficijent. Sa \( a = 1 \), množenje sa \( 1 \) je trivijalno &mdash; samo se sabira.</p>
+
+      <div class="math-block">\[ \begin{array}{c|ccccc} & 9 & 7 & 2 & 0 & 12 \\ \hline a = 1 & 9 & 16 & 18 & 18 & \mathbf{30} \\ \end{array} \]</div>
+
+      <div class="substep" data-substep="a)">
+        <p><strong>a) Korak po korak:</strong></p>
+        <ul>
+          <li>Prepiši \( 9 \).</li>
+          <li>\( 9 \cdot 1 + 7 = 16 \).</li>
+          <li>\( 16 \cdot 1 + 2 = 18 \).</li>
+          <li>\( 18 \cdot 1 + 0 = 18 \) (pazi na nulu!).</li>
+          <li>\( 18 \cdot 1 + 12 = \mathbf{30} \) &mdash; <strong>ostatak</strong>.</li>
+        </ul>
+      </div>
+
+      <div class="substep" data-substep="b)">
+        <p><strong>b) Količnik</strong> se čita iz prva četiri broja:</p>
+        <div class="math-block">\[ Q(x) = 9x^3 + 16x^2 + 18x + 18. \]</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera identiteta \( P(x) = (x-1) Q(x) + R \)</h3>
+      <p>Prema teoremi o deljenju mora da važi:</p>
+      <div class="math-block">\[ 9x^4 + 7x^3 + 2x^2 + 12 = (x - 1)(9x^3 + 16x^2 + 18x + 18) + 30. \]</div>
+      <p>Brza provera: stavimo \( x = 1 \). Leva strana \( = P(1) = 30 \). Desna strana \( = 0 \cdot Q(1) + 30 = 30 \). \(\checkmark\)</p>
+      <p>Stavimo i \( x = 0 \) za drugu kontrolu: leva strana \( = 12 \), desna \( = (-1)(18) + 30 = -18 + 30 = 12 \). \(\checkmark\)</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je ostatak <em>broj</em>, a ne polinom višeg stepena?</summary>
+          <div class="detail-content"><p>Ostatak \( R(x) \) mora imati stepen <strong>strogo manji</strong> od stepena delitelja. Delitelj \( x - 1 \) je stepena \( 1 \), pa ostatak ima stepen \( 0 \) ili manji &mdash; tj. konstantan broj. Zato je odgovor uvek samo <em>jedan broj</em>.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Bezuova teorema pretvara &bdquo;dugačko deljenje polinoma&ldquo; u <em>jednu evaluaciju</em>: ostatak je vrednost polinoma u nuli delitelja. Ako je \( a = 1 \), to je još lepše &mdash; <strong>ostatak je prosto zbir svih koeficijenata</strong>. Hornerova šema je kompromis: malo više rada, ali za istu cenu dobijemo i <em>ceo količnik</em>, što je ključno kad treba faktorisati polinom (npr. proveriti je li \( a \) koren i podeliti sa \( x - a \)).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ P(1) = 9 + 7 + 2 + 0 + 12 = 30 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 32 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 35 \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( 30 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 28 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 27 \)</span>
+  </div>
+  <p class="verification">Provera Hornerom: niz \( 9, 7, 2, 0, 12 \) sa \( a = 1 \) postaje \( 9, 16, 18, 18, \mathbf{30} \). Ostatak \( 30 \), količnik \( 9x^3 + 16x^2 + 18x + 18 \). Identitet \( P(x) = (x-1) Q(x) + 30 \) potvrđen u \( x = 0 \) i \( x = 1 \). \(\checkmark\)</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zaboravljeni \( 0 \) za nedostajući stepen:</strong> bez \( 0 \) između \( 2 \) i \( 12 \) Hornerova šema bi dala \( 9 \to 16 \to 18 \to 30 \) &mdash; pogrešan poslednji broj jer je &bdquo;pomeren&ldquo; za jedno mesto.</li>
+    <li><strong>Zamena znaka u Bezuu:</strong> za delitelj \( x - 1 \) ostatak je \( P(1) \), ne \( P(-1) \). Pravilo: \( a \) je <em>nula delitelja</em>, tj. broj koji čini \( x - a = 0 \).</li>
+    <li><strong>Pisanje &bdquo;ostatak je polinom 30\( x^0 \)&ldquo; ili sl.:</strong> ostatak je broj. Notaciju \( 30 x^0 \) ne koristi &mdash; to je samo \( 30 \).</li>
+    <li><strong>Rad bez Bezua:</strong> dugo deljenje radi, ali je sporo i sklono računskim greškama. Bezu je 5-sekundni odgovor; Horner je rezervna provera.</li>
+    <li><strong>Brkanje koeficijenata:</strong> u \( 9x^4 + 7x^3 + 2x^2 + 12 \) vodeći koeficijent je \( 9 \) (uz \( x^4 \)), a slobodni član \( 12 \). Lako je &bdquo;u žurbi&ldquo; uzeti pogrešan red.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koji je ostatak deljenja istog polinoma \( P(x) = 9x^4 + 7x^3 + 2x^2 + 12 \) binomom \( x + 1 \)? A binomom \( x - 2 \)? Da li je nula? Šta to znači geometrijski?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Za \( x + 1 \): \( a = -1 \), \( P(-1) = 9 - 7 + 2 - 0 + 12 = 16 \). Za \( x - 2 \): \( P(2) = 9 \cdot 16 + 7 \cdot 8 + 2 \cdot 4 + 12 = 144 + 56 + 8 + 12 = 220 \). Nijedan ostatak nije nula, što znači da \( P(x) \) <strong>nije deljiv</strong> ni sa \( x + 1 \) ni sa \( x - 2 \) &mdash; tj. brojevi \( -1 \) i \( 2 \) nisu koreni polinoma. Geometrijski: grafik \( y = P(x) \) ne seče \( x \)-osu u tim tačkama (i, kao vodeći koeficijent \( 9 > 0 \), parabola višeg reda i nije baš sklona da seče &mdash; možeš proveriti i da \( P \) nema realnih korena!).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var rr = parseInt(c.slice(1, 3), 16);
+      var gg = parseInt(c.slice(3, 5), 16);
+      var bb = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + rr + ',' + gg + ',' + bb + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-p11');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  // Horner table values
+  var coefs = [9, 7, 2, 0, 12];
+  var labels = ['x⁴', 'x³', 'x²', 'x¹', 'x⁰'];
+  var results = [9, 16, 18, 18, 30];
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+    var tertiary  = cv('--sol-canvas-tertiary');
+    var danger    = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 17px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Hornerova šema:  P(x) = 9x⁴ + 7x³ + 2x² + 0·x + 12  ÷  (x − 1)', W / 2, 32);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Pravilo: prepiši prvi koeficijent. Svaki sledeći = (prethodna suma) · a + sledeći koeficijent.', W / 2, 54);
+
+    // Table layout
+    var nCols = coefs.length; // 5
+    var cellW = 110;
+    var cellH = 60;
+    var tableW = (nCols + 1) * cellW;
+    var tableX = (W - tableW) / 2;
+    var tableY = 100;
+
+    // Header row labels (x^k)
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    for (var i = 0; i < nCols; i++) {
+      var cx = tableX + (i + 1) * cellW + cellW / 2;
+      ctx.fillText('koef. uz ' + labels[i], cx, tableY - 8);
+    }
+
+    // Row 1: original coefficients
+    var row1Y = tableY;
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.06);
+    ctx.fillRect(tableX, row1Y, tableW, cellH);
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+
+    // Empty header cell of row 1
+    ctx.strokeRect(tableX, row1Y, cellW, cellH);
+
+    // Coefficient cells (row 1)
+    ctx.font = 'bold 22px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    for (var c1 = 0; c1 < nCols; c1++) {
+      var cellX = tableX + (c1 + 1) * cellW;
+      ctx.strokeRect(cellX, row1Y, cellW, cellH);
+      // highlight zero coefficient
+      if (coefs[c1] === 0) {
+        ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.18);
+        ctx.fillRect(cellX + 1, row1Y + 1, cellW - 2, cellH - 2);
+      }
+      ctx.fillStyle = coefs[c1] === 0 ? warning : text;
+      ctx.font = 'bold 22px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(String(coefs[c1]), cellX + cellW / 2, row1Y + cellH / 2 + 8);
+    }
+
+    // Row 2: a=1 cell + Horner results
+    var row2Y = tableY + cellH + 30;
+    // 'a = 1' cell (left header)
+    ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.12);
+    ctx.fillRect(tableX, row2Y, cellW, cellH);
+    ctx.strokeStyle = grid;
+    ctx.strokeRect(tableX, row2Y, cellW, cellH);
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('a = 1', tableX + cellW / 2, row2Y + cellH / 2 + 7);
+
+    // Result cells
+    for (var c2 = 0; c2 < nCols; c2++) {
+      var cellX2 = tableX + (c2 + 1) * cellW;
+      var isLast = c2 === nCols - 1;
+      ctx.fillStyle = isLast ? cvAlpha('--sol-canvas-accent', 0.18) : cvAlpha('--sol-canvas-primary', 0.10);
+      ctx.fillRect(cellX2 + 1, row2Y + 1, cellW - 2, cellH - 2);
+      ctx.strokeStyle = isLast ? accent : grid;
+      ctx.lineWidth = isLast ? 2.5 : 1;
+      ctx.strokeRect(cellX2, row2Y, cellW, cellH);
+
+      ctx.fillStyle = isLast ? accent : primary;
+      ctx.font = 'bold 24px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(String(results[c2]), cellX2 + cellW / 2, row2Y + cellH / 2 + 9);
+    }
+
+    // Arrows: from row 2 cell c-1 -> row 1 cell c (multiply step) -> row 2 cell c (add step)
+    // Actually two arrows per "carry" step: diagonal "·a" and vertical "+ koef".
+    // We'll draw a curved arrow from results[c-1] to results[c] under row1, with label "· a + ..."
+    ctx.lineWidth = 2;
+    ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+    for (var k = 1; k < nCols; k++) {
+      var fromX = tableX + k * cellW + cellW / 2;
+      var fromY = row2Y;                          // top of source cell
+      var toX   = tableX + (k + 1) * cellW + cellW / 2;
+      var toY   = row2Y;
+      // Curved up via row1 area
+      var midY = (row1Y + cellH + row2Y) / 2;
+      ctx.strokeStyle = tertiary;
+      ctx.beginPath();
+      ctx.moveTo(fromX, fromY);
+      ctx.bezierCurveTo(fromX, midY - 12, toX, midY - 12, toX, toY);
+      ctx.stroke();
+
+      // Arrowhead at end
+      ctx.fillStyle = tertiary;
+      ctx.beginPath();
+      ctx.moveTo(toX, toY);
+      ctx.lineTo(toX - 5, toY - 8);
+      ctx.lineTo(toX + 5, toY - 8);
+      ctx.closePath();
+      ctx.fill();
+
+      // Step label (·1 + coef[k])
+      var stepText = '· 1 + ' + coefs[k];
+      ctx.fillStyle = tertiary;
+      ctx.textAlign = 'center';
+      ctx.fillText(stepText, (fromX + toX) / 2, midY - 16);
+    }
+
+    // Annotation: "ostatak" pointing to last result cell
+    var lastX = tableX + nCols * cellW + cellW / 2;
+    var lastY = row2Y + cellH + 28;
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('OSTATAK', lastX, lastY);
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('= P(1) = 30', lastX, lastY + 16);
+
+    // Annotation arrow above last cell
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(lastX, row2Y + cellH + 4);
+    ctx.lineTo(lastX, row2Y + cellH + 16);
+    ctx.stroke();
+
+    // Annotation: "količnik" sweeping over first 4 result cells
+    var qStartX = tableX + cellW + 8;
+    var qEndX = tableX + nCols * cellW - 8;
+    var qY = row2Y + cellH + 12;
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(qStartX, qY);
+    ctx.lineTo(qStartX, qY + 8);
+    ctx.lineTo(qEndX, qY + 8);
+    ctx.lineTo(qEndX, qY);
+    ctx.stroke();
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('koeficijenti količnika  Q(x) = 9x³ + 16x² + 18x + 18', (qStartX + qEndX) / 2, qY + 26);
+
+    // Bottom panel: identity verification
+    var panelY = H - 130;
+    var panelH = 110;
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.05);
+    ctx.fillRect(20, panelY, W - 40, panelH);
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(20, panelY, W - 40, panelH);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Identitet  P(x) = (x − 1) · Q(x) + R', 36, panelY + 24);
+
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('9x⁴ + 7x³ + 2x² + 12  =  (x − 1) · (9x³ + 16x² + 18x + 18)  +  30', 36, panelY + 50);
+
+    // Two-column verification
+    var col1X = 50;
+    var col2X = W / 2 + 10;
+    var rowY = panelY + 78;
+
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.fillText('Provera u  x = 1:', col1X, rowY);
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('P(1) = 9+7+2+0+12 = 30   =   0 · Q(1) + 30  ✓', col1X, rowY + 18);
+
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.fillText('Provera u  x = 0:', col2X, rowY);
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('P(0) = 12   =   (−1)·18 + 30 = 12  ✓', col2X, rowY + 18);
+  }
+
+  draw();
+
+  // Re-draw on theme change
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Bezuova teorema i Hornerova šema: ostatak deljenja sa x − 1",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["polinomi", "deljenje polinoma", "Bezuova teorema", "Hornerova šema", "ostatak deljenja"]
+}
+BRAINSPARK_META-->

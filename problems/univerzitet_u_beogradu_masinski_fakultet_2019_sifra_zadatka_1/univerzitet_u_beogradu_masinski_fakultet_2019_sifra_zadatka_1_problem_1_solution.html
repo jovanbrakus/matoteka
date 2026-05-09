@@ -1,0 +1,519 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Problem: Izračunati vrednost složenog razlomka
+x = [ (0,5 : 1,25 + 1 i 2/5 : 11/7 − 3/11) · 3 ] / [ (1,5 + 1/4) : 18 i 1/3 ]
+i odrediti u kom intervalu se nalazi.
+Opcije: (A) x<0; (B) 0≤x<10; (C) 10≤x<20; (D) 20≤x<30; (E) x≥30.
+
+KORAK 1 — Pretvaramo sve oblike u proste razlomke:
+0,5 = 1/2
+1,25 = 5/4
+1 i 2/5 = 1 + 2/5 = 7/5
+11/7 = 11/7
+3/11 = 3/11
+1,5 = 3/2
+1/4 = 1/4
+18 i 1/3 = 18 + 1/3 = 55/3
+
+KORAK 2 — Sređujemo BROJILAC. Najpre delenja u zagradi:
+A1 = 0,5 : 1,25 = (1/2) · (4/5) = 4/10 = 2/5
+A2 = (1 i 2/5) : (11/7) = (7/5) · (7/11) = 49/55
+A3 = 3/11
+
+Sabiranje uz zajednički imenilac 55:
+2/5 = 22/55
+49/55 = 49/55
+3/11 = 15/55
+Zbir u zagradi: 22/55 + 49/55 − 15/55 = 56/55.
+
+Brojilac: (56/55) · 3 = 168/55.
+
+KORAK 3 — IMENILAC.
+1,5 + 1/4 = 3/2 + 1/4 = 6/4 + 1/4 = 7/4.
+Imenilac: (7/4) : (55/3) = (7/4) · (3/55) = 21/220.
+
+KORAK 4 — Računanje x:
+x = (168/55) : (21/220) = (168/55) · (220/21).
+Skraćivanje: 168/21 = 8, 220/55 = 4.
+Dakle x = 8 · 4 = 32.
+
+KORAK 5 — Određivanje intervala:
+32 ≥ 30, pa pripada intervalu (E) x ≥ 30.
+
+Provera (decimalno): 0,4 + 0,8909 − 0,2727 ≈ 1,0182. ·3 ≈ 3,0545.
+Imenilac: 1,75 / (55/3) = 1,75 · 3 / 55 ≈ 0,09545.
+x ≈ 3,0545 / 0,09545 ≈ 31,99 ≈ 32. ✓
+
+Plan vizuelnog prikaza: brojevna prava sa pet intervala (A, B, C, D, E),
+svaki različito obojen, sa istaknutom tačkom x=32 unutar intervala (E).
+Iznad linije pokazujemo lančani put izračunavanja: brojilac → 168/55, imenilac → 21/220, x = 32.
+STATIC, jer je problem čisto numeričko izračunavanje — uvid je u redosledu operacija.
+Visina canvas ≈ 480px.
+</script>
+
+<h1 data-card="problem-title">Vrednost složenog brojevnog izraza i njegov interval</h1>
+<p data-card="problem-subtitle" class="subtitle">Lančano sređivanje razlomaka, decimala i mešovitih brojeva</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Ako je</p>
+  <div class="math-block">\[ x = \dfrac{\left(0{,}5 : 1{,}25 + 1\tfrac{2}{5} : \tfrac{11}{7} - \tfrac{3}{11}\right) \cdot 3}{\left(1{,}5 + \tfrac{1}{4}\right) : 18\tfrac{1}{3}}, \]</div>
+  <p>onda je:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( x < 0 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 0 \le x < 10 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 10 \le x < 20 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 20 \le x < 30 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( x \ge 30 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Sve oblike (decimale i mešovite brojeve) prevodimo u <em>proste razlomke</em>, jer se sa razlomcima sređivanje radi mehanički i bez grešaka u zaokruživanju. Posebno sređujemo brojilac i imenilac „velikog" razlomka, a na kraju ih podelimo. Izračunatu vrednost \( x \) tek onda upoređujemo sa pet datih intervala.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Pravila konverzije i operacija sa razlomcima</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Decimalni → razlomak</span> Za konačnu decimalu sa \( k \) cifara iza zareza: \( 0{,}\overline{a_1\ldots a_k} = \dfrac{a_1\ldots a_k}{10^k} \). Tako je \( 0{,}5 = \dfrac{1}{2} \) i \( 1{,}25 = \dfrac{5}{4} \).</li>
+        <li><span class="formula-label">Mešoviti broj</span> \( m\tfrac{p}{q} = m + \dfrac{p}{q} = \dfrac{mq + p}{q} \). Tako je \( 1\tfrac{2}{5} = \dfrac{7}{5} \) i \( 18\tfrac{1}{3} = \dfrac{55}{3} \).</li>
+        <li><span class="formula-label">Deljenje razlomaka</span> \( \dfrac{a}{b} : \dfrac{c}{d} = \dfrac{a}{b} \cdot \dfrac{d}{c} = \dfrac{ad}{bc} \) (množi se „prevrnutim" deliocem).</li>
+        <li><span class="formula-label">Redosled operacija</span> Unutar zagrade prvo množimo i delimo, pa tek onda sabiramo i oduzimamo. Na nivou „velikog" razlomka brojilac i imenilac sređujemo nezavisno, pa tek onda delimo.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Tok izračunavanja i interval">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="numline-canvas" width="780" height="480"></canvas>
+  </div>
+  <p class="canvas-caption">Gornji deo: lančano sređivanje brojioca i imenioca u proste razlomke. Donji deo: brojevna prava sa intervalima (A)–(E) i položajem rešenja \( x = 32 \) u intervalu (E).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Sve oblike pretvaramo u proste razlomke</h3>
+      <p>Najpre se rešavamo decimala i mešovitih brojeva — radićemo isključivo s razlomcima:</p>
+      <div class="math-block">\[ 0{,}5 = \tfrac{1}{2}, \quad 1{,}25 = \tfrac{5}{4}, \quad 1\tfrac{2}{5} = \tfrac{7}{5}, \quad 1{,}5 = \tfrac{3}{2}, \quad 18\tfrac{1}{3} = \tfrac{55}{3}. \]</div>
+      <p>Razlomci \( \tfrac{11}{7} \), \( \tfrac{3}{11} \) i \( \tfrac{1}{4} \) su već u prostoj formi.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( 18\tfrac{1}{3} = \tfrac{55}{3} \)?</summary>
+          <div class="detail-content"><p>Primenjujemo \( m\tfrac{p}{q} = \dfrac{mq+p}{q} \). Kod nas je \( m=18 \), \( p=1 \), \( q=3 \), pa je \( \dfrac{18 \cdot 3 + 1}{3} = \dfrac{55}{3} \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Sređujemo brojilac „velikog" razlomka</h3>
+      <p>Unutar zagrade prvo izvršimo dva deljenja:</p>
+      <div class="math-block">\[ \tfrac{1}{2} : \tfrac{5}{4} = \tfrac{1}{2} \cdot \tfrac{4}{5} = \tfrac{4}{10} = \tfrac{2}{5}, \qquad \tfrac{7}{5} : \tfrac{11}{7} = \tfrac{7}{5} \cdot \tfrac{7}{11} = \tfrac{49}{55}. \]</div>
+      <p>Sada saberemo i oduzmemo tri razlomka. Svodimo ih na zajednički imenilac \( 55 \):</p>
+      <div class="math-block">\[ \tfrac{2}{5} + \tfrac{49}{55} - \tfrac{3}{11} = \tfrac{22}{55} + \tfrac{49}{55} - \tfrac{15}{55} = \tfrac{22 + 49 - 15}{55} = \tfrac{56}{55}. \]</div>
+      <p>Pomnožimo zagradu sa \( 3 \):</p>
+      <div class="math-block">\[ \text{Brojilac} = \tfrac{56}{55} \cdot 3 = \tfrac{168}{55}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je zajednički imenilac baš \( 55 \)?</summary>
+          <div class="detail-content"><p>Imenioci su \( 5 \), \( 55 \) i \( 11 \). NZS \((5, 55, 11) = 55\), jer je \( 55 = 5 \cdot 11 \). Otud \( \tfrac{2}{5} = \tfrac{22}{55} \) i \( \tfrac{3}{11} = \tfrac{15}{55} \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Sređujemo imenilac „velikog" razlomka</h3>
+      <p>U zagradi imamo \( 1{,}5 + \tfrac{1}{4} = \tfrac{3}{2} + \tfrac{1}{4} \). Zajednički imenilac je \( 4 \):</p>
+      <div class="math-block">\[ \tfrac{3}{2} + \tfrac{1}{4} = \tfrac{6}{4} + \tfrac{1}{4} = \tfrac{7}{4}. \]</div>
+      <p>Sada delimo sa \( 18\tfrac{1}{3} = \tfrac{55}{3} \):</p>
+      <div class="math-block">\[ \text{Imenilac} = \tfrac{7}{4} : \tfrac{55}{3} = \tfrac{7}{4} \cdot \tfrac{3}{55} = \tfrac{21}{220}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Dobijamo \( x \)</h3>
+      <p>Veliki razlomak je sada deljenje brojioca imeniocem:</p>
+      <div class="math-block">\[ x = \tfrac{168}{55} : \tfrac{21}{220} = \tfrac{168}{55} \cdot \tfrac{220}{21}. \]</div>
+      <p>Skratimo dijagonalno: \( \tfrac{168}{21} = 8 \) (jer \( 21 \cdot 8 = 168 \)) i \( \tfrac{220}{55} = 4 \) (jer \( 55 \cdot 4 = 220 \)). Ostaje:</p>
+      <div class="math-block">\[ x = 8 \cdot 4 = 32. \]</div>
+      <p>Vrednost izraza je <span class="result">\( x = 32 \)</span>.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: brza decimalna provera</summary>
+          <div class="detail-content"><p>\( \tfrac{168}{55} \approx 3{,}0545 \), a \( \tfrac{21}{220} \approx 0{,}0955 \). Količnik: \( 3{,}0545 / 0{,}0955 \approx 31{,}99 \approx 32 \). ✓</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Određujemo interval</h3>
+      <p>Pošto je \( 32 \ge 30 \), broj pripada poslednjem intervalu (E). Granice ostalih intervala (\( <0 \), \( [0,10) \), \( [10,20) \), \( [20,30) \)) ne sadrže \( 32 \), pa su ostale opcije isključene.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Ne pokušavaj da računaš decimale do kraja — već u koraku 2 zaokruživanje bi unelo grešku reda \( 0{,}01 \), a zatim deljenje sa malim brojem \( \approx 0{,}095 \) tu grešku <em>uveličava ~10 puta</em>. Razlomci su precizni: \( \tfrac{168}{55} : \tfrac{21}{220} \) se idealno krati na \( 8 \cdot 4 = 32 \). Dijagonalno skraćivanje (\( 168 \) i \( 21 \) preko faktora \( 21 \), \( 220 \) i \( 55 \) preko faktora \( 55 \)) je dragulj koji pretvara naizgled glomazno deljenje u tablično \( 8 \cdot 4 \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Mešoviti broj kao proizvod.</strong> \( 1\tfrac{2}{5} \) <em>nije</em> \( 1 \cdot \tfrac{2}{5} = \tfrac{2}{5} \), nego \( 1 + \tfrac{2}{5} = \tfrac{7}{5} \). Razmak između celog dela i razlomka znači <em>plus</em>.</li>
+    <li><strong>Pogrešan znak kod deljenja razlomka.</strong> \( \tfrac{a}{b} : \tfrac{c}{d} \neq \tfrac{a}{b} \cdot \tfrac{c}{d} \). Tačno je „prevrni i pomnoži": \( \tfrac{a}{b} \cdot \tfrac{d}{c} \).</li>
+    <li><strong>Sabiranje pre deljenja u zagradi.</strong> Unutar prve zagrade prvo se izvršavaju \( 0{,}5 : 1{,}25 \) i \( 1\tfrac{2}{5} : \tfrac{11}{7} \), pa <em>tek onda</em> sabira/oduzima. Ako sabiraš pre deljenja, dobićeš sasvim drugi rezultat.</li>
+    <li><strong>Decimalno zaokruživanje rano u računu.</strong> \( 1{,}4 / (11/7) \) sa kalkulatorom daje \( \approx 0{,}8909\ldots \) — ako uzmeš samo \( 0{,}89 \), greška se kasnije <em>uveličava 10 puta</em> jer delimo sa \( \approx 0{,}095 \). Razlomci su sigurniji.</li>
+    <li><strong>Pogrešno čitanje intervala.</strong> „\( 0 \le x < 10 \)" znači <em>uključen 0, isključen 10</em>. Ako bi rezultat bio na granici (npr. \( x = 30 \)), morao bi pažljivo pogledati koji interval ga sadrži; \( 30 \) pripada (E), a ne (D).</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ x = \frac{168}{55} : \frac{21}{220} = \frac{168 \cdot 220}{55 \cdot 21} = 8 \cdot 4 = 32 \;\Rightarrow\; x \ge 30. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( x < 0 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 0 \le x < 10 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 10 \le x < 20 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 20 \le x < 30 \)</span>
+    <span class="answer-option correct" data-option="E">(E) \( x \ge 30 \)</span>
+  </div>
+  <p class="verification">Brza decimalna provera: \( \tfrac{168}{55} \approx 3{,}0545 \), \( \tfrac{21}{220} \approx 0{,}0955 \), pa \( x \approx 3{,}0545 / 0{,}0955 \approx 32 \). ✓ Pošto je \( 32 \ge 30 \), pripada isključivo intervalu (E).</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta bi se desilo ako u brojiocu zamenimo \( 1\tfrac{2}{5} : \tfrac{11}{7} \) sa \( 1\tfrac{2}{5} \cdot \tfrac{11}{7} \)? U koji bi interval onda upala vrednost \( x \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Tada je \( \tfrac{7}{5} \cdot \tfrac{11}{7} = \tfrac{11}{5} = 2{,}2 \). Brojilac u zagradi postaje \( 0{,}4 + 2{,}2 - \tfrac{3}{11} = \tfrac{22 + 121 - 15}{55} = \tfrac{128}{55} \). Onda je novi brojilac „velikog" razlomka \( \tfrac{128}{55} \cdot 3 = \tfrac{384}{55} \), a \( x' = \tfrac{384}{55} \cdot \tfrac{220}{21} = \tfrac{384 \cdot 4}{21} = \tfrac{1536}{21} \approx 73{,}1 \). Opet pripada intervalu (E), \( x \ge 30 \), ali je više od dva puta veće od originalnog \( 32 \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('numline-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  function roundedRect(x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+  }
+
+  function arrow(x1, y1, x2, y2, color) {
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    var ang = Math.atan2(y2 - y1, x2 - x1);
+    var ah = 8;
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - ah * Math.cos(ang - 0.4), y2 - ah * Math.sin(ang - 0.4));
+    ctx.lineTo(x2 - ah * Math.cos(ang + 0.4), y2 - ah * Math.sin(ang + 0.4));
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var warning   = cv('--sol-canvas-warning');
+    var tertiary  = cv('--sol-canvas-tertiary');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var axis      = cv('--sol-canvas-axis');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // ── Naslov ──
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText('Tok izračunavanja i položaj rešenja na brojevnoj pravoj', 28, 30);
+
+    // ── Gornji panel: tok izračunavanja ──
+    var rowY = 70;
+    var boxW = 148, boxH = 56;
+    var midX = W / 2;
+
+    // Brojilac box (levo)
+    var bx = 28;
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.10);
+    roundedRect(bx, rowY, boxW, boxH, 8);
+    ctx.fill();
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    roundedRect(bx, rowY, boxW, boxH, 8);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Brojilac', bx + boxW/2, rowY + 16);
+    ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+    ctx.fillStyle = primary;
+    ctx.fillText('168 / 55', bx + boxW/2, rowY + 40);
+
+    // Imenilac box (desno)
+    var ix = W - 28 - boxW;
+    ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.12);
+    roundedRect(ix, rowY, boxW, boxH, 8);
+    ctx.fill();
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2;
+    roundedRect(ix, rowY, boxW, boxH, 8);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Imenilac', ix + boxW/2, rowY + 16);
+    ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+    ctx.fillStyle = secondary;
+    ctx.fillText('21 / 220', ix + boxW/2, rowY + 40);
+
+    // Strelice ka srednjem boxu
+    arrow(bx + boxW + 4, rowY + boxH/2, midX - 90, rowY + boxH/2, muted);
+    arrow(ix - 4, rowY + boxH/2, midX + 90, rowY + boxH/2, muted);
+
+    // Sredina: x = 32
+    var cx = midX - 80, cy = rowY - 6;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.20);
+    roundedRect(cx, cy, 160, boxH + 12, 12);
+    ctx.fill();
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 3;
+    roundedRect(cx, cy, 160, boxH + 12, 12);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('x =', cx + 80, cy + 18);
+    ctx.font = 'bold 32px Inter, system-ui, sans-serif';
+    ctx.fillStyle = accent;
+    ctx.fillText('32', cx + 80, cy + 46);
+
+    // Mala oznaka deljenja
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('168·220 / (55·21) = 8·4', midX, rowY + boxH + 26);
+
+    // ── Donji panel: brojevna prava sa intervalima ──
+    var lineY = 280;
+    var lineL = 60;
+    var lineR = W - 60;
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText('Brojevna prava sa pet intervala (A–E)', W/2, lineY - 70);
+
+    // Glavna osa
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(lineL, lineY);
+    ctx.lineTo(lineR, lineY);
+    ctx.stroke();
+    arrow(lineR - 8, lineY, lineR + 4, lineY, axis);
+
+    // Mapiranje: -10 → lineL, 50 → lineR
+    var minX = -10, maxX = 50;
+    function tx(v) { return lineL + (v - minX) / (maxX - minX) * (lineR - lineL); }
+
+    // Bojene trake za intervale
+    var intervals = [
+      { from: -10,  to: 0,  letter: 'A', label: 'x < 0',          color: 'tertiary' },
+      { from: 0,   to: 10,  letter: 'B', label: '0 ≤ x < 10',     color: 'primary'   },
+      { from: 10,  to: 20,  letter: 'C', label: '10 ≤ x < 20',    color: 'secondary' },
+      { from: 20,  to: 30,  letter: 'D', label: '20 ≤ x < 30',    color: 'warning'   },
+      { from: 30,  to: 50,  letter: 'E', label: 'x ≥ 30',         color: 'accent'    }
+    ];
+
+    var bandH = 16;
+    for (var k = 0; k < intervals.length; k++) {
+      var iv = intervals[k];
+      var x1 = tx(iv.from), x2 = tx(iv.to);
+      var col = '--sol-canvas-' + iv.color;
+      ctx.fillStyle = cvAlpha(col, 0.22);
+      ctx.fillRect(x1, lineY - bandH/2, x2 - x1, bandH);
+      ctx.strokeStyle = cv(col);
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(x1, lineY - bandH/2, x2 - x1, bandH);
+
+      // slovo iznad trake
+      ctx.fillStyle = cv(col);
+      ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(iv.letter, (x1 + x2) / 2, lineY - 36);
+
+      // opis intervala
+      ctx.fillStyle = text;
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.fillText(iv.label, (x1 + x2) / 2, lineY + 32);
+    }
+
+    // Oznake na osi: 0, 10, 20, 30, 40
+    ctx.fillStyle = text;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    var ticks = [0, 10, 20, 30, 40];
+    for (var t = 0; t < ticks.length; t++) {
+      var v = ticks[t];
+      var px = tx(v);
+      ctx.strokeStyle = axis;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(px, lineY - bandH/2 - 2);
+      ctx.lineTo(px, lineY - bandH/2 - 8);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(px, lineY + bandH/2 + 2);
+      ctx.lineTo(px, lineY + bandH/2 + 8);
+      ctx.stroke();
+      ctx.fillStyle = muted;
+      ctx.fillText(String(v), px, lineY + bandH/2 + 12);
+    }
+
+    // Tačka x = 32 (istaknuta)
+    var xP = tx(32);
+    ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.28);
+    ctx.beginPath();
+    ctx.arc(xP, lineY, 18, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = highlight;
+    ctx.beginPath();
+    ctx.arc(xP, lineY, 8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Strelica i etiketa „x = 32"
+    var labY = lineY - 110;
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText('x = 32', xP, labY);
+
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(xP, labY + 6);
+    ctx.lineTo(xP, lineY - 10);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    arrow(xP, lineY - 18, xP, lineY - 10, highlight);
+
+    // Pomocni tekst ispod tacke
+    ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    ctx.fillText('upada u interval E', xP, lineY + 60);
+
+    // ── Donja legenda: rezime ──
+    ctx.fillStyle = text;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText('Rezime:  brojilac = 168/55,  imenilac = 21/220,  x = 32  ⇒  (E) x ≥ 30', W / 2, H - 22);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Vrednost složenog brojevnog izraza i pripadnost intervalu",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["razlomci", "decimalni brojevi", "mešoviti brojevi", "redosled operacija", "intervali"]
+}
+BRAINSPARK_META-->

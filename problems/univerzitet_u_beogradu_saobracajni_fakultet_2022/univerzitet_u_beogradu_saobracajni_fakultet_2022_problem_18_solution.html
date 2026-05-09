@@ -1,0 +1,642 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: |||x − 2| − 2| − 3| = 2. Naći zbir svih rešenja.
+
+Sistematsko skidanje apsolutnih vrednosti, sloj po sloj.
+
+Sloj 1: |A| = 2  ⇔  A = ±2, gde je A = ||x−2|−2|−3.
+   ||x−2|−2|−3 = 2  ili  ||x−2|−2|−3 = −2
+   ⇒ ||x−2|−2| = 5  ili  ||x−2|−2| = 1.
+
+Sloj 2a: ||x−2|−2| = 5  ⇒  |x−2|−2 = ±5
+   • |x−2| − 2 = 5 ⇒ |x−2| = 7
+   • |x−2| − 2 = −5 ⇒ |x−2| = −3 (NEMOGUĆE — apsolutna vrednost ≥ 0)
+
+Sloj 2b: ||x−2|−2| = 1 ⇒ |x−2|−2 = ±1
+   • |x−2| − 2 = 1 ⇒ |x−2| = 3
+   • |x−2| − 2 = −1 ⇒ |x−2| = 1
+
+Sloj 3: |x−2| = c (≥ 0) ⇒ x = 2 ± c.
+   • |x−2| = 7 ⇒ x = 9 ili x = −5
+   • |x−2| = 3 ⇒ x = 5 ili x = −1
+   • |x−2| = 1 ⇒ x = 3 ili x = 1
+
+Sva rešenja: {9, −5, 5, −1, 3, 1}. (6 rešenja, svako simetrično oko x = 2.)
+
+Provera u originalnoj jednačini:
+   x = 9: |9−2|=7, |7−2|=5, |5−3|=2 ✓
+   x = −5: |−5−2|=7, ..., 2 ✓
+   x = 5: |5−2|=3, |3−2|=1, |1−3|=2 ✓
+   x = −1: |−1−2|=3, ..., 2 ✓
+   x = 3: |3−2|=1, |1−2|=1, |1−3|=2 ✓
+   x = 1: |1−2|=1, ..., 2 ✓
+Svih 6 prolazi.
+
+Zbir: 9 + (−5) + 5 + (−1) + 3 + 1 = 12.
+
+Brži pristup za zbir: rešenja su simetrična oko x = 2 jer cela jednačina zavisi
+samo od |x−2|. Tačnije, parovi rešenja su {2+c, 2−c} sa centrom 2. Imamo 3 vrednosti
+c ∈ {7, 3, 1}, tj. 3 para. Zbir svakog para = 4. Ukupno: 3·4 = 12. ✓
+
+Tačan odgovor: (E) 12.
+
+Vizuelni prikaz:
+1) Brojevna prava sa svih 6 rešenja označenih, simetrija oko x = 2 vidljiva.
+2) Stablo (tree diagram) skidanja apsolutnih vrednosti — granaju se grane ±2/±5/±... ,
+   a nemoguće grane su precrtane.
+
+Pitfalls:
+- Zaboravljen drugi predznak na bilo kom sloju (gubi se pola rešenja).
+- Slučaj |x−2| = −3 nije „nemoguće, gotovo" već ga je važno eksplicitno odbaciti.
+- Aritmetička greška u sumi negativnih brojeva.
+</script>
+
+<h1 data-card="problem-title">Trostruko ugnežđena apsolutna vrednost</h1>
+<p data-card="problem-subtitle" class="subtitle">Algebra — sistematsko „skidanje" apsolutnih vrednosti i provera kandidata</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Zbir svih rešenja jednačine</p>
+  <div class="math-block">
+    \[ \big|\, ||x - 2| - 2| - 3 \,\big| = 2 \]
+  </div>
+  <p>je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 10 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 8 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 9 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 6 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 12 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">„Skidamo" apsolutne vrednosti sloj po sloj. Iz \( |A| = 2 \) sledi \( A = \pm 2 \); time se jednačina deli u dva slučaja, koji se opet dele kad otvorimo sledeći nivo \( |\cdot| \). Pratimo sve granice, eliminišemo one sa \( |x-2| < 0 \) (nemoguće), i u poslednjem koraku rešimo \( |x-2| = c \) kao \( x = 2 \pm c \). Zatim sve kandidate proveravamo i sumiramo.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Apsolutna vrednost — pravila i geometrijska interpretacija</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Definicija:</strong> \( |a| = a \) za \( a \ge 0 \), \( |a| = -a \) za \( a < 0 \). Uvek \( |a| \ge 0 \).</li>
+        <li><strong>Osnovna jednačina:</strong> \( |E| = c \) sa \( c \ge 0 \) je ekvivalentna sa \( E = c \) ili \( E = -c \). Ako je \( c < 0 \), nema rešenja.</li>
+        <li><strong>Geometrijski:</strong> \( |x - a| \) je rastojanje između \( x \) i \( a \) na brojevnoj pravoj. Otud \( |x - 2| = c \) opisuje sve tačke na rastojanju \( c \) od \( 2 \), pa su rešenja \( x = 2 - c \) i \( x = 2 + c \).</li>
+        <li><strong>Simetrija zbira:</strong> ako su rešenja jednačine simetrična oko broja \( m \) (odnosno parovi tipa \( (m - c, m + c) \)), zbir jednog para je \( 2m \). Ovde je \( m = 2 \), a parova ima \( 3 \), pa zbir = \( 3 \cdot 4 = 12 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — stablo slučajeva">
+  <h2>🌳 Stablo skidanja apsolutnih vrednosti</h2>
+  <p>Svaki nivo \( | \cdot | \) deli granu u dva slučaja \( + \) i \( - \). Crvene grane su nemoguće (vode na \( |x - 2| < 0 \)) i odbacuju se odmah.</p>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-tree" width="720" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Razgranavanje od \( |A| = 2 \) (vrh) do konkretnih vrednosti \( |x-2| \) (dno). Šest zelenih listova predstavlja šest validnih kandidata za \( x \). Crvena grana \( |x-2| = -3 \) je nemoguća i odmah se reže.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — brojevna prava">
+  <h2>📍 Brojevna prava: simetrija oko \( x = 2 \)</h2>
+  <p>Pošto cela jednačina zavisi samo od \( |x - 2| \), rešenja se grupišu u parove simetrične oko \( x = 2 \). Vidno je da svaki par ima zbir \( 4 \), a parova ima \( 3 \).</p>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-numberline" width="720" height="450"></canvas>
+  </div>
+  <p class="canvas-caption">Šest rešenja \( \{-5, -1, 1, 3, 5, 9\} \) na brojevnoj pravoj. Strelicama su naznačeni parovi: \( (-5, 9) \), \( (-1, 5) \), \( (1, 3) \) — svaki par je simetričan oko \( x = 2 \) i sumira se na \( 4 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Sloj 1: skidamo spoljnu \( |\cdot| \)</h3>
+      <p>Označimo unutrašnji izraz \( A = ||x-2| - 2| - 3 \). Tada je polazna jednačina \( |A| = 2 \), pa:</p>
+      <div class="math-block">
+        \[ A = 2 \quad \text{ili} \quad A = -2. \]
+      </div>
+      <p>Pisano detaljnije:</p>
+      <div class="math-block">
+        \[ ||x-2| - 2| - 3 = 2 \quad \Longrightarrow \quad ||x-2| - 2| = 5, \]
+        \[ ||x-2| - 2| - 3 = -2 \quad \Longrightarrow \quad ||x-2| - 2| = 1. \]
+      </div>
+      <p>Imamo dva potslučaja koje analiziramo nezavisno.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Sloj 2A: \( ||x-2| - 2| = 5 \)</h3>
+      <p>Ponavljamo princip \( |B| = 5 \) za \( B = |x-2| - 2 \):</p>
+      <div class="math-block">
+        \[ |x-2| - 2 = 5 \quad \Longrightarrow \quad |x-2| = 7, \]
+        \[ |x-2| - 2 = -5 \quad \Longrightarrow \quad |x-2| = -3. \]
+      </div>
+      <p>Druga grana je <span class="crossed">nemoguća</span> jer apsolutna vrednost ne može biti negativna. Odbacujemo je.</p>
+      <div class="callout callout-warning">
+        <p>Ovo je tipična zamka: kad pri otvaranju druge zagrade dobiješ \( |\text{nešto}| = -k \) sa \( k > 0 \), to nije rešenje, već nemogućnost — ne meša se sa „nula rešenja samo na ovoj grani".</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Sloj 2B: \( ||x-2| - 2| = 1 \)</h3>
+      <p>Isti princip:</p>
+      <div class="math-block">
+        \[ |x-2| - 2 = 1 \quad \Longrightarrow \quad |x-2| = 3, \]
+        \[ |x-2| - 2 = -1 \quad \Longrightarrow \quad |x-2| = 1. \]
+      </div>
+      <p>Obe grane daju nenegativnu vrednost, pa obe ostaju aktivne.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je grana sa \( |x-2| = -3 \) nemoguća, a obe iz sloja 2B aktivne?</summary>
+          <div class="detail-content">
+            <p>Apsolutna vrednost vraća uvek nenegativan broj. \( |x-2| \) može biti \( 0, 1, 3, 7, \ldots \) — bilo šta \( \ge 0 \). Ne može biti \( -3 \). U sloju 2B su obe vrednosti \( 1 \) i \( 3 \) nenegativne.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Sloj 3: skidamo poslednju \( |x-2| \)</h3>
+      <p>Imamo tri aktivne grane: \( |x-2| \in \{7, 3, 1\} \). Svaka jednačina \( |x-2| = c \) (\( c > 0 \)) daje dva rešenja \( x = 2 + c \) i \( x = 2 - c \):</p>
+      <div class="math-block">
+        \[ \begin{aligned}
+          |x-2| &= 7 \;\Longrightarrow\; x = 9 \text{ ili } x = -5, \\
+          |x-2| &= 3 \;\Longrightarrow\; x = 5 \text{ ili } x = -1, \\
+          |x-2| &= 1 \;\Longrightarrow\; x = 3 \text{ ili } x = 1.
+        \end{aligned} \]
+      </div>
+      <p>Ukupno <strong>6 kandidata</strong>: \( \{-5, -1, 1, 3, 5, 9\} \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera u originalnoj jednačini</h3>
+      <p>Kako smo svaki put samo dodavali sve grane (a ne uvodili spoljne zahteve poput domena), svi kandidati moraju da budu rešenja. Ipak proveravamo dva: krajnji \( x = 9 \) i jedan iznutra, recimo \( x = 3 \).</p>
+      <div class="math-block">
+        \[ x = 9: \; ||9-2|-2|-3| = ||7-2|-2|-... \to ||7-2|-3| \to |5 - 3| = 2 \;\checkmark \]
+      </div>
+      <div class="math-block">
+        \[ x = 3: \; |||3-2|-2|-3| = ||1-2|-3| = |1 - 3| = 2 \;\checkmark \]
+      </div>
+      <p>(Druge tačke se proveravaju analogno; sve daju \( 2 \) jer su izvedene direktno iz jednačine.)</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Zbir svih rešenja</h3>
+      <p>Sabiramo svih šest:</p>
+      <div class="math-block">
+        \[ 9 + (-5) + 5 + (-1) + 3 + 1 = 12. \]
+      </div>
+      <p>Ili elegantnije, primetimo da je svaki par \( (2-c, 2+c) \) simetričan oko \( 2 \) i sumira se na \( 4 \). Imamo \( 3 \) takva para, pa:</p>
+      <div class="math-block">
+        \[ \text{ukupan zbir} = 3 \cdot 4 = 12. \]
+      </div>
+      <p>Konačno: <span class="result">zbir svih rešenja = \( 12 \)</span>.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je zbir svakog para tačno \( 4 \)?</summary>
+          <div class="detail-content">
+            <p>Par dolazi iz jednačine \( |x-2| = c \), pa su rešenja \( x_1 = 2 - c \) i \( x_2 = 2 + c \). Tada \( x_1 + x_2 = (2 - c) + (2 + c) = 4 \). \( c \) se „pojede".</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Ugnežđene apsolutne vrednosti najbolje rešavamo <em>spolja prema unutra</em>: spoljni \( |\cdot| = k \) postaje par \( \pm k \), srednji \( |\cdot| = m \) postaje par \( \pm m \), itd. Kao binarno stablo. Trik za zbir: jednačina zavisi samo od \( |x - a| \), pa su rešenja simetrična oko \( a \), a svaki simetrični par doprinosi \( 2a \) ukupnom zbiru. Brojanje parova zamenjuje brojanje pojedinih korena.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \sum_{x \in \{-5,-1,1,3,5,9\}} x = 12 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 10 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 8 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 9 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 6 \)</span>
+    <span class="answer-option correct" data-option="E">(E) \( 12 \)</span>
+  </div>
+  <p class="verification">Provera simetrijom: rešenja su \( \{2 \pm 1, 2 \pm 3, 2 \pm 7\} \), tri para sa centrom \( 2 \). Zbir tri para = \( 3 \cdot (2 + 2) = 12 \). Provera direktnom sumom: \( 9 - 5 + 5 - 1 + 3 + 1 = 12 \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zaboravljen jedan predznak na nekom sloju:</strong> ako se otvori samo \( ||x-2|-2|-3 = 2 \) (a ne i \( = -2 \)), gubi se cela grana \( ||x-2|-2| = 1 \), pa i četiri rešenja \( \{-1, 1, 3, 5 \} \) — odgovor postaje \( 4 \) (nije ni među opcijama, a najbliža je (D) 6 ili (B) 8).</li>
+    <li><strong>Uračunato „nemoguće" \( |x-2| = -3 \):</strong> učenici ponekad ipak napišu \( x = 2 - 3 = -1 \) ili sl. — ali grane sa \( |x-2| < 0 \) se odbacuju u celosti. (Slučajnost je da broj \( -1 \) jeste rešenje, ali ne iz <em>te</em> grane.)</li>
+    <li><strong>Greška u sabiranju negativnih:</strong> \( 9 + (-5) + 5 + (-1) + 3 + 1 \) treba pažljivo: \( 9 - 5 = 4, +5 = 9, -1 = 8, +3 = 11, +1 = 12 \). Brza simetrija je sigurnija.</li>
+    <li><strong>Brkanje broja rešenja i njihovog zbira:</strong> rešenja ima \( 6 \) (zamka D), zbir je \( 12 \) (E). Pitanje traži zbir.</li>
+    <li><strong>Premešteno otvaranje (najpre unutrašnji \( |\cdot| \)):</strong> tehnički ide i obrnuto, ali zahteva intervale za \( x \) i znatno više slučajeva. Spolja-unutra je čisto.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Reši istu strukturu sa drugom desnom stranom: koliki je zbir svih rešenja jednačine</p>
+  <div class="math-block">
+    \[ ||| x - 2 | - 2 | - 3 | = 5 \,? \]
+  </div>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Sloj 1: \( ||x-2|-2| - 3 = \pm 5 \), pa \( ||x-2|-2| = 8 \) ili \( ||x-2|-2| = -2 \) (ova druga je <em>nemoguća</em>).</p>
+      <p>Sloj 2: \( |x-2| - 2 = \pm 8 \), pa \( |x-2| = 10 \) (radi) ili \( |x-2| = -6 \) (nemoguće).</p>
+      <p>Sloj 3: \( |x - 2| = 10 \) ⇒ \( x = 12 \) ili \( x = -8 \).</p>
+      <p>Sada imamo samo <strong>2 rešenja</strong>, par simetričan oko \( 2 \). Zbir = \( 12 + (-8) = 4 \).</p>
+      <p>Pouka: kad je desna strana „velika", spoljni red odbacuje više grana i rešenja je manje, ali zbir ostaje isti tip — ovde \( 2 \cdot 2 = 4 \) za jedan par.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-tree');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var primary = cv('--sol-canvas-primary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var secondary = cv('--sol-canvas-secondary');
+    var danger = cv('--sol-canvas-danger');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Stablo slučajeva: |||x − 2| − 2| − 3| = 2', W / 2, 28);
+
+    // Tree levels (y positions)
+    var y0 = 70;   // root
+    var y1 = 160;  // sloj 1: ||...|| = 5 vs = 1
+    var y2 = 260;  // sloj 2: |x-2| = ...
+    var y3 = 380;  // sloj 3: x values
+    var y4 = 470;  // labels for x
+
+    // Helper: draw a node with text
+    function node(x, y, text1, text2, color, fillAlpha) {
+      var w = 110, h = 38;
+      ctx.fillStyle = cvAlpha(color, fillAlpha || 0.15);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.roundRect ? ctx.roundRect(x - w/2, y - h/2, w, h, 7) :
+        (function() {
+          ctx.moveTo(x - w/2 + 7, y - h/2);
+          ctx.lineTo(x + w/2 - 7, y - h/2);
+          ctx.quadraticCurveTo(x + w/2, y - h/2, x + w/2, y - h/2 + 7);
+          ctx.lineTo(x + w/2, y + h/2 - 7);
+          ctx.quadraticCurveTo(x + w/2, y + h/2, x + w/2 - 7, y + h/2);
+          ctx.lineTo(x - w/2 + 7, y + h/2);
+          ctx.quadraticCurveTo(x - w/2, y + h/2, x - w/2, y + h/2 - 7);
+          ctx.lineTo(x - w/2, y - h/2 + 7);
+          ctx.quadraticCurveTo(x - w/2, y - h/2, x - w/2 + 7, y - h/2);
+          ctx.closePath();
+        })();
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = color;
+      ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      if (text2) {
+        ctx.fillText(text1, x, y - 3);
+        ctx.font = '11px Inter, system-ui, sans-serif';
+        ctx.fillText(text2, x, y + 12);
+      } else {
+        ctx.fillText(text1, x, y + 4);
+      }
+    }
+    function line(x1, y1, x2, y2, color, dashed) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.6;
+      if (dashed) ctx.setLineDash([5, 4]); else ctx.setLineDash([]);
+      ctx.beginPath();
+      ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // Root
+    var rootX = W / 2;
+    node(rootX, y0, '|A| = 2', 'A = ||x−2|−2|−3', primary, 0.18);
+
+    // Sloj 1: branches at x positions
+    var L1x = W / 2 - 200, L2x = W / 2 + 200;
+    line(rootX, y0 + 20, L1x, y1 - 20, primary);
+    line(rootX, y0 + 20, L2x, y1 - 20, primary);
+    // Edge labels (+2 / -2)
+    ctx.fillStyle = muted;
+    ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('A = +2', (rootX + L1x)/2 - 6, (y0 + y1)/2);
+    ctx.textAlign = 'left';
+    ctx.fillText('A = −2', (rootX + L2x)/2 + 6, (y0 + y1)/2);
+
+    node(L1x, y1, '||x−2|−2| = 5', null, secondary, 0.18);
+    node(L2x, y1, '||x−2|−2| = 1', null, accent, 0.18);
+
+    // Sloj 2
+    // Left subtree
+    var L1Lx = L1x - 110, L1Rx = L1x + 110;
+    line(L1x, y1 + 20, L1Lx, y2 - 20, secondary);
+    line(L1x, y1 + 20, L1Rx, y2 - 20, danger, true);
+    node(L1Lx, y2, '|x−2| = 7', null, secondary, 0.18);
+    // The right child is impossible
+    ctx.fillStyle = cvAlpha('--sol-canvas-danger', 0.12);
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 1.6;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath();
+    var w = 130, h = 38;
+    ctx.rect(L1Rx - w/2, y2 - h/2, w, h);
+    ctx.fill(); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = danger;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('|x−2| = −3', L1Rx, y2 - 2);
+    ctx.font = '10px Inter, system-ui, sans-serif';
+    ctx.fillText('NEMOGUĆE — odbaci', L1Rx, y2 + 13);
+
+    // Right subtree
+    var L2Lx = L2x - 110, L2Rx = L2x + 110;
+    line(L2x, y1 + 20, L2Lx, y2 - 20, accent);
+    line(L2x, y1 + 20, L2Rx, y2 - 20, accent);
+    node(L2Lx, y2, '|x−2| = 3', null, accent, 0.18);
+    node(L2Rx, y2, '|x−2| = 1', null, accent, 0.18);
+
+    // Sloj 3 — leaves (x values), grouped under each Sloj 2 node
+    function leaves(parentX, y_parent, c, color) {
+      var leftX = parentX - 50, rightX = parentX + 50;
+      line(parentX, y_parent + 20, leftX, y3 - 16, color);
+      line(parentX, y_parent + 20, rightX, y3 - 16, color);
+      // Render each leaf as a circle with x value
+      [{x: leftX, val: 2 - c}, {x: rightX, val: 2 + c}].forEach(function(L) {
+        ctx.fillStyle = cvAlpha(color === danger ? '--sol-canvas-danger' : '--sol-canvas-accent', 0.25);
+        ctx.beginPath();
+        ctx.arc(L.x, y3, 18, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.6;
+        ctx.stroke();
+        ctx.fillStyle = color;
+        ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('x = ' + L.val, L.x, y3 + 4);
+      });
+    }
+    leaves(L1Lx, y2, 7, secondary);   // → x = -5, 9
+    leaves(L2Lx, y2, 3, accent);       // → x = -1, 5
+    leaves(L2Rx, y2, 1, accent);       // → x = 1, 3
+
+    // Bottom annotation
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('6 zelenih/ljubičastih listova = 6 rešenja', W / 2, y4);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('Sva rešenja: { −5, −1, 1, 3, 5, 9 }     ⇒     zbir = 12', W / 2, y4 + 22);
+    ctx.fillStyle = danger;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillText('Crvena grana (|x−2| = −3) je odbačena pre nego što stigne do listova.', W / 2, y4 + 44);
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.fillText('Zapazi simetriju: svi listovi se grupišu u parove (2 ± c)', W / 2, y4 + 66);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-numberline');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var primary = cv('--sol-canvas-primary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var secondary = cv('--sol-canvas-secondary');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var axis = cv('--sol-canvas-axis');
+    var grid = cv('--sol-canvas-grid');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Šest rešenja na brojevnoj pravoj — simetrija oko x = 2', W / 2, 28);
+
+    // Number line params
+    var xMin = -7, xMax = 11;
+    var marginL = 50, marginR = 50;
+    var ny = H / 2 + 40;
+    var sx = (W - marginL - marginR) / (xMax - xMin);
+    function px(x) { return marginL + (x - xMin) * sx; }
+
+    // Center marker x = 2 (vertical guide)
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(px(2), 60); ctx.lineTo(px(2), H - 50);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('centar simetrije: x = 2', px(2), 70);
+
+    // Number line axis
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(marginL - 10, ny); ctx.lineTo(W - marginR + 10, ny);
+    ctx.stroke();
+    // Arrow tips
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(W - marginR + 10, ny); ctx.lineTo(W - marginR + 2, ny - 5); ctx.lineTo(W - marginR + 2, ny + 5); ctx.closePath(); ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(marginL - 10, ny); ctx.lineTo(marginL - 2, ny - 5); ctx.lineTo(marginL - 2, ny + 5); ctx.closePath(); ctx.fill();
+
+    // Tick marks at integers
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var x = xMin; x <= xMax; x++) {
+      ctx.beginPath();
+      ctx.moveTo(px(x), ny - 5); ctx.lineTo(px(x), ny + 5);
+      ctx.stroke();
+      ctx.fillText(String(x), px(x), ny + 20);
+    }
+
+    // Solution dots and pair arcs
+    var solutions = [-5, -1, 1, 3, 5, 9];
+    var pairs = [
+      { left: -5, right: 9, color: secondary, label: 'c = 7', radius: 60 },
+      { left: -1, right: 5, color: accent, label: 'c = 3', radius: 95 },
+      { left: 1, right: 3, color: primary, label: 'c = 1', radius: 130 }
+    ];
+
+    // Draw pair arcs above the line
+    pairs.forEach(function(p, idx) {
+      ctx.strokeStyle = p.color;
+      ctx.lineWidth = 1.8;
+      var x1 = px(p.left), x2 = px(p.right);
+      var midX = (x1 + x2) / 2;
+      // Arc heights — bigger pair = higher
+      var arcH = 40 + idx * 28;
+      ctx.beginPath();
+      ctx.moveTo(x1, ny - 8);
+      ctx.bezierCurveTo(x1, ny - 8 - arcH, x2, ny - 8 - arcH, x2, ny - 8);
+      ctx.stroke();
+      // Pair label
+      ctx.fillStyle = p.color;
+      ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('par: x = 2 ± ' + p.label.replace('c = ', ''), midX, ny - 8 - arcH - 6);
+      // Sum label
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.fillText('zbir para = 4', midX, ny - 8 - arcH + 14);
+    });
+
+    // Solution dots
+    solutions.forEach(function(x) {
+      var color = primary;
+      if (x === -5 || x === 9) color = secondary;
+      else if (x === -1 || x === 5) color = accent;
+      // Glow
+      ctx.fillStyle = cvAlpha(color === secondary ? '--sol-canvas-secondary' : (color === accent ? '--sol-canvas-accent' : '--sol-canvas-primary'), 0.25);
+      ctx.beginPath();
+      ctx.arc(px(x), ny, 11, 0, Math.PI * 2);
+      ctx.fill();
+      // Inner dot
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(px(x), ny, 6, 0, Math.PI * 2);
+      ctx.fill();
+      // Label below
+      ctx.fillStyle = color;
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('x = ' + x, px(x), ny + 42);
+    });
+
+    // Bottom big result
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Zbir svih rešenja:  3 para × 4 = 12', W / 2, H - 18);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Trostruko ugnežđena apsolutna vrednost",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["apsolutna vrednost", "ugnežđene jednačine", "stablo slučajeva", "simetrija rešenja", "brojevna prava"]
+}
+BRAINSPARK_META-->

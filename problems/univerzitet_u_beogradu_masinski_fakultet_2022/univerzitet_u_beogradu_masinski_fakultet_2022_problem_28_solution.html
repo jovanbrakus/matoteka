@@ -1,0 +1,587 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Tražimo: ((3/(1+i)) + ((1+i)/(2i)))^16.
+
+Korak 1 — uprostimo prvi razlomak: 3/(1+i).
+Pomnožimo brojilac i imenilac konjugovanim brojem (1 − i):
+  3/(1+i) = 3(1−i) / ((1+i)(1−i)) = 3(1−i) / (1² − i²) = 3(1−i) / (1 − (−1)) = 3(1−i) / 2.
+
+Korak 2 — uprostimo drugi razlomak: (1+i)/(2i).
+Više pristupa; izaberemo množenje i brojioca i imenioca sa −i (konjugat od i je −i, ili: cilj je da se imenilac realizuje):
+  (1+i)/(2i) = ((1+i)·(−i)) / (2i · (−i)) = (−i − i²) / (−2i²) = (−i + 1) / 2 = (1 − i)/2.
+  Provera ovog rezultata: pomnožimo (1−i)/2 sa 2i: (1−i)/2 · 2i = (1−i)·i = i − i² = i + 1 = 1+i. ✓
+
+Korak 3 — saberemo:
+  3(1−i)/2 + (1−i)/2 = (3+1)(1−i)/2 = 4(1−i)/2 = 2(1−i).
+
+Označimo z = 2(1 − i). Treba da nađemo z^16.
+
+Korak 4 — nađemo modul i argument od z = 2 − 2i:
+  |z| = √(2² + (−2)²) = √(4 + 4) = √8 = 2√2.
+  arg(z): tačka (2, −2) — IV kvadrant. tan(arg) = −2/2 = −1, pa arg = −π/4.
+
+Polarni oblik: z = 2√2 · (cos(−π/4) + i·sin(−π/4)).
+
+Korak 5 — De Moivreova formula: z^n = |z|^n · (cos(n·arg) + i·sin(n·arg)).
+  |z|^16 = (2√2)^16 = (2^1 · 2^(1/2))^16 = (2^(3/2))^16 = 2^(3/2 · 16) = 2^24.
+  Argument: 16 · (−π/4) = −4π. Pošto je period 2π, −4π ≡ 0 (mod 2π).
+  Dakle: cos(−4π) + i·sin(−4π) = cos 0 + i·sin 0 = 1 + i·0 = 1.
+  Stoga: z^16 = 2^24 · 1 = 2^24.
+
+Numerička provera:
+  z = 2 − 2i; |z|² = 8; z² = (2−2i)² = 4 − 8i + 4i² = 4 − 8i − 4 = −8i.
+  z^4 = (z²)² = (−8i)² = 64 · i² = −64.
+  z^8 = (z^4)² = (−64)² = 4096 = 2^12. ✓ (i nije imaginarno — realno!)
+  z^16 = (z^8)² = (2^12)² = 2^24. ✓
+
+Odgovor: (D) 2^24.
+
+Klopke / kontrole:
+  • Racionalizacija imenioca u kompleksnim razlomcima — množimo sa konjugatom.
+  • Posebno za razlomak sa „čistim i" u imeniocu, množi sa −i (jer i · (−i) = −i² = 1, pa imenilac postaje realan i pozitivan).
+  • |z|^16 nije |z|^8 · 2 — uvek pomnoži moduo na n.
+  • (2√2)^16 = 2^24, NE 2^16.
+  • Argument −4π je celobrojni umnožak od 2π, pa daje 1, ne 0!
+  • z^16 je REALAN broj iako je z kompleksan — zbog ugla koji „padne" na nulu po modu 2π.
+</script>
+
+<h1 data-card="problem-title">Stepen kompleksnog izraza pomoću De Moivreove formule</h1>
+<p data-card="problem-subtitle" class="subtitle">Kompleksni brojevi, racionalizacija, polarni oblik, stepen</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Vrednost izraza</p>
+  <div class="math-block">\[ \left(\dfrac{3}{1+i} + \dfrac{1+i}{2i}\right)^{16} \]</div>
+  <p>je:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 2^{8} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 2^{16} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 2^{24} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 2^{32} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Prvo <strong>uprostimo</strong> oba razlomka racionalizacijom imenioca: prvi pomnožimo konjugovanim brojem \( 1 - i \), drugi pomnožimo sa \( -i \) (jer \( i \cdot (-i) = 1 \)). Saberemo, dobijamo \( z = 2(1 - i) \). Zatim nađemo modul \( |z| \) i argument \( \arg z \), pa primenimo <strong>De Moivreovu formulu</strong> \( z^n = |z|^n \cdot \bigl(\cos(n \arg z) + i \sin(n \arg z)\bigr) \). Ugao će ispasti \( -4\pi \), što je celobrojni umnožak od \( 2\pi \), pa je sinusno-kosinusni faktor jednak \( 1 \) — i ostaje samo \( |z|^{16} \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Kompleksni brojevi: racionalizacija, modul, argument, De Moivre</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Konjugat</span> \( \overline{a + bi} = a - bi \). Proizvod \( (a+bi)(a-bi) = a^2 + b^2 \) je realan i nenegativan.</li>
+        <li><span class="formula-label">Racionalizacija</span> \( \dfrac{1}{a + bi} = \dfrac{a - bi}{a^2 + b^2} \). Za imenilac sa „čistim \( i \)": \( \dfrac{1}{ki} = \dfrac{-i}{k} \), jer \( i \cdot (-i) = 1 \).</li>
+        <li><span class="formula-label">Modul i argument</span> Za \( z = a + bi \): \( |z| = \sqrt{a^2 + b^2} \), \( \arg z \) je ugao u kompleksnoj ravni mereći od pozitivne realne ose.</li>
+        <li><span class="formula-label">Polarni oblik</span> \( z = |z|\,(\cos\varphi + i\sin\varphi) \), gde je \( \varphi = \arg z \).</li>
+        <li><span class="formula-label">De Moivreova formula</span> \( z^n = |z|^n \cdot (\cos(n\varphi) + i\sin(n\varphi)) \). Modul se diže na stepen, ugao se množi sa \( n \).</li>
+        <li><span class="formula-label">Periodičnost</span> \( \cos(\varphi + 2k\pi) = \cos\varphi \), \( \sin(\varphi + 2k\pi) = \sin\varphi \). Ako je \( n\varphi \) celobrojni umnožak od \( 2\pi \), izraz se svodi na \( |z|^n \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz: z u kompleksnoj ravni i njegovi stepeni">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="720" height="640"></canvas>
+  </div>
+  <p class="canvas-caption">Tačka \( z = 2(1 - i) = 2 - 2i \) u IV kvadrantu. Modul \( |z| = 2\sqrt{2} \), argument \( \varphi = -\pi/4 \). Stepenovanje rotira tačku za ugao \( \varphi \) i istovremeno je „udaljava" od ishodišta po modulu. Kako je \( 16 \cdot (-\pi/4) = -4\pi \) — pun broj puta \( 2\pi \) — tačka se vraća na pozitivnu realnu osu, te \( z^{16} = |z|^{16} = (2\sqrt{2})^{16} = 2^{24} \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Uprosti prvi razlomak \( \dfrac{3}{1+i} \)</h3>
+      <p>Pomnožimo brojilac i imenilac konjugatom \( 1 - i \) da bismo imenilac „očistili" od imaginarnog dela:</p>
+      <div class="math-block">\[ \frac{3}{1+i} = \frac{3(1-i)}{(1+i)(1-i)} = \frac{3(1-i)}{1^2 - i^2} = \frac{3(1-i)}{1-(-1)} = \frac{3(1-i)}{2}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( (1+i)(1-i) = 2 \)?</summary>
+          <div class="detail-content"><p>Po formuli razlike kvadrata: \( (a+b)(a-b) = a^2 - b^2 \). Ovde je \( a = 1 \), \( b = i \), pa imamo \( 1^2 - i^2 = 1 - (-1) = 2 \). Generalno, \( (a+bi)(a-bi) = a^2 + b^2 \) je uvek nenegativan realan broj — zato i racionalizacija „radi".</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Uprosti drugi razlomak \( \dfrac{1+i}{2i} \)</h3>
+      <p>Sada imenilac sadrži samo „čisto \( i \)". Najlakše ga uklanjamo množenjem brojioca i imenioca sa \( -i \) (jer \( i \cdot (-i) = -i^2 = 1 \)):</p>
+      <div class="math-block">\[ \frac{1+i}{2i} = \frac{(1+i)\cdot(-i)}{2i \cdot (-i)} = \frac{-i - i^2}{-2i^2} = \frac{-i - (-1)}{-2 \cdot (-1)} = \frac{1 - i}{2}. \]</div>
+      <p class="note">Korak po korak u brojiocu: \( (1+i)(-i) = -i - i^2 = -i - (-1) = -i + 1 = 1 - i \). U imeniocu: \( 2i \cdot (-i) = -2i^2 = -2 \cdot (-1) = 2 \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: brza provera obrnutim množenjem.</summary>
+          <div class="detail-content"><p>Ako je \( \dfrac{1+i}{2i} = \dfrac{1-i}{2} \), onda mora da važi \( (1+i) = 2i \cdot \dfrac{1-i}{2} = i(1-i) = i - i^2 = i + 1 \). Tačno — provera prošla. ✓</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Saberi razlomke i sredi izraz u zagradi</h3>
+      <p>Oba razlomka već imaju zajednički „faktor" \( (1 - i) \) i isti imenilac \( 2 \), pa lako sabiramo:</p>
+      <div class="math-block">\[ \frac{3(1-i)}{2} + \frac{1-i}{2} = \frac{3(1-i) + (1-i)}{2} = \frac{(3+1)(1-i)}{2} = \frac{4(1-i)}{2} = 2(1-i). \]</div>
+      <p>Označimo <span class="result">\( z = 2(1 - i) = 2 - 2i \)</span>. Zadatak se sveo na \( z^{16} \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Nađi modul i argument od \( z = 2 - 2i \)</h3>
+      <p>Modul:</p>
+      <div class="math-block">\[ |z| = \sqrt{2^2 + (-2)^2} = \sqrt{4 + 4} = \sqrt{8} = 2\sqrt{2}. \]</div>
+      <p>Argument: tačka \( (2, -2) \) je u <em>IV kvadrantu</em> (pozitivan realni deo, negativan imaginarni). Pošto je \( |\Re z| = |\Im z| = 2 \), ugao je \( -\pi/4 \) (mereći od pozitivne realne ose, idemo na dole):</p>
+      <div class="math-block">\[ \arg z = -\frac{\pi}{4}. \]</div>
+      <p>Polarni oblik:</p>
+      <div class="math-block">\[ z = 2\sqrt{2}\left(\cos\!\left(-\tfrac{\pi}{4}\right) + i\sin\!\left(-\tfrac{\pi}{4}\right)\right). \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kako iz polarnog oblika vraćaš algebarski?</summary>
+          <div class="detail-content"><p>\( \cos(-\pi/4) = \dfrac{\sqrt{2}}{2} \), \( \sin(-\pi/4) = -\dfrac{\sqrt{2}}{2} \). Pa: \( 2\sqrt{2}\left(\dfrac{\sqrt{2}}{2} - i\dfrac{\sqrt{2}}{2}\right) = 2\sqrt{2} \cdot \dfrac{\sqrt{2}}{2}(1 - i) = 2(1 - i) = 2 - 2i \). ✓</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Primeni De Moivreovu formulu za \( z^{16} \)</h3>
+      <p>Po De Moivreu, modul se diže na stepen, a ugao se množi sa \( n = 16 \):</p>
+      <div class="math-block">\[ z^{16} = |z|^{16}\bigl(\cos(16\varphi) + i\sin(16\varphi)\bigr), \quad \varphi = -\tfrac{\pi}{4}. \]</div>
+      <p><strong>Modul na 16:</strong></p>
+      <div class="math-block">\[ |z|^{16} = (2\sqrt{2})^{16} = \bigl(2 \cdot 2^{1/2}\bigr)^{16} = \bigl(2^{3/2}\bigr)^{16} = 2^{(3/2)\cdot 16} = 2^{24}. \]</div>
+      <p><strong>Ugao na 16:</strong></p>
+      <div class="math-block">\[ 16 \cdot \left(-\frac{\pi}{4}\right) = -4\pi. \]</div>
+      <p>Kako je \( -4\pi \) celobrojni umnožak od \( 2\pi \) (\( -4\pi = -2 \cdot 2\pi \)), trigonometrijske funkcije se vraćaju na nulu:</p>
+      <div class="math-block">\[ \cos(-4\pi) = 1, \qquad \sin(-4\pi) = 0. \]</div>
+      <p>Spojimo:</p>
+      <div class="math-block">\[ z^{16} = 2^{24}\,(1 + i \cdot 0) = 2^{24}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Brza provera ponovljenim kvadriranjem</h3>
+      <p>Bez De Moivrea, samo da budemo sigurni:</p>
+      <div class="math-block">\[ z^2 = (2 - 2i)^2 = 4 - 8i + 4i^2 = 4 - 8i - 4 = -8i. \]</div>
+      <div class="math-block">\[ z^4 = (z^2)^2 = (-8i)^2 = 64 \cdot i^2 = -64. \]</div>
+      <div class="math-block">\[ z^8 = (z^4)^2 = (-64)^2 = 4096 = 2^{12}. \]</div>
+      <div class="math-block">\[ z^{16} = (z^8)^2 = (2^{12})^2 = 2^{24}. \]</div>
+      <p>Ista vrednost — <span class="result">\( 2^{24} \)</span>. ✓</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Brojevi su namerno odabrani: ugao \( -\pi/4 \) puta \( 16 \) daje \( -4\pi \) — tačno dve pune rotacije. To znači da kompleksni broj \( z^{16} \) „pada" tačno na pozitivnu realnu osu, pa je odgovor čisti realni broj. Modul \( 2\sqrt{2} = 2^{3/2} \) na šesnaesti stepen daje \( 2^{24} \). Pouka: pre nego što zaglaviš u algebarskom množenju, pogledaj polarni oblik — često se ugao „nameš" na celobrojni umnožak od \( 2\pi \), pa ostaje samo modul.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pri racionalizaciji \( \dfrac{1+i}{2i} \), množiti samo brojilac (a ne i imenilac) sa \( -i \). To menja vrednost razlomka. Mora se množiti i gore i dole.</li>
+    <li>Tumačiti \( i^2 \) kao \( +1 \). Tačno je \( i^2 = -1 \), pa \( -i^2 = +1 \).</li>
+    <li>Pisati \( (2\sqrt{2})^{16} = 2^{16} \). Ne — \( (2\sqrt{2})^{16} = (2^{3/2})^{16} = 2^{24} \). Eksponent unutra množimo brojem napolju.</li>
+    <li>Argument tačke \( (2, -2) \) staviti na \( +\pi/4 \). Tačka je u <em>IV</em> kvadrantu (negativan imaginarni deo), pa je ugao \( -\pi/4 \), a ne \( +\pi/4 \).</li>
+    <li>Ugao \( -4\pi \) skratiti pogrešno: misliti da je „nula \( + \) nešto", a zapravo je \( -4\pi = -2 \cdot 2\pi \), tj. dve pune rotacije unazad — kosinus \( = 1 \), sinus \( = 0 \).</li>
+    <li>Zaboraviti da je \( z^{16} \) <strong>realan</strong> broj. Iako je \( z \) kompleksan, ugao se „smota" pa nestane imaginarni deo.</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \left(\dfrac{3}{1+i} + \dfrac{1+i}{2i}\right)^{16} = \bigl(2(1-i)\bigr)^{16} = 2^{24} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 1 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 2^{8} \)</span>
+    <span class="answer-option" data-option="C">(C) \( 2^{16} \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 2^{24} \)</span>
+    <span class="answer-option" data-option="E">(E) \( 2^{32} \)</span>
+  </div>
+  <p class="verification">Provera kvadriranjem: \( z = 2 - 2i \), \( z^2 = -8i \), \( z^4 = -64 \), \( z^8 = 4096 = 2^{12} \), \( z^{16} = 2^{24} \). ✓ Numerička vrednost: \( 2^{24} = 16\,777\,216 \).</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Kako se odgovor menja ako stepen umesto \( 16 \) bude \( 18 \)? Drugim rečima, koliko je \( \bigl(2(1-i)\bigr)^{18} \)? Pokušaj da odrediš i da li je rezultat realan ili kompleksan.</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Modul: \( (2\sqrt{2})^{18} = (2^{3/2})^{18} = 2^{27} \). Ugao: \( 18 \cdot (-\pi/4) = -9\pi/2 \). Skratimo po modulu \( 2\pi \): \( -9\pi/2 + 4\pi \cdot \mathbb{Z} \). Najbliži predstavnik u \( [-\pi, \pi] \): \( -9\pi/2 + 2 \cdot 2\pi = -9\pi/2 + 4\pi = -\pi/2 \). Pa: \( \cos(-\pi/2) = 0 \), \( \sin(-\pi/2) = -1 \). Konačno: \( z^{18} = 2^{27}(0 + i \cdot (-1)) = -2^{27} i \). Sad je rezultat <em>čisto imaginaran</em>! Pravilo: stepen \( n \) određuje gde tačka „zaustavlja" rotaciju — multipi od \( 2\pi \) → realna osa, multipi \( \pi/2 \) (ali ne \( 2\pi \)) → imaginarna osa.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  // Top half: complex plane with z and successive powers
+  // Bottom half: text panel with computation
+
+  function draw() {
+    styles = getComputedStyle(root);
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+    var tertiary  = cv('--sol-canvas-tertiary');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 17px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Kompleksna ravan: z = 2 − 2i  i  rotacija po stepenu', W / 2, 28);
+
+    // ── Coordinate system ──
+    // Plot area centered
+    var planeTop = 56;
+    var planeBottom = 380;
+    var planeH = planeBottom - planeTop;
+    var planeCx = W / 2;
+    var planeCy = (planeTop + planeBottom) / 2;
+    var unit = 50;  // pixels per unit
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var gx = -5; gx <= 5; gx++) {
+      var px = planeCx + gx * unit;
+      if (px < 30 || px > W - 30) continue;
+      ctx.beginPath();
+      ctx.moveTo(px, planeTop);
+      ctx.lineTo(px, planeBottom);
+      ctx.stroke();
+    }
+    for (var gy = -3; gy <= 3; gy++) {
+      var py = planeCy - gy * unit;
+      if (py < planeTop || py > planeBottom) continue;
+      ctx.beginPath();
+      ctx.moveTo(30, py);
+      ctx.lineTo(W - 30, py);
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    // X axis (Re)
+    ctx.beginPath();
+    ctx.moveTo(30, planeCy);
+    ctx.lineTo(W - 30, planeCy);
+    ctx.stroke();
+    // Y axis (Im)
+    ctx.beginPath();
+    ctx.moveTo(planeCx, planeTop);
+    ctx.lineTo(planeCx, planeBottom);
+    ctx.stroke();
+    // Arrowheads
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(W - 30, planeCy);
+    ctx.lineTo(W - 38, planeCy - 5);
+    ctx.lineTo(W - 38, planeCy + 5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(planeCx, planeTop);
+    ctx.lineTo(planeCx - 5, planeTop + 8);
+    ctx.lineTo(planeCx + 5, planeTop + 8);
+    ctx.closePath();
+    ctx.fill();
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = 'italic bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Re', W - 28, planeCy + 4);
+    ctx.textAlign = 'left';
+    ctx.fillText('Im', planeCx + 8, planeTop + 6);
+
+    // Tick numbers
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var tx = -4; tx <= 4; tx++) {
+      if (tx === 0) continue;
+      var tpx = planeCx + tx * unit;
+      if (tpx < 30 || tpx > W - 30) continue;
+      ctx.fillText(String(tx), tpx, planeCy + 16);
+    }
+    ctx.textAlign = 'right';
+    for (var ty = -2; ty <= 3; ty++) {
+      if (ty === 0) continue;
+      var tpy = planeCy - ty * unit;
+      if (tpy < planeTop || tpy > planeBottom) continue;
+      ctx.fillText(String(ty) + 'i', planeCx - 6, tpy + 4);
+    }
+    // Origin label
+    ctx.textAlign = 'right';
+    ctx.fillText('0', planeCx - 6, planeCy + 14);
+
+    function plot(re, im) { return { x: planeCx + re * unit, y: planeCy - im * unit }; }
+
+    // ── z = 2 - 2i ──
+    var zP = plot(2, -2);
+    // arrow from origin to z
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(planeCx, planeCy);
+    ctx.lineTo(zP.x, zP.y);
+    ctx.stroke();
+    // arrowhead
+    var ang = Math.atan2(zP.y - planeCy, zP.x - planeCx);
+    ctx.fillStyle = primary;
+    ctx.beginPath();
+    ctx.moveTo(zP.x, zP.y);
+    ctx.lineTo(zP.x - 10 * Math.cos(ang - 0.4), zP.y - 10 * Math.sin(ang - 0.4));
+    ctx.lineTo(zP.x - 10 * Math.cos(ang + 0.4), zP.y - 10 * Math.sin(ang + 0.4));
+    ctx.closePath();
+    ctx.fill();
+    // dot
+    ctx.fillStyle = primary;
+    ctx.beginPath();
+    ctx.arc(zP.x, zP.y, 7, 0, Math.PI * 2);
+    ctx.fill();
+    // glow
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.25);
+    ctx.beginPath();
+    ctx.arc(zP.x, zP.y, 13, 0, Math.PI * 2);
+    ctx.fill();
+    // label
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('z = 2 − 2i', zP.x + 14, zP.y + 4);
+
+    // angle arc (small arc from positive real axis going down to z)
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.arc(planeCx, planeCy, 30, 0, Math.PI / 4, false);  // canvas y inverted: 0 to +π/4 = below x-axis
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // angle label
+    ctx.fillStyle = highlight;
+    ctx.font = 'italic bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('φ = −π/4', planeCx + 36, planeCy + 22);
+
+    // |z| label along the radius
+    var midX = (planeCx + zP.x) / 2;
+    var midY = (planeCy + zP.y) / 2;
+    ctx.fillStyle = primary;
+    ctx.font = 'italic bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('|z| = 2√2', midX + 8, midY - 8);
+
+    // ── z² = -8i (on negative Im axis) ──
+    // Show small markers for z² and z^4 to suggest the rotation
+    var z2P = plot(0, -8/2);  // -8i would be at Im = -8; cap to -8/2 just for display? actually -8i is well off-canvas
+    // Plot z² but it'd be at Im = -8 — clamp visualization. We'll instead place outside the plane and label.
+    // Rather: plot z² at scale 0.25 (just to mark direction)
+    // Easier: just label markers at roughly correct angle
+    // z² has angle = 2·(-π/4) = -π/2 (negative imaginary direction)
+    var arrowLen2 = 130;
+    var z2dir = -Math.PI / 2;  // canvas angle for direction down
+    // canvas y inverted: math angle -π/2 (points down) is canvas angle +π/2
+    var canvasAng2 = Math.PI / 2;
+    var z2disp = { x: planeCx + arrowLen2 * Math.cos(canvasAng2), y: planeCy + arrowLen2 * Math.sin(canvasAng2) };
+    if (z2disp.y < planeBottom - 10) {
+      ctx.strokeStyle = secondary;
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6, 4]);
+      ctx.beginPath();
+      ctx.moveTo(planeCx, planeCy);
+      ctx.lineTo(z2disp.x, z2disp.y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = secondary;
+      ctx.beginPath();
+      ctx.arc(z2disp.x, z2disp.y, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('z² = −8i  (φ = −π/2)', z2disp.x + 8, z2disp.y + 4);
+    }
+
+    // z^4 = -64 (negative real axis)
+    var canvasAng4 = Math.PI;  // pointing left
+    var arrowLen4 = 200;
+    var z4disp = { x: planeCx + arrowLen4 * Math.cos(canvasAng4), y: planeCy + arrowLen4 * Math.sin(canvasAng4) };
+    if (z4disp.x > 30) {
+      ctx.strokeStyle = warning;
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6, 4]);
+      ctx.beginPath();
+      ctx.moveTo(planeCx, planeCy);
+      ctx.lineTo(z4disp.x, z4disp.y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = warning;
+      ctx.beginPath();
+      ctx.arc(z4disp.x, z4disp.y, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('z⁴ = −64  (φ = −π)', z4disp.x + 8, z4disp.y - 8);
+    }
+
+    // z^16 — back to positive real axis (φ = -4π ≡ 0)
+    var canvasAng16 = 0;  // right
+    var arrowLen16 = 240;
+    var z16disp = { x: planeCx + arrowLen16 * Math.cos(canvasAng16), y: planeCy + arrowLen16 * Math.sin(canvasAng16) };
+    if (z16disp.x < W - 30) {
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(planeCx, planeCy);
+      ctx.lineTo(z16disp.x, z16disp.y);
+      ctx.stroke();
+      // arrowhead
+      ctx.fillStyle = accent;
+      ctx.beginPath();
+      ctx.moveTo(z16disp.x, z16disp.y);
+      ctx.lineTo(z16disp.x - 10, z16disp.y - 5);
+      ctx.lineTo(z16disp.x - 10, z16disp.y + 5);
+      ctx.closePath();
+      ctx.fill();
+      // dot
+      ctx.beginPath();
+      ctx.arc(z16disp.x, z16disp.y, 7, 0, Math.PI * 2);
+      ctx.fill();
+      // glow
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.3);
+      ctx.beginPath();
+      ctx.arc(z16disp.x, z16disp.y, 13, 0, Math.PI * 2);
+      ctx.fill();
+      // label
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText('z¹⁶ = 2²⁴', z16disp.x - 14, z16disp.y - 12);
+      ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+      ctx.fillText('(φ = −4π ≡ 0)', z16disp.x - 14, z16disp.y + 4);
+    }
+
+    // legend / explanation
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('z, z², z⁴ rotiraju za φ; nakon 16 koraka ugao = −4π ≡ 0 (mod 2π)', W / 2, planeBottom + 20);
+
+    // ── BOTTOM PANEL: computation ──
+    var panelY = planeBottom + 40;
+    var panelW = 600, panelH = 180;
+    var panelX = (W - panelW) / 2;
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2.5;
+    ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.10);
+    ctx.beginPath();
+    ctx.moveTo(panelX + 12, panelY);
+    ctx.lineTo(panelX + panelW - 12, panelY);
+    ctx.quadraticCurveTo(panelX + panelW, panelY, panelX + panelW, panelY + 12);
+    ctx.lineTo(panelX + panelW, panelY + panelH - 12);
+    ctx.quadraticCurveTo(panelX + panelW, panelY + panelH, panelX + panelW - 12, panelY + panelH);
+    ctx.lineTo(panelX + 12, panelY + panelH);
+    ctx.quadraticCurveTo(panelX, panelY + panelH, panelX, panelY + panelH - 12);
+    ctx.lineTo(panelX, panelY + 12);
+    ctx.quadraticCurveTo(panelX, panelY, panelX + 12, panelY);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('De Moivreova formula:  z¹⁶ = |z|¹⁶ · (cos(16φ) + i·sin(16φ))', panelX + panelW / 2, panelY + 24);
+
+    ctx.fillStyle = muted;
+    ctx.font = '14px Inter, system-ui, sans-serif';
+    ctx.fillText('|z|¹⁶ = (2√2)¹⁶ = (2³ᐟ²)¹⁶ = 2²⁴', panelX + panelW / 2, panelY + 60);
+    ctx.fillText('16 · (−π/4) = −4π  ≡  0  (mod 2π)', panelX + panelW / 2, panelY + 86);
+    ctx.fillText('cos(−4π) = 1,   sin(−4π) = 0', panelX + panelW / 2, panelY + 110);
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 22px Inter, system-ui, sans-serif';
+    ctx.fillText('z¹⁶ = 2²⁴ · 1 = 2²⁴', panelX + panelW / 2, panelY + 152);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Stepen kompleksnog izraza: De Moivreova formula daje 2²⁴",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["kompleksni brojevi", "racionalizacija", "polarni oblik", "De Moivreova formula", "modul i argument", "stepen kompleksnog broja"]
+}
+BRAINSPARK_META-->

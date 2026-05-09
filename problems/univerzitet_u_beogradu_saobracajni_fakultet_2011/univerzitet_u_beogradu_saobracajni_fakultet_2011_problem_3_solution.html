@@ -1,0 +1,485 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: Roba je u toku godine dva puta poskupela: prvo za 20%, zatim za 25%. Za koliko procenata je krajnja cena veca od pocetne?
+
+Strategija — multiplikativni faktori:
+- "Poskupljenje za p%" = mnozenje sa (1 + p/100).
+- Prvo poskupljenje za 20% -> faktor 1.20.
+- Drugo poskupljenje za 25% (na vec uvecanu cenu) -> faktor 1.25.
+- Ukupan faktor = 1.20 * 1.25 = 1.50.
+- Ukupno povecanje u procentima = (1.50 - 1) * 100% = 50%.
+
+Provera konkretnim brojem:
+- Pocetna cena 100 din.
+- Posle prvog poskupljenja: 100 + 20 = 120 din.
+- Posle drugog poskupljenja (25% od 120 = 30): 120 + 30 = 150 din.
+- Razlika 150 - 100 = 50, to je 50% pocetne cene. ✓
+
+CESTA GRESKA:
+- Sabiranje procenata: 20% + 25% = 45% (NETACNO! pa zato je opcija (G) 45% destilator za varljive solvere).
+- Razlog greske: drugo poskupljenje se primenjuje na uvecanu, ne pocetnu cenu.
+
+Tacan odgovor: C) 50%.
+
+Mapiranje (A,C,E,G,I) -> (A,B,C,D,E):
+  (A) 40%  -> A
+  (C) 50%  -> B  ← TACAN
+  (E) 48%  -> C
+  (G) 45%  -> D
+  (I) 55%  -> E
+
+Vizuelni prikaz: bar chart sa 3 stupca: pocetna cena, posle prvog poskupljenja, posle drugog. Svaki stubac sa numerickim labelama 100, 120, 150. Strelice sa "+20%" i "+25%" izmedju stubaca, plus odvojen prikaz ukupnog povecanja "+50%". Staticki prikaz — odnosi 1.20, 1.25, 1.50 su fiksni i jasno prikazani.
+
+Kljucni uvid: procenti se NE SABIRAJU kada se primenjuju uzastopno; mnoze se faktori (1+p/100). Za male procente p+q je dobra aproksimacija (jer p*q/10000 je malo), ali za 20% i 25% imamo "bonus" od 0.20*0.25 = 5%, zato je 50% a ne 45%.
+</script>
+
+<h1 data-card="problem-title">Dva uzastopna poskupljenja: ukupno povećanje cene</h1>
+<p data-card="problem-subtitle" class="subtitle">Aritmetika — procenti, multiplikativni faktor, uzastopne promene</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Roba je u toku godine dva puta poskupela: prvo za \( 20\% \), a zatim za \( 25\% \). Njena cena na kraju godine veća je od cene na početku godine za:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 40\% \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 50\% \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 48\% \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(G)</span>
+      <span class="answer-value">\( 45\% \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(I)</span>
+      <span class="answer-value">\( 55\% \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Procente nećemo sabirati — uzastopna poskupljenja se <em>množe</em> kao faktori. Poskupljenje za \( p\% \) je množenje cene sa \( 1 + \tfrac{p}{100} \). Pomnožićemo \( 1{,}20 \cdot 1{,}25 \) i razliku od \( 1 \) prevesti u procente.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Procenti i multiplikativni faktori</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Poskupljenje za \( p\% \)</span> Nova cena \( = \) stara cena \( \cdot \left(1 + \dfrac{p}{100}\right) \).</li>
+        <li><span class="formula-label">Pojeftinjenje za \( p\% \)</span> Nova cena \( = \) stara cena \( \cdot \left(1 - \dfrac{p}{100}\right) \).</li>
+        <li><span class="formula-label">Uzastopne promene</span> Faktori se <em>množe</em>, ne sabiraju: \( (1 + p/100)\cdot(1 + q/100) \neq 1 + (p+q)/100 \).</li>
+        <li><span class="formula-label">Procenat povećanja</span> Ako je ukupan faktor \( k \), povećanje u procentima je \( (k - 1) \cdot 100\% \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz uzastopnih poskupljenja">
+  <h2>📐 Vizuelni prikaz uzastopnih poskupljenja</h2>
+  <div class="canvas-wrapper">
+    <canvas id="bars-canvas" width="700" height="540"></canvas>
+  </div>
+  <p class="canvas-caption">Tri stupca pokazuju cenu u tri vremenske tačke. Visina svakog stupca je proporcionalna ceni. Crvene strelice iznad stupaca prikazuju procenat poraz pri svakom poskupljenju, a velika zelena pločica desno daje ukupno povećanje od početne do krajnje cene.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavljamo početnu cenu kao \( C \)</h3>
+      <p>Neka je početna cena robe \( C \) (bilo koja jedinica — dinari, evri, slatkiši; ne menja procente). Posle prvog poskupljenja od \( 20\% \), cena postaje:</p>
+      <div class="math-block">
+        \[ C_1 = C \cdot \left(1 + \frac{20}{100}\right) = C \cdot 1{,}20 = 1{,}2\, C. \]
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto pišemo „\( \cdot 1{,}20 \)" a ne „\( + 20 \)"?</summary>
+          <div class="detail-content"><p>Procenat je <em>relativna</em> promena, vezana za trenutnu vrednost. Dvadeset posto od \( 100 \) iznosi \( 20 \), ali dvadeset posto od \( 1000 \) iznosi \( 200 \). Zato množimo, ne sabiramo: \( 1{,}20 \) znači „\( 100\% + 20\% \)".</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Drugo poskupljenje od \( 25\% \) — primenjuje se na <em>novu</em> cenu</h3>
+      <p>Sada se \( 25\% \) računa od \( C_1 \), ne od \( C \). Faktor je \( 1{,}25 \):</p>
+      <div class="math-block">
+        \[ C_2 = C_1 \cdot 1{,}25 = (1{,}2\,C) \cdot 1{,}25. \]
+      </div>
+      <p>Sastavljamo dva faktora u jedan:</p>
+      <div class="math-block">
+        \[ C_2 = 1{,}2 \cdot 1{,}25 \cdot C = 1{,}5\, C. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo ukupno povećanje u procentima</h3>
+      <p>Ukupan faktor je \( 1{,}5 \), što znači da je krajnja cena \( 1{,}5 \) puta veća od početne. Razlika između faktora i jedinice je upravo procenat povećanja:</p>
+      <div class="math-block">
+        \[ \frac{C_2 - C}{C} = \frac{1{,}5\,C - C}{C} = 1{,}5 - 1 = 0{,}5 = 50\%. \]
+      </div>
+      <p>Dakle krajnja cena je za <span class="result">\( 50\% \)</span> veća od početne.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto rezultat <em>nije</em> \( 20\% + 25\% = 45\% \)?</summary>
+          <div class="detail-content"><p>Drugo poskupljenje od \( 25\% \) ne računa se od početne cene, već od cene koja je već uvećana \( 1{,}2 \) puta. Tih \( 25\% \) je \( 25\% \) od \( 1{,}2\,C \), tj. \( 0{,}3\,C \) — što je \( 30\% \) početne cene, ne \( 25\% \). Ukupno: \( 20\% + 30\% = 50\% \). Ekstra \( 5\% \) dolazi od proizvoda \( 0{,}20 \cdot 0{,}25 = 0{,}05 \) — to je „kamata na kamatu".</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera konkretnim brojem</h3>
+      <p>Uzmimo \( C = 100 \) dinara — najprostiji izbor jer su procenti onda direktno dinari.</p>
+      <div class="math-block">
+        \[ \begin{aligned}
+          \text{Posle 1. poskupljenja:} &\quad 100 + 20 = 120 \ \text{din}, \\
+          25\% \text{ od } 120: &\quad \tfrac{25}{100}\cdot 120 = 30 \ \text{din}, \\
+          \text{Posle 2. poskupljenja:} &\quad 120 + 30 = 150 \ \text{din}.
+        \end{aligned} \]
+      </div>
+      <p>Razlika \( 150 - 100 = 50 \) dinara je tačno \( 50\% \) početne cene. ✓</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Pri uzastopnim procentnim promenama, faktori se <strong>množe</strong>: \( 1{,}2 \cdot 1{,}25 = 1{,}5 \). Razlika između naivnog odgovora \( 45\% \) i tačnog \( 50\% \) je upravo „međusobni" doprinos \( 0{,}20 \cdot 0{,}25 = 0{,}05 = 5\% \) — to je drugo poskupljenje primenjeno <em>baš na onaj deo</em> koji je dodalo prvo poskupljenje. Ovaj efekat je razlog zbog kog štedni ulozi sa složenom kamatom rastu brže nego sa prostom kamatom.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Sabiranje procenata: \( 20\% + 25\% = 45\% \).</strong> Klasična zamka. Procenti se ne sabiraju jer drugo poskupljenje deluje na već uvećanu cenu, a ne na početnu.</li>
+    <li><strong>Množenje procenata: \( 20\% \cdot 25\% = 5\% \).</strong> Ovo bi davalo \( 5\% \), što očigledno nije razumno — početna cena se ne bi skoro ni menjala. Greška je u tome što se množi <em>ulazne procente</em>, a treba množiti <em>faktore</em> \( 1{,}20 \cdot 1{,}25 \).</li>
+    <li><strong>Drugo poskupljenje računati od \( 100 \) (početne) umesto od \( 120 \).</strong> Ako se zaboravi da je cena već promenjena, pogrešno se dobije \( 100 + 20 + 25 = 145 \) — što vodi na pogrešan odgovor \( 45\% \).</li>
+    <li><strong>Mešanje „povećano za" i „povećano na".</strong> „Cena je povećana za \( 50\% \)" znači faktor \( 1{,}5 \). „Cena je povećana <em>na</em> \( 50\% \) početne" je pojeftinjenje na pola — sasvim suprotno.</li>
+    <li><strong>Pisanje \( C \cdot 1{,}20 + C \cdot 1{,}25 \).</strong> Ovo bi bila <em>suma</em> dveju cena, a ne uzastopni procesi. Uzastopne procene se uvek pišu kao množenje faktora: \( C \cdot 1{,}20 \cdot 1{,}25 \).</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \frac{C_2}{C} = 1{,}20 \cdot 1{,}25 = 1{,}5 \quad\Longrightarrow\quad \text{povećanje} = 50\%. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 40\% \)</span>
+    <span class="answer-option correct" data-option="B">(C) \( 50\% \)</span>
+    <span class="answer-option" data-option="C">(E) \( 48\% \)</span>
+    <span class="answer-option" data-option="D">(G) \( 45\% \)</span>
+    <span class="answer-option" data-option="E">(I) \( 55\% \)</span>
+  </div>
+  <p class="verification">Provera za \( C = 100 \): nakon \( 20\% \) → \( 120 \); nakon \( 25\% \) → \( 150 \). Razlika \( 50 \) je \( 50\% \) od \( 100 \). ✓</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Posle ova dva poskupljenja, prodavac odluči da na poslednju cenu da popust od \( 50\% \). Kolika je sada cena u odnosu na <em>početnu</em>? Da li je veća, manja ili jednaka početnoj?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Faktori se nižu: \( 1{,}20 \cdot 1{,}25 \cdot 0{,}50 = 1{,}5 \cdot 0{,}5 = 0{,}75 \). Krajnja cena je \( 75\% \) početne, dakle <em>manja</em> za \( 25\% \). Pouka: pojeftinjenje od \( 50\% \) i poskupljenje od \( 50\% \) se ne poništavaju, jer \( 1{,}5 \cdot 0{,}5 = 0{,}75 \neq 1 \). Da bi se neutralisalo poskupljenje od \( 50\% \), potreban je popust od \( \tfrac{1}{1{,}5} \approx 33{,}3\% \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('bars-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+    var danger    = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.font = 'bold 17px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Cena posle dva uzastopna poskupljenja', canvas.width / 2, 16);
+    ctx.font = 'italic 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Početna cena uzeta kao 100 (radi lakšeg računa)', canvas.width / 2, 38);
+
+    // Bar chart layout
+    var baseY = 460;          // y-coordinate where bars rest
+    var topY  = 90;           // ceiling
+    var maxValue = 160;       // axis max
+    var values = [100, 120, 150];
+    var labels = ['Početna cena', 'Posle +20%', 'Posle još +25%'];
+    var subLabels = ['C₀ = 100', 'C₁ = 120', 'C₂ = 150'];
+    var colors = [primary, secondary, accent];
+    var barW = 100;
+    // Bars centered around x positions
+    var positions = [150, 320, 490];
+
+    // Y-axis scale
+    function valueToY(v) {
+      return baseY - (v / maxValue) * (baseY - topY);
+    }
+
+    // Draw horizontal grid lines at increments of 25
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (var v = 0; v <= maxValue; v += 25) {
+      var y = valueToY(v);
+      ctx.beginPath();
+      ctx.moveTo(80, y);
+      ctx.lineTo(positions[2] + barW / 2 + 30, y);
+      ctx.stroke();
+      ctx.fillText(String(v), 75, y);
+    }
+
+    // Y-axis line
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(80, topY - 10);
+    ctx.lineTo(80, baseY);
+    ctx.stroke();
+    // X-axis line
+    ctx.beginPath();
+    ctx.moveTo(80, baseY);
+    ctx.lineTo(positions[2] + barW / 2 + 30, baseY);
+    ctx.stroke();
+
+    // y-axis label
+    ctx.save();
+    ctx.translate(28, (topY + baseY) / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.font = 'italic bold 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('cena (uslovne jedinice)', 0, 0);
+    ctx.restore();
+
+    // Draw bars
+    for (var i = 0; i < 3; i++) {
+      var v_i = values[i];
+      var x = positions[i] - barW / 2;
+      var topBar = valueToY(v_i);
+      var height = baseY - topBar;
+      // Fill
+      ctx.fillStyle = cvAlpha(colors[i] === primary ? '--sol-canvas-primary' :
+                              colors[i] === secondary ? '--sol-canvas-secondary' :
+                              '--sol-canvas-accent', 0.32);
+      ctx.fillRect(x, topBar, barW, height);
+      // Border
+      ctx.strokeStyle = colors[i];
+      ctx.lineWidth = 2.5;
+      ctx.strokeRect(x, topBar, barW, height);
+
+      // Value on top of bar
+      ctx.font = 'bold 17px Inter, system-ui, sans-serif';
+      ctx.fillStyle = colors[i];
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(String(values[i]), positions[i], topBar - 8);
+
+      // Label below bar
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.fillStyle = text;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText(labels[i], positions[i], baseY + 8);
+      ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+      ctx.fillStyle = muted;
+      ctx.fillText(subLabels[i], positions[i], baseY + 26);
+    }
+
+    // Increment arrows above bars
+    function drawArrow(x1, y1, x2, y2, color, label, sublabel) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+      // Arrowhead
+      ctx.fillStyle = color;
+      var ang = Math.atan2(y2 - y1, x2 - x1);
+      var ah = 9;
+      ctx.beginPath();
+      ctx.moveTo(x2, y2);
+      ctx.lineTo(x2 - ah * Math.cos(ang - 0.4), y2 - ah * Math.sin(ang - 0.4));
+      ctx.lineTo(x2 - ah * Math.cos(ang + 0.4), y2 - ah * Math.sin(ang + 0.4));
+      ctx.closePath();
+      ctx.fill();
+      // Label
+      var mx = (x1 + x2) / 2;
+      var my = (y1 + y2) / 2;
+      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx.fillStyle = color;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(label, mx, my - 4);
+      ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+      ctx.fillStyle = muted;
+      ctx.textBaseline = 'top';
+      ctx.fillText(sublabel, mx, my + 6);
+    }
+
+    var step1Y = valueToY(110); // between 100 and 120
+    drawArrow(positions[0] + barW / 2 + 6, valueToY(100) - 28,
+              positions[1] - barW / 2 - 6, valueToY(120) - 28,
+              warning, '+20%', '×1,20');
+
+    var step2Y = valueToY(135);
+    drawArrow(positions[1] + barW / 2 + 6, valueToY(120) - 28,
+              positions[2] - barW / 2 - 6, valueToY(150) - 28,
+              warning, '+25%', '×1,25');
+
+    // Big "+50%" callout above last bar
+    var calX = positions[2] + barW / 2 + 50;
+    var calY = topY + 8;
+    var calW = 130, calH = 90;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.16);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    if (ctx.roundRect) {
+      ctx.beginPath();
+      ctx.roundRect(calX, calY, calW, calH, 14);
+      ctx.fill();
+      ctx.stroke();
+    } else {
+      ctx.fillRect(calX, calY, calW, calH);
+      ctx.strokeRect(calX, calY, calW, calH);
+    }
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Ukupno', calX + calW / 2, calY + 8);
+    ctx.font = 'bold 30px Inter, system-ui, sans-serif';
+    ctx.fillStyle = accent;
+    ctx.textBaseline = 'middle';
+    ctx.fillText('+50%', calX + calW / 2, calY + 44);
+    ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('×1,20 · ×1,25 = ×1,50', calX + calW / 2, calY + calH - 8);
+
+    // Long arrow from first to last bar (curved at top)
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    var ay = topY - 4;
+    ctx.beginPath();
+    ctx.moveTo(positions[0], valueToY(100) - 50);
+    ctx.lineTo(positions[0], ay);
+    ctx.lineTo(calX + calW / 2, ay);
+    ctx.lineTo(calX + calW / 2, calY - 4);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // arrowhead going down to box
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.moveTo(calX + calW / 2, calY - 1);
+    ctx.lineTo(calX + calW / 2 - 6, calY - 10);
+    ctx.lineTo(calX + calW / 2 + 6, calY - 10);
+    ctx.closePath();
+    ctx.fill();
+
+    // "Pogresno!" red callout for naive 45% trap
+    var trapX = 100, trapY = baseY + 60;
+    var trapW = 480, trapH = 50;
+    ctx.fillStyle = cvAlpha('--sol-canvas-danger', 0.10);
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 1.5;
+    if (ctx.roundRect) {
+      ctx.beginPath();
+      ctx.roundRect(trapX, trapY, trapW, trapH, 10);
+      ctx.fill();
+      ctx.stroke();
+    } else {
+      ctx.fillRect(trapX, trapY, trapW, trapH);
+      ctx.strokeRect(trapX, trapY, trapW, trapH);
+    }
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = danger;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('⚠ Pogrešno: 20% + 25% = 45%', trapX + 14, trapY + 18);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Procenti se NE sabiraju — drugi se primenjuje na već uvećanu cenu (+5% bonus).', trapX + 14, trapY + 36);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Dva uzastopna poskupljenja od 20% i 25%: ukupno povećanje cene",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["procenti", "uzastopne promene", "multiplikativni faktor", "složena promena", "aritmetika"]
+}
+BRAINSPARK_META-->

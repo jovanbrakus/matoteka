@@ -1,0 +1,821 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Problem: Kvadar dimenzija 4 x 6 x 9 sastavljen je od jediničnih kockica (ivice 1).
+Sa kvadra se skida ceo SPOLJAŠNJI sloj debljine jedne kockice.
+Pitanje: koliko je kockica uklonjeno?
+
+Korak 1: Ukupan broj kockica u kvadru.
+  V_total = 4 * 6 * 9 = 216 kockica.
+
+Korak 2: Šta ostaje nakon skidanja spoljnog sloja.
+  Kada se ukloni sloj debljine 1 sa SVAKE od šest strana, dimenzije se smanjuju
+  za 2 (po jedna kockica sa svake suprotstavljene strane) duž svake od tri ose.
+  Nove dimenzije unutrašnjeg kvadra:
+    (4 - 2) x (6 - 2) x (9 - 2) = 2 x 4 x 7.
+  V_unutra = 2 * 4 * 7 = 56 kockica.
+
+Korak 3: Broj uklonjenih kockica.
+  Uklonjeno = V_total - V_unutra = 216 - 56 = 160.
+
+Provera (alternativni način, "uključi-isključi"):
+  Pišemo broj kockica u spoljnom sloju kao razliku:
+    spoljni_sloj = 4*6*9 - 2*4*7 = 216 - 56 = 160. ✓
+
+Druga provera (po elementima omotača):
+  Spoljni sloj kvadra a x b x c ima elemente:
+    - 8 ugaonih kockica (svaki ugao je 1 kockica): 8.
+    - 12 ivičnih nizova (bez uglova). Tri grupe po 4 ivice sa dužinama
+      (a-2), (b-2), (c-2). Sa našim brojevima: 4*(4-2) + 4*(6-2) + 4*(9-2)
+      = 4*2 + 4*4 + 4*7 = 8 + 16 + 28 = 52.
+    - 6 stranica (bez ivica). Parovi suprotnih stranica:
+      2*(a-2)(b-2) + 2*(b-2)(c-2) + 2*(a-2)(c-2)
+      = 2*(2*4) + 2*(4*7) + 2*(2*7) = 2*8 + 2*28 + 2*14 = 16 + 56 + 28 = 100.
+  Ukupno spoljni sloj: 8 + 52 + 100 = 160. ✓
+
+Tačan odgovor: (C) 160.
+
+Provera ostalih opcija:
+  (A) 132 — nepoznato; ne odgovara nijednom očiglednom računu.
+  (B) 96  — to je 2*4 + 2*6 + 2*9 dvostruko ili neka greška.
+  (C) 160 — naš odgovor.
+  (D) 82  — premalo; možda greška sa skidanjem sloja samo sa jedne strane.
+  (E) 196 — možda greška ako oduzmu samo 2x4x7 = 56 sa pogrešne formule;
+            ili ako uzmu unutrašnji 1x3x6 = 18 (skidanje samo "polusloja"):
+            216 - 18 = 198, blizu, ne tačno.
+
+Vizuelni prikaz (3 kanvasa, statička):
+  1) 3D aksonometrijski prikaz kvadra 4x6x9 sa istaknutim spoljašnjim slojem
+     (jedna boja, uklonjeno) i unutrašnjim 2x4x7 (druga boja, ostaje).
+  2) Presek (poprečni 2D prikaz) jednog "lista" 4x6, sa istaknutim
+     spoljnim okvirom (sloj) i unutrašnjim pravougaonikom 2x4.
+  3) Bar-graf-poređenje: ukupno 216, unutra 56, uklonjeno 160.
+</script>
+
+<h1 data-card="problem-title">Skidanje spoljnog sloja kvadra od jediničnih kockica</h1>
+<p data-card="problem-subtitle" class="subtitle">Geometrija prostora — zapremine, kombinatorika kockica</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Kvadar čije ivice imaju dužine \( 4 \), \( 6 \) i \( 9 \) sastavljen je od kockica ivice \( 1 \). Koliko je takvih kockica uklonjeno sa kvadra skidanjem celog spoljašnjeg sloja debljine jedne kockice?</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">Dimenzije kvadra</span>
+      <span class="given-value">\( 4 \times 6 \times 9 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Ivica jedne kockice</span>
+      <span class="given-value">\( 1 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Debljina skinutog sloja</span>
+      <span class="given-value">\( 1 \) (jedna kockica)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Cilj</span>
+      <span class="given-value">broj uklonjenih kockica</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 132 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 96 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 160 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 82 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 196 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Izračunaćemo ukupan broj kockica u kvadru kao proizvod ivica, a zatim broj kockica koje ostaju nakon skidanja sloja — to je manji kvadar čije su ivice umanjene za \( 2 \) (po jedna kockica sa svake od dve suprotstavljene strane). Razlika daje broj uklonjenih kockica.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Zapremina kvadra i pravilo „skidanja sloja”</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Zapremina kvadra</strong> sa ivicama \( a, b, c \): \( V = a \cdot b \cdot c \). Za kvadar koji je sastavljen od jediničnih kockica, broj kockica je upravo brojna vrednost \( V \).</li>
+        <li><strong>Skidanje sloja debljine \( 1 \) sa svih šest strana</strong> umanjuje svaku ivicu za \( 2 \): jedna kockica „nestane” sa svake od dve naspramne strane:
+          <div class="math-block">\[ (a, b, c) \;\longrightarrow\; (a - 2,\; b - 2,\; c - 2). \]</div>
+        </li>
+        <li><strong>Broj uklonjenih kockica</strong> jednak je razlici starog i novog broja kockica:
+          <div class="math-block">\[ N_{\text{uklonjeno}} \;=\; abc \;-\; (a - 2)(b - 2)(c - 2). \]</div>
+        </li>
+        <li><strong>Uslov primene:</strong> svaka dimenzija mora biti \( \ge 2 \), inače „unutrašnji” kvadar ne postoji (nema čega da ostane). U našem zadatku je \( 4, 6, 9 \ge 2 \), pa formula radi.</li>
+        <li><strong>Alternativna interpretacija:</strong> ukinjene kockice čine sam <em>spoljašnji omotač</em> kvadra debljine \( 1 \). Njega možemo prebrojati i direktno (ugaone + ivične + stranične), što daje istu vrednost — to je dobra provera.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz: kvadar i jezgro">
+  <h2>📐 Vizuelni prikaz: kvadar i jezgro</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram3d" width="720" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Aksonometrijski (kosi) prikaz kvadra \( 4 \times 6 \times 9 \). Spoljašnji „omotač” debljine jedne kockice — koji se skida — istaknut je svetlije, a unutrašnji <em>preostali</em> kvadar dimenzija \( 2 \times 4 \times 7 \) prikazan je punom bojom u sredini.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz: presek kvadra">
+  <h2>📐 Vizuelni prikaz: presek kvadra</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagramSlice" width="720" height="460"></canvas>
+  </div>
+  <p class="canvas-caption">Presek paralelan stranici dimenzija \( 4 \times 6 \). Spoljni „prsten” debljine \( 1 \) (svetlo plavo) odgovara skinutom sloju u tom preseku, a unutrašnji pravougaonik \( 2 \times 4 \) (zeleno) preostalom jezgru. Ovaj presek pojašnjava zašto se obe dimenzije smanjuju za \( 2 \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz: računica zapremina">
+  <h2>📐 Vizuelni prikaz: računica zapremina</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagramBars" width="720" height="420"></canvas>
+  </div>
+  <p class="canvas-caption">Bar-graf upoređuje tri broja: ukupno \( 216 \) kockica u kvadru, \( 56 \) preostalih u jezgru \( 2 \times 4 \times 7 \), i \( 160 \) uklonjenih (razlika). Vizuelno se vidi da uklonjeni omotač čini gotovo tri četvrtine svih kockica.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Ukupan broj kockica u kvadru</h3>
+      <p>Kvadar sa ivicama \( 4, 6, 9 \) (svaka u jedinicama dužine kockice) sadrži tačno onoliko jediničnih kockica kolika je njegova zapremina:</p>
+      <div class="math-block">\[ V_{\text{ukupno}} \;=\; 4 \cdot 6 \cdot 9 \;=\; 24 \cdot 9 \;=\; 216. \]</div>
+      <p>Dakle, pre skidanja sloja imamo \( 216 \) kockica.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je broj kockica jednak zapremini?</summary>
+          <div class="detail-content"><p>Svaka jedinična kockica ima zapreminu \( 1 \). Ako ih je \( N \) i one popunjavaju kvadar bez praznina, onda je ukupna zapremina \( N \cdot 1 = N \). Otud je broj kockica brojno jednak zapremini izraženoj u istim jedinicama.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Šta ostaje posle skidanja spoljnog sloja?</h3>
+      <p>„Skinuti spoljni sloj debljine jedne kockice” znači — ukloniti sve kockice koje dodiruju makar jednu od šest stranica kvadra. Posle toga ostaje manji kvadar, koji je sa svake strane uvučen za jednu kockicu.</p>
+      <p>Pogledajmo jednu osu, recimo onu dužine \( 4 \). Kockice na poziciji \( 1 \) i poziciji \( 4 \) (krajnje) su deo spoljnog sloja, pa se uklanjaju. Ostaju pozicije \( 2 \) i \( 3 \), tj. \( 4 - 2 = 2 \) kockice. Isto važi za ostale dve ose. Tako su nove dimenzije:</p>
+      <div class="math-block">\[ (4 - 2) \times (6 - 2) \times (9 - 2) \;=\; 2 \times 4 \times 7. \]</div>
+      <p>Broj kockica u tom unutrašnjem kvadru:</p>
+      <div class="math-block">\[ V_{\text{unutra}} \;=\; 2 \cdot 4 \cdot 7 \;=\; 8 \cdot 7 \;=\; 56. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš \( -2 \), a ne \( -1 \)?</summary>
+          <div class="detail-content"><p>Sa svake ose se uklanja po <em>jedna</em> kockica sa <em>oba</em> kraja — ukupno dve. Ako bi sloj bio debljine \( k \), oduzeli bismo \( 2k \) sa svake ose: \( (a - 2k)(b - 2k)(c - 2k) \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Broj uklonjenih kockica</h3>
+      <p>Uklonjene kockice čine spoljašnji omotač. Njih je tačno onoliko koliko je razlika ukupnog broja i broja preostalih:</p>
+      <div class="math-block">\[ N_{\text{uklonjeno}} \;=\; V_{\text{ukupno}} - V_{\text{unutra}} \;=\; 216 - 56 \;=\; 160. \]</div>
+      <p>To odgovara opciji <strong>(C)</strong>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera direktnim brojanjem omotača</h3>
+      <p>Za potpuno samopouzdanje, prebrojmo kockice u omotaču direktno — po vrsti pozicije:</p>
+      <ul>
+        <li><strong>Ugaone kockice</strong> (svaka kvadar ima \( 8 \) uglova): \( 8 \).</li>
+        <li><strong>Ivične kockice bez uglova.</strong> Kvadar ima \( 12 \) ivica u tri grupe po četiri:
+          <div class="math-block">\[ 4(a - 2) + 4(b - 2) + 4(c - 2) \;=\; 4 \cdot 2 + 4 \cdot 4 + 4 \cdot 7 \;=\; 8 + 16 + 28 \;=\; 52. \]</div>
+        </li>
+        <li><strong>Stranične kockice bez ivica</strong> (unutrašnjost svake od šest stranica). Tri para suprotnih stranica:
+          <div class="math-block">\[ 2(a-2)(b-2) + 2(b-2)(c-2) + 2(a-2)(c-2) \;=\; 2 \cdot 8 + 2 \cdot 28 + 2 \cdot 14 \;=\; 16 + 56 + 28 \;=\; 100. \]</div>
+        </li>
+      </ul>
+      <p>Sabiranjem:</p>
+      <div class="math-block">\[ 8 + 52 + 100 \;=\; 160. \quad \checkmark \]</div>
+      <p>Slaže se. Tačan odgovor je <strong>(C) 160</strong>.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>„Skidanje sloja debljine \( 1 \)” deluje komplikovano dok ne shvatimo da je to samo <em>oduzimanje \( 2 \) od svake ivice</em>: jedna kockica nestaje sa svakog kraja svake ose. Tada se ceo problem svodi na razliku dva proizvoda \( abc - (a-2)(b-2)(c-2) \). Direktno prebrojavanje uglova, ivica i stranica daje istu vrednost — to je razvoj iste algebarske formule po tipu kockice u omotaču.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Oduzimanje \( 1 \) umesto \( 2 \) od svake ivice.</strong> Time se računa kao da je sloj skinut samo sa jedne strane, a ne sa obe — pa se dobije netačan unutrašnji kvadar \( 3 \times 5 \times 8 \) sa zapreminom \( 120 \), i pogrešna razlika \( 216 - 120 = 96 \) (opcija B).</li>
+    <li><strong>Pogrešno brojanje uglova ili ivica.</strong> Kvadar ima \( 8 \) uglova i \( 12 \) ivica — ne zaboraviti da svaka grupa od četiri ivica deli istu „dužinu bez uglova”.</li>
+    <li><strong>Pisanje formule površine umesto zapremine omotača.</strong> Broj kockica u sloju nije isto što i površina kvadra; površina je zbir površina šest stranica, što daje drugi broj. Formula \( abc - (a-2)(b-2)(c-2) \) odnosi se na <em>broj kockica</em>, ne na površinu.</li>
+    <li><strong>Zaboravljeni uslov \( a, b, c \ge 2 \).</strong> Ako bi neka dimenzija bila \( 1 \), nakon skidanja sloja ne bi ostalo ništa po toj osi (nema „unutra”), pa bi formula \( (a-2)(b-2)(c-2) \) postala besmislena ili negativna.</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ N_{\text{uklonjeno}} \;=\; 4 \cdot 6 \cdot 9 \;-\; 2 \cdot 4 \cdot 7 \;=\; 216 - 56 \;=\; 160 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 132 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 96 \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( 160 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 82 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 196 \)</span>
+  </div>
+  <p class="verification">Provera direktnim sabiranjem omotača: \( 8 \) ugaonih \( + \) \( 52 \) ivičnih \( + \) \( 100 \) staničnih \( = 160 \). Slaže se sa razlikom zapremina \( 216 - 56 = 160 \). Tačan odgovor je <strong>(C) 160</strong>.</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta bi se dogodilo ako bismo skinuli <em>dva</em> sloja redom (prvo jedan, pa zatim sa preostalog kvadra još jedan)? Koliko bi tada kockica bilo uklonjeno ukupno, i koliko bi ostalo na kraju? Da li možemo isti zadatak rešiti i za četvorodimenzionalni „hiperkvadar”?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Posle prvog skidanja imamo \( 2 \times 4 \times 7 \) (ostalo \( 56 \), uklonjeno \( 160 \)). Drugo skidanje umanjuje svaku dimenziju za \( 2 \): nove dimenzije \( 0 \times 2 \times 5 \). Pošto je jedna ivica \( 0 \), unutrašnji kvadar ne postoji — preostalo \( 0 \) kockica! U drugom skidanju je uklonjeno svih \( 56 \) preostalih, pa je ukupno \( 160 + 56 = 216 \) (sve!). Generalno, za hiperkvadar dimenzija \( a_1 \times a_2 \times \cdots \times a_n \), broj kockica u omotaču je \( \prod a_i - \prod (a_i - 2) \), pod uslovom da je svaka dimenzija \( \ge 2 \). U \( n \)-D omotač čine kockice koje imaju makar jednu koordinatu na rubu \( \{1, a_i\} \), što se elegantno opisuje principom uključenja-isključenja.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16), g = parseInt(c.slice(3,5), 16), b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram3d');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var warning = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var W = canvas.width, H = canvas.height;
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 18px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Kvadar 4 × 6 × 9 i unutrašnje jezgro 2 × 4 × 7', W / 2, 30);
+
+    // Axonometric projection: x to right, y up, z back-up-left
+    // Pick angles to make all faces visible.
+    var s = 32; // scale per unit
+    var ax = { x: 1, y: 0 };
+    var ay = { x: 0, y: -1 };
+    var az = { x: -0.55, y: -0.35 };
+
+    var aLen = 9; // x dimension
+    var bLen = 4; // y dimension
+    var cLen = 6; // z dimension
+
+    // Center the figure
+    var cx = W / 2 + 30;
+    var cy = H / 2 + 60;
+
+    // Pre-compute base origin so center-of-cuboid lands at (cx, cy)
+    var midX = (aLen / 2) * ax.x + (bLen / 2) * ay.x + (cLen / 2) * az.x;
+    var midY = (aLen / 2) * ax.y + (bLen / 2) * ay.y + (cLen / 2) * az.y;
+    var ox = cx - s * midX;
+    var oy = cy - s * midY;
+
+    function P(x, y, z) {
+      return {
+        x: ox + s * (x * ax.x + y * ay.x + z * az.x),
+        y: oy + s * (x * ax.y + y * ay.y + z * az.y)
+      };
+    }
+
+    function drawQuad(p0, p1, p2, p3, fill, stroke, lw) {
+      ctx.fillStyle = fill;
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth = lw;
+      ctx.beginPath();
+      ctx.moveTo(p0.x, p0.y);
+      ctx.lineTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.lineTo(p3.x, p3.y);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    }
+
+    // ============== OUTER CUBOID 4x6x9 ==============
+    // Three visible faces (lighter, "outer shell" color).
+    // Right face (x = aLen):
+    var outerFill = cvAlpha('--sol-canvas-tertiary', 0.32);
+    var outerStroke = cv('--sol-canvas-tertiary');
+
+    // Right (x = aLen):
+    drawQuad(
+      P(aLen, 0, 0), P(aLen, bLen, 0), P(aLen, bLen, cLen), P(aLen, 0, cLen),
+      outerFill, outerStroke, 2
+    );
+    // Top (y = bLen):
+    drawQuad(
+      P(0, bLen, 0), P(aLen, bLen, 0), P(aLen, bLen, cLen), P(0, bLen, cLen),
+      outerFill, outerStroke, 2
+    );
+    // Front (z = 0):
+    drawQuad(
+      P(0, 0, 0), P(aLen, 0, 0), P(aLen, bLen, 0), P(0, bLen, 0),
+      outerFill, outerStroke, 2
+    );
+
+    // Grid lines on visible faces (1-unit grid)
+    ctx.strokeStyle = cvAlpha('--sol-canvas-tertiary', 0.55);
+    ctx.lineWidth = 0.7;
+    // Front face grid
+    for (var i = 1; i < aLen; i++) {
+      var p1 = P(i, 0, 0), p2 = P(i, bLen, 0);
+      ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+    }
+    for (var j = 1; j < bLen; j++) {
+      var q1 = P(0, j, 0), q2 = P(aLen, j, 0);
+      ctx.beginPath(); ctx.moveTo(q1.x, q1.y); ctx.lineTo(q2.x, q2.y); ctx.stroke();
+    }
+    // Top face grid
+    for (var i2 = 1; i2 < aLen; i2++) {
+      var t1 = P(i2, bLen, 0), t2 = P(i2, bLen, cLen);
+      ctx.beginPath(); ctx.moveTo(t1.x, t1.y); ctx.lineTo(t2.x, t2.y); ctx.stroke();
+    }
+    for (var k = 1; k < cLen; k++) {
+      var u1 = P(0, bLen, k), u2 = P(aLen, bLen, k);
+      ctx.beginPath(); ctx.moveTo(u1.x, u1.y); ctx.lineTo(u2.x, u2.y); ctx.stroke();
+    }
+    // Right face grid
+    for (var j2 = 1; j2 < bLen; j2++) {
+      var v1 = P(aLen, j2, 0), v2 = P(aLen, j2, cLen);
+      ctx.beginPath(); ctx.moveTo(v1.x, v1.y); ctx.lineTo(v2.x, v2.y); ctx.stroke();
+    }
+    for (var k2 = 1; k2 < cLen; k2++) {
+      var w1 = P(aLen, 0, k2), w2 = P(aLen, bLen, k2);
+      ctx.beginPath(); ctx.moveTo(w1.x, w1.y); ctx.lineTo(w2.x, w2.y); ctx.stroke();
+    }
+
+    // Outer cuboid edges (bold)
+    ctx.strokeStyle = cv('--sol-canvas-tertiary');
+    ctx.lineWidth = 2.2;
+    var oc = [
+      [P(0,0,0), P(aLen,0,0)], [P(0,0,0), P(0,bLen,0)], [P(0,0,0), P(0,0,cLen)],
+      [P(aLen,0,0), P(aLen,bLen,0)], [P(aLen,0,0), P(aLen,0,cLen)],
+      [P(0,bLen,0), P(aLen,bLen,0)], [P(0,bLen,0), P(0,bLen,cLen)],
+      [P(0,0,cLen), P(aLen,0,cLen)], [P(0,0,cLen), P(0,bLen,cLen)],
+      [P(aLen,bLen,0), P(aLen,bLen,cLen)],
+      [P(aLen,0,cLen), P(aLen,bLen,cLen)],
+      [P(0,bLen,cLen), P(aLen,bLen,cLen)]
+    ];
+    for (var e = 0; e < oc.length; e++) {
+      ctx.beginPath();
+      ctx.moveTo(oc[e][0].x, oc[e][0].y);
+      ctx.lineTo(oc[e][1].x, oc[e][1].y);
+      ctx.stroke();
+    }
+
+    // ============== INNER CUBOID 2x4x7 (offset by 1 in each dim) ==============
+    // The inner core has corners (1,1,1) and (aLen-1, bLen-1, cLen-1).
+    var ix0 = 1, iy0 = 1, iz0 = 1;
+    var ix1 = aLen - 1, iy1 = bLen - 1, iz1 = cLen - 1;
+
+    var innerFill = cvAlpha('--sol-canvas-accent', 0.7);
+    var innerStroke = cv('--sol-canvas-accent');
+
+    // Draw three visible faces of the inner core, in front of outer.
+    // Right (x = ix1):
+    drawQuad(
+      P(ix1, iy0, iz0), P(ix1, iy1, iz0), P(ix1, iy1, iz1), P(ix1, iy0, iz1),
+      innerFill, innerStroke, 2
+    );
+    // Top (y = iy1):
+    drawQuad(
+      P(ix0, iy1, iz0), P(ix1, iy1, iz0), P(ix1, iy1, iz1), P(ix0, iy1, iz1),
+      innerFill, innerStroke, 2
+    );
+    // Front (z = iz0):
+    drawQuad(
+      P(ix0, iy0, iz0), P(ix1, iy0, iz0), P(ix1, iy1, iz0), P(ix0, iy1, iz0),
+      innerFill, innerStroke, 2
+    );
+
+    // Inner core edges
+    ctx.strokeStyle = innerStroke;
+    ctx.lineWidth = 2.0;
+    var ic = [
+      [P(ix0,iy0,iz0), P(ix1,iy0,iz0)], [P(ix0,iy0,iz0), P(ix0,iy1,iz0)], [P(ix0,iy0,iz0), P(ix0,iy0,iz1)],
+      [P(ix1,iy0,iz0), P(ix1,iy1,iz0)], [P(ix1,iy0,iz0), P(ix1,iy0,iz1)],
+      [P(ix0,iy1,iz0), P(ix1,iy1,iz0)], [P(ix0,iy1,iz0), P(ix0,iy1,iz1)],
+      [P(ix0,iy0,iz1), P(ix1,iy0,iz1)], [P(ix0,iy0,iz1), P(ix0,iy1,iz1)],
+      [P(ix1,iy1,iz0), P(ix1,iy1,iz1)],
+      [P(ix1,iy0,iz1), P(ix1,iy1,iz1)],
+      [P(ix0,iy1,iz1), P(ix1,iy1,iz1)]
+    ];
+    for (var e2 = 0; e2 < ic.length; e2++) {
+      ctx.beginPath();
+      ctx.moveTo(ic[e2][0].x, ic[e2][0].y);
+      ctx.lineTo(ic[e2][1].x, ic[e2][1].y);
+      ctx.stroke();
+    }
+
+    // Dimension labels on outer cuboid edges
+    ctx.font = 'bold 14px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = text;
+
+    // Width 9 (along x-axis), bottom front
+    var wA = P(aLen / 2, 0, 0);
+    ctx.fillText('9', wA.x, wA.y + 22);
+
+    // Height 4 (along y-axis), front-right
+    var wB = P(aLen, bLen / 2, 0);
+    ctx.fillText('4', wB.x + 16, wB.y + 6);
+
+    // Depth 6 (along z-axis), top-back
+    var wC = P(aLen, bLen, cLen / 2);
+    ctx.fillText('6', wC.x + 18, wC.y - 2);
+
+    // Inner dimension labels (small)
+    ctx.font = 'bold 12px sans-serif';
+    ctx.fillStyle = innerStroke;
+    var iA = P((ix0 + ix1) / 2, iy0, iz0);
+    ctx.fillText('7', iA.x, iA.y + 16);
+    var iB = P(ix1, (iy0 + iy1) / 2, iz0);
+    ctx.fillText('2', iB.x + 11, iB.y + 4);
+    var iC = P(ix1, iy1, (iz0 + iz1) / 2);
+    ctx.fillText('4', iC.x + 13, iC.y - 2);
+
+    // Legend
+    var legX = 22, legY = H - 90;
+    ctx.font = 'bold 13px sans-serif';
+    ctx.textAlign = 'left';
+
+    // Legend box backgrounds
+    ctx.fillStyle = cvAlpha('--sol-canvas-tertiary', 0.32);
+    ctx.fillRect(legX, legY, 18, 14);
+    ctx.strokeStyle = cv('--sol-canvas-tertiary');
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(legX, legY, 18, 14);
+    ctx.fillStyle = text;
+    ctx.fillText('Spoljašnji omotač (uklonjeno) — 4·6·9 = 216', legX + 26, legY + 11);
+
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.7);
+    ctx.fillRect(legX, legY + 24, 18, 14);
+    ctx.strokeStyle = cv('--sol-canvas-accent');
+    ctx.strokeRect(legX, legY + 24, 18, 14);
+    ctx.fillStyle = text;
+    ctx.fillText('Unutrašnje jezgro (ostaje) — 2·4·7 = 56', legX + 26, legY + 35);
+
+    // Result line
+    ctx.font = 'bold 15px sans-serif';
+    ctx.fillStyle = cv('--sol-canvas-warning');
+    ctx.fillText('Uklonjeno: 216 − 56 = 160 kockica', legX, legY + 64);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16), g = parseInt(c.slice(3,5), 16), b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagramSlice');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var accent = cv('--sol-canvas-accent');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var tertiary = cv('--sol-canvas-tertiary');
+    var warning = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var W = canvas.width, H = canvas.height;
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 18px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Presek kvadra: stranica 4 × 6 (skidanje sloja debljine 1)', W / 2, 30);
+
+    // Slice geometry: 6 cells wide (x), 4 cells tall (y).
+    var aSlice = 6, bSlice = 4;
+    var cell = 50;
+    var gridW = aSlice * cell;
+    var gridH = bSlice * cell;
+    var ox = (W - gridW) / 2;
+    var oy = 70;
+
+    // Outer cells (border) - light blue
+    // Inner cells (2x4) - green
+    for (var j = 0; j < bSlice; j++) {
+      for (var i = 0; i < aSlice; i++) {
+        var x = ox + i * cell;
+        var y = oy + j * cell;
+        var isOuter = (i === 0 || i === aSlice - 1 || j === 0 || j === bSlice - 1);
+        if (isOuter) {
+          ctx.fillStyle = cvAlpha('--sol-canvas-tertiary', 0.45);
+          ctx.fillRect(x, y, cell, cell);
+        } else {
+          ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.65);
+          ctx.fillRect(x, y, cell, cell);
+        }
+      }
+    }
+
+    // Cell grid lines
+    ctx.strokeStyle = cvAlpha('--sol-canvas-axis', 0.6);
+    ctx.lineWidth = 1;
+    for (var ii = 0; ii <= aSlice; ii++) {
+      ctx.beginPath();
+      ctx.moveTo(ox + ii * cell, oy);
+      ctx.lineTo(ox + ii * cell, oy + gridH);
+      ctx.stroke();
+    }
+    for (var jj = 0; jj <= bSlice; jj++) {
+      ctx.beginPath();
+      ctx.moveTo(ox, oy + jj * cell);
+      ctx.lineTo(ox + gridW, oy + jj * cell);
+      ctx.stroke();
+    }
+
+    // Outer rectangle (thick)
+    ctx.strokeStyle = cv('--sol-canvas-tertiary');
+    ctx.lineWidth = 3;
+    ctx.strokeRect(ox, oy, gridW, gridH);
+
+    // Inner rectangle 4x2 (the kept core)
+    ctx.strokeStyle = cv('--sol-canvas-accent');
+    ctx.lineWidth = 3;
+    ctx.strokeRect(ox + cell, oy + cell, (aSlice - 2) * cell, (bSlice - 2) * cell);
+
+    // Dimension labels (outer)
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px sans-serif';
+    ctx.textAlign = 'center';
+    // Top width: 6
+    ctx.fillText('6 (širina)', ox + gridW / 2, oy - 16);
+    // Left height: 4
+    ctx.save();
+    ctx.translate(ox - 22, oy + gridH / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('4 (visina)', 0, 0);
+    ctx.restore();
+
+    // Inner dimensions
+    ctx.fillStyle = cv('--sol-canvas-accent');
+    ctx.font = 'bold 13px sans-serif';
+    ctx.fillText('4', ox + gridW / 2, oy + gridH + 24);
+    ctx.fillText('(6 − 2)', ox + gridW / 2, oy + gridH + 40);
+    ctx.save();
+    ctx.translate(ox + gridW + 32, oy + gridH / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('2 (4 − 2)', 0, 0);
+    ctx.restore();
+
+    // Side annotations: arrows showing the "skidanje" of one cell
+    ctx.strokeStyle = cv('--sol-canvas-warning');
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    // Top arrow (skidanje sa gornje strane)
+    ctx.beginPath();
+    ctx.moveTo(ox + gridW + 60, oy + 10);
+    ctx.lineTo(ox + gridW + 60, oy + cell - 10);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // Arrowheads
+    ctx.beginPath();
+    ctx.moveTo(ox + gridW + 60, oy + cell - 10);
+    ctx.lineTo(ox + gridW + 56, oy + cell - 16);
+    ctx.lineTo(ox + gridW + 64, oy + cell - 16);
+    ctx.closePath();
+    ctx.fillStyle = cv('--sol-canvas-warning');
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.font = '12px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('1 sloj', ox + gridW + 70, oy + cell / 2 + 5);
+
+    // Legend
+    ctx.font = 'bold 13px sans-serif';
+    ctx.textAlign = 'left';
+    var legY = oy + gridH + 60;
+    ctx.fillStyle = cvAlpha('--sol-canvas-tertiary', 0.45);
+    ctx.fillRect(ox, legY, 18, 14);
+    ctx.strokeStyle = cv('--sol-canvas-tertiary');
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(ox, legY, 18, 14);
+    ctx.fillStyle = text;
+    ctx.fillText('Spoljni „prsten” — uklanja se', ox + 26, legY + 11);
+
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.65);
+    ctx.fillRect(ox + 280, legY, 18, 14);
+    ctx.strokeStyle = cv('--sol-canvas-accent');
+    ctx.strokeRect(ox + 280, legY, 18, 14);
+    ctx.fillStyle = text;
+    ctx.fillText('Unutrašnji pravougaonik 4 × 2 — ostaje', ox + 306, legY + 11);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16), g = parseInt(c.slice(3,5), 16), b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagramBars');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var accent = cv('--sol-canvas-accent');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var tertiary = cv('--sol-canvas-tertiary');
+    var warning = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var W = canvas.width, H = canvas.height;
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 18px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Računica zapremina (broj kockica)', W / 2, 30);
+
+    // Bars data
+    var bars = [
+      { label: 'Ukupno (4·6·9)', value: 216, color: '--sol-canvas-tertiary' },
+      { label: 'Ostaje (2·4·7)', value: 56,  color: '--sol-canvas-accent' },
+      { label: 'Uklonjeno',      value: 160, color: '--sol-canvas-warning' }
+    ];
+
+    var marginL = 70, marginR = 50, marginT = 70, marginB = 100;
+    var plotW = W - marginL - marginR;
+    var plotH = H - marginT - marginB;
+
+    var maxV = 240;
+    function ty(v) { return marginT + plotH - (v / maxV) * plotH; }
+
+    // Y grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillStyle = muted;
+    for (var v = 0; v <= 240; v += 40) {
+      ctx.beginPath();
+      ctx.moveTo(marginL, ty(v));
+      ctx.lineTo(marginL + plotW, ty(v));
+      ctx.stroke();
+      ctx.fillText(String(v), marginL - 6, ty(v) + 4);
+    }
+
+    // X axis
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(marginL, ty(0));
+    ctx.lineTo(marginL + plotW, ty(0));
+    ctx.stroke();
+
+    // Bars
+    var barW = plotW / (bars.length * 2);
+    for (var k = 0; k < bars.length; k++) {
+      var bx = marginL + (k * 2 + 0.6) * barW;
+      var by = ty(bars[k].value);
+      var bh = ty(0) - by;
+      ctx.fillStyle = cvAlpha(bars[k].color, 0.7);
+      ctx.fillRect(bx, by, barW, bh);
+      ctx.strokeStyle = cv(bars[k].color);
+      ctx.lineWidth = 2;
+      ctx.strokeRect(bx, by, barW, bh);
+
+      // Value on top
+      ctx.fillStyle = text;
+      ctx.font = 'bold 16px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(String(bars[k].value), bx + barW / 2, by - 8);
+
+      // Label under bar
+      ctx.font = '13px sans-serif';
+      ctx.fillStyle = muted;
+      ctx.fillText(bars[k].label, bx + barW / 2, ty(0) + 22);
+    }
+
+    // Result equation at bottom
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('216 − 56 = 160', W / 2, H - 32);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Skidanje spoljnog sloja kvadra — broj uklonjenih jediničnih kockica",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["zapremina", "kvadar", "jedinične kockice", "kombinatorika prostora", "spoljašnji sloj"]
+}
+BRAINSPARK_META-->

@@ -1,0 +1,634 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Problem: Realno rešenje jednačine sqrt(2x+14) - sqrt(x-7) = sqrt(x+5) pripada intervalu?
+
+Korak 1 — Domen:
+- 2x + 14 >= 0  =>  x >= -7
+- x - 7 >= 0    =>  x >= 7
+- x + 5 >= 0    =>  x >= -5
+Presek: x >= 7. Domen: D = [7, +inf).
+
+Korak 2 — Izolacija jednog korena:
+sqrt(2x + 14) = sqrt(x - 7) + sqrt(x + 5).
+Obe strane su nenegativne na D, pa je kvadriranje dozvoljeno bez gubitka znaka.
+
+Korak 3 — Kvadriranje:
+2x + 14 = (sqrt(x-7) + sqrt(x+5))^2
+       = (x - 7) + (x + 5) + 2*sqrt((x-7)(x+5))
+       = 2x - 2 + 2*sqrt((x-7)(x+5)).
+
+Korak 4 — Pojednostavljenje:
+2x + 14 - (2x - 2) = 2*sqrt((x-7)(x+5))
+16 = 2*sqrt((x-7)(x+5))
+8 = sqrt((x-7)(x+5))     [obe strane >= 0, dozvoljeno kvadriranje]
+64 = (x-7)(x+5) = x^2 - 2x - 35.
+
+Korak 5 — Kvadratna jednačina:
+x^2 - 2x - 35 = 64
+x^2 - 2x - 99 = 0.
+Diskriminanta: D = 4 + 396 = 400, sqrt(D) = 20.
+x = (2 ± 20)/2 = 11  ili  -9.
+
+Korak 6 — Provera u domenu:
+x = 11 ∈ [7, +inf) ✓
+x = -9 ∉ [7, +inf) ✗  (odbacujemo).
+
+Korak 7 — Provera vraćanjem u originalnu jednačinu:
+sqrt(2*11 + 14) - sqrt(11 - 7) = sqrt(36) - sqrt(4) = 6 - 2 = 4.
+sqrt(11 + 5) = sqrt(16) = 4. ✓
+
+Korak 8 — Pripadnost intervalu:
+x = 11 pripada (A) [10, +inf). NE pripada [5,8], [0,1], [12,16], [1,9].
+
+Odgovor: (A) [10, +∞).
+
+Plan vizuelnog prikaza: Brojevna prava od 0 do 16 sa istaknutim domenom [7, +inf)
+i obeleženim x = 11. Iznad — graf funkcija L(x) = sqrt(2x+14) - sqrt(x-7) i
+R(x) = sqrt(x+5) na intervalu [7, 16], sa presekom u tački (11, 4).
+Dva canvas — jedan numerički, drugi grafički, ali smatraću da je dovoljan
+jedan canvas sa kompozitnim prikazom: gornji deo — graf, donji deo — brojevna prava
+sa intervalima odgovora i istaknutim x = 11.
+Napomena: Static; algebarsko rešavanje je suština, graf služi kao vizuelna potvrda.
+</script>
+
+<h1 data-card="problem-title">Iracionalna jednačina sa tri kvadratna korena</h1>
+<p data-card="problem-subtitle" class="subtitle">Određivanje domena, kvadriranje i provera rešenja</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Realno rešenje jednačine</p>
+  <div class="math-block">\[ \sqrt{2x + 14} - \sqrt{x - 7} = \sqrt{x + 5} \]</div>
+  <p>pripada intervalu:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( [10, +\infty) \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( [5, 8] \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( [0, 1] \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( [12, 16] \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( [1, 9] \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Prvo odredimo domen — sve potkorenske veličine moraju biti nenegativne. Zatim izolujemo jedan koren, kvadriramo, i ponavljamo postupak dok ne dobijemo polinomijalnu jednačinu. Rešavamo kvadratnu jednačinu, odbacujemo rešenja van domena, i obavezno proveramo preostala rešenja u originalnoj jednačini (kvadriranje može uvesti strana rešenja). Na kraju, identifikujemo interval iz ponuđenih opcija kojem rešenje pripada.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Iracionalne jednačine i operacija kvadriranja</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Domen kvadratnog korena</span> Izraz \( \sqrt{u(x)} \) je definisan u realnim brojevima samo kada je \( u(x) \geq 0 \).</li>
+        <li><span class="formula-label">Kvadriranje</span> Iz \( A = B \) sledi \( A^2 = B^2 \), ali obrnuto ne mora da važi (mogu se pojaviti strana rešenja). Stoga je <em>provera</em> rešenja obavezna.</li>
+        <li><span class="formula-label">Bezbedno kvadriranje</span> Ako su obe strane jednačine \( \geq 0 \) na celom domenu, tada \( A = B \iff A^2 = B^2 \) (nema gubitka, nema viška).</li>
+        <li><span class="formula-label">Strategija sa više korena</span> Izoluj koren čije kvadriranje najviše pojednostavljuje izraz. Često je dobro premestiti koren tako da na obe strane ostanu nenegativni izrazi.</li>
+        <li><span class="formula-label">Identitet kvadrata zbira</span> \( (\sqrt{u} + \sqrt{v})^2 = u + v + 2\sqrt{uv} \) (za \( u, v \geq 0 \)).</li>
+        <li><span class="formula-label">Kvadratna formula</span> Za \( ax^2 + bx + c = 0 \): \( x = \dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a} \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz rešenja">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="solution-canvas" width="720" height="640"></canvas>
+  </div>
+  <p class="canvas-caption">Gore: grafici funkcija \( L(x) = \sqrt{2x + 14} - \sqrt{x - 7} \) (plavo) i \( R(x) = \sqrt{x + 5} \) (zeleno) na domenu \( [7, +\infty) \), sa presekom u tački \( (11, 4) \). Dole: brojevna prava sa istaknutim domenom \( D = [7, +\infty) \), rešenjem \( x = 11 \), i intervalima iz ponuđenih opcija — vidi se da samo (A) \( [10, +\infty) \) sadrži \( 11 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Određujemo domen</h3>
+      <p>Sve tri potkorenske veličine moraju biti \( \geq 0 \):</p>
+      <div class="math-block">\[ \begin{aligned} 2x + 14 &amp;\geq 0 &amp;&amp;\Rightarrow x \geq -7, \\ x - 7 &amp;\geq 0 &amp;&amp;\Rightarrow x \geq 7, \\ x + 5 &amp;\geq 0 &amp;&amp;\Rightarrow x \geq -5. \end{aligned} \]</div>
+      <p>Najstroži uslov je \( x \geq 7 \), pa je domen \( D = [7, +\infty) \). Već znamo: rešenje (ako postoji) mora biti \( \geq 7 \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto uzimamo presek uslova, ne uniju?</summary>
+          <div class="detail-content"><p>Da bi cela leva i cela desna strana bili definisani u \( \mathbb{R} \), <em>svaki</em> koren mora biti definisan istovremeno. Ako bilo koji uslov nije ispunjen, ceo izraz nema realnu vrednost. Zato se traži presek (svi uslovi istovremeno), a ne unija (bar jedan uslov).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Premeštamo koren — obe strane nenegativne</h3>
+      <p>Da bismo bezbedno kvadrirali, premeštamo \( \sqrt{x - 7} \) na desnu stranu:</p>
+      <div class="math-block">\[ \sqrt{2x + 14} = \sqrt{x - 7} + \sqrt{x + 5}. \]</div>
+      <p>Sada su obe strane sumira nenegativnih izraza, pa je kvadriranje ekvivalencija (ne uvodi strana rešenja u prvom koraku).</p>
+      <div class="callout callout-info">
+        <p>Zašto baš ovaj raspored? Ako bismo kvadrirali u izvornom obliku \( \sqrt{2x + 14} - \sqrt{x-7} = \sqrt{x+5} \), leva strana bi bila razlika i mogla da bude negativna. Provera znaka tek bi nas uverila u smer ekvivalencije.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Prvo kvadriranje</h3>
+      <p>Kvadriramo obe strane, koristeći \( (\sqrt{u} + \sqrt{v})^2 = u + v + 2\sqrt{uv} \):</p>
+      <div class="math-block">\[ 2x + 14 = (x - 7) + (x + 5) + 2\sqrt{(x - 7)(x + 5)}. \]</div>
+      <p>Sređujemo desnu stranu: \( (x - 7) + (x + 5) = 2x - 2 \), pa</p>
+      <div class="math-block">\[ 2x + 14 = 2x - 2 + 2\sqrt{(x - 7)(x + 5)}. \]</div>
+      <p>Linearni \( 2x \) se skraćuje sa obe strane:</p>
+      <div class="math-block">\[ 14 = -2 + 2\sqrt{(x - 7)(x + 5)} \quad\Rightarrow\quad 16 = 2\sqrt{(x - 7)(x + 5)} \quad\Rightarrow\quad 8 = \sqrt{(x - 7)(x + 5)}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Drugo kvadriranje — eliminacija poslednjeg korena</h3>
+      <p>Obe strane su nenegativne (\( 8 &gt; 0 \), koren je \( \geq 0 \)), pa kvadriranje opet daje ekvivalentnu jednačinu:</p>
+      <div class="math-block">\[ 64 = (x - 7)(x + 5). \]</div>
+      <p>Razvijamo desnu stranu: \( (x - 7)(x + 5) = x^2 - 2x - 35 \), pa</p>
+      <div class="math-block">\[ x^2 - 2x - 35 = 64 \quad\Rightarrow\quad x^2 - 2x - 99 = 0. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Rešavanje kvadratne jednačine</h3>
+      <p>Primenjujemo kvadratnu formulu sa \( a = 1 \), \( b = -2 \), \( c = -99 \):</p>
+      <div class="math-block">\[ x = \frac{2 \pm \sqrt{(-2)^2 - 4 \cdot 1 \cdot (-99)}}{2} = \frac{2 \pm \sqrt{4 + 396}}{2} = \frac{2 \pm \sqrt{400}}{2} = \frac{2 \pm 20}{2}. \]</div>
+      <p>Dobijamo dva kandidata:</p>
+      <div class="math-block">\[ x_1 = \frac{2 + 20}{2} = 11, \qquad x_2 = \frac{2 - 20}{2} = -9. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: jesi li mogao i Vijetove formule?</summary>
+          <div class="detail-content"><p>Da! Iz \( x_1 + x_2 = 2 \) i \( x_1 \cdot x_2 = -99 \) tražimo dva broja čiji je zbir \( 2 \) i proizvod \( -99 \). To su \( 11 \) i \( -9 \) (jer \( 11 \cdot (-9) = -99 \) i \( 11 + (-9) = 2 \)). Brže od formule.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera u domenu i odbacivanje</h3>
+      <p>Domen je \( [7, +\infty) \). Proveramo:</p>
+      <ul>
+        <li>\( x_1 = 11 \): \( 11 \geq 7 \) ✓ — kandidat ostaje.</li>
+        <li>\( x_2 = -9 \): \( -9 &lt; 7 \) ✗ — <span class="crossed">odbacujemo</span> (van domena, koreni \( \sqrt{x - 7} \) i \( \sqrt{x + 5} \) ne bi bili realni).</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="step" data-step="7">
+    <div class="step-badge">7</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera u originalnoj jednačini</h3>
+      <p>Iako su sva naša kvadriranja bila ekvivalentna (obe strane uvek nenegativne), uvrštavamo \( x = 11 \) radi sigurnosti:</p>
+      <div class="math-block">\[ \sqrt{2 \cdot 11 + 14} - \sqrt{11 - 7} = \sqrt{36} - \sqrt{4} = 6 - 2 = 4, \]</div>
+      <div class="math-block">\[ \sqrt{11 + 5} = \sqrt{16} = 4. \]</div>
+      <p>Leva i desna strana se poklapaju: \( 4 = 4 \) ✓. Dakle, jedinstveno realno rešenje je <span class="result">\( x = 11 \)</span>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="8">
+    <div class="step-badge">8</div>
+    <div class="step-content">
+      <h3 class="step-title">Identifikacija intervala</h3>
+      <p>Proveramo svaki ponuđeni interval:</p>
+      <ul>
+        <li>(A) \( [10, +\infty) \): \( 11 \geq 10 \) ✓ — sadrži \( 11 \).</li>
+        <li>(B) \( [5, 8] \): \( 11 &gt; 8 \) — ne sadrži.</li>
+        <li>(C) \( [0, 1] \): \( 11 &gt; 1 \) — ne sadrži.</li>
+        <li>(D) \( [12, 16] \): \( 11 &lt; 12 \) — ne sadrži.</li>
+        <li>(E) \( [1, 9] \): \( 11 &gt; 9 \) — ne sadrži.</li>
+      </ul>
+      <p>Tačan odgovor je (A).</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>U iracionalnim jednačinama sa više korena, ključna je <em>strategija premestaja</em> pre kvadriranja. Premeštanjem postižemo da na obe strane budu nenegativni izrazi (suma korena na jednoj, koren na drugoj), što čini kvadriranje ekvivalencijom — ne uvodi se viška rešenja, ne gubi se postojeće. Drugi važan princip: posle prvog kvadriranja često ostaje samo jedan koren, koji se eliminuše drugim kvadriranjem; tada postaje obična kvadratna jednačina. Domen i provera su nezamenljivi koraci, čak i kad su sva kvadriranja "bezbedna" — bolje je biti pažljiv jednom previše nego propustiti grešku.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zaboravljanje domena.</strong> Ako se ne odredi \( D = [7, +\infty) \), kandidat \( x = -9 \) može slučajno da prođe kao "rešenje" iako uopšte nije u realnom domenu jednačine.</li>
+    <li><strong>Pogrešno kvadriranje binoma.</strong> \( (\sqrt{x-7} + \sqrt{x+5})^2 \) NIJE \( (x-7) + (x+5) \). Mora se uključiti dvostruki proizvod \( 2\sqrt{(x-7)(x+5)} \). Najčešća greška u celom zadatku.</li>
+    <li><strong>Kvadriranje u izvornom obliku bez analize znaka.</strong> Iz \( \sqrt{2x+14} - \sqrt{x-7} = \sqrt{x+5} \), leva strana može biti negativna, pa naivno kvadriranje briše informaciju o znaku i potencijalno uvodi strana rešenja.</li>
+    <li><strong>Zaboravljanje provere.</strong> Iako su naša kvadriranja bila ekvivalentna, kod iracionalnih jednačina je <em>uvek</em> dobro vratiti se u original. Tako se otkriva i računska greška.</li>
+    <li><strong>Pogrešna identifikacija intervala.</strong> Kada je dobijeno \( x = 11 \), brzo "tipovanje" može dovesti do (D) \( [12, 16] \), ali \( 11 &lt; 12 \). Pažljivo poređenje granica.</li>
+    <li><strong>Računska greška u diskriminanti.</strong> \( D = b^2 - 4ac = 4 - 4 \cdot 1 \cdot (-99) = 4 + 396 = 400 \). Znak \( c = -99 \) često se "izgubi", što daje \( D = 4 - 396 \) i nesticanje korena.</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ x = 11 \in [10, +\infty) \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( [10, +\infty) \)</span>
+    <span class="answer-option" data-option="B">(B) \( [5, 8] \)</span>
+    <span class="answer-option" data-option="C">(C) \( [0, 1] \)</span>
+    <span class="answer-option" data-option="D">(D) \( [12, 16] \)</span>
+    <span class="answer-option" data-option="E">(E) \( [1, 9] \)</span>
+  </div>
+  <p class="verification">Provera u originalnoj jednačini: za \( x = 11 \) imamo \( \sqrt{36} - \sqrt{4} = 6 - 2 = 4 \) na levoj strani, i \( \sqrt{16} = 4 \) na desnoj. Jednakost se zadovoljava. Rešenje je u domenu \( [7, +\infty) \) i pripada intervalu \( [10, +\infty) \). ✓</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Razmotri opštiju jednačinu \( \sqrt{2x + a} - \sqrt{x - 7} = \sqrt{x + 5} \), gde je \( a \) realan parametar. Za koje vrednosti parametra \( a \) jednačina ima realno rešenje \( x \in [7, +\infty) \)? Postoji li \( a \) za koji su <em>oba</em> kandidata iz kvadratne jednačine validna rešenja?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Domen ostaje \( x \geq 7 \) (uslovi \( x - 7 \geq 0 \) i \( x + 5 \geq 0 \) su nepromenjeni; uslov \( 2x + a \geq 0 \) postaje \( x \geq -a/2 \), što je slabije za \( a \geq -14 \)). Ponavljajući postupak (premeštanje, kvadriranje, kvadriranje), dobija se \( \sqrt{(x-7)(x+5)} = \dfrac{a + 2}{2} \). Za realno rešenje treba \( a \geq -2 \). Onda kvadriranjem \( (x-7)(x+5) = \left(\dfrac{a+2}{2}\right)^2 \), tj. \( x^2 - 2x - 35 = \left(\dfrac{a+2}{2}\right)^2 \). Ova kvadratna jednačina ima dva rešenja simetrična oko \( x = 1 \). Da bi <em>oba</em> bila u domenu \( [7, +\infty) \), oba korena moraju biti \( \geq 7 \), ali zbir korena je uvek \( 2 \) — što je nemoguće da oba budu \( \geq 7 \) (zbir bi tad bio \( \geq 14 \)). Zaključak: NIKADA ne postoje dva rešenja u domenu — samo jedno (veće) može biti validno. Spojler: konkretno za \( a = 14 \) (naš zadatak), to je \( x = 11 \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('solution-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  // Layout: top half — graph, bottom — number line
+  var W = canvas.width, H = canvas.height;
+  // Graph area
+  var gMarginL = 70, gMarginR = 50, gMarginT = 50;
+  var gPlotH = 320;
+  var gPlotW = W - gMarginL - gMarginR;
+  var gPlotTop = gMarginT;
+  var gPlotBottom = gMarginT + gPlotH;
+
+  // Graph data range
+  var xMin = 6, xMax = 16;
+  var yMin = 0, yMax = 6;
+
+  function gx(x) { return gMarginL + (x - xMin) / (xMax - xMin) * gPlotW; }
+  function gy(y) { return gPlotBottom - (y - yMin) / (yMax - yMin) * gPlotH; }
+
+  function L(x) { return Math.sqrt(2 * x + 14) - Math.sqrt(x - 7); }
+  function R(x) { return Math.sqrt(x + 5); }
+
+  // Number line area
+  var nlY = H - 80; // baseline y-coordinate
+  var nlMarginL = 70, nlMarginR = 50;
+  var nlW = W - nlMarginL - nlMarginR;
+  var nMin = 0, nMax = 16;
+  function nx(v) { return nlMarginL + (v - nMin) / (nMax - nMin) * nlW; }
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var accent = cv('--sol-canvas-accent');
+    var danger = cv('--sol-canvas-danger');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var warning = cv('--sol-canvas-warning');
+    var tertiary = cv('--sol-canvas-tertiary');
+    var secondary = cv('--sol-canvas-secondary');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // ── Graph section title ──
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('L(x) = √(2x+14) − √(x−7)   vs.   R(x) = √(x+5)', gMarginL, 26);
+
+    // Grid (graph)
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var ix = 6; ix <= 16; ix += 2) {
+      ctx.beginPath();
+      ctx.moveTo(gx(ix), gPlotTop);
+      ctx.lineTo(gx(ix), gPlotBottom);
+      ctx.stroke();
+    }
+    for (var iy = 0; iy <= 6; iy++) {
+      ctx.beginPath();
+      ctx.moveTo(gMarginL, gy(iy));
+      ctx.lineTo(gMarginL + gPlotW, gy(iy));
+      ctx.stroke();
+    }
+
+    // Mark domain band [7, 16]
+    ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.06);
+    ctx.fillRect(gx(7), gPlotTop, gx(16) - gx(7), gPlotH);
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(gMarginL, gPlotBottom);
+    ctx.lineTo(gMarginL + gPlotW, gPlotBottom);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(gMarginL, gPlotTop);
+    ctx.lineTo(gMarginL, gPlotBottom);
+    ctx.stroke();
+
+    // x-axis tick labels
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (var lx = 6; lx <= 16; lx += 2) {
+      ctx.fillText(String(lx), gx(lx), gPlotBottom + 4);
+    }
+    // y-axis tick labels
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (var ly = 0; ly <= 6; ly++) {
+      ctx.fillText(String(ly), gMarginL - 6, gy(ly));
+    }
+
+    ctx.fillStyle = text;
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('x', gMarginL + gPlotW + 8, gPlotBottom);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('y', gMarginL, gPlotTop - 4);
+
+    // Plot L(x) — defined for x >= 7
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    var firstL = true;
+    for (var i = 0; i <= 200; i++) {
+      var x = 7 + (16 - 7) * i / 200;
+      var y = L(x);
+      if (y < yMin || y > yMax) continue;
+      var px = gx(x), py = gy(y);
+      if (firstL) { ctx.moveTo(px, py); firstL = false; }
+      else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+
+    // Plot R(x) — defined for x >= -5, so on full visible
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    var firstR = true;
+    for (var k = 0; k <= 200; k++) {
+      var xR = xMin + (xMax - xMin) * k / 200;
+      var yR = R(xR);
+      if (yR < yMin || yR > yMax) continue;
+      var pxR = gx(xR), pyR = gy(yR);
+      if (firstR) { ctx.moveTo(pxR, pyR); firstR = false; }
+      else ctx.lineTo(pxR, pyR);
+    }
+    ctx.stroke();
+
+    // Mark intersection (11, 4)
+    ctx.strokeStyle = cvAlpha('--sol-canvas-muted', 0.6);
+    ctx.setLineDash([3, 4]);
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(gx(11), gPlotBottom);
+    ctx.lineTo(gx(11), gy(4));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(gMarginL, gy(4));
+    ctx.lineTo(gx(11), gy(4));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Intersection point
+    ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.25);
+    ctx.beginPath();
+    ctx.arc(gx(11), gy(4), 12, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = secondary;
+    ctx.beginPath();
+    ctx.arc(gx(11), gy(4), 6, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Label intersection
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('(11, 4)  presek', gx(11) + 12, gy(4) - 14);
+
+    // Legend (top-right)
+    var legX = gMarginL + gPlotW - 200;
+    var legY = gPlotTop + 14;
+    ctx.fillStyle = primary;
+    ctx.fillRect(legX, legY - 6, 22, 3);
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('L(x) = √(2x+14) − √(x−7)', legX + 28, legY - 5);
+
+    ctx.fillStyle = accent;
+    ctx.fillRect(legX, legY + 14, 22, 3);
+    ctx.fillStyle = text;
+    ctx.fillText('R(x) = √(x+5)', legX + 28, legY + 15);
+
+    // Domain x = 7 marker
+    ctx.strokeStyle = warning;
+    ctx.setLineDash([5, 4]);
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(gx(7), gPlotTop);
+    ctx.lineTo(gx(7), gPlotBottom);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('početak domena  x = 7', gx(7) + 4, gPlotTop + 4);
+
+    // ── Number line section ──
+    var nlSectionY = gPlotBottom + 50;
+
+    // Number line title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText('Brojevna prava — domen, rešenje i ponuđeni intervali', nlMarginL, nlSectionY - 18);
+
+    // Domain stripe [7, 16] (visible part of [7, +inf))
+    ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.13);
+    ctx.fillRect(nx(7), nlY - 28, nx(16) + 8 - nx(7), 56);
+
+    // Number line baseline
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(nx(0), nlY);
+    ctx.lineTo(nx(16) + 12, nlY);
+    ctx.stroke();
+    // arrow
+    ctx.beginPath();
+    ctx.moveTo(nx(16) + 12, nlY);
+    ctx.lineTo(nx(16) + 4, nlY - 4);
+    ctx.moveTo(nx(16) + 12, nlY);
+    ctx.lineTo(nx(16) + 4, nlY + 4);
+    ctx.stroke();
+
+    // Tick marks and labels
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (var t = 0; t <= 16; t += 2) {
+      ctx.strokeStyle = axis;
+      ctx.beginPath();
+      ctx.moveTo(nx(t), nlY - 4);
+      ctx.lineTo(nx(t), nlY + 4);
+      ctx.stroke();
+      ctx.fillStyle = muted;
+      ctx.fillText(String(t), nx(t), nlY + 8);
+    }
+
+    // Mark domain start at 7 (filled circle, label above)
+    ctx.fillStyle = warning;
+    ctx.beginPath();
+    ctx.arc(nx(7), nlY, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('7  (domen)', nx(7), nlY - 12);
+
+    // Mark x = 11 (solution) — green big dot above
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.25);
+    ctx.beginPath();
+    ctx.arc(nx(11), nlY, 12, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(nx(11), nlY, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('x = 11  rešenje', nx(11), nlY - 14);
+
+    // Show option intervals as horizontal bars below
+    // (A) [10, +inf) ← contains 11 (highlight)
+    // (B) [5, 8]
+    // (C) [0, 1]
+    // (D) [12, 16]
+    // (E) [1, 9]
+    var barY = nlY + 28;
+    var barH = 7;
+    var rowGap = 13;
+
+    function drawInterval(label, lo, hi, isInf, color, isCorrect, idx) {
+      var y = barY + idx * rowGap;
+      var x1 = nx(lo);
+      var x2 = isInf ? nx(16) + 12 : nx(hi);
+      // bar
+      ctx.fillStyle = color;
+      ctx.fillRect(x1, y, x2 - x1, barH - 2);
+      // ticks at endpoints
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x1, y - 2); ctx.lineTo(x1, y + barH);
+      ctx.stroke();
+      if (!isInf) {
+        ctx.beginPath();
+        ctx.moveTo(x2, y - 2); ctx.lineTo(x2, y + barH);
+        ctx.stroke();
+      } else {
+        // arrow at right end
+        ctx.beginPath();
+        ctx.moveTo(x2, y + barH/2);
+        ctx.lineTo(x2 - 6, y + barH/2 - 3);
+        ctx.moveTo(x2, y + barH/2);
+        ctx.lineTo(x2 - 6, y + barH/2 + 3);
+        ctx.stroke();
+      }
+      // label on left
+      ctx.fillStyle = isCorrect ? accent : muted;
+      ctx.font = isCorrect ? 'bold 10px Inter, system-ui, sans-serif' : '10px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(label, nlMarginL - 6, y + barH/2);
+    }
+
+    drawInterval('(A) [10, +∞)', 10, 16, true,  accent, true, 0);
+    drawInterval('(B) [5, 8]',   5,  8,  false, danger, false, 1);
+    drawInterval('(C) [0, 1]',   0,  1,  false, danger, false, 2);
+    drawInterval('(D) [12, 16]', 12, 16, false, danger, false, 3);
+    drawInterval('(E) [1, 9]',   1,  9,  false, danger, false, 4);
+
+    // Bottom caption
+    ctx.fillStyle = text;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText('Samo (A) [10, +∞) sadrži x = 11  →  tačan odgovor', W / 2, H - 10);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Iracionalna jednačina √(2x+14)−√(x−7)=√(x+5)",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["iracionalne jednačine", "kvadratni koren", "domen", "kvadriranje", "kvadratna jednačina", "provera rešenja"]
+}
+BRAINSPARK_META-->

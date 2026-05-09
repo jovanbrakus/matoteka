@@ -1,0 +1,668 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+Problem: tg 9° + tg 81° + tg 117° + tg 153° = ?
+
+Korak 1: Svedi sve uglove na "manje" eksprese.
+
+(a) tg 81° = tg(90° - 9°) = ctg 9°.
+(b) tg 117° = tg(180° - 63°) = -tg 63° = -tg(90° - 27°) = -ctg 27°.
+(c) tg 153° = tg(180° - 27°) = -tg 27°.
+
+Pa je
+  S = tg 9° + ctg 9° - ctg 27° - tg 27°
+    = (tg 9° + ctg 9°) - (tg 27° + ctg 27°).
+
+Korak 2: Identitet tg θ + ctg θ.
+
+  tg θ + ctg θ = sin θ/cos θ + cos θ/sin θ
+              = (sin²θ + cos²θ)/(sin θ cos θ)
+              = 1/(sin θ cos θ)
+              = 2/sin(2θ).
+
+Pa je
+  tg 9° + ctg 9°  = 2/sin 18°.
+  tg 27° + ctg 27° = 2/sin 54°.
+
+Stoga
+  S = 2/sin 18° - 2/sin 54°
+    = 2 (sin 54° - sin 18°)/(sin 18° sin 54°).
+
+Korak 3: Vrednosti sin 18° i sin 54°.
+
+  sin 18° = (√5 - 1)/4
+  sin 54° = cos 36° = (√5 + 1)/4
+
+  sin 54° - sin 18° = ((√5+1) - (√5-1))/4 = 2/4 = 1/2.
+  sin 18° · sin 54° = ((√5-1)(√5+1))/16 = (5 - 1)/16 = 4/16 = 1/4.
+
+Korak 4: Konacno.
+
+  S = 2 · (1/2) / (1/4) = 1 / (1/4) = 4.
+
+Provera (numericki):
+  tg 9°  ≈ 0.1584
+  tg 81° ≈ 6.3138   (=ctg 9°, jer 1/tg 9° ≈ 1/0.1584 ≈ 6.3137 ✓)
+  tg 117° ≈ -1.9626 (= -ctg 27°: ctg 27° = 1/tg 27° ≈ 1/0.5095 ≈ 1.9626 ✓)
+  tg 153° ≈ -0.5095 (= -tg 27° ✓)
+
+  S ≈ 0.1584 + 6.3138 - 1.9626 - 0.5095 = 4.0001. ✓
+
+Odgovor: (D) 4.
+
+Vizuelizacija:
+- jedinicni krug sa cetiri ugla 9°, 81°, 117°, 153° i njihove tangentne projekcije.
+- Pokazati simetrije: 81° = 90° - 9° (svojstvo komplementa); 117°, 153° su u QII (oba reflektirana iz QI).
+- Korisno je istaci da se "parovi" lepo grupisu: (9°, 81°) → 2/sin 18°, (117°, 153°) → -2/sin 54°.
+
+Drugi (mali) canvas: bar plot vrednosti tg(α) za sva cetiri ugla, sa konacnim sumom.
+
+Implementacija: jedan bogati canvas (jedinicni krug) je dovoljan — ne treba previse.
+Static jer je problem cisto algebarski/identitetni.
+</script>
+
+<h1 data-card="problem-title">Suma tangensa za četiri specifična ugla</h1>
+<p data-card="problem-subtitle" class="subtitle">Trigonometrija — identiteti komplementa i suplementa, vrednosti \( \sin 18^\circ \) i \( \sin 54^\circ \)</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Zbir</p>
+  <div class="math-block">
+    \[ \operatorname{tg} 9^\circ + \operatorname{tg} 81^\circ + \operatorname{tg} 117^\circ + \operatorname{tg} 153^\circ \]
+  </div>
+  <p>jednak je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( -\dfrac{13\sqrt{3}}{5} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( -3 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 4 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 3\sqrt{3} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Iskoristićemo identitete komplementa (\( \operatorname{tg}(90^\circ - \alpha) = \operatorname{ctg} \alpha \)) i suplementa (\( \operatorname{tg}(180^\circ - \alpha) = -\operatorname{tg} \alpha \)) da pretvorimo četiri tangensa u izraz \( \operatorname{tg} \alpha + \operatorname{ctg} \alpha \) za dva ugla. Zatim primenjujemo identitet \( \operatorname{tg} \alpha + \operatorname{ctg} \alpha = \dfrac{2}{\sin 2\alpha} \) i koristimo poznate vrednosti \( \sin 18^\circ \) i \( \sin 54^\circ \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Komplement:</strong> \( \operatorname{tg}(90^\circ - \alpha) = \operatorname{ctg} \alpha \), \( \cos(90^\circ - \alpha) = \sin \alpha \).</li>
+        <li><strong>Suplement:</strong> \( \operatorname{tg}(180^\circ - \alpha) = -\operatorname{tg} \alpha \), \( \sin(180^\circ - \alpha) = \sin \alpha \).</li>
+        <li><strong>Tangens + kotangens:</strong>
+          \[ \operatorname{tg} \alpha + \operatorname{ctg} \alpha = \frac{\sin\alpha}{\cos\alpha} + \frac{\cos\alpha}{\sin\alpha} = \frac{\sin^2\alpha + \cos^2\alpha}{\sin\alpha\cos\alpha} = \frac{1}{\sin\alpha\cos\alpha} = \frac{2}{\sin 2\alpha}. \]
+        </li>
+        <li><strong>Tablične vrednosti vezane za petougao:</strong>
+          \[ \sin 18^\circ = \frac{\sqrt{5} - 1}{4}, \qquad \sin 54^\circ = \cos 36^\circ = \frac{\sqrt{5} + 1}{4}. \]
+        </li>
+        <li><strong>Razlika kvadrata:</strong> \( (a - b)(a + b) = a^2 - b^2 \) — koristi se za pojednostavljenje proizvoda \( \sin 18^\circ \cdot \sin 54^\circ \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — četiri ugla na jediničnom krugu">
+  <h2>📐 Vizuelni prikaz — četiri ugla na jediničnom krugu</h2>
+  <div class="canvas-wrapper">
+    <canvas id="circle-canvas" width="700" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Uglovi \( 9^\circ \) i \( 81^\circ \) leže u prvom kvadrantu (oba imaju pozitivne tangense), dok \( 117^\circ \) i \( 153^\circ \) leže u drugom kvadrantu (oba imaju negativne tangense). Simetrija \( 81^\circ = 90^\circ - 9^\circ \) i \( 153^\circ = 180^\circ - 27^\circ \) je ono što nam dozvoljava da par tangensa svedemo na \( \operatorname{tg} \alpha + \operatorname{ctg} \alpha \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — vrednosti i njihova suma">
+  <h2>📐 Vizuelni prikaz — pojedinačne vrednosti</h2>
+  <div class="canvas-wrapper">
+    <canvas id="bars-canvas" width="700" height="430"></canvas>
+  </div>
+  <p class="canvas-caption">Stubići pokazuju približne vrednosti svakog tangensa. \( \operatorname{tg} 81^\circ \) je „daleko najveći&ldquo; (≈ 6,31), a \( \operatorname{tg} 117^\circ \) najnegativniji (≈ -1,96). Algebarski zbir 0,16 + 6,31 − 1,96 − 0,51 ≈ 4 tačno se poklapa sa rezultatom dobijenim identitetima.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Pretvori sva četiri tangensa u uglove ispod \( 45^\circ \)</h3>
+      <p>Identiteti komplementa i suplementa daju:</p>
+      <div class="math-block">
+        \[ \operatorname{tg} 81^\circ = \operatorname{tg}(90^\circ - 9^\circ) = \operatorname{ctg} 9^\circ. \]
+      </div>
+      <div class="math-block">
+        \[ \operatorname{tg} 117^\circ = \operatorname{tg}(180^\circ - 63^\circ) = -\operatorname{tg} 63^\circ = -\operatorname{tg}(90^\circ - 27^\circ) = -\operatorname{ctg} 27^\circ. \]
+      </div>
+      <div class="math-block">
+        \[ \operatorname{tg} 153^\circ = \operatorname{tg}(180^\circ - 27^\circ) = -\operatorname{tg} 27^\circ. \]
+      </div>
+      <p>Pa je:</p>
+      <div class="math-block">
+        \[ S = \operatorname{tg} 9^\circ + \operatorname{ctg} 9^\circ - \operatorname{ctg} 27^\circ - \operatorname{tg} 27^\circ = \big(\operatorname{tg} 9^\circ + \operatorname{ctg} 9^\circ\big) - \big(\operatorname{tg} 27^\circ + \operatorname{ctg} 27^\circ\big). \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš dva para \( (\alpha, 90^\circ - \alpha) \)?</summary>
+          <div class="detail-content">
+            <p>Plan je da svaku grupu od dva tangensa svedemo na oblik \( \operatorname{tg} \alpha + \operatorname{ctg} \alpha \), za koji znamo zatvorenu formulu. Pošto je \( 81^\circ = 90^\circ - 9^\circ \), prvi par je očigledan. Za drugi par primetimo \( 117^\circ = 180^\circ - 63^\circ \) i \( 63^\circ = 90^\circ - 27^\circ \), pa se i \( 153^\circ = 180^\circ - 27^\circ \) lepo uklopi sa istim parametrom \( 27^\circ \).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Primeni identitet \( \operatorname{tg} \alpha + \operatorname{ctg} \alpha = \dfrac{2}{\sin 2\alpha} \)</h3>
+      <p>Direktan račun:</p>
+      <div class="math-block">
+        \[ \operatorname{tg} \alpha + \operatorname{ctg} \alpha = \frac{\sin\alpha}{\cos\alpha} + \frac{\cos\alpha}{\sin\alpha} = \frac{\sin^2\alpha + \cos^2\alpha}{\sin\alpha\cos\alpha} = \frac{1}{\tfrac{1}{2}\sin 2\alpha} = \frac{2}{\sin 2\alpha}. \]
+      </div>
+      <p>Za naše uglove:</p>
+      <div class="math-block">
+        \[ \operatorname{tg} 9^\circ + \operatorname{ctg} 9^\circ = \frac{2}{\sin 18^\circ}, \qquad \operatorname{tg} 27^\circ + \operatorname{ctg} 27^\circ = \frac{2}{\sin 54^\circ}. \]
+      </div>
+      <p>Pa je:</p>
+      <div class="math-block">
+        \[ S = \frac{2}{\sin 18^\circ} - \frac{2}{\sin 54^\circ} = \frac{2 (\sin 54^\circ - \sin 18^\circ)}{\sin 18^\circ \cdot \sin 54^\circ}. \]
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Iskoristi tablične vrednosti</h3>
+      <p>Klasične formule (izvedene iz pravilnog petougla, vezane za zlatni presek):</p>
+      <div class="math-block">
+        \[ \sin 18^\circ = \frac{\sqrt{5} - 1}{4}, \qquad \sin 54^\circ = \cos 36^\circ = \frac{\sqrt{5} + 1}{4}. \]
+      </div>
+      <p>Razlika:</p>
+      <div class="math-block">
+        \[ \sin 54^\circ - \sin 18^\circ = \frac{(\sqrt{5}+1) - (\sqrt{5}-1)}{4} = \frac{2}{4} = \frac{1}{2}. \]
+      </div>
+      <p>Proizvod (razlika kvadrata!):</p>
+      <div class="math-block">
+        \[ \sin 18^\circ \cdot \sin 54^\circ = \frac{(\sqrt{5} - 1)(\sqrt{5} + 1)}{16} = \frac{5 - 1}{16} = \frac{4}{16} = \frac{1}{4}. \]
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: numerička sanity-provera</summary>
+          <div class="detail-content">
+            <p>\( \sin 18^\circ \approx 0{,}3090 \), \( \sin 54^\circ \approx 0{,}8090 \). Razlika \( \approx 0{,}5 \) ✓; proizvod \( \approx 0{,}25 \) ✓. Dve „lepe&ldquo; vrednosti — to je signal da je problem dobro postavljen.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Spoji rezultate</h3>
+      <p>Vraćamo se u izraz za \( S \):</p>
+      <div class="math-block">
+        \[ S = \frac{2 \cdot \tfrac{1}{2}}{\tfrac{1}{4}} = \frac{1}{\tfrac{1}{4}} = 4. \]
+      </div>
+      <p>Konačno: <span class="result">\( S = 4 \)</span>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Numerička provera (kalkulator)</h3>
+      <p>Direktni račun:</p>
+      <div class="math-block">
+        \[ \operatorname{tg} 9^\circ \approx 0{,}1584, \quad \operatorname{tg} 81^\circ \approx 6{,}3138, \quad \operatorname{tg} 117^\circ \approx -1{,}9626, \quad \operatorname{tg} 153^\circ \approx -0{,}5095. \]
+      </div>
+      <p>Suma:</p>
+      <div class="math-block">
+        \[ 0{,}1584 + 6{,}3138 - 1{,}9626 - 0{,}5095 \approx 4{,}0001. \]
+      </div>
+      <p>Ne baš tačno \( 4 \) zbog zaokruživanja, ali do četiri decimale tačno se poklapa. ✓</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Tri „skrivena dragulja&ldquo; čine ovaj zadatak elegantnim: (1) sva četiri ugla padaju u pripadne parove komplement/suplement, pa se zbir svodi na <em>dve</em> instance \( \operatorname{tg} \alpha + \operatorname{ctg} \alpha \); (2) taj izraz ima divnu zatvorenu formu \( 2/\sin 2\alpha \); (3) vrednosti \( \sin 18^\circ \) i \( \sin 54^\circ \) (povezane sa zlatnim presekom) imaju razliku \( 1/2 \) i proizvod \( 1/4 \), oba „lepa&ldquo; broja koja čiste rezultat do celog broja \( 4 \).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \operatorname{tg} 9^\circ + \operatorname{tg} 81^\circ + \operatorname{tg} 117^\circ + \operatorname{tg} 153^\circ = 4 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( -\dfrac{13\sqrt{3}}{5} \)</span>
+    <span class="answer-option" data-option="B">(B) \( -3 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 1 \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 4 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 3\sqrt{3} \)</span>
+  </div>
+  <p class="verification">Provera (numerički): \( 0{,}1584 + 6{,}3138 - 1{,}9626 - 0{,}5095 \approx 4{,}0001 \) ✓. Provera identiteta: \( S = 2/\sin 18^\circ - 2/\sin 54^\circ = 2 \cdot (1/2) / (1/4) = 4 \) ✓. Negativni rezultati \( -3 \), \( -13\sqrt{3}/5 \) su isključeni jer dva pozitivna tangensa (\( 9^\circ, 81^\circ \)) numerički nadjačaju dva negativna (\( 117^\circ, 153^\circ \)).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešan znak suplementa:</strong> \( \operatorname{tg}(180^\circ - \alpha) = -\operatorname{tg} \alpha \), <em>ne</em> \( +\operatorname{tg} \alpha \). Sinus je pozitivan u QII, kosinus negativan, pa je tangens negativan.</li>
+    <li><strong>Mešanje komplementa i suplementa:</strong> \( \operatorname{tg}(90^\circ - \alpha) = \operatorname{ctg} \alpha \) (ne \( -\operatorname{ctg}\alpha \)); \( \operatorname{tg}(90^\circ + \alpha) = -\operatorname{ctg} \alpha \). Razlika je \( 90^\circ - \alpha \) vs \( 90^\circ + \alpha \).</li>
+    <li><strong>Zaboravljanje da je \( \sin^2 + \cos^2 = 1 \):</strong> bez Pitagorinog identiteta izraz \( \dfrac{\sin^2 + \cos^2}{\sin\cos} \) ne kolabira u \( 1/\sin\cos \) i identitet propada.</li>
+    <li><strong>Pogrešne vrednosti za \( \sin 18^\circ \), \( \sin 54^\circ \):</strong> ovo nisu „lepi&ldquo; uglovi tabele \( 30^\circ, 45^\circ, 60^\circ \) — ali ipak imaju zatvorenu formu preko \( \sqrt{5} \) (zlatni presek). Treba ih zapamtiti ili izvesti iz \( \cos 36^\circ \).</li>
+    <li><strong>Direktan numerički račun bez identiteta:</strong> teoretski moguć, ali daje \( 4{,}0001 \) ili sl., pa se može propustiti tačan odgovor (svedeno do nekoliko decimala). Identitet daje strogi celi broj.</li>
+    <li><strong>Skraćivanje uglova naknadno:</strong> u nameri da se odmah saberu, neki napišu \( \operatorname{tg} 9^\circ + \operatorname{tg} 81^\circ + \dots \) i pokušaju formulu zbira tangensa — ona postoji ali je daleko komplikovanija od trika koji koristimo.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Izračunaj \( \operatorname{tg} 1^\circ + \operatorname{tg} 89^\circ + \operatorname{tg} 91^\circ + \operatorname{tg} 179^\circ \). Da li se ovaj izraz takođe svodi na zatvorenu formu? Možeš li opštije: za koje \( \alpha \) je \( \operatorname{tg} \alpha + \operatorname{tg}(90^\circ - \alpha) + \operatorname{tg}(90^\circ + \alpha) + \operatorname{tg}(180^\circ - \alpha) \) racionalan broj?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Po istim identitetima: \( \operatorname{tg} 89^\circ = \operatorname{ctg} 1^\circ \), \( \operatorname{tg} 91^\circ = \operatorname{tg}(180^\circ - 89^\circ) = -\operatorname{tg} 89^\circ = -\operatorname{ctg} 1^\circ \), \( \operatorname{tg} 179^\circ = -\operatorname{tg} 1^\circ \). Pa je suma \( = \operatorname{tg} 1^\circ + \operatorname{ctg} 1^\circ - \operatorname{ctg} 1^\circ - \operatorname{tg} 1^\circ = 0 \) — prosto poništavanje! Opštije: \( \operatorname{tg}\alpha + \operatorname{tg}(90^\circ - \alpha) + \operatorname{tg}(90^\circ + \alpha) + \operatorname{tg}(180^\circ - \alpha) = \operatorname{tg}\alpha + \operatorname{ctg}\alpha - \operatorname{ctg}\alpha - \operatorname{tg}\alpha = 0 \), za <em>svaki</em> dozvoljen \( \alpha \). Naš zadatak je drugačiji jer su uglovi \( 9^\circ, 81^\circ, 117^\circ, 153^\circ \) — pri čemu je drugi par zasnovan na \( 27^\circ \), ne na \( 9^\circ \), pa se ne poništava. Ovo objašnjava zašto rezultat \( 4 \) zavisi baš od izbora \( 9^\circ \) i \( 27^\circ \) (uglovi koji imaju vezu \( 3 \cdot 9 = 27 \)).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('circle-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var textCol = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var warning = cv('--sol-canvas-warning');
+    var danger = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = textCol;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Četiri ugla na jediničnom krugu (parovi: QI vs QII)', W / 2, 28);
+
+    var cx = W / 2;
+    var cy = H / 2 + 20;
+    var R = 180;
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(cx - R - 50, cy);
+    ctx.lineTo(cx + R + 50, cy);
+    ctx.moveTo(cx, cy + R + 50);
+    ctx.lineTo(cx, cy - R - 50);
+    ctx.stroke();
+
+    // Axis arrows
+    function arrow(x1, y1, x2, y2, col) {
+      var ang = Math.atan2(y2 - y1, x2 - x1);
+      ctx.beginPath();
+      ctx.moveTo(x2, y2);
+      ctx.lineTo(x2 - 8 * Math.cos(ang - 0.3), y2 - 8 * Math.sin(ang - 0.3));
+      ctx.lineTo(x2 - 8 * Math.cos(ang + 0.3), y2 - 8 * Math.sin(ang + 0.3));
+      ctx.closePath();
+      ctx.fillStyle = col;
+      ctx.fill();
+    }
+    arrow(cx, cy, cx + R + 50, cy, axis);
+    arrow(cx, cy, cx, cy - R - 50, axis);
+
+    // Labels
+    ctx.fillStyle = textCol;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('cos', cx + R + 24, cy - 6);
+    ctx.fillText('sin', cx + 8, cy - R - 30);
+
+    // Unit circle
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Quadrant separator (vertical at 90°)
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 4]);
+    ctx.beginPath();
+    ctx.moveTo(cx, cy + R + 30);
+    ctx.lineTo(cx, cy - R - 30);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Quadrant labels
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('QI: tg > 0', cx + R / 2 + 30, cy - R - 18);
+    ctx.fillText('QII: tg < 0', cx - R / 2 - 30, cy - R - 18);
+
+    // Four angles
+    var angles = [
+      { deg: 9,   color: primary,  label: '9°',   tag: 'tg 9° ≈ 0,16' },
+      { deg: 81,  color: secondary, label: '81°', tag: 'tg 81° ≈ 6,31' },
+      { deg: 117, color: highlight, label: '117°', tag: 'tg 117° ≈ -1,96' },
+      { deg: 153, color: warning,   label: '153°', tag: 'tg 153° ≈ -0,51' }
+    ];
+
+    // Draw rays + points
+    for (var i = 0; i < angles.length; i++) {
+      var a = angles[i].deg * Math.PI / 180;
+      var px = cx + R * Math.cos(a);
+      var py = cy - R * Math.sin(a);
+
+      ctx.strokeStyle = angles[i].color;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(px, py);
+      ctx.stroke();
+
+      ctx.fillStyle = angles[i].color;
+      ctx.beginPath();
+      ctx.arc(px, py, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = bg;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(px, py, 6, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    // Angle arcs (inside)
+    var arcRadii = [40, 56, 72, 88];
+    for (var i = 0; i < angles.length; i++) {
+      var a = angles[i].deg * Math.PI / 180;
+      ctx.strokeStyle = angles[i].color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(cx, cy, arcRadii[i], 0, -a, true);
+      ctx.stroke();
+    }
+
+    // Angle labels (positioned near the rays)
+    var labelOffsets = [
+      { x: 130, y: -16 },   // 9° (slightly above, right)
+      { x: 25, y: -130 },   // 81° (above)
+      { x: -90, y: -100 },  // 117°
+      { x: -160, y: -55 }   // 153°
+    ];
+    for (var i = 0; i < angles.length; i++) {
+      ctx.fillStyle = angles[i].color;
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(angles[i].label, cx + labelOffsets[i].x, cy + labelOffsets[i].y);
+    }
+
+    // Legend (bottom-right)
+    var lx = 40, ly = H - 130;
+    ctx.fillStyle = bg;
+    ctx.fillRect(lx - 10, ly - 8, 280, 110);
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(lx - 10, ly - 8, 280, 110);
+
+    ctx.fillStyle = textCol;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Vrednosti tangensa:', lx, ly + 6);
+
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    for (var i = 0; i < angles.length; i++) {
+      // colored swatch
+      ctx.fillStyle = angles[i].color;
+      ctx.fillRect(lx, ly + 16 + i * 20, 18, 4);
+      ctx.fillStyle = textCol;
+      ctx.fillText(angles[i].tag, lx + 26, ly + 22 + i * 20);
+    }
+
+    // Sum readout (top-right)
+    var sx = W - 220, sy = 60;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.18);
+    ctx.fillRect(sx - 8, sy - 16, 200, 38);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(sx - 8, sy - 16, 200, 38);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('S = 0,16 + 6,31', sx, sy - 2);
+    ctx.fillText('       − 1,96 − 0,51 ≈ 4', sx, sy + 16);
+
+    // Bottom caption
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Parovi (9°, 81°) i (117°, 153°) vode na izraz tg α + ctg α za α = 9° i α = 27°.', W / 2, H - 14);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('bars-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var textCol = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var warning = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.fillStyle = textCol;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Pojedinačne vrednosti tangensa i njihova suma', W / 2, 28);
+
+    var pad = { l: 70, r: 60, t: 60, b: 100 };
+    var plotW = W - pad.l - pad.r;
+    var plotH = H - pad.t - pad.b;
+    var x0 = pad.l, baseY = pad.t + plotH / 2 + 50;
+
+    // Y-range: -3 to 7
+    var yMin = -3, yMax = 7;
+    var ySpan = yMax - yMin;
+    var yScale = (plotH) / ySpan;
+    function ty(y) { return baseY - (y - 0) * yScale; }
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    var yticks = [-3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7];
+    for (var j = 0; j < yticks.length; j++) {
+      ctx.beginPath();
+      ctx.moveTo(x0, ty(yticks[j]));
+      ctx.lineTo(x0 + plotW, ty(yticks[j]));
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Y-axis
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x0, pad.t);
+    ctx.lineTo(x0, pad.t + plotH);
+    ctx.stroke();
+    // Zero line (x-axis at y=0)
+    ctx.beginPath();
+    ctx.moveTo(x0, ty(0));
+    ctx.lineTo(x0 + plotW, ty(0));
+    ctx.stroke();
+
+    ctx.fillStyle = textCol;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    for (var j = 0; j < yticks.length; j++) {
+      ctx.fillText(String(yticks[j]), x0 - 8, ty(yticks[j]) + 4);
+    }
+
+    // Bars
+    var bars = [
+      { label: 'tg 9°',   value: 0.1584,  color: primary },
+      { label: 'tg 81°',  value: 6.3138,  color: secondary },
+      { label: 'tg 117°', value: -1.9626, color: highlight },
+      { label: 'tg 153°', value: -0.5095, color: warning }
+    ];
+    var bw = plotW / (bars.length + 1.5);
+    for (var i = 0; i < bars.length; i++) {
+      var bx = x0 + (i + 0.5) * bw + bw * 0.25;
+      var bvTop = bars[i].value > 0 ? ty(bars[i].value) : ty(0);
+      var bvBot = bars[i].value > 0 ? ty(0) : ty(bars[i].value);
+      var bh = bvBot - bvTop;
+      ctx.fillStyle = cvAlpha(bars[i].color === primary ? '--sol-canvas-primary' :
+                              bars[i].color === secondary ? '--sol-canvas-secondary' :
+                              bars[i].color === highlight ? '--sol-canvas-highlight' :
+                              '--sol-canvas-warning', 0.55);
+      ctx.fillRect(bx, bvTop, bw * 0.7, bh);
+      ctx.strokeStyle = bars[i].color;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(bx, bvTop, bw * 0.7, bh);
+
+      // Value above/below bar
+      ctx.fillStyle = textCol;
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      var vy = bars[i].value > 0 ? bvTop - 8 : bvBot + 18;
+      ctx.fillText(bars[i].value.toFixed(2).replace('.', ','), bx + bw * 0.35, vy);
+
+      // Label below
+      ctx.fillStyle = textCol;
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.fillText(bars[i].label, bx + bw * 0.35, pad.t + plotH + 22);
+    }
+
+    // Sum bar (extra)
+    var sx = x0 + plotW - bw * 0.85;
+    var sumVal = 4.0;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.45);
+    ctx.fillRect(sx, ty(sumVal), bw * 0.7, ty(0) - ty(sumVal));
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 3;
+    ctx.strokeRect(sx, ty(sumVal), bw * 0.7, ty(0) - ty(sumVal));
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('= 4', sx + bw * 0.35, ty(sumVal) - 8);
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = accent;
+    ctx.fillText('SUMA', sx + bw * 0.35, pad.t + plotH + 22);
+
+    // Bottom caption
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Pozitivni tangensi (9°, 81°) zajedno daju 6,47; negativni (117°, 153°) ukupno -2,47.', W / 2, H - 30);
+    ctx.fillText('Razlika je tačno 4 — što je u skladu s identitetom 2/sin18° − 2/sin54°.', W / 2, H - 14);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Suma tangensa: tg 9° + tg 81° + tg 117° + tg 153°",
+  "subject": "math",
+  "unit": "trigonometry",
+  "topic_tags": ["trigonometrija", "tangens", "kotangens", "identiteti", "komplement", "suplement", "zlatni presek"]
+}
+BRAINSPARK_META-->

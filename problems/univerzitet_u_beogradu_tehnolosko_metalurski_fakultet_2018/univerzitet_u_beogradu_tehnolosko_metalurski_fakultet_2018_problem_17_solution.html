@@ -1,0 +1,518 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Problem: 10 distinct guests assigned to 4 distinct rooms with capacities 1, 2, 3, 4. Find number of arrangements.
+
+Step 1 — Sanity check on totals: 1 + 2 + 3 + 4 = 10. Good, exactly fits all guests.
+
+Step 2 — Rooms are distinct (different sizes), guests are distinct, but inside a room order does NOT matter (a 4-bed room with guests {A,B,C,D} is the same regardless of which bed each takes — a room is a set of occupants, not a sequence).
+
+Step 3 — Multinomial coefficient:
+N = 10! / (1! · 2! · 3! · 4!) = 3628800 / (1 · 2 · 6 · 24) = 3628800 / 288 = 12600.
+
+Step 4 — Sequential binomial verification:
+- Choose 1 guest for the single room: C(10,1) = 10.
+- Choose 2 of the remaining 9 for the double: C(9,2) = 36.
+- Choose 3 of the remaining 7 for the triple: C(7,3) = 35.
+- Last 4 go to the quadruple: C(4,4) = 1.
+Product: 10 · 36 · 35 · 1 = 360 · 35 = 12600. ✓
+
+Step 5 — Why NOT 10! = 3628800?
+Because guests within the same room are unordered (the room doesn't care which bed). 10! would count all permutations of guests across 10 "bed slots" — but within a 2-bed room there are 2! = 2 orderings that give the same arrangement, in a 3-bed room 3! = 6, in a 4-bed room 4! = 24. Dividing 10! by 1!·2!·3!·4! = 288 gives 12600.
+
+Why NOT 360 (option C) or 3600 (option D)? 360 = 10! / 4!·3! type miscount; 3600 = 10·9·8·5 type slip. The correct number is 12600.
+
+Why NOT 24000 (option B) or 12800 (option A)? Just close decoys.
+
+Sanity: 12600 = C(10,1) · C(9,2) · C(7,3) = 10 · 36 · 35 = 12600. ✓
+
+Visual: a tree/grouping diagram showing that 10 distinct items split into a 1, 2, 3, and 4 group; bar chart showing magnitudes of all answer options to highlight the correct one.
+
+Answer: (E) 12600.
+</script>
+
+<h1 data-card="problem-title">Razmeštanje gostiju u sobe različitih kapaciteta</h1>
+<p data-card="problem-subtitle" class="subtitle">Multinomni koeficijent — podela skupa na grupe različitih veličina</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Broj načina na koji je moguće razmestiti \( 10 \) gostiju hotela po sobama, ako su dobili po jednu jednokrevetnu, dvokrevetnu, trokrevetnu i četvorokrevetnu sobu, jednak je:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 12\,800 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 24\,000 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 360 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 3\,600 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 12\,600 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Skup od \( 10 \) različitih gostiju delimo na četiri grupe veličina \( 1, 2, 3, 4 \), pri čemu su sobe različite (raspoznaju se po kapacitetu). Tačan broj načina je multinomni koeficijent \( \dfrac{10!}{1!\cdot 2!\cdot 3!\cdot 4!} \), što proverićemo i lančanim brojanjem preko binomnih koeficijenata.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Multinomni koeficijent</span> Broj načina da se \( n \) različitih objekata podeli u \( k \) grupa veličina \( n_1, n_2, \ldots, n_k \) (gde \( n_1+n_2+\cdots+n_k = n \) i grupe se međusobno razlikuju): \( \dfrac{n!}{n_1!\, n_2!\, \cdots\, n_k!} \).</li>
+        <li><span class="formula-label">Binomni koeficijent</span> \( \dbinom{n}{k} = \dfrac{n!}{k!\,(n-k)!} \) — broj podskupova veličine \( k \) iz skupa od \( n \) elemenata.</li>
+        <li><span class="formula-label">Lančano izbacivanje</span> \( \dbinom{n_1+n_2+\cdots+n_k}{n_1}\dbinom{n_2+\cdots+n_k}{n_2}\cdots = \dfrac{n!}{n_1!\,n_2!\cdots n_k!} \).</li>
+        <li>Kada su sobe (grupe) raspoznatljive — različite veličine ili različiti brojevi — svaka raspodela se broji jednom; nema dodatnog deljenja.</li>
+        <li>Unutar jedne sobe redosled gostiju ne razlikuje raspored — svi kreveti u istoj sobi su ravnopravni.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — drvo izbora">
+  <h2>📐 Vizuelni prikaz — drvo izbora</h2>
+  <div class="canvas-wrapper">
+    <canvas id="tree-diagram" width="720" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Lančani izbor: iz \( 10 \) gostiju biramo \( 1 \) za jednokrevetnu, zatim iz \( 9 \) preostalih biramo \( 2 \) za dvokrevetnu, pa iz \( 7 \) biramo \( 3 \) za trokrevetnu, a poslednja \( 4 \) automatski idu u četvorokrevetnu. Brojevi pored grana pokazuju koliko izbora postoji u svakom koraku.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz — poređenje odgovora">
+  <h2>📊 Vizuelni prikaz — poređenje odgovora</h2>
+  <div class="canvas-wrapper">
+    <canvas id="bar-compare" width="720" height="440"></canvas>
+  </div>
+  <p class="canvas-caption">Visine stubaca odgovaraju vrednostima ponuđenih odgovora. Zeleni stubac obeležava tačan rezultat \( 12\,600 \), koji se po redu veličine bitno razlikuje od opcija (C) i (D).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Prepoznaj strukturu problema</h3>
+      <p>Imamo \( 10 \) različitih osoba i \( 4 \) različite sobe (svaka ima drugačiji kapacitet). Zbir kapaciteta je \( 1+2+3+4 = 10 \), tako da svaki gost dobija tačno jedan krevet. Unutar jedne sobe kreveti su ravnopravni — sobu zovemo „skup gostiju", a ne „uređena lista".</p>
+
+      <div class="callout callout-info">
+        <p>Ključno: <strong>sobe se razlikuju</strong> (po kapacitetu), ali <strong>unutar sobe red ne igra ulogu</strong>. Ovo je tipičan multinomni problem.</p>
+      </div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto sobe smatramo različitim?</summary>
+          <div class="detail-content"><p>Jednokrevetna soba je očigledno različita od dvokrevetne — već po veličini. Da su sve četiri sobe identične (npr. sve dvokrevetne), morali bismo dodatno da delimo sa \( 4! \) jer redosled „prva, druga, treća, četvrta" ne bi imao smisla. Ovde nije tako.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Lančano biranje preko binomnih koeficijenata</h3>
+      <p>Najsigurniji način da brojimo bez greške jeste da popunjavamo sobe redom:</p>
+      <ul>
+        <li>Iz \( 10 \) gostiju biramo \( 1 \) za jednokrevetnu: \( \dbinom{10}{1} = 10 \) načina.</li>
+        <li>Iz preostalih \( 9 \) biramo \( 2 \) za dvokrevetnu: \( \dbinom{9}{2} = \dfrac{9\cdot 8}{2} = 36 \).</li>
+        <li>Iz preostalih \( 7 \) biramo \( 3 \) za trokrevetnu: \( \dbinom{7}{3} = \dfrac{7\cdot 6\cdot 5}{6} = 35 \).</li>
+        <li>Preostala \( 4 \) gosta automatski idu u četvorokrevetnu: \( \dbinom{4}{4} = 1 \).</li>
+      </ul>
+      <p>Po pravilu proizvoda:</p>
+      <div class="math-block">\[ N = \binom{10}{1}\binom{9}{2}\binom{7}{3}\binom{4}{4} = 10\cdot 36\cdot 35\cdot 1. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunaj proizvod</h3>
+      <p>Računamo pažljivo:</p>
+      <div class="math-block">\[ 10 \cdot 36 = 360,\qquad 360 \cdot 35 = 12\,600,\qquad 12\,600 \cdot 1 = 12\,600. \]</div>
+      <p>Dakle \( N = 12\,600 \).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: \( 360 \cdot 35 \) bez kalkulatora?</summary>
+          <div class="detail-content"><p>\( 360\cdot 35 = 360\cdot (30 + 5) = 10\,800 + 1\,800 = 12\,600 \). Ili: \( 360\cdot 35 = 36\cdot 350 = 36\cdot 7\cdot 50 = 252\cdot 50 = 12\,600 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera multinomnim koeficijentom</h3>
+      <p>Isti rezultat dobija se direktno iz formule za podelu skupa od \( 10 \) elemenata na grupe veličina \( 1, 2, 3, 4 \):</p>
+      <div class="math-block">\[ N = \frac{10!}{1!\cdot 2!\cdot 3!\cdot 4!} = \frac{3\,628\,800}{1\cdot 2\cdot 6\cdot 24} = \frac{3\,628\,800}{288} = 12\,600. \]</div>
+      <p>Dva potpuno različita načina daju isti broj — to je čvrsta provera tačnosti.</p>
+
+      <div class="callout callout-success">
+        <p>Identitet \( \dbinom{10}{1}\dbinom{9}{2}\dbinom{7}{3}\dbinom{4}{4} = \dfrac{10!}{1!\,2!\,3!\,4!} \) pokazuje da je „lančano biranje" zapravo skraćeni zapis multinomnog koeficijenta.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Zašto nije \( 10! \)?</h3>
+      <p>Mogli bismo pomisliti: poređajmo gostiju \( G_1, G_2, \ldots, G_{10} \) i krevete „1, 2, 3, ..., 10" pa svaka permutacija daje raspored. To bi dalo \( 10! = 3\,628\,800 \). Ali tako bismo svaku sobu prebrojavali po više puta:</p>
+      <ul>
+        <li>U dvokrevetnoj — svaki par se može „uneti" na \( 2! = 2 \) načina (ko leži u krevetu A, ko u B).</li>
+        <li>U trokrevetnoj — \( 3! = 6 \) raspodela krevetom unutar iste trojke.</li>
+        <li>U četvorokrevetnoj — \( 4! = 24 \).</li>
+      </ul>
+      <p>Pošto raspored ne zavisi od krevetom unutar sobe, delimo sa \( 1!\cdot 2!\cdot 3!\cdot 4! = 288 \):</p>
+      <div class="math-block">\[ \frac{10!}{1!\,2!\,3!\,4!} = \frac{3\,628\,800}{288} = 12\,600. \quad \checkmark \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kada delimo skup različitih objekata u <em>raspoznatljive</em> grupe različitih veličina, broj načina je multinomni koeficijent — uopštenje binomnog koeficijenta. Lančano biranje sa \( \binom{10}{1}\binom{9}{2}\binom{7}{3}\binom{4}{4} \) i deljenje \( \dfrac{10!}{1!\,2!\,3!\,4!} \) su dve strane iste medalje. Faktorijeli u imeniocu nisu „kazna" nego ispravka koja briše duple račune unutar svake grupe.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ N = \frac{10!}{1!\,2!\,3!\,4!} = \binom{10}{1}\binom{9}{2}\binom{7}{3}\binom{4}{4} = 12\,600 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 12\,800 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 24\,000 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 360 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 3\,600 \)</span>
+    <span class="answer-option correct" data-option="E">(E) \( 12\,600 \)</span>
+  </div>
+  <p class="verification">Dvostruka provera: \( 10\cdot 36\cdot 35 = 12\,600 \) (binomni put) i \( 3\,628\,800 / 288 = 12\,600 \) (multinomni put) daju identičan rezultat — odgovor (E).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Računanje sa \( 10! = 3\,628\,800 \) bez deljenja — preuveličava odgovor 288 puta jer broji svaki interni redosled u sobi.</li>
+    <li>Korišćenje \( \binom{10}{2,3,4} \) ali zaboravljanje jednokrevetne sobe — daje \( \dfrac{9!}{2!\,3!\,4!} \) i pogrešan rezultat.</li>
+    <li>Permutovanje samih soba: dodatno deljenje sa \( 4! \) bi važilo samo da su sve sobe iste veličine; ovde su različite, pa se ne deli.</li>
+    <li>Računska greška u \( 360\cdot 35 \) — često se piše \( 12\,800 \) (zamka opcija (A)) ili \( 12\,500 \).</li>
+    <li>Tumačenje da je redosled gostiju u sobi važan — to bi vodilo na permutacije \( P(10) \), a sobe su skupovi, ne nizovi.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Kako bi se promenio odgovor da hotel ima dve dvokrevetne sobe (i jednu jednokrevetnu i jednu trokrevetnu) — i to <strong>identične</strong> dvokrevetne sobe, takve da ne razlikujemo „prvu" od „druge"? Skup od \( 1+2+2+3 = 8 \) gostiju razmeštamo u te sobe.</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Multinomni koeficijent daje \( \dfrac{8!}{1!\,2!\,2!\,3!} = \dfrac{40\,320}{24} = 1\,680 \) ako su sobe različite. Pošto su dve dvokrevetne sobe identične (zamenjive), tu vrednost dodatno delimo sa \( 2! = 2 \): konačni odgovor je \( 1\,680 / 2 = 840 \). Bez tog deljenja, svaki raspored bi se brojao dvaput (jednom kao \( \{A,B\}\,\{C,D\} \), drugi put kao \( \{C,D\}\,\{A,B\} \)).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('tree-diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Lančani izbor: koliko gostiju ostaje, koliko biramo, koliko načina', canvas.width / 2, 28);
+
+    // Five "stages" (columns): start, after stage 1, 2, 3, 4
+    // We'll draw a horizontal flow: each stage shows a box "remaining guests" and arrow with "C(n,k)=value".
+    var stages = [
+      { remaining: 10, room: '—', pick: '—', count: 1, label: 'Početak' },
+      { remaining: 9,  room: 'Jednokrevetna', pick: '1 od 10', count: 10, label: 'Posle 1. izbora' },
+      { remaining: 7,  room: 'Dvokrevetna',   pick: '2 od 9',  count: 36, label: 'Posle 2. izbora' },
+      { remaining: 4,  room: 'Trokrevetna',   pick: '3 od 7',  count: 35, label: 'Posle 3. izbora' },
+      { remaining: 0,  room: 'Četvorokrevetna', pick: '4 od 4', count: 1, label: 'Kraj' }
+    ];
+
+    var leftPad = 60;
+    var rightPad = 60;
+    var totalWidth = canvas.width - leftPad - rightPad;
+    var stageGap = totalWidth / (stages.length - 1);
+    var nodeY = 200;
+    var boxW = 100, boxH = 70;
+
+    var nodeColors = [primary, secondary, accent, highlight, warning];
+
+    // Draw boxes (nodes) for "remaining guests"
+    for (var i = 0; i < stages.length; i++) {
+      var x = leftPad + i * stageGap;
+      var color = nodeColors[i % nodeColors.length];
+
+      // Box
+      ctx.fillStyle = cvAlpha(['--sol-canvas-primary','--sol-canvas-secondary','--sol-canvas-accent','--sol-canvas-highlight','--sol-canvas-warning'][i % 5], 0.18);
+      ctx.fillRect(x - boxW/2, nodeY - boxH/2, boxW, boxH);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x - boxW/2, nodeY - boxH/2, boxW, boxH);
+
+      // "Preostalo: N"
+      ctx.fillStyle = text;
+      ctx.font = 'bold 12px Inter, system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText('Preostalo', x, nodeY - 14);
+      ctx.font = 'bold 22px Inter, system-ui';
+      ctx.fillStyle = color;
+      ctx.fillText(String(stages[i].remaining), x, nodeY + 14);
+
+      // Stage label below box
+      ctx.font = '11px Inter, system-ui';
+      ctx.fillStyle = muted;
+      ctx.fillText(stages[i].label, x, nodeY + boxH/2 + 18);
+    }
+
+    // Arrows + labels (between stages 0->1, 1->2, 2->3, 3->4)
+    ctx.font = 'bold 12px Inter, system-ui';
+    for (var k = 0; k < stages.length - 1; k++) {
+      var x1 = leftPad + k * stageGap + boxW/2;
+      var x2 = leftPad + (k+1) * stageGap - boxW/2;
+      var color = nodeColors[(k+1) % nodeColors.length];
+
+      // Arrow line
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x1, nodeY);
+      ctx.lineTo(x2, nodeY);
+      ctx.stroke();
+
+      // Arrow head
+      ctx.beginPath();
+      ctx.moveTo(x2, nodeY);
+      ctx.lineTo(x2 - 8, nodeY - 5);
+      ctx.lineTo(x2 - 8, nodeY + 5);
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.fill();
+
+      // Label above arrow: room name + pick info
+      var midX = (x1 + x2) / 2;
+      ctx.fillStyle = text;
+      ctx.font = 'bold 12px Inter, system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText(stages[k+1].room, midX, nodeY - 60);
+      ctx.font = '11px Inter, system-ui';
+      ctx.fillStyle = muted;
+      ctx.fillText('biramo ' + stages[k+1].pick, midX, nodeY - 44);
+
+      // C(n,k) = value (below arrow)
+      ctx.font = 'bold 13px Inter, system-ui';
+      ctx.fillStyle = color;
+      var cExpr;
+      if (k === 0) cExpr = 'C(10,1) = 10';
+      else if (k === 1) cExpr = 'C(9,2) = 36';
+      else if (k === 2) cExpr = 'C(7,3) = 35';
+      else cExpr = 'C(4,4) = 1';
+      ctx.fillText(cExpr, midX, nodeY + 32);
+    }
+
+    // Bottom summary box
+    var sumY = 410;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.16);
+    ctx.fillRect(80, sumY - 30, canvas.width - 160, 70);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(80, sumY - 30, canvas.width - 160, 70);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Pravilo proizvoda:', canvas.width / 2, sumY - 8);
+    ctx.font = 'bold 16px Inter, system-ui';
+    ctx.fillStyle = accent;
+    ctx.fillText('10 · 36 · 35 · 1 = 12 600', canvas.width / 2, sumY + 22);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('bar-compare');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var marginL = 80, marginR = 40, marginT = 60, marginB = 100;
+    var plotW = canvas.width - marginL - marginR;
+    var plotH = canvas.height - marginT - marginB;
+    var baseY = marginT + plotH;
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Vrednosti ponuđenih odgovora (zelena = tačan)', canvas.width / 2, 28);
+
+    var labels = ['(A) 12 800', '(B) 24 000', '(C) 360', '(D) 3 600', '(E) 12 600'];
+    var values = [12800, 24000, 360, 3600, 12600];
+    var maxVal = 24000;
+    var n = labels.length;
+    var gap = plotW / n;
+    var barW = gap * 0.55;
+
+    // y-axis grid lines
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.font = '11px Inter, system-ui';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'right';
+    for (var t = 0; t <= 4; t++) {
+      var v = (maxVal / 4) * t;
+      var y = baseY - (v / maxVal) * plotH;
+      ctx.beginPath();
+      ctx.moveTo(marginL, y);
+      ctx.lineTo(marginL + plotW, y);
+      ctx.stroke();
+      ctx.fillText(v.toLocaleString('sr-Latn').replace(/,/g, ' '), marginL - 8, y + 4);
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(marginL, marginT);
+    ctx.lineTo(marginL, baseY);
+    ctx.lineTo(marginL + plotW, baseY);
+    ctx.stroke();
+
+    // Bars
+    for (var i = 0; i < n; i++) {
+      var xCenter = marginL + gap * (i + 0.5);
+      var h = (values[i] / maxVal) * plotH;
+      var isCorrect = i === 4;
+      var fillVar = isCorrect ? '--sol-canvas-accent' : '--sol-canvas-primary';
+      var strokeColor = isCorrect ? accent : primary;
+
+      ctx.fillStyle = cvAlpha(fillVar, 0.85);
+      ctx.fillRect(xCenter - barW / 2, baseY - h, barW, h);
+      ctx.strokeStyle = strokeColor;
+      ctx.lineWidth = isCorrect ? 3 : 2;
+      ctx.strokeRect(xCenter - barW / 2, baseY - h, barW, h);
+
+      // Value above bar
+      ctx.fillStyle = text;
+      ctx.font = 'bold 11px Inter, system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText(values[i].toLocaleString('sr-Latn').replace(/,/g, ' '), xCenter, baseY - h - 8);
+
+      // Label below bar
+      ctx.fillStyle = isCorrect ? accent : muted;
+      ctx.font = (isCorrect ? 'bold ' : '') + '12px Inter, system-ui';
+      ctx.fillText(labels[i], xCenter, baseY + 22);
+    }
+
+    // Caption
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Tačan odgovor (E) razlikuje se od (A) za samo 200 — pažljivo množenje je presudno.', canvas.width / 2, canvas.height - 30);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Razmeštanje 10 gostiju u sobe 1+2+3+4",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["multinomni koeficijent", "binomni koeficijent", "kombinatorika", "podela skupa"]
+}
+BRAINSPARK_META-->
