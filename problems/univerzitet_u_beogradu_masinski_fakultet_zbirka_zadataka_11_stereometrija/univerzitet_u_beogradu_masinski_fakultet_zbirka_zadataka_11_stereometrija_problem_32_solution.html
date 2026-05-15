@@ -1,0 +1,733 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Zadatak: Romb površine 15 cm² rotira oko jedne svoje stranice. Naći površinu
+  dobijenog tela.
+
+  Postavka: Romb ABCD sa stranicom a i visinom h (rastojanjem između paralelnih
+  stranica). Površina romba: P_romb = a · h = 15.
+
+  Rotacija oko stranice AB (na osi). Postavimo koordinate: A = (0,0), B = (a,0)
+  na x-osi. Ugao u temenu A neka je θ. Tada:
+    D = (a cos θ, a sin θ)
+    C = (a + a cos θ, a sin θ)
+  (Romb sa stranom a; CD je paralelno sa AB i ima dužinu a; AD ima dužinu a;
+  BC ima dužinu a.)
+
+  Pri rotaciji oko x-ose:
+    - AB: leži na osi, ne stvara površinu.
+    - AD: spaja A=(0,0) na osi sa D=(a cos θ, a sin θ) izvan ose. Dužina = a,
+      pri rotaciji stvara KONUS sa vrhom u A (na osi) i poluprečnikom h = a sin θ
+      na drugom kraju. Bočna površina konusa = π · r · ℓ = π h · a.
+    - CD: spaja C=(a+a cos θ, h) sa D=(a cos θ, h). Obe tačke na rastojanju h
+      od ose. Pri rotaciji stvara CILINDARSKU bočnu površinu poluprečnika h i
+      "dužine" |CD projektovano na osu| = a. Bočna površina = 2π · h · a.
+    - BC: spaja B=(a,0) na osi sa C=(a+a cos θ, h) izvan ose. Dužina = a,
+      stvara KONUS sa vrhom u B i poluprečnikom h. Bočna površina = π h · a.
+
+  Ukupna bočna površina tela rotacije:
+    S = (π h a) + (2π h a) + (π h a) = 4π h a.
+
+  Sada koristimo P_romb = a · h = 15:
+    S = 4π · (a h) = 4π · 15 = 60π.
+
+  Provera: dimenzionalno P_romb [cm²] · 4π → [cm²], OK.
+
+  Alternativni način (Pappus): Površina tela rotacije zatvorene krive oko ose
+  jednaka je 2π · (centroid daljina od ose) · (dužina krive).
+    - Za AB: udaljenost centroida 0, dužina a → 0.
+    - Za BC: centroid je sredina BC, udaljenost od ose = h/2, dužina a →
+      2π · (h/2) · a = π a h.
+    - Za CD: centroid je sredina CD, udaljenost = h, dužina a → 2π · h · a = 2π a h.
+    - Za DA: centroid sredina DA, udaljenost h/2, dužina a → π a h.
+  S = π a h + 2π a h + π a h = 4π a h = 4π · 15 = 60π. ✓
+
+  Odgovor: (A) 60π cm².
+
+  Vizualizacija (3 slike):
+    1) Romb pre rotacije: ABCD u ravni, sa osom rotacije AB istaknutom kao
+       isprekidana horizontalna prava. Označiti a, h, ugao θ.
+    2) Telo posle rotacije: cilindar sa dva konusna "krila" — pogled u
+       kabinetnoj projekciji.
+    3) Razložena površina: tri komada (konus + cilindar + konus) sa formulama
+       za svaku površinu.
+
+  Statične slike — nije potrebna interaktivnost; struktura tela je fiksna.
+</script>
+
+<h1 data-card="problem-title">Rotacija romba oko njegove stranice</h1>
+<p data-card="problem-subtitle" class="subtitle">Stereometrija &mdash; telo rotacije, romb, cilindar, konus, Pappusova teorema</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Romb površine \( 15\,\text{cm}^2 \) rotira oko jedne svoje stranice. Površina tako dobijenog tela je:</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">površina romba</span>
+      <span class="given-value">\( P = 15\,\text{cm}^2 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">osa rotacije</span>
+      <span class="given-value">jedna stranica romba</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">traženo</span>
+      <span class="given-value">površina nastalog tela</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 60\pi\,\text{cm}^2 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 30\pi\,\text{cm}^2 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( (60+15\sqrt{3})\pi\,\text{cm}^2 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \left(60+\tfrac{15}{2}\sqrt{3}\right)\pi\,\text{cm}^2 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 90\pi\,\text{cm}^2 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Postavimo rotacionu osu na stranicu romba. Tri preostale stranice (dva kraka i nasuprotna stranica) generišu redom konus, cilindarsku bočnu površinu i još jedan konus. Njihove površine se izražavaju preko stranice \( a \) i visine romba \( h \) — a baš njihov proizvod \( a\cdot h \) je površina romba. Zato se konačan odgovor svodi na \( 4\pi P_{\text{romba}} \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Romb, telo rotacije, Pappusova teorema o površini</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Romb stranice \( a \) i visine \( h \):</strong> sve četiri stranice su jednake; nasuprotne stranice su paralelne; visina \( h \) je rastojanje između paralelnih stranica. Površina romba: \[ P = a\cdot h. \]</li>
+        <li><strong>Površina omotača (bočna površina) konusa:</strong> ako su \( r \) poluprečnik osnove i \( \ell \) izvodnica, onda je \[ M_{\text{konus}} = \pi r \ell. \]</li>
+        <li><strong>Bočna površina cilindra:</strong> ako su \( r \) poluprečnik i \( v \) visina, \[ M_{\text{cilindar}} = 2\pi r v. \]</li>
+        <li><strong>Pappusova teorema (površina):</strong> Površina koju opiše ravna kriva pri rotaciji oko ose u svojoj ravni, koja je ne seče, jednaka je \[ S = 2\pi \bar{d}\,L, \] gde je \( \bar{d} \) udaljenost težišta krive od ose, a \( L \) dužina krive.</li>
+        <li><strong>Strategija:</strong> Granična kriva (romb) ne seče osu (jer osa <em>jeste</em> jedna od stranica). Posmatramo svaku stranicu kao zaseban deo krive, sabiramo njihove doprinose.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Romb pre rotacije">
+  <h2>📐 Romb u ravni sa osom rotacije</h2>
+  <div class="canvas-wrapper">
+    <canvas id="rombPreRotacije" width="720" height="420"></canvas>
+  </div>
+  <p class="canvas-caption">Romb \( ABCD \) stranice \( a \) i visine \( h \). Osa rotacije je stranica \( AB \) (isprekidana). Stranice \( AD \) i \( BC \) su krakovi koji „dolaze" do ose pod uglom; \( CD \) je paralelna sa \( AB \) na rastojanju \( h \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Telo rotacije (3D pogled)">
+  <h2>📐 Telo posle rotacije: cilindar sa dva konusna kraja</h2>
+  <div class="canvas-wrapper">
+    <canvas id="teloRotacije3d" width="720" height="420"></canvas>
+  </div>
+  <p class="canvas-caption">Pri punoj rotaciji oko ose \( AB \), romb opisuje telo sa cilindričnim središnjim delom (od rotacije \( CD \)) i dva konusna kraja (od rotacije \( AD \) i \( BC \)). Konusi se „šire" sa ose ka maksimalnom poluprečniku \( h \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Razložena površina &mdash; 3 dela">
+  <h2>📐 Tri komada površine</h2>
+  <div class="canvas-wrapper">
+    <canvas id="razlozenaPovrsina" width="720" height="380"></canvas>
+  </div>
+  <p class="canvas-caption">Bočna površina tela razlaže se na tri dela: <strong>konus levo</strong> (od \( AD \)) i <strong>konus desno</strong> (od \( BC \)) sa površinom \( \pi a h \) svaki, i <strong>cilindar u sredini</strong> (od \( CD \)) sa površinom \( 2\pi a h \). Zbir: \( 4\pi a h \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavka: stranica romba kao osa</h3>
+      <p>Neka je \( a \) stranica romba, a \( h \) njegova visina (rastojanje između paralelnih stranica). Stavimo osu rotacije na stranicu \( AB \). Tada:</p>
+      <ul>
+        <li>\( AB \) leži na osi → pri rotaciji ne opisuje površinu.</li>
+        <li>\( CD \) je paralelna sa \( AB \), na rastojanju \( h \) od ose.</li>
+        <li>\( AD \) i \( BC \) su dva „kosa" kraka dužine \( a \), spajaju osu (tačke \( A \) i \( B \)) sa rastojanjem \( h \) (tačke \( D \) i \( C \)).</li>
+      </ul>
+      <div class="math-block">\[ P_{\text{romba}} = a \cdot h = 15. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Stranica \( AD \) opisuje konus</h3>
+      <p>Tačka \( A \) je na osi, tačka \( D \) je na rastojanju \( h \) od ose, a \( AD \) je duž dužine \( a \). Pri rotaciji ova duž opisuje <strong>bočnu površinu konusa</strong> sa vrhom u \( A \), poluprečnikom osnove \( h \) i izvodnicom \( a \):</p>
+      <div class="math-block">\[ M_{AD} = \pi\,r\,\ell = \pi\,h\,a. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Stranica \( BC \) opisuje drugi konus</h3>
+      <p>Analogno, \( B \) je na osi, \( C \) je na rastojanju \( h \) od ose, \( BC \) je dužine \( a \). Pri rotaciji se dobija konus sa vrhom u \( B \):</p>
+      <div class="math-block">\[ M_{BC} = \pi\,h\,a. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Stranica \( CD \) opisuje cilindar</h3>
+      <p>Stranica \( CD \) je paralelna sa osom: obe njene krajnje tačke su na rastojanju \( h \) od ose. Pri rotaciji opisuje <strong>bočnu površinu cilindra</strong> poluprečnika \( h \) i „dužine" \( a \) (= dužina \( CD \), koja je projektovana na osu):</p>
+      <div class="math-block">\[ M_{CD} = 2\pi\,r\,v = 2\pi\,h\,a. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koja je „dužina" cilindra duž ose?</summary>
+          <div class="detail-content"><p>Pošto je \( CD \) paralelna sa \( AB \) i jednake je dužine kao \( AB \) (sve stranice romba su jednake), njena projekcija na osu je tačno \( a \). To je „visina" cilindra duž ose.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Ukupna površina</h3>
+      <p>Sabiramo tri doprinosa (stranica \( AB \) na osi ne stvara površinu):</p>
+      <div class="math-block">\[ S = M_{AD} + M_{BC} + M_{CD} = \pi a h + \pi a h + 2\pi a h = 4\pi\, a h. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Zamena: \( a\cdot h = 15 \)</h3>
+      <p>Bez obzira na uglove i stranice romba pojedinačno — samo proizvod \( a\cdot h \) (= površina romba) ulazi u krajnji rezultat:</p>
+      <div class="math-block">\[ S = 4\pi \cdot a h = 4\pi \cdot 15 = 60\pi\,\text{cm}^2. \]</div>
+      <div class="math-block">\[ \boxed{\; S = 60\pi\,\text{cm}^2 \;}. \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Zadatak deluje kao da nedostaje podatak (ne znamo ni \( a \), ni \( h \), ni ugao romba!) — ali se ispostavlja da krajnja površina zavisi samo od proizvoda \( a\cdot h \), a to je upravo data <em>površina romba</em>. Pappusova teorema čini ovo očiglednim: svaka od četiri stranice ima centroid na fiksnoj prosečnoj udaljenosti od ose (\( 0 \), \( h/2 \), \( h \), \( h/2 \)), i sabiranjem doprinosa svih stranica dobija se \( S = 4\pi(ah) \). Lepota: <em>oblik</em> romba je nebitan, samo njegova <em>površina</em>.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ S = 60\pi\,\text{cm}^2 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 60\pi\,\text{cm}^2 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 30\pi\,\text{cm}^2 \)</span>
+    <span class="answer-option" data-option="C">(C) \( (60+15\sqrt{3})\pi\,\text{cm}^2 \)</span>
+    <span class="answer-option" data-option="D">(D) \( (60+\tfrac{15}{2}\sqrt{3})\pi\,\text{cm}^2 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 90\pi\,\text{cm}^2 \)</span>
+  </div>
+  <p class="verification">Provera Pappusom: težišta \( AD \) i \( BC \) su na udaljenosti \( h/2 \), težište \( CD \) na \( h \); zbir „obrtanih dužina" \( = a\cdot(h/2) + a\cdot h + a\cdot(h/2) = 2ah \). Površina \( = 2\pi \cdot 2ah = 4\pi a h = 4\pi P_{\text{romb}} = 60\pi \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Smatrati da telo ima i ravne osnove (diskove).</strong> Tačke \( A \) i \( B \) leže na osi rotacije i ne opisuju kružnicu pozitivnog poluprečnika. Tačke \( D \) i \( C \) opisuju kružnice poluprečnika \( h \), ali se ti krugovi nalaze <em>unutar</em> tela — između cilindra i konusâ — i nisu deo spoljašnje površine.</li>
+    <li><strong>Pokušavati da se izračunaju \( a \) i \( h \) posebno.</strong> Iz \( ah = 15 \) ne mogu se odrediti pojedinačno bez još jednog podatka (npr. ugao romba). Ali u krajnjem rezultatu se pojavljuje samo proizvod \( ah \), pa nije ni potrebno.</li>
+    <li><strong>Pogrešna formula za omotač konusa.</strong> \( M_{\text{konus}} = \pi r \ell \) (gde je \( \ell \) izvodnica, ne visina). Ovde je izvodnica jednaka stranici romba \( a \), pa je \( M = \pi h a \), ne \( \pi h^2 \) ili \( \pi h \cdot \text{visina konusa} \).</li>
+    <li><strong>Greška za cilindar:</strong> bočna površina cilindra je \( 2\pi r v \), a ne \( \pi r v \). Bez faktora 2 dobio bi se odgovor \( 45\pi \), koji nije među opcijama — ali je čest izvor zabune.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta ako isti romb rotira oko jedne svoje <em>dijagonale</em> (a ne oko stranice)? Koliko je tada zapremina tela? Da li i tada rezultat zavisi samo od površine romba?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Pri rotaciji romba oko dijagonale \( d_1 \) (dužine \( d_1 \)), dijagonala leži na osi a druga dijagonala (\( d_2 \)) je upravna na osu. Dobija se telo sastavljeno od dva podudarna konusa spojena osnovama — <em>biokonus</em>. Svaki konus ima poluprečnik \( d_2/2 \) i visinu \( d_1/2 \). Zapremina: \( V = 2\cdot \tfrac{1}{3}\pi(d_2/2)^2 (d_1/2) = \tfrac{\pi}{6} d_1 d_2^2 \). Ovde rezultat zavisi od obe dijagonale, ne samo od površine — jer \( P_{\text{romba}} = \tfrac12 d_1 d_2 \), pa imamo \( V = \tfrac{\pi}{3} d_2 \cdot P \). Drugačije od slučaja sa stranicom!</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('rombPreRotacije');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var primary = cv('--sol-canvas-primary');
+    var accent = cv('--sol-canvas-accent');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var highlight = cv('--sol-canvas-highlight');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Axis horizontal at y = 320
+    var yAxis = 320;
+    var a = 280;       // side length in px
+    var theta = Math.PI / 3; // 60° angle at A
+    var h = a * Math.sin(theta);
+
+    var Ax = 140, Ay = yAxis;
+    var Bx = Ax + a, By = yAxis;
+    var Dx = Ax + a * Math.cos(theta), Dy = yAxis - h;
+    var Cx = Bx + a * Math.cos(theta), Cy = yAxis - h;
+
+    // Axis line
+    ctx.strokeStyle = cv('--sol-canvas-muted');
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([8, 6]);
+    ctx.beginPath();
+    ctx.moveTo(40, yAxis);
+    ctx.lineTo(canvas.width - 40, yAxis);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Axis label
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.fillStyle = cv('--sol-canvas-muted');
+    ctx.fillText('osa rotacije', canvas.width - 130, yAxis - 8);
+
+    // Rhombus fill
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay);
+    ctx.lineTo(Bx, By);
+    ctx.lineTo(Cx, Cy);
+    ctx.lineTo(Dx, Dy);
+    ctx.closePath();
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.12);
+    ctx.fill();
+
+    // Sides — color-coded
+    // AB (on axis) — primary
+    ctx.strokeStyle = cv('--sol-canvas-primary');
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay);
+    ctx.lineTo(Bx, By);
+    ctx.stroke();
+
+    // AD — accent (will make cone)
+    ctx.strokeStyle = cv('--sol-canvas-accent');
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay);
+    ctx.lineTo(Dx, Dy);
+    ctx.stroke();
+
+    // BC — accent
+    ctx.beginPath();
+    ctx.moveTo(Bx, By);
+    ctx.lineTo(Cx, Cy);
+    ctx.stroke();
+
+    // CD — highlight (will make cylinder)
+    ctx.strokeStyle = cv('--sol-canvas-highlight');
+    ctx.beginPath();
+    ctx.moveTo(Cx, Cy);
+    ctx.lineTo(Dx, Dy);
+    ctx.stroke();
+
+    // Height marker (dashed vertical from D to axis)
+    ctx.strokeStyle = cv('--sol-canvas-text');
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    var Dxa = Dx;
+    ctx.beginPath();
+    ctx.moveTo(Dxa, Dy);
+    ctx.lineTo(Dxa, yAxis);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.font = 'italic bold 15px Inter, system-ui';
+    ctx.fillStyle = cv('--sol-canvas-text');
+    ctx.fillText('h', Dxa - 14, (Dy + yAxis) / 2 + 6);
+
+    // Right-angle square at base of h
+    ctx.strokeStyle = cv('--sol-canvas-text');
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(Dxa, yAxis - 10);
+    ctx.lineTo(Dxa + 10, yAxis - 10);
+    ctx.lineTo(Dxa + 10, yAxis);
+    ctx.stroke();
+
+    // Side label a (on AB)
+    ctx.fillStyle = cv('--sol-canvas-primary');
+    ctx.font = 'italic bold 16px Inter, system-ui';
+    ctx.fillText('a', (Ax + Bx) / 2 - 5, By + 22);
+
+    // Vertices
+    function dot(x, y, label, off) {
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, Math.PI * 2);
+      ctx.fillStyle = cv('--sol-canvas-text');
+      ctx.fill();
+      ctx.font = 'bold 14px Inter, system-ui';
+      ctx.fillStyle = cv('--sol-canvas-text');
+      ctx.fillText(label, x + off[0], y + off[1]);
+    }
+    dot(Ax, Ay, 'A', [-16, 6]);
+    dot(Bx, By, 'B', [8, 6]);
+    dot(Cx, Cy, 'C', [8, 0]);
+    dot(Dx, Dy, 'D', [-16, 0]);
+
+    // Title
+    ctx.fillStyle = cv('--sol-canvas-text');
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.fillText('Romb ABCD u ravni', 20, 28);
+
+    // Legend
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillStyle = cv('--sol-canvas-primary');
+    ctx.fillText('— AB: leži na osi (ne stvara površinu)', 20, 52);
+    ctx.fillStyle = cv('--sol-canvas-accent');
+    ctx.fillText('— AD, BC: konusne bočne površine pri rotaciji', 20, 70);
+    ctx.fillStyle = cv('--sol-canvas-highlight');
+    ctx.fillText('— CD: cilindarska bočna površina pri rotaciji', 20, 88);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('teloRotacije3d');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var primary = cv('--sol-canvas-primary');
+    var accent = cv('--sol-canvas-accent');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var highlight = cv('--sol-canvas-highlight');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var yAxis = 220;
+    var aLen = 200;
+    var hLen = 100;
+    var coneLen = 110;   // axial length of cone (projection of AD onto axis = a cos θ)
+    // We'll just draw a "schematic": apex - cone - cylinder - cone - apex
+    var xA = 130;
+    var xD = xA + coneLen;       // top-of-cone-left
+    var xC = xD + aLen;          // top-of-cone-right end of cylinder
+    var xB = xC + coneLen;       // apex right
+
+    // Axis
+    ctx.strokeStyle = cv('--sol-canvas-muted');
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([8, 6]);
+    ctx.beginPath();
+    ctx.moveTo(40, yAxis);
+    ctx.lineTo(canvas.width - 40, yAxis);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Ellipse helper for circle at given x with radius r (cabinet projection: ry = r * 0.35)
+    function ellipse(cx, cy, r, fillCol, strokeCol, dashed) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, r, r * 0.32, 0, 0, Math.PI * 2);
+      if (fillCol) { ctx.fillStyle = fillCol; ctx.fill(); }
+      ctx.strokeStyle = strokeCol;
+      ctx.lineWidth = 2;
+      if (dashed) ctx.setLineDash([5, 4]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+    }
+
+    // Cone left (apex at A=(xA,yAxis), base at xD with radius hLen, top half visible)
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.18);
+    ctx.beginPath();
+    ctx.moveTo(xA, yAxis);
+    ctx.lineTo(xD, yAxis - hLen);
+    ctx.lineTo(xD, yAxis + hLen);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = cv('--sol-canvas-accent');
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(xA, yAxis);
+    ctx.lineTo(xD, yAxis - hLen);
+    ctx.moveTo(xA, yAxis);
+    ctx.lineTo(xD, yAxis + hLen);
+    ctx.stroke();
+
+    // Cylinder middle (from xD to xC, radius hLen)
+    ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.18);
+    ctx.fillRect(xD, yAxis - hLen, xC - xD, 2 * hLen);
+    ctx.strokeStyle = cv('--sol-canvas-highlight');
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(xD, yAxis - hLen);
+    ctx.lineTo(xC, yAxis - hLen);
+    ctx.moveTo(xD, yAxis + hLen);
+    ctx.lineTo(xC, yAxis + hLen);
+    ctx.stroke();
+
+    // Cone right (apex at xB=(xB,yAxis), base at xC with radius hLen)
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.18);
+    ctx.beginPath();
+    ctx.moveTo(xB, yAxis);
+    ctx.lineTo(xC, yAxis - hLen);
+    ctx.lineTo(xC, yAxis + hLen);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = cv('--sol-canvas-accent');
+    ctx.beginPath();
+    ctx.moveTo(xB, yAxis);
+    ctx.lineTo(xC, yAxis - hLen);
+    ctx.moveTo(xB, yAxis);
+    ctx.lineTo(xC, yAxis + hLen);
+    ctx.stroke();
+
+    // Circles (ellipses) at the joins — base circles of cones
+    ellipse(xD, yAxis, hLen, null, cv('--sol-canvas-accent'), false);
+    ellipse(xC, yAxis, hLen, null, cv('--sol-canvas-accent'), false);
+
+    // Apex dots A and B
+    function dot(x, y, label, off) {
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, Math.PI * 2);
+      ctx.fillStyle = cv('--sol-canvas-text');
+      ctx.fill();
+      ctx.font = 'bold 14px Inter, system-ui';
+      ctx.fillStyle = cv('--sol-canvas-text');
+      ctx.fillText(label, x + off[0], y + off[1]);
+    }
+    dot(xA, yAxis, 'A', [-15, 18]);
+    dot(xB, yAxis, 'B', [8, 18]);
+
+    // Radius label on cylinder
+    ctx.strokeStyle = cv('--sol-canvas-text');
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    var xMid = (xD + xC) / 2;
+    ctx.beginPath();
+    ctx.moveTo(xMid, yAxis);
+    ctx.lineTo(xMid, yAxis - hLen);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.font = 'italic bold 15px Inter, system-ui';
+    ctx.fillStyle = cv('--sol-canvas-text');
+    ctx.fillText('h', xMid + 6, yAxis - hLen / 2);
+
+    // Component labels
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.fillStyle = cv('--sol-canvas-accent');
+    ctx.fillText('konus', xA + 30, yAxis + 150);
+    ctx.fillText('konus', xB - 75, yAxis + 150);
+    ctx.fillStyle = cv('--sol-canvas-highlight');
+    ctx.fillText('cilindar', xMid - 25, yAxis + 150);
+
+    // Title
+    ctx.fillStyle = cv('--sol-canvas-text');
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.fillText('Telo rotacije (osni presek)', 20, 28);
+
+    // Axis label
+    ctx.fillStyle = cv('--sol-canvas-muted');
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillText('osa rotacije', canvas.width - 110, yAxis - 8);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('razlozenaPovrsina');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Three boxes side by side, each with diagram + formula
+    var bw = (canvas.width - 80) / 3;
+    var y0 = 70;
+
+    function drawBox(x, title, formula, valueLabel, mainColor, diagramFn) {
+      // Title
+      ctx.fillStyle = cv('--sol-canvas-text');
+      ctx.font = 'bold 14px Inter, system-ui';
+      ctx.fillText(title, x + 10, y0 - 20);
+
+      // Diagram area
+      diagramFn(x + bw / 2, y0 + 60);
+
+      // Formula
+      ctx.font = 'bold 16px Inter, system-ui';
+      ctx.fillStyle = mainColor;
+      ctx.fillText(formula, x + 10, y0 + 200);
+
+      ctx.font = '13px Inter, system-ui';
+      ctx.fillStyle = cv('--sol-canvas-muted');
+      ctx.fillText(valueLabel, x + 10, y0 + 225);
+    }
+
+    // Box 1: cone from AD
+    drawBox(30, '1. Stranica AD → konus', 'M = π · h · a', '(omotač konusa: vrh u A, r = h, ℓ = a)',
+            cv('--sol-canvas-accent'), function(cx, cy) {
+      // Cone drawn schematically
+      var H = 100, R = 50;
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.20);
+      ctx.beginPath();
+      ctx.moveTo(cx - H/2, cy);
+      ctx.lineTo(cx + H/2, cy - R);
+      ctx.lineTo(cx + H/2, cy + R);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = cv('--sol-canvas-accent');
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.ellipse(cx + H/2, cy, R * 0.32, R, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    });
+
+    // Box 2: cylinder from CD
+    drawBox(40 + bw, '2. Stranica CD → cilindar', 'M = 2π · h · a', '(omotač cilindra: r = h, v = a)',
+            cv('--sol-canvas-highlight'), function(cx, cy) {
+      var H = 100, R = 50;
+      ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.20);
+      ctx.fillRect(cx - H/2, cy - R, H, 2 * R);
+      ctx.strokeStyle = cv('--sol-canvas-highlight');
+      ctx.lineWidth = 2;
+      ctx.strokeRect(cx - H/2, cy - R, H, 2 * R);
+      ctx.beginPath();
+      ctx.ellipse(cx - H/2, cy, R * 0.32, R, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.ellipse(cx + H/2, cy, R * 0.32, R, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    });
+
+    // Box 3: cone from BC
+    drawBox(50 + 2 * bw, '3. Stranica BC → konus', 'M = π · h · a', '(omotač konusa: vrh u B, r = h, ℓ = a)',
+            cv('--sol-canvas-accent'), function(cx, cy) {
+      var H = 100, R = 50;
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.20);
+      ctx.beginPath();
+      ctx.moveTo(cx + H/2, cy);
+      ctx.lineTo(cx - H/2, cy - R);
+      ctx.lineTo(cx - H/2, cy + R);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = cv('--sol-canvas-accent');
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.ellipse(cx - H/2, cy, R * 0.32, R, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    });
+
+    // Total formula at bottom
+    ctx.fillStyle = cv('--sol-canvas-text');
+    ctx.font = 'bold 16px Inter, system-ui';
+    ctx.fillText('Zbir:', 30, 350);
+    ctx.fillStyle = cv('--sol-canvas-accent');
+    ctx.fillText('S = π h a + 2π h a + π h a = 4π h a = 4π · 15 = 60π cm²', 90, 350);
+
+    // Top title
+    ctx.fillStyle = cv('--sol-canvas-text');
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.fillText('Razlaganje površine tela rotacije na tri komada', 20, 28);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Rotacija romba oko stranice — površina tela",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["stereometrija", "telo rotacije", "romb", "Pappusova teorema", "konus", "cilindar"]
+}
+BRAINSPARK_META-->

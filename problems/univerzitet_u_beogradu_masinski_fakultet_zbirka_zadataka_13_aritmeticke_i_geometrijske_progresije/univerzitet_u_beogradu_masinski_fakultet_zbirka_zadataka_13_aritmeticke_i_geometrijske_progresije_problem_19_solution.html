@@ -1,0 +1,521 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Zadatak: Brojevi a, b, c su uzastopni clanovi rastuce GP, a brojevi a, b, c-1 su uzastopni
+  clanovi AP. Dato je a + b + c = 19. Naci proizvod a*b*c.
+
+  Korak 1 — uslovi:
+    (GP) b^2 = a*c   (geometrijska sredina)
+    (AP na a, b, c-1) 2b = a + (c - 1)  =>  a + c = 2b + 1.
+
+  Korak 2 — supstitucija u zbir:
+    a + b + c = 19 i a + c = 2b + 1  =>  (2b + 1) + b = 19  =>  3b = 18  =>  b = 6.
+
+  Korak 3 — sistem za a, c:
+    a + c = 2*6 + 1 = 13
+    a*c  = b^2 = 36.
+    Vietteov sistem: a, c su koreni jednacine t^2 - 13t + 36 = 0.
+    Diskriminanta: 169 - 144 = 25, sqrt = 5.
+    t = (13 ± 5)/2 = 9 ili 4.
+
+  Korak 4 — biranje rastuce GP:
+    Rastuca GP znaci a < b < c, sto sa kolicnikom q daje q > 1 (pretpostavlja se a > 0 jer u
+    standardnoj GP svi clanovi imaju isti znak; ovde rastuca + pozitivna a iz konteksta).
+    Dakle a = 4, c = 9. Provera: 6/4 = 3/2; 9/6 = 3/2. Da, q = 3/2.
+
+  Korak 5 — proizvod:
+    abc = 4*6*9 = 24*9 = 216.
+
+  Veza GP <-> AP (kljucna ideja):
+    Ako su (a, b, c) u GP, vazi b^2 = ac (b je geometrijska sredina od a, c).
+    Ako su (a, b, c) u AP, vazi 2b = a + c (b je aritmeticka sredina od a, c).
+    Zadatak postavlja deo (a, b, c) u GP, a deformisani trio (a, b, c-1) u AP — tako se preko
+    SREDISNJEG clana b dobija "most" izmedju multiplikativne (GP) i aditivne (AP) strukture.
+
+  Provera AP na (4, 6, 8): 8 - 6 = 2, 6 - 4 = 2. Ali c - 1 = 8, c = 9. Dakle (4, 6, 8) je AP! ✓
+  Provera GP na (4, 6, 9): 6/4 = 1.5, 9/6 = 1.5. ✓ Rastuca (q > 1).
+
+  Vizuelno (statican): brojevna prava sa istaknutim a=4, b=6, c=9 i c-1=8.
+  Dva sloja strelica:
+    GP strelice (mnoze sa 3/2): 4 -> 6 -> 9.
+    AP strelice (sabiraju +2): 4 -> 6 -> 8 (gde 8 = c - 1).
+  Dva razlicita registra na istoj brojevnoj pravi pokazuju "most".
+
+  Najcesce greske:
+   * Pisati 2b = a + c umesto 2b = a + (c-1) — pomesati koji trio je AP.
+   * Zaboraviti "rastuca" — izabrati a = 9, c = 4 (opadajuca GP). Tada abc = 216 ipak, ali je
+     izbor pogresan principijelno, i b^2 = ac i dalje vazi (jer je proizvod simetrican).
+     Medjutim u sledecem zadatku biranje pogresnog korena daje pogresan a^2 + b^2 + c^2.
+   * Iskoristiti b = a*r tako da r mora biti ceo broj — q = 3/2 nije ceo, sto buni neke.
+   * Provera AP na (a, b, c) umesto na (a, b, c-1) — gresenje uslova.
+
+  Distraktor analiza:
+   (A) 125 = 5^3 — od broja 5 (mozda zbog "GP" => mozda misli da je b = 5 ili pomesa sa srednjim
+       brojem AP-a (4 + 6 + 8)/3, sto je rezultat 6, ne 5; ali 5*5*5 = 125 je "trik"-broj).
+   (B) 180 = 4 * 5 * 9 ili 5 * 6 * 6 — moguca greska sa neispravnim b.
+   (C) 189 = 27 * 7 — nejasno odakle, mozda 7^3 nije.
+   (D) 216 = TACAN.
+   (E) 224 = 2^5 * 7 — nejasno.
+
+  Konacan odgovor: (D) 216.
+</script>
+
+<h1 data-card="problem-title">GP &amp; AP most: brojevi <em>a, b, c</em> u rastućoj GP i <em>a, b, c−1</em> u AP</h1>
+<p data-card="problem-subtitle" class="subtitle">Kako kombinovati uslove geometrijske i aritmetičke progresije na istoj trojci brojeva &mdash; klasičan zadatak iz teorije nizova.</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Brojevi \( a,\, b,\, c \) su uzastopni članovi <strong>rastuće geometrijske progresije</strong>, a brojevi \( a,\, b,\, c - 1 \) su uzastopni članovi <strong>aritmetičke progresije</strong>. Ako je \( a + b + c = 19 \), onda je \( abc \) jednako:</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">trojka u GP (rastuća)</span>
+      <span class="given-value">\( a,\, b,\, c \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">trojka u AP</span>
+      <span class="given-value">\( a,\, b,\, c - 1 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">uslov zbira</span>
+      <span class="given-value">\( a + b + c = 19 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">traženo</span>
+      <span class="given-value">\( abc = ? \)</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 125 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 180 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 189 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 216 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 224 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Iskoristićemo dva ključna identiteta sredine: \( b^2 = ac \) (za GP) i \( 2b = a + (c-1) \) (za AP na trojci \( a, b, c-1 \)). Uvrstićemo ih u zbir \( a + b + c = 19 \) da odredimo \( b \), zatim \( a \) i \( c \) kao korene Vieteove kvadratne jednačine; uslov "rastuće" izdvaja jedinstvenu trojku, posle čega samo izračunamo \( abc \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule: most između AP i GP</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Geometrijska sredina (GP):</strong> ako su \( a,\, b,\, c \) tri uzastopna člana GP, tada je \( b \) <em>geometrijska sredina</em> krajnjih: \( b^2 = a c \), tj. \( \dfrac{b}{a} = \dfrac{c}{b} \).</li>
+        <li><strong>Aritmetička sredina (AP):</strong> ako su \( x,\, y,\, z \) tri uzastopna člana AP, tada je \( y \) <em>aritmetička sredina</em> krajnjih: \( 2y = x + z \), tj. \( y - x = z - y \).</li>
+        <li><strong>Most GP↔AP:</strong> kada ista trojka (ili njena mala perturbacija) zadovoljava i jedan i drugi uslov, dobijamo sistem \( b^2 = ac \) i \( 2b = a + c \) (eventualno sa pomakom), koji se elegantno rešava preko zbira i proizvoda korena.</li>
+        <li><strong>Vieteove formule:</strong> ako je \( s = a + c \) i \( p = a c \), tada su \( a \) i \( c \) koreni jednačine \( t^2 - s\, t + p = 0 \).</li>
+        <li><strong>Rastuća GP:</strong> količnik \( q = \dfrac{b}{a} \) zadovoljava \( q > 1 \) (uz pretpostavku pozitivnih članova). Zato u uređenju \( a < b < c \) važi i \( a < c \), tj. između dva korena biramo manji za \( a \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Brojevna prava: most između GP i AP">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-bridge" width="780" height="440"></canvas>
+  </div>
+  <p class="canvas-caption">Trojka \( (a, b, c) = (4, 6, 9) \) je u rastućoj GP sa količnikom \( q = \tfrac{3}{2} \) (gornji red strelica, množenje). Trojka \( (a, b, c{-}1) = (4, 6, 8) \) je u AP sa razlikom \( d = 2 \) (donji red strelica, sabiranje). Tačka \( c-1 = 8 \) pomera se za \( 1 \) ulevo od \( c = 9 \) &mdash; upravo tu se "spaja" most.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Zapisujemo uslov GP</h3>
+      <p>Pošto su \( a,\, b,\, c \) tri uzastopna člana GP, srednji član je geometrijska sredina krajnjih:</p>
+      <div class="math-block">\[ b^2 = a\, c. \]</div>
+      <p>Ovaj identitet je <em>simetričan</em> u \( a \) i \( c \), pa zasad ne razlikuje rastuću od opadajuće GP &mdash; uslov rastenja ćemo iskoristiti kasnije, pri biranju korena.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Zapisujemo uslov AP</h3>
+      <p>Brojevi \( a,\, b,\, c - 1 \) su uzastopni članovi AP, pa je srednji član aritmetička sredina krajnjih:</p>
+      <div class="math-block">\[ 2b = a + (c - 1) \;\Longleftrightarrow\; a + c = 2b + 1. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto se sa \( a, b, c-1 \) (a ne sa \( a, b, c \)) menja samo desna strana \( a + c \)?</summary>
+          <div class="detail-content"><p>Uslov AP glasi \( 2 \cdot (\text{srednji}) = (\text{prvi}) + (\text{poslednji}) \). Srednji član je i dalje \( b \), prvi je \( a \), a poslednji je \( c - 1 \) (a ne \( c \)). Zato je \( 2b = a + c - 1 \), odakle se prebacivanjem \( -1 \) na drugu stranu dobija \( a + c = 2b + 1 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Eliminišemo \( a + c \) iz zbira</h3>
+      <p>U zbir \( a + b + c = 19 \) uvrstimo \( a + c = 2b + 1 \):</p>
+      <div class="math-block">\[ (2b + 1) + b = 19 \;\Longleftrightarrow\; 3b = 18 \;\Longleftrightarrow\; b = 6. \]</div>
+      <p>Time je <span class="result">\( b = 6 \)</span> &mdash; jedinstveno određeno pre nego što uopšte gledamo \( a \) ili \( c \). Ovo je elegancija mosta AP↔GP: srednji član ispada iz dva uslova istovremeno.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavljamo sistem zbira i proizvoda</h3>
+      <p>Iz \( b = 6 \) odmah sledi:</p>
+      <div class="math-block">\[ a + c = 2 \cdot 6 + 1 = 13, \qquad a c = b^2 = 36. \]</div>
+      <p>Po Vieteovim formulama, \( a \) i \( c \) su koreni kvadratne jednačine:</p>
+      <div class="math-block">\[ t^2 - 13\, t + 36 = 0. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Rešavamo kvadratnu jednačinu</h3>
+      <p>Diskriminanta:</p>
+      <div class="math-block">\[ D = 13^2 - 4 \cdot 36 = 169 - 144 = 25, \quad \sqrt{D} = 5. \]</div>
+      <div class="math-block">\[ t = \frac{13 \pm 5}{2} \;\Longrightarrow\; t = 9 \quad \text{ili} \quad t = 4. \]</div>
+      <p>Dakle, \( \{a, c\} = \{4, 9\} \). Preostaje da odlučimo koji je koji.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Biramo ulogu \( a \) i \( c \) iz uslova "rastuća GP"</h3>
+      <p>Rastuća GP sa pozitivnim članovima ima količnik \( q > 1 \), pa je \( a < b < c \). Zato je <span class="result">\( a = 4 \)</span>, <span class="result">\( c = 9 \)</span>.</p>
+      <p>Provera količnika:</p>
+      <div class="math-block">\[ \frac{b}{a} = \frac{6}{4} = \frac{3}{2}, \qquad \frac{c}{b} = \frac{9}{6} = \frac{3}{2}. \quad \checkmark \]</div>
+      <p>Provera AP na \( (a, b, c-1) = (4, 6, 8) \): razlika \( 6 - 4 = 2 \), \( 8 - 6 = 2 \). \( \checkmark \)</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: šta ako uzmemo \( a = 9, c = 4 \) (opadajuća GP)?</summary>
+          <div class="detail-content"><p>Tada \( q = b/a = 6/9 = 2/3 < 1 \), pa GP <em>opada</em> &mdash; što krši dati uslov. Pored toga, AP bi morala da bude \( (9, 6, 3) \), tj. \( c - 1 = 3 \), \( c = 4 \), pa \( 2b = a + (c-1) = 9 + 3 = 12 \), što daje \( b = 6 \). Tu se uslov AP i dalje zadovoljava, ali GP više nije rastuća. <strong>Zato je "rastuća" suštinski uslov &mdash; bez njega bi rešenje bilo dvosmisleno!</strong></p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="7">
+    <div class="step-badge">7</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo \( abc \)</h3>
+      <div class="math-block">\[ abc = 4 \cdot 6 \cdot 9 = 24 \cdot 9 = 216. \]</div>
+      <p>Alternativno, kako je \( ac = 36 \) i \( b = 6 \), odmah dobijamo \( abc = b \cdot (ac) = 6 \cdot 36 = 216 \) &mdash; bez množenja \( 4 \cdot 9 \).</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kada je <em>ista</em> trojka istovremeno u GP i (uz malu korekciju) u AP, srednji član \( b \) postaje <strong>most</strong>: on je i geometrijska sredina (\( b^2 = ac \)) i aritmetička sredina (\( 2b = a + c \pm \text{korekcija} \)). Iz dva uslova izvuče se \( b \) <em>nezavisno</em> od pojedinačnih \( a \) i \( c \), a zatim Vieteove formule \( s = a + c \), \( p = ac \) daju \( a \) i \( c \) kao korene kvadratne jednačine. Trik koji se ponavlja u mnogim zadacima!</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ abc = 4 \cdot 6 \cdot 9 = 216 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 125 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 180 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 189 \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 216 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 224 \)</span>
+  </div>
+  <p class="verification">Provera: zbir \( 4 + 6 + 9 = 19 \) ✓; količnik GP \( 6/4 = 9/6 = 3/2 > 1 \) (rastuća) ✓; AP \( (4, 6, 8) \) sa razlikom \( 2 \) ✓.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pomeranje "−1" u pogrešan uslov:</strong> pisati \( b^2 = a(c-1) \) (GP postavljena na pogrešnu trojku) ili \( 2b = a + c \) (AP postavljena na pogrešnu trojku). Treba pažljivo: GP važi za \( (a, b, c) \), AP za \( (a, b, c-1) \).</li>
+    <li><strong>Zaboravljanje uslova "rastuća":</strong> ako se uzme \( a = 9, c = 4 \), GP je opadajuća (\( q = 2/3 < 1 \)) i krši se dati uslov &mdash; iako \( b^2 = ac \) i dalje važi.</li>
+    <li><strong>Zahtev da \( q \) bude ceo broj:</strong> ovde je \( q = \tfrac{3}{2} \). Količnik GP <em>ne mora</em> biti ceo &mdash; može biti bilo koji realan broj, samo da je \( \neq 0 \).</li>
+    <li><strong>Davanje pogrešne veličine:</strong> izračunati \( b = 6 \) ili \( a + c = 13 \) i to izabrati kao "odgovor", umesto proizvoda \( abc \).</li>
+    <li><strong>Mešanje znaka pri prebacivanju:</strong> iz \( 2b = a + c - 1 \) pogrešno dobiti \( a + c = 2b - 1 \) (umesto \( 2b + 1 \)) &mdash; izgubljen znak vodi do \( b = \tfrac{20}{3} \), čime se zadatak "iskvari".</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Pretpostavi opštiji uslov: \( a, b, c \) je rastuća GP, \( a, b, c - k \) je AP (za neki ceo broj \( k \geq 0 \)), i \( a + b + c = S \). Izrazi \( a, b, c \) (a time i \( abc \)) preko \( S \) i \( k \). Koje vrednosti \( k \) i \( S \) garantuju da su \( a, c \) realni i pozitivni? Provjeri svoju formulu na originalu (\( k = 1, S = 19 \)).</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Iz uslova AP: \( 2b = a + c - k \), pa \( a + c = 2b + k \). Iz zbira \( a + b + c = S \) dobijaš \( (2b + k) + b = S \), tj. \( b = \dfrac{S - k}{3} \). Onda je \( ac = b^2 = \left(\dfrac{S-k}{3}\right)^2 \) i \( a + c = 2b + k = \dfrac{2S + k}{3} \). Kvadratna jednačina za \( a, c \): \( t^2 - \dfrac{2S + k}{3}\, t + \left(\dfrac{S - k}{3}\right)^2 = 0 \). Diskriminanta mora biti nenegativna: \( \left(\dfrac{2S+k}{3}\right)^2 \geq 4 \left(\dfrac{S-k}{3}\right)^2 \). Za \( k = 1, S = 19 \): \( b = 6 \), \( a + c = 13 \), \( ac = 36 \) &mdash; baš naš rezultat.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-bridge');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  // Number line from x=2 to x=11; we will draw two "arrow registers" above and below.
+  var marginL = 70, marginR = 50;
+  var xMin = 2, xMax = 11;
+  var plotW = canvas.width - marginL - marginR;
+  function xPix(v) { return marginL + (v - xMin) / (xMax - xMin) * plotW; }
+  var yLine = 270; // baseline y position
+  var yGPArrow = 130; // upper arc apex band
+  var yAPArrow = 380; // lower arc apex band
+
+  function drawArrow(fromX, fromY, toX, toY, color, lineWidth) {
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = lineWidth;
+    ctx.beginPath();
+    ctx.moveTo(fromX, fromY);
+    ctx.lineTo(toX, toY);
+    ctx.stroke();
+    // arrowhead
+    var ang = Math.atan2(toY - fromY, toX - fromX);
+    var headLen = 9;
+    ctx.beginPath();
+    ctx.moveTo(toX, toY);
+    ctx.lineTo(toX - headLen * Math.cos(ang - Math.PI / 7), toY - headLen * Math.sin(ang - Math.PI / 7));
+    ctx.lineTo(toX - headLen * Math.cos(ang + Math.PI / 7), toY - headLen * Math.sin(ang + Math.PI / 7));
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function drawArcArrow(x1, x2, baselineY, apexY, color, label, lineWidth) {
+    // Quadratic curve from (x1, baselineY) up/down to (x2, baselineY), apex at midpoint apexY
+    var mx = (x1 + x2) / 2;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = lineWidth;
+    ctx.beginPath();
+    ctx.moveTo(x1, baselineY);
+    ctx.quadraticCurveTo(mx, apexY, x2, baselineY);
+    ctx.stroke();
+
+    // Arrowhead at end of curve (approximate tangent)
+    // Tangent at endpoint of Bezier: derivative at t=1: 2*(P2 - P1)
+    var tx = 2 * (x2 - mx);
+    var ty = 2 * (baselineY - apexY);
+    var len = Math.hypot(tx, ty) || 1;
+    tx /= len; ty /= len;
+    var headLen = 10;
+    var ax = x2, ay = baselineY;
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(ax, ay);
+    var leftX = ax - headLen * (tx * Math.cos(0.5) - ty * Math.sin(0.5));
+    var leftY = ay - headLen * (tx * Math.sin(0.5) + ty * Math.cos(0.5));
+    var rightX = ax - headLen * (tx * Math.cos(-0.5) - ty * Math.sin(-0.5));
+    var rightY = ay - headLen * (tx * Math.sin(-0.5) + ty * Math.cos(-0.5));
+    ctx.lineTo(leftX, leftY);
+    ctx.lineTo(rightX, rightY);
+    ctx.closePath();
+    ctx.fill();
+
+    // Label at apex
+    if (label) {
+      ctx.fillStyle = color;
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      // baselineY > apexY  =>  upper arc (above), label above apex
+      // baselineY < apexY  =>  lower arc (below), label below apex
+      var labelY = (apexY < baselineY) ? apexY - 6 : apexY + 16;
+      ctx.fillText(label, mx, labelY);
+    }
+  }
+
+  function drawDot(x, y, color, radius) {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var secondary = cv('--sol-canvas-secondary');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Most GP <-> AP: ista trojka u dva registra', marginL, 28);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Gore: GP (mnozenje sa q = 3/2). Dole: AP (sabiranje d = 2). Sa pomakom -1 na c.', marginL, 48);
+
+    // Number line baseline
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(xPix(xMin) - 10, yLine);
+    ctx.lineTo(xPix(xMax) + 10, yLine);
+    ctx.stroke();
+
+    // Arrow tip on right of number line
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(xPix(xMax) + 10, yLine);
+    ctx.lineTo(xPix(xMax) + 2, yLine - 5);
+    ctx.lineTo(xPix(xMax) + 2, yLine + 5);
+    ctx.closePath();
+    ctx.fill();
+
+    // Tick marks at integers
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var v = xMin; v <= xMax; v++) {
+      var x = xPix(v);
+      ctx.beginPath();
+      ctx.moveTo(x, yLine - 4);
+      ctx.lineTo(x, yLine + 4);
+      ctx.stroke();
+      ctx.fillText(String(v), x, yLine + 18);
+    }
+
+    // Highlight points: a = 4, b = 6, c = 9, and c-1 = 8 (open circle / outline)
+    var xA = xPix(4), xB = xPix(6), xC = xPix(9), xC1 = xPix(8);
+
+    // Dots for a, b, c (filled, primary color)
+    drawDot(xA, yLine, cv('--sol-canvas-primary'), 8);
+    drawDot(xB, yLine, cv('--sol-canvas-highlight'), 9); // b is central — special highlight color
+    drawDot(xC, yLine, cv('--sol-canvas-primary'), 8);
+
+    // c-1 = 8: outlined circle (accent color) since it's the AP terminal, not a GP point
+    ctx.beginPath();
+    ctx.arc(xC1, yLine, 7, 0, Math.PI * 2);
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = cv('--sol-canvas-accent');
+    ctx.stroke();
+    ctx.fillStyle = bg;
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(xC1, yLine, 7, 0, Math.PI * 2);
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = cv('--sol-canvas-accent');
+    ctx.stroke();
+
+    // Labels: a, b, c, c-1
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = cv('--sol-canvas-primary');
+    ctx.fillText('a = 4', xA, yLine - 14);
+    ctx.fillStyle = cv('--sol-canvas-highlight');
+    ctx.fillText('b = 6', xB, yLine - 14);
+    ctx.fillStyle = cv('--sol-canvas-primary');
+    ctx.fillText('c = 9', xC, yLine - 14);
+    ctx.fillStyle = cv('--sol-canvas-accent');
+    ctx.fillText('c - 1 = 8', xC1, yLine + 38);
+
+    // Small arrow from c down to c-1 (showing the "shift")
+    ctx.save();
+    ctx.setLineDash([4, 3]);
+    ctx.strokeStyle = cv('--sol-canvas-muted');
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(xC, yLine + 12);
+    ctx.lineTo(xC1 + 4, yLine + 30);
+    ctx.stroke();
+    ctx.restore();
+    ctx.fillStyle = cv('--sol-canvas-muted');
+    ctx.font = 'italic 10px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('pomak -1', xC + 6, yLine + 28);
+
+    // Upper register: GP arrows (a -> b, b -> c), labeled "x 3/2"
+    drawArcArrow(xA, xB, yLine - 12, yGPArrow, cv('--sol-canvas-primary'), 'x 3/2', 2.5);
+    drawArcArrow(xB, xC, yLine - 12, yGPArrow, cv('--sol-canvas-primary'), 'x 3/2', 2.5);
+
+    // Lower register: AP arrows (a -> b, b -> c-1), labeled "+2"
+    drawArcArrow(xA, xB, yLine + 12, yAPArrow, cv('--sol-canvas-accent'), '+ 2', 2.5);
+    drawArcArrow(xB, xC1, yLine + 12, yAPArrow, cv('--sol-canvas-accent'), '+ 2', 2.5);
+
+    // Legend boxes
+    ctx.textAlign = 'left';
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    // GP legend
+    ctx.fillStyle = cv('--sol-canvas-primary');
+    ctx.fillRect(marginL, 70, 18, 12);
+    ctx.fillStyle = text;
+    ctx.fillText('GP: a, b, c  (rastuca, q = 3/2)', marginL + 26, 80);
+    // AP legend
+    ctx.fillStyle = cv('--sol-canvas-accent');
+    ctx.fillRect(marginL + 280, 70, 18, 12);
+    ctx.fillStyle = text;
+    ctx.fillText('AP: a, b, c - 1  (d = 2)', marginL + 280 + 26, 80);
+
+    // Bottom annotation: equations
+    ctx.fillStyle = text;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('b^2 = a c   ⇔   36 = 4 · 9   ✓', canvas.width / 2 - 130, canvas.height - 14);
+    ctx.fillText('2b = a + (c - 1)   ⇔   12 = 4 + 8   ✓', canvas.width / 2 + 130, canvas.height - 14);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "GP i AP most: brojevi a, b, c u rastućoj GP i a, b, c−1 u AP, zbir 19",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["aritmetička progresija", "geometrijska progresija", "sistem jednačina", "Vieteove formule", "geometrijska sredina", "aritmetička sredina"]
+}
+BRAINSPARK_META-->

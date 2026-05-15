@@ -1,0 +1,416 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Zadatak: Kolika je verovatnoca da pri bacanju kockice za igru dva puta uzastopno padne strana
+  sa 6 tacaka?
+
+  Standardna sestostrana kocka je pravilna i postena: svaka strana 1,2,3,4,5,6 ima verovatnocu 1/6
+  pri svakom bacanju.
+
+  Pristup 1 — pravilo proizvoda za nezavisne dogadjaje:
+     A = "u prvom bacanju pada 6"; B = "u drugom bacanju pada 6".
+     A i B su NEZAVISNI (drugo bacanje ne zavisi od prvog).
+     P(A) = 1/6, P(B) = 1/6.
+     P(A ∩ B) = P(A) * P(B) = 1/6 * 1/6 = 1/36.
+
+  Pristup 2 — direktno prebrojavanje:
+     Omega = {(i, j) : i, j ∈ {1,...,6}}. |Omega| = 6 * 6 = 36.
+     Povoljan ishod samo (6, 6). |A ∩ B| = 1.
+     P = 1 / 36.
+
+  Sanity check:
+   * 1/36 ≈ 0,0278 ≈ 2,78%. Malo, sto je intuitivno: dva puta zaredom 6 je redak dogadjaj.
+   * P(bar jedna 6) = 1 - (5/6)^2 = 1 - 25/36 = 11/36 ≈ 30,6%. Veci od 1/36 (kao i treba).
+   * Komplement od "dve sestice" je "bar jedan rez nije 6": P = 1 - 1/36 = 35/36.
+
+  Najcesce greske:
+   * Sabirati verovatnoce: 1/6 + 1/6 = 1/3 — pogresno (princip zbira vazi za nesposobne/disjunktne).
+     1/3 je odgovor (B) — zamka.
+   * Misliti P = 1/12 = 1/6 / 2 — proizvoljno polovljenje.
+   * Misliti P = 1/6 — verovatnoca samo jednog bacanja, ne dva.
+   * Pomesati nezavisne i zavisne dogadjaje (npr. izvlacenje bez vracanja iz kutije).
+
+  Vizualizacija: 6x6 mreza svih (i, j) parova ishoda dva bacanja. Istaknuta jedna celija (6,6).
+  Po x-osi prvo bacanje (1..6), po y-osi drugo bacanje (1..6). Plus mali natpis P = 1/36.
+  Staticka — counting zadatak, draganje nista ne dodaje. Mozemo dodati i mali "tree diagram"
+  ali 6x6 grid je standardni i optimalan prikaz za uniform two-dice probleme.
+</script>
+
+<h1 data-card="problem-title">Dva uzastopna bacanja kocke &mdash; verovatnoća dve šestice</h1>
+<p data-card="problem-subtitle" class="subtitle">Nezavisni događaji i pravilo proizvoda &mdash; ključna formula za uzastopna slučajna ispitivanja</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Kolika je verovatnoća da pri bacanju kockice za igru dva puta uzastopno padne strana sa \( 6 \) tačaka?</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">kocka</span>
+      <span class="given-value">\( 6 \) strana \( \{1, 2, 3, 4, 5, 6\} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">broj bacanja</span>
+      <span class="given-value">\( 2 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">događaj \( A \)</span>
+      <span class="given-value">\( \text{u prvom bacanju pada } 6 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">događaj \( B \)</span>
+      <span class="given-value">\( \text{u drugom bacanju pada } 6 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">traženo</span>
+      <span class="given-value">\( P(A \cap B) = ? \)</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \dfrac{1}{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \dfrac{1}{3} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \dfrac{1}{6} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \dfrac{1}{12} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \dfrac{1}{36} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Bacanja su <em>nezavisni</em> događaji &mdash; ishod drugog bacanja ni na koji način ne zavisi od ishoda prvog. Verovatnoću dvostruke šestice računamo pravilom proizvoda \( P(A \cap B) = P(A) \cdot P(B) \). Paralelno proveravamo direktnim prebrojavanjem ishoda u prostoru \( 6 \times 6 \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i pojmovi</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Laplasova definicija.</strong> Za konačan prostor \( \Omega \) jednako verovatnih ishoda i događaj \( A \subseteq \Omega \) važi \[ P(A) = \frac{|A|}{|\Omega|}. \]</li>
+        <li><strong>Nezavisni događaji.</strong> Događaji \( A \) i \( B \) su nezavisni ako pojava jednog ne menja verovatnoću drugog. Tada važi <span class="formula-label">pravilo proizvoda</span>: \[ P(A \cap B) = P(A) \cdot P(B). \] Bacanja kockice (i novčića, izvlačenje sa vraćanjem,&hellip;) su klasičan primer nezavisnih ispitivanja.</li>
+        <li><strong>Princip množenja u kombinatorici.</strong> Ako se proces sastoji od dve nezavisne etape sa \( n_1 \) i \( n_2 \) mogućih ishoda, ukupno ima \( n_1 \cdot n_2 \) parova ishoda. Za dva bacanja kockice to je \( 6 \cdot 6 = 36 \).</li>
+        <li><strong>Pravilo zbira važi samo za nespojive (disjunktne) događaje:</strong> \( P(A \cup B) = P(A) + P(B) \) <em>ako</em> \( A \cap B = \varnothing \). Nikako ne zameni proizvod zbirom!</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Prostor ishoda dva bacanja kocke">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-dice" width="720" height="600"></canvas>
+  </div>
+  <p class="canvas-caption">Mreža \( 6 \times 6 \) prikazuje svih \( 36 \) jednako verovatnih ishoda. Po horizontalnoj osi je rezultat prvog bacanja, po vertikalnoj rezultat drugog. Jedina povoljna ćelija je \( (6, 6) \) &mdash; označena ružičastom bojom &mdash; pa je \( P = 1/36 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Identifikujemo nezavisne događaje</h3>
+      <p>Neka je \( A = \){„u prvom bacanju pada \( 6 \)"} i \( B = \){„u drugom bacanju pada \( 6 \)"}. Kocka „nema memoriju": ishod prvog bacanja ne utiče na drugo &mdash; događaji \( A \) i \( B \) su <strong>nezavisni</strong>.</p>
+      <div class="callout callout-info"><p>Ovo je važno: kada su događaji nezavisni, verovatnoće presek-događaja se <em>množe</em>, a ne sabiraju.</p></div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo \( P(A) \) i \( P(B) \) za jedno bacanje</h3>
+      <p>U jednom bacanju pravilne kocke \( \Omega_1 = \{1, 2, 3, 4, 5, 6\} \) i svi ishodi su jednako verovatni. Povoljan je samo „\( 6 \)":</p>
+      <div class="math-block">\[ P(A) = \frac{1}{6}, \qquad P(B) = \frac{1}{6}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( P(B) \) baš \( 1/6 \), a ne nešto manje jer „dolazi posle" \( A \)?</summary>
+          <div class="detail-content"><p>Zato što su bacanja nezavisna: drugo bacanje „ne zna" šta se desilo u prvom. Za samo to drugo bacanje sve šestice su podjednako moguće kao i bilo koji drugi broj, pa je verovatnoća tačno \( 1/6 \) bez obzira na ishod prvog bacanja.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Primenjujemo pravilo proizvoda</h3>
+      <p>Za nezavisne \( A \) i \( B \) važi \( P(A \cap B) = P(A) \cdot P(B) \):</p>
+      <div class="math-block">\[ P(A \cap B) = \frac{1}{6} \cdot \frac{1}{6} = \frac{1}{36}. \]</div>
+      <p>Dakle <span class="result">\( P(A \cap B) = \dfrac{1}{36} \approx 0{,}0278 \approx 2{,}78\% \)</span>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera direktnim prebrojavanjem</h3>
+      <p>Označimo ishod sa uređenim parom \( (i, j) \) gde je \( i \) prvi a \( j \) drugi rezultat. Prostor svih ishoda dva bacanja je:</p>
+      <div class="math-block">\[ \Omega = \{(i, j) \,|\, i, j \in \{1, 2, 3, 4, 5, 6\}\}, \qquad |\Omega| = 6 \cdot 6 = 36. \]</div>
+      <p>Povoljan je samo jedan uređen par: \( (6, 6) \). Po Laplasovoj formuli:</p>
+      <div class="math-block">\[ P(A \cap B) = \frac{1}{36}. \;\checkmark \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš \( 36 \) ishoda? Nije li „dve šestice" samo jedan slučaj?</summary>
+          <div class="detail-content"><p>Jeste, ali tu računamo prostor svih <em>mogućih</em> ishoda &mdash; \( 6 \) opcija za prvi izbor i \( 6 \) za drugi daju \( 6 \cdot 6 = 36 \) uređenih parova. Od tih \( 36 \) parova samo jedan, \( (6, 6) \), zadovoljava traženi uslov. Otud \( 1/36 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera reda veličine</h3>
+      <p>Komplement događaja „dve šestice" je „bar jedan rezultat različit od \( 6 \)". On bi trebalo da bude vrlo verovatan:</p>
+      <div class="math-block">\[ P\bigl(\overline{A \cap B}\bigr) = 1 - \frac{1}{36} = \frac{35}{36} \approx 97{,}22\%. \]</div>
+      <p>Ovo se slaže sa intuicijom &mdash; dve šestice zaredom su zaista redak događaj.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Za <em>nezavisne</em> uzastopne događaje verovatnoće se <strong>množe</strong>, ne sabiraju. Ako vidiš formulaciju „bacamo dva puta zaredom", „izvlačimo sa vraćanjem", „nezavisna ispitivanja" &mdash; odmah pomisli na \( P(A) \cdot P(B) \). Ekvivalentno, sa kombinatorne strane, prostor ishoda za \( n \) uzastopnih bacanja kocke ima \( 6^n \) elemenata; svaki specifičan niz dužine \( n \) ima verovatnoću tačno \( 1/6^n \). Za \( n = 2 \) to je naših \( 1/36 \), za \( n = 3 \) bi bilo \( 1/216 \), i tako dalje &mdash; padajuća geometrijska progresija.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ P(A \cap B) = \frac{1}{6} \cdot \frac{1}{6} = \frac{1}{36} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( \dfrac{1}{2} \)</span>
+    <span class="answer-option" data-option="B">(B) \( \dfrac{1}{3} \)</span>
+    <span class="answer-option" data-option="C">(C) \( \dfrac{1}{6} \)</span>
+    <span class="answer-option" data-option="D">(D) \( \dfrac{1}{12} \)</span>
+    <span class="answer-option correct" data-option="E">(E) \( \dfrac{1}{36} \)</span>
+  </div>
+  <p class="verification">Provera: u prostoru \( \Omega \) od \( 36 \) jednako verovatnih ishoda tačno \( 1 \) je povoljan &mdash; par \( (6, 6) \). Dakle \( |A \cap B|/|\Omega| = 1/36 \). ✓ Vrednost je u intervalu \( [0, 1] \) i znatno manja od \( 1/6 \) (verovatnoće za jedno bacanje), što odgovara intuiciji.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Sabirati verovatnoće: \( \dfrac{1}{6} + \dfrac{1}{6} = \dfrac{1}{3} \). Ovo je tipična greška &mdash; pravilo zbira važi samo za <em>nespojive</em> događaje, a ne za presek dva događaja. (To je zamka iza odgovora (B).)</li>
+    <li>Polovljenje verovatnoće, npr. \( \dfrac{1}{6} \cdot \dfrac{1}{2} = \dfrac{1}{12} \) &mdash; nepostojeća intuicija „dva puta po pola" je odgovor (D), takođe zamka.</li>
+    <li>Davati \( \dfrac{1}{6} \) &mdash; to je verovatnoća za <em>jedno</em> bacanje, ne za dva uzastopna.</li>
+    <li>Tretirati bacanja kao zavisna (npr. „posle prve šestice druga je manje verovatna"). Kocka nema memoriju; svako bacanje je novo, nezavisno ispitivanje.</li>
+    <li>Brkati uređene i neuređene parove ishoda. Ovde mora uređen par jer redosled bacanja postoji &mdash; broj svih ishoda je \( 6 \cdot 6 = 36 \), ne \( \binom{6+1}{2} = 21 \) ili slično.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Kolika je verovatnoća da pri <strong>tri</strong> uzastopna bacanja kockice padne <em>bar jedna</em> šestica? A da padnu <em>baš tri</em> šestice? I konačno: koliko puta bismo morali da bacimo kockicu da bismo bili „skoro sigurni" (verovatnoća veća od \( 0{,}99 \)) da će pasti bar jedna šestica?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Baš tri šestice: \( (1/6)^3 = 1/216 \) (pravilo proizvoda primenjeno tri puta). Bar jedna šestica u tri bacanja: lakše preko komplementa &mdash; verovatnoća „nijedne šestice" je \( (5/6)^3 = 125/216 \), pa je „bar jedna" \( 1 - 125/216 = 91/216 \approx 42{,}1\% \). Za poslednje pitanje rešavamo \( 1 - (5/6)^n > 0{,}99 \;\Leftrightarrow\; (5/6)^n < 0{,}01 \;\Leftrightarrow\; n > \dfrac{\ln(0{,}01)}{\ln(5/6)} \approx 25{,}26 \), pa je dovoljno \( n = 26 \) bacanja.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-dice');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  // 6x6 grid of outcome cells (i, j) for two dice throws.
+  var marginL = 90, marginT = 70, marginR = 40, marginB = 130;
+  var gridW = canvas.width - marginL - marginR;
+  var gridH = canvas.height - marginT - marginB;
+  var cellSize = Math.min(gridW, gridH) / 6;
+  // Recompute grid pixels to be exactly 6 * cellSize.
+  var totalGrid = cellSize * 6;
+  var gridX = marginL;
+  var gridY = marginT;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Prostor ishoda dva bacanja kocke: |Omega| = 6 x 6 = 36', marginL - 60, 28);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Povoljan je samo par (6, 6) — istaknut roze. P = 1 / 36.', marginL - 60, 48);
+
+    // Draw grid cells.
+    for (var i = 1; i <= 6; i++) { // i = prvo bacanje (x-axis)
+      for (var j = 1; j <= 6; j++) { // j = drugo bacanje (y-axis)
+        // x grows with i, y grows downward but we want j=1 at bottom, j=6 at top.
+        var cx = gridX + (i - 1) * cellSize;
+        var cy = gridY + (6 - j) * cellSize;
+
+        var isFavorable = (i === 6 && j === 6);
+
+        // cell fill
+        if (isFavorable) {
+          ctx.fillStyle = cv('--sol-canvas-highlight');
+        } else {
+          // Alternate light shade by checkerboard for readability
+          var even = ((i + j) % 2 === 0);
+          ctx.fillStyle = even ? cvAlpha('--sol-canvas-primary', 0.08) : cvAlpha('--sol-canvas-primary', 0.04);
+        }
+        ctx.fillRect(cx, cy, cellSize, cellSize);
+
+        // cell border
+        ctx.strokeStyle = cv('--sol-canvas-axis');
+        ctx.lineWidth = 1;
+        ctx.strokeRect(cx, cy, cellSize, cellSize);
+
+        // label "(i, j)" centered in cell
+        ctx.fillStyle = isFavorable ? cv('--sol-canvas-bg') : muted;
+        ctx.font = isFavorable ? 'bold 12px Inter, system-ui, sans-serif' : '11px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('(' + i + ',' + j + ')', cx + cellSize / 2, cy + cellSize / 2);
+      }
+    }
+    ctx.textBaseline = 'alphabetic';
+
+    // Outer border of the grid (thicker)
+    ctx.strokeStyle = cv('--sol-canvas-axis');
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(gridX, gridY, totalGrid, totalGrid);
+
+    // X-axis labels (i = prvo bacanje), below the grid
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var i2 = 1; i2 <= 6; i2++) {
+      var lx = gridX + (i2 - 0.5) * cellSize;
+      ctx.fillText(String(i2), lx, gridY + totalGrid + 22);
+    }
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('prvo bacanje  i', gridX + totalGrid / 2, gridY + totalGrid + 44);
+
+    // Y-axis labels (j = drugo bacanje), left of the grid
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (var j2 = 1; j2 <= 6; j2++) {
+      var ly = gridY + (6 - j2 + 0.5) * cellSize;
+      ctx.fillText(String(j2), gridX - 10, ly);
+    }
+    ctx.textBaseline = 'alphabetic';
+
+    // Vertical "drugo bacanje  j" label, rotated
+    ctx.save();
+    ctx.translate(gridX - 50, gridY + totalGrid / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('drugo bacanje  j', 0, 0);
+    ctx.restore();
+
+    // Highlight callout — arrow + label for the (6,6) cell
+    var fav_cx = gridX + (6 - 1) * cellSize + cellSize / 2;
+    var fav_cy = gridY + (6 - 6) * cellSize + cellSize / 2; // (6,6) is at top-right
+    // Arrow from outside the top-right corner pointing into the cell
+    var aStartX = gridX + totalGrid + 30;
+    var aStartY = gridY - 10;
+    ctx.strokeStyle = cv('--sol-canvas-highlight');
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(aStartX, aStartY);
+    // curved-ish line to cell center
+    ctx.bezierCurveTo(aStartX, aStartY + 20, fav_cx + 30, fav_cy - 30, fav_cx + 6, fav_cy - 6);
+    ctx.stroke();
+    // Arrowhead
+    ctx.fillStyle = cv('--sol-canvas-highlight');
+    ctx.beginPath();
+    ctx.moveTo(fav_cx + 6, fav_cy - 6);
+    ctx.lineTo(fav_cx + 14, fav_cy - 14);
+    ctx.lineTo(fav_cx + 16, fav_cy - 4);
+    ctx.closePath();
+    ctx.fill();
+    // Callout label
+    ctx.fillStyle = cv('--sol-canvas-highlight');
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('povoljan ishod', aStartX - 4, aStartY - 14);
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('(jedini od 36)', aStartX - 4, aStartY + 4);
+
+    // Bottom formula strip
+    var formY = canvas.height - 60;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Pravilo proizvoda (nezavisni dogadjaji):', marginL - 60, formY);
+    ctx.fillStyle = cv('--sol-canvas-primary');
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.fillText('P(A ∩ B) = P(A) · P(B) = 1/6 · 1/6 = 1/36', marginL - 60, formY + 22);
+
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillText('Sivkasta polja: 35 nepovoljnih ishoda    |    Roze polje: 1 povoljan ishod (6, 6)', marginL - 60, formY + 42);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Verovatnoća dve šestice u dva uzastopna bacanja kocke",
+  "subject": "math",
+  "unit": "probability",
+  "topic_tags": ["nezavisni događaji", "pravilo proizvoda", "klasična verovatnoća", "bacanje kocke", "prostor ishoda 6x6"]
+}
+BRAINSPARK_META-->

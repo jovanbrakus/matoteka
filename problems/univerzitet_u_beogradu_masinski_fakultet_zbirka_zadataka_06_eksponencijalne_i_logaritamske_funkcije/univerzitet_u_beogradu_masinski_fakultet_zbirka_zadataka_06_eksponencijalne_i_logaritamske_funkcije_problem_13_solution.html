@@ -1,0 +1,447 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Problem: Skup svih vrednosti parametra p za koje jednačina p·2^x + 2^{-x} = 5 ima jedinstveno rešenje.
+
+Strategija: Smena t = 2^x > 0 svodi problem na kvadratnu jednačinu po t (sa parametrom p), uz uslov t > 0. Jedinstveno rešenje po x odgovara tačno jednom pozitivnom korenu po t.
+
+Korak 1 — Smena.
+t = 2^x, t > 0. Jednačina postaje: p·t + 1/t = 5, množenjem sa t (t > 0):
+p·t^2 - 5t + 1 = 0.  (*)
+
+Korak 2 — Slučajevi po p.
+
+Slučaj A: p = 0.
+(*) postaje -5t + 1 = 0, t = 1/5 > 0. Tačno jedno rešenje. ✓
+
+Slučaj B: p < 0.
+(*) je kvadratna; D = 25 - 4p. Pošto p < 0, -4p > 0, pa D = 25 - 4p > 25 > 0. Dva realna korena.
+Po Vietama: t1·t2 = 1/p < 0, t1 + t2 = 5/p < 0.
+Proizvod negativan → koreni različitog znaka → tačno jedan pozitivan koren. ✓
+
+Slučaj C: p > 0.
+(*) kvadratna; D = 25 - 4p.
+  (C1) D < 0, tj. p > 25/4: nema realnih rešenja po t. ✗
+  (C2) D = 0, tj. p = 25/4: dvostruki koren t = 5/(2p) = 5/(25/2) = 2/5 > 0. Jedno (dvostruko) rešenje po t → t = 2/5 daje x = log_2(2/5) = 1 - log_2 5. Jedinstveno rešenje. ✓
+  (C3) D > 0, tj. 0 < p < 25/4: dva realna korena. Vietas: t1·t2 = 1/p > 0 (isti znak), t1 + t2 = 5/p > 0 (pozitivan zbir). Oba korena pozitivna → dva rešenja po x. ✗
+
+Zaključak: skup vrednosti p je {p ≤ 0} ∪ {25/4} = (-∞, 0] ∪ {25/4}.
+Odgovor: (A).
+
+Provera u graničnim slučajevima:
+- p = 0: 2^{-x} = 5, x = -log_2 5 ≈ -2,32. Jedinstveno. ✓
+- p = 1 (∈ (0, 25/4)): t^2 - 5t + 1 = 0, t = (5±√21)/2 ≈ 4,79 ili 0,21. Oba pozitivna → dva rešenja. ✗ (Pravilno isključeno.)
+- p = 25/4: 25/4·t^2 - 5t + 1 = 0, 25t^2 - 20t + 4 = 0, (5t - 2)^2 = 0, t = 2/5. ✓
+- p = -1: -t^2 - 5t + 1 = 0, t^2 + 5t - 1 = 0, t = (-5±√29)/2. Jedan pozitivan (≈ 0,193), drugi negativan. ✓
+
+Vizuelni prikaz:
+- Statička slika (parametar p ima diskretne karakteristične slučajeve, najbolje prikazati ih kao niz dijagrama).
+- Glavni grafik: kvadratna kriva f(t) = p·t^2 - 5t + 1 za nekoliko karakterističnih p (p < 0, p = 0, p = 25/4, p između 0 i 25/4) na intervalu t > 0, sa istaknutim presecima sa osom t.
+- Visina ~620px (jedan koordinatni sistem sa više krivih + legenda + naslov).
+</script>
+
+<h1 data-card="problem-title">Parametar za jedinstveno rešenje eksponencijalne jednačine</h1>
+<p data-card="problem-subtitle" class="subtitle">Eksponencijalna jednačina sa parametrom — smena \( t = 2^x \), analiza kvadratne po slučajevima</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Odrediti skup svih vrednosti parametra \( p \) za koje jednačina</p>
+  <div class="math-block">\[ p \cdot 2^x + 2^{-x} = 5 \]</div>
+  <p>ima jedinstveno rešenje.</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( (-\infty,\, 0] \cup \{\tfrac{25}{4}\} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \{0,\, \tfrac{25}{4}\} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( (-\infty,\, 0) \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \{\tfrac{25}{4}\} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( [0,\, \tfrac{25}{4}] \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Smenom \( t = 2^x > 0 \) jednačinu svodimo na kvadratnu \( p\,t^2 - 5t + 1 = 0 \) i tražimo vrednosti \( p \) za koje ona ima <em>tačno jedan pozitivan koren</em>. Razdvajamo tri slučaja: \( p = 0 \) (linearna), \( p < 0 \) (Vietas: proizvod korena negativan ⇒ tačno jedan pozitivan) i \( p > 0 \) (analiza diskriminante).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Smena, Vietas i broj pozitivnih korena</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Smena za eksponencijalne jednačine:</strong> ako se \( 2^x \) javlja, uvedi \( t = 2^x \), pri čemu uvek \( t > 0 \). Bijekcija \( x \leftrightarrow t \) znači da svako pozitivno \( t \) daje tačno jedno \( x = \log_2 t \).</li>
+        <li><strong>Vietasove formule:</strong> za \( a t^2 + b t + c = 0 \) (sa \( a \neq 0 \)) imamo \( t_1 + t_2 = -\tfrac{b}{a} \) i \( t_1 \cdot t_2 = \tfrac{c}{a} \). Znak proizvoda odmah kaže da li su koreni istog znaka.</li>
+        <li><strong>Broj pozitivnih korena kvadratne jednačine:</strong> ako je \( D > 0 \) i \( t_1 t_2 < 0 \) — tačno jedan pozitivan. Ako je \( D > 0 \), \( t_1 t_2 > 0 \) i \( t_1 + t_2 > 0 \) — oba pozitivna. Ako je \( D = 0 \) i \( -b/(2a) > 0 \) — jedan dvostruki pozitivan.</li>
+        <li><strong>Diskriminanta:</strong> \( D = b^2 - 4ac \) određuje broj realnih korena: \( D > 0 \) (dva), \( D = 0 \) (jedan dvostruki), \( D < 0 \) (nijedan u \( \mathbb{R} \)).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="780" height="620"></canvas>
+  </div>
+  <p class="canvas-caption">Grafici funkcije \( f(t) = p\,t^2 - 5t + 1 \) za četiri karakteristične vrednosti parametra \( p \) na intervalu \( t > 0 \). Tražimo \( p \) za koje kriva preseca pozitivnu osu \( t \) tačno jednom: pri \( p \leq 0 \) (kriva ide u \( -\infty \) ili je linearna sa jednim pozitivnim presekom) i pri \( p = 25/4 \) (parabola tangira osu).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Smena: svodimo na kvadratnu jednačinu po \( t \)</h3>
+      <p>Uvedimo \( t = 2^x \). Pošto je eksponencijalna funkcija strogo pozitivna, važi \( t > 0 \), a uz to \( 2^{-x} = 1/t \). Jednačina postaje:</p>
+      <div class="math-block">\[ p \cdot t + \frac{1}{t} = 5. \]</div>
+      <p>Pomnožimo obe strane sa \( t > 0 \) (smer nejednakosti ne menjamo, samo se domen ne narušava):</p>
+      <div class="math-block">\[ p\, t^2 \;-\; 5t \;+\; 1 \;=\; 0. \quad (*) \]</div>
+      <p>Zadatak postaje: za koje \( p \) jednačina \( (*) \) ima <em>tačno jedan</em> koren u skupu \( t > 0 \)? Svaki takav \( t \) zatim daje jedinstveno \( x = \log_2 t \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto „tačno jedan pozitivan \( t \)" garantuje „tačno jedno \( x \)"?</summary>
+          <div class="detail-content"><p>Funkcija \( x \mapsto 2^x \) je <em>bijekcija</em> sa \( \mathbb{R} \) na \( (0, +\infty) \). Stoga je dopisivanje \( t \leftrightarrow x \) jedan-na-jedan: jedan pozitivan \( t \) ⇔ jedno realno \( x \). Negativni ili nula koreni po \( t \) ne odgovaraju nikakvom realnom \( x \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj \( p = 0 \): jednačina je linearna</h3>
+      <p>Pri \( p = 0 \) jednačina \( (*) \) gubi kvadratni član:</p>
+      <div class="math-block">\[ -5t + 1 = 0 \;\;\Longrightarrow\;\; t = \tfrac{1}{5} > 0. \]</div>
+      <p>Dobijamo <strong>jedinstven</strong> pozitivan \( t \), dakle jedinstveno \( x = \log_2(1/5) = -\log_2 5 \). <span class="result">\( p = 0 \) je rešenje. ✓</span></p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj \( p < 0 \): proizvod korena je negativan</h3>
+      <p>Sada je \( (*) \) prava kvadratna jednačina. Diskriminanta:</p>
+      <div class="math-block">\[ D = 25 - 4p. \]</div>
+      <p>Kako je \( p < 0 \), to \( -4p > 0 \), pa \( D > 25 > 0 \) — dva različita realna korena. Po Vietasovim formulama:</p>
+      <div class="math-block">\[ t_1 \cdot t_2 = \frac{1}{p} < 0. \]</div>
+      <p>Proizvod korena je <em>negativan</em>, pa su koreni različitog znaka — jedan je strogo pozitivan, drugi strogo negativan. Negativan koren po \( t \) ne odgovara realnom \( x \), pa ostaje tačno jedno rešenje po \( x \). <span class="result">Svako \( p < 0 \) je rešenje. ✓</span></p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: probaj \( p = -1 \).</summary>
+          <div class="detail-content"><p>Jednačina \( -t^2 - 5t + 1 = 0 \), tj. \( t^2 + 5t - 1 = 0 \). Koreni \( t = \tfrac{-5 \pm \sqrt{29}}{2} \). Pozitivan koren \( t = \tfrac{-5 + \sqrt{29}}{2} \approx 0{,}193 \), drugi je negativan i odbacujemo ga. Jedno rešenje po \( x \). ✓</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj \( p > 0 \): analiza diskriminante</h3>
+      <p>Sada je \( (*) \) kvadratna sa pozitivnim vodećim koeficijentom. \( D = 25 - 4p \):</p>
+      <div class="substep" data-substep="a)">
+        <p><strong>Ako je \( D < 0 \)</strong>, tj. \( p > \tfrac{25}{4} \): nema realnih korena. <span class="crossed">Nije rešenje.</span></p>
+      </div>
+      <div class="substep" data-substep="b)">
+        <p><strong>Ako je \( D = 0 \)</strong>, tj. \( p = \tfrac{25}{4} \): dvostruki koren</p>
+        <div class="math-block">\[ t = \frac{5}{2p} = \frac{5}{2 \cdot \tfrac{25}{4}} = \frac{5}{\tfrac{25}{2}} = \frac{2}{5} > 0. \]</div>
+        <p>Jedan (dvostruki) pozitivan koren po \( t \) ⇒ jedinstveno \( x = \log_2(2/5) = 1 - \log_2 5 \). <span class="result">\( p = \tfrac{25}{4} \) je rešenje. ✓</span></p>
+      </div>
+      <div class="substep" data-substep="c)">
+        <p><strong>Ako je \( D > 0 \)</strong>, tj. \( 0 < p < \tfrac{25}{4} \): dva različita realna korena. Po Vietas:</p>
+        <div class="math-block">\[ t_1 t_2 = \frac{1}{p} > 0, \qquad t_1 + t_2 = \frac{5}{p} > 0. \]</div>
+        <p>Proizvod pozitivan ⇒ koreni istog znaka; zbir pozitivan ⇒ oba pozitivna. Imamo <em>dva</em> rešenja po \( t \), dakle dva po \( x \). <span class="crossed">Nije rešenje.</span></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Sastavljanje skupa rešenja</h3>
+      <p>Sumirajmo doprinose iz koraka 2, 3 i 4:</p>
+      <ul>
+        <li>\( p < 0 \): ✓ (jedan pozitivan + jedan negativan koren).</li>
+        <li>\( p = 0 \): ✓ (linearno, \( t = 1/5 \)).</li>
+        <li>\( 0 < p < \tfrac{25}{4} \): ✗ (dva pozitivna korena).</li>
+        <li>\( p = \tfrac{25}{4} \): ✓ (dvostruki koren \( t = 2/5 \)).</li>
+        <li>\( p > \tfrac{25}{4} \): ✗ (nema realnih korena).</li>
+      </ul>
+      <p>Spajamo prve dve oblasti u \( (-\infty, 0] \) i dodajemo izolovanu tačku \( \tfrac{25}{4} \):</p>
+      <div class="math-block">\[ \boxed{\, p \in (-\infty,\, 0] \;\cup\; \left\{\tfrac{25}{4}\right\}. \,} \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Ovaj zadatak ilustruje zlatno pravilo za eksponencijalne jednačine sa parametrom: <strong>smena \( t = 2^x > 0 \) prevodi pitanje "koliko rešenja ima jednačina po \( x \)" u "koliko pozitivnih korena ima jednačina po \( t \)"</strong>. Najsuptilniji deo je granični slučaj \( p = 0 \), koji ljudi često zaborave da provere — bez njega bismo izgubili čitavu polupravu negativnih \( p \). Drugi izvor jedinstvenog rešenja je dvostruki koren (\( D = 0 \)), gde parabola tangira osu \( t \) baš u pozitivnoj tački. To su dva geometrijski različita razloga zašto je rešenje jedinstveno — i baš oba doprinose u finalnom skupu \( (-\infty, 0] \cup \{25/4\} \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zaborav slučaja \( p = 0 \):</strong> ako odmah pretpostaviš da je \( (*) \) kvadratna, ispustiš celu polupravu \( p \leq 0 \) i odgovor bi (pogrešno) bio \( \{25/4\} \) ili \( (-\infty, 0) \).</li>
+    <li><strong>Mešanje "jedan koren" sa "jedan <em>pozitivan</em> koren":</strong> u slučaju \( p < 0 \) jednačina ima dva realna korena po \( t \), ali samo jedan zadovoljava \( t > 0 \). To je suština uslova smene.</li>
+    <li><strong>Ignorisanje uslova \( t > 0 \):</strong> u slučaju \( 0 < p < 25/4 \) lako se može pomisliti "dva realna korena ⇒ dva rešenja". Treba još da proveriš da su oba <em>pozitivna</em> (Vietas: \( 1/p > 0 \), \( 5/p > 0 \) ⇒ oba pozitivna), što ovde i jeste slučaj.</li>
+    <li><strong>Granični slučaj \( D = 0 \):</strong> često se zaboravi da i dvostruki koren po \( t \) daje <em>jedinstveno</em> rešenje po \( x \), iako u kvadratnoj jednačini formalno govorimo o "jednom dvostrukom". Bitno je da postoji tačno jedno \( x \).</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ p \in (-\infty,\, 0] \;\cup\; \left\{\tfrac{25}{4}\right\}. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( (-\infty,\, 0] \cup \{\tfrac{25}{4}\} \)</span>
+    <span class="answer-option" data-option="B">(B) \( \{0,\, \tfrac{25}{4}\} \)</span>
+    <span class="answer-option" data-option="C">(C) \( (-\infty,\, 0) \)</span>
+    <span class="answer-option" data-option="D">(D) \( \{\tfrac{25}{4}\} \)</span>
+    <span class="answer-option" data-option="E">(E) \( [0,\, \tfrac{25}{4}] \)</span>
+  </div>
+  <p class="verification">Provera krajnjih tačaka: \( p = 0 \Rightarrow t = 1/5 \) (jedno rešenje), \( p = 25/4 \Rightarrow t = 2/5 \) (dvostruko, jedno), \( p = 1 \in (0, 25/4) \Rightarrow t = (5 \pm \sqrt{21})/2 \) (dva pozitivna, isključeno). ✓</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Za koje vrednosti parametra \( p \) jednačina \( p \cdot 2^x + 2^{-x} = 5 \) ima <em>tačno dva</em> rešenja po \( x \)? A za koje <em>nijedno</em>?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Iz iste analize: dva rešenja po \( x \) ⇔ dva pozitivna korena po \( t \), što se dešava tačno za \( 0 < p < \tfrac{25}{4} \). Nijedno rešenje ⇔ nema pozitivnih korena, što se dešava za \( p > \tfrac{25}{4} \). Zajedno sa našim odgovorom, čitav skup vrednosti \( p \) je particionisan: \( (-\infty, 0] \cup \{25/4\} \) (jedno), \( (0, 25/4) \) (dva), \( (25/4, +\infty) \) (nijedno). Probaj nacrtati to na brojevnoj pravoj.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var warning   = cv('--sol-canvas-warning');
+    var tertiary  = cv('--sol-canvas-tertiary');
+
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('f(t) = p·t² − 5t + 1   (t > 0)   za razne vrednosti p', W / 2, 30);
+
+    // Coordinate system
+    var marginL = 70, marginR = 30, marginT = 60, marginB = 110;
+    var plotW = W - marginL - marginR;
+    var plotH = H - marginT - marginB;
+
+    var tMin = 0, tMax = 5;
+    var yMin = -8, yMax = 6;
+
+    function X(t) { return marginL + (t - tMin) / (tMax - tMin) * plotW; }
+    function Y(y) { return marginT + (yMax - y) / (yMax - yMin) * plotH; }
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var i = 0; i <= 5; i++) {
+      ctx.beginPath();
+      ctx.moveTo(X(i), marginT);
+      ctx.lineTo(X(i), marginT + plotH);
+      ctx.stroke();
+    }
+    for (var j = yMin; j <= yMax; j += 2) {
+      ctx.beginPath();
+      ctx.moveTo(marginL, Y(j));
+      ctx.lineTo(marginL + plotW, Y(j));
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    // x-axis (y = 0)
+    ctx.beginPath();
+    ctx.moveTo(marginL, Y(0));
+    ctx.lineTo(marginL + plotW, Y(0));
+    ctx.stroke();
+    // y-axis (t = 0)
+    ctx.beginPath();
+    ctx.moveTo(X(0), marginT);
+    ctx.lineTo(X(0), marginT + plotH);
+    ctx.stroke();
+
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = '13px sans-serif';
+    ctx.textAlign = 'center';
+    for (var i2 = 1; i2 <= 5; i2++) {
+      ctx.fillText(i2.toString(), X(i2), Y(0) + 18);
+    }
+    ctx.textAlign = 'right';
+    for (var j2 = yMin; j2 <= yMax; j2 += 2) {
+      if (j2 === 0) continue;
+      ctx.fillText(j2.toString(), marginL - 8, Y(j2) + 4);
+    }
+    ctx.textAlign = 'left';
+    ctx.font = 'italic 14px sans-serif';
+    ctx.fillText('t', marginL + plotW + 8, Y(0) + 5);
+    ctx.fillText('f(t)', X(0) + 8, marginT - 8);
+
+    // Plot f(t) = p·t² - 5t + 1 for various p
+    var pValues = [
+      { p: -0.5, color: accent,    label: 'p = −0,5  (jedan poz. koren ✓)', dash: [] },
+      { p: 0,    color: primary,   label: 'p = 0  (linearno: t = 1/5) ✓',   dash: [] },
+      { p: 1,    color: danger,    label: 'p = 1  (dva poz. korena ✗)',     dash: [6, 4] },
+      { p: 25/4, color: highlight, label: 'p = 25/4  (dodir: t = 2/5) ✓',   dash: [] }
+    ];
+
+    pValues.forEach(function(item) {
+      ctx.strokeStyle = item.color;
+      ctx.lineWidth = 2.5;
+      ctx.setLineDash(item.dash);
+      ctx.beginPath();
+      var started = false;
+      for (var t = tMin; t <= tMax; t += 0.02) {
+        var y = item.p * t * t - 5 * t + 1;
+        if (y < yMin - 1 || y > yMax + 1) { started = false; continue; }
+        var px = X(t), py = Y(y);
+        if (!started) { ctx.moveTo(px, py); started = true; }
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+      ctx.setLineDash([]);
+    });
+
+    // Mark key roots
+    // p = 0: t = 1/5
+    ctx.fillStyle = primary;
+    ctx.beginPath(); ctx.arc(X(0.2), Y(0), 5, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = text;
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('1/5', X(0.2), Y(0) - 10);
+
+    // p = 25/4: dvostruki t = 2/5
+    ctx.fillStyle = highlight;
+    ctx.beginPath(); ctx.arc(X(0.4), Y(0), 6, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(X(0.4), Y(0), 10, 0, Math.PI * 2);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.fillText('2/5 (dvostruko)', X(0.4) + 25, Y(0) - 12);
+
+    // p = -0.5: jedan pozitivan koren (≈ 0.196)
+    var pn = -0.5;
+    var rootN = (5 - Math.sqrt(25 - 4*pn*1))/(2*pn);
+    // Use the positive root: t = (5 - sqrt(D))/(2p) with p<0 gives positive
+    var Dn = 25 - 4*pn;
+    var rN = (5 - Math.sqrt(Dn))/(2*pn);
+    ctx.fillStyle = accent;
+    ctx.beginPath(); ctx.arc(X(rN), Y(0), 5, 0, Math.PI * 2); ctx.fill();
+
+    // p = 1: dva pozitivna korena
+    var D1 = 21;
+    var r1a = (5 - Math.sqrt(D1))/2;
+    var r1b = (5 + Math.sqrt(D1))/2;
+    ctx.fillStyle = danger;
+    ctx.beginPath(); ctx.arc(X(r1a), Y(0), 4, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(X(r1b), Y(0), 4, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = danger;
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('dva korena', X(r1a) - 30, Y(0) + 30);
+
+    // Legend
+    var legY = marginT + plotH + 35;
+    ctx.font = '12px sans-serif';
+    ctx.textAlign = 'left';
+    var legX = [marginL, marginL + 280, marginL + 280, marginL];
+    var legYs = [legY, legY, legY + 20, legY + 20];
+    pValues.forEach(function(item, idx) {
+      ctx.strokeStyle = item.color;
+      ctx.lineWidth = 3;
+      ctx.setLineDash(item.dash);
+      ctx.beginPath();
+      ctx.moveTo(legX[idx], legYs[idx]);
+      ctx.lineTo(legX[idx] + 28, legYs[idx]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = text;
+      ctx.fillText(item.label, legX[idx] + 34, legYs[idx] + 4);
+    });
+
+    // Bottom annotation
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 12px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Jedinstveno rešenje ⇔ tačno jedan presek krive sa pozitivnom osom t.', W / 2, H - 18);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Parametar za jedinstveno rešenje jednačine p·2^x + 2^{-x} = 5",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["eksponencijalna jednačina", "parametar", "kvadratna jednačina", "Vietasove formule", "diskriminanta", "smena"]
+}
+BRAINSPARK_META-->

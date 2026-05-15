@@ -1,0 +1,712 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Dato: u krug upisan pravilan osmougao površine 4. Traži se poluprečnik R.
+
+Strategija: pravilan n-tougao upisan u krug poluprečnika R deli se iz centra na n jednakokrakih trouglova. Svaki ima krakove R, R i centralni ugao 2π/n. Po formuli za površinu trougla preko dve stranice i ugla između njih:
+  S_trougla = (1/2) · R · R · sin(2π/n) = (1/2) R² sin(2π/n).
+
+Ukupna površina pravilnog n-tougla upisanog u krug:
+  P_n = n · (1/2) R² sin(2π/n) = (n/2) R² sin(2π/n).
+
+Za n = 8:
+  P_8 = (8/2) · R² · sin(2π/8) = 4 R² sin(π/4) = 4 R² · (√2/2) = 2√2 · R².
+
+Postavljamo P_8 = 4:
+  2√2 R² = 4
+  R² = 4/(2√2) = 2/√2 = √2.
+  R = √(√2) = ⁴√2.
+
+Numerika: ⁴√2 ≈ 1,1892.
+
+Odgovor: (D) ⁴√2.
+
+Provera distraktora:
+  (A) R = 1 → P = 2√2 ≈ 2,83 (≠ 4).
+  (B) R = √(1+√2) ≈ √2,414 ≈ 1,554 → R² ≈ 2,414 → P = 2√2 · 2,414 ≈ 6,83 (≠ 4).
+  (C) R = (√2+1)/2 ≈ 1,207 → R² ≈ 1,457 → P = 2√2 · 1,457 ≈ 4,12 (blizu, ali ne!). To je apothem-tip formule.
+  (D) R = ⁴√2 ≈ 1,189 → R² = √2 → P = 2√2 · √2 = 2 · 2 = 4. ✓
+  (E) R = √2 → R² = 2 → P = 2√2 · 2 = 4√2 ≈ 5,66 (≠ 4).
+
+Visual:
+  C1: Pravilan osmougao upisan u krug, sa centrom O i poluprečnikom R, podeljen na 8 jednakokrakih trouglova.
+  C2: Izolovan jedan od 8 trouglova, sa centralnim uglom π/4 i krakovima R.
+  C3 (opcionalno): Numerička vizualizacija — vrednosti opcija na realnoj osi, sa istaknutim R = ⁴√2 ≈ 1,189.
+
+Pitfall:
+- Korišćenje formule za opisani umesto upisani (zamena uloga R i a).
+- Korišćenje apoteme (poluprečnika upisanog kruga osmouglu) umesto R (poluprečnik opisanog kruga = naš R).
+- Zaboravljen faktor 1/2 u površini trougla preko sin.
+- Za n=8, sin(2π/8) = sin(π/4) = √2/2, NE √3/2.
+
+Challenge: Za pravilan šestougao (n=6) upisan u krug poluprečnika R, P_6 = (6/2) R² sin(π/3) = 3 R² · (√3/2) = (3√3/2) R². Ako je P_6 = 4, onda R² = 8/(3√3) = 8√3/9, R = √(8√3/9) = 2√(2√3)/3 = (2/3)√(2√3).
+</script>
+
+<h1 data-card="problem-title">Poluprečnik kruga opisanog pravilnom osmouglu površine 4</h1>
+<p data-card="problem-subtitle" class="subtitle">Geometrija • Pravilan mnogougao • Centralni ugao • Površina preko sinusa</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>U krug je upisan pravilan osmougao površine \( 4 \). Poluprečnik kruga je:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">mnogougao</span>
+      <span class="given-value">pravilan, \( n = 8 \) (osmougao)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">površina</span>
+      <span class="given-value">\( P_8 = 4 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">traži se</span>
+      <span class="given-value">\( R \) (poluprečnik opisanog kruga)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \sqrt{1+\sqrt{2}} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \dfrac{\sqrt{2}+1}{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \sqrt[4]{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \sqrt{2} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Pravilan osmougao upisan u krug podelićemo iz centra na \( 8 \) jednakokrakih trouglova; svaki ima dva kraka \( R \) i ugao \( 2\pi/8 = \pi/4 \) između njih. Formulom za površinu trougla preko dve stranice i ugla, izvedemo \( P_8 = 2\sqrt{2}\,R^2 \), izjednačimo sa \( 4 \) i rešimo po \( R \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule za pravilan upisan mnogougao</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Centralni ugao</span> Pravilan \( n \)-tougao deli pun krug na \( n \) jednakih lukova; centralni ugao svakog je \( \dfrac{2\pi}{n} \).</li>
+        <li><span class="formula-label">Površina trougla preko dve stranice i ugla</span> \( S = \dfrac{1}{2}\,b\,c\,\sin\alpha, \) gde su \( b, c \) dve stranice i \( \alpha \) ugao između njih.</li>
+        <li><span class="formula-label">Površina pravilnog n-tougla upisanog u krug</span> Iz centra \( O \) povučemo radijuse ka temenima — dobijemo \( n \) jednakokrakih trouglova, svaki sa krakovima \( R \) i uglom \( 2\pi/n \). Ukupna površina:
+        \[ P_n \;=\; \dfrac{n}{2}\,R^2 \sin\dfrac{2\pi}{n}. \]</li>
+        <li><span class="formula-label">Vrednosti sinusa</span> \( \sin\dfrac{\pi}{4} = \dfrac{\sqrt{2}}{2} \), \( \sin\dfrac{\pi}{3} = \dfrac{\sqrt{3}}{2} \), \( \sin\dfrac{\pi}{6} = \dfrac{1}{2} \).</li>
+      </ul>
+      <p class="note">Formula radi <em>samo</em> kada je mnogougao upisan u krug (svako teme leži na krugu). Za opisani mnogougao (krug upisan u mnogougao) formula koristi <em>apotemu</em>, a ne \( R \).</p>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Pravilan osmougao u krugu">
+  <h2>📐 Figura 1: Osmougao podeljen na 8 trouglova</h2>
+  <div class="canvas-wrapper">
+    <canvas id="fig1" width="700" height="540"></canvas>
+  </div>
+  <p class="canvas-caption">Pravilan osmougao upisan u krug poluprečnika \( R \). Iz centra \( O \) povučeni su radijusi ka svakom temenu; dobijemo \( 8 \) jednakokrakih trouglova sa krakovima \( R \) i centralnim uglom \( \pi/4 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Podeli osmougao na 8 trouglova iz centra</h3>
+      <p>Neka je \( O \) centar kruga i \( R \) njegov poluprečnik. Pošto je osmougao pravilan i upisan, sva temena leže na krugu na jednakim međusobnim rastojanjima.</p>
+      <p>Povučemo radijuse iz \( O \) ka svih osam temena. Tako osmougao razlažemo na <strong>\( 8 \) podudarnih jednakokrakih trouglova</strong>, svaki sa:</p>
+      <ul>
+        <li>krakovima \( R \) (radijusi do dva susedna temena),</li>
+        <li>centralnim uglom \( \alpha = \dfrac{2\pi}{8} = \dfrac{\pi}{4} \) između tih radijusa.</li>
+      </ul>
+      <p>Treći ugao (a to je stranica osmougla) nas <em>direktno ne treba</em> — formula za površinu radi sa dve stranice i uglom između njih.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Površina jednog trougla</h3>
+      <p>Po formuli \( S = \dfrac{1}{2}\,b\,c\,\sin\alpha \), za jednakokraki trougao sa \( b = c = R \) i \( \alpha = \pi/4 \):</p>
+      <div class="math-block">\[ S_1 \;=\; \dfrac{1}{2}\,R \cdot R \cdot \sin\dfrac{\pi}{4} \;=\; \dfrac{1}{2}\,R^2 \cdot \dfrac{\sqrt{2}}{2} \;=\; \dfrac{\sqrt{2}}{4}\,R^2. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš \( \sin(\pi/4) \), a ne \( \sin(2\pi/8) \)?</summary>
+          <div class="detail-content"><p>To je ista stvar: \( \dfrac{2\pi}{8} = \dfrac{\pi}{4} \). Skratili smo razlomak. Centralni ugao za \( n \)-tougao je \( 2\pi/n \), pa za \( n = 8 \) on iznosi \( \pi/4 \) (što je \( 45° \)).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Ukupna površina osmougla</h3>
+      <p>Pošto je svih \( 8 \) trouglova podudarno, ukupna površina je:</p>
+      <div class="math-block">\[ P_8 \;=\; 8 \cdot S_1 \;=\; 8 \cdot \dfrac{\sqrt{2}}{4}\,R^2 \;=\; 2\sqrt{2}\,R^2. \]</div>
+      <p>Ovo je opšti slučaj formule \( P_n = \dfrac{n}{2}\,R^2 \sin\dfrac{2\pi}{n} \) za \( n = 8 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavi jednačinu i reši po \( R \)</h3>
+      <p>Iz uslova \( P_8 = 4 \):</p>
+      <div class="math-block">\[ 2\sqrt{2}\,R^2 \;=\; 4. \]</div>
+      <p>Podelimo obe strane sa \( 2\sqrt{2} \):</p>
+      <div class="math-block">\[ R^2 \;=\; \dfrac{4}{2\sqrt{2}} \;=\; \dfrac{2}{\sqrt{2}} \;=\; \sqrt{2}. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kako se \( \dfrac{2}{\sqrt{2}} \) svodi na \( \sqrt{2} \)?</summary>
+          <div class="detail-content"><p>Racionalizacija: \( \dfrac{2}{\sqrt{2}} = \dfrac{2 \cdot \sqrt{2}}{\sqrt{2} \cdot \sqrt{2}} = \dfrac{2\sqrt{2}}{2} = \sqrt{2}. \) Alternativa: \( \dfrac{2}{\sqrt{2}} = \dfrac{(\sqrt{2})^2}{\sqrt{2}} = \sqrt{2}. \)</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Izvuci \( R \)</h3>
+      <p>Pošto je \( R^2 = \sqrt{2} \), uzimamo kvadratni koren (\( R > 0 \)):</p>
+      <div class="math-block">\[ R \;=\; \sqrt{\sqrt{2}} \;=\; 2^{1/2 \cdot 1/2} \;=\; 2^{1/4} \;=\; \sqrt[4]{2}. \]</div>
+      <span class="result">\( R = \sqrt[4]{2} \)</span>
+      <p>To je opcija <strong>(D)</strong>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Numerička provera</h3>
+      <p>\( R = \sqrt[4]{2} \approx 1{,}189 \). Provera \( R^2 = \sqrt{2} \approx 1{,}414 \), zatim \( P_8 = 2\sqrt{2} \cdot \sqrt{2} = 2 \cdot 2 = 4. \) ✓</p>
+      <p>Brzo eliminacija distraktora:</p>
+      <ul>
+        <li>(A) \( R = 1 \): \( P_8 = 2\sqrt{2} \approx 2{,}83 \neq 4. \)</li>
+        <li>(E) \( R = \sqrt{2} \): \( R^2 = 2 \), \( P_8 = 4\sqrt{2} \approx 5{,}66 \neq 4. \)</li>
+        <li>(D) \( R = \sqrt[4]{2} \): \( R^2 = \sqrt{2} \), \( P_8 = 2\sqrt{2} \cdot \sqrt{2} = 4. \) ✓</li>
+      </ul>
+      <p>Smisleno: \( \sqrt[4]{2} \approx 1{,}189 \) leži između \( 1 \) (opcija A) i \( \sqrt{2} \approx 1{,}414 \) (opcija E) — što je geometrijski razuman međurezultat.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="visual-aid" data-title="Jedan od 8 trouglova">
+  <h2>📐 Figura 2: Centralni trougao izbliza</h2>
+  <div class="canvas-wrapper">
+    <canvas id="fig2" width="700" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Jedan od \( 8 \) podudarnih trouglova: krakovi \( R \), centralni ugao \( \pi/4 \) (\( = 45° \)), površina \( \frac{1}{2}R^2\sin\frac{\pi}{4} = \frac{\sqrt{2}}{4}R^2 \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Numerička skala odgovora">
+  <h2>📐 Figura 3: Gde leže ponuđeni odgovori?</h2>
+  <div class="canvas-wrapper">
+    <canvas id="fig3" width="720" height="380"></canvas>
+  </div>
+  <p class="canvas-caption">Numerička vrednost \( R = \sqrt[4]{2} \approx 1{,}189 \) — između \( 1 \) (opcija A) i \( \sqrt{2} \approx 1{,}414 \) (opcija E), što odgovara geometrijskoj intuiciji.</p>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Triangulacija iz centra svodi <em>svaki</em> problem pravilnog mnogougla upisanog u krug na <em>jedan</em> tip jednakokrakog trougla: dva kraka \( R \), ugao \( 2\pi/n \) između njih. Formula \( P_n = \dfrac{n}{2} R^2 \sin\dfrac{2\pi}{n} \) radi za bilo koje \( n \geq 3 \). Za \( n = 8 \), specijalna vrednost \( \sin(\pi/4) = \sqrt{2}/2 \) daje vrlo „čistu” formulu \( P_8 = 2\sqrt{2}\,R^2 \). U graničnom slučaju \( n \to \infty \), \( P_n \to \pi R^2 \) — površina kruga (jer \( n \sin(2\pi/n)/2 \to \pi \)).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ R \;=\; \sqrt[4]{2} \;\approx\; 1{,}189. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 1 \)</span>
+    <span class="answer-option" data-option="B">(B) \( \sqrt{1+\sqrt{2}} \)</span>
+    <span class="answer-option" data-option="C">(C) \( \dfrac{\sqrt{2}+1}{2} \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( \sqrt[4]{2} \)</span>
+    <span class="answer-option" data-option="E">(E) \( \sqrt{2} \)</span>
+  </div>
+  <p class="verification">Provera: \( P_8 = 2\sqrt{2} \cdot R^2 \), pa za \( R^2 = \sqrt{2} \) imamo \( P_8 = 2\sqrt{2} \cdot \sqrt{2} = 4 \). ✓ Pošto je \( R^2 = \sqrt{2} = 2^{1/2} \), važi \( R = 2^{1/4} = \sqrt[4]{2} \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Mešanje upisan/opisan.</strong> Ako se „upisan u krug” pomeša sa „opisan oko kruga”, koristi se pogrešna formula. Upisan: temena na krugu, \( P_n = \frac{n}{2} R^2 \sin\frac{2\pi}{n} \). Opisan: stranice tangentne kružnici, koristi se apotema \( a_p \): \( P_n = n \cdot a_p^2 \cdot \tan\frac{\pi}{n} \).</li>
+    <li><strong>Zaboravljen faktor \( \tfrac{1}{2} \) u površini trougla.</strong> Formula je \( S = \frac{1}{2} b c \sin\alpha \), <em>ne</em> \( S = b c \sin\alpha \). Bez tog faktora dobiće se \( P_8 = 4\sqrt{2}\, R^2 \) i pogrešan \( R \).</li>
+    <li><strong>Pogrešan centralni ugao.</strong> Za \( n = 8 \) ugao je \( 2\pi/8 = \pi/4 \), tj. \( 45° \), ne \( \pi/8 \) (\( 22{,}5° \)). Pola tog ugla (\( \pi/8 \)) se javlja samo ako trougao dalje delimo simetralom — tu sin je \( \sin(\pi/8) \), drugačiji broj.</li>
+    <li><strong>Pogrešna vrednost sinusa.</strong> Za \( \pi/4 \), \( \sin = \cos = \sqrt{2}/2 \), <em>ne</em> \( \sqrt{3}/2 \) (to je \( \sin(\pi/3) \)).</li>
+    <li><strong>Korišćenje apoteme umesto \( R \).</strong> Za opisan ili „polu-poznat” oblik, neki studenti razlažu na trouglove visine = apoteme, što daje opciju (C). Apotema osmougla upisanog u krug poluprečnika \( R \) je \( a_p = R \cos(\pi/8) \), <em>ne</em> \( R \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Razmotri pravilan šestougao (\( n = 6 \)) upisan u krug poluprečnika \( R \). Izvedi formulu za njegovu površinu, pa nađi \( R \) ako je površina jednaka \( 4 \).</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Centralni ugao je \( 2\pi/6 = \pi/3 \). \( \sin(\pi/3) = \sqrt{3}/2 \). Po opštoj formuli:</p>
+      <div class="math-block">\[ P_6 \;=\; \dfrac{6}{2}\,R^2 \sin\dfrac{\pi}{3} \;=\; 3 R^2 \cdot \dfrac{\sqrt{3}}{2} \;=\; \dfrac{3\sqrt{3}}{2}\,R^2. \]</div>
+      <p>Za \( P_6 = 4 \):</p>
+      <div class="math-block">\[ R^2 \;=\; \dfrac{8}{3\sqrt{3}} \;=\; \dfrac{8\sqrt{3}}{9},\qquad R \;=\; \dfrac{2}{3}\sqrt{2\sqrt{3}} \;\approx\; 1{,}241. \]</div>
+      <p>Zapazi: pravilan šestougao ima posebnu osobinu — stranica je jednaka poluprečniku (\( a = R \)). To je posledica činjenice da je centralni trougao <em>jednakostraničan</em> kada je centralni ugao \( 60° \). Tako se površina šestougla može pisati i kao \( P_6 = 6 \cdot \frac{R^2 \sqrt{3}}{4} = \frac{3\sqrt{3}}{2} R^2 \), što potvrđuje formulu.</p>
+      <p>Granični slučaj: kada \( n \to \infty \), \( P_n \to \pi R^2 \). Provera: \( P_8 = 2\sqrt{2} R^2 \approx 2{,}83 R^2 \), \( P_{100} \approx 3{,}14 R^2 \), \( \pi \approx 3{,}1416 \). Niz \( P_n / R^2 \) raste i teži broju \( \pi \).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('fig1');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var highlight = cv('--sol-canvas-highlight');
+
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Pravilan osmougao upisan u krug poluprečnika R', W / 2, 28);
+
+    var cx = W / 2, cy = H / 2 + 5;
+    var R_px = 170;
+
+    // circle
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.arc(cx, cy, R_px, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // 8 vertices
+    var n = 8;
+    var verts = [];
+    for (var i = 0; i < n; i++) {
+      var theta = -Math.PI/2 + i * 2*Math.PI/n; // start at top
+      verts.push({ x: cx + R_px * Math.cos(theta), y: cy + R_px * Math.sin(theta), angle: theta });
+    }
+
+    // fill octagon (faint)
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.06);
+    ctx.beginPath();
+    ctx.moveTo(verts[0].x, verts[0].y);
+    for (var i = 1; i < n; i++) ctx.lineTo(verts[i].x, verts[i].y);
+    ctx.closePath();
+    ctx.fill();
+
+    // Highlight one sector (between verts[0] and verts[1]) with green fill
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.30);
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(verts[0].x, verts[0].y);
+    ctx.lineTo(verts[1].x, verts[1].y);
+    ctx.closePath();
+    ctx.fill();
+
+    // 8 radii
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 4]);
+    for (var i = 0; i < n; i++) {
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(verts[i].x, verts[i].y);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // octagon edges
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(verts[0].x, verts[0].y);
+    for (var i = 1; i < n; i++) ctx.lineTo(verts[i].x, verts[i].y);
+    ctx.closePath();
+    ctx.stroke();
+
+    // center
+    ctx.fillStyle = text;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText('O', cx + 8, cy + 5);
+
+    // label R on one radius (going up-right to verts[1])
+    var mx = (cx + verts[1].x) / 2;
+    var my = (cy + verts[1].y) / 2;
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold italic 15px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText('R', mx + 8, my);
+
+    // central angle arc inside highlighted sector
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 30, verts[0].angle, verts[1].angle, false);
+    ctx.stroke();
+
+    // label π/4 near arc
+    var midA = (verts[0].angle + verts[1].angle) / 2;
+    var laX = cx + 48 * Math.cos(midA);
+    var laY = cy + 48 * Math.sin(midA);
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('π/4', laX, laY + 4);
+
+    // vertex labels (just numbers 1..8)
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, system-ui';
+    ctx.textAlign = 'center';
+    for (var i = 0; i < n; i++) {
+      var labelX = cx + (R_px + 18) * Math.cos(verts[i].angle);
+      var labelY = cy + (R_px + 18) * Math.sin(verts[i].angle) + 4;
+      ctx.fillText(String(i + 1), labelX, labelY);
+    }
+
+    // captions at bottom
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Osmougao se iz centra deli na 8 podudarnih trouglova; zeleni je jedan od njih.', W / 2, H - 50);
+    ctx.fillText('Svaki trougao ima krakove R, R i centralni ugao 2π/8 = π/4.', W / 2, H - 28);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('fig2');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var highlight = cv('--sol-canvas-highlight');
+
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Jedan od 8 trouglova: krakovi R, ugao π/4', W / 2, 28);
+
+    // Place center O at bottom, two rays going up-left and up-right at ±π/8 from vertical
+    var Ox = W / 2, Oy = H - 110;
+    var armLen = 280;
+    // half of central angle = π/8
+    var halfAngle = Math.PI / 8;
+    // Left vertex direction: angle (pi/2 + pi/8) from positive x = up-left
+    // We want symmetric: one arm at angle pi/2 - pi/8 (right of vertical), other pi/2 + pi/8 (left).
+    var rightAngle = Math.PI/2 + halfAngle;
+    var leftAngle  = Math.PI/2 - halfAngle;
+    // Note: y in canvas goes DOWN. To go "up" we subtract from Oy.
+    var Vleft  = { x: Ox + armLen * Math.cos(rightAngle), y: Oy - armLen * Math.sin(rightAngle) };
+    var Vright = { x: Ox + armLen * Math.cos(leftAngle),  y: Oy - armLen * Math.sin(leftAngle) };
+
+    // fill triangle
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.22);
+    ctx.beginPath();
+    ctx.moveTo(Ox, Oy);
+    ctx.lineTo(Vleft.x, Vleft.y);
+    ctx.lineTo(Vright.x, Vright.y);
+    ctx.closePath();
+    ctx.fill();
+
+    // strokes
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(Ox, Oy);
+    ctx.lineTo(Vleft.x, Vleft.y);
+    ctx.lineTo(Vright.x, Vright.y);
+    ctx.closePath();
+    ctx.stroke();
+
+    // central angle arc
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    // arc in canvas coords: from angle pointing to Vleft to angle pointing to Vright (positive y is down, so flip)
+    var aL = Math.atan2(Vleft.y - Oy, Vleft.x - Ox);
+    var aR = Math.atan2(Vright.y - Oy, Vright.x - Ox);
+    ctx.arc(Ox, Oy, 50, aL, aR);
+    ctx.stroke();
+
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 16px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('π/4', Ox, Oy - 60);
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillStyle = muted;
+    ctx.fillText('(= 45°)', Ox, Oy - 42);
+
+    // R labels on both arms
+    var midL = { x: (Ox + Vleft.x)/2, y: (Oy + Vleft.y)/2 };
+    var midR = { x: (Ox + Vright.x)/2, y: (Oy + Vright.y)/2 };
+    ctx.fillStyle = primary;
+    ctx.font = 'bold italic 16px Inter, system-ui';
+    ctx.textAlign = 'right';
+    ctx.fillText('R', midL.x - 8, midL.y);
+    ctx.textAlign = 'left';
+    ctx.fillText('R', midR.x + 8, midR.y);
+
+    // vertex labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.textAlign = 'right';
+    ctx.fillText('A', Vleft.x - 8, Vleft.y - 8);
+    ctx.textAlign = 'left';
+    ctx.fillText('B', Vright.x + 8, Vright.y - 8);
+    ctx.textAlign = 'right';
+    ctx.fillText('O', Ox - 8, Oy + 5);
+
+    // O point
+    ctx.fillStyle = text;
+    ctx.beginPath();
+    ctx.arc(Ox, Oy, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    // formula box at bottom
+    ctx.fillStyle = text;
+    ctx.font = '13px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Površina jednog trougla:', W / 2, H - 60);
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.fillStyle = accent;
+    ctx.fillText('S₁ = (1/2) · R · R · sin(π/4) = (√2 / 4) · R²', W / 2, H - 38);
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillStyle = muted;
+    ctx.fillText('Ukupno: P₈ = 8 · S₁ = 2√2 · R².', W / 2, H - 18);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('fig3');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var axis      = cv('--sol-canvas-axis');
+    var danger    = cv('--sol-canvas-danger');
+
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Numeričke vrednosti ponuđenih odgovora', W / 2, 28);
+
+    var xMin = 0.9, xMax = 1.6;
+    var axisY = 200;
+    var padL = 60, padR = 60;
+    var plotW = W - padL - padR;
+
+    function tx(x) { return padL + (x - xMin) / (xMax - xMin) * plotW; }
+
+    // axis
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(padL, axisY);
+    ctx.lineTo(padL + plotW, axisY);
+    ctx.stroke();
+
+    // ticks at 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, system-ui';
+    ctx.textAlign = 'center';
+    var tickVals = [0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6];
+    for (var i = 0; i < tickVals.length; i++) {
+      var v = tickVals[i];
+      ctx.beginPath();
+      ctx.strokeStyle = axis;
+      ctx.moveTo(tx(v), axisY - 5);
+      ctx.lineTo(tx(v), axisY + 5);
+      ctx.stroke();
+      ctx.fillStyle = muted;
+      ctx.fillText(v.toFixed(1).replace('.', ','), tx(v), axisY + 20);
+    }
+
+    // Options data
+    var opts = [
+      { label: 'A: 1', val: 1.0, color: muted, above: true },
+      { label: 'C: (√2+1)/2 ≈ 1,207', val: (Math.sqrt(2) + 1) / 2, color: muted, above: false },
+      { label: 'D: ⁴√2 ≈ 1,189', val: Math.pow(2, 0.25), color: accent, above: true, correct: true },
+      { label: 'E: √2 ≈ 1,414', val: Math.sqrt(2), color: muted, above: false },
+      { label: 'B: √(1+√2) ≈ 1,554', val: Math.sqrt(1 + Math.sqrt(2)), color: muted, above: true }
+    ];
+
+    for (var j = 0; j < opts.length; j++) {
+      var o = opts[j];
+      var X = tx(o.val);
+      // line
+      ctx.strokeStyle = o.correct ? accent : muted;
+      ctx.setLineDash([3, 3]);
+      ctx.lineWidth = o.correct ? 2 : 1;
+      ctx.beginPath();
+      ctx.moveTo(X, axisY - 4);
+      ctx.lineTo(X, o.above ? axisY - 70 : axisY + 70);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      // dot
+      ctx.beginPath();
+      ctx.arc(X, axisY, o.correct ? 7 : 5, 0, Math.PI * 2);
+      ctx.fillStyle = o.correct ? accent : o.color;
+      ctx.fill();
+      // outer ring for correct
+      if (o.correct) {
+        ctx.beginPath();
+        ctx.arc(X, axisY, 11, 0, Math.PI * 2);
+        ctx.strokeStyle = accent;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+      // label
+      ctx.fillStyle = o.correct ? accent : text;
+      ctx.font = o.correct ? 'bold 13px Inter, system-ui' : '12px Inter, system-ui';
+      ctx.textAlign = 'center';
+      var labelY = o.above ? axisY - 78 : axisY + 78;
+      ctx.fillText(o.label, X, labelY);
+    }
+
+    // Bottom caption
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Tačan odgovor R = ⁴√2 ≈ 1,189 — između 1 (A) i √2 (E). Geometrijski razumno: R je „nešto malo veće od 1” za osmougao površine 4.', W / 2, H - 30);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Poluprečnik kruga opisanog pravilnom osmouglu",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["pravilni mnogougao", "upisani krug", "centralni ugao", "trigonometrija površine"]
+}
+BRAINSPARK_META-->

@@ -1,0 +1,569 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Zadatak: pojednostaviti izraz  E(x) = ( √2 + sin x − cos x ) / ( sin x + cos x ).
+
+  Cilj: pretvoriti u jedan trig. izraz oblika tg(...).
+
+  Strategija — uvodimo smenu u = x − π/4.
+
+  1) Lema za zbir/razlika sinusa i kosinusa istog argumenta:
+     sin x − cos x = √2 · sin(x − π/4)            (jer √2 sin(x − π/4) = √2(sin x cos π/4 − cos x sin π/4) = sin x − cos x)
+     sin x + cos x = √2 · cos(x − π/4)            (jer √2 cos(x − π/4) = √2(cos x cos π/4 + sin x sin π/4) = cos x + sin x)
+     Sa smenom u = x − π/4:
+        sin x − cos x = √2 sin u
+        sin x + cos x = √2 cos u
+
+  2) Brojilac:
+       √2 + sin x − cos x = √2 + √2 sin u = √2 (1 + sin u)
+
+  3) Imenilac:
+       sin x + cos x = √2 cos u
+
+  4) E(x) = √2 (1 + sin u) / (√2 cos u) = (1 + sin u) / cos u
+
+  5) Trik "polovina ugla":
+       1 + sin u = 1 + 2 sin(u/2) cos(u/2) = sin²(u/2) + cos²(u/2) + 2 sin(u/2) cos(u/2)
+                 = (sin(u/2) + cos(u/2))²
+       cos u    = cos²(u/2) − sin²(u/2) = (cos(u/2) − sin(u/2))(cos(u/2) + sin(u/2))
+
+     Pa
+       E = (sin(u/2) + cos(u/2))² / [(cos(u/2) − sin(u/2))(cos(u/2) + sin(u/2))]
+         = (sin(u/2) + cos(u/2)) / (cos(u/2) − sin(u/2))
+
+  6) Podelimo brojilac i imenilac sa cos(u/2) (gde nije nula):
+       E = (tg(u/2) + 1) / (1 − tg(u/2))
+         = tg(π/4 + u/2)         [formula tg(α+β) sa α=π/4, β=u/2; tg(π/4)=1]
+
+  7) Vratimo smenu u/2 = (x − π/4)/2 = x/2 − π/8, pa
+       π/4 + u/2 = π/4 + x/2 − π/8 = x/2 + π/8.
+
+     Dakle  E(x) = tg(x/2 + π/8).
+
+  Odgovor: (A) tg(x/2 + π/8).
+
+  Numerička provera za x = 0:
+    sin 0 − cos 0 = −1;   sin 0 + cos 0 = 1
+    E(0) = (√2 − 1) / 1 = √2 − 1 ≈ 0,4142
+    tg(π/8) = √2 − 1 ≈ 0,4142  ✓ (poznata vrednost, tg 22,5°)
+
+  Provera za x = π/2:
+    sin(π/2) − cos(π/2) = 1;  sin(π/2) + cos(π/2) = 1
+    E(π/2) = (√2 + 1)/1 = √2 + 1 ≈ 2,4142
+    tg(π/4 + π/8) = tg(3π/8) = ctg(π/8) = 1/(√2−1) = √2+1 ≈ 2,4142  ✓
+
+  Vizuelni prikaz: dva grafika na istom kanvasu — y = E(x) (primarna) i
+  y = tg(x/2 + π/8) (akcent, isprekidano). Treba da se preklope na celom
+  domenu (osim u tačkama nedefinisanosti). Pure-algebarski identitet,
+  bez slobodnog parametra — statičan crtež.
+</script>
+
+<h1 data-card="problem-title">Identitet sa zbirom sinusa, kosinusa i konstante</h1>
+<p data-card="problem-subtitle" class="subtitle">Trigonometrija &mdash; smena ugla, formula \( a\sin x + b\cos x \) i tangens polovine ugla</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Izraz</p>
+  <div class="math-block">\[ \dfrac{\sqrt{2} + \sin x - \cos x}{\sin x + \cos x} \]</div>
+  <p>je identički jednak:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \operatorname{tg}\!\left(\dfrac{x}{2} + \dfrac{\pi}{8}\right) \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \operatorname{ctg}\!\left(\dfrac{x}{2} + \dfrac{\pi}{8}\right) \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \operatorname{tg}\!\left(x + \dfrac{\pi}{4}\right) \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \operatorname{tg}\!\left(\dfrac{x}{2} + \dfrac{\pi}{4}\right) \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \sin\!\left(\dfrac{x}{2} + \dfrac{\pi}{8}\right) \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Prvo &bdquo;sklopimo&ldquo; \( \sin x \pm \cos x \) u jedinstvene sinus/kosinus pomerene za \( \pi/4 \) (formula \( a\sin x + b\cos x \)). Time se ceo izraz svodi na \( \dfrac{1 + \sin u}{\cos u} \), gde je \( u = x - \pi/4 \). Zatim primenimo formule za polovinu ugla \( 1 + \sin u = (\sin\tfrac{u}{2} + \cos\tfrac{u}{2})^2 \) i \( \cos u = (\cos\tfrac{u}{2})^2 - (\sin\tfrac{u}{2})^2 \), skratimo zajednički činilac i prepoznamo \( \operatorname{tg}\!\left(\dfrac{\pi}{4} + \dfrac{u}{2}\right) \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule koje koristimo</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Sklapanje linearne kombinacije:</strong> \[ \sin x \pm \cos x = \sqrt{2}\,\sin\!\left(x \pm \tfrac{\pi}{4}\right). \] Posebno: \( \sin x - \cos x = \sqrt{2}\sin\!\left(x - \tfrac{\pi}{4}\right) \) i \( \sin x + \cos x = \sqrt{2}\cos\!\left(x - \tfrac{\pi}{4}\right) \).</li>
+        <li><strong>Sinus dvostrukog ugla:</strong> \( \sin u = 2\sin\!\tfrac{u}{2}\cos\!\tfrac{u}{2} \), pa \( 1 + \sin u = \left(\sin\!\tfrac{u}{2} + \cos\!\tfrac{u}{2}\right)^2 \) (zbog \( \sin^2 + \cos^2 = 1 \)).</li>
+        <li><strong>Kosinus dvostrukog ugla:</strong> \( \cos u = \cos^2\!\tfrac{u}{2} - \sin^2\!\tfrac{u}{2} = \left(\cos\!\tfrac{u}{2} - \sin\!\tfrac{u}{2}\right)\left(\cos\!\tfrac{u}{2} + \sin\!\tfrac{u}{2}\right) \).</li>
+        <li><strong>Adiciona formula za tangens:</strong> \[ \operatorname{tg}(\alpha + \beta) = \dfrac{\operatorname{tg}\alpha + \operatorname{tg}\beta}{1 - \operatorname{tg}\alpha\,\operatorname{tg}\beta}; \] uz \( \operatorname{tg}\!\tfrac{\pi}{4} = 1 \) sledi \( \dfrac{1 + \operatorname{tg}\beta}{1 - \operatorname{tg}\beta} = \operatorname{tg}\!\left(\tfrac{\pi}{4} + \beta\right) \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="identityPlot" width="720" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Grafici dve funkcije: leve strane \( y = \dfrac{\sqrt{2} + \sin x - \cos x}{\sin x + \cos x} \) (puna primarna linija) i tvrđene desne strane \( y = \operatorname{tg}\!\left(\dfrac{x}{2} + \dfrac{\pi}{8}\right) \) (isprekidana akcent linija). Krive se savršeno poklapaju &mdash; identitet važi gde su obe definisane. Označene su i tačke nedefinisanosti \( x = -\dfrac{\pi}{4} + k\pi \) (vertikalne asimptote).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Sklapamo \( \sin x \pm \cos x \) u jedan sinus/kosinus</h3>
+      <p>Iz adicionih formula:</p>
+      <div class="math-block">\[ \sqrt{2}\,\sin\!\left(x - \tfrac{\pi}{4}\right) = \sqrt{2}\,\bigl(\sin x\cos\tfrac{\pi}{4} - \cos x\sin\tfrac{\pi}{4}\bigr) = \sin x - \cos x, \]</div>
+      <div class="math-block">\[ \sqrt{2}\,\cos\!\left(x - \tfrac{\pi}{4}\right) = \sqrt{2}\,\bigl(\cos x\cos\tfrac{\pi}{4} + \sin x\sin\tfrac{\pi}{4}\bigr) = \cos x + \sin x. \]</div>
+      <p>Uvedimo skraćeni argument <span class="result">\( u = x - \dfrac{\pi}{4} \)</span>. Tada</p>
+      <div class="math-block">\[ \sin x - \cos x = \sqrt{2}\sin u, \qquad \sin x + \cos x = \sqrt{2}\cos u. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto se za zbir koristi \( \cos\!\left(x - \tfrac{\pi}{4}\right) \), a ne \( \sin\!\left(x + \tfrac{\pi}{4}\right) \)?</summary>
+          <div class="detail-content"><p>Obe formule su tačne &mdash; one daju isti broj zbog identiteta \( \cos\!\left(x - \tfrac{\pi}{4}\right) = \sin\!\left(x - \tfrac{\pi}{4} + \tfrac{\pi}{2}\right) = \sin\!\left(x + \tfrac{\pi}{4}\right) \). Biramo \( \cos\!\left(x - \tfrac{\pi}{4}\right) \) zato što sa <em>istom</em> smenom \( u = x - \tfrac{\pi}{4} \) odmah dobijamo i \( \sin u \) (za razliku) i \( \cos u \) (za zbir). Jedna smena, dva rezultata &mdash; ekonomično.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Zamena u polazni izraz i izvlačenje \( \sqrt{2} \)</h3>
+      <p>Brojilac postaje</p>
+      <div class="math-block">\[ \sqrt{2} + \sin x - \cos x = \sqrt{2} + \sqrt{2}\sin u = \sqrt{2}\,(1 + \sin u). \]</div>
+      <p>Imenilac je već \( \sqrt{2}\cos u \). Razlomak:</p>
+      <div class="math-block">\[ \dfrac{\sqrt{2}\,(1 + \sin u)}{\sqrt{2}\,\cos u} = \dfrac{1 + \sin u}{\cos u}. \]</div>
+      <p>Faktor \( \sqrt{2} \) se skratio &mdash; ovo je odlučujući trenutak rešenja.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Preko polovine ugla: brojilac i imenilac postaju kvadrat i razlika kvadrata</h3>
+      <p>Pišemo \( 1 = \sin^2\!\tfrac{u}{2} + \cos^2\!\tfrac{u}{2} \) i \( \sin u = 2\sin\!\tfrac{u}{2}\cos\!\tfrac{u}{2} \):</p>
+      <div class="math-block">\[ 1 + \sin u = \sin^2\!\tfrac{u}{2} + 2\sin\!\tfrac{u}{2}\cos\!\tfrac{u}{2} + \cos^2\!\tfrac{u}{2} = \left(\sin\!\tfrac{u}{2} + \cos\!\tfrac{u}{2}\right)^{2}. \]</div>
+      <p>Slično, koristimo \( \cos u = \cos^2\!\tfrac{u}{2} - \sin^2\!\tfrac{u}{2} \), pa razlikom kvadrata:</p>
+      <div class="math-block">\[ \cos u = \left(\cos\!\tfrac{u}{2} - \sin\!\tfrac{u}{2}\right)\!\left(\cos\!\tfrac{u}{2} + \sin\!\tfrac{u}{2}\right). \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( 1 + \sin u \) baš puni kvadrat?</summary>
+          <div class="detail-content"><p>Zato što \( (a + b)^2 = a^2 + 2ab + b^2 \). Sa \( a = \sin\!\tfrac{u}{2} \) i \( b = \cos\!\tfrac{u}{2} \), srednji član \( 2ab = 2\sin\!\tfrac{u}{2}\cos\!\tfrac{u}{2} = \sin u \), a krajnji \( a^2 + b^2 = 1 \). Tako se zbir \( 1 + \sin u \) prirodno &bdquo;zatvara&ldquo; u kvadrat.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Skraćivanje zajedničkog činioca</h3>
+      <p>Razlomak postaje</p>
+      <div class="math-block">\[ \dfrac{1 + \sin u}{\cos u} = \dfrac{\left(\sin\!\tfrac{u}{2} + \cos\!\tfrac{u}{2}\right)^{2}}{\left(\cos\!\tfrac{u}{2} - \sin\!\tfrac{u}{2}\right)\!\left(\cos\!\tfrac{u}{2} + \sin\!\tfrac{u}{2}\right)}. \]</div>
+      <p>Skraćujemo zajednički činilac \( \cos\!\tfrac{u}{2} + \sin\!\tfrac{u}{2} \) (gde nije nula):</p>
+      <div class="math-block">\[ \dfrac{\sin\!\tfrac{u}{2} + \cos\!\tfrac{u}{2}}{\cos\!\tfrac{u}{2} - \sin\!\tfrac{u}{2}}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Delimo brojilac i imenilac sa \( \cos\!\tfrac{u}{2} \) &mdash; prepoznajemo \( \operatorname{tg} \)</h3>
+      <p>Posle deljenja:</p>
+      <div class="math-block">\[ \dfrac{\sin\!\tfrac{u}{2} + \cos\!\tfrac{u}{2}}{\cos\!\tfrac{u}{2} - \sin\!\tfrac{u}{2}} = \dfrac{\operatorname{tg}\!\tfrac{u}{2} + 1}{1 - \operatorname{tg}\!\tfrac{u}{2}}. \]</div>
+      <p>Sa \( \operatorname{tg}\!\tfrac{\pi}{4} = 1 \), izraz \( \dfrac{1 + \operatorname{tg}\beta}{1 - \operatorname{tg}\beta} \) je upravo adiciona formula za tangens:</p>
+      <div class="math-block">\[ \dfrac{1 + \operatorname{tg}\!\tfrac{u}{2}}{1 - 1\cdot \operatorname{tg}\!\tfrac{u}{2}} = \dfrac{\operatorname{tg}\!\tfrac{\pi}{4} + \operatorname{tg}\!\tfrac{u}{2}}{1 - \operatorname{tg}\!\tfrac{\pi}{4}\operatorname{tg}\!\tfrac{u}{2}} = \operatorname{tg}\!\left(\dfrac{\pi}{4} + \dfrac{u}{2}\right). \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Vraćamo smenu \( u = x - \dfrac{\pi}{4} \)</h3>
+      <p>Imamo \( \dfrac{u}{2} = \dfrac{x}{2} - \dfrac{\pi}{8} \), pa</p>
+      <div class="math-block">\[ \dfrac{\pi}{4} + \dfrac{u}{2} = \dfrac{\pi}{4} + \dfrac{x}{2} - \dfrac{\pi}{8} = \dfrac{x}{2} + \dfrac{\pi}{8}. \]</div>
+      <p>Dakle:</p>
+      <div class="math-block">\[ \dfrac{\sqrt{2} + \sin x - \cos x}{\sin x + \cos x} = \operatorname{tg}\!\left(\dfrac{x}{2} + \dfrac{\pi}{8}\right). \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="7">
+    <div class="step-badge">7</div>
+    <div class="step-content">
+      <h3 class="step-title">Numerička provera za dve vrednosti</h3>
+      <p>Za \( x = 0 \): \( \sin 0 - \cos 0 = -1 \), \( \sin 0 + \cos 0 = 1 \), pa polazni izraz daje \( \dfrac{\sqrt{2} - 1}{1} = \sqrt{2} - 1 \). Sa druge strane, \( \operatorname{tg}\!\dfrac{\pi}{8} = \sqrt{2} - 1 \approx 0{,}4142 \). \( \checkmark \)</p>
+      <p>Za \( x = \dfrac{\pi}{2} \): brojilac \( \sqrt{2} + 1 - 0 = \sqrt{2} + 1 \), imenilac \( 1 + 0 = 1 \), pa izraz \( = \sqrt{2} + 1 \). A \( \operatorname{tg}\!\left(\dfrac{\pi}{4} + \dfrac{\pi}{8}\right) = \operatorname{tg}\dfrac{3\pi}{8} = \operatorname{ctg}\dfrac{\pi}{8} = \dfrac{1}{\sqrt{2}-1} = \sqrt{2}+1 \approx 2{,}4142 \). \( \checkmark \)</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Konstanta \( \sqrt{2} \) u brojiocu deluje &bdquo;dodatno&ldquo;, ali zapravo je <em>znak da treba smena</em> \( u = x - \pi/4 \). Posle nje: \( \sin x - \cos x \) postaje \( \sqrt{2}\sin u \), \( \sin x + \cos x \) postaje \( \sqrt{2}\cos u \), a polazna \( \sqrt{2} \) baš nam dopuni brojilac do \( \sqrt{2}(1 + \sin u) \). Zatim formula \( 1 + \sin u = (\sin\tfrac{u}{2} + \cos\tfrac{u}{2})^2 \) razbija sve na kvadrat / razliku kvadrata, što vodi do skraćivanja i pojave tangensa polovine ugla pomerene za \( \pi/4 \). Sve naizgled različite tehnike (sklapanje linearne kombinacije, polovina ugla, tangens zbira) zapravo se ovde slažu kao jedan domino niz.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \dfrac{\sqrt{2} + \sin x - \cos x}{\sin x + \cos x} \;=\; \operatorname{tg}\!\left(\dfrac{x}{2} + \dfrac{\pi}{8}\right) \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( \operatorname{tg}\!\left(\tfrac{x}{2} + \tfrac{\pi}{8}\right) \)</span>
+    <span class="answer-option" data-option="B">(B) \( \operatorname{ctg}\!\left(\tfrac{x}{2} + \tfrac{\pi}{8}\right) \)</span>
+    <span class="answer-option" data-option="C">(C) \( \operatorname{tg}\!\left(x + \tfrac{\pi}{4}\right) \)</span>
+    <span class="answer-option" data-option="D">(D) \( \operatorname{tg}\!\left(\tfrac{x}{2} + \tfrac{\pi}{4}\right) \)</span>
+    <span class="answer-option" data-option="E">(E) \( \sin\!\left(\tfrac{x}{2} + \tfrac{\pi}{8}\right) \)</span>
+  </div>
+  <p class="verification">Provera za \( x = 0 \): polazna vrednost \( \sqrt{2} - 1 \approx 0{,}4142 \), a \( \operatorname{tg}(\pi/8) = \sqrt{2} - 1 \). \( \checkmark \) Tačno (A).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešan znak u sklapanju:</strong> pisanje \( \sin x + \cos x = \sqrt{2}\sin\!\left(x - \tfrac{\pi}{4}\right) \) umesto \( \sqrt{2}\sin\!\left(x + \tfrac{\pi}{4}\right) \). Pomak ide u znaku <em>plus</em> (ili ekvivalentno \( \sqrt{2}\cos\!\left(x - \tfrac{\pi}{4}\right) \)).</li>
+    <li><strong>Zaboravljen koeficijent \( \sqrt{2} \):</strong> sklapanje \( \sin x \pm \cos x \) ne daje samo \( \sin\!\left(x\pm\tfrac{\pi}{4}\right) \); pojaviće se faktor \( \sqrt{2} \). Bez njega rezultat ne može biti čista \( \operatorname{tg} \).</li>
+    <li><strong>Pisanje \( 1 + \sin u = (1 + \sin\!\tfrac{u}{2})^2 \) ili \( (\sin\!\tfrac{u}{2})^2 + (\cos\!\tfrac{u}{2})^2 \):</strong> formule polovine ugla zahtevaju oba ugla i unakrsni član \( 2\sin\!\tfrac{u}{2}\cos\!\tfrac{u}{2} \). Bez njega &mdash; rezultat je pogrešan.</li>
+    <li><strong>Ostavljanje izraza u obliku \( \dfrac{1 + \operatorname{tg}\beta}{1 - \operatorname{tg}\beta} \) bez prepoznavanja \( \operatorname{tg}(\pi/4 + \beta) \):</strong> tehnički korektno, ali ne identifikuje ponuđeni odgovor.</li>
+    <li><strong>Ne vraćanje smene:</strong> dobiti \( \operatorname{tg}\!\left(\tfrac{\pi}{4} + \tfrac{u}{2}\right) \) i tu stati &mdash; potrebno je vratiti \( u = x - \pi/4 \). Inače se može pomisliti da je odgovor (D) \( \operatorname{tg}\!\left(\tfrac{x}{2} + \tfrac{\pi}{4}\right) \), što je tipična zamka u ovom zadatku.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Pokušaj sličnu transformaciju za izraz \( \dfrac{\sqrt{2} - \sin x + \cos x}{\sin x + \cos x} \). Da li ćeš dobiti \( \operatorname{ctg}\!\left(\dfrac{x}{2} + \dfrac{\pi}{8}\right) \), \( \operatorname{tg}\!\left(\dfrac{\pi}{8} - \dfrac{x}{2}\right) \), ili nešto treće? I za koje \( x \) izraz nije definisan?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Sa istom smenom \( u = x - \pi/4 \) brojilac postaje \( \sqrt{2} - \sqrt{2}\sin u = \sqrt{2}(1 - \sin u) \). Sada koristi \( 1 - \sin u = \left(\cos\!\tfrac{u}{2} - \sin\!\tfrac{u}{2}\right)^2 \). Imenilac je opet \( \sqrt{2}\cos u = \sqrt{2}(\cos\!\tfrac{u}{2} - \sin\!\tfrac{u}{2})(\cos\!\tfrac{u}{2} + \sin\!\tfrac{u}{2}) \). Skraćivanjem se dobija \( \dfrac{\cos\!\tfrac{u}{2} - \sin\!\tfrac{u}{2}}{\cos\!\tfrac{u}{2} + \sin\!\tfrac{u}{2}} = \dfrac{1 - \operatorname{tg}\!\tfrac{u}{2}}{1 + \operatorname{tg}\!\tfrac{u}{2}} = \operatorname{tg}\!\left(\dfrac{\pi}{4} - \dfrac{u}{2}\right) = \operatorname{tg}\!\left(\dfrac{3\pi}{8} - \dfrac{x}{2}\right) = \operatorname{ctg}\!\left(\dfrac{x}{2} + \dfrac{\pi}{8}\right) \). Izraz nije definisan kada \( \sin x + \cos x = 0 \), tj. \( x = -\dfrac{\pi}{4} + k\pi \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('identityPlot');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Grafici LHS i RHS — identitet vizuelno', W/2, 26);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('LHS = (√2 + sin x − cos x) / (sin x + cos x)   ≡   RHS = tg(x/2 + π/8)', W/2, 46);
+
+    // Plot area
+    var plotTop = 70;
+    var plotBottom = H - 100;
+    var plotLeft = 60;
+    var plotRight = W - 40;
+    var plotW = plotRight - plotLeft;
+    var plotH = plotBottom - plotTop;
+
+    // Range
+    var xMin = -Math.PI;
+    var xMax = 2 * Math.PI;
+    var yMin = -4;
+    var yMax = 4;
+    var sx = plotW / (xMax - xMin);
+    var sy = plotH / (yMax - yMin);
+    function X(x) { return plotLeft + (x - xMin) * sx; }
+    function Y(y) { return plotTop + plotH - (y - yMin) * sy; }
+
+    // Plot bg
+    ctx.fillStyle = cvAlpha('--sol-canvas-grid', 0.15);
+    ctx.fillRect(plotLeft, plotTop, plotW, plotH);
+
+    // Grid — vertical at multiples of π/4
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 3]);
+    for (var k = -4; k <= 8; k++) {
+      var xv = k * Math.PI / 4;
+      if (xv < xMin || xv > xMax) continue;
+      ctx.beginPath();
+      ctx.moveTo(X(xv), plotTop);
+      ctx.lineTo(X(xv), plotBottom);
+      ctx.stroke();
+    }
+    for (var yy = -4; yy <= 4; yy++) {
+      ctx.beginPath();
+      ctx.moveTo(plotLeft, Y(yy));
+      ctx.lineTo(plotRight, Y(yy));
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(plotLeft, Y(0));
+    ctx.lineTo(plotRight, Y(0));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(X(0), plotTop);
+    ctx.lineTo(X(0), plotBottom);
+    ctx.stroke();
+
+    // Tick labels on x-axis
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    var ticks = [
+      { x: -Math.PI, label: '−π' },
+      { x: -Math.PI/2, label: '−π/2' },
+      { x: -Math.PI/4, label: '−π/4' },
+      { x: 0, label: '0' },
+      { x: Math.PI/4, label: 'π/4' },
+      { x: Math.PI/2, label: 'π/2' },
+      { x: 3*Math.PI/4, label: '3π/4' },
+      { x: Math.PI, label: 'π' },
+      { x: 5*Math.PI/4, label: '5π/4' },
+      { x: 3*Math.PI/2, label: '3π/2' },
+      { x: 7*Math.PI/4, label: '7π/4' },
+      { x: 2*Math.PI, label: '2π' }
+    ];
+    for (var i = 0; i < ticks.length; i++) {
+      var t = ticks[i];
+      if (t.x === 0) continue;
+      ctx.fillText(t.label, X(t.x), Y(0) + 16);
+    }
+    ctx.textAlign = 'right';
+    for (var yy = -4; yy <= 4; yy++) {
+      if (yy === 0) continue;
+      ctx.fillText(yy.toString(), plotLeft - 6, Y(yy) + 4);
+    }
+
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = 'italic bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('x', plotRight - 12, Y(0) - 8);
+    ctx.textAlign = 'right';
+    ctx.fillText('y', X(0) - 8, plotTop + 14);
+
+    // Mark vertical asymptotes at x = -pi/4 + k*pi
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 4]);
+    var asymp = [-Math.PI/4, -Math.PI/4 + Math.PI, -Math.PI/4 + 2*Math.PI];
+    for (var i = 0; i < asymp.length; i++) {
+      var xa = asymp[i];
+      if (xa < xMin || xa > xMax) continue;
+      ctx.beginPath();
+      ctx.moveTo(X(xa), plotTop);
+      ctx.lineTo(X(xa), plotBottom);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+    // Label asymptote
+    ctx.fillStyle = danger;
+    ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('x = −π/4', X(-Math.PI/4), plotTop + 14);
+    ctx.fillText('x = 3π/4', X(3*Math.PI/4), plotTop + 14);
+    ctx.fillText('x = 7π/4', X(7*Math.PI/4), plotTop + 14);
+
+    // Plot LHS (primary, solid, thick)
+    function lhs(x) {
+      var den = Math.sin(x) + Math.cos(x);
+      if (Math.abs(den) < 1e-3) return NaN;
+      return (Math.SQRT2 + Math.sin(x) - Math.cos(x)) / den;
+    }
+    // Plot RHS (accent, dashed, thinner)
+    function rhs(x) {
+      var ang = x/2 + Math.PI/8;
+      var c = Math.cos(ang);
+      if (Math.abs(c) < 1e-3) return NaN;
+      return Math.tan(ang);
+    }
+
+    function plotFn(fn, color, lineW, dashed) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineW;
+      if (dashed) ctx.setLineDash([7, 5]); else ctx.setLineDash([]);
+      var N = 1400;
+      var prevValid = false;
+      ctx.beginPath();
+      for (var i = 0; i <= N; i++) {
+        var xv = xMin + (xMax - xMin) * i / N;
+        var yv = fn(xv);
+        if (!isFinite(yv) || Math.abs(yv) > 40) {
+          prevValid = false;
+          continue;
+        }
+        // Clip y for visibility
+        var yc = Math.max(yMin - 0.5, Math.min(yMax + 0.5, yv));
+        var px = X(xv);
+        var py = Y(yc);
+        if (!prevValid) {
+          ctx.moveTo(px, py);
+          prevValid = true;
+        } else {
+          // detect huge jump (asymptote)
+          // If consecutive y values change too fast, lift pen
+          ctx.lineTo(px, py);
+        }
+      }
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // Better: plot each "branch" between asymptotes to avoid lines crossing
+    function plotBranches(fn, color, lineW, dashed) {
+      var asymps = [-Math.PI/4, 3*Math.PI/4, 7*Math.PI/4];
+      var segments = [[xMin, asymps[0] - 0.04],
+                      [asymps[0] + 0.04, asymps[1] - 0.04],
+                      [asymps[1] + 0.04, asymps[2] - 0.04],
+                      [asymps[2] + 0.04, xMax]];
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineW;
+      if (dashed) ctx.setLineDash([7, 5]); else ctx.setLineDash([]);
+      for (var s = 0; s < segments.length; s++) {
+        var a = segments[s][0], b = segments[s][1];
+        if (b <= a) continue;
+        var N = 400;
+        var started = false;
+        ctx.beginPath();
+        for (var i = 0; i <= N; i++) {
+          var xv = a + (b - a) * i / N;
+          var yv = fn(xv);
+          if (!isFinite(yv)) { started = false; continue; }
+          var yc = Math.max(yMin - 0.3, Math.min(yMax + 0.3, yv));
+          var px = X(xv);
+          var py = Y(yc);
+          if (!started) { ctx.moveTo(px, py); started = true; }
+          else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+      }
+      ctx.setLineDash([]);
+    }
+
+    plotBranches(lhs, primary, 3, false);
+    plotBranches(rhs, accent, 2.2, true);
+
+    // Legend (bottom band)
+    var bandY = H - 70;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.12);
+    ctx.fillRect(40, bandY, W - 80, 52);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(40, bandY, W - 80, 52);
+
+    // Legend items
+    var lx = 60;
+    var ly = bandY + 18;
+    // LHS line sample
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(lx, ly);
+    ctx.lineTo(lx + 36, ly);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('LHS — polazni izraz', lx + 44, ly + 4);
+
+    var lx2 = 60;
+    var ly2 = bandY + 40;
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.2;
+    ctx.setLineDash([7, 5]);
+    ctx.beginPath();
+    ctx.moveTo(lx2, ly2);
+    ctx.lineTo(lx2 + 36, ly2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = text;
+    ctx.fillText('RHS — tg(x/2 + π/8)', lx2 + 44, ly2 + 4);
+
+    // Red asymptote sample
+    var lx3 = W/2 + 30;
+    var ly3 = bandY + 18;
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(lx3, ly3 - 8);
+    ctx.lineTo(lx3, ly3 + 12);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = text;
+    ctx.fillText('vertikalne asimptote x = −π/4 + kπ', lx3 + 10, ly3 + 4);
+
+    ctx.fillStyle = cv('--sol-canvas-accent');
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.fillText('Krive se poklapaju — identitet važi.', W/2 + 30, bandY + 40 + 4);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Identitet (√2 + sin x − cos x)/(sin x + cos x) = tg(x/2 + π/8)",
+  "subject": "math",
+  "unit": "trigonometry",
+  "topic_tags": ["trigonometrijski identiteti", "sklapanje sinusa i kosinusa", "polovina ugla", "adiciona formula za tangens", "smena ugla"]
+}
+BRAINSPARK_META-->

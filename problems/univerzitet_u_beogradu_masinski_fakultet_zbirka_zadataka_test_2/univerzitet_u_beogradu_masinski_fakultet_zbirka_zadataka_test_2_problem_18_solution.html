@@ -1,0 +1,680 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Zadatak: Tangenta u tački A(3, 4) na krug x² + y² − 7x − y = 0 seče
+  x-osu u tački (x*, 0). Naći x*.
+
+  Korak 0 — provera da li A leži na krugu:
+    3² + 4² − 7·3 − 4 = 9 + 16 − 21 − 4 = 0  ✓.
+
+  Korak 1 — centar i poluprečnik kruga:
+    Opšti oblik: x² + y² + Dx + Ey + F = 0, gde je D = −7, E = −1, F = 0.
+    Centar C = (−D/2, −E/2) = (7/2, 1/2).
+    Poluprečnik: r² = (D/2)² + (E/2)² − F = 49/4 + 1/4 = 50/4 = 25/2.
+    r = √(25/2) = 5/√2 = 5√2/2.
+
+  Korak 2 — jednačina tangente.
+    METOD A (formula tangente u tački na krug):
+      x·x₀ + y·y₀ + (D/2)(x + x₀) + (E/2)(y + y₀) + F = 0.
+      Sa x₀ = 3, y₀ = 4, D/2 = −7/2, E/2 = −1/2, F = 0:
+        3x + 4y − (7/2)(x + 3) − (1/2)(y + 4) = 0.
+      Pomnoži sa 2:
+        6x + 8y − 7(x + 3) − (y + 4) = 0
+        6x + 8y − 7x − 21 − y − 4 = 0
+        −x + 7y − 25 = 0
+        x = 7y − 25.
+
+    METOD B (preko nagiba):
+      Vektor CA = A − C = (3 − 7/2, 4 − 1/2) = (−1/2, 7/2).
+      Nagib radijus-vektora: k_CA = (7/2) / (−1/2) = −7.
+      Tangenta je upravna na radijus: k_t = −1 / k_CA = 1/7.
+      Jednačina tangente kroz A: y − 4 = (1/7)(x − 3)
+        7y − 28 = x − 3
+        x = 7y − 25.
+
+  Korak 3 — presek sa x-osom (y = 0):
+      x* = 7·0 − 25 = −25.
+
+  Provera: tačka (−25, 0) na tangenti — proverimo da je rastojanje od centra
+  C = (7/2, 1/2) jednako r:
+    Tangenta: −x + 7y − 25 = 0, tj. ax + by + c = 0 sa a = −1, b = 7, c = −25.
+    Rastojanje od C(7/2, 1/2):
+      d = |−7/2 + 7·1/2 − 25| / √(1 + 49) = |−7/2 + 7/2 − 25| / √50
+        = 25 / √50 = 25 / (5√2) = 5/√2 = 5√2/2 = r ✓.
+
+  Tačan odgovor: (E) −25.
+
+  Vizualizacija (jedan canvas):
+    Skala je problematična jer x ide od ~ −26 do ~ +10, a y od −1 do ~+8.
+    Dakle koristim različite skale po osama (uobičajeno za "ekstremne" prikaze),
+    ili veoma širok canvas. Prikazaću krug (centar (3.5, 0.5), r ≈ 3.54),
+    tačku A(3, 4), tangentu, i presek (−25, 0).
+    Pošto je crta tangenta vrlo blago nagnuta (k = 1/7), ide dugo od A nadole
+    do (−25, 0). Razmotriti da imamo dva insert prikaza ili samo jedan širok.
+    Plan: jedan canvas 720x500, scale_x = px po jedinici, x_min = −28, x_max = 8.
+    To je raspon 36 jedinica po x. Po y: −2 do 6 (raspon 8). U pikselima:
+    width usable 660, height usable 380, pa scale_x ≈ 18, scale_y ≈ 48.
+    Različite skale po osama — moram to jasno naglasiti u captionu, i nacrtati
+    krug kao elipsu (jer u različitim skalama postaje elipsa); ALI to bi
+    bilo zbunjujuće (ovo je krug, ne elipsa).
+
+    BOLJI plan: dva canvasa.
+    Prva slika: ZUMIRANO oko A i kruga, jednake skale, ali iz koje vidi
+                samo deo tangente (bez preseka sa x-osom). Krug izgleda
+                kao krug; tangenta je nagnuta.
+    Druga slika: ŠIROK pregled gde se pokaže ceo presek sa x-osom (−25, 0)
+                u manjoj/različitoj skali. Tu možemo prihvatiti da krug
+                izgleda kao mali elipsasti otisak ili samo kao mala tačka.
+
+  ALTERNATIVNO: zumirana slika sa krugom, A, normalom (CA), tangentom kratko,
+  i odvojeno kratak segment koji pokazuje x-osu sa označenom tačkom (−25, 0).
+
+  Idem na dva canvasa za jasnoću.
+</script>
+
+<h1 data-card="problem-title">Tangenta na krug i presek sa x-osom</h1>
+<p data-card="problem-subtitle" class="subtitle">Analitička geometrija &mdash; krug u opštem obliku, jednačina tangente, presek sa x-osom</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Tangenta u tački \( A(3, 4) \) na krug \( x^2 + y^2 - 7x - y = 0 \) seče \( x \)-osu u tački \( (x_*, 0) \). Tada je \( x_* \) jednako:</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">krug</span>
+      <span class="given-value">\( x^2 + y^2 - 7x - y = 0 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">dirna tačka</span>
+      <span class="given-value">\( A(3, 4) \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">traženo</span>
+      <span class="given-value">presek tangente sa \( x \)-osom: \( x_* = ? \)</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( -13 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( -22 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 28 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 31 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( -25 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Prvo proverimo da \( A \) leži na krugu. Zatim nađemo jednačinu tangente direktnom formulom „polovljenja koordinata" (ili preko normalnosti tangente i radijusa). Konačno, postavimo \( y = 0 \) i očitamo \( x_* \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Opšti oblik kruga</span> \( x^2 + y^2 + Dx + Ey + F = 0 \). Centar: \( C\!\left(-\dfrac{D}{2},\, -\dfrac{E}{2}\right) \). Poluprečnik: \( r = \sqrt{\!\left(\dfrac{D}{2}\right)^{\!2} + \!\left(\dfrac{E}{2}\right)^{\!2} - F} \).</li>
+        <li><span class="formula-label">Tangenta u tački na krug</span> Za tačku \( (x_0, y_0) \) na krugu, tangenta se dobija formalnim „polovljenjem koordinata":
+        \[ x x_0 + y y_0 + \tfrac{D}{2}(x + x_0) + \tfrac{E}{2}(y + y_0) + F = 0. \]
+        (Zameni \( x^2 \to x x_0 \), \( y^2 \to y y_0 \), \( x \to (x + x_0)/2 \), \( y \to (y + y_0)/2 \).)</li>
+        <li><span class="formula-label">Normalnost tangente</span> Tangenta na krug u dirnoj tački je upravna na radijus \( CA \). Ako je \( k_{CA} \) nagib radijusa, nagib tangente je \( k_t = -\dfrac{1}{k_{CA}} \).</li>
+        <li><span class="formula-label">Prava kroz tačku sa datim nagibom</span> \( y - y_0 = k(x - x_0) \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera: leži li \( A(3, 4) \) na krugu?</h3>
+      <p>Ubacimo \( x = 3, y = 4 \) u jednačinu kruga:</p>
+      <div class="math-block">\[ 3^2 + 4^2 - 7 \cdot 3 - 1 \cdot 4 = 9 + 16 - 21 - 4 = 0\ \checkmark \]</div>
+      <p>Tačka \( A \) je na krugu, pa tangenta u njoj postoji i jedinstvena je.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Centar i poluprečnik kruga</h3>
+      <p>Iz \( x^2 + y^2 + Dx + Ey + F = 0 \) sa \( D = -7,\ E = -1,\ F = 0 \):</p>
+      <div class="math-block">\[ C\!\left(-\tfrac{D}{2},\, -\tfrac{E}{2}\right) = \!\left(\tfrac{7}{2},\, \tfrac{1}{2}\right). \]</div>
+      <div class="math-block">\[ r^2 = \!\left(\tfrac{7}{2}\right)^{\!2} + \!\left(\tfrac{1}{2}\right)^{\!2} - 0 = \tfrac{49}{4} + \tfrac{1}{4} = \tfrac{50}{4} = \tfrac{25}{2}. \]</div>
+      <p>Ovaj korak nam nije neophodan za nalaženje tangente direktnom formulom, ali je koristan za proveru.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliko je \( |CA| \)?</summary>
+          <div class="detail-content"><p>\( CA = A - C = \!\left(3 - \tfrac{7}{2},\, 4 - \tfrac{1}{2}\right) = \!\left(-\tfrac{1}{2},\, \tfrac{7}{2}\right) \). Dužina: \( |CA| = \sqrt{\tfrac{1}{4} + \tfrac{49}{4}} = \sqrt{\tfrac{50}{4}} = \sqrt{\tfrac{25}{2}} \). To je tačno \( r \) — još jedna potvrda da \( A \) leži na krugu.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Jednačina tangente — formula polovljenja</h3>
+      <p>U formulu tangente za krug u opštem obliku uvrstimo \( (x_0, y_0) = (3, 4) \), \( D = -7,\ E = -1,\ F = 0 \):</p>
+      <div class="math-block">\[ x \cdot 3 + y \cdot 4 + \tfrac{-7}{2}(x + 3) + \tfrac{-1}{2}(y + 4) + 0 = 0. \]</div>
+      <p>Pomnožimo sve sa 2 da uklonimo razlomke:</p>
+      <div class="math-block">\[ 6x + 8y - 7(x + 3) - (y + 4) = 0. \]</div>
+      <p>Otvorimo zagrade i skupimo:</p>
+      <div class="math-block">\[ 6x + 8y - 7x - 21 - y - 4 = 0 \implies -x + 7y - 25 = 0. \]</div>
+      <p>Izrazimo \( x \) iz \( -x + 7y - 25 = 0 \):</p>
+      <div class="math-block">\[ x = 7y - 25. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: da li \( A(3, 4) \) zadovoljava jednačinu tangente?</summary>
+          <div class="detail-content"><p>\( 7 \cdot 4 - 25 = 28 - 25 = 3 = x \) ✓. To je očekivano: tangenta prolazi kroz dirnu tačku.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Presek sa x-osom</h3>
+      <p>Tačka na \( x \)-osi ima \( y = 0 \). Zameni u jednačinu tangente:</p>
+      <div class="math-block">\[ x_* = 7 \cdot 0 - 25 = -25. \]</div>
+      <p>Dakle, tangenta seče \( x \)-osu u tački \( (-25,\, 0) \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Alternativni put preko nagiba (provera)</h3>
+      <p>Nagib radijusa \( CA \) sa \( C(7/2, 1/2) \) i \( A(3, 4) \):</p>
+      <div class="math-block">\[ k_{CA} = \dfrac{4 - 1/2}{3 - 7/2} = \dfrac{7/2}{-1/2} = -7. \]</div>
+      <p>Tangenta je upravna na radijus, pa je njen nagib \( k_t = -1/k_{CA} = 1/7 \). Jednačina tangente kroz \( A \):</p>
+      <div class="math-block">\[ y - 4 = \tfrac{1}{7}(x - 3) \implies 7y - 28 = x - 3 \implies x = 7y - 25. \]</div>
+      <p>Identičan rezultat — kod \( y = 0 \) je \( x_* = -25 \). Dva nezavisna pristupa daju isto, što je jaka potvrda.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="visual-aid" data-title="Krug, tačka A i tangenta (zumirano)">
+  <h2>📐 Krug, tačka A i tangenta — bliski prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-zoom" width="720" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Krug ima centar \( C\!\left(\tfrac{7}{2},\, \tfrac{1}{2}\right) \) i poluprečnik \( r = \tfrac{5\sqrt{2}}{2} \approx 3{,}54 \). Tangenta u \( A(3, 4) \) je upravna na radijus \( CA \) (nagib \( -7 \)), pa ima nagib \( \tfrac{1}{7} \) — blago nakošena, gotovo horizontalna.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Tangenta do preseka sa x-osom">
+  <h2>📐 Tangenta — od A do preseka sa x-osom</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-wide" width="720" height="380"></canvas>
+  </div>
+  <p class="canvas-caption">Pošto je nagib tangente vrlo blag (\( k = 1/7 \)), ona se proteže daleko ulevo da bi presekla \( x \)-osu. Skale po osama \( x \) i \( y \) <em>nisu iste</em> u ovom prikazu (zbog velikog raspona po \( x \)), pa krug izgleda spljošteno — to je samo radi vidljivosti tačke \( (-25, 0) \).</p>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Najkraći put kroz problem je <strong>formula tangente za krug u opštem obliku</strong> — „polovljenje koordinata": \( x^2 \to x x_0,\ x \to (x + x_0)/2 \) (i analogno za \( y \)). Nema potrebe da posebno računamo centar i poluprečnik, niti da koristimo nagibe — formula radi sve naizgled „magično" u jednoj liniji, što štedi vreme na ispitu. Veza sa normalnošću tangente i radijusa je samo <em>provera</em>.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ x_* = -25 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( -13 \)</span>
+    <span class="answer-option" data-option="B">(B) \( -22 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 28 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 31 \)</span>
+    <span class="answer-option correct" data-option="E">(E) \( -25 \)</span>
+  </div>
+  <p class="verification">Provera 1: rastojanje od centra \( C\!\left(\tfrac{7}{2}, \tfrac{1}{2}\right) \) do prave \( -x + 7y - 25 = 0 \) iznosi \( \dfrac{|-7/2 + 7/2 - 25|}{\sqrt{1 + 49}} = \dfrac{25}{\sqrt{50}} = \dfrac{5}{\sqrt{2}} = \dfrac{5\sqrt{2}}{2} = r \) ✓. Provera 2: tačka \( A(3, 4) \) zadovoljava jednačinu tangente: \( 7 \cdot 4 - 25 = 3 \) ✓. Dva nezavisna pristupa (formula polovljenja i nagib upravne) daju isti rezultat.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Loše prepoznavanje \( D, E, F \): u \( x^2 + y^2 - 7x - y \) je \( D = -7 \), \( E = -1 \) (a ne \( 1 \) ili \( -7 \) za oba). Pažljivo sa znacima.</li>
+    <li>Greška u formuli polovljenja — naročito sa \( D/2 \) i \( E/2 \). Mnogi zaborave faktor \( 1/2 \) ili obratno (pomeranje na pogrešnu stranu).</li>
+    <li>Pokušaj direktnog implicitnog izvoda \( x^2 + y^2 - 7x - y = 0 \) bez pažnje na znak: \( 2x + 2y \cdot y' - 7 - y' = 0 \), pa \( y' = \dfrac{7 - 2x}{2y - 1} \). Pri \( (3, 4) \): \( y' = \dfrac{7 - 6}{8 - 1} = \dfrac{1}{7} \) — tačan nagib! Ako u tom postupku zameniš znak, dobićeš \( -1/7 \), pa pogrešnu jednačinu i pogrešan odgovor.</li>
+    <li>Tačka koja nije na krugu: ako se ne proveri početni uslov, formula polovljenja daje pravu „polare", ali ne tangentu — što za ovaj zadatak nije problem (\( A \) jeste na krugu), ali generalno jeste.</li>
+    <li>Zaboravljanje da je presek sa \( x \)-osom postavljen sa \( y = 0 \), a ne \( x = 0 \) (presek sa \( y \)-osom).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>U kojoj tački ista tangenta seče \( y \)-osu? Postoji li tačka na krugu u kojoj je tangenta paralelna sa \( x \)-osom, i ako da — koja je to tačka? Šta ako pomerimo dirnu tačku \( A \) na drugu tačku kruga — kako se menja nagib tangente?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>(1) Presek sa \( y \)-osom: postavi \( x = 0 \) u \( x = 7y - 25 \) \( \Rightarrow \) \( y = 25/7 \). (2) Tangenta paralelna \( x \)-osi znači \( k_t = 0 \), tj. radijus \( CA \) je vertikalan; to su „najviša" i „najniža" tačka kruga: \( (7/2,\ 1/2 + r) \) i \( (7/2,\ 1/2 - r) \). (3) Generalno, ako \( A \) klizi po krugu, nagib radijusa \( CA \) menja se neprekidno, pa se i tangenta neprekidno rotira oko centra — to možeš lepo vizualizovati eksperimentom sa pokretnom tačkom.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  function drawZoom() {
+    var canvas = document.getElementById('diagram-zoom');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, Hpx = canvas.height;
+
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var warning = cv('--sol-canvas-warning');
+    var tertiary = cv('--sol-canvas-tertiary');
+
+    ctx.clearRect(0, 0, W, Hpx);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, Hpx);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Zumiran prikaz kruga, tačke A(3,4) i tangente', W/2, 26);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('skale po x i y su iste — krug izgleda kao krug', W/2, 46);
+
+    // Math-domain: x in [-2, 9], y in [-3, 8] -> aspect 11 x 11
+    // We'll keep equal scale.
+    var xMin = -2, xMax = 9;
+    var yMin = -3, yMax = 8;
+    var padTop = 70, padBot = 30, padLeft = 50, padRight = 40;
+    var plotW = W - padLeft - padRight;
+    var plotH = Hpx - padTop - padBot;
+    var sx = plotW / (xMax - xMin);
+    var sy = plotH / (yMax - yMin);
+    var scale = Math.min(sx, sy);
+    // Center plot horizontally and vertically
+    var originX = padLeft + (plotW - (xMax - xMin)*scale)/2 - xMin*scale;
+    var originY = padTop + (plotH - (yMax - yMin)*scale)/2 + yMax*scale;
+    function toC(x, y) {
+      return { x: originX + x*scale, y: originY - y*scale };
+    }
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (var gx = Math.ceil(xMin); gx <= xMax; gx++) {
+      var p1 = toC(gx, yMin), p2 = toC(gx, yMax);
+      ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
+    }
+    for (var gy = Math.ceil(yMin); gy <= yMax; gy++) {
+      var q1 = toC(xMin, gy), q2 = toC(xMax, gy);
+      ctx.moveTo(q1.x, q1.y); ctx.lineTo(q2.x, q2.y);
+    }
+    ctx.stroke();
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    var ax1 = toC(xMin, 0), ax2 = toC(xMax, 0);
+    ctx.moveTo(ax1.x, ax1.y); ctx.lineTo(ax2.x, ax2.y);
+    var ay1 = toC(0, yMin), ay2 = toC(0, yMax);
+    ctx.moveTo(ay1.x, ay1.y); ctx.lineTo(ay2.x, ay2.y);
+    ctx.stroke();
+
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var lx = Math.ceil(xMin); lx <= xMax; lx++) {
+      if (lx === 0) continue;
+      var pl = toC(lx, 0);
+      ctx.fillText(lx, pl.x, pl.y + 15);
+    }
+    ctx.textAlign = 'right';
+    for (var ly = Math.ceil(yMin); ly <= yMax; ly++) {
+      if (ly === 0) continue;
+      var ql = toC(0, ly);
+      ctx.fillText(ly, ql.x - 6, ql.y + 4);
+    }
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('x', ax2.x - 10, ax2.y - 6);
+    ctx.fillText('y', ay2.x + 6, ay2.y + 12);
+
+    // Circle: center (3.5, 0.5), r = sqrt(25/2) = 5/sqrt(2)
+    var cxM = 3.5, cyM = 0.5;
+    var rM = Math.sqrt(25/2);
+    var Cc = toC(cxM, cyM);
+    ctx.beginPath();
+    ctx.arc(Cc.x, Cc.y, rM*scale, 0, Math.PI*2);
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.10);
+    ctx.fill();
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Center C
+    ctx.beginPath();
+    ctx.arc(Cc.x, Cc.y, 4, 0, Math.PI*2);
+    ctx.fillStyle = primary;
+    ctx.fill();
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('C(7/2, 1/2)', Cc.x + 8, Cc.y + 16);
+
+    // Point A(3, 4)
+    var A = toC(3, 4);
+    ctx.beginPath();
+    ctx.arc(A.x, A.y, 6, 0, Math.PI*2);
+    ctx.fillStyle = highlight;
+    ctx.fill();
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(A.x, A.y, 11, 0, Math.PI*2);
+    ctx.stroke();
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('A(3, 4)', A.x + 14, A.y - 6);
+
+    // Radius CA (dashed)
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 1.8;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(Cc.x, Cc.y); ctx.lineTo(A.x, A.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = warning;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    var mCA = { x: (Cc.x + A.x)/2, y: (Cc.y + A.y)/2 };
+    ctx.save();
+    ctx.translate(mCA.x, mCA.y);
+    var angCA = Math.atan2(A.y - Cc.y, A.x - Cc.x);
+    ctx.rotate(angCA);
+    ctx.textAlign = 'center';
+    ctx.fillText('radijus, k = −7', 0, -8);
+    ctx.restore();
+
+    // Tangent line: x = 7y - 25, i.e., y = (x + 25)/7, slope 1/7
+    // Draw across visible plot range
+    function tanY(x) { return (x + 25)/7; }
+    var xs = xMin, xe = xMax;
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    var p1 = toC(xs, tanY(xs));
+    var p2 = toC(xe, tanY(xe));
+    ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
+    ctx.stroke();
+
+    // Tangent label
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    // Place near right end of tangent visible
+    var tlabPos = toC(7, tanY(7));
+    ctx.fillText('tangenta: x = 7y − 25', tlabPos.x - 20, tlabPos.y - 12);
+    ctx.fillStyle = secondary;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('nagib k_t = 1/7', tlabPos.x - 20, tlabPos.y + 4);
+
+    // Right-angle marker between radius and tangent at A
+    // Direction of radius (C->A): (3-3.5, 4-0.5) = (-0.5, 3.5), normalize
+    var rdx = 3 - 3.5, rdy = 4 - 0.5;
+    var rlen = Math.hypot(rdx, rdy);
+    var rux = rdx/rlen, ruy = rdy/rlen;
+    // Direction of tangent: slope 1/7 -> (7, 1) normalized; but in canvas y flips, so handle later
+    // Just compute screen-space right angle marker via cross product idea
+    // Convert directions to screen pixels
+    var rPxX = rux*scale, rPxY = -ruy*scale; // canvas y inverted
+    var tdx = 7, tdy = 1;
+    var tlen = Math.hypot(tdx, tdy);
+    var tPxX = (tdx/tlen)*scale, tPxY = -(tdy/tlen)*scale;
+    // Right-angle marker is a small square at A using these two unit-pixel directions
+    var s_ra = 12;
+    var p_in = { x: A.x - rPxX*0.6 * s_ra/scale * scale, y: A.y - rPxY*0.6 * s_ra/scale * scale }; // direction back along radius (towards C)
+    // Simpler: compute back-along-radius and along-tangent (towards positive x)
+    var back = { x: -rPxX/scale * s_ra, y: -rPxY/scale * s_ra };
+    var along = { x: tPxX/scale * s_ra, y: tPxY/scale * s_ra };
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(A.x + back.x, A.y + back.y);
+    ctx.lineTo(A.x + back.x + along.x, A.y + back.y + along.y);
+    ctx.lineTo(A.x + along.x, A.y + along.y);
+    ctx.stroke();
+
+    // Footer info
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('tangenta ⊥ radijusu CA u dirnoj tački A (oznaka pravog ugla)', W/2, Hpx - 10);
+  }
+
+  function drawWide() {
+    var canvas = document.getElementById('diagram-wide');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, Hpx = canvas.height;
+
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var warning = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, Hpx);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, Hpx);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Tangenta od A(3, 4) do preseka sa x-osom u (−25, 0)', W/2, 26);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('skale po x i y su različite (zbog ogromnog raspona po x)', W/2, 44);
+
+    // Math-domain: x in [-28, 8], y in [-1.5, 6.5]
+    var xMin = -28, xMax = 8;
+    var yMin = -1.5, yMax = 6.5;
+    var padTop = 60, padBot = 60, padLeft = 30, padRight = 30;
+    var plotW = W - padLeft - padRight;
+    var plotH = Hpx - padTop - padBot;
+    var sxScale = plotW / (xMax - xMin);
+    var syScale = plotH / (yMax - yMin);
+    function toC(x, y) {
+      return { x: padLeft + (x - xMin)*sxScale, y: padTop + (yMax - y)*syScale };
+    }
+
+    // Grid: x every 5, y every 1
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (var gx = -25; gx <= 5; gx += 5) {
+      var p1 = toC(gx, yMin), p2 = toC(gx, yMax);
+      ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
+    }
+    for (var gy = Math.ceil(yMin); gy <= yMax; gy++) {
+      var q1 = toC(xMin, gy), q2 = toC(xMax, gy);
+      ctx.moveTo(q1.x, q1.y); ctx.lineTo(q2.x, q2.y);
+    }
+    ctx.stroke();
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    var ax1 = toC(xMin, 0), ax2 = toC(xMax, 0);
+    ctx.moveTo(ax1.x, ax1.y); ctx.lineTo(ax2.x, ax2.y);
+    var ay1 = toC(0, yMin), ay2 = toC(0, yMax);
+    ctx.moveTo(ay1.x, ay1.y); ctx.lineTo(ay2.x, ay2.y);
+    ctx.stroke();
+
+    // Axis ticks/labels
+    ctx.fillStyle = text;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    [-25, -20, -15, -10, -5, 5].forEach(function(v) {
+      var p = toC(v, 0);
+      ctx.fillText(v, p.x, p.y + 16);
+    });
+    ctx.textAlign = 'right';
+    [-1, 1, 2, 3, 4, 5, 6].forEach(function(v) {
+      var p = toC(0, v);
+      ctx.fillText(v, p.x - 4, p.y + 4);
+    });
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('x', ax2.x - 14, ax2.y - 8);
+    ctx.fillText('y', ay2.x + 6, ay2.y + 12);
+
+    // Circle as an ellipse (since x and y scales differ)
+    var cxM = 3.5, cyM = 0.5;
+    var rM = Math.sqrt(25/2);
+    var Cc = toC(cxM, cyM);
+    var rPxX = rM * sxScale;
+    var rPxY = rM * syScale;
+    ctx.beginPath();
+    ctx.ellipse(Cc.x, Cc.y, rPxX, rPxY, 0, 0, Math.PI*2);
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.10);
+    ctx.fill();
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1.6;
+    ctx.stroke();
+
+    // Center
+    ctx.beginPath();
+    ctx.arc(Cc.x, Cc.y, 3, 0, Math.PI*2);
+    ctx.fillStyle = primary;
+    ctx.fill();
+    ctx.fillStyle = primary;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('C', Cc.x + 6, Cc.y + 4);
+
+    // Tangent line across the plot
+    function tanY(x) { return (x + 25)/7; }
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    var p1 = toC(xMin, tanY(xMin));
+    var p2 = toC(xMax, tanY(xMax));
+    ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
+    ctx.stroke();
+
+    // Point A(3, 4)
+    var A = toC(3, 4);
+    ctx.beginPath();
+    ctx.arc(A.x, A.y, 6, 0, Math.PI*2);
+    ctx.fillStyle = highlight;
+    ctx.fill();
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(A.x, A.y, 10, 0, Math.PI*2);
+    ctx.stroke();
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('A(3, 4)', A.x + 12, A.y - 4);
+
+    // Intersection point (-25, 0)
+    var Ix = toC(-25, 0);
+    ctx.beginPath();
+    ctx.arc(Ix.x, Ix.y, 7, 0, Math.PI*2);
+    ctx.fillStyle = accent;
+    ctx.fill();
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(Ix.x, Ix.y, 12, 0, Math.PI*2);
+    ctx.stroke();
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('(−25, 0)', Ix.x, Ix.y - 16);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('presek tangente sa x-osom', Ix.x, Ix.y + 24);
+
+    // Tangent label
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    var labelX = toC(-13, tanY(-13));
+    ctx.fillText('tangenta: x = 7y − 25', labelX.x - 60, labelX.y - 10);
+  }
+
+  function drawAll() {
+    drawZoom();
+    drawWide();
+  }
+
+  drawAll();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        drawAll();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Tangenta na krug u tački i presek sa x-osom",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["analitička geometrija", "krug", "tangenta", "opšti oblik kruga", "formula polovljenja", "presek sa x-osom"]
+}
+BRAINSPARK_META-->

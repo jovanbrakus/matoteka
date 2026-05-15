@@ -1,0 +1,543 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Problem: 5 ljudi (Ana, Bojan, Vesna, Goran, Danica) u vrstu tako da Bojan i Goran NISU jedan pored drugog.
+
+Strategija 1 — komplement (najlakša, klasičan trik):
+  Ukupan broj rasporeda (bez ograničenja) = 5! = 120.
+  Broj rasporeda gde su B i G zajedno: tretiramo (BG) kao jedan „blok".
+    Imamo onda 4 jedinice: blok, A, V, D. Broj rasporeda = 4! = 24.
+    Unutar bloka, B i G mogu biti redom BG ili GB, što je 2 mogućnosti.
+    Ukupno „zajedno" = 4! · 2 = 24 · 2 = 48.
+  Po pravilu komplementa:
+    „nisu zajedno" = ukupno − „zajedno" = 120 − 48 = 72.
+
+Strategija 2 — metod praznina (gap method):
+  Prvo postavimo „ostale" — A, V, D — u vrstu: 3! = 6 načina.
+  Time se kreiraju 4 „praznine": pre prve osobe, između prve i druge, između druge i treće, posle treće.
+    _ A _ V _ D _   (4 praznine za umetanje)
+  Sada biramo 2 RAZLIČITE praznine za B i G (jer ako bi bili u istoj praznini, bili bi susedni).
+    Ako biraju različite praznine, automatski NEĆE biti jedan pored drugog.
+  Broj načina za izbor 2 različite uređene praznine za B i G: P(4,2) = 4 · 3 = 12.
+  Ukupno: 6 · 12 = 72. ✓
+
+Provera (enumeracijom za manji slučaj): za 3 osobe A, B, C, „B i C nisu jedan pored drugog":
+  Strategija 1: 3! − 2! · 2 = 6 − 4 = 2. To su BAC i CAB. Provera: ABC, ACB, BAC, BCA, CAB, CBA.
+    Susedni B-C: ABC (B,C susedni), ACB (C,B susedni), BCA (B,C susedni), CBA (C,B susedni). To je 4.
+    Nisu susedni: BAC, CAB. To je 2. ✓
+  Slaže se sa formulom.
+
+Odgovor: (D) 72.
+
+Klopke:
+  • Zaboraviti faktor 2 unutar bloka (uzeti samo 4! = 24, pa dobiti 120 − 24 = 96). Greška: BG i GB su 2 različita rasporeda.
+  • Računati ukupno kao 5! = 60 (faktorijel pogrešno; 5! = 120, ne 60).
+  • Računati „B nije pored G" kao „B i G na krajevima" (specifični uslov) — to bi bilo 2 · 3! = 12 (odgovor A, distraktor!).
+  • Mešati permutacije sa kombinacijama: koristiti C(4,2) = 6 umesto P(4,2) = 12 u metodi praznina (B i G se RAZLIKUJU, pa redosled važi).
+</script>
+
+<h1 data-card="problem-title">Permutacije sa zabranom susedstva: pet ljudi u vrstu</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika, princip komplementa, metoda praznina (gap method)</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Na koliko načina se Ana, Bojan, Vesna, Goran i Danica mogu rasporediti u vrstu radi fotografisanja tako da Bojan i Goran <strong>ne budu</strong> jedan pored drugog?</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">broj osoba</span>
+      <span class="given-value">\( 5 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">ograničenje</span>
+      <span class="given-value">B i G nisu susedni</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">traži se</span>
+      <span class="given-value">broj rasporeda</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 12 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 60 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 66 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 72 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 90 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Koristimo princip komplementa: prebrojimo sve rasporede \( 5! = 120 \), zatim oduzmemo one u kojima su Bojan i Goran <em>jedan pored drugog</em>. Zajedničke rasporede brojimo tretiranjem para kao bloka — \( 4! \cdot 2 = 48 \). Rezultat: \( 120 - 48 = 72 \). Potvrđujemo i drugom metodom — metodom praznina — kao dodatnu proveru.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Permutacije, princip komplementa, blokovi i praznine</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Faktorijel</span> \( n! = 1 \cdot 2 \cdot 3 \cdots n \). Broj uređenja \( n \) različitih objekata u vrstu je \( n! \). \( 5! = 120 \).</li>
+        <li><span class="formula-label">Permutacije \( k \) iz \( n \)</span> \( P(n,k) = \dfrac{n!}{(n-k)!} = n(n-1)\cdots(n-k+1) \). Broj uređenih izbora \( k \) elemenata iz skupa od \( n \).</li>
+        <li><span class="formula-label">Princip komplementa</span> Ako želimo broj rasporeda koji ne ispunjavaju neko svojstvo \( P \), računamo: \( |\text{ne-}P| = |\text{ukupno}| - |P| \). Često je lakše prebrojati \( P \) (npr. „B i G zajedno") nego direktno „nisu zajedno".</li>
+        <li><span class="formula-label">Tehnika bloka</span> Za prebrojavanje rasporeda u kojima dva (ili više) određenih objekata moraju biti susedni: tretiramo ih kao jedan „blok". Time se broj rasporeda smanji za jedan, ali se unutar bloka mogu uređivati interno (faktor \( k! \) za blok od \( k \) elemenata).</li>
+        <li><span class="formula-label">Metoda praznina</span> Za rasporede u kojima određeni objekti NE smeju biti susedni: prvo se rasporede ostali objekti, što stvara „praznine" oko njih. Zabranjeni objekti se zatim umeću u <em>različite</em> praznine.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz: dva pristupa istom zadatku">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="720" height="640"></canvas>
+  </div>
+  <p class="canvas-caption">Gore: metoda komplementa. Tretiramo (BG) kao jedan blok — imamo \( 4 \) jedinice (blok, A, V, D), pa \( 4! = 24 \) rasporeda, puta \( 2 \) za redosled unutar bloka (BG ili GB), ukupno \( 48 \) „loših". Onda \( 120 - 48 = 72 \). Dole: metoda praznina. Prvo poredamo A, V, D (\( 3! = 6 \) načina), pa biramo \( 2 \) od \( 4 \) praznina za B i G (\( P(4,2) = 12 \) načina). Ukupno: \( 6 \cdot 12 = 72 \). Oba pristupa daju isti odgovor.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Prebrojimo sve rasporede bez ograničenja</h3>
+      <p>Imamo pet različitih osoba (Ana, Bojan, Vesna, Goran, Danica). Broj načina da se postave u vrstu (bez ikakvih dodatnih uslova) je \( 5! \):</p>
+      <div class="math-block">\[ 5! = 5 \cdot 4 \cdot 3 \cdot 2 \cdot 1 = 120. \]</div>
+      <p class="note">Ovo je „univerzum" svih rasporeda. Sada moramo da izbacimo one u kojima su Bojan i Goran jedan pored drugog.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Strategija: princip komplementa</h3>
+      <p>Direktno brojanje „rasporeda u kojima B i G nisu susedni" je nezgodno (mnogo slučajeva). Lakše je brojati suprotno: <strong>rasporedi u kojima B i G JESU susedni</strong>, pa onda oduzeti od ukupnog broja:</p>
+      <div class="math-block">\[ \#(\text{nisu susedni}) = \#(\text{ukupno}) - \#(\text{susedni}) = 120 - \#(\text{susedni}). \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je princip komplementa „pametniji" ovde?</summary>
+          <div class="detail-content"><p>Jer je „susedni" jasan, jedan slučaj sa simpatičnom strukturom (blok), dok „nisu susedni" pokriva mnogo različitih međurazmaka — bilo bi potrebno razbijanje na slučajeve po dužini razmaka, što je dosadno. Komplement je u jednom potezu.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Brojimo rasporede gde su B i G zajedno — tehnika bloka</h3>
+      <p>Ako Bojan i Goran moraju biti jedan pored drugog, „zalepimo" ih u jedan <strong>blok</strong>:</p>
+      <div class="math-block">\[ \boxed{BG}, \quad A, \quad V, \quad D. \]</div>
+      <p>Sada imamo četiri „jedinice" za raspoređivanje u vrstu. Broj njihovih rasporeda:</p>
+      <div class="math-block">\[ 4! = 4 \cdot 3 \cdot 2 \cdot 1 = 24. \]</div>
+      <p>Ali unutar bloka, Bojan i Goran mogu stajati u dva različita redosleda:</p>
+      <div class="math-block">\[ (BG) \quad \text{ili} \quad (GB) \;\Longrightarrow\; 2 \text{ varijante za svaki raspored bloka}. \]</div>
+      <p>Dakle ukupan broj rasporeda u kojima su B i G susedni je:</p>
+      <div class="math-block">\[ 4! \cdot 2 = 24 \cdot 2 = 48. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je faktor 2 ključan?</summary>
+          <div class="detail-content"><p>Jer „blok BG" i „blok GB" daju različite rasporede u vrsti. Npr. raspored \( A,\,(BG),\,V,\,D = A,B,G,V,D \) je različit od \( A,\,(GB),\,V,\,D = A,G,B,V,D \). Bez ovog faktora, dobili bismo pogrešnih \( 120 - 24 = 96 \) — a 96 nije ni među ponuđenim odgovorima!</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunamo konačan odgovor</h3>
+      <p>Primenimo princip komplementa:</p>
+      <div class="math-block">\[ \#(\text{B i G nisu susedni}) = 120 - 48 = \boxed{72}. \]</div>
+      <p>Dakle traženi broj rasporeda je <span class="result">\( 72 \)</span>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera drugim metodom: metoda praznina</h3>
+      <p>Drugačiji pristup daje isti odgovor — vredan je provere i instruktivan sam po sebi.</p>
+      <p><strong>Korak 5a:</strong> Postavimo prvo „ostale" osobe — A, V, D — u vrstu. Broj načina:</p>
+      <div class="math-block">\[ 3! = 6. \]</div>
+      <p><strong>Korak 5b:</strong> Pomeđu i oko njih nastaju četiri „praznine":</p>
+      <div class="math-block">\[ \underline{\ \square_1\ }\;A\;\underline{\ \square_2\ }\;V\;\underline{\ \square_3\ }\;D\;\underline{\ \square_4\ } \]</div>
+      <p>Sada biramo dve <em>različite</em> praznine — jednu za Bojana, drugu za Gorana. Ako biraju različite praznine, automatski neće biti jedan pored drugog (između njih je bar jedan od A, V, D).</p>
+      <p><strong>Korak 5c:</strong> Broj načina da odaberemo dve uređene praznine od četiri (jer B i G se razlikuju):</p>
+      <div class="math-block">\[ P(4, 2) = 4 \cdot 3 = 12. \]</div>
+      <p><strong>Korak 5d:</strong> Po pravilu proizvoda, ukupan broj povoljnih rasporeda:</p>
+      <div class="math-block">\[ 3! \cdot P(4,2) = 6 \cdot 12 = 72. \;\checkmark \]</div>
+      <p class="note">Isti rezultat — sa potpuno drugačijim pristupom. Sjajna potvrda da je odgovor tačan.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto \( P(4,2) \), a ne \( \binom{4}{2} \)?</summary>
+          <div class="detail-content"><p>Jer B i G se razlikuju kao osobe — „B u praznini 1, G u praznini 3" je drugačiji raspored od „G u praznini 1, B u praznini 3". Treba <em>uređen</em> izbor. \( \binom{4}{2} = 6 \) bi računao neuređene parove i dao bi pogrešan rezultat \( 6 \cdot 6 = 36 \). Permutacija \( P(4,2) = 12 \) je prava stvar.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>U kombinatorici, problemi sa zabranom („ne sme") gotovo uvek postaju jednostavniji kroz princip komplementa: <em>broj rasporeda koji ne ispunjavaju uslov = ukupno − broj rasporeda koji ispunjavaju uslov</em>. Zabrana je rasplet — dozvoljeno je jednostavno. Tehnika bloka (zalepi susedne) sa faktorom \( k! \) za interni redosled i metoda praznina (umetni zabranjene u različite praznine) su dva alata koja prirodno rešavaju sve probleme tipa „X i Y (ne) smeju biti susedni" — bilo da je u pitanju 5 osoba u redu, slova u reči, ili boje na traci.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Zaboraviti faktor \( 2 \) za interno uređenje bloka (BG vs GB): dobiti \( 4! = 24 \) umesto \( 4! \cdot 2 = 48 \), pa \( 120 - 24 = 96 \). Greška: blok ima dva moguća redosleda, oba se broje.</li>
+    <li>Pomešati permutacije i kombinacije u metodi praznina: koristiti \( \binom{4}{2} = 6 \) umesto \( P(4,2) = 12 \). Ali Bojan i Goran su <em>različite</em> osobe — redosled u koji praznina ide ko se vidi.</li>
+    <li>Pokušati direktno prebrojavanje rasporeda u kojima B i G nisu susedni razlaganjem po razmaku između njih (1, 2, 3 mesta) — ovo radi ali je zametnije, pa lako vodi do greške. Komplement je elegantniji.</li>
+    <li>Pogrešno tumačiti „nisu jedan pored drugog" kao „nisu na susednim mestima u abecednom redu" ili neki drugi metafora — ovde znači prostorni susedi u vrsti.</li>
+    <li>Računati \( 5! \) kao \( 60 \) (pomešati \( 5! \) sa \( 5 \cdot 4 \cdot 3 = 60 \)). Tačno: \( 5! = 5 \cdot 4 \cdot 3 \cdot 2 \cdot 1 = 120 \).</li>
+    <li>Distraktor \( 12 \) (odgovor A): odgovara \( 2 \cdot 3! = 12 \), tj. „B i G na krajevima vrste, ostali u sredini" — ali to je samo poseban slučaj „nisu susedni", a ne svi takvi.</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ 5! - 4! \cdot 2 = 120 - 48 = 72 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 12 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 60 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 66 \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 72 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 90 \)</span>
+  </div>
+  <p class="verification">Provera drugim metodom (gap method): \( 3! \cdot P(4,2) = 6 \cdot 12 = 72 \) ✓. Dva nezavisna pristupa daju isti rezultat. Dodatna provera: udeo „nisu susedni" je \( 72/120 = 3/5 = 60\% \), što ima smisla — za nasumičan raspored 5 osoba, šansa da su dve određene susedne je \( 2/5 = 40\% \), pa „nisu susedne" \( 60\% \), tj. \( 0{,}6 \cdot 120 = 72 \).</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Generalizuj: u vrsti od \( n \) osoba (od kojih su dve određene osoba \( X \) i \( Y \)), na koliko načina se mogu rasporediti tako da \( X \) i \( Y \) <em>nisu</em> susedni? Koliki je udeo „nisu susedni" u ukupnom broju rasporeda, i kako se ponaša taj udeo kad \( n \to \infty \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Ukupno \( n! \). Susedni: tretiraj XY kao blok → \( (n-1)! \cdot 2 \). Pa „nisu susedni" = \( n! - 2(n-1)! = (n-1)! \cdot (n - 2) \). Udeo: \( \dfrac{n! - 2(n-1)!}{n!} = 1 - \dfrac{2}{n} \). Za \( n=5 \): \( 1 - 2/5 = 3/5 \), tj. \( 72/120 \) ✓. Kako \( n \to \infty \), udeo teži ka \( 1 \) — što ima smisla, jer u veoma dugačkoj vrsti je sve manje verovatno da su dve fiksne osobe baš susedne.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  function drawPersonBox(cx, cy, w, h, label, fillColor, strokeColor, textColor) {
+    var x = cx - w / 2, y = cy - h / 2;
+    ctx.fillStyle = fillColor;
+    ctx.fillRect(x, y, w, h);
+    ctx.strokeStyle = strokeColor;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x, y, w, h);
+    ctx.fillStyle = textColor;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, cx, cy);
+    ctx.textBaseline = 'alphabetic';
+  }
+
+  function drawDashedRect(x, y, w, h, color, lineWidth) {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = lineWidth;
+    ctx.setLineDash([6, 5]);
+    ctx.strokeRect(x, y, w, h);
+    ctx.setLineDash([]);
+  }
+
+  function drawGap(cx, cy, w, h, label, color) {
+    // Dashed rectangle for gap, with label
+    ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.18);
+    ctx.fillRect(cx - w/2, cy - h/2, w, h);
+    drawDashedRect(cx - w/2, cy - h/2, w, h, color, 1.5);
+    ctx.fillStyle = color;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, cx, cy);
+    ctx.textBaseline = 'alphabetic';
+  }
+
+  function draw() {
+    styles = getComputedStyle(root);
+    var bg        = cv('--sol-canvas-bg');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+    var danger    = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Main title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 17px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Dva pristupa: ista zagonetka, ista vrednost 72', W / 2, 26);
+
+    // ─────────────────────────────────────────────────
+    // TOP PANEL: BLOCK METHOD (complement)
+    // ─────────────────────────────────────────────────
+    var topY = 60;
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('① Metoda komplementa: tretirati (BG) kao jedan blok', 40, topY);
+
+    // Row 1: show 5 slots with the BG block shown together
+    var rowY = topY + 50;
+    var boxW = 80, boxH = 50;
+    var gap = 14;
+    var totalW = 4 * boxW + 3 * gap;
+    var rowX = (W - totalW) / 2 - 30; // shift slightly left to leave room for label
+    // Label
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('4 jedinice:', rowX - 14, rowY + 6);
+
+    // Block (BG) — special styling
+    var blockX = rowX + boxW / 2;
+    // Draw the BG block as a single wider box highlighted
+    var blockW = boxW;
+    var bx = rowX, by = rowY - boxH/2;
+    ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.30);
+    ctx.fillRect(bx, by, blockW, boxH);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(bx, by, blockW, boxH);
+    // Inner divider
+    ctx.beginPath();
+    ctx.moveTo(bx + blockW / 2, by + 6);
+    ctx.lineTo(bx + blockW / 2, by + boxH - 6);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('B', bx + blockW / 4, rowY);
+    ctx.fillText('G', bx + 3 * blockW / 4, rowY);
+    ctx.textBaseline = 'alphabetic';
+
+    // Label "BG blok" below
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('(BG) blok', bx + blockW / 2, by + boxH + 16);
+
+    // Other three boxes: A, V, D
+    var others = ['A', 'V', 'D'];
+    var otherColors = [primary, secondary, accent];
+    for (var i = 0; i < 3; i++) {
+      var cx = rowX + (i + 1) * (boxW + gap) + boxW / 2;
+      drawPersonBox(cx, rowY, boxW, boxH,
+        others[i],
+        cvAlpha(['--sol-canvas-primary','--sol-canvas-secondary','--sol-canvas-accent'][i], 0.25),
+        otherColors[i],
+        otherColors[i]);
+    }
+
+    // Calculation under top panel
+    var calcY = rowY + boxH/2 + 50;
+    ctx.fillStyle = text;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('4 jedinice u vrsti: 4! = 24 rasporeda', W / 2, calcY);
+    ctx.fillText('Unutar bloka: BG ili GB → faktor 2', W / 2, calcY + 20);
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.fillText('„zajedno" = 24 · 2 = 48', W / 2, calcY + 44);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.fillText('„nisu zajedno" = 120 − 48 = 72', W / 2, calcY + 68);
+
+    // Horizontal divider
+    var dividerY = calcY + 95;
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(40, dividerY);
+    ctx.lineTo(W - 40, dividerY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // ─────────────────────────────────────────────────
+    // BOTTOM PANEL: GAP METHOD
+    // ─────────────────────────────────────────────────
+    var botTitleY = dividerY + 28;
+    ctx.fillStyle = secondary;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('② Metoda praznina: prvo A, V, D — pa B i G u različite praznine', 40, botTitleY);
+
+    // Draw: gap A gap V gap D gap
+    var rowY2 = botTitleY + 64;
+    var gapW = 56, gapH = 50;
+    var personW = 72;
+    // Layout: gap, A, gap, V, gap, D, gap
+    var elementsCount = 7;
+    var totalRow = 4 * gapW + 3 * personW + 6 * 8;
+    var startX = (W - totalRow) / 2;
+    var positions = [];
+    var x = startX;
+    positions.push({ type: 'gap', label: '□₁', x: x + gapW/2 });
+    x += gapW + 8;
+    positions.push({ type: 'person', label: 'A', x: x + personW/2 });
+    x += personW + 8;
+    positions.push({ type: 'gap', label: '□₂', x: x + gapW/2 });
+    x += gapW + 8;
+    positions.push({ type: 'person', label: 'V', x: x + personW/2 });
+    x += personW + 8;
+    positions.push({ type: 'gap', label: '□₃', x: x + gapW/2 });
+    x += gapW + 8;
+    positions.push({ type: 'person', label: 'D', x: x + personW/2 });
+    x += personW + 8;
+    positions.push({ type: 'gap', label: '□₄', x: x + gapW/2 });
+
+    var personIdx = 0;
+    var personColors = [primary, secondary, accent];
+    for (var k = 0; k < positions.length; k++) {
+      var p = positions[k];
+      if (p.type === 'gap') {
+        drawGap(p.x, rowY2, gapW, gapH, p.label, warning);
+      } else {
+        var col = personColors[personIdx];
+        drawPersonBox(p.x, rowY2, personW, gapH,
+          p.label,
+          cvAlpha(['--sol-canvas-primary','--sol-canvas-secondary','--sol-canvas-accent'][personIdx], 0.25),
+          col, col);
+        personIdx++;
+      }
+    }
+
+    // Labels above gaps explaining
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('4 praznine', positions[0].x + (positions[6].x - positions[0].x) / 2, rowY2 - gapH/2 - 12);
+
+    // Arrows from "B" and "G" labels going into two of the gaps
+    // We'll show B going into gap 1, G going into gap 3 (as an illustrative example)
+    var arrowY = rowY2 + gapH/2 + 30;
+    var bX = positions[0].x;
+    var gX = positions[4].x;
+
+    // Draw B and G labels below with arrows pointing up to gaps
+    function drawArrowFromLabel(labelX, labelY, label, color, targetX, targetY) {
+      // label box
+      ctx.fillStyle = cvAlpha(color === highlight ? '--sol-canvas-highlight' : '--sol-canvas-danger', 0.20);
+      ctx.fillRect(labelX - 18, labelY - 14, 36, 28);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(labelX - 18, labelY - 14, 36, 28);
+      ctx.fillStyle = color;
+      ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(label, labelX, labelY);
+      ctx.textBaseline = 'alphabetic';
+      // arrow upward
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(labelX, labelY - 14);
+      ctx.lineTo(targetX, targetY);
+      ctx.stroke();
+      // arrowhead
+      var ang = Math.atan2(targetY - (labelY - 14), targetX - labelX);
+      ctx.beginPath();
+      ctx.moveTo(targetX, targetY);
+      ctx.lineTo(targetX - 7 * Math.cos(ang - 0.4), targetY - 7 * Math.sin(ang - 0.4));
+      ctx.lineTo(targetX - 7 * Math.cos(ang + 0.4), targetY - 7 * Math.sin(ang + 0.4));
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.fill();
+    }
+
+    drawArrowFromLabel(bX, arrowY, 'B', highlight, positions[0].x, rowY2 + gapH/2 - 2);
+    drawArrowFromLabel(gX, arrowY, 'G', danger, positions[4].x, rowY2 + gapH/2 - 2);
+
+    // Caption below arrows
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Primer izbora: B u praznini □₁, G u praznini □₃', W / 2, arrowY + 36);
+
+    // Calculation at bottom
+    var bCalcY = arrowY + 60;
+    ctx.fillStyle = text;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillText('A, V, D u vrsti: 3! = 6 načina  ·  B i G u 2 različite praznine: P(4,2) = 12', W / 2, bCalcY);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.fillText('Ukupno: 6 · 12 = 72  ✓  (isto kao gore)', W / 2, bCalcY + 24);
+  }
+
+  draw();
+
+  // Re-draw on theme change
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Permutacije sa zabranom susedstva: pet ljudi u vrstu",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["permutacije", "princip komplementa", "metoda praznina", "kombinatorika"]
+}
+BRAINSPARK_META-->

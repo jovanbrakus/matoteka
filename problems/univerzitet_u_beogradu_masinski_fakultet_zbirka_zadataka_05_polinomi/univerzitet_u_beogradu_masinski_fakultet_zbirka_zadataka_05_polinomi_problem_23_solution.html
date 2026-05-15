@@ -1,0 +1,476 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Zadatak: p, q, r su nule polinoma P(x) = x^3 + 3x^2 + 2x - 5.
+Naći vrednost izraza S = 1/(p+3) + 1/(q+3) + 1/(r+3).
+
+Vijetove formule (za x^3 + ax^2 + bx + c, a=3, b=2, c=-5):
+  p + q + r = -a = -3
+  pq + qr + rp = b = 2
+  pqr = -c = 5
+
+Metoda A — sabiranje razlomaka:
+  Svedimo na zajednički imenilac:
+    S = [(q+3)(r+3) + (p+3)(r+3) + (p+3)(q+3)] / [(p+3)(q+3)(r+3)].
+
+  Brojilac. Razvijamo (q+3)(r+3) = qr + 3q + 3r + 9 itd. Sumiramo tri analogna izraza:
+    Sum = (pq + qr + rp) + 3*( (q+r) + (p+r) + (p+q) ) + 3*9
+        = (pq + qr + rp) + 3 * 2(p+q+r) + 27
+        = (pq + qr + rp) + 6(p+q+r) + 27.
+  Ubacujemo Vijete: 2 + 6*(-3) + 27 = 2 - 18 + 27 = 11.
+
+  Imenilac. (p+3)(q+3)(r+3) = pqr + 3(pq+qr+rp) + 9(p+q+r) + 27
+        = 5 + 3*2 + 9*(-3) + 27
+        = 5 + 6 - 27 + 27 = 11.
+
+  Dakle S = 11/11 = 1.
+
+Metoda B (elegantna) — preko P(-3):
+  P(x) = (x - p)(x - q)(x - r). Stavimo x = -3:
+    P(-3) = (-3 - p)(-3 - q)(-3 - r) = (-1)^3 (p+3)(q+3)(r+3) = -(p+3)(q+3)(r+3).
+  Računamo P(-3) = (-27) + 3*9 + 2*(-3) - 5 = -27 + 27 - 6 - 5 = -11.
+  Iz P(-3) = -(p+3)(q+3)(r+3) sledi (p+3)(q+3)(r+3) = 11.
+
+  Za brojilac koristimo izvod. Neka y_i = -1/(x_i + 3) tj. opštije:
+  S = sum 1/(p+3). Imamo identitet
+    P'(x) / P(x) = sum 1/(x - p_i)  (logaritamski izvod).
+  Stavimo x = -3: P'(-3) / P(-3) = sum 1/(-3 - p_i) = -sum 1/(p_i + 3) = -S.
+  Računamo P'(x) = 3x^2 + 6x + 2, P'(-3) = 27 - 18 + 2 = 11.
+  Dakle -S = P'(-3) / P(-3) = 11 / (-11) = -1, pa je S = 1. ✓
+
+Provera: oba metoda daju 1. Tačan odgovor (B) 1.
+
+Analiza distraktora:
+  (A) -1 — znak iz P(-3) zaboravljen (smetnja: faktor (-1)^3).
+  (C) -2, (D) 2 — pogrešno tretiranje koeficijenta b ili kvadrat sume.
+  (E) 0 — pomisao da se neki simetrični izraz poništava.
+
+Stilski plan: pokazati direktan metod (Vijete + sabiranje razlomaka) korak po korak,
+zatim "ključni uvid" — elegantni metod sa P(-3) i P'(-3). Vizuelno: graf P(x) sa
+korenima i naznačenom vrednošću P(-3) = -11.
+</script>
+
+<h1 data-card="problem-title">Suma razlomaka po pomerenim korenima kubnog polinoma</h1>
+<p data-card="problem-subtitle" class="subtitle">Vijetove formule, transformacija korena i elegantni trik sa \( P(-3) \)</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Ako su \( p, q, r \) nule polinoma \( x^3 + 3x^2 + 2x - 5 \), tada je vrednost izraza</p>
+  <div class="math-block">\[ \dfrac{1}{p+3} + \dfrac{1}{q+3} + \dfrac{1}{r+3} \]</div>
+  <p>jednaka:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( -1 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( -2 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 0 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Korene \( p, q, r \) ne treba računati eksplicitno — koristićemo <em>Vijetove formule</em> za njihove simetrične izraze. Svedemo tri razlomka na zajednički imenilac, izrazimo brojilac i imenilac preko sume, sume parova i proizvoda korena, a zatim ubacimo vrednosti iz Vijeta. Na kraju ćemo isti rezultat dobiti i elegantnim trikom: vrednošću \( P(-3) \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Vijetove formule i veza polinoma sa nulama</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Vijete (kubni)</span> Za \( x^3 + ax^2 + bx + c = (x-p)(x-q)(x-r) \) važi: \[ p+q+r = -a, \quad pq+qr+rp = b, \quad pqr = -c. \]</li>
+        <li><span class="formula-label">Naš polinom</span> \( P(x) = x^3 + 3x^2 + 2x - 5 \), pa je \( a=3,\; b=2,\; c=-5 \). Odatle \[ p+q+r = -3,\quad pq+qr+rp = 2,\quad pqr = 5. \]</li>
+        <li><span class="formula-label">Faktorisan oblik</span> \( P(x) = (x-p)(x-q)(x-r) \). Smenom \( x = -3 \) faktoriše \( (p+3)(q+3)(r+3) \) — direktna veza sa našim imeniocem!</li>
+        <li><span class="formula-label">Logaritamski izvod</span> \( \dfrac{P'(x)}{P(x)} = \dfrac{1}{x-p} + \dfrac{1}{x-q} + \dfrac{1}{x-r} \). Smenom \( x=-3 \) dobijamo upravo našu sumu (do znaka).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz: graf P(x), nule i tačka P(-3)">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diag23" width="720" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Graf kubnog polinoma \( P(x) = x^3 + 3x^2 + 2x - 5 \). Tri realne nule \( p, q, r \) leže na \( x \)-osi. Vertikalna isprekidana linija u \( x = -3 \) seče graf u tački sa ordinatom \( P(-3) = -11 \). Iz faktorisanog oblika \( P(-3) = -(p+3)(q+3)(r+3) \), pa je \( (p+3)(q+3)(r+3) = 11 \) — to će biti imenilac u našem izrazu.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Zapišimo Vijetove formule</h3>
+      <p>Polinom \( P(x) = x^3 + 3x^2 + 2x - 5 \) ima koeficijente \( a=3,\; b=2,\; c=-5 \). Vijete daju:</p>
+      <div class="math-block">\[ p+q+r = -3, \qquad pq+qr+rp = 2, \qquad pqr = 5. \]</div>
+      <p>To su jedine "tri stvari" o korenima koje su nam potrebne — same nule \( p, q, r \) ne moramo nikada da izračunamo.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš znak <em>minus</em> kod \( p+q+r \)?</summary>
+          <div class="detail-content"><p>Razvijanjem \( (x-p)(x-q)(x-r) = x^3 - (p+q+r)x^2 + (pq+qr+rp)x - pqr \) vidi se da je koeficijent uz \( x^2 \) jednak \( -(p+q+r) \). Pošto je u našem polinomu taj koeficijent \( +3 \), sledi \( p+q+r = -3 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Sabiranje tri razlomka — zajednički imenilac</h3>
+      <p>Označimo traženi izraz sa \( S \). Svedemo na zajednički imenilac:</p>
+      <div class="math-block">\[ S = \dfrac{1}{p+3} + \dfrac{1}{q+3} + \dfrac{1}{r+3} = \dfrac{(q+3)(r+3) + (p+3)(r+3) + (p+3)(q+3)}{(p+3)(q+3)(r+3)}. \]</div>
+      <p>Sada zasebno računamo brojilac i imenilac, koristeći samo simetrične izraze iz koraka 1.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Imenilac \( (p+3)(q+3)(r+3) \)</h3>
+      <p>Razvijamo proizvod:</p>
+      <div class="math-block">\[ (p+3)(q+3)(r+3) = pqr + 3(pq+qr+rp) + 9(p+q+r) + 27. \]</div>
+      <p>Ubacimo Vijete:</p>
+      <div class="math-block">\[ = 5 + 3\cdot 2 + 9\cdot(-3) + 27 = 5 + 6 - 27 + 27 = \mathbf{11}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: odakle dolazi koeficijent \( 9 \) uz \( (p+q+r) \)?</summary>
+          <div class="detail-content"><p>Kada razvijamo \( (p+3)(q+3)(r+3) \), člana koji daje "dva broja iz tri trojke" ima tri: \( 3 \cdot 3 \cdot p \), \( 3 \cdot 3 \cdot q \), \( 3 \cdot 3 \cdot r \). Ukupno \( 9(p+q+r) \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Brojilac \( (q+3)(r+3) + (p+3)(r+3) + (p+3)(q+3) \)</h3>
+      <p>Razvijemo jedan tipičan sabirak: \( (q+3)(r+3) = qr + 3(q+r) + 9 \). Sabiranjem sva tri analogna izraza:</p>
+      <div class="math-block">\[ \begin{aligned} \text{Brojilac} &= (pq + qr + rp) \;+\; 3\bigl[(q+r) + (p+r) + (p+q)\bigr] \;+\; 3\cdot 9 \\ &= (pq+qr+rp) \;+\; 3 \cdot 2(p+q+r) \;+\; 27 \\ &= (pq+qr+rp) + 6(p+q+r) + 27. \end{aligned} \]</div>
+      <p>Ubacimo Vijete:</p>
+      <div class="math-block">\[ = 2 + 6\cdot(-3) + 27 = 2 - 18 + 27 = \mathbf{11}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto \( (q+r)+(p+r)+(p+q) = 2(p+q+r) \)?</summary>
+          <div class="detail-content"><p>Svaki od \( p, q, r \) se u toj sumi pojavljuje tačno dva puta (jednom u svakom paru u kome figuriše). Zato je suma \( 2(p+q+r) \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Spajamo brojilac i imenilac</h3>
+      <p>Dobili smo:</p>
+      <div class="math-block">\[ S = \dfrac{\text{Brojilac}}{\text{Imenilac}} = \dfrac{11}{11} = \mathbf{1}. \]</div>
+      <p>Iznenađujuće je da brojilac i imenilac ispadnu jednaki — to je više od slučajnosti i u sledećem kartonu ćemo videti zašto.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid — elegantan metod sa \( P(-3) \) i \( P'(-3) \)</h2>
+  <p>Iz faktorisanog oblika \( P(x) = (x-p)(x-q)(x-r) \), smenom \( x = -3 \) dobijamo:</p>
+  <div class="math-block">\[ P(-3) = (-3-p)(-3-q)(-3-r) = -(p+3)(q+3)(r+3). \]</div>
+  <p>Direktno: \( P(-3) = -27 + 27 - 6 - 5 = -11 \), pa <span class="result">\( (p+3)(q+3)(r+3) = 11 \)</span>. To je odmah imenilac!</p>
+  <p>Za brojilac upotrebimo <em>logaritamski izvod</em>:</p>
+  <div class="math-block">\[ \dfrac{P'(x)}{P(x)} = \dfrac{1}{x-p} + \dfrac{1}{x-q} + \dfrac{1}{x-r}. \]</div>
+  <p>U tački \( x = -3 \), desna strana je \( \;-\!\bigl(\tfrac{1}{p+3}+\tfrac{1}{q+3}+\tfrac{1}{r+3}\bigr) = -S \). Računamo \( P'(x) = 3x^2 + 6x + 2 \), pa \( P'(-3) = 27 - 18 + 2 = 11 \). Otuda:</p>
+  <div class="math-block">\[ -S \;=\; \dfrac{P'(-3)}{P(-3)} \;=\; \dfrac{11}{-11} \;=\; -1 \quad\Longrightarrow\quad S = 1. \]</div>
+  <p>Isti rezultat, ali u dva reda — jer su \( P(-3) \) i \( P'(-3) \) baš veličine koje "skupljaju" naš imenilac i brojilac.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \dfrac{1}{p+3} + \dfrac{1}{q+3} + \dfrac{1}{r+3} = 1 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( -1 \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( 1 \)</span>
+    <span class="answer-option" data-option="C">(C) \( -2 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 2 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 0 \)</span>
+  </div>
+  <p class="verification">Dve metode daju isti rezultat: direktno preko Vijeta ( \( S = 11/11 = 1 \) ) i preko logaritamskog izvoda ( \( -S = P'(-3)/P(-3) = -1 \), pa \( S = 1 \) ). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pokušaj da se direktno izračunaju koreni \( p, q, r \) kubnog polinoma — nepotrebno i obično bolno. Vijetove formule daju sve što treba.</li>
+    <li>U razvoju \( (p+3)(q+3)(r+3) \) zaboraviti koeficijent \( 9 \) uz \( (p+q+r) \) — taj član dolazi iz tri kombinacije \( 3\cdot 3 \cdot p,\; 3\cdot 3 \cdot q,\; 3\cdot 3 \cdot r \).</li>
+    <li>U izrazu \( (q+r) + (p+r) + (p+q) \) napisati samo \( p+q+r \) (zaboraviti faktor \( 2 \)).</li>
+    <li>Pomešati znake u Vijetovim formulama. Pravilo: u monijskom polinomu \( x^3 + ax^2 + bx + c \), naizmenično se menjaju znakovi kod elementarnih simetričnih funkcija: \( -a,\; +b,\; -c \).</li>
+    <li>Kod elegantnog metoda zaboraviti znak: \( P(-3) = (-3-p)(-3-q)(-3-r) = (-1)^3(p+3)(q+3)(r+3) = \boldsymbol{-}(p+3)(q+3)(r+3) \). Faktor \( (-1)^3 = -1 \) lako se previdi.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Pomoću istog polinoma \( P(x) = x^3 + 3x^2 + 2x - 5 \) izračunaj sumu</p>
+  <div class="math-block">\[ T = \dfrac{1}{(p+3)^2} + \dfrac{1}{(q+3)^2} + \dfrac{1}{(r+3)^2}. \]</div>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Koristi identitet \( T = S^2 - 2\!\!\sum_{\text{parovi}} \dfrac{1}{(p+3)(q+3)} \). Druga suma se može svesti na \( \dfrac{(p+3) + (q+3) + (r+3)}{(p+3)(q+3)(r+3)} \cdot 1 \) — proveri: brojilac je \( (p+q+r) + 9 = -3 + 9 = 6 \), imenilac smo izračunali \( = 11 \). Dakle \( \sum_{\text{parovi}}\tfrac{1}{(p+3)(q+3)} = \tfrac{6}{11} \), pa je \( T = 1 - \tfrac{12}{11} = -\tfrac{1}{11} \). Alternativno: \( T = \bigl(P'(-3)/P(-3)\bigr)^2 - P''(-3)/P(-3) \cdot \tfrac{1}{1} \) — slično logaritamskim izvodima drugog reda.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diag23');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+    var danger    = cv('--sol-canvas-danger');
+
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.font = 'bold 17px Inter, system-ui';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.fillText('P(x) = x³ + 3x² + 2x − 5,   P(−3) = −11', W/2, 26);
+
+    // Plot area
+    var padLeft = 60, padRight = 30, padTop = 50, padBottom = 90;
+    var plotW = W - padLeft - padRight;
+    var plotH = H - padTop - padBottom;
+    var plotX = padLeft;
+    var plotY = padTop;
+
+    var xMin = -4, xMax = 3;
+    var yMin = -22, yMax = 22;
+
+    function P(x) { return x*x*x + 3*x*x + 2*x - 5; }
+
+    function tx(x) { return plotX + (x - xMin) / (xMax - xMin) * plotW; }
+    function ty(y) { return plotY + plotH - (y - yMin) / (yMax - yMin) * plotH; }
+
+    // Grid vertical
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var gx = Math.ceil(xMin); gx <= Math.floor(xMax); gx++) {
+      ctx.beginPath();
+      ctx.moveTo(tx(gx), plotY);
+      ctx.lineTo(tx(gx), plotY + plotH);
+      ctx.stroke();
+    }
+    // Grid horizontal every 5
+    for (var gy = -20; gy <= 20; gy += 5) {
+      ctx.beginPath();
+      ctx.moveTo(plotX, ty(gy));
+      ctx.lineTo(plotX + plotW, ty(gy));
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(plotX, ty(0));
+    ctx.lineTo(plotX + plotW, ty(0));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(tx(0), plotY);
+    ctx.lineTo(tx(0), plotY + plotH);
+    ctx.stroke();
+
+    // Axis labels
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    for (var ix = Math.ceil(xMin); ix <= Math.floor(xMax); ix++) {
+      if (ix === 0) continue;
+      ctx.fillText(String(ix), tx(ix), ty(0) + 15);
+    }
+    ctx.textAlign = 'right';
+    for (var iy = -20; iy <= 20; iy += 5) {
+      if (iy === 0) continue;
+      ctx.fillText(String(iy), tx(0) - 6, ty(iy) + 4);
+    }
+    ctx.textAlign = 'left';
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.fillText('x', plotX + plotW - 12, ty(0) - 8);
+    ctx.fillText('y', tx(0) + 8, plotY + 12);
+
+    // Plot P(x), clipped
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    var first = true;
+    var N = 600;
+    for (var i = 0; i <= N; i++) {
+      var x = xMin + (xMax - xMin) * i / N;
+      var y = P(x);
+      if (y < yMin - 1 || y > yMax + 1) { first = true; continue; }
+      var cx = tx(x), cy = ty(y);
+      if (first) { ctx.moveTo(cx, cy); first = false; }
+      else ctx.lineTo(cx, cy);
+    }
+    ctx.stroke();
+
+    // Find approximate roots numerically (sign changes), then mark them
+    var roots = [];
+    var prev = P(xMin);
+    var steps = 2000;
+    for (var k = 1; k <= steps; k++) {
+      var xk = xMin + (xMax - xMin) * k / steps;
+      var yk = P(xk);
+      if (prev === 0 || (prev < 0) !== (yk < 0)) {
+        // bisection refine
+        var lo = xMin + (xMax - xMin) * (k-1) / steps;
+        var hi = xk;
+        for (var b = 0; b < 40; b++) {
+          var mid = (lo + hi) / 2;
+          if ((P(lo) < 0) === (P(mid) < 0)) lo = mid; else hi = mid;
+        }
+        roots.push((lo + hi) / 2);
+      }
+      prev = yk;
+    }
+    // Mark roots
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 12px Inter, system-ui';
+    ctx.textAlign = 'center';
+    var rootNames = ['p', 'q', 'r'];
+    for (var ri = 0; ri < roots.length && ri < 3; ri++) {
+      var rx = tx(roots[ri]);
+      var ry = ty(0);
+      ctx.beginPath();
+      ctx.arc(rx, ry, 10, 0, Math.PI*2);
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.25);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(rx, ry, 5, 0, Math.PI*2);
+      ctx.fillStyle = accent;
+      ctx.fill();
+      ctx.fillStyle = accent;
+      ctx.fillText(rootNames[ri] + ' ≈ ' + roots[ri].toFixed(2), rx, ry - 14);
+    }
+
+    // Vertical dashed line at x = -3, and mark P(-3)
+    var Px3 = P(-3); // = -11
+    ctx.setLineDash([6, 4]);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(tx(-3), plotY);
+    ctx.lineTo(tx(-3), plotY + plotH);
+    ctx.stroke();
+    // Horizontal dashed from y-axis to (-3, P(-3))
+    ctx.strokeStyle = highlight;
+    ctx.beginPath();
+    ctx.moveTo(tx(-3), ty(Px3));
+    ctx.lineTo(tx(0), ty(Px3));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Point (-3, -11)
+    ctx.beginPath();
+    ctx.arc(tx(-3), ty(Px3), 6, 0, Math.PI*2);
+    ctx.fillStyle = highlight;
+    ctx.fill();
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 12px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText('(−3, −11)', tx(-3) + 10, ty(Px3) + 4);
+
+    // Mark y = -11 on y-axis
+    ctx.beginPath();
+    ctx.arc(tx(0), ty(Px3), 4, 0, Math.PI*2);
+    ctx.fillStyle = highlight;
+    ctx.fill();
+    ctx.font = 'bold 11px Inter, system-ui';
+    ctx.fillStyle = highlight;
+    ctx.textAlign = 'right';
+    ctx.fillText('P(−3) = −11', tx(0) - 8, ty(Px3) + 4);
+
+    // Label x = -3 on x-axis
+    ctx.font = 'bold 12px Inter, system-ui';
+    ctx.fillStyle = highlight;
+    ctx.textAlign = 'center';
+    ctx.fillText('x = −3', tx(-3), ty(0) + 30);
+
+    // Legend at bottom
+    var legY = H - 50;
+    ctx.font = '13px Inter, system-ui';
+    ctx.textAlign = 'left';
+    var legX = 60;
+    ctx.fillStyle = accent;
+    ctx.beginPath(); ctx.arc(legX, legY, 5, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = text;
+    ctx.fillText('nule p, q, r polinoma P(x)', legX + 12, legY + 4);
+
+    ctx.fillStyle = highlight;
+    ctx.beginPath(); ctx.arc(legX, legY + 22, 5, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = text;
+    ctx.fillText('P(−3) = −(p+3)(q+3)(r+3) = −11   ⇒   (p+3)(q+3)(r+3) = 11', legX + 12, legY + 26);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Suma 1/(p+3)+1/(q+3)+1/(r+3) za nule kubnog polinoma — Vijete i P(−3)",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["polinomi", "Vijetove formule", "nule polinoma", "simetrične funkcije", "logaritamski izvod"]
+}
+BRAINSPARK_META-->

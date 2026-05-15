@@ -1,0 +1,716 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Zadatak: Naci povrsinu pravilnog DVANAESTOUGLA upisanog u krug poluprecnika R = 1.
+
+  Sintetski pristup (bez gotove formule za n-tougao):
+
+    1) Pravilni 12-tougao upisan u krug poluprecnika R = 1 sa centrom O.
+       Tjemena V_0, V_1, ..., V_{11} ravnomerno na krugu. Centralni ugao
+       izmedu susednih tjemena:
+         theta = 360° / 12 = 30°.
+
+    2) Razlozimo dvanaestougao na 12 podudarnih jednakokrakih trouglova
+       O V_k V_{k+1}. Svaki trougao ima:
+         - krake OV_k = OV_{k+1} = R = 1,
+         - ugao kod O jednak 30°.
+
+    3) Povrsina trougla sa dvema stranicama a, b i uglom gamma izmedu njih je
+         P = (1/2) * a * b * sin(gamma).
+       Ovo je standardna sintetska/elementarna formula (sledi iz P = (1/2) * baza * visina
+       sa visinom h = a * sin gamma).
+       Za nas trougao:
+         P_trougla = (1/2) * 1 * 1 * sin 30° = (1/2) * (1/2) = 1/4.
+
+    4) Cestougao = 12 jednakih trouglova:
+         P_12gon = 12 * (1/4) = 3.
+
+    Odgovor: (D) 3.
+
+    Provera (alternativno razlaganje na visinu i osnovicu):
+      U trouglu OV_0V_1, spustimo iz O simetralu na V_0V_1 (pala u sredinu M).
+      Tada je u trouglu OV_0M: ugao kod O je 15°, hipotenuza R = 1.
+        kateta V_0M = R * sin 15° = sin 15°,    => stranica a = 2 sin 15°.
+        kateta OM (apotema) = R * cos 15° = cos 15°.
+      Povrsina trougla = (1/2) * baza * visina = (1/2) * (2 sin 15°) * cos 15°
+                       = sin 15° * cos 15° = (1/2) sin 30° = 1/4. ✓
+      P_12gon = 12 * 1/4 = 3. ✓
+
+    Numericka provera:
+      sin 30° = 0.5 tacno.
+      P = 12 * (1/2) * 1 * 1 * 0.5 = 12 * 0.25 = 3.  ✓
+
+    Provera ostalih opcija:
+      (A) 3 (sqrt 6 - sqrt 2) = 3 * (2.449 - 1.414) = 3 * 1.035 ~ 3.106  -> nije 3 (blizu, ali ne tacno)
+      (B) 1 + sqrt 3 ~ 2.732   -> nije 3
+      (C) 2 sqrt 2 ~ 2.828     -> nije 3
+      (D) 3                    -> tacno
+      (E) 2 sqrt 3 ~ 3.464     -> nije 3
+
+    Vazno: P_kruga = pi * R^2 = pi ~ 3.14159. Dvanaestougao ima povrsinu 3 sto je vec
+    veoma blizu krugu (~ 95.5% povrsine kruga). Dobar pokazatelj kako se n-tougao priblizava
+    krugu kada n raste.
+
+  Vizualizacija (3 platna):
+    1) Ceo dvanaestougao u krugu, podeljen na 12 trouglova alternativnih boja.
+       Naglasen jedan trougao OV_0V_1.
+    2) Detalj jednog trougla OV_0V_1: krakovi R, centralni ugao 30°, vidi se formula
+       P = (1/2) R R sin 30° = 1/4.
+    3) INTERAKTIVNI canvas: slider za n od 3 do 24, crta n-tougao u krugu R=1,
+       prikazuje povrsinu P_n = (n/2) sin(360°/n). Kako n raste, P_n -> pi.
+       Za n = 12, P = 3.
+</script>
+
+<h1 data-card="problem-title">Površina pravilnog dvanaestougla upisanog u krug</h1>
+<p data-card="problem-subtitle" class="subtitle">Geometrija u ravni &mdash; pravilni mnogougao, razlaganje na trouglove, sinus centralnog ugla</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Površina pravilnog dvanaestougla upisanog u krug poluprečnika \( 1 \) je:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 3(\sqrt 6 - \sqrt 2) \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 1 + \sqrt 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 2\sqrt 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 2\sqrt 3 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Pravilni dvanaestougao upisan u krug poluprečnika \( R = 1 \) razložićemo na \( 12 \) podudarnih jednakokrakih trouglova sa zajedničkim tjemenom u centru kruga \( O \). Svaki trougao ima krake \( R \) i ugao kod \( O \) jednak \( \tfrac{360^\circ}{12} = 30^\circ \). Površinu jednog takvog trougla računamo kao \( \tfrac{1}{2}\cdot R\cdot R\cdot \sin 30^\circ = \tfrac{1}{2}\cdot 1\cdot 1\cdot \tfrac{1}{2} = \tfrac{1}{4} \), pa ukupna površina iznosi \( 12\cdot \tfrac{1}{4} = 3 \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Pravilni \( n \)-tougao, centralni ugao i površina trougla preko sinusa</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Pravilni \( n \)-tougao upisan u krug:</strong> mnogougao sa \( n \) jednakih stranica i jednakih unutrašnjih uglova kome sva tjemena \( V_0, V_1, \dots, V_{n-1} \) leže na opisanom krugu poluprečnika \( R \) sa centrom \( O \).</li>
+        <li><strong>Centralni ugao stranice:</strong> susedna tjemena \( V_k \) i \( V_{k+1} \) vide se iz \( O \) pod uglom
+          \[ \theta = \dfrac{360^\circ}{n}. \]
+          Za \( n = 12 \): \( \theta = 30^\circ \).
+        </li>
+        <li><strong>Razlaganje na trouglove:</strong> spajanjem centra \( O \) sa svim tjemenima, pravilni \( n \)-tougao se deli na \( n \) podudarnih jednakokrakih trouglova \( OV_kV_{k+1} \), svaki sa kracima \( R \) i uglom kod \( O \) jednakim \( \theta \).</li>
+        <li><strong>Površina trougla preko dve stranice i ugla:</strong> ako su \( a \) i \( b \) stranice, a \( \gamma \) ugao između njih:
+          \[ P_{\triangle} = \dfrac{1}{2}\,a\,b\,\sin\gamma. \]
+          Ova formula sledi iz \( P = \tfrac{1}{2}\cdot \text{baza}\cdot \text{visina} \), gde je visina iz tjemena nasuprot baze \( a \) jednaka \( b\sin\gamma \).
+        </li>
+        <li><strong>Specijalne vrednosti:</strong> \( \sin 30^\circ = \dfrac{1}{2} \), \( \cos 30^\circ = \dfrac{\sqrt 3}{2} \).</li>
+        <li><strong>Krug poluprečnika 1:</strong> \( P_{\bigcirc} = \pi\cdot 1^2 = \pi \approx 3{,}14159 \). Pravilni mnogougao upisan u krug uvek ima manju površinu, koja teži ka \( \pi \) kada \( n\to\infty \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Dvanaestougao razložen na 12 trouglova">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram1" width="720" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Pravilni dvanaestougao upisan u krug poluprečnika \( R = 1 \) sa centrom \( O \). Tjemena \( V_0, V_1, \dots, V_{11} \) su ravnomerno raspoređena duž kruga, a centralni ugao između dva susedna tjemena je \( 30^\circ \). Razlaganjem na \( 12 \) podudarnih jednakokrakih trouglova \( OV_kV_{k+1} \) (alternativne boje) problem se svodi na površinu jednog trougla.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Jedan od 12 trouglova — krakovi R i ugao 30°">
+  <h2>📐 Jedan od 12 trouglova</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram2" width="720" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Detalj jednog trougla \( OV_0V_1 \): krakovi \( OV_0 = OV_1 = R = 1 \), ugao kod \( O \) iznosi \( 30^\circ \). Visina iz \( V_1 \) na krak \( OV_0 \) jednaka je \( R\sin 30^\circ = \tfrac{1}{2} \). Površina trougla je \( \tfrac{1}{2}\cdot R\cdot R\sin 30^\circ = \tfrac{1}{2}\cdot 1\cdot \tfrac{1}{2} = \tfrac{1}{4} \). Dvanaest takvih trouglova daje ukupnu površinu \( 12\cdot \tfrac{1}{4} = 3 \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Interaktivno: n-tougao u krug, kako se površina menja sa n">
+  <h2>📐 Interaktivno: koliko se brzo \( n \)-tougao približava krugu?</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram3" width="720" height="520"></canvas>
+  </div>
+  <div class="canvas-controls">
+    <label for="nSlider">Broj stranica <strong>n</strong>: <span id="nValue">12</span></label>
+    <input type="range" id="nSlider" min="3" max="36" value="12" step="1">
+  </div>
+  <p class="canvas-caption">Pomeri klizač da promeniš \( n \). Za svako \( n \) vidi se pravilni \( n \)-tougao upisan u jedinični krug, zajedno sa njegovom površinom \( P_n = \tfrac{n}{2}\sin\tfrac{360^\circ}{n} \). Za \( n = 12 \) dobijamo tačno \( P_{12} = 3 \). Kako \( n \) raste, \( P_n \) se približava \( \pi \approx 3{,}14159 \) (površina jediničnog kruga) &mdash; ali nikad je ne dostiže. Već za dvanaestougao smo na \( 95{,}5\% \) površine kruga!</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavljanje &mdash; razlaganje na centralne trouglove</h3>
+      <p>Neka je \( O \) centar kruga poluprečnika \( R = 1 \), a \( V_0, V_1, \dots, V_{11} \) tjemena pravilnog dvanaestougla, ravnomerno raspoređena na krugu. Spojimo \( O \) sa svim tjemenima. Tako dobijamo \( 12 \) trouglova \( OV_kV_{k+1} \), \( k = 0, 1, \dots, 11 \) (gde uzimamo \( V_{12} = V_0 \)).</p>
+      <p>Po simetriji pravilnog mnogougla, svi ovi trouglovi su međusobno <em>podudarni</em>. Svaki je jednakokraki sa kracima</p>
+      <div class="math-block">\[ OV_k = OV_{k+1} = R = 1. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Centralni ugao jednog trougla</h3>
+      <p>Pun ugao oko centra \( O \) iznosi \( 360^\circ \) i deli se na \( 12 \) jednakih delova po jednom trouglu, pa je ugao kod \( O \) u svakom trouglu:</p>
+      <div class="math-block">\[ \angle V_kOV_{k+1} = \dfrac{360^\circ}{12} = 30^\circ. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliki su uglovi pri osnovici?</summary>
+          <div class="detail-content"><p>U jednakokrakom trouglu uglovi pri osnovici su jednaki. Pošto je zbir uglova \( 180^\circ \), a ugao kod \( O \) je \( 30^\circ \), preostalo je \( 150^\circ \) za dva ugla pri osnovici, pa je svaki \( 75^\circ \). (Provera: \( 30 + 75 + 75 = 180 \). ✓)</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Površina jednog trougla</h3>
+      <p>Za trougao sa dve stranice \( a \), \( b \) i uglom \( \gamma \) između njih važi:</p>
+      <div class="math-block">\[ P_{\triangle} = \dfrac{1}{2}\,a\,b\,\sin\gamma. \]</div>
+      <p>Geometrijsko opravdanje: ako uzmemo \( a \) za osnovicu, onda je visina iz suprotnog tjemena jednaka \( b\sin\gamma \), pa je \( P = \tfrac12\cdot a\cdot b\sin\gamma \).</p>
+      <p>U našem trouglu \( OV_kV_{k+1} \) imamo \( a = b = R = 1 \) i \( \gamma = 30^\circ \):</p>
+      <div class="math-block">\[ P_{\triangle} = \dfrac{1}{2}\cdot 1\cdot 1\cdot \sin 30^\circ = \dfrac{1}{2}\cdot \dfrac{1}{2} = \dfrac{1}{4}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: alternativno preko stranice i apoteme.</summary>
+          <div class="detail-content"><p>Iz \( O \) spustimo simetralu na osnovicu \( V_0V_1 \); ona pada u sredinu \( M \) i pod uglom \( 15^\circ \). U pravouglom trouglu \( OV_0M \) sa hipotenuzom \( R = 1 \): kateta \( V_0M = \sin 15^\circ \) (pa je stranica dvanaestougla \( a_{12} = 2\sin 15^\circ \)), a apotema \( OM = \cos 15^\circ \). Površina jednog trougla:
+          \[ P_{\triangle} = \dfrac{1}{2}\cdot a_{12}\cdot OM = \dfrac{1}{2}\cdot (2\sin 15^\circ)\cdot \cos 15^\circ = \sin 15^\circ\cos 15^\circ = \tfrac{1}{2}\sin 30^\circ = \tfrac{1}{4}. \]
+          (Iskoristili smo formulu dvostrukog ugla \( \sin 2x = 2\sin x\cos x \).) Isti rezultat. ✓</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Ukupna površina &mdash; sabiranje 12 trouglova</h3>
+      <p>Pošto je dvanaestougao razložen na \( 12 \) podudarnih trouglova, njegova površina je:</p>
+      <div class="math-block">\[ P_{12} = 12\cdot P_{\triangle} = 12\cdot \dfrac{1}{4} = 3. \]</div>
+      <div class="math-block">\[ \boxed{\; P_{12} = 3 \;}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera &mdash; smisao broja \( 3 \)</h3>
+      <p>Površina jediničnog kruga je \( \pi\approx 3{,}14159 \). Naš dvanaestougao je upisan u taj krug i ima površinu \( 3 \). Odnos:</p>
+      <div class="math-block">\[ \dfrac{P_{12}}{P_{\bigcirc}} = \dfrac{3}{\pi} \approx 0{,}9549, \]</div>
+      <p>tj. dvanaestougao pokriva oko \( 95{,}5\% \) površine kruga. To je sasvim razumno: \( 12 \) stranica je dovoljno da pravilni mnogougao bude veoma blizu kruga, ali \( P_{12} < \pi \), kao što i mora biti (mnogougao je strogi podskup kruga).</p>
+      <p>Sa druge strane, opcije \( (A) \) i \( (E) \) numerički iznose \( \approx 3{,}11 \) i \( \approx 3{,}46 \) &mdash; obe veće od \( \pi \), što je <em>nemoguće</em> za upisani mnogougao (površina mu mora biti manja od površine kruga). Već po toj proveri eliminišu se ti odgovori.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Svaki pravilni \( n \)-tougao upisan u krug poluprečnika \( R \) prirodno se razlaže na \( n \) podudarnih jednakokrakih trouglova sa zajedničkim tjemenom u centru kruga. Centralni ugao svakog trougla je \( \tfrac{360^\circ}{n} \), a krakovi su \( R \). Površina jednog takvog trougla je \( \tfrac12 R^2\sin\tfrac{360^\circ}{n} \), pa je ukupna površina \( P_n = \tfrac{n}{2}R^2\sin\tfrac{360^\circ}{n} \). Za \( n = 12 \), \( R = 1 \): \( \tfrac{12}{2}\cdot 1\cdot \sin 30^\circ = 6\cdot \tfrac{1}{2} = 3 \). „Magični“ izbor \( n = 12 \) daje upravo ugao od \( 30^\circ \) čiji je sinus tačno \( \tfrac{1}{2} \) &mdash; otud i ceo broj kao rezultat.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ P_{12} = 3 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 3(\sqrt 6 - \sqrt 2) \)</span>
+    <span class="answer-option" data-option="B">(B) \( 1 + \sqrt 3 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 2\sqrt 2 \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 3 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 2\sqrt 3 \)</span>
+  </div>
+  <p class="verification">Provera: \( P_{12} = 12\cdot \tfrac12\cdot R^2\cdot \sin 30^\circ = 12\cdot \tfrac12\cdot 1\cdot \tfrac12 = 3 \). Pošto je \( P_{12} = 3 < \pi \approx 3{,}14 \), rezultat je geometrijski konzistentan &mdash; upisani mnogougao mora imati manju površinu od kruga. Numerički \( P_{12}/\pi \approx 95{,}5\% \), što je smisleno za 12-tougao. Tačno (D).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešan centralni ugao:</strong> uzimanje \( \theta = \tfrac{180^\circ}{12} = 15^\circ \) (umesto \( 30^\circ \)) &mdash; mešanje sa polovinom centralnog ugla koja se pojavljuje u formuli za stranicu \( a_n = 2R\sin\tfrac{180^\circ}{n} \).</li>
+    <li><strong>Korišćenje \( \sin\theta \) sa pogrešnim uglom:</strong> recimo \( \sin 12^\circ \) ili \( \sin 15^\circ \). Pravilna formula za površinu trougla je \( \tfrac12 ab\sin\gamma \), gde je \( \gamma \) ugao <em>između</em> stranica \( a \) i \( b \). Kod nas: krakovi su \( R \), a ugao između njih je centralni ugao, dakle \( 30^\circ \).</li>
+    <li><strong>Brkanje stranice i kraka:</strong> stranica dvanaestougla je \( a_{12} = 2\sin 15^\circ \) (a ne \( 1 \)). Ako pokušaš \( P_{\triangle} = \tfrac12 a_{12}^2\sin\theta \) sa pogrešnom interpretacijom &mdash; dobijaš pogrešan broj.</li>
+    <li><strong>Korišćenje opisanog umesto upisanog mnogougla:</strong> kod <em>opisanog</em> dvanaestougla (oko kruga) stranica je \( 2\tan 15^\circ \), a apotema je \( R = 1 \); površina je \( 12\tan 15^\circ \approx 3{,}215 > \pi \) &mdash; veća od kruga. Pažljivo razlikuj „upisan u krug“ od „opisan oko kruga“.</li>
+    <li><strong>Ignorisanje provere \( P_{12} < \pi \):</strong> opcije \( (A) \approx 3{,}106 \) i \( (E) \approx 3{,}464 \) su veće od \( \pi \approx 3{,}142 \), pa <em>ne mogu</em> biti površina upisanog mnogougla. Brza provera bi odmah eliminisala neke distraktore (mada je \( (A) \) numerički <em>vrlo</em> blizu, pa zahteva tačniju procenu).</li>
+    <li><strong>„Računanje preko stranice“ bez razlaganja:</strong> pokušaj da se direktno koristi formula za stranicu i apotemu bez razloženog koraka može uvesti grešku u faktoru \( 2 \) (npr. \( P = \tfrac{n\cdot a\cdot \text{apotema}}{2} \) sa pogrešnim apotemom).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Izračunaj površinu pravilnog \( 24 \)-tougla upisanog u krug poluprečnika \( 1 \). Koliki je njegov odnos prema površini kruga? Da li je veći ili manji od \( P_{12}/\pi \)? Pokušaj da iskoristiš istu strategiju razlaganja na \( 24 \) trougla.</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Centralni ugao je \( \tfrac{360^\circ}{24} = 15^\circ \). Površina jednog od \( 24 \) trouglova je \( \tfrac12\cdot 1\cdot 1\cdot \sin 15^\circ = \tfrac{\sin 15^\circ}{2} \). Ukupno: \( P_{24} = 24\cdot \tfrac{\sin 15^\circ}{2} = 12\sin 15^\circ \). Numerički, \( \sin 15^\circ \approx 0{,}25882 \), pa \( P_{24} \approx 3{,}1058 \). To je \( \approx 98{,}86\% \) površine kruga &mdash; znatno bolja aproksimacija od dvanaestougla (\( 95{,}5\% \)). Egzaktno: \( \sin 15^\circ = \tfrac{\sqrt 6 - \sqrt 2}{4} \), pa \( P_{24} = 12\cdot \tfrac{\sqrt 6 - \sqrt 2}{4} = 3(\sqrt 6 - \sqrt 2) \) &mdash; što je upravo opcija \( (A) \)! Drugim rečima, distraktor \( (A) \) je tačan odgovor za \( n = 24 \), pa je zato i izabran kao zamka.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3),16), g = parseInt(c.slice(3,5),16), b = parseInt(c.slice(5,7),16);
+      return 'rgba('+r+','+g+','+b+','+alpha+')';
+    }
+    return c;
+  }
+
+  // ── Diagram 1: 12-gon decomposed into 12 triangles ──
+  var canvas1 = document.getElementById('diagram1');
+  if (canvas1) {
+    var ctx = canvas1.getContext('2d');
+    var W = canvas1.width, H = canvas1.height;
+    function draw1() {
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = cv('--sol-canvas-bg');
+      ctx.fillRect(0,0,W,H);
+
+      var cx = W/2, cy = H/2 + 20, R = 200;
+      // Circle (background)
+      ctx.strokeStyle = cv('--sol-canvas-muted');
+      ctx.lineWidth = 1.4;
+      ctx.setLineDash([5,4]);
+      ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI*2); ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Vertices V_0 at top
+      var verts = [];
+      for (var k = 0; k < 12; k++) {
+        var ang = -Math.PI/2 + k * (2*Math.PI/12);
+        verts.push({ x: cx + R*Math.cos(ang), y: cy + R*Math.sin(ang) });
+      }
+
+      // Fill 12 triangles, alternating colors. Highlight first triangle.
+      for (var t = 0; t < 12; t++) {
+        var p = verts[t], q = verts[(t+1)%12];
+        var fill;
+        if (t === 0) fill = cvAlpha('--sol-canvas-highlight', 0.28);
+        else if (t % 2 === 0) fill = cvAlpha('--sol-canvas-accent', 0.14);
+        else fill = cvAlpha('--sol-canvas-secondary', 0.12);
+        ctx.fillStyle = fill;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(p.x, p.y);
+        ctx.lineTo(q.x, q.y);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      // Spokes (radii)
+      ctx.strokeStyle = cv('--sol-canvas-accent');
+      ctx.lineWidth = 1.4;
+      for (var s = 0; s < 12; s++) {
+        ctx.beginPath();
+        ctx.moveTo(cx, cy); ctx.lineTo(verts[s].x, verts[s].y);
+        ctx.stroke();
+      }
+
+      // Polygon outline
+      ctx.strokeStyle = cv('--sol-canvas-primary');
+      ctx.lineWidth = 2.4;
+      ctx.beginPath();
+      for (var i = 0; i < 12; i++) {
+        var pp = verts[i];
+        if (i === 0) ctx.moveTo(pp.x, pp.y);
+        else ctx.lineTo(pp.x, pp.y);
+      }
+      ctx.closePath();
+      ctx.stroke();
+
+      // Highlight first triangle's outline thicker
+      ctx.strokeStyle = cv('--sol-canvas-highlight');
+      ctx.lineWidth = 2.8;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(verts[0].x, verts[0].y);
+      ctx.lineTo(verts[1].x, verts[1].y);
+      ctx.closePath();
+      ctx.stroke();
+
+      // Center O
+      ctx.fillStyle = cv('--sol-canvas-text');
+      ctx.beginPath(); ctx.arc(cx, cy, 3.5, 0, Math.PI*2); ctx.fill();
+
+      // 30° central angle arc inside first triangle
+      ctx.strokeStyle = cv('--sol-canvas-highlight');
+      ctx.lineWidth = 2;
+      var a0 = -Math.PI/2;
+      var a1 = -Math.PI/2 + (2*Math.PI/12);
+      ctx.beginPath();
+      ctx.arc(cx, cy, 36, a0, a1);
+      ctx.stroke();
+
+      // Vertex dots and labels
+      ctx.font = '13px sans-serif';
+      ctx.textAlign = 'center';
+      for (var j = 0; j < 12; j++) {
+        var vv = verts[j];
+        ctx.fillStyle = (j === 0 || j === 1) ? cv('--sol-canvas-highlight') : cv('--sol-canvas-text');
+        ctx.beginPath();
+        ctx.arc(vv.x, vv.y, (j === 0 || j === 1) ? 4.5 : 3.5, 0, Math.PI*2);
+        ctx.fill();
+        var lang = -Math.PI/2 + j * (2*Math.PI/12);
+        var lx = cx + (R+22)*Math.cos(lang);
+        var ly = cy + (R+22)*Math.sin(lang) + 4;
+        ctx.fillStyle = cv('--sol-canvas-text');
+        ctx.fillText('V' + j, lx, ly);
+      }
+      ctx.textAlign = 'left';
+
+      // Labels
+      ctx.fillStyle = cv('--sol-canvas-text');
+      ctx.font = '14px sans-serif';
+      ctx.fillText('O', cx + 6, cy + 16);
+
+      ctx.fillStyle = cv('--sol-canvas-accent');
+      ctx.font = 'bold 13px sans-serif';
+      // R label on spoke to V_0 (going up)
+      ctx.fillText('R = 1', cx + 8, cy - R/2);
+
+      // 30° label
+      ctx.fillStyle = cv('--sol-canvas-highlight');
+      ctx.font = 'bold 14px sans-serif';
+      var midA = (a0 + a1) / 2;
+      ctx.fillText('30°', cx + 48*Math.cos(midA) - 12, cy + 48*Math.sin(midA) + 4);
+
+      // Title
+      ctx.fillStyle = cv('--sol-canvas-text');
+      ctx.font = 'bold 16px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Pravilni 12-tougao = 12 podudarnih trouglova', cx, 28);
+      ctx.font = '13px sans-serif';
+      ctx.fillText('Svaki trougao: krakovi R = 1, centralni ugao 30°', cx, 50);
+      ctx.fillStyle = cv('--sol-canvas-highlight');
+      ctx.font = 'bold 13px sans-serif';
+      ctx.fillText('P₁₂ = 12 · (½ · 1 · 1 · sin 30°) = 12 · ¼ = 3', cx, H - 18);
+      ctx.textAlign = 'left';
+    }
+    draw1();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() { styles = getComputedStyle(root); draw1(); }, 50);
+      }
+    });
+  }
+
+  // ── Diagram 2: One central triangle OV0V1 with R, R, 30°, height ──
+  var canvas2 = document.getElementById('diagram2');
+  if (canvas2) {
+    var ctx2 = canvas2.getContext('2d');
+    var W2 = canvas2.width, H2 = canvas2.height;
+    function draw2() {
+      ctx2.clearRect(0,0,W2,H2);
+      ctx2.fillStyle = cv('--sol-canvas-bg');
+      ctx2.fillRect(0,0,W2,H2);
+
+      // Place the triangle: O at top-center, V0 going down-left, V1 going down-right
+      // To make it visually clear, choose a large scale.
+      var Ox = W2/2 - 80, Oy = 130;
+      var R2 = 320; // pixel length representing R
+      var theta = 30 * Math.PI / 180;
+      // V0 at angle 90° - 15° = 75° below O on the left side
+      // Actually: place V0 and V1 symmetric below O with included angle 30°
+      var ang0 = Math.PI/2 - theta/2; // direction from O to V0 (down-left)
+      var ang1 = Math.PI/2 + theta/2; // direction from O to V1 (down-right)
+      // Use y-down canvas: y positive goes down. So direction from O down-left is x = -sin(theta/2), y = cos(theta/2).
+      // For "down-left": x negative, y positive. So angle from +x axis: pi/2 - theta/2 won't directly do it. Let's just compute:
+      // We want V0 = O + R * (sin(-theta/2), cos(-theta/2)) ... easier: rotate (0,1) by ±theta/2.
+      function rotateDown(dx, dy, a) {
+        // rotate (dx, dy) by angle a around origin
+        return { x: dx*Math.cos(a) - dy*Math.sin(a), y: dx*Math.sin(a) + dy*Math.cos(a) };
+      }
+      var d0 = rotateDown(0, 1, -theta/2); // tilted left from straight down
+      var d1 = rotateDown(0, 1,  theta/2); // tilted right from straight down
+      var V0 = { x: Ox + R2*d0.x, y: Oy + R2*d0.y };
+      var V1 = { x: Ox + R2*d1.x, y: Oy + R2*d1.y };
+      var M = { x: (V0.x + V1.x)/2, y: (V0.y + V1.y)/2 };
+
+      // Triangle fill
+      ctx2.fillStyle = cvAlpha('--sol-canvas-accent', 0.16);
+      ctx2.beginPath();
+      ctx2.moveTo(Ox, Oy); ctx2.lineTo(V0.x, V0.y); ctx2.lineTo(V1.x, V1.y);
+      ctx2.closePath();
+      ctx2.fill();
+
+      // Triangle outline
+      ctx2.strokeStyle = cv('--sol-canvas-primary');
+      ctx2.lineWidth = 2.6;
+      ctx2.beginPath();
+      ctx2.moveTo(Ox, Oy); ctx2.lineTo(V0.x, V0.y); ctx2.lineTo(V1.x, V1.y);
+      ctx2.closePath();
+      ctx2.stroke();
+
+      // Apothem from O to midpoint M (height of the isoceles triangle from O to V0V1)
+      ctx2.strokeStyle = cv('--sol-canvas-secondary');
+      ctx2.lineWidth = 1.8;
+      ctx2.setLineDash([6,4]);
+      ctx2.beginPath();
+      ctx2.moveTo(Ox, Oy); ctx2.lineTo(M.x, M.y);
+      ctx2.stroke();
+      ctx2.setLineDash([]);
+
+      // Height from V1 perpendicular to OV0 — illustrating P = (1/2) * OV0 * (V1 sin 30°)
+      // Foot of perpendicular from V1 onto line O->V0
+      // OV0 direction:
+      var ovx = V0.x - Ox, ovy = V0.y - Oy;
+      var oLen = Math.sqrt(ovx*ovx + ovy*ovy);
+      var ux = ovx/oLen, uy = ovy/oLen;
+      // Projection length: ((V1-O) . u)
+      var v1ox = V1.x - Ox, v1oy = V1.y - Oy;
+      var proj = v1ox*ux + v1oy*uy;
+      var F = { x: Ox + proj*ux, y: Oy + proj*uy };
+
+      ctx2.strokeStyle = cv('--sol-canvas-highlight');
+      ctx2.lineWidth = 1.8;
+      ctx2.setLineDash([4,3]);
+      ctx2.beginPath();
+      ctx2.moveTo(V1.x, V1.y); ctx2.lineTo(F.x, F.y);
+      ctx2.stroke();
+      ctx2.setLineDash([]);
+
+      // Right angle marker at F
+      var perpx = -uy, perpy = ux;
+      var sz = 10;
+      ctx2.strokeStyle = cv('--sol-canvas-text');
+      ctx2.lineWidth = 1.4;
+      ctx2.beginPath();
+      ctx2.moveTo(F.x - sz*ux, F.y - sz*uy);
+      ctx2.lineTo(F.x - sz*ux + sz*perpx, F.y - sz*uy + sz*perpy);
+      ctx2.lineTo(F.x + sz*perpx, F.y + sz*perpy);
+      ctx2.stroke();
+
+      // 30° arc at O
+      ctx2.strokeStyle = cv('--sol-canvas-highlight');
+      ctx2.lineWidth = 2;
+      var angA = Math.atan2(d0.y, d0.x);
+      var angB = Math.atan2(d1.y, d1.x);
+      ctx2.beginPath();
+      ctx2.arc(Ox, Oy, 56, angA, angB);
+      ctx2.stroke();
+
+      // Vertex dots
+      ctx2.fillStyle = cv('--sol-canvas-text');
+      ctx2.beginPath(); ctx2.arc(Ox, Oy, 4, 0, Math.PI*2); ctx2.fill();
+      ctx2.beginPath(); ctx2.arc(V0.x, V0.y, 4, 0, Math.PI*2); ctx2.fill();
+      ctx2.beginPath(); ctx2.arc(V1.x, V1.y, 4, 0, Math.PI*2); ctx2.fill();
+      ctx2.beginPath(); ctx2.arc(M.x, M.y, 3.5, 0, Math.PI*2); ctx2.fill();
+      ctx2.beginPath(); ctx2.arc(F.x, F.y, 3.5, 0, Math.PI*2); ctx2.fill();
+
+      // Labels
+      ctx2.font = '15px sans-serif';
+      ctx2.fillStyle = cv('--sol-canvas-text');
+      ctx2.fillText('O', Ox - 16, Oy - 4);
+      ctx2.fillText('V₀', V0.x - 24, V0.y + 6);
+      ctx2.fillText('V₁', V1.x + 8, V1.y + 6);
+      ctx2.fillText('M', M.x - 4, M.y + 22);
+
+      // R labels along OV0 and OV1
+      ctx2.fillStyle = cv('--sol-canvas-primary');
+      ctx2.font = 'bold 14px sans-serif';
+      ctx2.fillText('R = 1', (Ox + V0.x)/2 - 56, (Oy + V0.y)/2);
+      ctx2.fillText('R = 1', (Ox + V1.x)/2 + 12, (Oy + V1.y)/2);
+
+      // Side label (stranica a)
+      ctx2.fillStyle = cv('--sol-canvas-accent');
+      ctx2.font = '13px sans-serif';
+      ctx2.fillText('a = 2 sin 15°', (V0.x + V1.x)/2 - 36, V0.y + 38);
+
+      // Apothem label
+      ctx2.fillStyle = cv('--sol-canvas-secondary');
+      ctx2.fillText('apotema = cos 15°', (Ox + M.x)/2 + 14, (Oy + M.y)/2 + 4);
+
+      // height label (R sin 30° from V1 perpendicular)
+      ctx2.fillStyle = cv('--sol-canvas-highlight');
+      ctx2.font = 'bold 13px sans-serif';
+      ctx2.fillText('h = R sin 30° = ½', V1.x + 10, V1.y - 30);
+
+      // 30° label
+      ctx2.fillStyle = cv('--sol-canvas-highlight');
+      ctx2.font = 'bold 15px sans-serif';
+      ctx2.fillText('30°', Ox - 14, Oy + 76);
+
+      // Title
+      ctx2.fillStyle = cv('--sol-canvas-text');
+      ctx2.font = 'bold 15px sans-serif';
+      ctx2.textAlign = 'center';
+      ctx2.fillText('Trougao OV₀V₁ — krakovi R, ugao 30°', W2/2, 28);
+      ctx2.font = '13px sans-serif';
+      ctx2.fillText('P = ½ · R · R · sin 30° = ½ · 1 · 1 · ½ = ¼', W2/2, 50);
+      ctx2.fillStyle = cv('--sol-canvas-highlight');
+      ctx2.font = 'bold 14px sans-serif';
+      ctx2.fillText('Ukupno: P₁₂ = 12 · ¼ = 3', W2/2, H2 - 18);
+      ctx2.textAlign = 'left';
+    }
+    draw2();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() { styles = getComputedStyle(root); draw2(); }, 50);
+      }
+    });
+  }
+
+  // ── Diagram 3: Interactive slider — n-gon inscribed in unit circle, area converging to π ──
+  var canvas3 = document.getElementById('diagram3');
+  var slider = document.getElementById('nSlider');
+  var nValueLabel = document.getElementById('nValue');
+  if (canvas3 && slider) {
+    var ctx3 = canvas3.getContext('2d');
+    var W3 = canvas3.width, H3 = canvas3.height;
+    function draw3(n) {
+      ctx3.clearRect(0,0,W3,H3);
+      ctx3.fillStyle = cv('--sol-canvas-bg');
+      ctx3.fillRect(0,0,W3,H3);
+
+      var cx3 = W3/2 - 30, cy3 = H3/2 + 20, R3 = 200;
+
+      // Circle (unit circle for reference)
+      ctx3.fillStyle = cvAlpha('--sol-canvas-primary', 0.08);
+      ctx3.beginPath(); ctx3.arc(cx3, cy3, R3, 0, Math.PI*2); ctx3.fill();
+      ctx3.strokeStyle = cv('--sol-canvas-primary');
+      ctx3.lineWidth = 2;
+      ctx3.beginPath(); ctx3.arc(cx3, cy3, R3, 0, Math.PI*2); ctx3.stroke();
+
+      // n-gon vertices
+      var verts3 = [];
+      for (var k3 = 0; k3 < n; k3++) {
+        var ang3 = -Math.PI/2 + k3 * (2*Math.PI/n);
+        verts3.push({ x: cx3 + R3*Math.cos(ang3), y: cy3 + R3*Math.sin(ang3) });
+      }
+
+      // n-gon fill
+      ctx3.fillStyle = cvAlpha('--sol-canvas-accent', 0.30);
+      ctx3.beginPath();
+      for (var i3 = 0; i3 < n; i3++) {
+        var pp3 = verts3[i3];
+        if (i3 === 0) ctx3.moveTo(pp3.x, pp3.y);
+        else ctx3.lineTo(pp3.x, pp3.y);
+      }
+      ctx3.closePath();
+      ctx3.fill();
+
+      // n-gon outline (highlight for n=12)
+      var highlight12 = (n === 12);
+      ctx3.strokeStyle = highlight12 ? cv('--sol-canvas-highlight') : cv('--sol-canvas-accent');
+      ctx3.lineWidth = highlight12 ? 3.2 : 2.2;
+      ctx3.beginPath();
+      for (var ii = 0; ii < n; ii++) {
+        var qq = verts3[ii];
+        if (ii === 0) ctx3.moveTo(qq.x, qq.y);
+        else ctx3.lineTo(qq.x, qq.y);
+      }
+      ctx3.closePath();
+      ctx3.stroke();
+
+      // Vertex dots
+      ctx3.fillStyle = cv('--sol-canvas-text');
+      for (var jj = 0; jj < n; jj++) {
+        ctx3.beginPath();
+        ctx3.arc(verts3[jj].x, verts3[jj].y, n > 24 ? 1.8 : 2.6, 0, Math.PI*2);
+        ctx3.fill();
+      }
+
+      // Center
+      ctx3.fillStyle = cv('--sol-canvas-text');
+      ctx3.beginPath(); ctx3.arc(cx3, cy3, 3, 0, Math.PI*2); ctx3.fill();
+
+      // Compute areas
+      var area = (n / 2) * Math.sin(2*Math.PI/n); // R = 1
+      var circArea = Math.PI;
+      var ratio = area / circArea;
+      var theta_deg = 360 / n;
+
+      // Info panel on the right
+      var infoX = cx3 + R3 + 50;
+      var infoY = 80;
+      ctx3.fillStyle = cv('--sol-canvas-text');
+      ctx3.font = 'bold 15px sans-serif';
+      ctx3.textAlign = 'left';
+      ctx3.fillText('Broj stranica:', infoX, infoY);
+      ctx3.fillStyle = highlight12 ? cv('--sol-canvas-highlight') : cv('--sol-canvas-primary');
+      ctx3.font = 'bold 28px sans-serif';
+      ctx3.fillText('n = ' + n, infoX, infoY + 32);
+
+      ctx3.fillStyle = cv('--sol-canvas-text');
+      ctx3.font = '13px sans-serif';
+      ctx3.fillText('centralni ugao:', infoX, infoY + 64);
+      ctx3.font = 'bold 14px sans-serif';
+      ctx3.fillStyle = cv('--sol-canvas-secondary');
+      ctx3.fillText('θ = ' + theta_deg.toFixed(2) + '°', infoX, infoY + 84);
+
+      ctx3.fillStyle = cv('--sol-canvas-text');
+      ctx3.font = '13px sans-serif';
+      ctx3.fillText('formula:', infoX, infoY + 116);
+      ctx3.font = '13px sans-serif';
+      ctx3.fillText('Pₙ = (n/2) sin(360°/n)', infoX, infoY + 134);
+
+      ctx3.fillStyle = cv('--sol-canvas-text');
+      ctx3.font = '13px sans-serif';
+      ctx3.fillText('površina:', infoX, infoY + 166);
+      ctx3.fillStyle = highlight12 ? cv('--sol-canvas-highlight') : cv('--sol-canvas-accent');
+      ctx3.font = 'bold 22px sans-serif';
+      ctx3.fillText('Pₙ ≈ ' + area.toFixed(5), infoX, infoY + 194);
+
+      ctx3.fillStyle = cv('--sol-canvas-text');
+      ctx3.font = '13px sans-serif';
+      ctx3.fillText('udeo u krugu:', infoX, infoY + 224);
+      ctx3.font = 'bold 14px sans-serif';
+      ctx3.fillStyle = cv('--sol-canvas-secondary');
+      ctx3.fillText('Pₙ / π = ' + (ratio*100).toFixed(2) + ' %', infoX, infoY + 244);
+
+      ctx3.fillStyle = cv('--sol-canvas-muted');
+      ctx3.font = '12px sans-serif';
+      ctx3.fillText('π ≈ 3,14159', infoX, infoY + 274);
+      ctx3.fillText('(granica kad n → ∞)', infoX, infoY + 290);
+
+      // Highlight when n = 12
+      if (highlight12) {
+        ctx3.fillStyle = cv('--sol-canvas-highlight');
+        ctx3.font = 'bold 13px sans-serif';
+        ctx3.fillText('✦ slučaj iz zadatka', infoX, infoY + 320);
+      }
+
+      // Title
+      ctx3.fillStyle = cv('--sol-canvas-text');
+      ctx3.font = 'bold 15px sans-serif';
+      ctx3.textAlign = 'center';
+      ctx3.fillText('Pravilni n-tougao upisan u jedinični krug', W3/2, 28);
+      ctx3.textAlign = 'left';
+    }
+
+    function updateFromSlider() {
+      var n = parseInt(slider.value, 10);
+      if (nValueLabel) nValueLabel.textContent = String(n);
+      draw3(n);
+    }
+    slider.addEventListener('input', updateFromSlider);
+    updateFromSlider();
+
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() { styles = getComputedStyle(root); updateFromSlider(); }, 50);
+      }
+    });
+  }
+})();
+</script>
+
+<!--BRAINSPARK_META
+{"format":"v2","title":"Površina pravilnog dvanaestougla upisanog u krug poluprečnika 1","subject":"math","unit":"geometry","topic_tags":["pravilni mnogougao","dvanaestougao","upisani mnogougao","centralni ugao","površina trougla","sinus"]}
+BRAINSPARK_META-->

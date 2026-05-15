@@ -1,0 +1,460 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Problem: Vrednost izraza ((1 + i√7)/2)^4 + ((1 - i√7)/2)^4.
+
+Označimo w = (1 + i√7)/2, w̄ = (1 - i√7)/2.
+
+Korak 1 — Vietove veličine za par konjugovanih brojeva.
+S := w + w̄ = ( (1 + i√7) + (1 - i√7) ) / 2 = 2/2 = 1.
+P := w · w̄ = |w|^2 = ( 1 + 7 ) / 4 = 8/4 = 2.
+
+Provera: brojevi w, w̄ su nule polinoma t^2 - S t + P = 0, tj. t^2 - t + 2 = 0.
+Diskriminanta: 1 - 8 = -7. Kvadratna formula: t = (1 ± √(-7))/2 = (1 ± i√7)/2. ✓ Slaže se.
+
+Korak 2 — Identitet za zbir kvadrata.
+w^2 + w̄^2 = S^2 - 2P = 1 - 4 = -3.
+
+Korak 3 — Identitet za zbir četvrtih stepena.
+w^4 + w̄^4 = (w^2 + w̄^2)^2 - 2 (w · w̄)^2 = (-3)^2 - 2 · 2^2 = 9 - 8 = 1.
+
+Odgovor: (C) 1.
+
+Alternativa 1 — Direktno preko karakteristične jednačine.
+Pošto je w^2 - w + 2 = 0, imamo w^2 = w - 2.
+w^3 = w · w^2 = w(w - 2) = w^2 - 2w = (w - 2) - 2w = -w - 2.
+w^4 = w · w^3 = w(-w - 2) = -w^2 - 2w = -(w - 2) - 2w = -3w + 2.
+Isto za w̄: w̄^4 = -3w̄ + 2.
+Zbir: w^4 + w̄^4 = -3(w + w̄) + 4 = -3 · 1 + 4 = 1. ✓
+
+Alternativa 2 — Njutnovi identiteti (rekurzija):
+p_n = w^n + w̄^n. Rekurzija: p_n = S · p_{n-1} - P · p_{n-2}, tj. p_n = p_{n-1} - 2 p_{n-2}.
+p_0 = 2, p_1 = S = 1.
+p_2 = 1 - 2·2 = 1 - 4 = -3.
+p_3 = p_2 - 2 p_1 = -3 - 2 = -5.
+p_4 = p_3 - 2 p_2 = -5 - 2·(-3) = -5 + 6 = 1. ✓
+
+Vizuelni prikaz:
+- Argandov dijagram.
+- w i w̄ su simetrični u odnosu na realnu osu.
+- |w| = √2, argument arg(w) = arctan(√7) ≈ 69.3°.
+- Iako nisu koreni iz jedinice (|w| ≠ 1), simetrija konjugacije i činjenica da zadovoljavaju t^2 - t + 2 = 0 omogućava rešavanje.
+- Visina canvas: 560px.
+</script>
+
+<h1 data-card="problem-title">Zbir četvrtih stepena para konjugovanih kompleksnih brojeva</h1>
+<p data-card="problem-subtitle" class="subtitle">Kompleksni brojevi — primena Vietovih formula i karakteristične jednačine</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Vrednost izraza</p>
+  <div class="math-block">\[ \left(\dfrac{1+i\sqrt{7}}{2}\right)^{4} + \left(\dfrac{1-i\sqrt{7}}{2}\right)^{4} \]</div>
+  <p>je:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 4 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 0 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( -3\sqrt{7}\,i \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Označićemo \( w = \dfrac{1 + i\sqrt{7}}{2} \) i \( \overline{w} = \dfrac{1 - i\sqrt{7}}{2} \). Izračunaćemo \( S = w + \overline{w} \) i \( P = w \cdot \overline{w} \), pa će po Vietama brojevi \( w, \overline{w} \) biti koreni jednačine \( t^{2} - St + P = 0 \). Zatim ćemo izraziti \( w^{4} + \overline{w}^{\,4} \) preko \( S \) i \( P \) koristeći identitet \( a^{4} + b^{4} = (a^{2}+b^{2})^{2} - 2(ab)^{2} \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Simetrične funkcije i identiteti za stepene</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Konjugovani brojevi:</strong> ako je \( w = a + bi \), onda je \( \overline{w} = a - bi \), pa \( w + \overline{w} = 2a = 2\,\mathrm{Re}\,w \) i \( w \cdot \overline{w} = a^{2} + b^{2} = |w|^{2} \). Zbir i proizvod konjugata su uvek realni brojevi.</li>
+        <li><span class="formula-label">Vietove formule</span> Brojevi \( w \) i \( \overline{w} \) su koreni kvadratne jednačine \( t^{2} - St + P = 0 \), gde je \( S = w + \overline{w} \) i \( P = w \cdot \overline{w} \).</li>
+        <li><strong>Zbir kvadrata:</strong> \( w^{2} + \overline{w}^{\,2} = (w + \overline{w})^{2} - 2 w \overline{w} = S^{2} - 2P \).</li>
+        <li><strong>Zbir četvrtih stepena:</strong> \( w^{4} + \overline{w}^{\,4} = (w^{2} + \overline{w}^{\,2})^{2} - 2 (w\overline{w})^{2} = (S^{2} - 2P)^{2} - 2P^{2} \).</li>
+        <li><strong>Njutnova rekurzija</strong> Ako \( p_{n} = w^{n} + \overline{w}^{\,n} \), važi \( p_{n} = S \cdot p_{n-1} - P \cdot p_{n-2} \), uz početne uslove \( p_{0} = 2,\; p_{1} = S \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="720" height="600"></canvas>
+  </div>
+  <p class="canvas-caption">Brojevi \( w = \tfrac{1+i\sqrt{7}}{2} \) i \( \overline{w} = \tfrac{1-i\sqrt{7}}{2} \) u Argandovoj ravni. Oni su simetrični u odnosu na realnu osu, sa modulom \( |w| = \sqrt{2} \approx 1{,}414 \) i argumentima \( \pm\arctan\sqrt{7} \approx \pm 69{,}3^{\circ} \). Nisu na jediničnom krugu, ali su koreni iste realne kvadratne jednačine \( t^{2} - t + 2 = 0 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Pročitaj zbir \( S \) i proizvod \( P \)</h3>
+      <p>Označimo</p>
+      <div class="math-block">\[ w = \dfrac{1 + i\sqrt{7}}{2}, \qquad \overline{w} = \dfrac{1 - i\sqrt{7}}{2}. \]</div>
+      <p>Sabiranjem i množenjem:</p>
+      <div class="math-block">\[ S \;=\; w + \overline{w} \;=\; \dfrac{(1 + i\sqrt{7}) + (1 - i\sqrt{7})}{2} \;=\; \dfrac{2}{2} \;=\; 1. \]</div>
+      <div class="math-block">\[ P \;=\; w \cdot \overline{w} \;=\; \left|w\right|^{2} \;=\; \dfrac{1^{2} + (\sqrt{7})^{2}}{4} \;=\; \dfrac{1 + 7}{4} \;=\; 2. \]</div>
+      <p>Po <span class="formula-label">Vietovim formulama</span>, brojevi \( w \) i \( \overline{w} \) su koreni jednačine</p>
+      <div class="math-block">\[ t^{2} - St + P = 0, \qquad \text{tj.}\qquad t^{2} - t + 2 = 0. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kvadratna formula primenjena na \( t^{2} - t + 2 = 0 \) vraća li polazne brojeve?</summary>
+          <div class="detail-content"><p>Diskriminanta: \( D = 1 - 8 = -7 \). Rešenja: \( t = \dfrac{1 \pm \sqrt{-7}}{2} = \dfrac{1 \pm i\sqrt{7}}{2} \). To su upravo \( w \) i \( \overline{w} \). ✓</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunaj zbir kvadrata: \( w^{2} + \overline{w}^{\,2} \)</h3>
+      <p>Iz identiteta \( a^{2} + b^{2} = (a+b)^{2} - 2ab \):</p>
+      <div class="math-block">\[ w^{2} + \overline{w}^{\,2} \;=\; S^{2} - 2P \;=\; 1^{2} - 2 \cdot 2 \;=\; 1 - 4 \;=\; -3. \]</div>
+      <p>Primeti: rezultat je negativan, što je <em>moguće</em> jer \( w \) i \( \overline{w} \) nisu realni brojevi, pa njihovi kvadrati ne moraju biti pozitivni.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunaj zbir četvrtih stepena: \( w^{4} + \overline{w}^{\,4} \)</h3>
+      <p>Sad iskoristi isti identitet, ali primenjen na \( w^{2} \) i \( \overline{w}^{\,2} \):</p>
+      <div class="math-block">\[ w^{4} + \overline{w}^{\,4} \;=\; \big(w^{2} + \overline{w}^{\,2}\big)^{2} - 2 \big(w \overline{w}\big)^{2} \;=\; (-3)^{2} - 2 \cdot 2^{2}. \]</div>
+      <p>Računamo:</p>
+      <div class="math-block">\[ w^{4} + \overline{w}^{\,4} \;=\; 9 - 8 \;=\; 1. \]</div>
+      <p>Tačan odgovor je <strong>(C) \( 1 \)</strong>.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( (w\overline{w})^{2} = 4 \), a ne \( 16 \) ili nešto drugo?</summary>
+          <div class="detail-content"><p>\( w \overline{w} = P = 2 \). Kvadrat: \( (w\overline{w})^{2} = P^{2} = 2^{2} = 4 \). Tipična greška je da se napiše \( w^{2} \overline{w}^{\,2} \) i traži pojedinačno — ali to je upravo \( (w\overline{w})^{2} = P^{2} \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Alternativna provera — preko karakteristične jednačine</h3>
+      <p>Pošto \( w^{2} - w + 2 = 0 \), važi \( w^{2} = w - 2 \). Stepenujmo:</p>
+      <div class="math-block">\[ w^{3} = w \cdot w^{2} = w(w - 2) = w^{2} - 2w = (w - 2) - 2w = -w - 2. \]</div>
+      <div class="math-block">\[ w^{4} = w \cdot w^{3} = w(-w - 2) = -w^{2} - 2w = -(w - 2) - 2w = -3w + 2. \]</div>
+      <p>Analogno \( \overline{w}^{\,4} = -3\overline{w} + 2 \). Sabiranjem:</p>
+      <div class="math-block">\[ w^{4} + \overline{w}^{\,4} = -3(w + \overline{w}) + 4 = -3 \cdot 1 + 4 = 1. \;\; \checkmark \]</div>
+      <p>Isti odgovor — dva potpuno različita puta. To je solidna garancija da je rezultat \( 1 \).</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kad se traži \( w^{n} + \overline{w}^{\,n} \) za par konjugovanih kompleksnih brojeva, <em>ne moraš</em> stvarno stepenovati. Dovoljno je naći \( S = w + \overline{w} \) i \( P = w\overline{w} \) (oba realna!) i koristiti rekurziju \( p_{n} = S\, p_{n-1} - P\, p_{n-2} \). Niz \( p_{0}, p_{1}, p_{2}, \dots \) je niz realnih celih brojeva (ako su \( S, P \in \mathbb{Z} \)) i da se ne morate baviti kompleksnim računom uopšte. Cela jačina ovog pristupa: <em>simetrične funkcije korenova su uvek realne, čak i kad su koreni kompleksni</em>.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Mešanje \( S^{2} - 2P \) sa \( S^{2} + 2P \):</strong> identitet je \( (w + \overline{w})^{2} = w^{2} + 2w\overline{w} + \overline{w}^{\,2} \), pa \( w^{2} + \overline{w}^{\,2} = S^{2} - 2P \). Znak <em>minus</em>.</li>
+    <li><strong>Pogrešna formula za četvrti stepen:</strong> tačno je \( a^{4} + b^{4} = (a^{2} + b^{2})^{2} - 2(ab)^{2} \), <em>ne</em> \( (a + b)^{4} - 4ab \) ili slično. Provera: \( (a^{2} + b^{2})^{2} = a^{4} + 2a^{2}b^{2} + b^{4} \), pa oduzimanjem \( 2(ab)^{2} = 2a^{2}b^{2} \) ostaje \( a^{4} + b^{4} \). ✓</li>
+    <li><strong>Direktan razvoj binoma \( (1 + i\sqrt{7})^{4} \):</strong> tehnički ispravno (\( \binom{4}{k} \)-ovi), ali dugačko i podložno greškama u znaku. Identiteti preko \( S \) i \( P \) su znatno kraći.</li>
+    <li><strong>Verovanje da je odgovor kompleksan broj (E):</strong> \( w^{4} + \overline{w}^{\,4} \) je <em>uvek</em> realan, jer je zbir konjugata svaka dva konjugata realan broj. Distraktor \( -3\sqrt{7}\,i \) je očigledno netačan iz tog jednog razloga.</li>
+    <li><strong>Zaboravljanje da je \( -3 \) negativno:</strong> \( w^{2} + \overline{w}^{\,2} = -3 \), pa \( (-3)^{2} = 9 \), <em>ne</em> \( -9 \). Pri kvadriranju negativnog broja dobija se pozitivan.</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ w^{4} + \overline{w}^{\,4} \;=\; (S^{2} - 2P)^{2} - 2P^{2} \;=\; (1 - 4)^{2} - 2 \cdot 4 \;=\; 9 - 8 \;=\; 1. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 4 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 2 \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( 1 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 0 \)</span>
+    <span class="answer-option" data-option="E">(E) \( -3\sqrt{7}\,i \)</span>
+  </div>
+  <p class="verification">Provera (Njutnova rekurzija \( p_{n} = p_{n-1} - 2 p_{n-2} \)): \( p_{0} = 2,\; p_{1} = 1,\; p_{2} = 1 - 4 = -3,\; p_{3} = -3 - 2 = -5,\; p_{4} = -5 + 6 = 1 \). ✓</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Iskoristi rekurziju \( p_{n} = p_{n-1} - 2 p_{n-2} \) da izračunaš \( w^{8} + \overline{w}^{\,8} \). Kako se ponaša niz \( p_{n} \) sa povećanjem \( n \) — da li raste, opada, ili oscilira?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Nastavljamo niz: \( p_{4} = 1,\; p_{5} = 1 - 2 \cdot (-3) = 7,\; p_{6} = 7 - 2 \cdot 1 = 5,\; p_{7} = 5 - 14 = -9,\; p_{8} = -9 - 10 = -19 \). Dakle \( w^{8} + \overline{w}^{\,8} = -19 \). Niz je oscilatoran u znaku, ali apsolutna vrednost raste — jer \( |w| = \sqrt{2} > 1 \), pa \( |w^{n}| = 2^{n/2} \) eksplodira. Kad bi bilo \( |w| = 1 \) (tj. da je \( w \) koren iz jedinice), niz \( p_{n} \) bi bio ograničen i čak periodičan.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Naslov
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('w i w̄ u Argandovoj ravni — simetrija u odnosu na realnu osu', W / 2, 28);
+
+    // Centar i razmera (1 jedinica = 110 px)
+    var cx = W / 2, cy = 300;
+    var unit = 110;
+
+    // w = (1/2, √7/2), w̄ = (1/2, -√7/2)
+    var wRe = 0.5;
+    var wIm = Math.sqrt(7) / 2; // ≈ 1.3229
+
+    // Mreža
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var gx = -2; gx <= 2; gx++) {
+      if (gx === 0) continue;
+      var x = cx + gx * unit;
+      ctx.beginPath();
+      ctx.moveTo(x, 60);
+      ctx.lineTo(x, H - 110);
+      ctx.stroke();
+    }
+    for (var gy = -2; gy <= 2; gy++) {
+      if (gy === 0) continue;
+      var y = cy - gy * unit;
+      ctx.beginPath();
+      ctx.moveTo(60, y);
+      ctx.lineTo(W - 60, y);
+      ctx.stroke();
+    }
+
+    // Jedinični krug (referentni, lagani)
+    ctx.strokeStyle = cvAlpha('--sol-canvas-muted', 0.4);
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.arc(cx, cy, unit, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Krug poluprečnika √2 (krug na kome leže w i w̄)
+    ctx.strokeStyle = cvAlpha('--sol-canvas-primary', 0.6);
+    ctx.lineWidth = 2;
+    ctx.setLineDash([8, 4]);
+    ctx.beginPath();
+    ctx.arc(cx, cy, Math.sqrt(2) * unit, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Oznaka kruga
+    ctx.fillStyle = cv('--sol-canvas-primary');
+    ctx.font = 'italic 12px sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('|z| = √2', cx + Math.sqrt(2) * unit * Math.cos(-Math.PI / 6) + 50,
+                              cy - Math.sqrt(2) * unit * Math.sin(-Math.PI / 6) - 6);
+
+    // Ose
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(60, cy);
+    ctx.lineTo(W - 60, cy);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(cx, 60);
+    ctx.lineTo(cx, H - 110);
+    ctx.stroke();
+
+    function arrow(x1, y1, x2, y2) {
+      var ang = Math.atan2(y2 - y1, x2 - x1);
+      ctx.beginPath();
+      ctx.moveTo(x2, y2);
+      ctx.lineTo(x2 - 9 * Math.cos(ang - 0.4), y2 - 9 * Math.sin(ang - 0.4));
+      ctx.lineTo(x2 - 9 * Math.cos(ang + 0.4), y2 - 9 * Math.sin(ang + 0.4));
+      ctx.closePath();
+      ctx.fillStyle = axis;
+      ctx.fill();
+    }
+    arrow(60, cy, W - 60, cy);
+    arrow(cx, H - 110, cx, 60);
+
+    // Labele osa
+    ctx.fillStyle = text;
+    ctx.font = 'italic 13px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Re', W - 56, cy + 4);
+    ctx.textAlign = 'center';
+    ctx.fillText('Im', cx, 56);
+
+    // Brojevi na osama
+    ctx.fillStyle = text;
+    ctx.font = '12px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('1', cx + unit, cy + 16);
+    ctx.fillText('−1', cx - unit, cy + 16);
+    ctx.fillText('2', cx + 2 * unit, cy + 16);
+    ctx.fillText('−2', cx - 2 * unit, cy + 16);
+    ctx.textAlign = 'right';
+    ctx.fillText('1', cx - 6, cy - unit + 4);
+    ctx.fillText('−1', cx - 6, cy + unit + 4);
+    ctx.fillText('2', cx - 6, cy - 2 * unit + 4);
+    ctx.fillText('−2', cx - 6, cy + 2 * unit + 4);
+    ctx.fillText('0', cx - 6, cy + 14);
+
+    // Tačke w i w̄
+    function plotPoint(re, im, color, label, labelPos) {
+      var px = cx + re * unit;
+      var py = cy - im * unit;
+      // potez od ishodišta
+      ctx.strokeStyle = cvAlpha(color, 0.6);
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(px, py);
+      ctx.stroke();
+      // halo
+      ctx.fillStyle = cvAlpha(color, 0.3);
+      ctx.beginPath();
+      ctx.arc(px, py, 13, 0, Math.PI * 2);
+      ctx.fill();
+      // solid
+      ctx.fillStyle = cv(color);
+      ctx.beginPath();
+      ctx.arc(px, py, 7, 0, Math.PI * 2);
+      ctx.fill();
+      // label
+      ctx.fillStyle = cv(color);
+      ctx.font = 'bold 16px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, px + labelPos.x, py + labelPos.y);
+      // koordinate
+      ctx.fillStyle = muted;
+      ctx.font = '11px sans-serif';
+      var coordLabel = '(' + re.toFixed(1).replace('.', ',') + '; '
+        + (im > 0 ? '' : '−') + Math.abs(im).toFixed(3).replace('.', ',') + ')';
+      ctx.fillText(coordLabel, px + labelPos.x, py + labelPos.y + 14);
+    }
+
+    plotPoint(wRe, wIm, '--sol-canvas-secondary', 'w', { x: 22, y: -4 });
+    plotPoint(wRe, -wIm, '--sol-canvas-highlight', 'w̄', { x: 22, y: 6 });
+
+    // Veza simetrije (isprekidana linija između w i w̄)
+    ctx.strokeStyle = cvAlpha('--sol-canvas-accent', 0.6);
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(cx + wRe * unit, cy - wIm * unit);
+    ctx.lineTo(cx + wRe * unit, cy + wIm * unit);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = cv('--sol-canvas-accent');
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('simetrija ↔', cx + wRe * unit + 8, cy + 4);
+
+    // Donji informativni boks
+    var bx = 40, by = H - 90, bw = W - 80, bh = 72;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.08);
+    ctx.strokeStyle = cv('--sol-canvas-accent');
+    ctx.lineWidth = 1.5;
+    var rr = 10;
+    ctx.beginPath();
+    ctx.moveTo(bx + rr, by);
+    ctx.lineTo(bx + bw - rr, by);
+    ctx.quadraticCurveTo(bx + bw, by, bx + bw, by + rr);
+    ctx.lineTo(bx + bw, by + bh - rr);
+    ctx.quadraticCurveTo(bx + bw, by + bh, bx + bw - rr, by + bh);
+    ctx.lineTo(bx + rr, by + bh);
+    ctx.quadraticCurveTo(bx, by + bh, bx, by + bh - rr);
+    ctx.lineTo(bx, by + rr);
+    ctx.quadraticCurveTo(bx, by, bx + rr, by);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('S = w + w̄ = 1,    P = w · w̄ = 2    ⟹    t² − t + 2 = 0', W / 2, by + 22);
+    ctx.font = '12px sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('w² + w̄² = S² − 2P = −3', W / 2, by + 42);
+    ctx.fillStyle = cv('--sol-canvas-accent');
+    ctx.font = 'bold 13px sans-serif';
+    ctx.fillText('w⁴ + w̄⁴ = (−3)² − 2·2² = 9 − 8 = 1  ✓', W / 2, by + 62);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Zbir četvrtih stepena konjugovanih kompleksnih brojeva preko Vietovih formula",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["kompleksni brojevi", "konjugovani brojevi", "Vietove formule", "simetrične funkcije", "Njutnovi identiteti"]
+}
+BRAINSPARK_META-->

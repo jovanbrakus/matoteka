@@ -1,0 +1,521 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Zadatak: Zbir svih rešenja jednačine 2/sin x - sin x = (5/2) ctg x na intervalu (0, π/2).
+
+Strategija:
+1) Domen na (0, π/2): sin x > 0 i cos x > 0, pa su 1/sin x i ctg x = cos x / sin x definisani. Nema deljenja nulom.
+
+2) Eliminisanje imenilaca. Pomnožimo obe strane sa 2 sin x (pozitivno, pa znak nejednakosti/jednačine ne menja):
+     2/sin x · 2 sin x - sin x · 2 sin x = (5/2) ctg x · 2 sin x
+     4 - 2 sin² x = 5 · (cos x / sin x) · sin x
+     4 - 2 sin² x = 5 cos x.
+
+3) Smena sin² x = 1 - cos² x:
+     4 - 2(1 - cos² x) = 5 cos x
+     4 - 2 + 2 cos² x = 5 cos x
+     2 + 2 cos² x = 5 cos x
+     2 cos² x - 5 cos x + 2 = 0.
+
+4) Kvadratna po u = cos x: 2u² - 5u + 2 = 0.
+   D = 25 - 16 = 9, √D = 3. u = (5 ± 3)/4. Dakle u₁ = 8/4 = 2, u₂ = 2/4 = 1/2.
+
+5) Selekcija:
+   - u₁ = 2: cos x = 2 — NEMOGUĆE jer |cos x| ≤ 1. Odbacujemo.
+   - u₂ = 1/2: cos x = 1/2. Na (0, π/2) jedinstveno rešenje x = π/3 (jer cos(π/3) = 1/2 i π/3 ∈ (0, π/2)).
+
+6) Provera (Vieta + direktna):
+   - Vieta: u₁ · u₂ = 2/2 = 1 ✓; u₁ + u₂ = 5/2 ✓.
+   - Direktna provera: x = π/3, sin x = √3/2, cos x = 1/2, ctg x = (1/2)/(√3/2) = 1/√3.
+     LS = 2/(√3/2) - √3/2 = 4/√3 - √3/2 = (4·2)/(2√3) - (√3·√3)/(2·√3) = 8/(2√3) - 3/(2√3) = 5/(2√3) = 5/(2√3) · √3/√3 = 5√3/6.
+     RS = (5/2) · (1/√3) = 5/(2√3) = 5√3/6. ✓
+
+7) Zbir svih rešenja na (0, π/2): postoji samo jedno rešenje x = π/3, pa zbir = π/3.
+
+Selekcija odgovora:
+  (A) 5π/4
+  (B) 2π/3 — bilo bi ako bi bila dva rešenja koja se sabiraju
+  (C) π/2
+  (D) 3π/4
+  (E) π/3 — TAČAN
+
+Distraktori: (B) 2π/3 je opasan jer ako neko slučajno uzme i cos x = 2 (zaboravljajući ograničenje), pa pomeša... ali zapravo 2π/3 nije ni vrednost iz π/3 + nešto.
+Verovatnije: neko pomeša sa intervalom (0, π) gde bi cos x = 1/2 dao x = π/3, ali na (0, π) cos x = 1/2 ima samo jedno rešenje x = π/3 (na (π, 2π) bi imali 5π/3). Možda neko misli da je "obe strane intervala" pa pridoda π/3 + π/3 = 2π/3, ili pomeša sa sumom 0 + π/3 = π/3, ili...
+Najverovatnija greška: neko misli da je rešenje i x = π/2 - arccos(1/2) = π/2 - π/3 = π/6, pa zbiri = π/3 + π/6 = π/2 — to objašnjava (C) π/2.
+
+Tačan odgovor: (E) π/3.
+
+Vizuelni materijal:
+  Ovo je algebarska jednačina (svedena na kvadratnu po cos x). Statički graf — možda grafovi LS = 2/sin x - sin x
+  i RS = (5/2) ctg x na (0, π/2) sa istaknutim presekom u x = π/3. Statički je sasvim u redu — ne treba interaktivnost.
+
+Implementacija canvas-a:
+  - x ∈ (0,15, π/2 - 0,01)
+  - LS i RS funkcije, prikaz preseka
+  - vertikalna linija u x = π/3, oznaka tačke preseka
+  - asimptotsko ponašanje: LS → ∞ pri x → 0+ (zbog 2/sin x), RS → ∞ pri x → 0+ (zbog ctg x). LS = -∞ + ∞? Zapravo na (0, π/2) sin x ∈ (0,1], cos x ∈ (0,1), pa LS = 2/sin x - sin x ide od +∞ (x→0+) do 2/1 - 1 = 1 (x = π/2). RS = (5/2) ctg x ide od +∞ (x→0+) do 0 (x → π/2). Obe opadaju (LS strogo) i imaju tačno jedan presek.
+</script>
+
+<h1 data-card="problem-title">Zbir rešenja trigonometrijske jednačine na \( (0, \pi/2) \)</h1>
+<p data-card="problem-subtitle" class="subtitle">Trigonometrija — svođenje na kvadratnu jednačinu po \( \cos x \) i izbor dopuštenih korena</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Zbir svih rešenja jednačine</p>
+  <div class="math-block">\[ \dfrac{2}{\sin x} \;-\; \sin x \;=\; \dfrac{5}{2}\operatorname{ctg} x \]</div>
+  <p>u intervalu \( \left(0,\, \dfrac{\pi}{2}\right) \) je:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">Jednačina</span>
+      <span class="given-value">\( \dfrac{2}{\sin x} - \sin x = \dfrac{5}{2}\operatorname{ctg} x \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Domen</span>
+      <span class="given-value">\( x \in \left(0,\, \dfrac{\pi}{2}\right) \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Traži se</span>
+      <span class="given-value">\( \sum x_k = \,? \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \dfrac{5\pi}{4} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \dfrac{2\pi}{3} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \dfrac{\pi}{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \dfrac{3\pi}{4} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \dfrac{\pi}{3} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Pomnožićemo obe strane sa \( 2\sin x \) (pozitivno na \( (0, \pi/2) \), tako da znak ostaje sačuvan), eliminisati imenioce i zameniti \( \sin^2 x = 1 - \cos^2 x \). Time dobijamo <strong>kvadratnu jednačinu po \( \cos x \)</strong>: \( 2\cos^2 x - 5\cos x + 2 = 0 \). Posle rešavanja, odbacujemo nemoguć koren \( \cos x = 2 \) i tražimo sve \( x \in (0, \pi/2) \) sa \( \cos x = \dfrac{1}{2} \). Konačno saberemo sva rešenja.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Osnovni identiteti i kvadratna formula</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Pitagorin identitet:</strong> \( \sin^2 x + \cos^2 x = 1 \), tj. \( \sin^2 x = 1 - \cos^2 x \).</li>
+        <li><strong>Kotangens:</strong> \( \operatorname{ctg} x = \dfrac{\cos x}{\sin x} \) za \( \sin x \neq 0 \).</li>
+        <li><strong>Znakovi na \( (0, \pi/2) \):</strong> \( \sin x > 0 \) i \( \cos x > 0 \), pa je množenje sa \( \sin x \) (ili \( 2\sin x \)) <em>siguran</em> potez — ekvivalentne transformacije.</li>
+        <li><strong>Ograničenje:</strong> \( |\cos x| \leq 1 \). Svaki koren \( |u| > 1 \) iz kvadratne po \( u = \cos x \) treba odbaciti.</li>
+        <li><strong>Vrednosti na \( (0, \pi/2) \):</strong> \( \cos x \) je strogo opadajuća i bijekcija \( (0, \pi/2) \to (0, 1) \). Zato za svako \( u \in (0, 1) \) postoji <em>tačno jedno</em> \( x \) takvo da \( \cos x = u \).</li>
+        <li><strong>Kvadratna formula:</strong> \( au^2 + bu + c = 0 \;\Rightarrow\; u = \dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a} \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="graph" width="720" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Grafovi leve strane \( L(x) = \dfrac{2}{\sin x} - \sin x \) (plavo) i desne strane \( D(x) = \dfrac{5}{2}\operatorname{ctg} x \) (narandžasto) na \( (0, \pi/2) \). Obe krive su strogo opadajuće i seku se u tačno jednoj tački, \( x = \dfrac{\pi}{3} \), gde \( L = D = \dfrac{5\sqrt{3}}{6} \approx 1{,}443 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Proveri domen i eliminiši imenioce</h3>
+      <p>Na intervalu \( (0, \pi/2) \) važi \( \sin x > 0 \) i \( \cos x > 0 \). Posebno, \( \sin x \neq 0 \), pa svi izrazi \( \dfrac{2}{\sin x} \) i \( \operatorname{ctg} x = \dfrac{\cos x}{\sin x} \) imaju smisla.</p>
+      <p>Pomnožimo obe strane jednačine sa \( 2\sin x > 0 \) (transformacija je <em>ekvivalentna</em>):</p>
+      <div class="math-block">\[ 2\sin x \cdot \dfrac{2}{\sin x} \;-\; 2\sin x \cdot \sin x \;=\; 2\sin x \cdot \dfrac{5}{2} \cdot \dfrac{\cos x}{\sin x}. \]</div>
+      <div class="math-block">\[ 4 \;-\; 2\sin^2 x \;=\; 5\cos x. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je množenje sa \( 2\sin x \) bezbedno?</summary>
+          <div class="detail-content"><p>Jer je \( 2\sin x > 0 \) na celom domenu \( (0, \pi/2) \). Množenje pozitivnim brojem ne stvara <em>nova</em> rešenja niti gubi postojeća — to je ekvivalentna transformacija.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Pređi na \( \cos x \) pomoću \( \sin^2 x = 1 - \cos^2 x \)</h3>
+      <p>Zamenom \( \sin^2 x = 1 - \cos^2 x \) dobijamo jednačinu u kojoj se pojavljuje samo \( \cos x \):</p>
+      <div class="math-block">\[ 4 \;-\; 2(1 - \cos^2 x) \;=\; 5\cos x. \]</div>
+      <div class="math-block">\[ 4 \;-\; 2 \;+\; 2\cos^2 x \;=\; 5\cos x \quad\Longrightarrow\quad 2\cos^2 x \;-\; 5\cos x \;+\; 2 \;=\; 0. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Reši kvadratnu jednačinu po \( u = \cos x \)</h3>
+      <p>Smena \( u = \cos x \) daje:</p>
+      <div class="math-block">\[ 2u^2 \;-\; 5u \;+\; 2 \;=\; 0. \]</div>
+      <p>Diskriminanta:</p>
+      <div class="math-block">\[ D \;=\; (-5)^2 \;-\; 4 \cdot 2 \cdot 2 \;=\; 25 \;-\; 16 \;=\; 9, \qquad \sqrt{D} \;=\; 3. \]</div>
+      <p>Koreni:</p>
+      <div class="math-block">\[ u \;=\; \dfrac{5 \pm 3}{4}, \qquad u_1 \;=\; \dfrac{8}{4} \;=\; 2, \qquad u_2 \;=\; \dfrac{2}{4} \;=\; \dfrac{1}{2}. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: brzo preko Viete-a.</summary>
+          <div class="detail-content"><p>Za \( 2u^2 - 5u + 2 = 0 \): zbir korena \( = \dfrac{5}{2} \), proizvod \( = \dfrac{2}{2} = 1 \). \( 2 + \dfrac{1}{2} = \dfrac{5}{2} \) ✓ i \( 2 \cdot \dfrac{1}{2} = 1 \) ✓.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Odbaci nemoguć koren i nađi \( x \)</h3>
+      <p>Pošto je \( |\cos x| \leq 1 \), koren <span class="crossed">\( u_1 = 2 \)</span> je <strong>nemoguć</strong> — odbacujemo ga.</p>
+      <p>Ostaje \( \cos x = \dfrac{1}{2} \). Na intervalu \( (0, \pi/2) \), funkcija \( \cos \) je strogo opadajuća bijekcija na \( (0, 1) \), pa postoji <em>tačno jedno</em> rešenje:</p>
+      <div class="math-block">\[ x \;=\; \arccos\!\left(\dfrac{1}{2}\right) \;=\; \dfrac{\pi}{3}. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš jedno rešenje, a ne dva?</summary>
+          <div class="detail-content"><p>Vrednost \( \cos x = \dfrac{1}{2} \) na intervalu \( [0, 2\pi) \) imaju dva ugla: \( \dfrac{\pi}{3} \) i \( \dfrac{5\pi}{3} \). Drugi nije u \( (0, \pi/2) \), pa nas ne interesuje.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Direktna provera u originalnoj jednačini</h3>
+      <p>Za \( x = \dfrac{\pi}{3} \): \( \sin x = \dfrac{\sqrt{3}}{2} \), \( \cos x = \dfrac{1}{2} \), \( \operatorname{ctg} x = \dfrac{1}{\sqrt{3}} \).</p>
+      <div class="math-block">\[ \text{LS} \;=\; \dfrac{2}{\sqrt{3}/2} \;-\; \dfrac{\sqrt{3}}{2} \;=\; \dfrac{4}{\sqrt{3}} \;-\; \dfrac{\sqrt{3}}{2} \;=\; \dfrac{8}{2\sqrt{3}} \;-\; \dfrac{3}{2\sqrt{3}} \;=\; \dfrac{5}{2\sqrt{3}} \;=\; \dfrac{5\sqrt{3}}{6}. \]</div>
+      <div class="math-block">\[ \text{DS} \;=\; \dfrac{5}{2} \cdot \dfrac{1}{\sqrt{3}} \;=\; \dfrac{5}{2\sqrt{3}} \;=\; \dfrac{5\sqrt{3}}{6}. \]</div>
+      <p>LS \( = \) DS. ✓</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Saberi sva rešenja</h3>
+      <p>Na intervalu \( (0, \pi/2) \) postoji <em>tačno jedno</em> rešenje, \( x = \dfrac{\pi}{3} \). Zato je zbir:</p>
+      <div class="math-block">\[ \sum x_k \;=\; \dfrac{\pi}{3}. \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Strategija „pomnoži sa \( \sin x \) i koristi \( \sin^2 x = 1 - \cos^2 x \)“ je tipičan trik za jednačine sa \( \dfrac{1}{\sin x} \), \( \sin x \) i \( \operatorname{ctg} x \) — sve sa istim imeniocem \( \sin x \). Posle toga, jednačina se gotovo uvek svodi na <strong>kvadratnu po \( \cos x \)</strong>. Glavna zamka je zaboraviti da je \( |\cos x| \leq 1 \), pa neke korene <em>moramo</em> da odbacimo.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \sum x_k \;=\; \dfrac{\pi}{3}. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( \dfrac{5\pi}{4} \)</span>
+    <span class="answer-option" data-option="B">(B) \( \dfrac{2\pi}{3} \)</span>
+    <span class="answer-option" data-option="C">(C) \( \dfrac{\pi}{2} \)</span>
+    <span class="answer-option" data-option="D">(D) \( \dfrac{3\pi}{4} \)</span>
+    <span class="answer-option correct" data-option="E">(E) \( \dfrac{\pi}{3} \)</span>
+  </div>
+  <p class="verification">Provera: jedino rešenje na \( (0, \pi/2) \) je \( x = \pi/3 \). Direktna zamena: LS \( = \dfrac{5\sqrt{3}}{6} \), DS \( = \dfrac{5\sqrt{3}}{6} \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zaboravljanje ograničenja \( |\cos x| \leq 1 \):</strong> ako se ne odbaci \( \cos x = 2 \), može se pokušati naći \( x \) koji „ne postoji“ i unositi konfuziju.</li>
+    <li><strong>Pogrešna ekspanzija:</strong> \( 4 - 2(1 - \cos^2 x) = 4 - 2 - 2\cos^2 x \) (greška sa znakom) umesto \( 4 - 2 + 2\cos^2 x \). To bi dalo \( -2\cos^2 x - 5\cos x + 2 = 0 \), tj. \( 2\cos^2 x + 5\cos x - 2 = 0 \) sa pogrešnim korenima.</li>
+    <li><strong>Iskorišćavanje \( \sin x = \sqrt{1 - \cos^2 x} \):</strong> sa korenom umesto sa kvadratom — uvodi nepotrebne komplikacije i potencijalno gubi rešenja.</li>
+    <li><strong>Dodatno rešenje \( x = \pi/6 \):</strong> neko može pomešati \( \cos x = 1/2 \) sa \( \sin x = 1/2 \), pa pogrešno zbrojiti \( \pi/3 + \pi/6 = \pi/2 \) — to vodi do distraktora (C).</li>
+    <li><strong>Računanje na pogrešnom intervalu:</strong> ako se rešenja traže na \( (0, \pi) \) ili \( (0, 2\pi) \), broj rešenja se menja. Pažljivo pročitati uslov \( (0, \pi/2) \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Kako se menja zbir rešenja iste jednačine ako se interval proširi na \( (0, 2\pi) \)? Koliko će rešenja biti i koliko će im biti zbir?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Na \( (0, 2\pi) \) jednakost \( \cos x = \dfrac{1}{2} \) ima dva rešenja: \( x_1 = \dfrac{\pi}{3} \) i \( x_2 = \dfrac{5\pi}{3} \) (u IV kvadrantu, gde \( \sin x < 0 \)). Treba proveriti da li \( x_2 \) i dalje zadovoljava polaznu jednačinu — sin x ostaje različito od nule. Provera: \( \sin\!\left(\dfrac{5\pi}{3}\right) = -\dfrac{\sqrt{3}}{2} \), pa LS \( = \dfrac{2}{-\sqrt{3}/2} - \!\left(-\dfrac{\sqrt{3}}{2}\right) = -\dfrac{4}{\sqrt{3}} + \dfrac{\sqrt{3}}{2} = -\dfrac{5\sqrt{3}}{6} \). DS \( = \dfrac{5}{2} \cdot \dfrac{1/2}{-\sqrt{3}/2} = -\dfrac{5}{2\sqrt{3}} = -\dfrac{5\sqrt{3}}{6} \). Jednakost važi. Zbir rešenja \( = \dfrac{\pi}{3} + \dfrac{5\pi}{3} = 2\pi \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('graph');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  var X_MIN = 0.18;
+  var X_MAX = Math.PI / 2 - 0.005;
+  var Y_MIN = 0;
+  var Y_MAX = 12;
+
+  var padL = 70, padR = 30, padT = 50, padB = 90;
+  function plotW() { return canvas.width - padL - padR; }
+  function plotH() { return canvas.height - padT - padB; }
+
+  function toCanvas(x, y) {
+    return {
+      x: padL + (x - X_MIN) / (X_MAX - X_MIN) * plotW(),
+      y: padT + (Y_MAX - y) / (Y_MAX - Y_MIN) * plotH()
+    };
+  }
+
+  function L(x) { return 2 / Math.sin(x) - Math.sin(x); }
+  function D(x) { return (5 / 2) * (Math.cos(x) / Math.sin(x)); }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    var xTicks = [
+      { v: Math.PI/6, l: 'π/6' },
+      { v: Math.PI/4, l: 'π/4' },
+      { v: Math.PI/3, l: 'π/3' },
+      { v: 5*Math.PI/12, l: '5π/12' }
+    ];
+    var yTicks = [2, 4, 6, 8, 10];
+
+    xTicks.forEach(function(t) {
+      if (t.v < X_MIN || t.v > X_MAX) return;
+      var p = toCanvas(t.v, 0);
+      ctx.beginPath();
+      ctx.moveTo(p.x, padT);
+      ctx.lineTo(p.x, padT + plotH());
+      ctx.stroke();
+    });
+    yTicks.forEach(function(yv) {
+      var p = toCanvas(X_MIN, yv);
+      ctx.beginPath();
+      ctx.moveTo(padL, p.y);
+      ctx.lineTo(padL + plotW(), p.y);
+      ctx.stroke();
+    });
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(padL, padT + plotH());
+    ctx.lineTo(padL + plotW(), padT + plotH());
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(padL, padT);
+    ctx.lineTo(padL, padT + plotH());
+    ctx.stroke();
+
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, system-ui';
+    ctx.textAlign = 'center';
+    xTicks.forEach(function(t) {
+      if (t.v < X_MIN || t.v > X_MAX) return;
+      var p = toCanvas(t.v, 0);
+      ctx.fillText(t.l, p.x, padT + plotH() + 16);
+    });
+    ctx.textAlign = 'right';
+    yTicks.forEach(function(yv) {
+      var p = toCanvas(X_MIN, yv);
+      ctx.fillText(String(yv), padL - 8, p.y + 4);
+    });
+
+    // Axis titles
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 12px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('x ∈ (0, π/2)', padL + plotW()/2, canvas.height - 50);
+    ctx.save();
+    ctx.translate(20, padT + plotH()/2);
+    ctx.rotate(-Math.PI/2);
+    ctx.fillText('vrednost', 0, 0);
+    ctx.restore();
+
+    // L(x) curve
+    function drawCurve(fn, color, lineWidth) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineWidth;
+      ctx.beginPath();
+      var first = true;
+      var N = 400;
+      for (var i = 0; i <= N; i++) {
+        var x = X_MIN + (X_MAX - X_MIN) * i / N;
+        var y = fn(x);
+        if (y < Y_MIN || y > Y_MAX) {
+          first = true;
+          continue;
+        }
+        var p = toCanvas(x, y);
+        if (first) { ctx.moveTo(p.x, p.y); first = false; }
+        else ctx.lineTo(p.x, p.y);
+      }
+      ctx.stroke();
+    }
+
+    drawCurve(L, primary, 2.5);
+    drawCurve(D, warning, 2.5);
+
+    // Intersection at x = π/3, y = 5√3/6 ≈ 1.4434
+    var xStar = Math.PI / 3;
+    var yStar = 5 * Math.sqrt(3) / 6;
+    var pStar = toCanvas(xStar, yStar);
+
+    // Vertical line at π/3
+    ctx.strokeStyle = cvAlpha('--sol-canvas-accent', 0.7);
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(pStar.x, padT);
+    ctx.lineTo(pStar.x, padT + plotH());
+    ctx.stroke();
+    // Horizontal line at y = 5√3/6
+    var pY = toCanvas(X_MIN, yStar);
+    ctx.beginPath();
+    ctx.moveTo(padL, pStar.y);
+    ctx.lineTo(padL + plotW(), pStar.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Intersection point
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.25);
+    ctx.beginPath();
+    ctx.arc(pStar.x, pStar.y, 14, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(pStar.x, pStar.y, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Labels for intersection
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText('x = π/3', pStar.x + 12, pStar.y - 8);
+    ctx.fillText('5√3/6 ≈ 1,443', pStar.x + 12, pStar.y + 18);
+
+    // Legend (top-right)
+    var legX = padL + plotW() - 240;
+    var legY = padT + 14;
+    var legW = 230;
+    var legH = 78;
+
+    ctx.fillStyle = cvAlpha('--sol-canvas-bg', 0.9);
+    ctx.fillRect(legX, legY, legW, legH);
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(legX, legY, legW, legH);
+
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(legX + 12, legY + 20);
+    ctx.lineTo(legX + 38, legY + 20);
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText('L(x) = 2/sin x − sin x', legX + 46, legY + 24);
+
+    ctx.strokeStyle = warning;
+    ctx.beginPath();
+    ctx.moveTo(legX + 12, legY + 42);
+    ctx.lineTo(legX + 38, legY + 42);
+    ctx.stroke();
+    ctx.fillText('D(x) = (5/2) ctg x', legX + 46, legY + 46);
+
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(legX + 25, legY + 64, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.fillText('presek: x = π/3', legX + 46, legY + 68);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Presek L(x) = D(x) na (0, π/2): tačno jedna tačka', padL + plotW()/2, 28);
+
+    // Bottom formula reminder
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('2 cos²x − 5 cos x + 2 = 0  ⇒  cos x = 1/2  ⇒  x = π/3', padL + plotW()/2, canvas.height - 20);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Zbir rešenja: 2/sin x − sin x = (5/2) ctg x na (0, π/2)",
+  "subject": "math",
+  "unit": "trigonometry",
+  "topic_tags": ["trigonometrijska jednačina", "kvadratna po kosinusu", "izbor korena", "domen rešenja"]
+}
+BRAINSPARK_META-->

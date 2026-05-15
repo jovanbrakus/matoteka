@@ -1,0 +1,489 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Zadatak: a > 0, x > 0. U razvoju (cetvrti_koren(a^2 x) + 1/peti_koren(a x^2))^13
+  pronaci clan koji ne sadrzi x.
+
+  Prepisivanje izraza:
+     cetvrti_koren(a^2 x) = (a^2 x)^(1/4) = a^(2/4) · x^(1/4) = a^(1/2) · x^(1/4).
+     1/peti_koren(a x^2) = (a x^2)^(-1/5) = a^(-1/5) · x^(-2/5).
+
+  Opsti clan: T_{k+1} = C(13,k) · (a^(1/2) x^(1/4))^(13-k) · (a^(-1/5) x^(-2/5))^k
+     = C(13,k) · a^((13-k)/2 - k/5) · x^((13-k)/4 - 2k/5).
+
+  Uslov: eksponent od x je 0.
+     (13-k)/4 - 2k/5 = 0
+     Pomnozi sa 20: 5(13-k) - 8k = 0
+     65 - 5k - 8k = 0
+     65 - 13k = 0
+     k = 5.
+
+  Eksponent od a za k = 5:
+     (13-5)/2 - 5/5 = 8/2 - 1 = 4 - 1 = 3.
+
+  Koeficijent: C(13, 5) = 13!/(5! · 8!) = (13·12·11·10·9)/(5·4·3·2·1) = 154440/120 = 1287.
+
+  Provera C(13,5): 13C5 = 1287. ✓ (Poznata vrednost iz Paskalovog trougla.)
+
+  T_6 = 1287 · a^3 (clan ne sadrzi x). Odgovor (C) 1287a^3.
+
+  Vizualizacija:
+     Canvas: dijagram koji prikazuje opsti clan, eksponente x i a u funkciji od k
+     (za k = 0..13), i tacku k = 5 gde se eksponent x anulira.
+     Linija eksponenta od x se ukosava od (13-k)/4 - 2k/5, pa za k=0 je 13/4 = 3.25,
+     a za k=13 je -26/5 = -5.2. Tacka preseka sa nulom je k = 5.
+     Staticki — niz vrednosti, brzina razumevanja se ne menja sa interakcijom.
+
+  Najcesce greske:
+   * Pogresno prepisati eksponente korenova (1/4 ili 1/5).
+   * Zaboraviti minus za reciprocnu cesticu (1/peti_koren = a^(-1/5)).
+   * Pomnoziti pogresno: (a^2 x)^(1/4) bi neko mogao pisati kao a^2 · x^(1/4) bez deljenja 2/4.
+   * Racunati C(13,5) sa greskom (ispravno 1287).
+   * Naci k pa zaboraviti racunati eksponent od a — pomesati ga sa eksponentom x.
+   * Pobrkati T_{k+1} i T_k (treba T_6 za k=5, ne T_5).
+</script>
+
+<h1 data-card="problem-title">Član bez \( x \) u binomnom razvoju</h1>
+<p data-card="problem-subtitle" class="subtitle">Pronalaženje slobodnog člana po \( x \) u razvoju izraza sa korenima &mdash; opšti član i jednačina eksponenta</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Za \( a > 0 \) i \( x > 0 \), član u razvoju izraza \( \left(\sqrt[4]{a^2 x} + \dfrac{1}{\sqrt[5]{a x^2}}\right)^{13} \) koji ne sadrži \( x \) jednak je:</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">prvi sabirak</span>
+      <span class="given-value">\( \sqrt[4]{a^2 x} = a^{1/2} x^{1/4} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">drugi sabirak</span>
+      <span class="given-value">\( \dfrac{1}{\sqrt[5]{a x^2}} = a^{-1/5} x^{-2/5} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">stepen</span>
+      <span class="given-value">\( n = 13 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">uslov</span>
+      <span class="given-value">eksponent od \( x \) je \( 0 \)</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 286a \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 715a^{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 1287a^{3} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 1716a^{4} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 1716a^{5} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Prepišemo korene kao stepene, napišemo opšti član razvoja i razdvojimo eksponente od \( a \) i \( x \). Postavljanjem eksponenta od \( x \) na nulu nalazimo \( k \), pa zatim računamo binomni koeficijent \( \binom{13}{k} \) i eksponent od \( a \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Stepeni, koreni i binomni razvoj</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Koreni kao stepeni</span> \( \sqrt[m]{a^n} = a^{n/m} \), \( \dfrac{1}{\sqrt[m]{a}} = a^{-1/m} \).</li>
+        <li><span class="formula-label">Pravila stepena</span> \( (a^p \cdot b^q)^r = a^{pr}\, b^{qr} \), \( a^p \cdot a^q = a^{p+q} \).</li>
+        <li><span class="formula-label">Binomna teorema</span> \( (X + Y)^n = \sum_{k=0}^{n} \binom{n}{k} X^{n-k} Y^k \), opšti član \( T_{k+1} = \binom{n}{k} X^{n-k} Y^k \).</li>
+        <li><span class="formula-label">Slobodan član</span> Za \( X = a^{p_1} x^{q_1}, \; Y = a^{p_2} x^{q_2} \), eksponent od \( x \) u \( T_{k+1} \) je \( q_1(n-k) + q_2\, k \). Slobodan član (ne sadrži \( x \)) postoji akko je rešenje po \( k \) ceo broj iz \( \{0, 1, \ldots, n\} \).</li>
+        <li>Poznata vrednost: \( \binom{13}{5} = 1287 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="760" height="540"></canvas>
+  </div>
+  <p class="canvas-caption">Eksponent od \( x \) u opštem članu kao funkcija indeksa \( k \): \( E_x(k) = \dfrac{13-k}{4} - \dfrac{2k}{5} \). Linija seče nulu u \( k = 5 \) &mdash; tada član ne sadrži \( x \). Istovremeno prikazujemo i eksponent od \( a \), koji za \( k = 5 \) iznosi \( 3 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Prepiši korene kao stepene</h3>
+      <p>Iskoristimo \( \sqrt[m]{a^n} = a^{n/m} \) i \( \dfrac{1}{\sqrt[m]{u}} = u^{-1/m} \).</p>
+      <div class="math-block">\[ \sqrt[4]{a^2 x} = (a^2 x)^{1/4} = a^{1/2}\, x^{1/4}, \qquad \frac{1}{\sqrt[5]{a x^2}} = (a x^2)^{-1/5} = a^{-1/5}\, x^{-2/5}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( (a^2 x)^{1/4} = a^{1/2} x^{1/4} \)?</summary>
+          <div class="detail-content"><p>Po pravilu \( (uv)^r = u^r v^r \) imamo \( (a^2 x)^{1/4} = (a^2)^{1/4} \cdot x^{1/4} = a^{2/4} \cdot x^{1/4} = a^{1/2} x^{1/4} \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Napiši opšti član razvoja</h3>
+      <p>Postavimo \( X = a^{1/2} x^{1/4} \), \( Y = a^{-1/5} x^{-2/5} \), \( n = 13 \). Opšti član je:</p>
+      <div class="math-block">\[ T_{k+1} = \binom{13}{k}\, \bigl(a^{1/2} x^{1/4}\bigr)^{13-k} \, \bigl(a^{-1/5} x^{-2/5}\bigr)^{k}. \]</div>
+      <p>Posebno sredjujemo eksponente od \( a \) i od \( x \):</p>
+      <div class="math-block">\[ T_{k+1} = \binom{13}{k}\; a^{\,\tfrac{13-k}{2} - \tfrac{k}{5}}\; x^{\,\tfrac{13-k}{4} - \tfrac{2k}{5}}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavi eksponent od \( x \) na nulu</h3>
+      <p>Tražimo \( k \) za koji je eksponent uz \( x \) jednak nuli:</p>
+      <div class="math-block">\[ \frac{13 - k}{4} - \frac{2k}{5} = 0. \]</div>
+      <p>Pomnožimo obe strane sa 20 (zajednički sadržalac), pa dobijemo linearnu jednačinu po \( k \):</p>
+      <div class="math-block">\[ 5(13 - k) - 8k = 0 \;\;\Longrightarrow\;\; 65 - 5k - 8k = 0 \;\;\Longrightarrow\;\; 13k = 65 \;\;\Longrightarrow\;\; \boxed{k = 5}. \]</div>
+      <p>Vrednost \( k = 5 \) je u opsegu \( \{0, 1, \ldots, 13\} \), pa slobodan član postoji &mdash; to je <span class="result">\( T_6 \)</span>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunaj eksponent od \( a \) za \( k = 5 \)</h3>
+      <p>Uvrstimo \( k = 5 \) u izraz za eksponent od \( a \):</p>
+      <div class="math-block">\[ \frac{13 - 5}{2} - \frac{5}{5} = \frac{8}{2} - 1 = 4 - 1 = 3. \]</div>
+      <p>Dakle uz koeficijent \( \binom{13}{5} \) ostaje \( a^{3} \) (i \( x^{0} = 1 \)).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunaj \( \binom{13}{5} \)</h3>
+      <p>Po definiciji binomnog koeficijenta:</p>
+      <div class="math-block">\[ \binom{13}{5} = \frac{13 \cdot 12 \cdot 11 \cdot 10 \cdot 9}{5 \cdot 4 \cdot 3 \cdot 2 \cdot 1} = \frac{154\,440}{120} = 1287. \]</div>
+      <p>Slobodan član je:</p>
+      <div class="math-block">\[ T_6 = \binom{13}{5}\, a^{3} = 1287\, a^{3}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto se brzo može uveriti da \( \binom{13}{5} = 1287 \)?</summary>
+          <div class="detail-content"><p>Iz Paskalovog trougla \( \binom{13}{5} = \binom{12}{4} + \binom{12}{5} = 495 + 792 = 1287 \). Ili po simetriji: \( \binom{13}{5} = \binom{13}{8} \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>U razvoju izraza sa korenima, opšti član se uvek može svesti na \( \binom{n}{k} a^{p(k)} x^{q(k)} \), gde su \( p, q \) <em>linearne</em> funkcije od \( k \). &bdquo;Slobodan član po \( x \)&ldquo; znači postaviti \( q(k) = 0 \) i rešiti po \( k \) &mdash; uvek linearna jednačina. Ako rešenje nije ceo broj u \( \{0, \ldots, n\} \), takav član ne postoji.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ T_6 = \binom{13}{5}\, a^{3} = 1287\, a^{3}. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 286a \)</span>
+    <span class="answer-option" data-option="B">(B) \( 715a^{2} \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( 1287a^{3} \)</span>
+    <span class="answer-option" data-option="D">(D) \( 1716a^{4} \)</span>
+    <span class="answer-option" data-option="E">(E) \( 1716a^{5} \)</span>
+  </div>
+  <p class="verification">Provera: eksponent od \( x \) za \( k = 5 \): \( \dfrac{13-5}{4} - \dfrac{2 \cdot 5}{5} = 2 - 2 = 0 \) ✓. Eksponent od \( a \): \( \dfrac{13-5}{2} - \dfrac{5}{5} = 4 - 1 = 3 \) ✓. Koeficijent: \( \binom{13}{5} = 1287 \) ✓.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pogrešno prepisati eksponente korenova: \( \sqrt[4]{a^2 x} \) NIJE \( a^2 \cdot x^{1/4} \) &mdash; pravilno je \( a^{2/4} \cdot x^{1/4} = a^{1/2} x^{1/4} \).</li>
+    <li>Zaboraviti minus iz reciprocne strane: \( \dfrac{1}{\sqrt[5]{a x^2}} = a^{-1/5} x^{-2/5} \) (oba eksponenta negativna).</li>
+    <li>Pomešati \( T_{k+1} \) i \( T_k \): za \( k = 5 \) traženi član je \( T_6 \), ne \( T_5 \). (Ovde nas to ipak ne pita po broju člana, samo po vrednosti.)</li>
+    <li>Pošto nadjete \( k \), zaboraviti da izračunate eksponent od \( a \) &mdash; krajnji odgovor mora imati i koeficijent i stepen od \( a \).</li>
+    <li>Pogrešno izračunati \( \binom{13}{5} \): tačna vrednost je \( 1287 \), a ne \( 1716 \) (\( = \binom{13}{6} \)) ni \( 715 \) (\( = \binom{13}{4} \)).</li>
+    <li>Zaboraviti proveriti da li je dobijeno \( k \) ceo broj iz \( \{0, 1, \ldots, n\} \). Ako nije, slobodan član ne postoji.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>U istom razvoju \( \left(\sqrt[4]{a^2 x} + \dfrac{1}{\sqrt[5]{a x^2}}\right)^{13} \) pronađi član koji ne sadrži \( a \) (slobodan po \( a \)), ako on uopšte postoji.</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Postavi eksponent od \( a \) na nulu: \( \dfrac{13-k}{2} - \dfrac{k}{5} = 0 \). Pomnoži sa 10: \( 5(13-k) - 2k = 0 \Rightarrow 65 = 7k \Rightarrow k = \dfrac{65}{7} \). Pošto to nije ceo broj, slobodan po \( a \) <em>ne postoji</em>. Razvoj ima samo članove sa nenultim eksponentom uz \( a \) za \( k = 0, 1, \ldots, 13 \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function expX(k) { return (13 - k) / 4 - 2 * k / 5; }
+  function expA(k) { return (13 - k) / 2 - k / 5; }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var W = canvas.width;
+    var H = canvas.height;
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Eksponenti od x i a u opštem članu T_{k+1}, k = 0, 1, …, 13', W/2, 14);
+
+    // Plot area
+    var plotL = 80;
+    var plotR = W - 60;
+    var plotT = 60;
+    var plotB = H - 140;
+    var plotW = plotR - plotL;
+    var plotH = plotB - plotT;
+
+    // Y range: roughly -6 .. +7  (expA min at k=13: 13/2 - 13/5 = 6.5 - 2.6 = 3.9? Let's compute true range)
+    // expA(0) = 13/2 = 6.5; expA(13) = -13/5 = -2.6
+    // expX(0) = 13/4 = 3.25; expX(13) = -2*13/5 = -5.2
+    var yMin = -6;
+    var yMax = 7;
+    var xMin = 0;
+    var xMax = 13;
+
+    function tx(k) { return plotL + (k - xMin) / (xMax - xMin) * plotW; }
+    function ty(v) { return plotT + (yMax - v) / (yMax - yMin) * plotH; }
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 3]);
+    for (var k = 0; k <= 13; k++) {
+      ctx.beginPath();
+      ctx.moveTo(tx(k), plotT);
+      ctx.lineTo(tx(k), plotB);
+      ctx.stroke();
+    }
+    for (var v = yMin; v <= yMax; v++) {
+      ctx.beginPath();
+      ctx.moveTo(plotL, ty(v));
+      ctx.lineTo(plotR, ty(v));
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    // x-axis at y=0
+    ctx.beginPath();
+    ctx.moveTo(plotL, ty(0));
+    ctx.lineTo(plotR, ty(0));
+    ctx.stroke();
+    // y-axis at x=0
+    ctx.beginPath();
+    ctx.moveTo(plotL, plotT);
+    ctx.lineTo(plotL, plotB);
+    ctx.stroke();
+
+    // Y-axis labels
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (var v2 = yMin; v2 <= yMax; v2++) {
+      ctx.fillText(String(v2), plotL - 8, ty(v2));
+    }
+    // X-axis labels (k values)
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (var kk = 0; kk <= 13; kk++) {
+      ctx.fillText(String(kk), tx(kk), plotB + 6);
+    }
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('indeks k', (plotL + plotR) / 2, plotB + 26);
+
+    // Plot expA(k) line + dots — secondary (purple)
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    for (var i = 0; i <= 13; i++) {
+      var X = tx(i), Y = ty(expA(i));
+      if (i === 0) ctx.moveTo(X, Y); else ctx.lineTo(X, Y);
+    }
+    ctx.stroke();
+    // Dots
+    ctx.fillStyle = secondary;
+    for (var i2 = 0; i2 <= 13; i2++) {
+      ctx.beginPath();
+      ctx.arc(tx(i2), ty(expA(i2)), 3.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Plot expX(k) line + dots — primary (blue)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    for (var j = 0; j <= 13; j++) {
+      var X3 = tx(j), Y3 = ty(expX(j));
+      if (j === 0) ctx.moveTo(X3, Y3); else ctx.lineTo(X3, Y3);
+    }
+    ctx.stroke();
+    // Dots
+    ctx.fillStyle = primary;
+    for (var j2 = 0; j2 <= 13; j2++) {
+      ctx.beginPath();
+      ctx.arc(tx(j2), ty(expX(j2)), 3.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Highlight k = 5 — vertical band
+    var hx = tx(5);
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.18);
+    ctx.fillRect(hx - 14, plotT, 28, plotH);
+
+    // Marker at k=5, expX = 0 (zero crossing)
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(hx, ty(0), 9, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Marker at k=5, expA = 3
+    ctx.fillStyle = warning;
+    ctx.beginPath();
+    ctx.arc(hx, ty(3), 9, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Annotations
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('eksp(x) = 0', hx + 14, ty(0) - 14);
+
+    ctx.fillStyle = warning;
+    ctx.fillText('eksp(a) = 3', hx + 14, ty(3) - 4);
+
+    // Legend (top-right)
+    var legX = plotR - 200;
+    var legY = plotT + 8;
+    ctx.fillStyle = cvAlpha('--sol-canvas-text', 0.04);
+    ctx.fillRect(legX - 8, legY - 6, 200, 60);
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(legX - 8, legY - 6, 200, 60);
+
+    ctx.fillStyle = primary;
+    ctx.fillRect(legX, legY + 6, 18, 3);
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('eksp(x) = (13−k)/4 − 2k/5', legX + 24, legY + 7);
+
+    ctx.fillStyle = secondary;
+    ctx.fillRect(legX, legY + 30, 18, 3);
+    ctx.fillStyle = text;
+    ctx.fillText('eksp(a) = (13−k)/2 − k/5', legX + 24, legY + 31);
+
+    // Bottom big result box
+    var bx = 60, by = H - 96, bw = W - 120, bh = 78;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.15);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.5;
+    if (typeof ctx.roundRect === 'function') {
+      ctx.beginPath();
+      ctx.roundRect(bx, by, bw, bh, 12);
+      ctx.fill();
+      ctx.stroke();
+    } else {
+      ctx.fillRect(bx, by, bw, bh);
+      ctx.strokeRect(bx, by, bw, bh);
+    }
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('k = 5  →  T₆ = C(13, 5) · a³ = 1287 · a³', W/2, by + 28);
+
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Eksponent x se anulira u jednoj jedinoj tački k = 5 ∈ {0, 1, …, 13}.', W/2, by + 54);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Slobodan član po x u binomnom razvoju 13. stepena",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["binomna formula", "opšti član", "slobodan član", "koreni", "binomni koeficijenti"]
+}
+BRAINSPARK_META-->

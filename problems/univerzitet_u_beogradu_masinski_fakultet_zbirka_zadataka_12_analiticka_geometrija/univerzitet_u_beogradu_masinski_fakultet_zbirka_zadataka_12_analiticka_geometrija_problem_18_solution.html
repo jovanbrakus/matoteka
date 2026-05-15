@@ -1,0 +1,665 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Problem: Lines ax + 3y + 4 = 0 and 5x + by - 3 = 0 intersect at the center of circle x^2 + y^2 - 2x + 4y - 10 = 0. Find angle between the lines.
+
+Step 1: Find circle center via completing the square.
+  x^2 - 2x + y^2 + 4y - 10 = 0
+  (x^2 - 2x + 1) + (y^2 + 4y + 4) = 10 + 1 + 4
+  (x - 1)^2 + (y + 2)^2 = 15
+  Center P(1, -2), radius sqrt(15).
+
+Step 2: Both lines pass through P(1, -2).
+  Line 1: a*1 + 3*(-2) + 4 = 0  →  a - 6 + 4 = 0  →  a = 2.
+  Line 2: 5*1 + b*(-2) - 3 = 0  →  5 - 2b - 3 = 0  →  2b = 2  →  b = 1.
+
+  Therefore lines are:
+    L1: 2x + 3y + 4 = 0,  slope k1 = -2/3.
+    L2: 5x + y - 3 = 0,   slope k2 = -5.
+
+Step 3: Angle between two lines via slopes:
+  tan(theta) = |(k2 - k1) / (1 + k1*k2)|.
+  Numerator: k2 - k1 = -5 - (-2/3) = -5 + 2/3 = -15/3 + 2/3 = -13/3.
+  Denominator: 1 + k1*k2 = 1 + (-2/3)*(-5) = 1 + 10/3 = 3/3 + 10/3 = 13/3.
+  tan(theta) = |(-13/3) / (13/3)| = 1.
+  theta = pi/4.
+
+Answer: (B) pi/4 = 45°.
+
+Sanity check via normal vectors:
+  n1 = (2, 3),  n2 = (5, 1).
+  cos(angle between normals) = (n1·n2)/(|n1||n2|) = (10 + 3)/(sqrt(13)*sqrt(26)) = 13/sqrt(338).
+  sqrt(338) = sqrt(2*169) = 13*sqrt(2).
+  So cos = 13/(13*sqrt(2)) = 1/sqrt(2).
+  Angle = pi/4. ✓
+
+Sanity check via direction vectors:
+  d1 = (-3, 2) (perpendicular to n1), d2 = (-1, 5) (perpendicular to n2).
+  cos = (d1·d2)/(|d1||d2|) = (3 + 10)/(sqrt(13)*sqrt(26)) = 13/(13*sqrt(2)) = 1/sqrt(2).
+  Angle = pi/4. ✓
+
+For visualization, draw both lines through P(1,-2). Possibly include circle around center as context, but radius sqrt(15) ≈ 3.87.
+
+Reasonable canvas range: x from -4 to 6, y from -7 to 3.
+
+Line 1: 2x + 3y + 4 = 0 → y = -(2x + 4)/3.
+  At x = -4: y = -(-8+4)/3 = 4/3 ≈ 1.33.
+  At x = 6: y = -(12+4)/3 = -16/3 ≈ -5.33.
+
+Line 2: 5x + y - 3 = 0 → y = 3 - 5x.
+  At x = -4: y = 3 + 20 = 23 (off canvas, clip).
+  At x = 6: y = 3 - 30 = -27 (off canvas).
+
+Clip line 2 to x range that keeps y in [-7, 3]: 3 - 5x = -7 → x = 2; 3 - 5x = 3 → x = 0. So visible on canvas only between x = 0 and x = 2 within the y range — actually the visible portion is small. We can still draw extending beyond canvas by clipping.
+
+For the angle arc, place it at P with radius small, between the two lines.
+
+Direction vectors at P:
+  Along L1 (going say into upper-left quadrant from P): direction proportional to (-3, 2), normalized.
+    Length sqrt(13). Unit: (-3/√13, 2/√13). Going from P(1,-2) by t = 1 unit: (1 - 3/√13, -2 + 2/√13) ≈ (0.168, -1.445).
+  Along L2 (going say to lower-right of P, descending steeply): direction proportional to (1, -5)... wait, direction along 5x+y-3=0 is perpendicular to (5,1), so (-1, 5) or (1, -5). Let's pick (1, -5) (positive x). From P: (1 + 1/√26, -2 - 5/√26) ≈ (1.196, -2.981).
+  Actually for clarity, let me show both branches of each line from P. Then mark 4 angles (two pairs of vertical angles): two of pi/4 and two of 3pi/4. Mark the acute one as the answer.
+
+Angle arc:
+  Acute angle between L1 and L2 is pi/4. Place arc at P with radius r in pixels. Compute angles in canvas coords (note y flips).
+
+Direction L1 (one branch): (-3, 2). Canvas-space angle: atan2(-2, -3) (since y flips). = atan2(-2,-3) ≈ atan2(-2,-3) ~ -2.5536 rad ~ -146.3°. Other branch direction (3,-2): atan2(2,3) ~ 0.5880 rad ~ 33.7°.
+
+Direction L2 (branch (1,-5)): canvas angle atan2(5,1) ~ 1.3734 rad ~ 78.7°. Other branch (-1,5): atan2(-5,-1) ~ -1.7682 ~ -101.3°.
+
+Acute angle between L1 and L2 = pi/4 ≈ 45°.
+
+Check: 78.7° - 33.7° = 45° ✓. So I can draw arc from 33.7° to 78.7° in canvas coords as the marked pi/4 angle.
+
+For interactivity: not particularly useful here since lines are fixed by the constraints. Static is appropriate. I'll do high-quality static.
+
+Will also add second canvas showing slope/angle computation more abstractly with the formula. Actually, single high-quality canvas + clean step-by-step should suffice. But spec recommends 3-4 canvases for geometry problems — I'll do two: (1) the main figure with two lines, circle (faint), angle arc, and (2) zoom on the slope/angle right at the intersection or as schematic with formula visualization.
+
+Actually given problem is more algebraic with mild geometry, two canvases is appropriate.
+
+Second canvas: zoom on the angle at P, showing both lines, the four angles labeled (pi/4 and 3pi/4 pairs), and the formula tan(theta) = |(k2-k1)/(1+k1k2)| beneath.
+</script>
+
+<h1 data-card="problem-title">Ugao između dve prave kroz centar kruga</h1>
+<p data-card="problem-subtitle" class="subtitle">Analitička geometrija u ravni: jednačina kružnice, presek pravih i ugao između pravih</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Presek pravih \( ax + 3y + 4 = 0 \) i \( 5x + by - 3 = 0 \) je centar kruga \( x^2 + y^2 - 2x + 4y - 10 = 0 \). Ugao između ovih pravih je:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">Prava 1</span>
+      <span class="given-value">\( ax + 3y + 4 = 0 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Prava 2</span>
+      <span class="given-value">\( 5x + by - 3 = 0 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Kružnica</span>
+      <span class="given-value">\( x^2 + y^2 - 2x + 4y - 10 = 0 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Uslov</span>
+      <span class="given-value">Prave se seku u centru</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \dfrac{\pi}{6} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \dfrac{\pi}{4} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \dfrac{\pi}{3} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \dfrac{5\pi}{12} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \dfrac{\pi}{2} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Najpre pronađemo centar kružnice svođenjem na kanonski oblik (dopuna do potpunog kvadrata). Onda iz uslova „obe prave prolaze kroz centar” izračunamo nepoznate \( a \) i \( b \). Kada znamo koeficijente, izračunamo nagibe pravih \( k_1, k_2 \) i ugao po formuli \( \tan\theta = \left|\frac{k_2 - k_1}{1 + k_1 k_2}\right| \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Kanonski oblik kružnice</span> Iz opšteg oblika \( x^2 + y^2 + Dx + Ey + F = 0 \) dopunom do potpunog kvadrata dobija se \( (x - p)^2 + (y - q)^2 = R^2 \) sa centrom \( (p, q) \).</li>
+        <li><span class="formula-label">Prava kroz tačku</span> Prava sadrži tačku \( (x_0, y_0) \) akko njene koordinate zadovoljavaju njenu jednačinu. Tako iz \( Ax_0 + By_0 + C = 0 \) izvlačimo nepoznati koeficijent.</li>
+        <li><span class="formula-label">Eksplicitni oblik i nagib</span> Iz \( Ax + By + C = 0 \) (uz \( B \neq 0 \)) dobija se \( y = -\dfrac{A}{B} x - \dfrac{C}{B} \), pa je nagib \( k = -\dfrac{A}{B}. \)</li>
+        <li><span class="formula-label">Ugao između dve prave</span> Ako su \( k_1 \) i \( k_2 \) nagibi pravih i \( 1 + k_1 k_2 \neq 0 \), oštri ugao između pravih zadovoljava \( \tan\theta = \left|\dfrac{k_2 - k_1}{1 + k_1 k_2}\right|. \) Ako je \( 1 + k_1 k_2 = 0 \), prave su normalne (\( \theta = \pi/2 \)).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz: dve prave kroz centar">
+  <h2>📐 Vizuelni prikaz: dve prave kroz centar</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-lines" width="720" height="640"></canvas>
+  </div>
+  <p class="canvas-caption">Kružnica \( (x - 1)^2 + (y + 2)^2 = 15 \) sa centrom \( P(1, -2) \). Obe prave \( L_1: 2x + 3y + 4 = 0 \) i \( L_2: 5x + y - 3 = 0 \) prolaze kroz centar i međusobno zaklapaju oštri ugao \( \pi/4 \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz: zumiran ugao">
+  <h2>📐 Vizuelni prikaz: zumiran ugao</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-angle" width="720" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Uvećan prikaz preseka u tački \( P \). Dve prave čine četiri ugla: dva oštra od \( \pi/4 \) (45°) i dva tupa od \( 3\pi/4 \) (135°), koja zajedno daju \( \pi \). Ispod je formula \( \tan\theta = \left|\frac{k_2 - k_1}{1 + k_1 k_2}\right| = 1 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Odredi centar kružnice dopunom do potpunog kvadrata</h3>
+      <p>Krenemo od opštim oblika i grupišemo članove sa \( x \) odvojeno od onih sa \( y \):</p>
+      <div class="math-block">\[ x^2 + y^2 - 2x + 4y - 10 = 0 \;\Longrightarrow\; (x^2 - 2x) + (y^2 + 4y) = 10. \]</div>
+      <p>Sada svakoj grupi dodamo „pola koeficijenta na kvadrat”:</p>
+      <div class="math-block">\[ (x^2 - 2x + 1) + (y^2 + 4y + 4) = 10 + 1 + 4. \]</div>
+      <div class="math-block">\[ (x - 1)^2 + (y + 2)^2 = 15. \]</div>
+      <p>Dakle centar kružnice je <span class="result">\( P(1, -2) \)</span>, a poluprečnik \( R = \sqrt{15} \).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto dodajemo \( +1 \) i \( +4 \)?</summary>
+          <div class="detail-content"><p>Da bismo dopunili do potpunog kvadrata: \( x^2 - 2x + 1 = (x - 1)^2 \) i \( y^2 + 4y + 4 = (y + 2)^2 \). „Pola od \(-2\)” je \(-1\), kvadrat je \( 1 \); „pola od \( 4 \)” je \( 2 \), kvadrat je \( 4 \). Isto što dodamo levo, moramo dodati i desno da bismo sačuvali jednakost.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Uvrsti centar u obe prave i odredi \( a \) i \( b \)</h3>
+      <p>Pošto se prave seku u centru \( P(1, -2) \), tačka \( P \) leži na svakoj od njih. Uvrstimo \( x = 1, y = -2 \):</p>
+
+      <div class="math-block">\[ \begin{aligned} a \cdot 1 + 3 \cdot (-2) + 4 &= 0 \;\Longrightarrow\; a - 6 + 4 = 0 \;\Longrightarrow\; a = 2, \\[4pt] 5 \cdot 1 + b \cdot (-2) - 3 &= 0 \;\Longrightarrow\; 5 - 2b - 3 = 0 \;\Longrightarrow\; b = 1. \end{aligned} \]</div>
+
+      <p>Konkretne jednačine pravih su sada:</p>
+      <div class="math-block">\[ L_1: \; 2x + 3y + 4 = 0, \qquad L_2: \; 5x + y - 3 = 0. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: da li su prave zaista različite?</summary>
+          <div class="detail-content"><p>Kratko: koeficijenti \( (2 : 3) \) i \( (5 : 1) \) nisu proporcionalni — \( \dfrac{2}{5} \neq \dfrac{3}{1} \). Dakle prave imaju različite nagibe i seku se u tačno jednoj tački (u \( P \)).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunaj nagibe \( k_1 \) i \( k_2 \)</h3>
+      <p>Iz opšteg oblika \( Ax + By + C = 0 \) nagib je \( k = -A/B \):</p>
+
+      <div class="math-block">\[ k_1 = -\frac{2}{3}, \qquad k_2 = -\frac{5}{1} = -5. \]</div>
+
+      <p>Brza provera: kod \( L_1 \) je \( 3y = -2x - 4 \;\Rightarrow\; y = -\tfrac{2}{3} x - \tfrac{4}{3} \), nagib \( -\tfrac{2}{3} \). Kod \( L_2 \) je \( y = -5x + 3 \), nagib \( -5 \). ✓</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Primeni formulu za ugao između pravih</h3>
+      <p>Oštri ugao između pravih sa nagibima \( k_1 \) i \( k_2 \) (kada \( 1 + k_1 k_2 \neq 0 \)) zadovoljava:</p>
+      <div class="math-block">\[ \tan \theta = \left| \frac{k_2 - k_1}{1 + k_1 k_2} \right|. \]</div>
+
+      <p>Brojilac:</p>
+      <div class="math-block">\[ k_2 - k_1 = -5 - \left( -\tfrac{2}{3} \right) = -5 + \tfrac{2}{3} = -\tfrac{15}{3} + \tfrac{2}{3} = -\tfrac{13}{3}. \]</div>
+
+      <p>Imenilac:</p>
+      <div class="math-block">\[ 1 + k_1 k_2 = 1 + \left( -\tfrac{2}{3} \right)(-5) = 1 + \tfrac{10}{3} = \tfrac{3}{3} + \tfrac{10}{3} = \tfrac{13}{3}. \]</div>
+
+      <p>Stavljamo zajedno:</p>
+      <div class="math-block">\[ \tan \theta = \left| \frac{-\tfrac{13}{3}}{\tfrac{13}{3}} \right| = 1. \]</div>
+
+      <p>Iz \( \tan \theta = 1 \) i uslova \( 0 < \theta \leq \pi/2 \) (oštri ugao) sledi:</p>
+      <div class="math-block">\[ \theta = \frac{\pi}{4}. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: alternativna provera preko vektora normale.</summary>
+          <div class="detail-content"><p>Vektori normale pravih su \( \vec{n_1} = (2, 3) \) i \( \vec{n_2} = (5, 1) \). Ugao između normala je isti kao ugao između samih pravih (do oštrog izbora). Tada: \( \cos\theta = \dfrac{|\vec{n_1} \cdot \vec{n_2}|}{|\vec{n_1}|\,|\vec{n_2}|} = \dfrac{|10 + 3|}{\sqrt{13}\,\sqrt{26}} = \dfrac{13}{\sqrt{338}} = \dfrac{13}{13\sqrt{2}} = \dfrac{1}{\sqrt{2}}. \) Dakle \( \theta = \pi/4 \). ✓</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Uslov „prave se seku u centru kružnice” je samo prerušen zahtev <em>obe prave prolaze kroz tačno tu jednu tačku</em>. To je dovoljno da se izračunaju nepoznati koeficijenti, jer svaka prava daje jednu linearnu jednačinu po svom nepoznatom parametru. Tek tada pristupamo „pravoj” geometriji — uglu između pravih. Lepota je u tome što sam ugao na kraju ne zavisi od specifičnih položaja: definisan je samo nagibima.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pogrešno čitanje centra iz opšteg oblika kružnice \( x^2 + y^2 + Dx + Ey + F = 0 \). Centar je \( \left( -\tfrac{D}{2}, -\tfrac{E}{2} \right) \), dakle u našem slučaju \( \left( -\tfrac{-2}{2}, -\tfrac{4}{2} \right) = (1, -2) \) — sa <em>minusima koji se ponište</em>, lako je promašiti znak.</li>
+    <li>Zaboravljanje apsolutne vrednosti u formuli za ugao: bez nje može se dobiti \( \tan\theta = -1 \), pa \( \theta = -\pi/4 \), što nije smislen ugao između pravih. Formula vraća oštri ugao samo uz \( |\cdot| \).</li>
+    <li>Pomešani znakovi nagiba: za \( Ax + By + C = 0 \) je \( k = -A/B \), ne \( A/B \). Promašaj znaka kvari kako brojilac, tako i imenilac.</li>
+    <li>Davanje tupog ugla kao odgovora. Dve seku se prave čine četiri ugla: dva oštra i dva tupa, koja se nadopunjavaju do \( \pi \). Konvencija „ugao između pravih” podrazumeva <em>oštri</em> (ili prav, kao granični slučaj) — ovde \( \pi/4 \), ne \( 3\pi/4 \).</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \theta = \frac{\pi}{4} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( \dfrac{\pi}{6} \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( \dfrac{\pi}{4} \)</span>
+    <span class="answer-option" data-option="C">(C) \( \dfrac{\pi}{3} \)</span>
+    <span class="answer-option" data-option="D">(D) \( \dfrac{5\pi}{12} \)</span>
+    <span class="answer-option" data-option="E">(E) \( \dfrac{\pi}{2} \)</span>
+  </div>
+  <p class="verification">Provera preko skalarnog proizvoda normala \( \vec{n_1} = (2, 3) \), \( \vec{n_2} = (5, 1) \): \( \cos\theta = \dfrac{13}{\sqrt{13}\cdot\sqrt{26}} = \dfrac{1}{\sqrt{2}} \), pa je \( \theta = \pi/4 \). Tačan odgovor je (B).</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Pretpostavi da želiš da modifikuješ pravu \( L_2 \) zamenom konstante: nova prava je \( 5x + by - 3 = 0 \), ali sada bez uslova da prolazi kroz centar. Za koju vrednost \( b \) je nova prava <em>normalna</em> na \( L_1: 2x + 3y + 4 = 0 \)? A za koju vrednost je <em>paralelna</em>?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Izrazi nagibe obe prave u zavisnosti od \( b \): \( k_1 = -2/3 \), \( k_2(b) = -5/b \) (za \( b \neq 0 \)). Normalnost znači \( k_1 \cdot k_2 = -1 \), pa odatle nađeš \( b \). Paralelnost znači \( k_1 = k_2 \), pa odatle drugi uslov. Razmisli posebno šta se događa ako \( b = 0 \) — kako tada izgleda prava \( L_2 \)? (Postaje vertikalna i nema definisan nagib u običnom smislu.)</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  // ===== Canvas 1: lines through P with circle =====
+  var canvas = document.getElementById('diagram-lines');
+  if (canvas) {
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, H = canvas.height;
+
+    var scale = 50; // px per unit
+    // Center the view around P(1,-2): so P should appear around middle of canvas
+    var originX = W / 2 - 1 * scale;
+    var originY = H / 2 - 2 * scale;
+
+    function toCx(x) { return originX + x * scale; }
+    function toCy(y) { return originY - y * scale; }
+
+    // Liang-Barsky-ish: given line through (x0,y0) with direction (dx,dy), clip to canvas
+    function clipLine(x0, y0, dx, dy) {
+      // canvas pixel rect [0..W]x[0..H]
+      var p0 = { x: toCx(x0), y: toCy(y0) };
+      // pixel direction: dx maps to +x_px, dy maps to -y_px
+      var pdx = dx * scale, pdy = -dy * scale;
+      // Find params t such that p0 + t*(pdx,pdy) stays inside
+      var tMin = -Infinity, tMax = Infinity;
+      function clip(p, d, lo, hi) {
+        if (Math.abs(d) < 1e-9) {
+          return p >= lo && p <= hi;
+        }
+        var t1 = (lo - p) / d, t2 = (hi - p) / d;
+        if (t1 > t2) { var tmp = t1; t1 = t2; t2 = tmp; }
+        if (t1 > tMin) tMin = t1;
+        if (t2 < tMax) tMax = t2;
+        return tMin <= tMax;
+      }
+      var ok = clip(p0.x, pdx, 0, W) && clip(p0.y, pdy, 0, H);
+      if (!ok) return null;
+      return {
+        a: { x: p0.x + tMin * pdx, y: p0.y + tMin * pdy },
+        b: { x: p0.x + tMax * pdx, y: p0.y + tMax * pdy }
+      };
+    }
+
+    function drawLines() {
+      styles = getComputedStyle(root);
+      var bg        = cv('--sol-canvas-bg');
+      var grid      = cv('--sol-canvas-grid');
+      var axis      = cv('--sol-canvas-axis');
+      var primary   = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent    = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text      = cv('--sol-canvas-text');
+      var muted     = cv('--sol-canvas-muted');
+      var warning   = cv('--sol-canvas-warning');
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      // Grid
+      ctx.strokeStyle = grid;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      var xMin = Math.ceil(-originX / scale);
+      var xMax = Math.floor((W - originX) / scale);
+      for (var i = xMin; i <= xMax; i++) {
+        var gx = toCx(i);
+        ctx.moveTo(gx, 0); ctx.lineTo(gx, H);
+      }
+      var yMin = Math.ceil(-(H - originY) / scale);
+      var yMax = Math.floor(originY / scale);
+      for (var j = yMin; j <= yMax; j++) {
+        var gy = toCy(j);
+        ctx.moveTo(0, gy); ctx.lineTo(W, gy);
+      }
+      ctx.stroke();
+
+      // Axes
+      ctx.strokeStyle = axis;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, originY); ctx.lineTo(W, originY);
+      ctx.moveTo(originX, 0); ctx.lineTo(originX, H);
+      ctx.stroke();
+
+      // Tick labels
+      ctx.font = '11px Inter, system-ui';
+      ctx.fillStyle = muted;
+      ctx.textAlign = 'center';
+      for (var t = xMin; t <= xMax; t++) {
+        if (t === 0) continue;
+        if (toCx(t) > 14 && toCx(t) < W - 14) {
+          ctx.fillText(t.toString(), toCx(t), originY + 14);
+        }
+      }
+      ctx.textAlign = 'right';
+      for (var s = yMin; s <= yMax; s++) {
+        if (s === 0) continue;
+        if (toCy(s) > 14 && toCy(s) < H - 14) {
+          ctx.fillText(s.toString(), originX - 6, toCy(s) + 4);
+        }
+      }
+      ctx.textAlign = 'left';
+      ctx.font = 'bold 14px Inter, system-ui';
+      ctx.fillStyle = text;
+      ctx.fillText('x', W - 16, originY - 10);
+      ctx.fillText('y', originX + 10, 16);
+
+      // Circle
+      var Px = 1, Py = -2, R = Math.sqrt(15);
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 2.5;
+      ctx.setLineDash([6, 4]);
+      ctx.beginPath();
+      ctx.arc(toCx(Px), toCy(Py), R * scale, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.05);
+      ctx.beginPath();
+      ctx.arc(toCx(Px), toCy(Py), R * scale, 0, Math.PI * 2);
+      ctx.fill();
+
+      // L1: direction (-3, 2) (along line, perp to (2,3))
+      var l1 = clipLine(Px, Py, -3, 2);
+      if (l1) {
+        ctx.strokeStyle = highlight;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(l1.a.x, l1.a.y);
+        ctx.lineTo(l1.b.x, l1.b.y);
+        ctx.stroke();
+      }
+
+      // L2: direction (1, -5) (along line, perp to (5,1))
+      var l2 = clipLine(Px, Py, 1, -5);
+      if (l2) {
+        ctx.strokeStyle = accent;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(l2.a.x, l2.a.y);
+        ctx.lineTo(l2.b.x, l2.b.y);
+        ctx.stroke();
+      }
+
+      // Center P + label
+      var Ppx = toCx(Px), Ppy = toCy(Py);
+      ctx.beginPath();
+      ctx.arc(Ppx, Ppy, 12, 0, Math.PI * 2);
+      ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.3);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(Ppx, Ppy, 7, 0, Math.PI * 2);
+      ctx.fillStyle = cv('--sol-canvas-warning');
+      ctx.fill();
+      ctx.strokeStyle = bg;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.font = 'bold 16px Inter, system-ui';
+      ctx.fillStyle = text;
+      ctx.fillText('P(1, −2)', Ppx + 14, Ppy + 22);
+
+      // Angle arc at P: pi/4
+      // In canvas (pixel) coordinates, the direction (3,-2) (one branch of L1) maps to pixel angle atan2(-(-2),3)=atan2(2,3).
+      // Wait: pixel y is inverted. A math direction (dx, dy) maps to pixel direction (dx, -dy). So angle in canvas = atan2(-dy, dx).
+      // For L1 branch (3, -2) math → pixel (3, 2). atan2(2,3) ≈ 0.5880 rad ≈ 33.69°.
+      // For L2 branch (1, -5) math → pixel (1, 5). atan2(5,1) ≈ 1.3734 rad ≈ 78.69°.
+      var ang1 = Math.atan2(2, 3);
+      var ang2 = Math.atan2(5, 1);
+      var arcR = 42;
+      ctx.strokeStyle = cv('--sol-canvas-secondary');
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(Ppx, Ppy, arcR, ang1, ang2);
+      ctx.stroke();
+      // Subtle fill of angle sector
+      ctx.fillStyle = cvAlpha('--sol-canvas-secondary', 0.18);
+      ctx.beginPath();
+      ctx.moveTo(Ppx, Ppy);
+      ctx.arc(Ppx, Ppy, arcR, ang1, ang2);
+      ctx.closePath();
+      ctx.fill();
+
+      // Angle label
+      var midAng = (ang1 + ang2) / 2;
+      var labelR = arcR + 22;
+      ctx.font = 'bold 16px Inter, system-ui';
+      ctx.fillStyle = cv('--sol-canvas-secondary');
+      ctx.textAlign = 'center';
+      ctx.fillText('θ = π/4', Ppx + labelR * Math.cos(midAng), Ppy + labelR * Math.sin(midAng) + 5);
+      ctx.textAlign = 'left';
+
+      // Line labels (near edge of canvas where each line exits)
+      ctx.font = 'bold 14px Inter, system-ui';
+      ctx.fillStyle = highlight;
+      ctx.fillText('L₁:  2x + 3y + 4 = 0', 18, H - 60);
+      ctx.fillStyle = accent;
+      ctx.fillText('L₂:  5x + y − 3 = 0', 18, H - 40);
+      ctx.fillStyle = cv('--sol-canvas-primary');
+      ctx.fillText('kružnica:  (x−1)² + (y+2)² = 15', 18, H - 20);
+
+      // Heading
+      ctx.font = 'bold 14px Inter, system-ui';
+      ctx.fillStyle = muted;
+      ctx.fillText('Obe prave prolaze kroz centar P;  ugao između njih je π/4.', 18, 24);
+    }
+
+    drawLines();
+
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() {
+          styles = getComputedStyle(root);
+          drawLines();
+        }, 50);
+      }
+    });
+  }
+
+  // ===== Canvas 2: zoomed schematic showing 4 angles =====
+  var canvas2 = document.getElementById('diagram-angle');
+  if (canvas2) {
+    var ctx2 = canvas2.getContext('2d');
+    var W2 = canvas2.width, H2 = canvas2.height;
+
+    function drawAngles() {
+      styles = getComputedStyle(root);
+      var bg        = cv('--sol-canvas-bg');
+      var primary   = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent    = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text      = cv('--sol-canvas-text');
+      var muted     = cv('--sol-canvas-muted');
+      var warning   = cv('--sol-canvas-warning');
+
+      ctx2.clearRect(0, 0, W2, H2);
+      ctx2.fillStyle = bg;
+      ctx2.fillRect(0, 0, W2, H2);
+
+      // P at center
+      var cx0 = W2 / 2, cy0 = H2 / 2 - 30;
+      // L1 direction (math): along (3, -2). Pixel: (3, 2). Length sqrt(13).
+      // L2 direction (math): along (1, -5). Pixel: (1, 5). Length sqrt(26).
+      var l1Ang = Math.atan2(2, 3);          // ≈ 33.69°
+      var l2Ang = Math.atan2(5, 1);          // ≈ 78.69°
+      var len = 230;
+
+      // Draw 4 rays (two lines = two pairs of rays)
+      function ray(ang, color, w) {
+        ctx2.strokeStyle = color;
+        ctx2.lineWidth = w;
+        ctx2.beginPath();
+        ctx2.moveTo(cx0, cy0);
+        ctx2.lineTo(cx0 + len * Math.cos(ang), cy0 + len * Math.sin(ang));
+        ctx2.stroke();
+        ctx2.beginPath();
+        ctx2.moveTo(cx0, cy0);
+        ctx2.lineTo(cx0 - len * Math.cos(ang), cy0 - len * Math.sin(ang));
+        ctx2.stroke();
+      }
+      ray(l1Ang, highlight, 3);
+      ray(l2Ang, accent, 3);
+
+      // Four angle sectors
+      function sector(a1, a2, color, alpha) {
+        var r = 56;
+        ctx2.fillStyle = cvAlpha(color, alpha);
+        ctx2.beginPath();
+        ctx2.moveTo(cx0, cy0);
+        ctx2.arc(cx0, cy0, r, a1, a2);
+        ctx2.closePath();
+        ctx2.fill();
+        ctx2.strokeStyle = cv(color);
+        ctx2.lineWidth = 2;
+        ctx2.beginPath();
+        ctx2.arc(cx0, cy0, r, a1, a2);
+        ctx2.stroke();
+      }
+      // From l1 to l2 (acute pi/4)
+      sector(l1Ang, l2Ang, '--sol-canvas-secondary', 0.25);
+      // From l2 to l1+pi (obtuse 3pi/4)
+      sector(l2Ang, l1Ang + Math.PI, '--sol-canvas-warning', 0.18);
+      // From l1+pi to l2+pi (acute pi/4)
+      sector(l1Ang + Math.PI, l2Ang + Math.PI, '--sol-canvas-secondary', 0.25);
+      // From l2+pi to l1 + 2pi (obtuse 3pi/4)
+      sector(l2Ang + Math.PI, l1Ang + 2 * Math.PI, '--sol-canvas-warning', 0.18);
+
+      // Labels for the 4 angles
+      function lbl(a1, a2, txtL, color) {
+        var midA = (a1 + a2) / 2;
+        var r = 88;
+        ctx2.font = 'bold 16px Inter, system-ui';
+        ctx2.fillStyle = cv(color);
+        ctx2.textAlign = 'center';
+        ctx2.fillText(txtL, cx0 + r * Math.cos(midA), cy0 + r * Math.sin(midA) + 5);
+        ctx2.textAlign = 'left';
+      }
+      lbl(l1Ang, l2Ang, 'π/4', '--sol-canvas-secondary');
+      lbl(l2Ang, l1Ang + Math.PI, '3π/4', '--sol-canvas-warning');
+      lbl(l1Ang + Math.PI, l2Ang + Math.PI, 'π/4', '--sol-canvas-secondary');
+      lbl(l2Ang + Math.PI, l1Ang + 2 * Math.PI, '3π/4', '--sol-canvas-warning');
+
+      // P dot
+      ctx2.beginPath();
+      ctx2.arc(cx0, cy0, 7, 0, Math.PI * 2);
+      ctx2.fillStyle = cv('--sol-canvas-warning');
+      ctx2.fill();
+      ctx2.strokeStyle = bg;
+      ctx2.lineWidth = 2;
+      ctx2.stroke();
+      ctx2.font = 'bold 16px Inter, system-ui';
+      ctx2.fillStyle = text;
+      ctx2.fillText('P', cx0 + 12, cy0 - 10);
+
+      // Line labels near ray ends
+      ctx2.font = 'bold 14px Inter, system-ui';
+      ctx2.fillStyle = highlight;
+      // L1 along (3,2) in pixels
+      ctx2.fillText('L₁ (k₁ = −2/3)', cx0 + (len + 8) * Math.cos(l1Ang) - 38, cy0 + (len + 8) * Math.sin(l1Ang) + 18);
+      ctx2.fillStyle = accent;
+      ctx2.fillText('L₂ (k₂ = −5)', cx0 + (len + 8) * Math.cos(l2Ang) - 40, cy0 + (len + 8) * Math.sin(l2Ang) + 18);
+
+      // Formula at bottom
+      ctx2.font = 'bold 17px Inter, system-ui';
+      ctx2.fillStyle = text;
+      ctx2.textAlign = 'center';
+      ctx2.fillText('tan θ = |(k₂ − k₁) / (1 + k₁·k₂)| = |(−13/3) / (13/3)| = 1', W2 / 2, H2 - 44);
+      ctx2.font = 'bold 19px Inter, system-ui';
+      ctx2.fillStyle = cv('--sol-canvas-accent');
+      ctx2.fillText('θ = π/4   (oštri ugao)', W2 / 2, H2 - 16);
+      ctx2.textAlign = 'left';
+
+      // Header
+      ctx2.font = 'bold 14px Inter, system-ui';
+      ctx2.fillStyle = muted;
+      ctx2.fillText('Četiri ugla u tački P:  dva oštra (π/4) i dva tupa (3π/4); zbir suseda je π.', 18, 24);
+    }
+
+    drawAngles();
+
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() {
+          styles = getComputedStyle(root);
+          drawAngles();
+        }, 50);
+      }
+    });
+  }
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Ugao između dve prave čiji presek je centar kružnice",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["analitička geometrija", "kružnica", "centar kružnice", "ugao između pravih", "nagib prave"]
+}
+BRAINSPARK_META-->

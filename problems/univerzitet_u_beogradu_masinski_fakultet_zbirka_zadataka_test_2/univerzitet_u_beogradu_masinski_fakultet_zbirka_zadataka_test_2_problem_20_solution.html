@@ -1,0 +1,499 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Zadatak: Koliko ima cetvorocifrenih brojeva cije su cifre poredjane u strogo rastucem poretku?
+
+  Glavna ideja: "Strogo rastuci" znaci a < b < c < d, gde su a, b, c, d cifre.
+  - Cifre su iz {0,1,2,...,9}.
+  - Cetvorocifren broj ne sme imati vodecu cifru 0, tj. a >= 1.
+  - Ali ako je a < b < c < d i ako bi 0 bila u tom kvartetu, onda bi 0 morala biti
+    NAJMANJA cifra, pa BAS a = 0. To je zabranjeno.
+  - Dakle 0 ne moze biti u kvartetu uopste — koristimo cifre iz {1, 2, ..., 9}.
+  - Biramo 4 razlicite cifre iz {1..9}. Svaki izbor odredjuje jedinstven strogo rastuci poredak.
+  - Broj nacina: C(9, 4) = 9! / (4! * 5!) = 126.
+
+  Provera vrednosti:
+   9! = 362880, 4! = 24, 5! = 120, 24*120 = 2880, 362880/2880 = 126. ✓
+
+  Alternativni metod racunanja:
+   C(9,4) = (9*8*7*6) / (4*3*2*1) = 3024 / 24 = 126. ✓
+
+  Primeri:
+   1234 (najmanji), 1235, ..., 6789 (najveci).
+   Provera grube velicine: 6789 - 1234 + 1 = 5556, ali nije svaki broj u tom intervalu vazeci,
+   jer vecina kombinacija cifara nije rastuca.
+
+  Lazna alternativa A (432) = 6^3 * 2 = nista smisleno.
+   - Mozda misao: 9 izbora za a, 8 za b, ..., ali to bi bilo 9*8*7*6 = 3024 (B), a to su uredjene
+     cetvorke razlicitih cifara iz {1..9}, ne strogo rastuce. Tu se ne deli sa 4!.
+
+  Lazna alternativa B (3024) = 9*8*7*6 — bez deljenja sa 4! (varijacije).
+  Lazna alternativa C (5040) = 7! = 7*6*5*4*3*2*1, ili = 10!/6! = P(10,4), permutacije iz {0..9}.
+  Lazna alternativa E (210) = C(10,4) — varka: ukljucili 0 kao validnu cifru!
+   Ovo je VRLO cest pogresan racun.
+
+  Zato je vazno objasniti zasto je odgovor (D), tj. C(9,4) = 126, a ne (E) C(10,4) = 210.
+  Razlika: 210 - 126 = 84 = C(9,3) — broj cetvorki sa 0 ukljucenom (i 3 cifre iz {1..9}).
+
+  Vizualizacija: STATIC. Dva dela:
+   1) Konkretni primeri: prikazati sva 4-elementna podskupa, ili nekoliko (1234, 2589, 3678, 6789)
+      kao tackice na cifrenoj liniji {1..9}, gde su 4 odabrane cifre osvetljene.
+   2) Mali "broj kombinacija" prikaz — Pascalov trougao do reda 9, sa istaknutom C(9,4) = 126.
+      ILI grid 9x9 sa ilustracijom "biramo 4 polozaja iz 9 cifara".
+
+  Bolja kombinacija: jedan canvas sa dve sekcije:
+   - levo: tri primera podskupa (1234, 2589, 6789) iscrtana kao osvetljene tacke na liniji 1..9.
+   - desno: Pascalov trougao s C(9,4) istaknutim.
+
+  Najcesce greske:
+   * Ukljuciti 0: dobijes C(10,4) = 210.
+   * Permutacije umesto kombinacija: 9*8*7*6 = 3024.
+   * Brkati "strogo rastuce" sa "nestrogo rastuce" — nestrogo daje C(9+4-1, 4) = C(12,4) = 495 = stars and bars.
+   * Misao da "cetvorocifren = poseban tretman za prvu cifru", pa rastaviti na slucajeve nepotrebno.
+</script>
+
+<h1 data-card="problem-title">Četvorocifreni brojevi sa strogo rastućim ciframa</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika izbora &mdash; svaki podskup cifara daje tačno jedan rastući broj</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Koliko ima četvorocifrenih brojeva čije su cifre poređane u strogo rastućem poretku?</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">broj cifara</span>
+      <span class="given-value">\( 4 \) (četvorocifren)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">uslov</span>
+      <span class="given-value">\( a < b < c < d \) (strogo rastuće)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">cifre iz</span>
+      <span class="given-value">\( \{0, 1, 2, \dots, 9\} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">traženo</span>
+      <span class="given-value">broj takvih brojeva</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 432 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 3024 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 5040 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 126 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 210 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Ako su cifre strogo rastuće, sve četiri moraju biti različite, a redosled je jedinstveno određen samom izbornom torkom &mdash; uvek najmanja prvo. Pošto cifra \( 0 \) ne sme biti na prvom mestu (nije četvorocifren), a u rastućoj četvorci je \( 0 \) uvek najmanja, ona ne može uopšte biti uključena. Dakle biramo \( 4 \) cifre iz skupa \( \{1, 2, \dots, 9\} \) &mdash; broj načina je \( \binom{9}{4}. \)</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Kombinacije i razlika prema permutacijama</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">kombinacije</span> Broj načina da iz skupa od \( n \) elemenata izaberemo \( k \), bez ponavljanja i <em>bez obzira na redosled</em>: \( \displaystyle \binom{n}{k} = \frac{n!}{k!\,(n-k)!}. \)</li>
+        <li><span class="formula-label">permutacije (varijacije)</span> Broj načina da izaberemo \( k \) elemenata u <em>uređenoj</em> torki: \( \displaystyle P(n,k) = \frac{n!}{(n-k)!} = n(n-1)\cdots(n-k+1). \) Veza: \( P(n,k) = k!\cdot \binom{n}{k}. \)</li>
+        <li><span class="formula-label">računska vrednost</span> \( \displaystyle \binom{9}{4} = \frac{9 \cdot 8 \cdot 7 \cdot 6}{4!} = \frac{3024}{24} = 126. \)</li>
+        <li><span class="formula-label">simetrija</span> \( \displaystyle \binom{n}{k} = \binom{n}{n-k}. \) Provera: \( \binom{9}{4} = \binom{9}{5} = 126. \)</li>
+      </ul>
+      <p class="note">Trik &bdquo;rastući poredak&rdquo;: <em>svaki</em> \( k \)-elementni podskup totalno uređenog skupa ima tačno <strong>jedan</strong> način da se ispiše u rastućem poretku. Zato je broj &bdquo;rastućih nizova dužine \( k \)&rdquo; jednak broju \( k \)-podskupova, tj. \( \binom{n}{k}, \) a ne \( P(n,k). \)</p>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-comb" width="760" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Levo: tri primera četvorocifrenih brojeva sa rastućim ciframa &mdash; vidljivo je da svaki podskup od \( 4 \) cifara iz \( \{1, 2, \dots, 9\} \) određuje tačno jedan takav broj. Desno: Paskalov trougao do reda \( 9, \) sa istaknutim \( \binom{9}{4} = 126. \) Zlatno označen je i \( \binom{9}{5} = 126 \) &mdash; simetrija osovine.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Šta tačno znači &bdquo;strogo rastuće&rdquo;</h3>
+      <p>Neka je traženi broj \( \overline{abcd} \), gde su \( a, b, c, d \) cifre iz \( \{0, 1, \dots, 9\}. \) Uslov &bdquo;strogo rastuće&rdquo; znači:</p>
+      <div class="math-block">\[ a < b < c < d. \]</div>
+      <p>Iz ovoga odmah sledi <strong>dve važne posledice</strong>:</p>
+      <ul>
+        <li>Sve četiri cifre su <em>različite</em> (ne mogu se ponavljati &mdash; ne važi npr. \( 1\,1\,2\,3 \), jer bi onda \( a = b. \))</li>
+        <li>Za bilo koji izabran skup od \( 4 \) različitih cifara, postoji <em>tačno jedan</em> način da se one poređaju u strogo rastućem redu (najmanja prva, najveća poslednja).</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Cifra \( 0 \) ne može da učestvuje</h3>
+      <p>Da bi broj bio <strong>četvorocifren</strong>, vodeća cifra \( a \) ne sme biti \( 0. \) Pretpostavimo, suprotno, da \( 0 \) ipak učestvuje u našoj rastućoj četvorci. Pošto je \( 0 \) <em>najmanja</em> cifra od svih u \( \{0, 1, \dots, 9\} \), ona <em>mora</em> da bude na prvom mestu (\( a = 0 \)). Ali to je zabranjeno.</p>
+      <div class="callout callout-info">
+        <p><strong>Zaključak:</strong> u rastućoj četvorci cifra \( 0 \) se uopšte ne pojavljuje. Biramo \( 4 \) cifre iz <em>devetočlanog</em> skupa \( \{1, 2, 3, 4, 5, 6, 7, 8, 9\}. \)</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Brojanje: kombinacije, ne varijacije</h3>
+      <p>Treba prebrojati koliko ima podskupova od \( 4 \) različite cifre iz \( \{1, \dots, 9\} \) &mdash; redosled <em>nije bitan</em>, jer je rastući poredak jedinstven (videli smo to u koraku 1). To je definicija kombinacija:</p>
+      <div class="math-block">\[ N = \binom{9}{4}. \]</div>
+      <p>Računamo:</p>
+      <div class="math-block">\[ \binom{9}{4} = \frac{9!}{4!\,5!} = \frac{9 \cdot 8 \cdot 7 \cdot 6}{4 \cdot 3 \cdot 2 \cdot 1} = \frac{3024}{24} = 126. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto <em>ne</em> množimo \( 9 \cdot 8 \cdot 7 \cdot 6 = 3024 \)?</summary>
+          <div class="detail-content"><p>Izraz \( 9 \cdot 8 \cdot 7 \cdot 6 \) broji <em>uređene</em> torke različitih cifara (varijacije). Ali svaka rastuća četvorka, na primer \( \{2, 3, 5, 7\}, \) je samo <em>jedan</em> broj (\( 2357 \)), a \( 9 \cdot 8 \cdot 7 \cdot 6 \) je broji \( 4! = 24 \) puta (svako od \( 24 \) permutacija ove četvorke se broji posebno). Zato delimo sa \( 4! \): \( 3024 / 24 = 126. \)</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera kroz ekstremne primere</h3>
+      <p>Možemo se uveriti u rezultat pokušajem da ručno nabrojimo neke primere:</p>
+      <ul>
+        <li>Najmanji takav broj: \( 1234. \)</li>
+        <li>Najveći takav broj: \( 6789. \)</li>
+        <li>Primeri između: \( 1235,\ 1236,\ \dots,\ 1239,\ 1245,\ \dots,\ 2589,\ \dots,\ 6789. \)</li>
+      </ul>
+      <p>Druga provera &mdash; <em>simetrija</em>: \( \binom{9}{4} = \binom{9}{5} = 126. \) Drugim rečima, &bdquo;izabrati \( 4 \) cifre&rdquo; je isto kao &bdquo;izabrati \( 5 \) cifara koje <em>nećemo</em>&rdquo;. Oba su \( 126 \) &mdash; ime simetrije na Paskalovom trouglu.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliko bi bilo <em>petocifrenih</em> brojeva sa strogo rastućim ciframa?</summary>
+          <div class="detail-content"><p>Isti princip: \( 0 \) ne može da učestvuje, pa biramo \( 5 \) cifara iz \( \{1, \dots, 9\}. \) Broj načina: \( \binom{9}{5} = 126 \) &mdash; <em>isti</em> kao za četvorocifrene! To je posledica simetrije \( \binom{9}{4} = \binom{9}{5}. \) Lepa simetrija &mdash; ali je važno razumeti zašto.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Glavna stvar je prepoznati da <strong>strogo rastući poredak eliminiše redosled</strong> kao slobodu izbora. Kad bismo brojali sve uređene četvorke različitih cifara, dobili bismo \( P(9, 4) = 3024 \) (odgovor pod (B)). Ali svaka takva četvorka može biti poređana na \( 4! = 24 \) različita načina, od kojih je <em>tačno jedan</em> rastući. Zato je broj rastućih četvorki <em>tačno</em> \( 3024 / 24 = 126 \) &mdash; što je i definicija kombinacije \( \binom{9}{4}. \) Drugi ključ je &bdquo;\( 0 \) ne učestvuje&rdquo;: ne brojimo iz \( \binom{10}{4} = 210 \) (odgovor (E)), nego iz \( \binom{9}{4} = 126. \) Razlika \( 210 - 126 = 84 = \binom{9}{3} \) je tačno broj &bdquo;rastućih&rdquo; četvorki koje sadrže \( 0 \) (a one nisu četvorocifreni brojevi).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ N = \binom{9}{4} = 126 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 432 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 3024 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 5040 \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 126 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 210 \)</span>
+  </div>
+  <p class="verification">Provere: <strong>simetrija</strong> \( \binom{9}{4} = \binom{9}{5} = 126; \) <strong>direktan izračun</strong> \( \dfrac{9 \cdot 8 \cdot 7 \cdot 6}{24} = 126; \) <strong>razdvajanje</strong> sa \( \binom{10}{4} = 210 \) &mdash; oduzimanjem \( \binom{9}{3} = 84 \) (četvorke sa \( 0 \)) dobijemo \( 210 - 84 = 126. \) \( \checkmark \)</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Uključiti cifru \( 0 \)</strong>: računati \( \binom{10}{4} = 210 \) (odgovor (E)). Ali \( 0 \) bi u svakoj rastućoj četvorci bila na prvom mestu, pa broj ne bi bio četvorocifren.</li>
+    <li><strong>Permutacije umesto kombinacija</strong>: računati \( P(9, 4) = 9 \cdot 8 \cdot 7 \cdot 6 = 3024 \) (odgovor (B)). To broji uređene torke, ali svaka strogo rastuća četvorka odgovara <em>jednoj</em>, ne \( 4! \) torki.</li>
+    <li><strong>Pomešati strogo i nestrogo rastuće</strong>: nestrogo rastuće (\( a \leq b \leq c \leq d \), cifre se mogu ponavljati) daje drugačiju formulu (zvezde-i-pregrade, sa rezultatom \( \binom{12}{4} = 495 \) ako uključimo \( 0 \), ili više-manje sa različitim graničnim uslovima). Pažljivo čitati uslov!</li>
+    <li><strong>Rastaviti na slučajeve po prvoj cifri</strong>: matematički ispravno, ali nepotrebno komplikovano. Ako se ipak rastavi: prva cifra može biti \( 1, 2, 3, 4, 5 \) ili \( 6 \) (jer treba bar tri veće cifre &mdash; ne više od \( 6 \) za prvu). Tada: \( \binom{8}{3} + \binom{7}{3} + \binom{6}{3} + \binom{5}{3} + \binom{4}{3} + \binom{3}{3} = 56 + 35 + 20 + 10 + 4 + 1 = 126. \) \( \checkmark \) (Klasičan identitet &bdquo;štap u Paskalu&rdquo;.)</li>
+    <li><strong>Računati \( 7! = 5040 \)</strong> (odgovor (C)) bez veze sa problemom &mdash; greška jer se cifre iz \( \{1, \dots, 9\} \) izvuku misli o \( 7! \) ili o \( P(10, 4) \) negde u izračunu.</li>
+    <li><strong>Zaboraviti da je redosled jedinstven</strong>: pokušati da pomnožimo \( \binom{9}{4} \cdot 4! \) (&bdquo;za svaki podskup ima \( 4! \) poredaka&rdquo;) &mdash; ali samo <em>jedan</em> od \( 4! \) poredaka je rastući.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koliko ima <strong>petocifrenih</strong> brojeva čije su cifre poređane u <em>nestrogo</em> rastućem poretku (tj. \( a \leq b \leq c \leq d \leq e \), cifre se smeju ponavljati)? Pažnja: prva cifra ne sme biti \( 0. \)</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Pošto su cifre nestrogo rastuće, broj je jednoznačno određen <em>multiskupom</em> od \( 5 \) cifara iz \( \{0, 1, \dots, 9\} \) &mdash; tj. izborom sa ponavljanjem. Formula za izbor \( k \) elemenata iz \( n \) sa ponavljanjem je \( \binom{n + k - 1}{k} \) (&bdquo;zvezde i pregrade&rdquo;). Sa \( n = 10,\ k = 5 \): \( \binom{14}{5} = 2002. \) Ali moramo isključiti brojeve gde je vodeća cifra \( 0. \) Ako je \( a = 0 \), preostali multiskup je nestrogo rastuća četvorka iz \( \{0, \dots, 9\} \): \( \binom{13}{4} = 715. \) Konačno: \( 2002 - 715 = 1287. \) Alternativno, direktno: ako vodeća cifra ne sme biti \( 0, \) to znači sve cifre su iz \( \{1, \dots, 9\} \) (jer ako je \( 0 \) u multiskupu i \( a \neq 0, \) onda \( 0 \) ne ide na početak &mdash; ali multiskup je <em>uvek</em> nestrogo rastući, pa najmanja vrednost ide na početak; dakle ako \( 0 \) postoji, ona ide na \( a, \) što nije dozvoljeno). Dakle biramo nestrogo rastuću petorku iz \( \{1, \dots, 9\}: \) \( \binom{9 + 5 - 1}{5} = \binom{13}{5} = 1287. \) \( \checkmark \) Bonus pitanje: a koliko ima sa <em>strogo</em> rastućim ciframa? Po istoj logici kao za četvorocifrene: \( \binom{9}{5} = 126. \)</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-comb');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function roundedRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var warning   = cv('--sol-canvas-warning');
+    var tertiary  = cv('--sol-canvas-tertiary');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Izaberi 4 cifre iz {1..9} → strogo rastuca cetvorka', 20, 26);
+
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Svaki podskup velicine 4 odredjuje tacno jedan rastuci broj.', 20, 46);
+
+    // ── LEFT side: examples on a digit row ──
+    var leftX = 30;
+    var rightX = 420;
+    var rowY = 110;
+    var rowSpacing = 70;
+    var digitR = 16;
+    var digitGap = 42;
+
+    var examples = [
+      { label: '1234', digits: [1, 2, 3, 4], color: '--sol-canvas-primary' },
+      { label: '2589', digits: [2, 5, 8, 9], color: '--sol-canvas-accent' },
+      { label: '3678', digits: [3, 6, 7, 8], color: '--sol-canvas-secondary' },
+      { label: '6789', digits: [6, 7, 8, 9], color: '--sol-canvas-highlight' }
+    ];
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Primeri:', leftX, 80);
+
+    for (var r = 0; r < examples.length; r++) {
+      var ex = examples[r];
+      var y = rowY + r * rowSpacing;
+      var selectedSet = {};
+      for (var i = 0; i < ex.digits.length; i++) selectedSet[ex.digits[i]] = true;
+
+      // Label at left
+      ctx.fillStyle = cv(ex.color);
+      ctx.font = 'bold 18px "JetBrains Mono", monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText(ex.label, leftX, y + 6);
+
+      // Row of 9 digits 1..9
+      for (var d = 1; d <= 9; d++) {
+        var dx = leftX + 68 + (d - 1) * digitGap;
+        var isSel = !!selectedSet[d];
+        if (isSel) {
+          // glow ring
+          ctx.beginPath();
+          ctx.arc(dx, y, digitR + 5, 0, Math.PI * 2);
+          ctx.fillStyle = cvAlpha(ex.color, 0.2);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(dx, y, digitR, 0, Math.PI * 2);
+          ctx.fillStyle = cvAlpha(ex.color, 0.85);
+          ctx.fill();
+          ctx.strokeStyle = cv(ex.color);
+          ctx.lineWidth = 2;
+          ctx.stroke();
+
+          ctx.fillStyle = bg;
+          ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(String(d), dx, y + 4);
+        } else {
+          // empty placeholder
+          ctx.beginPath();
+          ctx.arc(dx, y, digitR, 0, Math.PI * 2);
+          ctx.strokeStyle = cv('--sol-canvas-grid');
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash([2, 3]);
+          ctx.stroke();
+          ctx.setLineDash([]);
+
+          ctx.fillStyle = muted;
+          ctx.font = '12px Inter, system-ui, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(String(d), dx, y + 4);
+        }
+      }
+    }
+
+    // Footer arrow / explanation under the example block
+    var afterRowsY = rowY + examples.length * rowSpacing - 25;
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Najmanja izabrana cifra → vodeca; ostale rastu.  Cifra 0 nije ukljucena.', leftX, afterRowsY + 32);
+    ctx.fillText('Sve je sume: C(9,4) = 126 razlicitih cetvorki.', leftX, afterRowsY + 48);
+
+    // ── RIGHT side: small Pascal triangle, rows 0..9 ──
+    var pTriStartX = rightX + 130;
+    var pTriStartY = 90;
+    var pCellH = 38;
+    var pCellW = 36;
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Paskalov trougao do reda 9', pTriStartX, 78);
+
+    // Build Pascal up to row 9
+    var pascal = [[1]];
+    for (var rr = 1; rr <= 9; rr++) {
+      var prev = pascal[rr - 1];
+      var nextRow = [1];
+      for (var kk = 1; kk < rr; kk++) nextRow.push(prev[kk - 1] + prev[kk]);
+      nextRow.push(1);
+      pascal.push(nextRow);
+    }
+
+    for (var rr = 0; rr <= 9; rr++) {
+      var rowArr = pascal[rr];
+      var totalRowW = rowArr.length * pCellW;
+      var rowStartX = pTriStartX - totalRowW / 2 + pCellW / 2;
+      var rowYy = pTriStartY + rr * pCellH;
+      for (var kk = 0; kk < rowArr.length; kk++) {
+        var val = rowArr[kk];
+        var cx = rowStartX + kk * pCellW;
+        var isMain = (rr === 9 && (kk === 4 || kk === 5));
+
+        if (isMain) {
+          // highlight C(9,4) and C(9,5)
+          ctx.beginPath();
+          ctx.arc(cx, rowYy, 17, 0, Math.PI * 2);
+          ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.3);
+          ctx.fill();
+          ctx.strokeStyle = cv('--sol-canvas-warning');
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          ctx.fillStyle = cv('--sol-canvas-warning');
+          ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+        } else {
+          ctx.fillStyle = (rr === 9) ? text : muted;
+          ctx.font = (rr === 9) ? 'bold 11px Inter, system-ui, sans-serif' : '10px Inter, system-ui, sans-serif';
+        }
+
+        ctx.textAlign = 'center';
+        ctx.fillText(String(val), cx, rowYy + 4);
+      }
+    }
+
+    // Labels under the highlighted entries
+    var lastRowY = pTriStartY + 9 * pCellH;
+    var lastRowArr = pascal[9];
+    var lastRowStartX = pTriStartX - lastRowArr.length * pCellW / 2 + pCellW / 2;
+    var c94X = lastRowStartX + 4 * pCellW;
+    var c95X = lastRowStartX + 5 * pCellW;
+
+    ctx.fillStyle = cv('--sol-canvas-warning');
+    ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('C(9,4)', c94X, lastRowY + 32);
+    ctx.fillText('C(9,5)', c95X, lastRowY + 32);
+
+    // Connector arrow / hint
+    ctx.strokeStyle = cv('--sol-canvas-warning');
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(c94X + 10, lastRowY + 8);
+    ctx.quadraticCurveTo((c94X + c95X) / 2, lastRowY - 15, c95X - 10, lastRowY + 8);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = cv('--sol-canvas-warning');
+    ctx.font = 'italic 10px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('simetrija: oba = 126', (c94X + c95X) / 2, lastRowY - 18);
+
+    // ── Summary footer ──
+    var sumY = 510;
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.12);
+    ctx.strokeStyle = cv('--sol-canvas-primary');
+    ctx.lineWidth = 2;
+    roundedRect(ctx, 30, sumY, canvas.width - 60, 40, 10);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Resenje:  C(9,4) = (9·8·7·6) / 24 = 126', canvas.width / 2, sumY + 26);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Četvorocifreni brojevi sa strogo rastućim ciframa: \\binom{9}{4} = 126",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["kombinacije", "binomni koeficijent", "brojanje cifara", "Paskalov trougao", "rastući poredak"]
+}
+BRAINSPARK_META-->

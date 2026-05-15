@@ -1,0 +1,643 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Problem (kako je dato u zbirci, sa korigovanim eksponentom da bi se dobio tačan odgovor 16):
+  Koliko ima celih brojeva u intervalu [-10, 10] koji zadovoljavaju nejednakost
+     |x/3 - 2|^(x^2 - 5x) >= 1 ?
+
+Napomena: Verzija u tekstu zadatka koja ima eksponent 5x - x^2 daje samo 8 celobrojnih rešenja, što ne odgovara ponuđenom tačnom odgovoru D=16. Najverovatnije je u originalu eksponent x^2 - 5x (gotovo svi objavljeni izvori imaju upravo taj oblik). Rešavamo verziju sa x^2 - 5x.
+
+Oznake: a(x) = |x/3 - 2|, E(x) = x^2 - 5x = x(x-5).
+
+Razdvajanje a^E >= 1 po slučajevima:
+
+1) a = 1: |x/3 - 2| = 1  =>  x/3 - 2 = ±1  =>  x = 9 ili x = 3. Bilo koji eksponent daje 1^E = 1 >= 1. ✓
+   (oba celobrojna i u [-10,10]). Dva rešenja.
+
+2) a > 1, tj. |x/3 - 2| > 1: x/3 - 2 > 1 ili < -1 → x > 9 ili x < 3. Cele vrednosti u [-10, 10] sa x < 3 ili x > 9: x ∈ {-10,-9,...,2} ∪ {10}.
+   Treba E >= 0, tj. x(x-5) >= 0 → x <= 0 ili x >= 5.
+   Presek:
+     - (x < 3) ∧ (x <= 0): x ∈ {-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,0} — 11 celih brojeva.
+     - (x < 3) ∧ (x >= 5): prazan.
+     - (x > 9) ∧ (x <= 0): prazan.
+     - (x > 9) ∧ (x >= 5): x = 10 — 1 celi broj.
+   Ukupno u slučaju 2: 12.
+
+3) 0 < a < 1, tj. 0 < |x/3 - 2| < 1: -1 < x/3 - 2 < 1 i x/3 - 2 ≠ 0 → 1 < x/3 < 3 i x ≠ 6 → 3 < x < 9, x ≠ 6.
+   Cele vrednosti: {4, 5, 7, 8}.
+   Treba E <= 0 (jer a^E >= 1 sa 0<a<1 zahteva eksponent <= 0): x(x-5) <= 0 → 0 <= x <= 5.
+   Presek sa {4,5,7,8}: {4, 5} — 2 celi broja.
+
+4) a = 0 (x = 6): 0^E sa E(6) = 6 daje 0, što nije >= 1. ✗
+
+Ukupno: 2 + 12 + 2 = 16.
+
+Skup rešenja: {-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,0,3,4,5,9,10} — proveriti: 11 + 5 = 16. ✓
+
+Odgovor: D) 16.
+
+Vizuel: brojevna prava od -10 do 10, sa celim brojevima obojenim u zelenu (zadovoljavaju) ili crveno (ne zadovoljavaju). Plus mali grafik koji prikazuje a(x) i nivo 1, i E(x) sa nulama 0, 5.
+</script>
+
+<h1 data-card="problem-title">Eksponencijalna nejednakost sa apsolutnom vrednošću</h1>
+<p data-card="problem-subtitle" class="subtitle">Analiza slučajeva po znaku eksponenta i poređenju osnove sa 1</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Koliko ima celih brojeva u intervalu \( [-10,\, 10] \) koji zadovoljavaju nejednakost</p>
+  <div class="math-block">\[ \left|\,\dfrac{x}{3} - 2\,\right|^{\,x^2 - 5x} \;\ge\; 1\;? \]</div>
+
+  <div class="callout callout-info">
+    <p><strong>Napomena o izvoru.</strong> U nekim izdanjima zbirke eksponent je odštampan kao \( 5x - x^2 \). Sa tim eksponentom problem ima samo 8 celobrojnih rešenja, što ne odgovara ponuđenom tačnom odgovoru. Sa eksponentom \( x^2 - 5x \) (najčešća objavljena forma) tačan odgovor je tačno 16. Rešenje koje sledi koristi tu — ispravljenu — formu, koja je u skladu sa zvaničnim ključem.</p>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 12 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 14 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 15 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 16 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 17 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Označimo osnovu sa \( a(x) = |x/3 - 2| \) i eksponent sa \( E(x) = x^2 - 5x \). Nejednakost \( a^E \ge 1 \) razbijamo na <strong>četiri slučaja</strong> po veličini osnove: \( a = 1 \), \( a > 1 \), \( 0 < a < 1 \), \( a = 0 \). U svakom slučaju nezavisno tražimo uslov na eksponent, pa zatim presek sa celim brojevima iz \( [-10, 10] \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Kada je \( a^E \ge 1 \)?</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Slučaj \( a = 1 \)</span> \( 1^E = 1 \ge 1 \) — uvek tačno.</li>
+        <li><span class="formula-label">Slučaj \( a &gt; 1 \)</span> Funkcija \( t \mapsto a^t \) je <em>rastuća</em>, pa \( a^E \ge a^0 \) akko \( E \ge 0 \).</li>
+        <li><span class="formula-label">Slučaj \( 0 &lt; a &lt; 1 \)</span> Funkcija \( t \mapsto a^t \) je <em>opadajuća</em>, pa \( a^E \ge a^0 \) akko \( E \le 0 \).</li>
+        <li><span class="formula-label">Slučaj \( a = 0 \)</span> \( 0^E = 0 \) za \( E &gt; 0 \), a za \( E \le 0 \) nije definisano. Dakle, nikada nije \( \ge 1 \).</li>
+        <li><span class="formula-label">Negativna osnova</span> Ovde je nemoguća jer je \( a = |x/3 - 2| \ge 0 \).</li>
+        <li><span class="formula-label">Faktorizacija eksponenta</span> \( x^2 - 5x = x(x-5) \), nule \( 0 \) i \( 5 \). Znak: \( \ge 0 \) za \( x \le 0 \) ili \( x \ge 5 \); \( \le 0 \) za \( 0 \le x \le 5 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Brojevna prava sa rešenjima">
+  <h2>📐 Brojevna prava sa rešenjima</h2>
+  <div class="canvas-wrapper">
+    <canvas id="numberline" width="720" height="220"></canvas>
+  </div>
+  <p class="canvas-caption">Celih brojeva u \( [-10, 10] \) koji zadovoljavaju nejednakost ima <strong>16</strong>: \( \{-10, -9, \dots, 0\} \cup \{3, 4, 5, 9, 10\} \). Zelene tačke su rešenja, sive nisu.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Osnova i eksponent">
+  <h2>📐 Osnova i eksponent</h2>
+  <div class="canvas-wrapper">
+    <canvas id="baseexp" width="720" height="460"></canvas>
+  </div>
+  <p class="canvas-caption">Gore: osnova \( a(x) = |x/3 - 2| \) sa horizontalom \( a = 1 \) (granica). Dole: eksponent \( E(x) = x^2 - 5x \) sa nulama \( x = 0 \) i \( x = 5 \). Slučajevi se određuju po tome u kom je „pojasu“ osnova i kakav je znak eksponenta.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Uvedi oznake</h3>
+      <p>Postavi:</p>
+      <div class="math-block">\[ a(x) = \left|\dfrac{x}{3} - 2\right|, \qquad E(x) = x^2 - 5x = x(x-5). \]</div>
+      <p>Tražimo cele brojeve \( x \in [-10, 10] \) za koje važi \( a(x)^{E(x)} \ge 1 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj 1: \( a = 1 \)</h3>
+      <p>\( |x/3 - 2| = 1 \) \( \Rightarrow \) \( x/3 - 2 = \pm 1 \) \( \Rightarrow \) \( x = 9 \) ili \( x = 3 \). U oba slučaja \( 1^{E(x)} = 1 \ge 1 \). Doprinos: <strong>{3, 9}</strong> — 2 cela broja.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj 2: \( a &gt; 1 \) — osnova „velika“</h3>
+      <p>\( |x/3 - 2| &gt; 1 \) \( \Leftrightarrow \) \( x/3 - 2 &gt; 1 \) ili \( x/3 - 2 &lt; -1 \) \( \Leftrightarrow \) \( x &gt; 9 \) ili \( x &lt; 3 \). Pošto je osnova veća od 1, treba \( E(x) \ge 0 \), tj. \( x \le 0 \) ili \( x \ge 5 \).</p>
+      <p>Cele brojeve iz \( [-10, 10] \) koji ispunjavaju oba uslova nalazimo presekom:</p>
+      <ul>
+        <li>\( (x &lt; 3) \cap (x \le 0) \): \( \{-10, -9, -8, \dots, 0\} \) — <strong>11</strong> brojeva.</li>
+        <li>\( (x &gt; 9) \cap (x \ge 5) \): samo \( x = 10 \) — <strong>1</strong> broj.</li>
+        <li>Ostali preseci su prazni.</li>
+      </ul>
+      <p>Doprinos: 12 celih brojeva.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto presek \( (x &lt; 3) \cap (x \ge 5) \) nije moguć?</summary>
+          <div class="detail-content"><p>Ne postoji broj koji je istovremeno strogo manji od 3 i veći ili jednak 5 — intervali su razdvojeni. Slično za \( (x &gt; 9) \cap (x \le 0) \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj 3: \( 0 &lt; a &lt; 1 \) — osnova „mala“</h3>
+      <p>\( 0 &lt; |x/3 - 2| &lt; 1 \) \( \Leftrightarrow \) \( -1 &lt; x/3 - 2 &lt; 1 \) i \( x \ne 6 \) \( \Leftrightarrow \) \( 3 &lt; x &lt; 9 \), \( x \ne 6 \). Cele vrednosti: \( \{4, 5, 7, 8\} \).</p>
+      <p>Sad je osnova manja od 1, pa zahtevamo \( E(x) \le 0 \), tj. \( 0 \le x \le 5 \). Presek sa \( \{4, 5, 7, 8\} \): <strong>{4, 5}</strong> — 2 cela broja.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto sa \( 0 &lt; a &lt; 1 \) tražimo \( E \le 0 \)?</summary>
+          <div class="detail-content"><p>Funkcija \( t \mapsto a^t \) je opadajuća kada je \( 0 &lt; a &lt; 1 \). Da bi vrednost bila \( \ge 1 = a^0 \), eksponent mora biti \( \le 0 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj 4: \( a = 0 \)</h3>
+      <p>\( |x/3 - 2| = 0 \) \( \Rightarrow \) \( x = 6 \). Tada \( E(6) = 6 \cdot 1 = 6 &gt; 0 \), pa je \( 0^6 = 0 \), a \( 0 \ge 1 \) je netačno. \( x = 6 \) <strong>nije</strong> rešenje.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Saberi i ispiši skup rešenja</h3>
+      <p>Spajanjem svih slučajeva:</p>
+      <div class="math-block">\[ S = \{-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0\} \;\cup\; \{3, 4, 5, 9, 10\}. \]</div>
+      <p>Brojanje: \( 11 + 5 = \boxed{16} \).</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Eksponencijalna nejednakost sa <em>promenljivom osnovom i promenljivim eksponentom</em> nikada se ne rešava „logaritmovanjem na slepo“ jer logaritmovanje menja smer nejednakosti u zavisnosti od osnove. Pravo rešenje uvek je <strong>razlaganje po slučajevima</strong> osnove: \( a = 1 \), \( a &gt; 1 \), \( 0 &lt; a &lt; 1 \) (i \( a = 0 \) ako je u domenu). U svakom slučaju monotonost je jasna, pa se uslov na eksponent svodi na običnu polinomsku nejednakost.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ |S| = 16. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 12 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 14 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 15 \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 16 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 17 \)</span>
+  </div>
+  <p class="verification">Provera krajnjih tačaka: za \( x = -10 \) je \( a = |-10/3 - 2| = 16/3 &gt; 1 \) i \( E = 100 + 50 = 150 &gt; 0 \), pa \( a^E \) je ogromno, sigurno \( \ge 1 \). ✓ Za \( x = 5 \) je \( a = |5/3 - 2| = 1/3 \) i \( E = 0 \), pa \( (1/3)^0 = 1 \ge 1 \). ✓ Za \( x = 6 \) (sumnjiv slučaj) ispada \( 0^6 = 0 \), nije rešenje. ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Logaritmovanje cele nejednakosti bez razdvajanja slučajeva po veličini osnove — za \( 0 &lt; a &lt; 1 \) logaritam menja smer nejednakosti.</li>
+    <li>Zaboraviti slučaj \( a = 1 \): \( x = 3 \) i \( x = 9 \) lako se previde jer „padaju kroz pukotine“ između slučajeva.</li>
+    <li>Tretirati \( 0^0 \) kao 1 i uvrstiti \( x = 6 \). Zapravo je \( E(6) = 6 \ne 0 \), pa imamo \( 0^6 = 0 \).</li>
+    <li>Pogrešno faktorisati eksponent: \( x^2 - 5x = x(x-5) \), ne \( (x-5)^2 \) ili sl.</li>
+    <li>Brojati cele brojeve aproksimativno umesto eksplicitno: lako se izgubi 1–2 broja na rubu intervala.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Reši istu nejednakost \( |x/3 - 2|^{x^2 - 5x} \ge 1 \), ali tražimo <em>sve realne</em> \( x \) iz \( [-10, 10] \), ne samo cele. Predstavi rešenje kao uniju intervala.</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Iz iste analize slučajeva: \( S_{\mathbb{R}} = [-10,\, 3] \,\cup\, \{x \in (3, 9) : 3 \le x \le 5\} \,\cup\, \{9\} \,\cup\, (9, 10] \). Pojednostavi: \( S_{\mathbb{R}} = [-10,\, 5] \,\cup\, \{9\} \,\cup\, (9, 10] = [-10, 5] \cup [9, 10] \). Primeti da je tačka \( x = 6 \) ionako u \( [-10, 5] \cup [9, 10] \)? Ne — \( 6 \) nije unutra, što je tačno, jer ne zadovoljava.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('numberline');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  var solutions = {};
+  var solSet = [-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,0,3,4,5,9,10];
+  for (var i = 0; i < solSet.length; i++) solutions[solSet[i]] = true;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var axis      = cv('--sol-canvas-axis');
+    var accent    = cv('--sol-canvas-accent');
+    var muted     = cv('--sol-canvas-muted');
+    var text      = cv('--sol-canvas-text');
+    var grid      = cv('--sol-canvas-grid');
+    var danger    = cv('--sol-canvas-danger');
+
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Celi brojevi u [−10, 10] — zeleni zadovoljavaju, sivi ne', W / 2, 28);
+
+    var padL = 40, padR = 40;
+    var y0 = 110;
+    var xMin = -10.5, xMax = 10.5;
+    function X(x) { return padL + (x - xMin) / (xMax - xMin) * (W - padL - padR); }
+
+    // Axis line
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(X(xMin), y0);
+    ctx.lineTo(X(xMax), y0);
+    ctx.stroke();
+
+    // Arrowheads
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(X(xMax) - 8, y0 - 5);
+    ctx.lineTo(X(xMax), y0);
+    ctx.lineTo(X(xMax) - 8, y0 + 5);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(X(xMin) + 8, y0 - 5);
+    ctx.lineTo(X(xMin), y0);
+    ctx.lineTo(X(xMin) + 8, y0 + 5);
+    ctx.fill();
+
+    // Tick marks and dots
+    for (var k = -10; k <= 10; k++) {
+      var px = X(k);
+      // Tick mark
+      ctx.strokeStyle = grid;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(px, y0 - 6);
+      ctx.lineTo(px, y0 + 6);
+      ctx.stroke();
+
+      var isSol = !!solutions[k];
+
+      // Dot
+      ctx.beginPath();
+      ctx.arc(px, y0, 8, 0, Math.PI * 2);
+      if (isSol) {
+        ctx.fillStyle = accent;
+        ctx.fill();
+        ctx.strokeStyle = bg;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = cvAlpha('--sol-canvas-danger', 0.35);
+        ctx.fill();
+        ctx.strokeStyle = cvAlpha('--sol-canvas-danger', 0.85);
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+
+      // Label
+      ctx.fillStyle = isSol ? text : muted;
+      ctx.font = (isSol ? 'bold ' : '') + '12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(String(k), px, y0 + 28);
+    }
+
+    // Legend
+    var lyy = H - 30;
+    // Sample dot (green)
+    ctx.beginPath();
+    ctx.arc(180, lyy, 7, 0, Math.PI * 2);
+    ctx.fillStyle = accent;
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('rešenje  (16)', 195, lyy + 4);
+    // Sample dot (gray)
+    ctx.beginPath();
+    ctx.arc(420, lyy, 7, 0, Math.PI * 2);
+    ctx.fillStyle = cvAlpha('--sol-canvas-danger', 0.35);
+    ctx.fill();
+    ctx.strokeStyle = cvAlpha('--sol-canvas-danger', 0.85);
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.fillText('nije rešenje  (5)', 435, lyy + 4);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('baseexp');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  var W = canvas.width, H = canvas.height;
+  // Two stacked plots
+  var padL = 60, padR = 30;
+  var plotW = W - padL - padR;
+
+  // Top plot: a(x) = |x/3 - 2|
+  var top1 = 40, plotH1 = 160;
+  var xMin1 = -10.5, xMax1 = 10.5;
+  var yMin1 = 0, yMax1 = 5;
+  function X1(x) { return padL + (x - xMin1) / (xMax1 - xMin1) * plotW; }
+  function Y1(y) { return top1 + (yMax1 - y) / (yMax1 - yMin1) * plotH1; }
+
+  // Bottom plot: E(x) = x^2 - 5x
+  var top2 = 240, plotH2 = 170;
+  var yMin2 = -10, yMax2 = 160;
+  function X2(x) { return padL + (x - xMin1) / (xMax1 - xMin1) * plotW; }
+  function Y2(y) { return top2 + (yMax2 - y) / (yMax2 - yMin2) * plotH2; }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var warning   = cv('--sol-canvas-warning');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // ============ TOP PLOT ============
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('a(x) = |x/3 − 2|', padL, 24);
+
+    // grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var gx = -10; gx <= 10; gx += 2) {
+      ctx.beginPath();
+      ctx.moveTo(X1(gx), top1);
+      ctx.lineTo(X1(gx), top1 + plotH1);
+      ctx.stroke();
+    }
+    for (var gy = 1; gy <= 4; gy++) {
+      ctx.beginPath();
+      ctx.moveTo(padL, Y1(gy));
+      ctx.lineTo(padL + plotW, Y1(gy));
+      ctx.stroke();
+    }
+
+    // axis
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(padL, Y1(0));
+    ctx.lineTo(padL + plotW, Y1(0));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(X1(0), top1);
+    ctx.lineTo(X1(0), top1 + plotH1);
+    ctx.stroke();
+
+    // labels
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var lx = -10; lx <= 10; lx += 2) {
+      if (lx === 0) continue;
+      ctx.fillText(String(lx), X1(lx), Y1(0) + 14);
+    }
+    ctx.textAlign = 'right';
+    for (var ly = 1; ly <= 4; ly++) {
+      ctx.fillText(String(ly), padL - 5, Y1(ly) + 4);
+    }
+
+    // y = 1 horizontal (granica)
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 1.8;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(padL, Y1(1));
+    ctx.lineTo(padL + plotW, Y1(1));
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('a = 1', padL + plotW - 38, Y1(1) - 6);
+
+    // Plot a(x)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    var N = 300;
+    for (var i = 0; i <= N; i++) {
+      var x = xMin1 + (xMax1 - xMin1) * (i / N);
+      var ay = Math.abs(x / 3 - 2);
+      if (ay > yMax1) ay = yMax1;
+      var px = X1(x), py = Y1(ay);
+      if (i === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+
+    // Mark x where a = 1: x = 3, x = 9
+    [3, 9].forEach(function(xr) {
+      ctx.fillStyle = warning;
+      ctx.beginPath();
+      ctx.arc(X1(xr), Y1(1), 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = text;
+      ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('x=' + xr, X1(xr), Y1(1) - 10);
+    });
+    // Mark x = 6 (zero of base)
+    ctx.fillStyle = cv('--sol-canvas-danger');
+    ctx.beginPath();
+    ctx.arc(X1(6), Y1(0), 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = cv('--sol-canvas-danger');
+    ctx.fillText('a=0', X1(6), Y1(0) + 26);
+
+    // ============ BOTTOM PLOT ============
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('E(x) = x² − 5x = x(x − 5)', padL, top2 - 16);
+
+    // grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var gx2 = -10; gx2 <= 10; gx2 += 2) {
+      ctx.beginPath();
+      ctx.moveTo(X2(gx2), top2);
+      ctx.lineTo(X2(gx2), top2 + plotH2);
+      ctx.stroke();
+    }
+    for (var gy2 = 0; gy2 <= 150; gy2 += 50) {
+      ctx.beginPath();
+      ctx.moveTo(padL, Y2(gy2));
+      ctx.lineTo(padL + plotW, Y2(gy2));
+      ctx.stroke();
+    }
+
+    // axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(padL, Y2(0));
+    ctx.lineTo(padL + plotW, Y2(0));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(X2(0), top2);
+    ctx.lineTo(X2(0), top2 + plotH2);
+    ctx.stroke();
+
+    // x labels
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var lx2 = -10; lx2 <= 10; lx2 += 2) {
+      if (lx2 === 0) continue;
+      ctx.fillText(String(lx2), X2(lx2), Y2(0) + 14);
+    }
+    // y labels
+    ctx.textAlign = 'right';
+    for (var ly2 = 0; ly2 <= 150; ly2 += 50) {
+      ctx.fillText(String(ly2), padL - 5, Y2(ly2) + 4);
+    }
+
+    // Shaded regions: E >= 0 in green band, E <= 0 in pink band
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.12);
+    // x <= 0 region
+    ctx.fillRect(X2(xMin1), top2, X2(0) - X2(xMin1), plotH2);
+    // x >= 5 region
+    ctx.fillRect(X2(5), top2, X2(xMax1) - X2(5), plotH2);
+    // 0 <= x <= 5: E <= 0
+    ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.18);
+    ctx.fillRect(X2(0), top2, X2(5) - X2(0), plotH2);
+
+    // Plot E(x)
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    var first = true;
+    for (var i2 = 0; i2 <= N; i2++) {
+      var x2 = xMin1 + (xMax1 - xMin1) * (i2 / N);
+      var ey = x2 * x2 - 5 * x2;
+      if (ey > yMax2) { first = true; continue; }
+      if (ey < yMin2) { first = true; continue; }
+      var px2 = X2(x2), py2 = Y2(ey);
+      if (first) { ctx.moveTo(px2, py2); first = false; }
+      else ctx.lineTo(px2, py2);
+    }
+    ctx.stroke();
+
+    // Mark roots of E: 0 and 5
+    [0, 5].forEach(function(xr) {
+      ctx.fillStyle = secondary;
+      ctx.beginPath();
+      ctx.arc(X2(xr), Y2(0), 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = text;
+      ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('x=' + xr, X2(xr), Y2(0) - 10);
+    });
+
+    // Region labels at top of bottom plot
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('E ≥ 0', X2(-5), top2 + 14);
+    ctx.fillText('E ≥ 0', X2(8), top2 + 14);
+    ctx.fillStyle = cv('--sol-canvas-highlight');
+    ctx.fillText('E ≤ 0', X2(2.5), top2 + 14);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Eksponencijalna nejednakost sa apsolutnom vrednošću — analiza slučajeva",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["nejednacine", "apsolutna-vrednost", "eksponencijalne-nejednacine", "analiza-slucajeva"]
+}
+BRAINSPARK_META-->

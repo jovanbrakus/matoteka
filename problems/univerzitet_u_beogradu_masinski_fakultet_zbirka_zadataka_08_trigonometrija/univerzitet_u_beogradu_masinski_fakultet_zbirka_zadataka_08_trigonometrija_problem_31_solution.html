@@ -1,0 +1,474 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Zadatak: izračunati zbir S = sin x + sin 2x + sin 3x + ... + sin 10x i prepoznati među ponuđenim formulama.
+
+  Strategija (teleskopiranje pomoću "trika 2 sin(x/2)"):
+    Pomnoži ceo zbir sa 2 sin(x/2):
+      2 sin(x/2) · sin(kx) = cos((k - 1/2)x) - cos((k + 1/2)x).
+    Tada je:
+      2 sin(x/2) · S = sum_{k=1..10} [ cos((k-1/2)x) - cos((k+1/2)x) ]
+                     = cos(x/2) - cos(21x/2)   (teleskopski zbir).
+    Dakle:
+      S = (cos(x/2) - cos(21x/2)) / (2 sin(x/2)).
+
+  Provera (alternativni oblik koristeći formulu za zbir n članova):
+    S_n = sum_{k=1..n} sin(kx) = sin(nx/2) · sin((n+1)x/2) / sin(x/2).
+    Za n = 10:
+      S = sin(5x) · sin(11x/2) / sin(x/2).
+    Numerička provera za x = 0.3 rad:
+      Direktan zbir:
+        sin(0.3) ≈ 0.29552
+        sin(0.6) ≈ 0.56464
+        sin(0.9) ≈ 0.78333
+        sin(1.2) ≈ 0.93204
+        sin(1.5) ≈ 0.99749
+        sin(1.8) ≈ 0.97385
+        sin(2.1) ≈ 0.86321
+        sin(2.4) ≈ 0.67546
+        sin(2.7) ≈ 0.42738
+        sin(3.0) ≈ 0.14112
+        Σ ≈ 6.65404.
+      Formula (C): cos(0.15) - cos(3.15) ≈ 0.98877 - (-0.99987) = 1.98864.
+        2 sin(0.15) ≈ 2 · 0.14944 = 0.29888.
+        S ≈ 1.98864 / 0.29888 ≈ 6.65380.  ✓
+    Sjajno, odgovor je (C).
+
+  Ostali odgovori se eliminišu logički:
+    (A) sin 11x / sin x — pogrešna asimptotika; za x = 0.3 daje sin(3.3)/sin(0.3) ≈ -0.158/0.296 ≈ -0.534, ne 6.65.
+    (B) cos 11x / cos x — slično, nije 6.65.
+    (D) (sin x/2 - sin 21x/2) / (2 sin x/2) — daje (0.1494 - 0.0007...)/0.299 ≈ 0.497, nije.
+    (E) (sin 21x/2 - sin x/2) / cos x/2 — pogrešno.
+
+  Ključni uvid: trik "pomnoži sa 2 sin(x/2)" pretvara svaki sinus u razliku dva kosinusa,
+  a u zbiru srednji članovi se "ponište" — ostaju samo prvi i poslednji.
+
+  Vizuelni prikaz: grafik parcijalnih suma S_n(x) za n = 1, 2, ..., 10, sa interaktivnim
+  sliderom za n. Pokazuje se kako rastom n zbir oscilira sve više i kako se približava
+  formuli (C). Statičan grafik je dovoljan jer je suština algebarska.
+</script>
+
+<h1 data-card="problem-title">Zbir sinusa \( \sin x + \sin 2x + \cdots + \sin 10x \)</h1>
+<p data-card="problem-subtitle" class="subtitle">Trigonometrija &mdash; teleskopski zbir, formula za proizvod \( 2\sin\tfrac{x}{2}\sin(kx) \)</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Čemu je jednako:</p>
+  <div class="math-block">\[ S \;=\; \sin x + \sin 2x + \sin 3x + \cdots + \sin 10x ? \]</div>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">broj članova</span>
+      <span class="given-value">\( 10 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">opšti član</span>
+      <span class="given-value">\( \sin(kx),\; k = 1, \ldots, 10 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">traženo</span>
+      <span class="given-value">\( S = ? \)</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \dfrac{\sin 11x}{\sin x} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \dfrac{\cos 11x}{\cos x} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \dfrac{\cos \tfrac{x}{2} - \cos \tfrac{21x}{2}}{2\sin \tfrac{x}{2}} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \dfrac{\sin \tfrac{x}{2} - \sin \tfrac{21x}{2}}{2\sin \tfrac{x}{2}} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \dfrac{\sin \tfrac{21x}{2} - \sin \tfrac{x}{2}}{\cos \tfrac{x}{2}} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Pomnožićemo ceo zbir sa \( 2\sin\tfrac{x}{2} \). Svaki član \( 2\sin\tfrac{x}{2}\cdot\sin(kx) \) postaje razlika dva kosinusa pomoću formule proizvoda u zbir, pa se susedne razlike <em>teleskopski</em> poništavaju — ostaju samo prvi i poslednji. Na kraju podelimo nazad sa \( 2\sin\tfrac{x}{2} \) i dobijemo gotovu formulu.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Formule proizvoda i teleskopski zbirovi</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Proizvod u zbir:</strong> \( 2\sin A \sin B = \cos(A - B) - \cos(A + B) \). Specijalno, \( 2\sin\tfrac{x}{2}\sin(kx) = \cos\!\left((k-\tfrac12)x\right) - \cos\!\left((k+\tfrac12)x\right) \).</li>
+        <li><strong>Teleskopski zbir:</strong> ako je svaki član razlika \( a_k - a_{k+1} \), onda se zbir \( \sum_{k=1}^{n}(a_k - a_{k+1}) \) sveden na \( a_1 - a_{n+1} \).</li>
+        <li><strong>Zatvorena forma:</strong> \( \displaystyle \sum_{k=1}^{n}\sin(kx) = \dfrac{\sin\tfrac{nx}{2}\,\sin\tfrac{(n+1)x}{2}}{\sin\tfrac{x}{2}} \). Za \( n = 10 \) postaje \( \dfrac{\sin 5x\,\sin\tfrac{11x}{2}}{\sin\tfrac{x}{2}} \).</li>
+        <li><strong>Domen:</strong> \( \sin\tfrac{x}{2} \neq 0 \), tj. \( x \neq 2k\pi \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="sum-plot" width="700" height="560"></canvas>
+  </div>
+  <div class="canvas-controls">
+    <label for="n-slider">Broj članova \( n \): <strong id="n-value">10</strong></label>
+    <input type="range" id="n-slider" min="1" max="10" value="10" step="1">
+  </div>
+  <p class="canvas-caption">Klizač menja gornju granicu zbira \( S_n(x) = \sin x + \sin 2x + \cdots + \sin nx \). Zelena kriva je direktan zbir, ljubičasta isprekidana je formula (C) — poklapaju se uvek kada je \( \sin\tfrac{x}{2} \neq 0 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Pomnožimo zbir sa \( 2\sin\tfrac{x}{2} \)</h3>
+      <p>Pretpostavimo \( \sin\tfrac{x}{2} \neq 0 \) (inače je svaki član \(\sin(kx) = 0\) i zbir je trivijalno \(0\)). Pomnožićemo obe strane jednakosti sa \(2\sin\tfrac{x}{2}\):</p>
+      <div class="math-block">\[ 2\sin\tfrac{x}{2}\cdot S \;=\; \sum_{k=1}^{10} 2\sin\tfrac{x}{2}\,\sin(kx). \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš faktor \( 2\sin\tfrac{x}{2} \)?</summary>
+          <div class="detail-content"><p>Zato što sa tim faktorom svaki član postaje razlika dva kosinusa po formuli \(2\sin A\sin B = \cos(A-B) - \cos(A+B)\), gde se susedne razlike "ulančuju".</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Primenimo formulu \( 2\sin A\sin B = \cos(A-B) - \cos(A+B) \)</h3>
+      <p>Sa \( A = \tfrac{x}{2} \) i \( B = kx \) imamo \( A - B = \left(\tfrac12 - k\right)x \) i \( A + B = \left(\tfrac12 + k\right)x \). Pošto je \( \cos \) parna funkcija:</p>
+      <div class="math-block">\[ 2\sin\tfrac{x}{2}\,\sin(kx) \;=\; \cos\!\left(\!\left(k - \tfrac12\right)x\right) - \cos\!\left(\!\left(k + \tfrac12\right)x\right). \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Razvijemo zbir i vidimo teleskopiranje</h3>
+      <p>Sumiramo za \( k = 1, 2, \ldots, 10 \):</p>
+      <div class="math-block">\[ \begin{aligned}
+        2\sin\tfrac{x}{2}\cdot S \;=\;& \left[\cos\tfrac{x}{2} - \cos\tfrac{3x}{2}\right] + \left[\cos\tfrac{3x}{2} - \cos\tfrac{5x}{2}\right] + \left[\cos\tfrac{5x}{2} - \cos\tfrac{7x}{2}\right] + \cdots \\
+        &+ \left[\cos\tfrac{19x}{2} - \cos\tfrac{21x}{2}\right].
+      \end{aligned} \]</div>
+      <p>Svaki "unutrašnji" \(\cos\) pojavljuje se jednom sa plusom i jednom sa minusom — ti članovi se međusobno poništavaju.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliko članova ostaje posle skraćivanja?</summary>
+          <div class="detail-content"><p>Tačno dva — prvi i poslednji: \( \cos\tfrac{x}{2} \) (iz \(k=1\)) i \( -\cos\tfrac{21x}{2} \) (iz \(k=10\)). Sve između se poništava u parovima.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Ostaje samo prvi i poslednji član</h3>
+      <p>Posle teleskopiranja:</p>
+      <div class="math-block">\[ 2\sin\tfrac{x}{2}\cdot S \;=\; \cos\tfrac{x}{2} - \cos\tfrac{21x}{2}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Podelimo sa \( 2\sin\tfrac{x}{2} \) i dobijemo rezultat</h3>
+      <p>Pošto je \( \sin\tfrac{x}{2} \neq 0 \), možemo deliti:</p>
+      <div class="math-block">\[ \boxed{\; S \;=\; \dfrac{\cos\tfrac{x}{2} - \cos\tfrac{21x}{2}}{2\sin\tfrac{x}{2}}.\;} \]</div>
+      <p>To je tačno opcija <strong>(C)</strong>.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kakva je veza sa "kanonskim" oblikom \( \dfrac{\sin 5x\,\sin\tfrac{11x}{2}}{\sin\tfrac{x}{2}} \)?</summary>
+          <div class="detail-content"><p>Pomoću formule razlike kosinusa: \( \cos A - \cos B = -2\sin\tfrac{A+B}{2}\sin\tfrac{A-B}{2} \). Sa \(A = \tfrac{x}{2}\), \(B = \tfrac{21x}{2}\) dobija se \( -2\sin\tfrac{11x}{2}\sin(-5x) = 2\sin\tfrac{11x}{2}\sin 5x \). Podelivši sa \(2\sin\tfrac{x}{2}\) dobijamo \( \dfrac{\sin 5x \, \sin\tfrac{11x}{2}}{\sin\tfrac{x}{2}} \). Iste vrednosti, ekvivalentan zapis.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Trik "<strong>pomnoži sa \(2\sin\tfrac{x}{2}\)</strong>" je univerzalan za zbirove tipa \( \sum \sin(kx) \) i \( \sum \cos(kx) \). Svaki član se pretvori u razliku dva kosinusa, susedne razlike se "ulančuju" kao domine, i u zbiru preživljavaju samo <em>krajnji</em> kosinusi. Isti princip — teleskopiranje — koristi se i u algebri (npr. \( \sum 1/(k(k+1)) \)) i u kombinatorici.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ S \;=\; \sin x + \sin 2x + \cdots + \sin 10x \;=\; \dfrac{\cos\tfrac{x}{2} - \cos\tfrac{21x}{2}}{2\sin\tfrac{x}{2}}. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( \dfrac{\sin 11x}{\sin x} \)</span>
+    <span class="answer-option" data-option="B">(B) \( \dfrac{\cos 11x}{\cos x} \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( \dfrac{\cos \tfrac{x}{2} - \cos \tfrac{21x}{2}}{2\sin \tfrac{x}{2}} \)</span>
+    <span class="answer-option" data-option="D">(D) \( \dfrac{\sin \tfrac{x}{2} - \sin \tfrac{21x}{2}}{2\sin \tfrac{x}{2}} \)</span>
+    <span class="answer-option" data-option="E">(E) \( \dfrac{\sin \tfrac{21x}{2} - \sin \tfrac{x}{2}}{\cos \tfrac{x}{2}} \)</span>
+  </div>
+  <p class="verification">Numerička provera za \( x = 0{,}3 \) rad: direktan zbir \( \sin 0{,}3 + \sin 0{,}6 + \cdots + \sin 3{,}0 \approx 6{,}654 \); formula (C) daje \( (\cos 0{,}15 - \cos 3{,}15)/(2\sin 0{,}15) \approx 1{,}989/0{,}299 \approx 6{,}654 \). Slaganje na 4 cifre.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pomešati formulu proizvoda: \( 2\sin A\sin B = \cos(A-B) - \cos(A+B) \), <em>ne</em> \( \cos(A+B) - \cos(A-B) \). Pogrešan znak vodi do opcije (E).</li>
+    <li>Zameniti \(\sin\) sa \(\cos\) u brojiocu (opcija D) — to bi došlo iz pogrešne formule \( 2\sin\sin = \sin(A-B) - \sin(A+B) \), koja ne postoji.</li>
+    <li>Naivno "skraćivanje" \( \dfrac{\sin 10x}{\sin x} \) ili \( \dfrac{\sin 11x}{\sin x} \) — to nije način kako se sabira ovakav red.</li>
+    <li>Zaboraviti uslov \( \sin\tfrac{x}{2} \neq 0 \), tj. da formula važi za \( x \neq 2k\pi \). U tim tačkama je svaki \( \sin(kx) = 0 \), pa je zbir \(0\), a formula daje neodređeni izraz \(0/0\) (može se "popraviti" graničnom vrednošću).</li>
+    <li>Pogrešno teleskopiranje — ako napišete \( \cos\tfrac{x}{2} - \cos\tfrac{20x}{2} \) umesto \( \cos\tfrac{x}{2} - \cos\tfrac{21x}{2} \), izgubili ste poslednji član. Poslednji indeks je \(k = 10\), pa je \( k + \tfrac12 = \tfrac{21}{2} \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Dokaži opštu formulu za prirodno \(n\):</p>
+  <div class="math-block">\[ \sum_{k=1}^{n}\sin(kx) \;=\; \dfrac{\sin\tfrac{nx}{2}\,\sin\tfrac{(n+1)x}{2}}{\sin\tfrac{x}{2}}. \]</div>
+  <p>Zatim probaj analognu formulu za \( \sum_{k=1}^{n}\cos(kx) \). Koji "trik množenja" radi?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Iz našeg rezultata \( 2\sin\tfrac{x}{2}\cdot S_n = \cos\tfrac{x}{2} - \cos\tfrac{(2n+1)x}{2} \). Primeni formulu razlike: \( \cos A - \cos B = -2\sin\tfrac{A+B}{2}\sin\tfrac{A-B}{2} \). Za kosinusni zbir: pomnoži opet sa \( 2\sin\tfrac{x}{2} \) i koristi \( 2\sin A\cos B = \sin(A+B) + \sin(B-A) \) — opet teleskop.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('sum-plot');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  canvas.style.touchAction = 'none';
+
+  var W = canvas.width, H = canvas.height;
+  var marginL = 60, marginR = 30, marginT = 60, marginB = 90;
+  var plotW = W - marginL - marginR;
+  var plotH = H - marginT - marginB;
+
+  var xMin = -Math.PI, xMax = Math.PI;
+  var yMin = -10, yMax = 10;
+
+  function xToPx(x) { return marginL + (x - xMin) / (xMax - xMin) * plotW; }
+  function yToPx(y) { return marginT + (1 - (y - yMin) / (yMax - yMin)) * plotH; }
+
+  var nValue = 10;
+  var slider = document.getElementById('n-slider');
+  var nLabel = document.getElementById('n-value');
+
+  function partialSum(x, n) {
+    var s = 0;
+    for (var k = 1; k <= n; k++) s += Math.sin(k * x);
+    return s;
+  }
+
+  function formulaC(x, n) {
+    // (cos(x/2) - cos((2n+1)x/2)) / (2 sin(x/2))
+    var d = 2 * Math.sin(x / 2);
+    if (Math.abs(d) < 1e-9) return null;
+    return (Math.cos(x / 2) - Math.cos((2 * n + 1) * x / 2)) / d;
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.fillText('Parcijalni zbir S_n(x) = sin x + sin 2x + ... + sin nx', W/2, 26);
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 4]);
+    for (var gy = -10; gy <= 10; gy += 2) {
+      ctx.beginPath();
+      ctx.moveTo(xToPx(xMin), yToPx(gy));
+      ctx.lineTo(xToPx(xMax), yToPx(gy));
+      ctx.stroke();
+    }
+    for (var gx = -3; gx <= 3; gx++) {
+      ctx.beginPath();
+      ctx.moveTo(xToPx(gx), yToPx(yMin));
+      ctx.lineTo(xToPx(gx), yToPx(yMax));
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(xToPx(xMin), yToPx(0));
+    ctx.lineTo(xToPx(xMax), yToPx(0));
+    ctx.moveTo(xToPx(0), yToPx(yMin));
+    ctx.lineTo(xToPx(0), yToPx(yMax));
+    ctx.stroke();
+
+    // Axis ticks/labels
+    ctx.font = '11px Inter, system-ui';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    var piTicks = [
+      { v: -Math.PI, l: '-π' },
+      { v: -Math.PI/2, l: '-π/2' },
+      { v: 0, l: '0' },
+      { v: Math.PI/2, l: 'π/2' },
+      { v: Math.PI, l: 'π' }
+    ];
+    for (var i = 0; i < piTicks.length; i++) {
+      var t = piTicks[i];
+      ctx.fillText(t.l, xToPx(t.v), yToPx(0) + 16);
+    }
+    ctx.textAlign = 'right';
+    for (var gy2 = -10; gy2 <= 10; gy2 += 5) {
+      if (gy2 === 0) continue;
+      ctx.fillText(String(gy2), xToPx(0) - 4, yToPx(gy2) + 4);
+    }
+    ctx.textAlign = 'left';
+    ctx.fillStyle = text;
+    ctx.fillText('x', xToPx(xMax) + 4, yToPx(0) + 4);
+    ctx.textAlign = 'center';
+    ctx.fillText('y', xToPx(0), yToPx(yMax) - 6);
+
+    // Plot formula (C) — dashed secondary (purple)
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2.5;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    var first = true;
+    var steps = 800;
+    for (var s = 0; s <= steps; s++) {
+      var x = xMin + (xMax - xMin) * s / steps;
+      var y = formulaC(x, nValue);
+      if (y === null) {
+        first = true;
+        continue;
+      }
+      // Clip extreme spikes near singularities
+      if (Math.abs(y) > 20) { first = true; continue; }
+      var px = xToPx(x);
+      var py = yToPx(y);
+      if (first) { ctx.moveTo(px, py); first = false; }
+      else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Plot direct partial sum — solid accent (green)
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    first = true;
+    for (var s2 = 0; s2 <= steps; s2++) {
+      var x2 = xMin + (xMax - xMin) * s2 / steps;
+      var y2 = partialSum(x2, nValue);
+      var px2 = xToPx(x2);
+      var py2 = yToPx(y2);
+      if (first) { ctx.moveTo(px2, py2); first = false; }
+      else ctx.lineTo(px2, py2);
+    }
+    ctx.stroke();
+
+    // Legend
+    var lx = marginL + 8, ly = marginT + 8;
+    ctx.fillStyle = bg;
+    ctx.fillRect(lx - 4, ly - 4, 270, 56);
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(lx - 4, ly - 4, 270, 56);
+
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(lx, ly + 8); ctx.lineTo(lx + 32, ly + 8);
+    ctx.stroke();
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'left';
+    ctx.fillText('S_n(x) — direktan zbir', lx + 40, ly + 12);
+
+    ctx.strokeStyle = secondary;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(lx, ly + 30); ctx.lineTo(lx + 32, ly + 30);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillText('formula (C)', lx + 40, ly + 34);
+
+    // Show current n big at top-right
+    ctx.font = 'bold 20px Inter, system-ui';
+    ctx.fillStyle = primary;
+    ctx.textAlign = 'right';
+    ctx.fillText('n = ' + nValue, W - marginR - 10, marginT + 22);
+
+    // Bottom caption: formula
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.fillText('S_n(x) = (cos(x/2) - cos((2n+1)x/2)) / (2 sin(x/2))', W/2, H - 50);
+    ctx.fillStyle = muted;
+    ctx.fillText('Klizač menja n. Zelena i ljubičasta linija se poklapaju — to je grafička provera identiteta.', W/2, H - 28);
+  }
+
+  if (slider) {
+    slider.addEventListener('input', function() {
+      nValue = parseInt(slider.value, 10);
+      if (nLabel) nLabel.textContent = nValue;
+      draw();
+    });
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Zbir sinusa sin x + sin 2x + ... + sin 10x — teleskopski metod",
+  "subject": "math",
+  "unit": "trigonometry",
+  "topic_tags": ["zbir sinusa", "teleskopski zbir", "proizvod u zbir", "trigonometrijski identitet", "konacne sume"]
+}
+BRAINSPARK_META-->

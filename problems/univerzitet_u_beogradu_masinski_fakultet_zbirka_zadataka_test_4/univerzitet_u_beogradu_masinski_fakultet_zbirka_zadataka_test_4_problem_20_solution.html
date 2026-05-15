@@ -1,0 +1,508 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Špil: 52 karte = 4 znaka (♠ ♥ ♦ ♣) × 13 vrednosti (A,2,...,10,J,Q,K).
+Tražimo broj trojki karata takvih da su sve tri:
+- različitih znakova (sve 3 boje različite) I
+- različitih vrednosti (sve 3 rang različite).
+
+Tri karte → 3 različitih znakova (od 4 mogućih) i 3 različitih vrednosti (od 13 mogućih).
+
+Metoda A — kombinatorički korak po korak (nepoređani izbor):
+1) Izaberi 3 znaka od 4: C(4,3) = 4.
+2) Izaberi 3 vrednosti od 13: C(13,3) = 13·12·11/6 = 286.
+3) Pridruži vrednosti znakovima (bijektivno): 3! = 6 načina.
+Ukupno: 4 · 286 · 6 = 6864.
+
+Zašto NE delimo na kraju sa 3!? Zato što „izbor 3 znaka" i „izbor 3 vrednosti" su već nepoređani; preostala 3! odnosi se na PARENJE (koji znak ide uz koju vrednost), što proizvodi različite konkretne karte. Završni skup od 3 karte je sam po sebi nepoređan.
+
+Metoda B — direktno brojanje uređenih trojki, pa deljenje sa 3!:
+1. karta: 52 izbora.
+2. karta: različita i u znaku i u vrednosti od prve.
+  Inkluzivno-isključivo: 52 - 13 (isti znak) - 4 (ista vrednost) + 1 (prva sama, brojana dvaput) = 36.
+3. karta: različita u znaku i vrednosti od PRVE i DRUGE.
+  |A_i| = same suit as card i: 13 svaka, |A_1 ∪ A_2| = 13+13 - |A_1∩A_2|.
+  Pošto prve dve imaju različite znakove, A_1 ∩ A_2 = ∅, pa |A_1 ∪ A_2| = 26.
+  |B_i| = same value as card i: 4 svaka, |B_1 ∪ B_2| = 8 (jer su prve dve različite vrednosti).
+  |(A_1∪A_2) ∩ (B_1∪B_2)|: tačno karte koje s prvom dele znak ILI s drugom dele znak, A I s prvom dele vrednost ILI s drugom dele vrednost. To su 4 karte: (1. znak, 1. vredn) = 1. karta, (1. znak, 2. vredn), (2. znak, 1. vredn), (2. znak, 2. vredn) = 2. karta. Dakle 4.
+  |A∪B| = 26 + 8 - 4 = 30.
+  Treća karta: 52 - 30 = 22.
+
+Uređene trojke: 52 · 36 · 22 = 41184.
+Nepoređane: 41184 / 6 = 6864. ✓
+
+Provera C: brzo, 4 · 286 · 6 = 286 · 24 = 6864. ✓
+
+Odgovor: (A) 6864.
+
+Visual: 4×13 matrica (vrste = znakovi, kolone = vrednosti). Označiti jednu validnu trojku (tri ćelije u 3 različite vrste i 3 različite kolone), i jednu „nevalidnu" (npr. dve u istoj koloni — ista vrednost) sa precrtavanjem.
+
+Pitfall: dvostruko deljenje sa 3! na kraju. Mešanje C(52,3) - „loši". Mešanje „različiti znakovi" sa „barem dva ista".
+
+Challenge: 4 karte 4 različitih znakova I 4 različitih vrednosti = 13 · 12 · 11 · 10 = 17160 (po znaku biramo različitu vrednost; redosled znakova je fiksiran A=♠,K=♥,D=♦,J=♣, ali pošto je svaka karta jedinstvena, ovo daje nepoređan izbor 4 karte).
+</script>
+
+<h1 data-card="problem-title">Broj načina izbora tri karte različitih znakova i vrednosti</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika • Pravilo proizvoda • Binomni koeficijenti • Permutacije</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Na koliko se načina iz uobičajenog špila od 52 karte za igru mogu izabrati tri karte međusobno različitih znakova i vrednosti?</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">špil</span>
+      <span class="given-value">\( 52 \) karte</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">znakovi</span>
+      <span class="given-value">\( 4 \) (♠, ♥, ♦, ♣)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">vrednosti</span>
+      <span class="given-value">\( 13 \) (A, 2, \ldots, 10, J, Q, K)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">biramo</span>
+      <span class="given-value">\( 3 \) karte, svi znakovi različiti i sve vrednosti različite</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 6864 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 1144 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 41184 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 1716 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 10296 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Špil zamišljamo kao mrežu \( 4 \times 13 \) (vrste = znakovi, kolone = vrednosti). Tri karte različitih znakova i vrednosti zauzimaju tri ćelije u tri različite vrste i tri različite kolone. Brojanje radimo u tri koraka: odaberi \( 3 \) vrste \( \binom{4}{3} \), odaberi \( 3 \) kolone \( \binom{13}{3} \), pa rasporedi vrednosti u znakove na \( 3! \) načina. Rezultat proveravamo direktnim brojanjem uređenih trojki podeljenim sa \( 3! \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i tehnike</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Pravilo proizvoda</span> Ako se izbor sastoji od više nezavisnih koraka sa \( n_1, n_2, \ldots, n_k \) opcija, ukupno ima \( n_1\cdot n_2\cdots n_k \) ishoda.</li>
+        <li><span class="formula-label">Binomni koeficijent</span> Broj načina da se iz \( n \) elemenata izabere <em>nepoređan</em> podskup od \( k \): \( \binom{n}{k} = \dfrac{n!}{k!(n-k)!} \).</li>
+        <li><span class="formula-label">Permutacija \( n \) elemenata</span> \( n! \) — broj uređenja \( n \) različitih predmeta u red. Specijalno \( 3! = 6 \).</li>
+        <li><span class="formula-label">Konkretne vrednosti</span> \( \binom{4}{3} = 4 \); \( \binom{13}{3} = \dfrac{13\cdot 12\cdot 11}{6} = 286 \).</li>
+        <li><span class="formula-label">Princip inkluzije-isključenja</span> \( |A \cup B| = |A| + |B| - |A \cap B| \). Koristi se za brojanje karata koje treba <em>isključiti</em>.</li>
+      </ul>
+      <p class="note">Sveža slika: zamisli špil kao tabelu \( 4 \) vrsta × \( 13 \) kolona. Svaka karta je jedna ćelija. „Različiti znakovi i vrednosti" znači: nikoja dva izabrana polja nisu u istoj vrsti niti u istoj koloni — kao tri „topa" koji se međusobno ne napadaju na neredovnoj šahovskoj tabli.</p>
+    </div>
+  </details>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Modeluj špil kao mrežu \( 4 \times 13 \)</h3>
+      <p>Svaka karta je jedinstveni par <em>(znak, vrednost)</em>. Postavljamo špil kao tabelu sa \( 4 \) vrste (znakovi ♠, ♥, ♦, ♣) i \( 13 \) kolona (A, 2, \ldots, K). „Tri karte različitih znakova i vrednosti" znači:</p>
+      <ul>
+        <li>tri različite <em>vrste</em> (nema dve karte u istoj vrsti),</li>
+        <li>tri različite <em>kolone</em> (nema dve karte u istoj koloni).</li>
+      </ul>
+      <p>To je analogno postavljanju tri „topa" na šahovskoj tabli koji se ne napadaju — samo što ovde nije \( 8\times 8 \) već \( 4 \times 13 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Korak A — izaberi tri vrste (znaka)</h3>
+      <p>Od \( 4 \) znaka izaberemo \( 3 \) — nepoređano, jer u konačnoj trojki karata nema redosleda znakova:</p>
+      <div class="math-block">\[ \binom{4}{3} = 4. \]</div>
+      <span class="result">\( 4 \) načina za izbor tri znaka</span>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto \( \binom{4}{3} \), a ne \( 4\cdot 3\cdot 2 \)?</summary>
+          <div class="detail-content"><p>U konačnoj trojki <em>karata</em> ne razlikujemo „prvu" i „drugu" kartu — skup je nepoređan. Ako bismo brojali znake redosledno (4·3·2 = 24), svaki nepoređan izbor 3 znaka brojali bismo \( 3! = 6 \) puta. Tada bi 24/6 = 4 = \( \binom{4}{3} \), što je isto.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Korak B — izaberi tri vrednosti</h3>
+      <p>Od \( 13 \) vrednosti izaberemo \( 3 \), takođe nepoređano:</p>
+      <div class="math-block">\[ \binom{13}{3} = \frac{13 \cdot 12 \cdot 11}{3!} = \frac{1716}{6} = 286. \]</div>
+      <span class="result">\( 286 \) načina za izbor tri vrednosti</span>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Korak C — pridruži vrednosti znakovima</h3>
+      <p>Sada imamo izabrana tri znaka \( \{Z_1, Z_2, Z_3\} \) i tri vrednosti \( \{V_1, V_2, V_3\} \). Treba da napravimo tri <em>konkretne karte</em>. Svaka karta dobija po jedan znak i po jednu vrednost — to je <strong>bijektivno pridruživanje</strong> skupa znakova skupu vrednosti (svaki znak dobija tačno jednu vrednost). Broj takvih bijekcija:</p>
+      <div class="math-block">\[ 3! = 6. \]</div>
+      <p>Na primer, ako su znakovi \( \{♠, ♥, ♦\} \) i vrednosti \( \{A, 7, K\} \), šest bijekcija daje šest različitih trojki karata:</p>
+      <div class="math-block">\[ \{♠A,\ ♥7,\ ♦K\},\ \{♠A,\ ♥K,\ ♦7\},\ \{♠7,\ ♥A,\ ♦K\},\ \{♠7,\ ♥K,\ ♦A\},\ \{♠K,\ ♥A,\ ♦7\},\ \{♠K,\ ♥7,\ ♦A\}. \]</div>
+      <p class="note">Sve šest trojki su <em>različite</em> kao skupovi karata. Pa ih treba sve brojati.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto NA KRAJU ne delimo sa \( 3! \) još jednom?</summary>
+          <div class="detail-content"><p>Faktor \( 3! \) iz koraka C broji <em>različite</em> načine spajanja znakova i vrednosti, što proizvodi <em>različite</em> trojke karata. Konačna trojka karata već je nepoređan skup od tri karte — nepoređanost smo „ugradili" u korake A i B time što smo koristili \( \binom{n}{k} \), a ne uređene izbore. Dodatno deljenje sa \( 3! \) bi bilo dvostruko brisanje redosleda.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Pomnoži tri koraka</h3>
+      <p>Po pravilu proizvoda:</p>
+      <div class="math-block">\[ N = \binom{4}{3} \cdot \binom{13}{3} \cdot 3! = 4 \cdot 286 \cdot 6. \]</div>
+      <p>Računamo:</p>
+      <div class="math-block">\[ 4 \cdot 286 = 1144,\qquad 1144 \cdot 6 = 6864. \]</div>
+      <span class="result">\( N = 6864 \)</span>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Nezavisna provera — direktno brojanje uređenih trojki</h3>
+      <p>Brojimo <em>uređene</em> trojke karata (kao da vučemo karte jednu po jednu) i na kraju delimo sa \( 3! = 6 \):</p>
+
+      <p><strong>1. karta:</strong> bilo koja od \( 52 \) karte.</p>
+
+      <p><strong>2. karta:</strong> mora imati različit znak <em>i</em> različitu vrednost od prve. Brojimo „loše":</p>
+      <ul>
+        <li>karte sa istim znakom kao prva: \( 12 \) (od preostalih \( 51 \)) plus sama prva karta — tj. \( 13 \) ukupno u tom znaku;</li>
+        <li>karte sa istom vrednošću kao prva: \( 4 \) ukupno;</li>
+        <li>prva karta je ista u oba skupa (presek).</li>
+      </ul>
+      <p>Po inkluziji-isključenju, „loših" je \( 13 + 4 - 1 = 16 \) (uračunavajući samu prvu kartu, koja se ne sme ni ponoviti). Ostaje:</p>
+      <div class="math-block">\[ 52 - 16 = 36 \quad\text{validnih izbora za 2. kartu}. \]</div>
+
+      <p><strong>3. karta:</strong> mora imati znak različit od <em>obe</em> prethodne (a one same imaju različite znakove) <em>i</em> vrednost različitu od obe prethodne. „Loših":</p>
+      <ul>
+        <li>karte sa znakom prve ili druge: \( 13 + 13 = 26 \) (preseka nema jer prve dve imaju različite znakove);</li>
+        <li>karte sa vrednošću prve ili druge: \( 4 + 4 = 8 \) (preseka nema jer prve dve imaju različite vrednosti);</li>
+        <li>presek dva ova skupa: karta koja deli znak sa nekom od prvih dve <em>i</em> vrednost sa nekom od prvih dve — to su tačno \( 2 \cdot 2 = 4 \) karte (prva karta, druga karta, i još dve „ukrštene").</li>
+      </ul>
+      <div class="math-block">\[ |\text{loših}| = 26 + 8 - 4 = 30 \;\Longrightarrow\; 52 - 30 = 22 \quad\text{validnih izbora za 3. kartu}. \]</div>
+
+      <p>Uređenih trojki:</p>
+      <div class="math-block">\[ 52 \cdot 36 \cdot 22 = 41184. \]</div>
+      <p>Nepoređanih (delimo sa \( 3! \)):</p>
+      <div class="math-block">\[ \frac{41184}{6} = 6864. \quad\checkmark \]</div>
+      <p class="note">Usput se vidi i opcija (C) \( 41184 \) — to bi bio odgovor da je problem tražio <em>uređene</em> trojke (npr. „izvuci tri karte redom"). Ovde je traženo „izabrati" što je nepoređan izbor, pa je \( 6864 \).</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="780" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Špil prikazan kao mreža \( 4 \times 13 \). Zeleno: jedan validan izbor \( (♠ A,\ ♥ 7,\ ♦ K) \) — tri ćelije u tri različite vrste i kolone. Crveno (precrtano): primeri <em>nevalidnih</em> trojki — dve u istoj vrsti (ista boja) ili dve u istoj koloni (ista vrednost).</p>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Ovaj zadatak je preformulisan klasični problem „tri topa koji se ne napadaju na tabli \( 4 \times 13 \)". Ključni trik je <strong>odvojeno brojanje: koje vrste, koje kolone, kako ih spojiti</strong>. Faktor \( 3! = 6 \) na kraju nije „višak" niti se ne deli na kraju — to je broj bijekcija između skupa znakova i skupa vrednosti, i svaka bijekcija daje različitu konkretnu trojku karata. Opštije: broj načina za izbor \( k \) karata iz špila \( s \) znakova × \( v \) vrednosti, sa svim znakovima i vrednostima različitim, jeste \( \binom{s}{k}\binom{v}{k}\,k! \).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ N = \binom{4}{3}\cdot\binom{13}{3}\cdot 3! = 4 \cdot 286 \cdot 6 = 6864. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 6864 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 1144 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 41184 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 1716 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 10296 \)</span>
+  </div>
+  <p class="verification">Provera direktnim brojanjem: uređene trojke \( 52 \cdot 36 \cdot 22 = 41184 \), nepoređane \( 41184 / 3! = 41184 / 6 = 6864 \). \( \checkmark \)</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Dvostruko deljenje sa \( 3! \).</strong> Posle množenja \( \binom{4}{3}\binom{13}{3}\cdot 3! \) ima istisnuti redosled — daljnje deljenje bi dalo \( 1144 \) (opcija B), što je <em>pogrešno</em>.</li>
+    <li><strong>Zaboravljanje faktora \( 3! \).</strong> Bez koraka C dobijamo \( 4 \cdot 286 = 1144 \) — opcija B. To je broj parova „skup znakova × skup vrednosti", ali još nije skup karata.</li>
+    <li><strong>Brojanje uređenih trojki.</strong> \( 52 \cdot 36 \cdot 22 = 41184 \) (opcija C) važi za uređene trojke; problem traži <em>izbor</em>, pa treba podeliti sa \( 3! \).</li>
+    <li><strong>Mešanje uslova „različiti znakovi i vrednosti" sa „barem dva ista".</strong> Pažljivo pročitati: traženo je da su <em>sve tri</em> različite — i znakovi i vrednosti.</li>
+    <li><strong>Pogrešno tumačenje „znaka".</strong> „Znak" karte je boja/oblik (♠ ♥ ♦ ♣), a ne „rang/vrednost". Ako ih zamenimo, dobićemo isti rezultat zbog simetrije računa, ali konceptualno je važno znati šta je šta.</li>
+    <li><strong>Računanje preko komplementa preko \( \binom{52}{3} \).</strong> Moguće je, ali je vrlo komplikovano (treba isključiti slučajeve gde dve karte dele znak ili dele vrednost, paziti na inkluzije-isključenja). Direktan pristup \( \binom{4}{3}\binom{13}{3}\,3! \) je daleko brži.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koliko ima trojki karata u kojima su sve tri <em>iste boje (znaka)</em>, a sve tri <em>različite vrednosti</em>? A koliko ima skupova od \( 4 \) karte sa <em>sva 4 različita znaka</em> i <em>sve 4 različite vrednosti</em>?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p><strong>Tri karte istog znaka, različite vrednosti:</strong> izaberi znak (\( 4 \) načina) i \( 3 \) vrednosti od \( 13 \):</p>
+      <div class="math-block">\[ 4 \cdot \binom{13}{3} = 4 \cdot 286 = 1144. \]</div>
+      <p>(Primeti: ovo je tačno opcija (B) iz našeg zadatka — još jedan razlog što je (B) klasična zamka.)</p>
+
+      <p><strong>Četiri karte, svi znakovi različiti i sve vrednosti različite:</strong> svaki znak ide tačno jednom. Najlakše: po znaku redom (♠, ♥, ♦, ♣) biramo različite vrednosti — prvi znak ima \( 13 \) izbora vrednosti, drugi \( 12 \) (mora biti drugačija), treći \( 11 \), četvrti \( 10 \):</p>
+      <div class="math-block">\[ 13 \cdot 12 \cdot 11 \cdot 10 = 17160. \]</div>
+      <p>Pošto je svaki znak jedinstven, redosled koraka <em>nije</em> proizvoljan — ne delimo sa \( 4! \). Drugim rečima: \( \binom{4}{4}\binom{13}{4}\,4! = 1 \cdot 715 \cdot 24 = 17160 \). \( \checkmark \)</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var warning   = cv('--sol-canvas-warning');
+
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Špil 52 karte kao mreža 4 × 13', W / 2, 28);
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillStyle = muted;
+    ctx.fillText('vrste = znakovi (♠ ♥ ♦ ♣), kolone = vrednosti (A, 2, …, K)', W / 2, 48);
+
+    // Grid layout
+    var padL = 90, padT = 80, padR = 30, padB = 200;
+    var rows = 4;
+    var cols = 13;
+    var gridW = W - padL - padR;
+    var gridH = H - padT - padB;
+    var cellW = gridW / cols;
+    var cellH = gridH / rows;
+
+    var suits  = ['♠', '♥', '♦', '♣'];
+    var ranks  = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+
+    // Suit colors: black for ♠♣ (use text), red for ♥♦ (use highlight or danger)
+    function suitColor(i) {
+      return (i === 0 || i === 3) ? text : danger;
+    }
+
+    // Draw cells
+    ctx.lineWidth = 1;
+    for (var r = 0; r < rows; r++) {
+      for (var c = 0; c < cols; c++) {
+        var x = padL + c * cellW;
+        var y = padT + r * cellH;
+        ctx.fillStyle = bg;
+        ctx.fillRect(x, y, cellW, cellH);
+        ctx.strokeStyle = grid;
+        ctx.strokeRect(x, y, cellW, cellH);
+      }
+    }
+
+    // Highlight valid example: (♠, A), (♥, 7), (♦, K) — rows 0,1,2 and cols 0,6,12
+    var validCells = [
+      { r: 0, c: 0,  label: '♠A' },
+      { r: 1, c: 6,  label: '♥7' },
+      { r: 2, c: 12, label: '♦K' }
+    ];
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.45);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 3;
+    for (var i = 0; i < validCells.length; i++) {
+      var vx = padL + validCells[i].c * cellW;
+      var vy = padT + validCells[i].r * cellH;
+      ctx.fillRect(vx + 1, vy + 1, cellW - 2, cellH - 2);
+      ctx.strokeRect(vx + 1, vy + 1, cellW - 2, cellH - 2);
+    }
+
+    // Mark invalid example 1: two in same row (♣, 3) and (♣, 9) — row 3, cols 2 and 8
+    var invalidRow = [
+      { r: 3, c: 2 },
+      { r: 3, c: 8 }
+    ];
+    ctx.fillStyle = cvAlpha('--sol-canvas-danger', 0.35);
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 2;
+    for (var j = 0; j < invalidRow.length; j++) {
+      var ix = padL + invalidRow[j].c * cellW;
+      var iy = padT + invalidRow[j].r * cellH;
+      ctx.fillRect(ix + 1, iy + 1, cellW - 2, cellH - 2);
+      ctx.strokeRect(ix + 1, iy + 1, cellW - 2, cellH - 2);
+      // X through
+      ctx.beginPath();
+      ctx.moveTo(ix + 3, iy + 3);
+      ctx.lineTo(ix + cellW - 3, iy + cellH - 3);
+      ctx.moveTo(ix + cellW - 3, iy + 3);
+      ctx.lineTo(ix + 3, iy + cellH - 3);
+      ctx.stroke();
+    }
+
+    // Mark invalid example 2: two in same column (♥, 5) and (♦, 5) — col 4, rows 1 and 2 — BUT we have ♥7 already at row 1.
+    // Use col 10 (J) instead: (♠, J) row 0 and (♣, J) row 3 — col 10
+    // But row 0 col 0 is taken (♠A) — different col, OK.
+    // Use col 10 (J), rows 0 and 3 — both unused.
+    var invalidCol = [
+      { r: 0, c: 10 },
+      { r: 3, c: 10 }
+    ];
+    ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.35);
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2;
+    for (var k = 0; k < invalidCol.length; k++) {
+      var ix2 = padL + invalidCol[k].c * cellW;
+      var iy2 = padT + invalidCol[k].r * cellH;
+      ctx.fillRect(ix2 + 1, iy2 + 1, cellW - 2, cellH - 2);
+      ctx.strokeRect(ix2 + 1, iy2 + 1, cellW - 2, cellH - 2);
+      ctx.beginPath();
+      ctx.moveTo(ix2 + 3, iy2 + 3);
+      ctx.lineTo(ix2 + cellW - 3, iy2 + cellH - 3);
+      ctx.moveTo(ix2 + cellW - 3, iy2 + 3);
+      ctx.lineTo(ix2 + 3, iy2 + cellH - 3);
+      ctx.stroke();
+    }
+
+    // Row labels (suits) — left side
+    ctx.font = 'bold 18px Inter, system-ui';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (var rr = 0; rr < rows; rr++) {
+      ctx.fillStyle = suitColor(rr);
+      ctx.fillText(suits[rr], padL - 12, padT + rr * cellH + cellH / 2);
+    }
+
+    // Column labels (ranks) — top
+    ctx.font = 'bold 12px Inter, system-ui';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    for (var cc = 0; cc < cols; cc++) {
+      ctx.fillText(ranks[cc], padL + cc * cellW + cellW / 2, padT - 6);
+    }
+
+    // Labels inside highlighted cells (small)
+    ctx.font = 'bold 10px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    for (var v = 0; v < validCells.length; v++) {
+      ctx.fillStyle = accent;
+      ctx.fillText(validCells[v].label, padL + validCells[v].c * cellW + cellW/2, padT + validCells[v].r * cellH + cellH/2);
+    }
+
+    // Legend area below the grid
+    var lgTop = padT + gridH + 30;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.fillStyle = text;
+    ctx.fillText('Legenda:', padL, lgTop);
+
+    // Valid swatch
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.45);
+    ctx.fillRect(padL + 90, lgTop - 10, 22, 20);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(padL + 90, lgTop - 10, 22, 20);
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillText('VALIDNA trojka: 3 različita znaka i 3 različite vrednosti  (♠A, ♥7, ♦K)', padL + 120, lgTop);
+
+    // Invalid row swatch
+    ctx.fillStyle = cvAlpha('--sol-canvas-danger', 0.35);
+    ctx.fillRect(padL + 90, lgTop + 22, 22, 20);
+    ctx.strokeStyle = danger;
+    ctx.strokeRect(padL + 90, lgTop + 22, 22, 20);
+    ctx.fillStyle = text;
+    ctx.fillText('NEVALIDNO (ista vrsta = isti znak): ♣3 i ♣9 imaju isti znak ♣', padL + 120, lgTop + 32);
+
+    // Invalid col swatch
+    ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.35);
+    ctx.fillRect(padL + 90, lgTop + 54, 22, 20);
+    ctx.strokeStyle = warning;
+    ctx.strokeRect(padL + 90, lgTop + 54, 22, 20);
+    ctx.fillStyle = text;
+    ctx.fillText('NEVALIDNO (ista kolona = ista vrednost): ♠J i ♣J imaju istu vrednost J', padL + 120, lgTop + 64);
+
+    // Formula summary
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Broj validnih trojki:  C(4,3) · C(13,3) · 3!  =  4 · 286 · 6  =  6864', W/2, lgTop + 102);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Broj načina izbora tri karte različitih znakova i vrednosti",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["kombinatorika", "kombinacije", "permutacije", "karte"]
+}
+BRAINSPARK_META-->

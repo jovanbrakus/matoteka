@@ -1,0 +1,574 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Zadatak: pronaći A u razvoju sin^5 x = A sin x + B sin 3x + C sin 5x.
+
+  Strategija: razložiti sin^5 x na linearnu kombinaciju sinusa višestrukih uglova,
+  pa pročitati koeficijente A, B, C.
+
+  Korak 1: zapisati sin^5 x = sin x · (sin^2 x)^2 = sin x · ((1 - cos 2x)/2)^2.
+    (sin^2 x)^2 = (1 - cos 2x)^2 / 4 = (1 - 2 cos 2x + cos^2 2x) / 4.
+
+  Korak 2: cos^2 2x = (1 + cos 4x)/2.
+    Pa (1 - 2 cos 2x + cos^2 2x)/4 = (1 - 2 cos 2x + (1 + cos 4x)/2)/4
+                                  = ((2 - 4 cos 2x + 1 + cos 4x)/2)/4
+                                  = (3 - 4 cos 2x + cos 4x)/8.
+
+  Korak 3: dakle sin^5 x = sin x · (3 - 4 cos 2x + cos 4x)/8
+                         = (3 sin x - 4 sin x cos 2x + sin x cos 4x)/8.
+
+  Korak 4: koristim 2 sin A cos B = sin(A+B) + sin(A-B):
+    sin x cos 2x = (sin 3x + sin(-x))/2 = (sin 3x - sin x)/2.
+    sin x cos 4x = (sin 5x + sin(-3x))/2 = (sin 5x - sin 3x)/2.
+
+  Korak 5: zamenjujem:
+    -4 sin x cos 2x = -4 · (sin 3x - sin x)/2 = -2 sin 3x + 2 sin x.
+    sin x cos 4x = (sin 5x - sin 3x)/2.
+
+    Pa: 8 sin^5 x = 3 sin x - 4 sin x cos 2x + sin x cos 4x
+                  = 3 sin x + (-2 sin 3x + 2 sin x) + (sin 5x - sin 3x)/2
+                  = 3 sin x + 2 sin x - 2 sin 3x + sin 5x/2 - sin 3x/2
+                  = 5 sin x + (-2 - 1/2) sin 3x + sin 5x/2
+                  = 5 sin x - (5/2) sin 3x + (1/2) sin 5x.
+
+    Množim sa 2: 16 sin^5 x = 10 sin x - 5 sin 3x + sin 5x.
+
+    Pa: sin^5 x = (10 sin x - 5 sin 3x + sin 5x)/16.
+
+    Dakle: A = 10/16 = 5/8, B = -5/16, C = 1/16.
+
+  Provera za x = π/2: sin^5(π/2) = 1.
+    Desna strana: (5/8) sin(π/2) + (-5/16) sin(3π/2) + (1/16) sin(5π/2)
+                = 5/8 + (-5/16)(-1) + (1/16)(1)
+                = 5/8 + 5/16 + 1/16
+                = 10/16 + 5/16 + 1/16
+                = 16/16 = 1. ✓
+
+  Provera za x = π/6: sin(π/6) = 1/2, pa sin^5 = 1/32.
+    sin(3·π/6) = sin(π/2) = 1.  sin(5·π/6) = 1/2.
+    Desna strana: (5/8)(1/2) + (-5/16)(1) + (1/16)(1/2) = 5/16 - 5/16 + 1/32 = 1/32. ✓
+
+  Odgovor: (D) A = 5/8.
+
+  Vizuelni prikaz: statični grafik koji pokazuje funkciju y = sin^5 x i njenu reprezentaciju
+  (5/8) sin x - (5/16) sin 3x + (1/16) sin 5x; krive se savršeno poklapaju. Bonus: tri komponente
+  pojedinačno (Fourier dekompozicija). Statika je dovoljna — poenta je algebra.
+</script>
+
+<h1 data-card="problem-title">Razvoj \( \sin^5 x \) preko \( \sin x, \sin 3x, \sin 5x \)</h1>
+<p data-card="problem-subtitle" class="subtitle">Trigonometrija &mdash; linearizacija stepena, transformacija proizvoda u zbir, koeficijenti Fourier tipa</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Ako je izraz \( A \sin x + B \sin 3x + C \sin 5x \) identički jednak \( \sin^5 x \), pri čemu su \( A, B \) i \( C \) konstante, koliko je \( A \)?</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">identitet</span>
+      <span class="given-value">\( \sin^5 x = A\sin x + B\sin 3x + C\sin 5x \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">važi za</span>
+      <span class="given-value">svako \( x \in \mathbb{R} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">traženo</span>
+      <span class="given-value">\( A = ? \)</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \dfrac{1}{8} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \dfrac{1}{16} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \dfrac{3}{4} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \dfrac{5}{8} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \dfrac{3}{8} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Linearizovaćemo \( \sin^5 x \). Krećemo od \( \sin^5 x = \sin x \cdot (\sin^2 x)^2 \), pa \( \sin^2 x = \tfrac{1 - \cos 2x}{2} \). Posle kvadriranja imamo proizvod sinusa sa kosinusima dvostrukog i četvorostrukog ugla, koje transformišemo u zbir preko formule \( 2 \sin A \cos B = \sin(A+B) + \sin(A-B) \). Skupljanjem članova dobijamo razvoj po \( \sin x, \sin 3x, \sin 5x \), iz kojeg pročitamo \( A \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Formule koje ćemo koristiti</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Spuštanje stepena:</strong> \( \sin^2 \theta = \dfrac{1 - \cos 2\theta}{2} \), \( \cos^2 \theta = \dfrac{1 + \cos 2\theta}{2} \).</li>
+        <li><strong>Proizvod u zbir:</strong> \( 2\sin A \cos B = \sin(A+B) + \sin(A-B) \).</li>
+        <li><strong>Neparnost sinusa:</strong> \( \sin(-\alpha) = -\sin\alpha \).</li>
+        <li><strong>Jedinstvenost razvoja:</strong> Ako je \( a_1\sin x + a_3\sin 3x + a_5\sin 5x = 0 \) za sve \( x \), tada je \( a_1 = a_3 = a_5 = 0 \). Zato su koeficijenti \( A, B, C \) jednoznačno određeni.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="700" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Grafici funkcije \( \sin^5 x \) i njene linearne kombinacije \( \tfrac{5}{8}\sin x - \tfrac{5}{16}\sin 3x + \tfrac{1}{16}\sin 5x \). Krive se preklapaju savršeno — geometrijska potvrda razvoja. Donji panel pokazuje tri pojedinačne komponente (\( \sin x, \sin 3x, \sin 5x \)) skalirane svojim koeficijentima.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Rastavimo \( \sin^5 x \) na \( \sin x \cdot (\sin^2 x)^2 \)</h3>
+      <p>Cilj nam je da iskoristimo formulu za \( \sin^2 x \), koja "spušta stepen". Zato pišemo:</p>
+      <div class="math-block">\[ \sin^5 x \;=\; \sin x \cdot \big(\sin^2 x\big)^2. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Spustimo stepen kod \( \sin^2 x \)</h3>
+      <p>Iz \( \sin^2 x = \dfrac{1 - \cos 2x}{2} \) sledi:</p>
+      <div class="math-block">\[ (\sin^2 x)^2 \;=\; \dfrac{(1 - \cos 2x)^2}{4} \;=\; \dfrac{1 - 2\cos 2x + \cos^2 2x}{4}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto kvadrat smesa daje ova tri člana?</summary>
+          <div class="detail-content"><p>Razvojem \( (1 - \cos 2x)^2 = 1^2 - 2\cdot 1 \cdot \cos 2x + (\cos 2x)^2 = 1 - 2\cos 2x + \cos^2 2x \). Klasična "kvadratna formula" \( (a - b)^2 = a^2 - 2ab + b^2 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Još jednom spustimo stepen: \( \cos^2 2x \to \cos 4x \)</h3>
+      <p>Iz \( \cos^2 \theta = \dfrac{1 + \cos 2\theta}{2} \) sa \( \theta = 2x \):</p>
+      <div class="math-block">\[ \cos^2 2x \;=\; \dfrac{1 + \cos 4x}{2}. \]</div>
+      <p>Zamenimo nazad i objedinimo razlomke:</p>
+      <div class="math-block">\[ (\sin^2 x)^2 \;=\; \dfrac{1 - 2\cos 2x + \tfrac{1 + \cos 4x}{2}}{4} \;=\; \dfrac{3 - 4\cos 2x + \cos 4x}{8}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Pomnožimo sa \( \sin x \)</h3>
+      <p>Vraćamo se u \( \sin^5 x = \sin x \cdot (\sin^2 x)^2 \):</p>
+      <div class="math-block">\[ \sin^5 x \;=\; \dfrac{3\sin x \;-\; 4\sin x \cos 2x \;+\; \sin x \cos 4x}{8}. \]</div>
+      <p>Sad imamo dva proizvoda oblika \( \sin x \cos(k x) \). Oba ćemo prevesti u zbir sinusa.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Proizvod u zbir: \( 2\sin x \cos 2x \) i \( 2\sin x \cos 4x \)</h3>
+      <p>Koristimo \( 2\sin A \cos B = \sin(A+B) + \sin(A-B) \). Za \( A = x \), \( B = 2x \):</p>
+      <div class="math-block">\[ 2\sin x \cos 2x \;=\; \sin 3x + \sin(-x) \;=\; \sin 3x - \sin x. \]</div>
+      <p>Za \( A = x \), \( B = 4x \):</p>
+      <div class="math-block">\[ 2\sin x \cos 4x \;=\; \sin 5x + \sin(-3x) \;=\; \sin 5x - \sin 3x. \]</div>
+      <p>Otud:</p>
+      <div class="math-block">\[ \sin x \cos 2x \;=\; \dfrac{\sin 3x - \sin x}{2}, \qquad \sin x \cos 4x \;=\; \dfrac{\sin 5x - \sin 3x}{2}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto se znak menja kod \( \sin(-x) \)?</summary>
+          <div class="detail-content"><p>Sinus je <em>neparna</em> funkcija: \( \sin(-\alpha) = -\sin\alpha \). Zato \( \sin(-x) = -\sin x \), a \( \sin(-3x) = -\sin 3x \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Zamenimo i skupimo članove</h3>
+      <p>Vraćamo u izraz iz koraka 4:</p>
+      <div class="math-block">\[ 8\sin^5 x \;=\; 3\sin x \;-\; 4\cdot\dfrac{\sin 3x - \sin x}{2} \;+\; \dfrac{\sin 5x - \sin 3x}{2}. \]</div>
+      <p>Sredimo:</p>
+      <div class="math-block">\[ 8\sin^5 x \;=\; 3\sin x \;-\; 2\sin 3x + 2\sin x \;+\; \tfrac{1}{2}\sin 5x - \tfrac{1}{2}\sin 3x. \]</div>
+      <p>Skupljamo po \( \sin x, \sin 3x, \sin 5x \):</p>
+      <div class="math-block">\[ 8\sin^5 x \;=\; (3 + 2)\sin x \;+\; \left(-2 - \tfrac{1}{2}\right)\sin 3x \;+\; \tfrac{1}{2}\sin 5x \;=\; 5\sin x \;-\; \tfrac{5}{2}\sin 3x \;+\; \tfrac{1}{2}\sin 5x. \]</div>
+      <p>Pomnožimo obe strane sa \( \tfrac{1}{8} \) (tj. podelimo sa 8) i sredimo razlomke množenjem sa \( \tfrac{2}{2} \):</p>
+      <div class="math-block">\[ \sin^5 x \;=\; \dfrac{10\sin x \;-\; 5\sin 3x \;+\; \sin 5x}{16}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="7">
+    <div class="step-badge">7</div>
+    <div class="step-content">
+      <h3 class="step-title">Pročitamo koeficijent \( A \)</h3>
+      <p>Uporedimo sa \( A\sin x + B\sin 3x + C\sin 5x \):</p>
+      <div class="math-block">\[ A \;=\; \dfrac{10}{16} \;=\; \dfrac{5}{8}, \qquad B \;=\; -\dfrac{5}{16}, \qquad C \;=\; \dfrac{1}{16}. \]</div>
+      <p>Traženi koeficijent je \( A = \tfrac{5}{8} \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: brza numerička provera za \( x = \tfrac{\pi}{2} \)</summary>
+          <div class="detail-content"><p>Leva strana: \( \sin^5\tfrac{\pi}{2} = 1 \). Desna: \( \tfrac{5}{8}\cdot 1 + \left(-\tfrac{5}{16}\right)\cdot(-1) + \tfrac{1}{16}\cdot 1 = \tfrac{10}{16} + \tfrac{5}{16} + \tfrac{1}{16} = \tfrac{16}{16} = 1 \). ✓</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Ovo je <em>linearizacija</em> &mdash; pretvaranje stepena trigonometrijske funkcije u linearnu kombinaciju funkcija višestrukih uglova. Lepota leži u činjenici da \( \sin^5 x \) sadrži samo neparne harmonike (\( \sin x, \sin 3x, \sin 5x \)), bez parnih (\( \sin 2x, \sin 4x \)) i bez kosinusa &mdash; jer je \( \sin^5 x \) neparna funkcija sa periodom \( 2\pi \). Najveći koeficijent (po apsolutnoj vrednosti) javlja se baš ispred osnovne harmonike \( \sin x \), što je intuitivno: \( \sin^5 x \) je "lažni" sinus sa malim doprinosima trećeg i petog harmonika. Ovaj princip stoji u osnovi Furijeovog razvoja.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ A \;=\; \dfrac{5}{8}. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( \dfrac{1}{8} \)</span>
+    <span class="answer-option" data-option="B">(B) \( \dfrac{1}{16} \)</span>
+    <span class="answer-option" data-option="C">(C) \( \dfrac{3}{4} \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( \dfrac{5}{8} \)</span>
+    <span class="answer-option" data-option="E">(E) \( \dfrac{3}{8} \)</span>
+  </div>
+  <p class="verification">Kompletan razvoj: \( \sin^5 x = \tfrac{10\sin x - 5\sin 3x + \sin 5x}{16} \). Provera za \( x = \tfrac{\pi}{6} \): \( \sin^5\tfrac{\pi}{6} = (\tfrac12)^5 = \tfrac{1}{32} \); desna strana \( = \tfrac{10\cdot\tfrac12 - 5\cdot 1 + \tfrac12}{16} = \tfrac{5 - 5 + \tfrac12}{16} = \tfrac{1}{32} \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pokušati direktno binomnim razvojem \( (\sin x)^5 \). To ne pojednostavljuje &mdash; krenuti od \( \sin x \cdot (\sin^2 x)^2 \) je daleko praktičnije.</li>
+    <li>Pomešati \( \sin^2 x = \tfrac{1 - \cos 2x}{2} \) sa \( \cos^2 x = \tfrac{1 + \cos 2x}{2} \). Razlikuju se po znaku &mdash; sinus dobija minus, kosinus plus.</li>
+    <li>Zaboraviti da je \( \sin(-x) = -\sin x \) i izgubiti negativan znak u formuli \( 2\sin A \cos B = \sin(A+B) + \sin(A-B) \) kada je \( A < B \).</li>
+    <li>Promeniti redosled množenja: \( 2\sin A \cos B \neq 2\cos A \sin B \) u opštem slučaju (osim kad \( A = B \)). Formule su simetrične po znacima ali pažljivo prati koje je sinus a koje kosinus.</li>
+    <li>Tražiti i koeficijente \( \sin 2x \) ili \( \sin 4x \). Oni su nula jer \( \sin^5 x \) ima samo neparne harmonike.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Pokušaj istom metodom da pronađeš razvoj za \( \cos^5 x \) preko \( \cos x, \cos 3x, \cos 5x \). Koji koeficijent stoji ispred \( \cos x \)? Da li je on isti kao \( A \) ovde, ili drugačiji?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Razvoj je \( \cos^5 x = \tfrac{10\cos x + 5\cos 3x + \cos 5x}{16} \). Koeficijent ispred \( \cos x \) je \( \tfrac{10}{16} = \tfrac{5}{8} \) &mdash; baš kao kod sinusa! Razlika je u znaku ispred \( \cos 3x \) (sada plus, ne minus). Razlog: dok \( \sin^2 x = \tfrac{1 - \cos 2x}{2} \) ima minus, \( \cos^2 x = \tfrac{1 + \cos 2x}{2} \) ima plus, što se širi kroz račun.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  var W = canvas.width, H = canvas.height;
+
+  // Two stacked plot panels
+  var marginL = 60, marginR = 30;
+  var topMargin = 50;
+  var midGap = 50;
+  var bottomMargin = 60;
+  var panelH = (H - topMargin - midGap - bottomMargin) / 2;
+  var plotW = W - marginL - marginR;
+
+  var xMin = 0, xMax = 2 * Math.PI;
+
+  // Panel A (top): y in [-1.2, 1.2] — sin^5 x vs reconstructed
+  var yMinA = -1.2, yMaxA = 1.2;
+  var topT = topMargin;
+  // Panel B (bottom): same y range — three components
+  var yMinB = -0.8, yMaxB = 0.8;
+  var bottomT = topMargin + panelH + midGap;
+
+  function xToPx(x) { return marginL + (x - xMin) / (xMax - xMin) * plotW; }
+  function yToPxA(y) { return topT + panelH - (y - yMinA) / (yMaxA - yMinA) * panelH; }
+  function yToPxB(y) { return bottomT + panelH - (y - yMinB) / (yMaxB - yMinB) * panelH; }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var tertiary  = cv('--sol-canvas-tertiary');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Main title
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.fillText('sin⁵ x i njena dekompozicija po sin x, sin 3x, sin 5x', W / 2, 22);
+
+    // === Panel A: sin^5 x vs reconstruction ===
+    // Panel title
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillStyle = muted;
+    ctx.fillText('Gore: sin⁵ x i njena rekonstrukcija — krive se poklapaju', W / 2, topT - 8);
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 4]);
+    for (var k = 0; k <= 8; k++) {
+      var xv = k * Math.PI / 4;
+      var px = xToPx(xv);
+      ctx.beginPath(); ctx.moveTo(px, topT); ctx.lineTo(px, topT + panelH); ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Axes (zero line)
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(marginL, yToPxA(0)); ctx.lineTo(marginL + plotW, yToPxA(0));
+    ctx.moveTo(marginL, topT); ctx.lineTo(marginL, topT + panelH);
+    ctx.stroke();
+
+    // y-axis ticks for A
+    ctx.font = '10px Inter, system-ui';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'right';
+    var yTicksA = [-1, -0.5, 0, 0.5, 1];
+    for (var i = 0; i < yTicksA.length; i++) {
+      var yv = yTicksA[i];
+      var py = yToPxA(yv);
+      ctx.strokeStyle = axis;
+      ctx.beginPath(); ctx.moveTo(marginL - 4, py); ctx.lineTo(marginL, py); ctx.stroke();
+      var lab = (yv === 0) ? '0' : (yv === 1 ? '1' : (yv === -1 ? '-1' : (yv > 0 ? '0,5' : '-0,5')));
+      ctx.fillStyle = text;
+      ctx.fillText(lab, marginL - 8, py + 4);
+    }
+
+    // x-axis labels (panel A)
+    var xLabels = [
+      { x: 0,            t: '0' },
+      { x: Math.PI / 2,  t: 'π/2' },
+      { x: Math.PI,      t: 'π' },
+      { x: 3*Math.PI/2,  t: '3π/2' },
+      { x: 2*Math.PI,    t: '2π' }
+    ];
+    ctx.textAlign = 'center';
+    for (var ii = 0; ii < xLabels.length; ii++) {
+      var lp = xLabels[ii];
+      var lpx = xToPx(lp.x);
+      ctx.fillStyle = axis;
+      ctx.beginPath(); ctx.moveTo(lpx, yToPxA(0)); ctx.lineTo(lpx, yToPxA(0) + 4); ctx.stroke();
+      ctx.fillStyle = text;
+      ctx.fillText(lp.t, lpx, yToPxA(0) + 16);
+    }
+
+    // Plot rekonstrukcija g(x) = (10 sin x - 5 sin 3x + sin 5x)/16 — thick accent
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    var first = true;
+    for (var s = 0; s <= 500; s++) {
+      var xv2 = xMin + (xMax - xMin) * s / 500;
+      var g = (10 * Math.sin(xv2) - 5 * Math.sin(3 * xv2) + Math.sin(5 * xv2)) / 16;
+      var px2 = xToPx(xv2);
+      var py2 = yToPxA(g);
+      if (first) { ctx.moveTo(px2, py2); first = false; } else { ctx.lineTo(px2, py2); }
+    }
+    ctx.stroke();
+
+    // Plot f(x) = sin^5 x — thinner, primary, dashed
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    first = true;
+    for (var t = 0; t <= 500; t++) {
+      var xv3 = xMin + (xMax - xMin) * t / 500;
+      var f = Math.pow(Math.sin(xv3), 5);
+      var px3 = xToPx(xv3);
+      var py3 = yToPxA(f);
+      if (first) { ctx.moveTo(px3, py3); first = false; } else { ctx.lineTo(px3, py3); }
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Legend for panel A
+    var legAY = topT + panelH + 12;
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 5;
+    ctx.beginPath(); ctx.moveTo(marginL, legAY); ctx.lineTo(marginL + 30, legAY); ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.font = '11px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText('(10 sin x − 5 sin 3x + sin 5x)/16', marginL + 38, legAY + 4);
+
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath(); ctx.moveTo(marginL + 260, legAY); ctx.lineTo(marginL + 290, legAY); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = text;
+    ctx.fillText('sin⁵ x', marginL + 298, legAY + 4);
+
+    // === Panel B: three components ===
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    ctx.fillText('Dole: pojedinačne komponente (sa svojim koeficijentima)', W / 2, bottomT - 8);
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 4]);
+    for (var k2 = 0; k2 <= 8; k2++) {
+      var xvb = k2 * Math.PI / 4;
+      var pxb = xToPx(xvb);
+      ctx.beginPath(); ctx.moveTo(pxb, bottomT); ctx.lineTo(pxb, bottomT + panelH); ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Zero line
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(marginL, yToPxB(0)); ctx.lineTo(marginL + plotW, yToPxB(0));
+    ctx.moveTo(marginL, bottomT); ctx.lineTo(marginL, bottomT + panelH);
+    ctx.stroke();
+
+    // y-axis ticks for B
+    ctx.font = '10px Inter, system-ui';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'right';
+    var yTicksB = [-0.5, 0, 0.5];
+    for (var iii = 0; iii < yTicksB.length; iii++) {
+      var yvb = yTicksB[iii];
+      var pyb = yToPxB(yvb);
+      ctx.strokeStyle = axis;
+      ctx.beginPath(); ctx.moveTo(marginL - 4, pyb); ctx.lineTo(marginL, pyb); ctx.stroke();
+      var labB = (yvb === 0) ? '0' : (yvb > 0 ? '0,5' : '-0,5');
+      ctx.fillStyle = text;
+      ctx.fillText(labB, marginL - 8, pyb + 4);
+    }
+
+    // x-axis labels (panel B)
+    ctx.textAlign = 'center';
+    for (var jjj = 0; jjj < xLabels.length; jjj++) {
+      var lpb = xLabels[jjj];
+      var lpxb = xToPx(lpb.x);
+      ctx.fillStyle = axis;
+      ctx.beginPath(); ctx.moveTo(lpxb, yToPxB(0)); ctx.lineTo(lpxb, yToPxB(0) + 4); ctx.stroke();
+      ctx.fillStyle = text;
+      ctx.fillText(lpb.t, lpxb, yToPxB(0) + 16);
+    }
+
+    // Component 1: (5/8) sin x — primary
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    first = true;
+    for (var u = 0; u <= 500; u++) {
+      var xv5 = xMin + (xMax - xMin) * u / 500;
+      var v1 = (5 / 8) * Math.sin(xv5);
+      var px5 = xToPx(xv5);
+      var py5 = yToPxB(Math.max(yMinB, Math.min(yMaxB, v1)));
+      if (first) { ctx.moveTo(px5, py5); first = false; } else { ctx.lineTo(px5, py5); }
+    }
+    ctx.stroke();
+
+    // Component 2: -(5/16) sin 3x — secondary
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    first = true;
+    for (var u2 = 0; u2 <= 500; u2++) {
+      var xv6 = xMin + (xMax - xMin) * u2 / 500;
+      var v2 = -(5 / 16) * Math.sin(3 * xv6);
+      var px6 = xToPx(xv6);
+      var py6 = yToPxB(Math.max(yMinB, Math.min(yMaxB, v2)));
+      if (first) { ctx.moveTo(px6, py6); first = false; } else { ctx.lineTo(px6, py6); }
+    }
+    ctx.stroke();
+
+    // Component 3: (1/16) sin 5x — tertiary or highlight
+    ctx.strokeStyle = tertiary || highlight;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    first = true;
+    for (var u3 = 0; u3 <= 500; u3++) {
+      var xv7 = xMin + (xMax - xMin) * u3 / 500;
+      var v3 = (1 / 16) * Math.sin(5 * xv7);
+      var px7 = xToPx(xv7);
+      var py7 = yToPxB(Math.max(yMinB, Math.min(yMaxB, v3)));
+      if (first) { ctx.moveTo(px7, py7); first = false; } else { ctx.lineTo(px7, py7); }
+    }
+    ctx.stroke();
+
+    // Legend for panel B
+    var legBY = bottomT + panelH + 18;
+    ctx.font = '11px Inter, system-ui';
+    ctx.textAlign = 'left';
+
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(marginL, legBY); ctx.lineTo(marginL + 28, legBY); ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.fillText('(5/8) sin x', marginL + 34, legBY + 4);
+
+    ctx.strokeStyle = secondary;
+    ctx.beginPath(); ctx.moveTo(marginL + 150, legBY); ctx.lineTo(marginL + 178, legBY); ctx.stroke();
+    ctx.fillText('−(5/16) sin 3x', marginL + 184, legBY + 4);
+
+    ctx.strokeStyle = tertiary || highlight;
+    ctx.beginPath(); ctx.moveTo(marginL + 320, legBY); ctx.lineTo(marginL + 348, legBY); ctx.stroke();
+    ctx.fillText('(1/16) sin 5x', marginL + 354, legBY + 4);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Koeficijent uz sin x u razvoju sin^5 x",
+  "subject": "math",
+  "unit": "trigonometry",
+  "topic_tags": ["linearizacija stepena", "trigonometrijski identiteti", "proizvod u zbir", "spustanje stepena", "Furijeov razvoj"]
+}
+BRAINSPARK_META-->

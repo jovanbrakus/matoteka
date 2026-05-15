@@ -1,0 +1,439 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Zadatak: U aritmetičkom nizu je a_3 + a_4 = 7. Naći S_6 = a_1 + a_2 + ... + a_6.
+
+  Ključne formule:
+    - Opšti član: a_n = a_1 + (n-1) d.
+    - Zbir prvih n članova: S_n = n/2 · (a_1 + a_n) = n/2 · (2 a_1 + (n-1) d).
+    - Svojstvo simetričnih parova: u aritmetičkom nizu, parovi (a_k, a_{n+1-k})
+      za k = 1, 2, ..., imaju ISTI zbir = a_1 + a_n.
+
+  Pristup A (direktan, kroz formulu S_n):
+    a_3 + a_4 = (a_1 + 2d) + (a_1 + 3d) = 2 a_1 + 5d = 7.
+    S_6 = 6/2 · (2 a_1 + 5d) = 3 · (2 a_1 + 5d) = 3 · 7 = 21.
+
+  Pristup B (kroz svojstvo parova) — najelegantniji:
+    Prvih 6 članova: a_1, a_2, a_3, a_4, a_5, a_6.
+    Simetrični parovi sa zbirom a_1 + a_6:
+       (a_1, a_6), (a_2, a_5), (a_3, a_4).
+    Sva tri para imaju isti zbir! Dakle a_3 + a_4 = a_1 + a_6 = 7.
+    S_6 = 3 · 7 = 21.
+
+  Pristup C (numerički, sa konkretnim primerom):
+    Uzmimo a_1 = 1, d = 1: a_3 = 3, a_4 = 4, zbir 7 ✓.
+       S_6 = 1+2+3+4+5+6 = 21 ✓.
+    Uzmimo a_1 = 0, d = 7/5 = 1{,}4: a_3 = 2{,}8, a_4 = 4{,}2, zbir 7 ✓.
+       S_6 = 6/2 · (0 + 5·1{,}4) = 3 · 7 = 21 ✓.
+    Rezultat 21 je nezavisan od konkretnih a_1 i d — sve dok je a_3 + a_4 = 7.
+
+  Odgovor: (D) 21.
+
+  Vizualizacija:
+    Bar-chart prvih 6 članova niza za konkretan primer (a_1 = 1, d = 1).
+    Označiti tri simetrična para različitim bojama, pokazati da svaki par
+    ima isti zbir 7 (luk povezuje a_1↔a_6, a_2↔a_5, a_3↔a_4).
+    Ovo vizuelno potkrepljuje "trik sa parovima".
+
+  Interaktivnost: nepotrebna — najvažniji uvid je sam trik sa simetrijom,
+  vizuelno dobro prenet statičnim dijagramom. Pomeranje d ili a_1 može
+  zamagliti glavnu poruku da je rezultat nezavisan od izbora.
+
+  Najčešće greške:
+    - Pokušaj da se reši pravi sistem: imamo 1 jednačinu sa 2 nepoznate,
+      pa novi pokušava da "doda još jednu" — ne shvata da je sistem dovoljan.
+    - Pri S_6 zamene n/2 sa n − 1 ili n + 1.
+    - Pomešanje formula S_n = n/2(a_1 + a_n) sa S_n = n(a_1 + a_n).
+    - Mešanje opcija: 28 = 4·7 (greška u koeficijentu), 42 = 6·7 (zaboravljen 1/2).
+</script>
+
+<h1 data-card="problem-title">Zbir prvih šest članova iz zbira para</h1>
+<p data-card="problem-subtitle" class="subtitle">Aritmetički niz &mdash; simetrija parova i formula za \( S_n \)</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Zbir trećeg i četvrtog člana aritmetičkog niza je \( 7 \). Zbir prvih šest članova tog niza je:</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">\( a_3 + a_4 \)</span>
+      <span class="given-value">\( 7 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">traženo</span>
+      <span class="given-value">\( S_6 = ? \)</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 42 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 36 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 28 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 21 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 15 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Iskoristićemo prelep simetrijski trik: u aritmetičkom nizu svi parovi čiji se indeksi sabiraju na isti zbir imaju isti zbir vrednosti. Među prvih šest članova ima tri takva para &mdash; svaki sa istim zbirom kao \( a_3 + a_4 \). Tako se odgovor svodi na množenje brojem parova.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Zbirovi i simetrija u aritmetičkom nizu</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">opšti član</span> \( a_n = a_1 + (n-1)\,d \).</li>
+        <li><span class="formula-label">zbir prvih \( n \) članova</span> \( S_n = \dfrac{n}{2}(a_1 + a_n) = \dfrac{n}{2}\bigl(2 a_1 + (n-1)\,d\bigr) \).</li>
+        <li><span class="formula-label">simetrija parova</span> Ako je \( p + q = r + s \), onda \( a_p + a_q = a_r + a_s \). Zbir zavisi samo od zbira indeksa, ne i od njihovog konkretnog izbora.</li>
+        <li>Posledica: među prvih \( n \) članova, parovi \( (a_1, a_n), (a_2, a_{n-1}), \ldots \) svi imaju isti zbir \( a_1 + a_n \). Ako je \( n \) parno, ima ih tačno \( n/2 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz simetričnih parova">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-main" width="760" height="540"></canvas>
+  </div>
+  <p class="canvas-caption">Stubovi prikazuju prvih šest članova niza (primer: \( a_1 = 1,\ d = 1 \)). Tri simetrična para &mdash; \( (a_1, a_6),\ (a_2, a_5),\ (a_3, a_4) \) &mdash; spojena su lukovima i svaki ima isti zbir \( 7 \). Zato je \( S_6 = 3 \cdot 7 = 21 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Uočavamo da imamo manje podataka nego nepoznatih</h3>
+      <p>Aritmetički niz je određen sa dva broja: prvim članom \( a_1 \) i razlikom \( d \). Imamo samo <em>jednu</em> jednačinu, \( a_3 + a_4 = 7 \) &mdash; nedovoljno za zasebno određivanje \( a_1 \) i \( d \). Zato je suštinski važno da tražena veličina, \( S_6 \), ipak <em>zavisi samo od ovog jednog podatka</em>.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliko je nepoznatih u problemu?</summary>
+          <div class="detail-content"><p>Dve: \( a_1 \) i \( d \). Sa samo jednom jednačinom imamo beskonačno mnogo nizova koji zadovoljavaju uslov &mdash; ali svi imaju isti \( S_6 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Primenjujemo formulu za zbir prvih \( n \) članova</h3>
+      <p>Standardna formula glasi:</p>
+      <div class="math-block">\[ S_n = \frac{n}{2}\bigl(2 a_1 + (n-1)\,d\bigr). \]</div>
+      <p>Za \( n = 6 \):</p>
+      <div class="math-block">\[ S_6 = \frac{6}{2}\bigl(2 a_1 + 5d\bigr) = 3\,(2 a_1 + 5d). \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Povezujemo zagradu sa datim podatkom</h3>
+      <p>Pogledajmo zbir trećeg i četvrtog člana:</p>
+      <div class="math-block">\[ a_3 + a_4 = (a_1 + 2d) + (a_1 + 3d) = 2 a_1 + 5d. \]</div>
+      <p>To je tačno onaj izraz u našoj zagradi! Po uslovu zadatka taj zbir je \( 7 \):</p>
+      <div class="math-block">\[ 2 a_1 + 5d = 7. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo \( S_6 \)</h3>
+      <p>Vraćamo to u izraz za \( S_6 \):</p>
+      <div class="math-block">\[ S_6 = 3 \cdot (2 a_1 + 5d) = 3 \cdot 7 = 21. \]</div>
+      <p><span class="result">\( S_6 = 21 \)</span> &mdash; rezultat ne zavisi od konkretnih \( a_1 \) i \( d \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: probaj sa \( a_1 = 1,\ d = 1 \).</summary>
+          <div class="detail-content"><p>Tada je niz \( 1, 2, 3, 4, 5, 6 \), \( a_3 + a_4 = 3 + 4 = 7 \) ✓, i \( S_6 = 1 + 2 + 3 + 4 + 5 + 6 = 21 \) ✓. Funkcioniše bilo koji izbor \( a_1, d \) koji zadovoljava uslov.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Elegantna alternativa: simetrija parova</h3>
+      <p>Posmatrajmo prvih šest članova ispisanih jedan ispod drugog &mdash; jednom rastući, jednom opadajući:</p>
+      <div class="math-block">\[ \begin{array}{c|cccccc} & a_1 & a_2 & a_3 & a_4 & a_5 & a_6 \\ \hline & a_6 & a_5 & a_4 & a_3 & a_2 & a_1 \\ \text{zbir} & a_1{+}a_6 & a_2{+}a_5 & a_3{+}a_4 & a_3{+}a_4 & a_2{+}a_5 & a_1{+}a_6 \end{array} \]</div>
+      <p>U aritmetičkom nizu su sva tri zbira jednaka: \( a_1 + a_6 = a_2 + a_5 = a_3 + a_4 = 7 \). Zato je \( S_6 \) tačno tri puta po \( 7 \):</p>
+      <div class="math-block">\[ S_6 = (a_1 + a_6) + (a_2 + a_5) + (a_3 + a_4) = 3 \cdot 7 = 21. \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>U aritmetičkom nizu sa parnim brojem članova \( 2k \), zbir se uvek može zapisati kao \( k \) jednakih zbirova "krajeva ka sredini". Ovde je \( 2k = 6 \), pa imamo \( k = 3 \) para, i svaki par je tačno koliko i središnji \( a_3 + a_4 \) &mdash; jer je središnji par <em>najbliži centru</em>, ali ima isti zbir kao i krajnji. Otkriti ovo svojstvo &mdash; to je suština Gausove ideje za zbir \( 1 + 2 + \cdots + 100 \).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ S_6 = 21 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 42 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 36 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 28 \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 21 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 15 \)</span>
+  </div>
+  <p class="verification">Provera primerom: niz \( 1,2,3,4,5,6 \) ima \( a_3 + a_4 = 7 \) i \( S_6 = 21 \) ✓. Drugi primer, niz \( -2, 0, 2, 4{,}5 \) konkretno: \( a_1 = -1,\ d = 1{,}6 \Rightarrow a_3 + a_4 = (-1+3{,}2)+(-1+4{,}8) = 7 \) ✓, \( S_6 = 3(−2+8) = 21 \) ✓.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pokušaj da se postavi <em>sistem dve jednačine</em> &mdash; uveravajući sebe da bez još jednog podatka nije moguće rešiti zadatak. Zapravo, \( S_6 \) zavisi <em>samo</em> od \( 2 a_1 + 5d \), pa je jedna jednačina dovoljna.</li>
+    <li>Pogrešna formula za zbir: \( S_n = n(a_1 + a_n) \) bez faktora \( \tfrac{1}{2} \) &mdash; daje \( 42 \) (lažna opcija (A)).</li>
+    <li>"Vidim broj 7, pomnožim sa 6 i podelim sa 2 dajući 21" &mdash; tačan odgovor, ali iz pogrešnog razloga. Bolje je razumeti vezu \( 2 a_1 + 5d = a_3 + a_4 \).</li>
+    <li>Mešanje \( S_6 = 6 a_1 + d (0+1+2+3+4+5) = 6 a_1 + 15 d \) sa pogrešnim koeficijentom uz \( a_1 \) &mdash; daje proizvoljne rezultate.</li>
+    <li>Računanje samo "polovine zbira": shvatiti da je \( a_3 + a_4 \) jedan od tri ekvivalentna para, ali zaboraviti da pomnožiš sa \( 3 \) &mdash; ostaje \( 7 \) ili pogrešno \( 14 \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Pretpostavi da je u istom nizu poznato samo \( a_4 + a_7 = 13 \). Koliko je \( S_{10} \)? Možeš li uopštiti: za aritmetički niz, ako je \( a_p + a_q = M \), pod kojim uslovom na \( n,\ p,\ q \) je \( S_n \) jednoznačno određen?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Posmatraj parnost: \( S_n = \tfrac{n}{2}(a_1 + a_n) \), pa nam treba \( a_1 + a_n \). Iz simetrije \( a_p + a_q = a_1 + a_n \) samo kada je \( p + q = 1 + n \), odnosno \( p + q = n + 1 \). Za drugi izazov: \( p = 4,\ q = 7 \Rightarrow n = 10 \), pa je \( S_{10} = \tfrac{10}{2} \cdot 13 = 65 \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-main');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  // We'll show concrete example: a_1 = 1, d = 1, so terms 1..6
+  var terms = [1, 2, 3, 4, 5, 6];
+
+  // Layout
+  var marginL = 80, marginR = 60, marginT = 70, marginB = 110;
+  var plotW = canvas.width - marginL - marginR;
+  var plotH = canvas.height - marginT - marginB;
+  var n = terms.length;
+  var maxVal = 7; // for scale (one beyond max term)
+  var barW = plotW / n * 0.55;
+  var slotW = plotW / n;
+
+  function xCenter(i) { return marginL + (i + 0.5) * slotW; }
+  function yTop(v) { return marginT + plotH * (1 - v / maxVal); }
+  function yBase() { return marginT + plotH; }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Tri simetrična para sa istim zbirom 7', canvas.width / 2, 28);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Primer: a₁ = 1, d = 1  →  niz: 1, 2, 3, 4, 5, 6', canvas.width / 2, 48);
+
+    // Horizontal grid lines
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var v = 0; v <= maxVal; v++) {
+      var y = yTop(v);
+      ctx.beginPath();
+      ctx.moveTo(marginL, y);
+      ctx.lineTo(canvas.width - marginR, y);
+      ctx.stroke();
+      // y-axis label
+      ctx.fillStyle = muted;
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(String(v), marginL - 8, y + 4);
+    }
+
+    // y-axis
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(marginL, marginT);
+    ctx.lineTo(marginL, yBase());
+    ctx.stroke();
+    // x-axis (base line)
+    ctx.beginPath();
+    ctx.moveTo(marginL, yBase());
+    ctx.lineTo(canvas.width - marginR, yBase());
+    ctx.stroke();
+
+    // Color for each pair: (a_1, a_6) primary, (a_2, a_5) secondary, (a_3, a_4) highlight
+    var pairColor = [
+      cv('--sol-canvas-primary'),    // index 0 (a_1)
+      cv('--sol-canvas-secondary'),  // index 1 (a_2)
+      cv('--sol-canvas-highlight'),  // index 2 (a_3)
+      cv('--sol-canvas-highlight'),  // index 3 (a_4)
+      cv('--sol-canvas-secondary'),  // index 4 (a_5)
+      cv('--sol-canvas-primary'),    // index 5 (a_6)
+    ];
+
+    // Bars
+    for (var i = 0; i < n; i++) {
+      var cx = xCenter(i);
+      var v = terms[i];
+      var yt = yTop(v);
+      var yb = yBase();
+
+      ctx.fillStyle = cvAlpha(['--sol-canvas-primary', '--sol-canvas-secondary', '--sol-canvas-highlight', '--sol-canvas-highlight', '--sol-canvas-secondary', '--sol-canvas-primary'][i], 0.55);
+      ctx.fillRect(cx - barW / 2, yt, barW, yb - yt);
+
+      // bar outline
+      ctx.strokeStyle = pairColor[i];
+      ctx.lineWidth = 2;
+      ctx.strokeRect(cx - barW / 2, yt, barW, yb - yt);
+
+      // value label inside bar (top)
+      ctx.fillStyle = text;
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(String(v), cx, yt - 6);
+
+      // x-axis label (index)
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.fillStyle = muted;
+      ctx.fillText('a' + subscript(i + 1), cx, yb + 18);
+    }
+
+    // Connecting arcs for the three pairs (above the bars)
+    var pairs = [
+      { i: 0, j: 5, color: cv('--sol-canvas-primary'),   archHeight: 50,  label: 'a₁ + a₆ = 7' },
+      { i: 1, j: 4, color: cv('--sol-canvas-secondary'), archHeight: 30,  label: 'a₂ + a₅ = 7' },
+      { i: 2, j: 3, color: cv('--sol-canvas-highlight'), archHeight: 18,  label: 'a₃ + a₄ = 7' },
+    ];
+
+    for (var k = 0; k < pairs.length; k++) {
+      var p = pairs[k];
+      var xi = xCenter(p.i);
+      var xj = xCenter(p.j);
+      var topI = yTop(terms[p.i]);
+      var topJ = yTop(terms[p.j]);
+      var midX = (xi + xj) / 2;
+      var midY = Math.min(topI, topJ) - p.archHeight;
+
+      // dashed arc
+      ctx.strokeStyle = p.color;
+      ctx.lineWidth = 2;
+      ctx.setLineDash([4, 3]);
+      ctx.beginPath();
+      ctx.moveTo(xi, topI - 4);
+      ctx.quadraticCurveTo(midX, midY, xj, topJ - 4);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // label
+      ctx.fillStyle = p.color;
+      ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(p.label, midX, midY - 6);
+    }
+
+    // Bottom: sum formula
+    var sy = canvas.height - 65;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('S₆ = (a₁+a₆) + (a₂+a₅) + (a₃+a₄)  =  3 · 7  =  21', canvas.width / 2, sy);
+
+    // Legend
+    var ly = canvas.height - 30;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    var lx = marginL;
+
+    function drawSwatch(color, label) {
+      ctx.fillStyle = color;
+      ctx.fillRect(lx, ly - 9, 14, 12);
+      ctx.strokeStyle = color;
+      ctx.strokeRect(lx, ly - 9, 14, 12);
+      ctx.fillStyle = text;
+      ctx.fillText(label, lx + 20, ly);
+    }
+    drawSwatch(cv('--sol-canvas-primary'), 'par (a₁, a₆)');
+    lx += 140;
+    drawSwatch(cv('--sol-canvas-secondary'), 'par (a₂, a₅)');
+    lx += 140;
+    drawSwatch(cv('--sol-canvas-highlight'), 'par (a₃, a₄)  ← dat');
+  }
+
+  function subscript(n) {
+    var map = ['₀','₁','₂','₃','₄','₅','₆','₇','₈','₉'];
+    return String(n).split('').map(function(c){ return map[+c]; }).join('');
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Zbir prvih šest članova aritmetičkog niza iz para",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["aritmetički niz", "zbir niza", "simetrija parova", "S_n formula"]
+}
+BRAINSPARK_META-->

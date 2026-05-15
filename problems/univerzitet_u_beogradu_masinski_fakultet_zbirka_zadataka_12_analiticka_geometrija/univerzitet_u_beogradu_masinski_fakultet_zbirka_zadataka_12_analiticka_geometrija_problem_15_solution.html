@@ -1,0 +1,741 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Zadatak: Tacke A(2, -5) i B(4, 1) su krajevi precnika kruznice K.
+  Treba naci RASTOJANJE tacke C(7, -6) od kruznice K (od KRUZNICE,
+  ne od centra!).
+
+  Korak 1 — centar kruznice je sredina precnika:
+    O = midpoint(A, B) = ((2+4)/2, (-5+1)/2) = (3, -2).
+
+  Korak 2 — poluprecnik je polovina precnika:
+    |AB| = sqrt( (4-2)^2 + (1-(-5))^2 ) = sqrt(4 + 36) = sqrt(40)
+         = sqrt(4*10) = 2*sqrt(10)
+    R = |AB| / 2 = sqrt(40) / 2 = sqrt(10)
+
+  (Alternativno: R = |OA| = sqrt( (2-3)^2 + (-5-(-2))^2 ) = sqrt(1 + 9) = sqrt(10). ✓)
+
+  Korak 3 — rastojanje C od centra O:
+    |OC| = sqrt( (7-3)^2 + (-6-(-2))^2 ) = sqrt(16 + 16) = sqrt(32) = 4*sqrt(2).
+
+  Korak 4 — gde je C u odnosu na krug?
+    |OC| = 4*sqrt(2) ≈ 5.657
+    R = sqrt(10) ≈ 3.162
+    |OC| > R, pa je C VAN kruga.
+
+  Korak 5 — najmanje rastojanje od C do kruznice = |OC| - R:
+    d = 4*sqrt(2) - sqrt(10).
+
+  Korak 6 — proveri da li se taj izraz svodi na neki od ponudjenih:
+    4*sqrt(2) - sqrt(10) = sqrt(2) * 4 - sqrt(2) * sqrt(5)    (jer sqrt(10) = sqrt(2)*sqrt(5))
+                        = sqrt(2) * (4 - sqrt(5)).
+    Dakle d = sqrt(2) * (4 - sqrt(5)).
+
+  Numericka provera: 4*sqrt(2) ≈ 5.6569, sqrt(10) ≈ 3.1623
+    d ≈ 5.6569 - 3.1623 = 2.4946
+    sqrt(2) * (4 - sqrt(5)) ≈ 1.4142 * (4 - 2.2361) ≈ 1.4142 * 1.7639 ≈ 2.4948 ✓
+    (mala razlika je zbog zaokruzivanja)
+
+  Odgovor: (D) sqrt(2) * (4 - sqrt(5)).
+
+  Distrakteri:
+    (A) 4*sqrt(2) — to je |OC|, tj. rastojanje od centra, NE od kruga.
+    (B) 4*sqrt(2) - sqrt(5) — greska: stavlja R = sqrt(5) umesto sqrt(10).
+    (C) 4 - sqrt(10) — greska: zaboravi sqrt(2) (uzme |OC| kao 4).
+    (D) sqrt(2)*(4 - sqrt(5)) — TACAN, posle uproscavanja.
+    (E) 5 - sqrt(5) — neka nasumicna kombinacija, mozda neko ko zaokruzio 4*sqrt(2) ≈ 5
+        (ali to nije lepo).
+
+  Vizuelizacija (3-4 slike):
+    1) Koordinatni sistem sa krugom: A(2,-5), B(4,1), O(3,-2) sredina,
+       R = sqrt(10), C(7,-6) van kruga, segment OC duzine 4*sqrt(2),
+       i istaknut najblizi tacka P kruznice na pravoj OC.
+       Rastojanje C do P = d.
+    2) Detalj: pravougli trougao za rastojanje |OC|: kateta 4 (dx),
+       kateta 4 (dy), hipotenuza 4*sqrt(2). Lep "ravnokraki" trougao.
+    3) Algebraicno uproscavanje: 4*sqrt(2) - sqrt(10) = sqrt(2)*(4 - sqrt(5)).
+       Pokazuje izvlacenje zajednickog faktora sqrt(2). Vise tabelarna slika.
+    4) (opciono) Demonstracija: najblize i najdalje tacke na kruznici od C.
+       Najbliza: |OC| - R, najdalja: |OC| + R.
+
+  Interaktivnost: NE — geometrija je odredjena, podaci fiksni. Statican set
+  dijagrama je sasvim dovoljan; dodavanje slajdera bi bilo kozmeticko.
+</script>
+
+<h1 data-card="problem-title">Rastojanje tačke od kružnice zadane svojim prečnikom</h1>
+<p data-card="problem-subtitle" class="subtitle">Analitička geometrija u ravni &mdash; sredina duži, poluprečnik iz prečnika, rastojanje tačke od kružnice (ne od centra)</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Ako su tačke \( A(2, -5) \) i \( B(4, 1) \) krajevi prečnika kružnice \( \mathcal{K} \), tada je rastojanje tačke \( C(7, -6) \) od te kružnice jednako:</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">tačka \( A \)</span>
+      <span class="given-value">\( (2, -5) \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">tačka \( B \)</span>
+      <span class="given-value">\( (4, 1) \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">tačka \( C \)</span>
+      <span class="given-value">\( (7, -6) \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">\( AB \)</span>
+      <span class="given-value">prečnik kružnice \( \mathcal{K} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">traženo</span>
+      <span class="given-value">\( d(C, \mathcal{K}) = ? \)</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 4\sqrt{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 4\sqrt{2} - \sqrt{5} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 4 - \sqrt{10} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \sqrt{2}\,(4 - \sqrt{5}) \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 5 - \sqrt{5} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Centar \( O \) kruga je <em>sredina</em> prečnika \( AB \), a poluprečnik \( R = \tfrac12 |AB| \). Zatim računamo \( |OC| \) i upoređujemo sa \( R \). Pošto se ispostavi da je \( C \) <strong>van</strong> kruga, najmanje rastojanje tačke od kružnice je \( d = |OC| - R \). Na kraju uprostimo izraz izvlačenjem zajedničkog faktora \( \sqrt{2} \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Sredina duži, poluprečnik iz prečnika, rastojanje tačka–kružnica</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Sredina duži (midpoint formula):</strong> sredina duži \( AB \) sa krajevima \( A(x_A, y_A) \) i \( B(x_B, y_B) \) ima koordinate \[ O = \Bigl(\tfrac{x_A + x_B}{2},\; \tfrac{y_A + y_B}{2}\Bigr). \] (Prosto: svaki centroid od dve tačke je njihova aritmetička sredina.)</li>
+        <li><strong>Prečnik i poluprečnik:</strong> ako je \( AB \) prečnik, onda je \( O \) (centar) sredina od \( AB \), a poluprečnik \[ R = \tfrac12 |AB|. \] Ekvivalentno: \( R = |OA| = |OB| \).</li>
+        <li><strong>Rastojanje tačke i kružnice (a ne centra!):</strong> neka tačka \( C \) i krug sa centrom \( O \), poluprečnikom \( R \). Definišemo \( \delta = |OC| \). Tri slučaja:
+          <ul>
+            <li>\( \delta > R \) &mdash; \( C \) je van kruga. Najmanje rastojanje \( C \) do kružnice je \( \boxed{\delta - R} \).</li>
+            <li>\( \delta = R \) &mdash; \( C \) je na kružnici. Rastojanje \( 0 \).</li>
+            <li>\( \delta < R \) &mdash; \( C \) je unutar kruga. Najmanje rastojanje do kružnice je \( R - \delta \).</li>
+          </ul>
+          Generalno: \( d(C, \mathcal{K}) = \bigl| |OC| - R \bigr| \). Najbliža tačka kružnice leži na pravoj \( OC \) &mdash; na presečnoj tački sa kružnicom <em>između</em> \( O \) i \( C \) (ako je \( C \) spolja) ili „van“ \( C \) (ako je \( C \) unutra).</li>
+        <li><strong>Uprošćavanje korena:</strong> \( \sqrt{40} = 2\sqrt{10} \), \( \sqrt{32} = 4\sqrt{2} \), \( \sqrt{10} = \sqrt{2}\sqrt{5} \). Korisno ih je prepoznati pre nego što se računaju decimale.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Kružnica nad prečnikom AB i spoljnja tačka C">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="krugAB" width="720" height="600"></canvas>
+  </div>
+  <p class="canvas-caption">Krug \( \mathcal{K} \) ima prečnik \( AB \) sa \( A(2, -5) \) i \( B(4, 1) \); centar \( O(3, -2) \) je sredina prečnika, a poluprečnik \( R = \sqrt{10} \approx 3{,}16 \). Tačka \( C(7, -6) \) je <em>van</em> kruga (\( |OC| > R \)). Najbliža tačka kružnice tački \( C \) je \( P \), presek prave \( OC \) sa kružnicom <em>između</em> \( O \) i \( C \). Traženo rastojanje je segment \( PC \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Pravougli trougao za |OC|">
+  <h2>📐 Računanje \( |OC| \) preko katet&acirc; \( 4 \) i \( 4 \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="OCtrougao" width="720" height="540"></canvas>
+  </div>
+  <p class="canvas-caption">Vektor od \( O(3, -2) \) do \( C(7, -6) \) ima komponente \( \Delta x = 4 \), \( \Delta y = -4 \). To je <em>ravnokraki</em> pravougli trougao &mdash; obe katete su \( 4 \), pa je hipotenuza \( |OC| = \sqrt{4^2 + 4^2} = \sqrt{32} = 4\sqrt{2} \). U takvom trouglu ugao prema osi je tačno \( 45^\circ \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Izvlačenje √2 — kako 4√2 − √10 postaje √2(4 − √5)">
+  <h2>📐 Algebarska transformacija odgovora</h2>
+  <div class="canvas-wrapper">
+    <canvas id="uproscavanje" width="720" height="460"></canvas>
+  </div>
+  <p class="canvas-caption">Naš sirovi rezultat \( 4\sqrt{2} - \sqrt{10} \) izgleda kao da nije među ponuđenim odgovorima &mdash; ali jeste, samo „prerušen“. Trik: \( \sqrt{10} = \sqrt{2 \cdot 5} = \sqrt{2}\cdot\sqrt{5} \). Onda iz oba člana izvlačimo \( \sqrt{2} \) kao zajednički faktor: \( 4\sqrt{2} - \sqrt{2}\sqrt{5} = \sqrt{2}(4 - \sqrt{5}) \). Numerički: \( 4\sqrt{2} - \sqrt{10} \approx 2{,}494 \) i \( \sqrt{2}(4 - \sqrt{5}) \approx 2{,}494 \) &mdash; ista vrednost.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Centar kruga &mdash; sredina prečnika</h3>
+      <p>Ako je \( AB \) prečnik, centar \( O \) je sredina duži \( AB \). Računamo po formuli:</p>
+      <div class="math-block">\[ O = \Bigl(\tfrac{x_A + x_B}{2},\; \tfrac{y_A + y_B}{2}\Bigr) = \Bigl(\tfrac{2 + 4}{2},\; \tfrac{-5 + 1}{2}\Bigr) = (3,\; -2). \]</div>
+      <p>Dakle:</p>
+      <div class="math-block">\[ \boxed{\; O(3,\, -2). \;} \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je <em>sredina</em> prečnika baš centar kruga?</summary>
+          <div class="detail-content"><p>Sve tačke kružnice su jednako udaljene od centra. Centar je dakle ravno između bilo koje dve dijametralno suprotne tačke &mdash; što je tačno svojstvo sredine duži. Geometrijski: \( |OA| = |OB| = R \) i \( A, O, B \) su kolinearni, pa je \( O \) sredina od \( AB \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Poluprečnik &mdash; polovina dužine prečnika</h3>
+      <p>Računamo \( |AB| \) po formuli za rastojanje:</p>
+      <div class="math-block">\[ |AB| = \sqrt{(4 - 2)^2 + (1 - (-5))^2} = \sqrt{2^2 + 6^2} = \sqrt{4 + 36} = \sqrt{40}. \]</div>
+      <p>Uprostimo: \( \sqrt{40} = \sqrt{4\cdot 10} = 2\sqrt{10} \). Poluprečnik je polovina:</p>
+      <div class="math-block">\[ R = \tfrac12 |AB| = \tfrac{2\sqrt{10}}{2} = \sqrt{10}. \]</div>
+      <p>Provera istom činjenicom: \( R = |OA| \). \( |OA| = \sqrt{(2-3)^2 + (-5-(-2))^2} = \sqrt{1 + 9} = \sqrt{10}. \) \( \checkmark \)</p>
+      <div class="math-block">\[ \boxed{\; R = \sqrt{10}. \;} \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Rastojanje tačke \( C \) od centra \( O \)</h3>
+      <p>Računamo \( |OC| \) za \( O(3, -2) \), \( C(7, -6) \):</p>
+      <div class="math-block">\[ |OC| = \sqrt{(7 - 3)^2 + (-6 - (-2))^2} = \sqrt{4^2 + (-4)^2} = \sqrt{16 + 16} = \sqrt{32}. \]</div>
+      <p>Uprostimo: \( \sqrt{32} = \sqrt{16 \cdot 2} = 4\sqrt{2} \).</p>
+      <div class="math-block">\[ \boxed{\; |OC| = 4\sqrt{2}. \;} \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je dx = dy ovde znak nečeg „lepog“?</summary>
+          <div class="detail-content"><p>Razlike \( |\Delta x| = 4 \) i \( |\Delta y| = 4 \) su jednake, što znači da pravac \( OC \) zaklapa ugao \( 45^\circ \) (tj. \( -45^\circ \)) sa \( x \)-osom. Takav „dijagonalni“ pravougli trougao je ravnokraki, pa hipotenuza ispada \( \sqrt{2} \) puta veća od katete: \( 4\sqrt{2} \). Brojevi su biranja tako da odgovor liči na nešto „neuredno“, a zapravo je vrlo struktirano.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Položaj tačke \( C \) u odnosu na krug</h3>
+      <p>Upoređujemo \( |OC| \) sa \( R \):</p>
+      <div class="math-block">\[ |OC| = 4\sqrt{2} \approx 5{,}657, \qquad R = \sqrt{10} \approx 3{,}162. \]</div>
+      <p>Jasno \( |OC| > R \), pa je tačka \( C \) <strong>van</strong> kruga. To je važno jer određuje formulu za rastojanje od kružnice.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Najmanje rastojanje od \( C \) do kružnice</h3>
+      <p>Kada je tačka van kruga, najbliža tačka kružnice tački \( C \) leži na pravoj kroz \( O \) i \( C \) &mdash; tačnije, na delu te prave između \( O \) i \( C \). To je tačka \( P \). Imamo:</p>
+      <div class="math-block">\[ |OC| = |OP| + |PC| \quad\text{i}\quad |OP| = R. \]</div>
+      <p>Pa je</p>
+      <div class="math-block">\[ d(C, \mathcal{K}) = |PC| = |OC| - R = 4\sqrt{2} - \sqrt{10}. \]</div>
+      <p>Ovo je rezultat &mdash; ali ne baš u obliku koji se nudi.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Uprošćavanje &mdash; izvlačenje zajedničkog faktora</h3>
+      <p>Posmatramo \( \sqrt{10} = \sqrt{2 \cdot 5} = \sqrt{2}\cdot\sqrt{5} \). Tada</p>
+      <div class="math-block">\[ 4\sqrt{2} - \sqrt{10} \;=\; 4\sqrt{2} - \sqrt{2}\cdot\sqrt{5} \;=\; \sqrt{2}\,(4 - \sqrt{5}). \]</div>
+      <p>Konačno:</p>
+      <div class="math-block">\[ \boxed{\; d(C, \mathcal{K}) = \sqrt{2}\,(4 - \sqrt{5}). \;} \]</div>
+      <p>Pošto \( \sqrt{5} \approx 2{,}236 < 4 \), izraz je pozitivan (kao što i mora biti za rastojanje).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: numerička provera oba zapisa</summary>
+          <div class="detail-content"><p>\( 4\sqrt{2} - \sqrt{10} \approx 5{,}6569 - 3{,}1623 = 2{,}4946 \). \( \sqrt{2}(4 - \sqrt{5}) \approx 1{,}4142 \cdot (4 - 2{,}2361) = 1{,}4142 \cdot 1{,}7639 \approx 2{,}4948 \). Slaže se &mdash; sitna razlika je samo zbog zaokruživanja. \( \checkmark \)</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Dva zapažanja čine ceo zadatak. <strong>Prvo:</strong> za rastojanje tačke od kružnice (a ne od centra!), kada je tačka van kruga, idemo „centar minus poluprečnik“ &mdash; \( |OC| - R \). Najbliža tačka kružnice je na pravoj kroz \( O \) i \( C \), pa se geometrija svodi na <em>jedan</em> oduzimanje. <strong>Drugo:</strong> kada odgovor liči na \( a\sqrt{2} - \sqrt{2\cdot k} \), izvlačenje zajedničkog faktora \( \sqrt{2} \) često otkrije ponuđeni oblik. Brojevi u zadatku su biranje tako da odgovor bude „lepi“ \( \sqrt{2}(4 - \sqrt{5}) \) &mdash; isti broj, drugačije napisan.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ d(C, \mathcal{K}) = \sqrt{2}\,(4 - \sqrt{5}) \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 4\sqrt{2} \)</span>
+    <span class="answer-option" data-option="B">(B) \( 4\sqrt{2} - \sqrt{5} \)</span>
+    <span class="answer-option" data-option="C">(C) \( 4 - \sqrt{10} \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( \sqrt{2}\,(4 - \sqrt{5}) \)</span>
+    <span class="answer-option" data-option="E">(E) \( 5 - \sqrt{5} \)</span>
+  </div>
+  <p class="verification">Provera (numerička): \( |OC| - R = 4\sqrt{2} - \sqrt{10} \approx 2{,}4946 \); \( \sqrt{2}(4 - \sqrt{5}) \approx 2{,}4948 \). Slaže se. \( \checkmark \) Tačno (D).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Davanje \( |OC| \) kao konačnog odgovora (opcija A):</strong> rastojanje od <em>centra</em> nije rastojanje od <em>kružnice</em>. Treba oduzeti poluprečnik \( R \).</li>
+    <li><strong>Brkanje \( R \) i \( R^2 \):</strong> \( R^2 = |OA|^2 = 10 \), pa neki uzmu \( R = 10 \) ili \( R = 5 \). Pravilno: \( R = \sqrt{10} \).</li>
+    <li><strong>Uzimanje \( |AB| \) kao poluprečnika</strong> (zaboraviti faktor \( \tfrac12 \)): \( |AB| = 2\sqrt{10} \) je <em>prečnik</em>, a poluprečnik je polovina, tj. \( \sqrt{10} \).</li>
+    <li><strong>Greška u oduzimanju koordinatâ sa negativnim znacima:</strong> \( -6 - (-2) = -6 + 2 = -4 \), ne \( -8 \). Posle se kvadrira, pa znak nije bitan &mdash; ali greška u međukoraku može da promeni krajnji broj.</li>
+    <li><strong>Ne prepoznavanje da je \( 4\sqrt{2} - \sqrt{10} = \sqrt{2}(4 - \sqrt{5}) \):</strong> bez izvlačenja \( \sqrt{2} \) odgovor „nije među ponuđenim“ &mdash; pa se često bira pogrešna opcija (B) \( 4\sqrt{2} - \sqrt{5} \) koja izgleda slično.</li>
+    <li><strong>Misao „uzeću rastojanje između najbliže tačke prečnika i C“:</strong> nije isto. Najbliža tačka <em>kružnice</em> je na pravoj kroz <em>centar</em> i \( C \), a ne nužno na pravoj prečnika \( AB \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Za <em>iste</em> podatke (\( A(2, -5) \), \( B(4, 1) \), \( C(7, -6) \)): nađi koordinate tačke \( P \) na kružnici \( \mathcal{K} \) koja je <strong>najbliža</strong> tački \( C \), i koordinate tačke \( Q \) na kružnici koja je <strong>najdalja</strong> od \( C \). Izrazi koordinate tačno (sa korenima).</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Obe tačke leže na pravoj kroz \( O \) i \( C \). Jedinični vektor pravca od \( O \) ka \( C \) je \( \vec{u} = \tfrac{1}{|OC|}\bigl(7-3,\; -6-(-2)\bigr) = \tfrac{1}{4\sqrt{2}}(4, -4) = \bigl(\tfrac{1}{\sqrt{2}}, -\tfrac{1}{\sqrt{2}}\bigr) \). Najbliža: \( P = O + R\cdot\vec{u} = \bigl(3 + \sqrt{10}\cdot\tfrac{1}{\sqrt{2}},\; -2 - \sqrt{10}\cdot\tfrac{1}{\sqrt{2}}\bigr) = \bigl(3 + \sqrt{5},\; -2 - \sqrt{5}\bigr) \). Najdalja: \( Q = O - R\cdot\vec{u} = \bigl(3 - \sqrt{5},\; -2 + \sqrt{5}\bigr) \). Provera: \( |PC| + |CQ| = ? \) Trebalo bi da je \( |PC| = |OC| - R \) i \( |QC| = |OC| + R \). Numerički \( |PC| \approx 2{,}49 \), \( |QC| \approx 8{,}82 \) &mdash; saglasno.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  // ============== Canvas 1: Circle with diameter AB and point C ==============
+  var canvas1 = document.getElementById('krugAB');
+  if (canvas1) {
+    var ctx = canvas1.getContext('2d');
+    var W = canvas1.width, H = canvas1.height;
+
+    function draw1() {
+      var bg = cv('--sol-canvas-bg');
+      var grid = cv('--sol-canvas-grid');
+      var axis = cv('--sol-canvas-axis');
+      var primary = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var warning = cv('--sol-canvas-warning');
+      var text = cv('--sol-canvas-text');
+      var muted = cv('--sol-canvas-muted');
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+
+      var xMin = -2, xMax = 10, yMin = -8, yMax = 3;
+      var marginL = 60, marginR = 30, marginT = 40, marginB = 60;
+      var plotW = W - marginL - marginR;
+      var plotH = H - marginT - marginB;
+      var s = Math.min(plotW / (xMax - xMin), plotH / (yMax - yMin));
+      var ox = marginL + (plotW - s * (xMax - xMin)) / 2 - s * xMin;
+      var oy = marginT + (plotH - s * (yMax - yMin)) / 2 + s * yMax;
+
+      function X(x) { return ox + x * s; }
+      function Y(y) { return oy - y * s; }
+
+      // grid
+      ctx.strokeStyle = grid; ctx.lineWidth = 1;
+      for (var i = Math.ceil(xMin); i <= Math.floor(xMax); i++) {
+        ctx.beginPath(); ctx.moveTo(X(i), Y(yMin)); ctx.lineTo(X(i), Y(yMax)); ctx.stroke();
+      }
+      for (var j = Math.ceil(yMin); j <= Math.floor(yMax); j++) {
+        ctx.beginPath(); ctx.moveTo(X(xMin), Y(j)); ctx.lineTo(X(xMax), Y(j)); ctx.stroke();
+      }
+
+      ctx.strokeStyle = axis; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(X(xMin), Y(0)); ctx.lineTo(X(xMax), Y(0)); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(X(0), Y(yMin)); ctx.lineTo(X(0), Y(yMax)); ctx.stroke();
+
+      ctx.fillStyle = text;
+      ctx.font = 'bold 13px Inter, system-ui';
+      ctx.textAlign = 'left';
+      ctx.fillText('x', X(xMax) - 12, Y(0) - 8);
+      ctx.textAlign = 'right';
+      ctx.fillText('y', X(0) - 8, Y(yMax) + 14);
+
+      // tick labels
+      ctx.fillStyle = muted; ctx.font = '11px Inter, system-ui';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      for (var ti = -2; ti <= 10; ti += 2) if (ti !== 0) ctx.fillText(String(ti), X(ti), Y(0) + 4);
+      ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      for (var tj = -8; tj <= 2; tj += 2) if (tj !== 0) ctx.fillText(String(tj), X(0) - 5, Y(tj));
+
+      // Coordinates
+      var Ax = 2, Ay = -5;
+      var Bx = 4, By = 1;
+      var Ox = 3, Oy = -2;
+      var Cx = 7, Cy = -6;
+      var R = Math.sqrt(10);
+      var OC = Math.sqrt(32); // 4 sqrt 2
+
+      // Circle
+      ctx.beginPath(); ctx.arc(X(Ox), Y(Oy), R * s, 0, Math.PI * 2);
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.12);
+      ctx.fill();
+      ctx.strokeStyle = primary; ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      // Diameter AB (solid line)
+      ctx.strokeStyle = secondary; ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(X(Ax), Y(Ay));
+      ctx.lineTo(X(Bx), Y(By));
+      ctx.stroke();
+
+      // OC segment (highlight)
+      ctx.strokeStyle = highlight; ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(X(Ox), Y(Oy));
+      ctx.lineTo(X(Cx), Y(Cy));
+      ctx.stroke();
+
+      // Compute P = nearest point on circle to C, along O->C direction
+      var ux = (Cx - Ox) / OC, uy = (Cy - Oy) / OC;
+      var Px = Ox + R * ux, Py = Oy + R * uy;
+
+      // Emphasize segment PC (the answer) with a bold colored line on top
+      ctx.strokeStyle = accent; ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.moveTo(X(Px), Y(Py));
+      ctx.lineTo(X(Cx), Y(Cy));
+      ctx.stroke();
+
+      // points
+      function pt(x, y, color, label, dx, dy, align, baseline) {
+        ctx.beginPath(); ctx.arc(X(x), Y(y), 6, 0, Math.PI * 2);
+        ctx.fillStyle = color; ctx.fill();
+        ctx.fillStyle = cv('--sol-canvas-text');
+        ctx.font = 'bold 14px Inter, system-ui';
+        ctx.textAlign = align; ctx.textBaseline = baseline;
+        ctx.fillText(label, X(x) + dx, Y(y) + dy);
+      }
+
+      pt(Ax, Ay, secondary, 'A(2, -5)', -8, 0, 'right', 'middle');
+      pt(Bx, By, secondary, 'B(4, 1)', 8, 0, 'left', 'middle');
+      pt(Ox, Oy, primary, 'O(3, -2)', -8, -2, 'right', 'bottom');
+      pt(Cx, Cy, accent, 'C(7, -6)', 10, 2, 'left', 'top');
+
+      // P point
+      ctx.beginPath(); ctx.arc(X(Px), Y(Py), 6, 0, Math.PI * 2);
+      ctx.fillStyle = highlight; ctx.fill();
+      ctx.strokeStyle = bg; ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = highlight;
+      ctx.font = 'bold 13px Inter, system-ui';
+      ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      ctx.fillText('P', X(Px) - 8, Y(Py));
+
+      // Labels on segments
+      ctx.fillStyle = primary;
+      ctx.font = 'bold 14px Inter, system-ui';
+      ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
+      // R label on OP segment
+      var midOPx = (Ox + Px) / 2, midOPy = (Oy + Py) / 2;
+      ctx.fillText('R = √10', X(midOPx) + 6, Y(midOPy) - 6);
+
+      // PC label (the answer)
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 14px Inter, system-ui';
+      var midPCx = (Px + Cx) / 2, midPCy = (Py + Cy) / 2;
+      ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+      ctx.fillText('d = √2(4 − √5)', X(midPCx) + 6, Y(midPCy) + 4);
+
+      // Legend at bottom
+      ctx.fillStyle = text;
+      ctx.font = '13px Inter, system-ui';
+      ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+      ctx.fillText('|AB| = 2√10  (prečnik)', 30, H - 50);
+      ctx.fillText('|OC| = 4√2 ≈ 5,66   >   R = √10 ≈ 3,16   ⇒  C je VAN kruga', 30, H - 32);
+    }
+
+    draw1();
+
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() {
+          styles = getComputedStyle(root);
+          draw1();
+        }, 50);
+      }
+    });
+  }
+
+  // ============== Canvas 2: Right triangle for |OC| ==============
+  var canvas2 = document.getElementById('OCtrougao');
+  if (canvas2) {
+    var ctx2 = canvas2.getContext('2d');
+    var W2 = canvas2.width, H2 = canvas2.height;
+
+    function draw2() {
+      var bg = cv('--sol-canvas-bg');
+      var grid = cv('--sol-canvas-grid');
+      var axis = cv('--sol-canvas-axis');
+      var primary = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text = cv('--sol-canvas-text');
+      var muted = cv('--sol-canvas-muted');
+
+      ctx2.clearRect(0, 0, W2, H2);
+      ctx2.fillStyle = bg; ctx2.fillRect(0, 0, W2, H2);
+
+      var xMin = 1, xMax = 9, yMin = -8, yMax = 0;
+      var marginL = 60, marginR = 30, marginT = 50, marginB = 60;
+      var plotW = W2 - marginL - marginR;
+      var plotH = H2 - marginT - marginB;
+      var s = Math.min(plotW / (xMax - xMin), plotH / (yMax - yMin));
+      var ox = marginL + (plotW - s * (xMax - xMin)) / 2 - s * xMin;
+      var oy = marginT + (plotH - s * (yMax - yMin)) / 2 + s * yMax;
+
+      function X(x) { return ox + x * s; }
+      function Y(y) { return oy - y * s; }
+
+      // grid
+      ctx2.strokeStyle = grid; ctx2.lineWidth = 1;
+      for (var i = Math.ceil(xMin); i <= Math.floor(xMax); i++) {
+        ctx2.beginPath(); ctx2.moveTo(X(i), Y(yMin)); ctx2.lineTo(X(i), Y(yMax)); ctx2.stroke();
+      }
+      for (var j = Math.ceil(yMin); j <= Math.floor(yMax); j++) {
+        ctx2.beginPath(); ctx2.moveTo(X(xMin), Y(j)); ctx2.lineTo(X(xMax), Y(j)); ctx2.stroke();
+      }
+
+      // axis-like reference at left/bottom (no full axes since we don't include 0)
+      // Title
+      ctx2.fillStyle = text;
+      ctx2.font = 'bold 15px Inter, system-ui';
+      ctx2.textAlign = 'center'; ctx2.textBaseline = 'top';
+      ctx2.fillText('Pravougli trougao za |OC|: katete 4 i 4, hipotenuza 4√2', W2 / 2, 12);
+
+      var Ox = 3, Oy = -2;
+      var Cx = 7, Cy = -6;
+      var Kx = 7, Ky = -2; // right-angle vertex
+
+      // triangle fill
+      ctx2.beginPath();
+      ctx2.moveTo(X(Ox), Y(Oy));
+      ctx2.lineTo(X(Kx), Y(Ky));
+      ctx2.lineTo(X(Cx), Y(Cy));
+      ctx2.closePath();
+      ctx2.fillStyle = cvAlpha('--sol-canvas-accent', 0.15);
+      ctx2.fill();
+
+      // horizontal leg (dx = 4)
+      ctx2.strokeStyle = primary; ctx2.lineWidth = 3;
+      ctx2.beginPath();
+      ctx2.moveTo(X(Ox), Y(Oy));
+      ctx2.lineTo(X(Kx), Y(Ky));
+      ctx2.stroke();
+
+      // vertical leg (|dy| = 4)
+      ctx2.strokeStyle = secondary;
+      ctx2.beginPath();
+      ctx2.moveTo(X(Kx), Y(Ky));
+      ctx2.lineTo(X(Cx), Y(Cy));
+      ctx2.stroke();
+
+      // hypotenuse
+      ctx2.strokeStyle = highlight; ctx2.lineWidth = 3.5;
+      ctx2.beginPath();
+      ctx2.moveTo(X(Ox), Y(Oy));
+      ctx2.lineTo(X(Cx), Y(Cy));
+      ctx2.stroke();
+
+      // right-angle marker at K
+      var sq = 12;
+      ctx2.strokeStyle = text; ctx2.lineWidth = 1.5;
+      ctx2.beginPath();
+      ctx2.moveTo(X(Kx) - sq, Y(Ky));
+      ctx2.lineTo(X(Kx) - sq, Y(Ky) + sq);
+      ctx2.lineTo(X(Kx), Y(Ky) + sq);
+      ctx2.stroke();
+
+      // Leg labels
+      ctx2.fillStyle = primary;
+      ctx2.font = 'bold 16px Inter, system-ui';
+      ctx2.textAlign = 'center'; ctx2.textBaseline = 'bottom';
+      ctx2.fillText('Δx = 4', X((Ox + Kx) / 2), Y(Oy) - 6);
+
+      ctx2.fillStyle = secondary;
+      ctx2.textAlign = 'left'; ctx2.textBaseline = 'middle';
+      ctx2.fillText('|Δy| = 4', X(Kx) + 8, Y((Ky + Cy) / 2));
+
+      ctx2.fillStyle = highlight;
+      ctx2.font = 'bold 18px Inter, system-ui';
+      ctx2.textAlign = 'right'; ctx2.textBaseline = 'top';
+      ctx2.fillText('|OC| = 4√2', X((Ox + Cx) / 2) - 8, Y((Oy + Cy) / 2) + 8);
+
+      // points
+      ctx2.beginPath(); ctx2.arc(X(Ox), Y(Oy), 6, 0, Math.PI * 2);
+      ctx2.fillStyle = primary; ctx2.fill();
+      ctx2.beginPath(); ctx2.arc(X(Cx), Y(Cy), 6, 0, Math.PI * 2);
+      ctx2.fillStyle = accent; ctx2.fill();
+      ctx2.beginPath(); ctx2.arc(X(Kx), Y(Ky), 5, 0, Math.PI * 2);
+      ctx2.fillStyle = muted; ctx2.fill();
+
+      ctx2.fillStyle = text;
+      ctx2.font = 'bold 14px Inter, system-ui';
+      ctx2.textAlign = 'right'; ctx2.textBaseline = 'bottom';
+      ctx2.fillText('O(3, -2)', X(Ox) - 8, Y(Oy) - 4);
+      ctx2.textAlign = 'left'; ctx2.textBaseline = 'top';
+      ctx2.fillText('C(7, -6)', X(Cx) + 8, Y(Cy) + 4);
+      ctx2.fillStyle = muted;
+      ctx2.font = 'italic 12px Inter, system-ui';
+      ctx2.textAlign = 'left'; ctx2.textBaseline = 'top';
+      ctx2.fillText('K(7, -2)', X(Kx) + 8, Y(Ky) + 6);
+
+      // formula
+      ctx2.fillStyle = text;
+      ctx2.font = 'bold 14px Inter, system-ui';
+      ctx2.textAlign = 'center'; ctx2.textBaseline = 'bottom';
+      ctx2.fillText('4² + 4² = 16 + 16 = 32  ⇒  √32 = 4√2', W2 / 2, H2 - 14);
+    }
+
+    draw2();
+
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() {
+          styles = getComputedStyle(root);
+          draw2();
+        }, 50);
+      }
+    });
+  }
+
+  // ============== Canvas 3: Simplification 4sqrt2 - sqrt10 = sqrt2(4 - sqrt5) ==============
+  var canvas3 = document.getElementById('uproscavanje');
+  if (canvas3) {
+    var ctx3 = canvas3.getContext('2d');
+    var W3 = canvas3.width, H3 = canvas3.height;
+
+    function draw3() {
+      var bg = cv('--sol-canvas-bg');
+      var primary = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text = cv('--sol-canvas-text');
+      var muted = cv('--sol-canvas-muted');
+
+      ctx3.clearRect(0, 0, W3, H3);
+      ctx3.fillStyle = bg; ctx3.fillRect(0, 0, W3, H3);
+
+      // Title
+      ctx3.fillStyle = text;
+      ctx3.font = 'bold 16px Inter, system-ui';
+      ctx3.textAlign = 'center'; ctx3.textBaseline = 'top';
+      ctx3.fillText('Algebarsko uprošćavanje: izvlačenje zajedničkog faktora √2', W3 / 2, 14);
+
+      // Three equation steps
+      var stepY = 90;
+      var stepGap = 80;
+
+      // Step 1
+      ctx3.fillStyle = primary;
+      ctx3.font = 'bold 22px "Times New Roman", serif';
+      ctx3.textAlign = 'center'; ctx3.textBaseline = 'middle';
+      ctx3.fillText('d = 4√2 − √10', W3 / 2, stepY);
+      ctx3.fillStyle = muted;
+      ctx3.font = 'italic 13px Inter, system-ui';
+      ctx3.textBaseline = 'top';
+      ctx3.fillText('sirovi rezultat: |OC| − R', W3 / 2, stepY + 18);
+
+      // Arrow down
+      ctx3.strokeStyle = accent; ctx3.lineWidth = 2;
+      ctx3.beginPath();
+      ctx3.moveTo(W3 / 2, stepY + 42);
+      ctx3.lineTo(W3 / 2, stepY + stepGap - 16);
+      ctx3.stroke();
+      ctx3.fillStyle = accent;
+      ctx3.beginPath();
+      ctx3.moveTo(W3 / 2, stepY + stepGap - 12);
+      ctx3.lineTo(W3 / 2 - 6, stepY + stepGap - 22);
+      ctx3.lineTo(W3 / 2 + 6, stepY + stepGap - 22);
+      ctx3.closePath(); ctx3.fill();
+      ctx3.fillStyle = accent;
+      ctx3.font = '13px Inter, system-ui';
+      ctx3.textAlign = 'left'; ctx3.textBaseline = 'middle';
+      ctx3.fillText('√10 = √(2·5) = √2 · √5', W3 / 2 + 16, stepY + stepGap / 2 + 10);
+
+      // Step 2
+      var y2 = stepY + stepGap;
+      ctx3.fillStyle = secondary;
+      ctx3.font = 'bold 22px "Times New Roman", serif';
+      ctx3.textAlign = 'center'; ctx3.textBaseline = 'middle';
+      ctx3.fillText('d = 4√2 − √2 · √5', W3 / 2, y2);
+      ctx3.fillStyle = muted;
+      ctx3.font = 'italic 13px Inter, system-ui';
+      ctx3.textBaseline = 'top';
+      ctx3.fillText('rastavi √10', W3 / 2, y2 + 18);
+
+      // Arrow down
+      ctx3.strokeStyle = accent; ctx3.lineWidth = 2;
+      ctx3.beginPath();
+      ctx3.moveTo(W3 / 2, y2 + 42);
+      ctx3.lineTo(W3 / 2, y2 + stepGap - 16);
+      ctx3.stroke();
+      ctx3.fillStyle = accent;
+      ctx3.beginPath();
+      ctx3.moveTo(W3 / 2, y2 + stepGap - 12);
+      ctx3.lineTo(W3 / 2 - 6, y2 + stepGap - 22);
+      ctx3.lineTo(W3 / 2 + 6, y2 + stepGap - 22);
+      ctx3.closePath(); ctx3.fill();
+      ctx3.fillStyle = accent;
+      ctx3.font = '13px Inter, system-ui';
+      ctx3.textAlign = 'left'; ctx3.textBaseline = 'middle';
+      ctx3.fillText('izvuci √2 ispred zagrade', W3 / 2 + 16, y2 + stepGap / 2 + 10);
+
+      // Step 3 — final
+      var y3 = y2 + stepGap;
+      // Highlighted box
+      ctx3.fillStyle = cvAlpha('--sol-canvas-highlight', 0.16);
+      ctx3.fillRect(W3 / 2 - 200, y3 - 28, 400, 56);
+      ctx3.strokeStyle = highlight; ctx3.lineWidth = 2;
+      ctx3.strokeRect(W3 / 2 - 200, y3 - 28, 400, 56);
+
+      ctx3.fillStyle = highlight;
+      ctx3.font = 'bold 24px "Times New Roman", serif';
+      ctx3.textAlign = 'center'; ctx3.textBaseline = 'middle';
+      ctx3.fillText('d = √2 (4 − √5)', W3 / 2, y3);
+
+      // Numerical check
+      ctx3.fillStyle = text;
+      ctx3.font = '13px Inter, system-ui';
+      ctx3.textBaseline = 'top';
+      ctx3.fillText('≈ 1,4142 · (4 − 2,2361) ≈ 1,4142 · 1,7639 ≈ 2,495', W3 / 2, y3 + 36);
+    }
+
+    draw3();
+
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() {
+          styles = getComputedStyle(root);
+          draw3();
+        }, 50);
+      }
+    });
+  }
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Rastojanje tačke od kružnice (zadane prečnikom)",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["analitička geometrija", "kružnica", "prečnik", "sredina duži", "rastojanje tačke od kruga", "uprošćavanje korena"]
+}
+BRAINSPARK_META-->

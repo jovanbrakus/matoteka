@@ -1,0 +1,419 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Zadatak: Aritmetička progresija. Zbir prvih pet članova sa NEPARNIM indeksima je 35.
+  Zbir prvih pet članova sa PARNIM indeksima je 50. Naći a_2.
+
+  Neparni indeksi 1,3,5,7,9 → članovi a_1, a_3, a_5, a_7, a_9.
+  Ovi članovi sami čine novu aritmetičku progresiju sa razlikom 2d.
+  Suma 5 članova: S = 5/2 · (a_1 + a_9) = 5/2 · (a_1 + a_1 + 8d) = 5(a_1 + 4d).
+  Dakle 5(a_1 + 4d) = 35  →  a_1 + 4d = 7.   (I)
+
+  Parni indeksi 2,4,6,8,10 → članovi a_2, a_4, a_6, a_8, a_10.
+  Suma: S' = 5/2 · (a_2 + a_10) = 5/2 · (a_1 + d + a_1 + 9d) = 5(a_1 + 5d).
+  Dakle 5(a_1 + 5d) = 50  →  a_1 + 5d = 10.  (II)
+
+  Oduzimanjem (II) − (I): d = 3.
+  Iz (I): a_1 = 7 − 4·3 = 7 − 12 = −5.
+  Onda a_2 = a_1 + d = −5 + 3 = −2.   ✓
+
+  Provera: niz: −5, −2, 1, 4, 7, 10, 13, 16, 19, 22, ...
+  Neparni: −5 + 1 + 7 + 13 + 19 = 35 ✓
+  Parni:   −2 + 4 + 10 + 16 + 22 = 50 ✓
+
+  Lepa alternativna metoda (brza):
+  Parni − neparni član-po-član: (a_2 − a_1) + (a_4 − a_3) + ... = 5·d.
+  Pošto je 50 − 35 = 15, dobijamo 5d = 15, d = 3.
+  Onda iz a_1 + 4d = 7: a_1 = −5, a_2 = −2.
+
+  Tačan odgovor: (C) −2.
+
+  Najčešće greške:
+   * Tumačenje "prvih pet sa neparnim indeksima" kao a_1..a_5 sa filtrom — to su a_1, a_3, a_5,
+     ali ih je samo tri, ne pet. Treba 5 različitih neparnih indeksa: 1,3,5,7,9.
+   * Korišćenje formule S_n = n(a_1 + a_n)/2 bez prepoznavanja da je razlika u "podnizu" 2d, ne d.
+   * Računajući a_2 = a_1 − d umesto a_1 + d.
+
+  Vizualizacija:
+   - Brojevna prava sa članovima a_1, a_2, ..., a_10.
+   - Neparni indeksi obojeni jednom bojom (npr. primary), parni drugom (npr. accent).
+   - Iznad strelica suma neparnih = 35; ispod suma parnih = 50.
+   - Statički prikaz — niz je fiksiran, fokus je na strukturi zbirova.
+</script>
+
+<h1 data-card="problem-title">Sume parnih i neparnih članova aritmetičke progresije</h1>
+<p data-card="problem-subtitle" class="subtitle">Aritmetička progresija — razdvajanje članova po parnosti indeksa i traženje drugog člana</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Data je aritmetička progresija. Zbir prvih pet članova sa neparnim indeksima je \( 35 \), a zbir prvih pet članova sa parnim indeksima je \( 50 \). Drugi član te progresije je:</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">Zbir neparnih</span>
+      <span class="given-value">\( a_1 + a_3 + a_5 + a_7 + a_9 = 35 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Zbir parnih</span>
+      <span class="given-value">\( a_2 + a_4 + a_6 + a_8 + a_{10} = 50 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Traženo</span>
+      <span class="given-value">\( a_2 = ? \)</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( -13 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( -5 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( -2 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 19 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Izrazićemo članove preko \( a_1 \) i razlike \( d \), pa oba zbira svesti na linearne jednačine po \( a_1 \) i \( d \). Najbrži put: posmatrati razliku dva zbira član‑po‑član — svaki parni član je za \( d \) veći od prethodnog neparnog, pa razlika zbirova direktno daje \( 5d \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule za aritmetičku progresiju</summary>
+    <div class="detail-content">
+      <ul>
+        <li>Opšti član: \( a_n = a_1 + (n-1)\,d \).</li>
+        <li>Zbir prvih \( n \) članova: \( S_n = \dfrac{n}{2}\bigl(a_1 + a_n\bigr) = \dfrac{n}{2}\bigl(2a_1 + (n-1)d\bigr) \).</li>
+        <li>Članovi sa indeksima koji čine aritmetičku progresiju i sami čine aritmetičku progresiju: na primer \( a_1, a_3, a_5, \ldots \) imaju razliku \( 2d \).</li>
+        <li>Korisno: ako su parni i neparni članovi naizmenični, razlika svakog parnog i prethodnog neparnog jednaka je \( d \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz progresije">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-main" width="780" height="460"></canvas>
+  </div>
+  <p class="canvas-caption">Prvih deset članova niza prikazani na brojevnoj pravoj. Neparni indeksi su označeni plavom, parni zelenom bojom. Iznad: njihov zbir je \( 35 \); ispod: zbir je \( 50 \). Razlika tih zbirova daje \( 5d \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Označavamo nepoznate</h3>
+      <p>Neka je \( a_1 \) prvi član i \( d \) razlika progresije. Tada je \( a_n = a_1 + (n-1)\,d \) za svako \( n \).</p>
+      <p>Treba odrediti \( a_2 = a_1 + d \), pa nam je potrebno i \( a_1 \) i \( d \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Zbir članova sa neparnim indeksima</h3>
+      <p>Posmatramo \( a_1, a_3, a_5, a_7, a_9 \). To je novi aritmetički niz sa razlikom \( 2d \), pa primenjujemo formulu za zbir \( S_5 = \tfrac{5}{2}(\text{prvi} + \text{poslednji}) \):</p>
+      <div class="math-block">\[ a_1 + a_3 + a_5 + a_7 + a_9 = \frac{5}{2}\bigl(a_1 + a_9\bigr) = \frac{5}{2}\bigl(a_1 + a_1 + 8d\bigr) = 5\,(a_1 + 4d). \]</div>
+      <p>Uslov \( = 35 \) daje:</p>
+      <div class="math-block">\[ a_1 + 4d = 7. \tag{I} \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( a_9 = a_1 + 8d \), a ne \( a_1 + 9d \)?</summary>
+          <div class="detail-content"><p>Formula je \( a_n = a_1 + (n-1)\,d \). Za \( n = 9 \) imamo \( a_9 = a_1 + (9-1)\,d = a_1 + 8d \). "Korakâ" iz \( a_1 \) do \( a_9 \) ima osam, ne devet.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Zbir članova sa parnim indeksima</h3>
+      <p>Sada \( a_2, a_4, a_6, a_8, a_{10} \). Isti princip — pet članova nove aritmetičke progresije sa razlikom \( 2d \), prvi je \( a_2 = a_1 + d \), poslednji \( a_{10} = a_1 + 9d \):</p>
+      <div class="math-block">\[ a_2 + a_4 + a_6 + a_8 + a_{10} = \frac{5}{2}\bigl(a_2 + a_{10}\bigr) = \frac{5}{2}\bigl(2a_1 + 10d\bigr) = 5\,(a_1 + 5d). \]</div>
+      <p>Uslov \( = 50 \) daje:</p>
+      <div class="math-block">\[ a_1 + 5d = 10. \tag{II} \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Rešavamo sistem (I) i (II)</h3>
+      <p>Oduzmemo (I) od (II) i nestaje \( a_1 \):</p>
+      <div class="math-block">\[ (a_1 + 5d) - (a_1 + 4d) = 10 - 7 \;\Longrightarrow\; d = 3. \]</div>
+      <p>Iz (I): \( a_1 = 7 - 4 \cdot 3 = -5 \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Brza alternativa: zašto je razlika zbirova jednaka \( 5d \)?</summary>
+          <div class="detail-content"><p>Sparimo članove redom: \( (a_2 - a_1) + (a_4 - a_3) + (a_6 - a_5) + (a_8 - a_7) + (a_{10} - a_9) \). Svaka razlika je \( d \), a parova ima \( 5 \). Dakle \( 50 - 35 = 5d \), tj. \( d = 3 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo \( a_2 \)</h3>
+      <p>Konačno:</p>
+      <div class="math-block">\[ a_2 = a_1 + d = -5 + 3 = -2. \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kada se zbirovi članova progresije razlikuju samo po "pomeranju" indeksa za jedan korak, njihova razlika je proporcionalna razlici progresije \( d \). Ovde svaki parni član nadmašuje "svog" prethodnog neparnog tačno za \( d \), pa razlika pet takvih parova iznosi \( 5d \). Iz \( 50 - 35 = 15 \) odmah sledi \( d = 3 \), bez ulaska u glomazne formule.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ a_2 = -2 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( -13 \)</span>
+    <span class="answer-option" data-option="B">(B) \( -5 \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( -2 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 3 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 19 \)</span>
+  </div>
+  <p class="verification">Provera: niz \( -5,\,-2,\,1,\,4,\,7,\,10,\,13,\,16,\,19,\,22,\,\ldots \) Zbir neparnih: \( -5 + 1 + 7 + 13 + 19 = 35 \). ✓ Zbir parnih: \( -2 + 4 + 10 + 16 + 22 = 50 \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pogrešno tumačenje: "prvih pet sa neparnim indeksima" ne znači \( a_1, a_2, \ldots, a_5 \) ograničeno na neparne (to bi bila samo tri člana), već prvih pet članova čiji su indeksi neparni — dakle \( a_1, a_3, a_5, a_7, a_9 \).</li>
+    <li>Pamtiti da je razlika u "podnizu" \( a_1, a_3, a_5, \ldots \) jednaka \( 2d \), a ne \( d \) — ovo se vidi iz \( a_3 - a_1 = 2d \).</li>
+    <li>Greška u formuli za poslednji član: napisati \( a_9 = a_1 + 9d \) umesto \( a_1 + 8d \). Indeks i broj "koraka" se razlikuju za jedan.</li>
+    <li>Računati \( a_2 = a_1 - d \). Indeks raste sa razlikom \( +d \) (osim ako razlika nije negativna — što ovde nije slučaj, jer je \( d = 3 > 0 \)).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Generalizuj: ako se za istu progresiju kaže da je zbir prvih \( n \) članova sa neparnim indeksima jednak \( N \), a zbir prvih \( n \) članova sa parnim indeksima jednak \( P \) (pri čemu je \( P > N \)), kako se \( a_1 \) i \( d \) izražavaju preko \( n, N, P \)? Pokušaj da rešenje izraziš kao kompaktnu formulu.</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Razlika \( P - N \) sadrži \( n \) sparenih razlika, pa je \( P - N = n\,d \), tj. \( d = \dfrac{P - N}{n} \). Iz zbira neparnih dobijaš \( N = n\,(a_1 + (n-1)\,d) \), odakle \( a_1 = \dfrac{N}{n} - (n-1)\,d = \dfrac{N}{n} - (n-1)\dfrac{P - N}{n} \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-main');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  // Progresija: a_n = -5 + 3(n-1)  →  -5, -2, 1, 4, 7, 10, 13, 16, 19, 22
+  var terms = [];
+  for (var n = 1; n <= 10; n++) terms.push(-5 + 3 * (n - 1));
+
+  // Range: y od -8 do 24 (na brojevnoj pravoj)
+  var marginL = 50, marginR = 30, marginT = 110, marginB = 100;
+  var plotW = canvas.width - marginL - marginR;
+  var plotH = canvas.height - marginT - marginB;
+  var yMin = -8, yMax = 24;
+  function xOf(value) {
+    return marginL + (value - yMin) / (yMax - yMin) * plotW;
+  }
+  var axisY = marginT + plotH / 2;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Niz: a_n = a_1 + (n−1)·d,  a_1 = −5,  d = 3', canvas.width / 2, 14);
+
+    // Number line
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(marginL - 10, axisY);
+    ctx.lineTo(marginL + plotW + 10, axisY);
+    ctx.stroke();
+    // arrow tip
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(marginL + plotW + 10, axisY);
+    ctx.lineTo(marginL + plotW + 2, axisY - 5);
+    ctx.lineTo(marginL + plotW + 2, axisY + 5);
+    ctx.closePath();
+    ctx.fill();
+
+    // Grid ticks every 4 (every 4 units of value)
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var v = yMin; v <= yMax; v += 4) {
+      ctx.beginPath();
+      ctx.moveTo(xOf(v), axisY - 4);
+      ctx.lineTo(xOf(v), axisY + 4);
+      ctx.stroke();
+      ctx.fillStyle = muted;
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText(v.toString(), xOf(v), axisY + 8);
+    }
+
+    // Origin marker
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('vrednost a_n', marginL + plotW + 16, axisY - 6);
+
+    // Draw points for each term
+    // Odd-index (a_1, a_3, a_5, a_7, a_9) — primary; even-index — accent
+    var oddSumX = 0, oddCount = 0;
+    var evenSumX = 0, evenCount = 0;
+
+    for (var i = 0; i < terms.length; i++) {
+      var idx = i + 1; // 1-based
+      var value = terms[i];
+      var px = xOf(value);
+      var isOdd = (idx % 2 === 1);
+      // place dots above (odd) or below (even) the axis to disambiguate
+      var py = isOdd ? axisY - 26 : axisY + 26;
+      var color = isOdd ? primary : accent;
+
+      // connector line to axis
+      ctx.strokeStyle = cvAlpha(isOdd ? '--sol-canvas-primary' : '--sol-canvas-accent', 0.5);
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 3]);
+      ctx.beginPath();
+      ctx.moveTo(px, axisY);
+      ctx.lineTo(px, py);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // dot
+      ctx.beginPath();
+      ctx.arc(px, py, 8, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.strokeStyle = bg;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // index label inside dot
+      ctx.fillStyle = bg;
+      ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(idx.toString(), px, py);
+
+      // value label outside
+      ctx.fillStyle = color;
+      ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = isOdd ? 'bottom' : 'top';
+      var labelY = isOdd ? py - 12 : py + 12;
+      ctx.fillText(value.toString(), px, labelY);
+
+      if (isOdd) { oddSumX += px; oddCount++; }
+      else { evenSumX += px; evenCount++; }
+    }
+
+    // Legend / sum boxes
+    // Top box for odd indices
+    var topY = 46;
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.12);
+    ctx.fillRect(marginL, topY, plotW, 30);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(marginL, topY, plotW, 30);
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Neparni indeksi:  a₁ + a₃ + a₅ + a₇ + a₉  =  35', marginL + plotW / 2, topY + 15);
+
+    // Bottom box for even indices
+    var bottomY = canvas.height - 76;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.12);
+    ctx.fillRect(marginL, bottomY, plotW, 30);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(marginL, bottomY, plotW, 30);
+    ctx.fillStyle = accent;
+    ctx.fillText('Parni indeksi:  a₂ + a₄ + a₆ + a₈ + a₁₀  =  50', marginL + plotW / 2, bottomY + 15);
+
+    // Difference annotation
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Razlika: 50 − 35 = 15 = 5·d   ⇒   d = 3,  a₁ = −5,  a₂ = −2', canvas.width / 2, canvas.height - 30);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Drugi član progresije iz zbirova članova sa parnim i neparnim indeksima",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["aritmetička progresija", "razlika progresije", "zbir članova", "indeksi", "sistem jednačina"]
+}
+BRAINSPARK_META-->

@@ -1,0 +1,443 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Zadatak: Zbir kvadrata tri uzastopna PARNA prirodna broja je 200. Naci zbir tih brojeva.
+
+  Strategija: parametrizovati parni broj kao 2k, gde je k prirodan broj. Tri uzastopna
+  parna broja: 2k-2, 2k, 2k+2 (centrirano oko sredine 2k).
+  Razlika izmedju uzastopnih parnih brojeva je 2 (a ne 1, kao kod prirodnih).
+
+  Jednacina:
+     (2k-2)^2 + (2k)^2 + (2k+2)^2 = 200
+     = (4k^2 - 8k + 4) + 4k^2 + (4k^2 + 8k + 4)
+     = 12k^2 + 8
+  Dakle: 12k^2 + 8 = 200 => 12k^2 = 192 => k^2 = 16 => k = 4 (uzimamo pozitivan,
+     da brojevi budu prirodni).
+
+  Brojevi: 2k-2 = 6, 2k = 8, 2k+2 = 10. Provera: 36 + 64 + 100 = 200. ✓
+  Zbir: 6 + 8 + 10 = 24. Ili brze: 3 * 2k = 6k = 6*4 = 24.
+
+  Odgovor (D) 24.
+
+  Alternative parametrizacije:
+  (a) Najmanji = 2k: brojevi 2k, 2k+2, 2k+4. Daje 12k^2 + 24k + 20 = 200,
+     12k^2 + 24k - 180 = 0, k^2 + 2k - 15 = 0, k = (-2 ± sqrt(64))/2 = 3 ili -5.
+     k = 3: brojevi 6, 8, 10. ✓
+  (b) Centrirano sa n parnim, n = sredina: pisati brojeve n-2, n, n+2.
+     (n-2)^2 + n^2 + (n+2)^2 = 3n^2 + 8 = 200 => 3n^2 = 192 => n^2 = 64 => n = 8.
+     Brojevi: 6, 8, 10. ✓
+     Ovo je mozda najelegantnija forma — uzeti n = sredina (parno), bez 2k.
+
+  Kljucni uvid: zbir kvadrata k uzastopnih clanova aritmetickog niza sa srednjim m i razlikom d
+     je k*m^2 + d^2 * (zbir kvadrata simetricnih indeksa). Za 3 clana i razliku d:
+     (m-d)^2 + m^2 + (m+d)^2 = 3m^2 + 2d^2. Kod nas d = 2: 3m^2 + 8.
+
+  Najcesce greske:
+   * Korisitti razliku 1 umesto 2 izmedju parnih brojeva (kao u prethodnom zadatku).
+   * Pogresno: 2k, 2k+1, 2k+2 — to NIJE parni niz.
+   * Pogresno razvijanje (2k+2)^2 = 4k^2 + 4 (zaboravljen srednji 8k).
+   * Davanje k = 4 ili n = 8 (srednji broj) umesto zbira.
+   * Misliti da su parni brojevi 4, 6, 8 i preskocti zbog 4^2+6^2+8^2 = 16+36+64=116 — pa
+     pretpostaviti da nema resenja.
+
+  Vizualizacija: brojevna prava sa parnim brojevima 0, 2, 4, 6, 8, 10, 12, 14, sa
+     istaknutim 6, 8, 10 (resenje). Iznad — tri kvadrata stranica 6, 8, 10 sa povrsinama
+     36, 64, 100, zbir 200. Staticki dijagram, sekvencijalni zadatak.
+</script>
+
+<h1 data-card="problem-title">Zbir kvadrata tri uzastopna parna prirodna broja</h1>
+<p data-card="problem-subtitle" class="subtitle">Aritmetički niz sa razlikom \( d = 2 \) &mdash; supstitucija "srednji broj kao \( n \)" daje najčistiju jednačinu</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Ako je zbir kvadrata tri uzastopna parna prirodna broja jednak \( 200 \), onda je zbir tih brojeva jednak:</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">brojevi</span>
+      <span class="given-value">\( n - 2,\ n,\ n + 2 \), \( n \) parno</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">uslov</span>
+      <span class="given-value">\( (n-2)^2 + n^2 + (n+2)^2 = 200 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">traženo</span>
+      <span class="given-value">\( (n-2) + n + (n+2) = ? \)</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 42 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 36 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 30 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 24 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 18 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Tri uzastopna parna broja međusobno se razlikuju za \( 2 \). Označićemo <em>srednji</em> sa \( n \) (parno), pa su brojevi \( n - 2,\ n,\ n + 2 \). Pri sabiranju kvadrata, linearni članovi \( \pm 4n \) se međusobno potiru &mdash; ostaje čista jednačina po \( n^2 \) koju rešavamo, a zatim računamo zbir \( 3n \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i tehnike</summary>
+    <div class="detail-content">
+      <ul>
+        <li>Uzastopni <em>parni</em> brojevi: razlika između susednih je \( 2 \). Dakle, ako je \( n \) parno, susedni parni brojevi su \( n - 2 \) i \( n + 2 \).</li>
+        <li>Tri uzastopna parna broja čine <strong>aritmetički niz</strong> sa razlikom \( d = 2 \) i srednjim članom \( n \).</li>
+        <li>Kvadrat binoma: \( (n \pm 2)^2 = n^2 \pm 4n + 4 \).</li>
+        <li>Opšta formula (vredna pamćenja): za aritmetički niz sa srednjim \( m \) i razlikom \( d \), zbir kvadrata tri uzastopna člana je \( (m-d)^2 + m^2 + (m+d)^2 = 3m^2 + 2d^2 \). Kod nas \( d = 2 \), pa je to \( 3n^2 + 8 \).</li>
+        <li>Zbir tri člana aritmetičkog niza je tri puta srednji član: \( (n-2) + n + (n+2) = 3n \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz parnih brojeva i njihovih kvadrata">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-evensq" width="720" height="540"></canvas>
+  </div>
+  <p class="canvas-caption">Gore: tri kvadrata stranica \( 6,\ 8,\ 10 \) sa površinama \( 36,\ 64,\ 100 \) &mdash; ukupno \( 200 \). Dole: brojevna prava sa istaknutim parnim brojevima \( 6,\ 8,\ 10 \) (uzastopni parni, razlika \( +2 \)).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Uvodimo oznake (centriramo oko sredine)</h3>
+      <p>Tri uzastopna parna broja razlikuju se za \( 2 \). Ako je srednji od njih \( n \) (parno), brojevi su:</p>
+      <div class="math-block">\[ n - 2,\quad n,\quad n + 2, \qquad n \text{ parno},\ n \geq 4. \]</div>
+      <p>Ova "centrirana" supstitucija će dovesti do toga da se linearni članovi pri sabiranju kvadrata simetrično potiru.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto razlika između uzastopnih parnih brojeva nije \( 1 \)?</summary>
+          <div class="detail-content"><p>Parni brojevi su \( \dots, 4, 6, 8, 10, 12, \dots\) &mdash; svaki sledeći se dobija dodavanjem \( 2 \). "Uzastopni parni" znači <em>uzastopni u nizu parnih brojeva</em>, ne u nizu svih celih brojeva.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Razvijamo zbir kvadrata</h3>
+      <p>Korišćenjem \( (n-2)^2 = n^2 - 4n + 4 \) i \( (n+2)^2 = n^2 + 4n + 4 \):</p>
+      <div class="math-block">\[ (n-2)^2 + n^2 + (n+2)^2 = \bigl(n^2 - 4n + 4\bigr) + n^2 + \bigl(n^2 + 4n + 4\bigr). \]</div>
+      <p>Linearni članovi \( -4n \) i \( +4n \) se potiru, a konstante \( 4 + 4 = 8 \) ostaju:</p>
+      <div class="math-block">\[ (n-2)^2 + n^2 + (n+2)^2 = 3n^2 + 8. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Rešavamo jednačinu po \( n \)</h3>
+      <p>Iz uslova \( 3n^2 + 8 = 200 \) sledi:</p>
+      <div class="math-block">\[ 3n^2 = 192 \;\Longleftrightarrow\; n^2 = 64 \;\Longrightarrow\; n = \pm 8. \]</div>
+      <p>Pošto su brojevi prirodni i parni, biramo <span class="result">\( n = 8 \)</span>. Rešenje <span class="crossed">\( n = -8 \)</span> dalo bi negativne brojeve, što ne odgovara uslovu zadatka.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Identifikujemo brojeve i proveravamo</h3>
+      <p>Tri uzastopna parna broja sa srednjim \( 8 \) su:</p>
+      <div class="math-block">\[ n - 2 = 6,\quad n = 8,\quad n + 2 = 10. \]</div>
+      <p>Provera zbira kvadrata:</p>
+      <div class="math-block">\[ 6^2 + 8^2 + 10^2 = 36 + 64 + 100 = 200. \quad \checkmark \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: da li primećuješ nešto posebno u trojki \( (6, 8, 10) \)?</summary>
+          <div class="detail-content"><p>To je Pitagorina trojka! \( 6^2 + 8^2 = 36 + 64 = 100 = 10^2 \). Drugim rečima, brojevi \( 6, 8, 10 \) čine prave uglove kao stranice pravouglog trougla &mdash; zgodan estetski "bonus" ovog zadatka, mada nije ključ za rešenje.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo traženi zbir</h3>
+      <p>Tražen je zbir tih tri broja:</p>
+      <div class="math-block">\[ (n - 2) + n + (n + 2) = 3n = 3 \cdot 8 = 24. \]</div>
+      <p>Direktno: \( 6 + 8 + 10 = 24 \). Tri puta srednji član &mdash; svojstvo aritmetičkog niza sa neparnim brojem članova.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Različite vrste "uzastopnih" brojeva razlikuju se samo po razlici \( d \): obični uzastopni imaju \( d = 1 \), parni i neparni imaju \( d = 2 \), uzastopni umnošci broja \( 3 \) imaju \( d = 3 \), itd. Za svaki takav slučaj formula \( (m - d)^2 + m^2 + (m + d)^2 = 3m^2 + 2d^2 \) elegantno povezuje zbir kvadrata sa srednjim članom i razlikom. U našem zadatku \( d = 2 \), pa konstanta postaje \( 2 \cdot 2^2 = 8 \) &mdash; baš ono što smo dobili kao "ostatak" posle skraćivanja linearnih članova.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ 6 + 8 + 10 = 24 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 42 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 36 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 30 \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 24 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 18 \)</span>
+  </div>
+  <p class="verification">Provera: \( 6^2 + 8^2 + 10^2 = 36 + 64 + 100 = 200 \). ✓ Zbir tih brojeva je \( 24 = 3 \cdot 8 \), gde je \( 8 \) srednji član. Brojevi \( 6, 8, 10 \) su uzastopni parni i čine Pitagorinu trojku.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Korišćenje razlike \( 1 \) umesto \( 2 \) &mdash; pretpostaviti brojeve \( n, n+1, n+2 \) kao u prethodnom tipu zadatka. Tada \( n^2 + (n+1)^2 + (n+2)^2 = 200 \) daje \( 3n^2 + 6n - 195 = 0 \), čiji koren nije ceo broj.</li>
+    <li>Pogrešna parametrizacija: pisanje \( 2k,\ 2k+1,\ 2k+2 \) &mdash; ali \( 2k+1 \) je <em>neparan</em>, dakle ovo nije niz parnih brojeva.</li>
+    <li>Pogrešan razvoj kvadrata: \( (n + 2)^2 = n^2 + 4 \) (zaboravljen srednji član \( 4n \)) ili \( (n - 2)^2 = n^2 - 4 \).</li>
+    <li>Davanje srednjeg broja \( n = 8 \) kao odgovora umesto zbira \( 24 \). Slično, davanje pomoćnog \( k = 4 \) (ako se koristi parametrizacija \( 2k \pm 2 \)) umesto zbira.</li>
+    <li>Davanje zbira kvadrata \( 200 \) kao odgovora &mdash; čita se "zbir kvadrata", ali traži se "zbir brojeva".</li>
+    <li>Uzimanje oba korena \( n = \pm 8 \) bez provere da su brojevi prirodni.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Generalizacija: dokaži formulu \( (m-d)^2 + m^2 + (m+d)^2 = 3m^2 + 2d^2 \) za bilo koje \( m \) i \( d \). Koristeći je, naci tri uzastopna <em>neparna</em> prirodna broja čiji je zbir kvadrata \( 251 \). A da li postoje tri uzastopna umnoška broja \( 3 \) čiji je zbir kvadrata \( 126 \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Za neparne brojeve \( d = 2 \) (jer su \( \dots, 5, 7, 9, \dots\) takođe sa razlikom \( 2 \)). Iz \( 3m^2 + 8 = 251 \) sledi \( m^2 = 81 \), \( m = 9 \) &mdash; brojevi \( 7, 9, 11 \) (provera: \( 49 + 81 + 121 = 251 \) ✓). Za umnoške broja \( 3 \): \( d = 3 \), pa je formula \( 3m^2 + 2 \cdot 9 = 3m^2 + 18 = 126 \), tj. \( m^2 = 36 \), \( m = 6 \) &mdash; brojevi \( 3, 6, 9 \) (provera: \( 9 + 36 + 81 = 126 \) ✓). Generalizacija: razmisli šta se dešava ako je broj članova \( 5 \) umesto \( 3 \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-evensq');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  // Three squares 6, 8, 10
+  var sides = [6, 8, 10];
+  var unit = 18; // px per unit -> largest 10*18 = 180 px
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Tri uzastopna parna prirodna broja kao kvadrati: 6, 8, 10', 40, 28);
+
+    // Layout: squares aligned to a common baseline
+    var baselineY = 280;
+    var gap = 50;
+    var totalWidth = 0;
+    for (var i = 0; i < sides.length; i++) totalWidth += sides[i] * unit;
+    totalWidth += gap * (sides.length - 1);
+    var startX = (canvas.width - totalWidth) / 2;
+
+    var colors = ['--sol-canvas-primary', '--sol-canvas-accent', '--sol-canvas-highlight'];
+
+    var x = startX;
+    for (var i = 0; i < sides.length; i++) {
+      var s = sides[i];
+      var w = s * unit;
+      var y = baselineY - w;
+
+      ctx.fillStyle = cvAlpha(colors[i], 0.4);
+      ctx.fillRect(x, y, w, w);
+      ctx.strokeStyle = cv(colors[i]);
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x, y, w, w);
+
+      // grid inside
+      ctx.strokeStyle = cvAlpha('--sol-canvas-axis', 0.22);
+      ctx.lineWidth = 1;
+      for (var k = 1; k < s; k++) {
+        ctx.beginPath();
+        ctx.moveTo(x + k * unit, y);
+        ctx.lineTo(x + k * unit, y + w);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x, y + k * unit);
+        ctx.lineTo(x + w, y + k * unit);
+        ctx.stroke();
+      }
+
+      // Side label
+      ctx.fillStyle = text;
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('strana = ' + s, x + w / 2, y - 10);
+
+      // Area label inside center
+      ctx.fillStyle = text;
+      ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+      ctx.fillText(String(s * s), x + w / 2, y + w / 2 + 6);
+
+      // n^2 label below
+      ctx.fillStyle = muted;
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.fillText(s + '^2 = ' + (s*s), x + w / 2, baselineY + 22);
+
+      x += w + gap;
+    }
+
+    // Sum equation
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('36 + 64 + 100 = 200', canvas.width / 2, baselineY + 60);
+
+    // Number line of even numbers 0, 2, 4, ..., 14
+    var nlY = canvas.height - 70;
+    var nlLeft = 80, nlRight = canvas.width - 80;
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(nlLeft, nlY);
+    ctx.lineTo(nlRight, nlY);
+    ctx.stroke();
+    // arrowhead right
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(nlRight, nlY);
+    ctx.lineTo(nlRight - 9, nlY - 5);
+    ctx.lineTo(nlRight - 9, nlY + 5);
+    ctx.closePath();
+    ctx.fill();
+
+    // Ticks for even numbers 0..14
+    var evens = [0, 2, 4, 6, 8, 10, 12, 14];
+    var nlScale = (nlRight - nlLeft - 30) / (evens[evens.length - 1] - evens[0]);
+    for (var i = 0; i < evens.length; i++) {
+      var v = evens[i];
+      var tx = nlLeft + (v - evens[0]) * nlScale;
+
+      ctx.strokeStyle = axis;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(tx, nlY - 6);
+      ctx.lineTo(tx, nlY + 6);
+      ctx.stroke();
+
+      var idx = (v === 6) ? 0 : (v === 8) ? 1 : (v === 10) ? 2 : -1;
+      if (idx >= 0) {
+        ctx.fillStyle = cv(colors[idx]);
+        ctx.beginPath();
+        ctx.arc(tx, nlY, 9, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = cv('--sol-canvas-bg');
+        ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(String(v), tx, nlY + 4);
+      } else {
+        ctx.fillStyle = muted;
+        ctx.font = '11px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(String(v), tx, nlY + 22);
+      }
+    }
+
+    // Connect 6 -> 8 and 8 -> 10 with "+2" annotations
+    function plusTwoArc(v1, v2) {
+      var x1 = nlLeft + (v1 - evens[0]) * nlScale;
+      var x2 = nlLeft + (v2 - evens[0]) * nlScale;
+      var midX = (x1 + x2) / 2;
+      var arcY = nlY - 28;
+      ctx.strokeStyle = cv('--sol-canvas-warning');
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(x1, nlY - 12);
+      ctx.quadraticCurveTo(midX, arcY - 6, x2, nlY - 12);
+      ctx.stroke();
+      // Arrowhead at x2
+      ctx.fillStyle = cv('--sol-canvas-warning');
+      ctx.beginPath();
+      ctx.moveTo(x2, nlY - 12);
+      ctx.lineTo(x2 - 6, nlY - 18);
+      ctx.lineTo(x2 - 4, nlY - 8);
+      ctx.closePath();
+      ctx.fill();
+      // Label "+2"
+      ctx.fillStyle = cv('--sol-canvas-warning');
+      ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('+2', midX, arcY - 4);
+    }
+    plusTwoArc(6, 8);
+    plusTwoArc(8, 10);
+
+    // Caption
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Brojevna prava parnih brojeva: razlika izmedju susednih je +2.', 40, canvas.height - 18);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Zbir kvadrata tri uzastopna parna prirodna broja jednak 200",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["uzastopni parni brojevi", "zbir kvadrata", "kvadratna jednačina", "aritmetički niz", "Pitagorina trojka"]
+}
+BRAINSPARK_META-->

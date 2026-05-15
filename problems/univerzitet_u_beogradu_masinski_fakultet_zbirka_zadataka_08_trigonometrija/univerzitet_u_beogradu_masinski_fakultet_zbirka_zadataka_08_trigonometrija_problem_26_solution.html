@@ -1,0 +1,505 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Zadatak: za 0 < x < π/2 uprostiti
+    E = sqrt((1+cos x)/(1-cos x)) + sqrt((1-cos x)/(1+cos x)).
+
+  KORAK 1. Iskoristimo formule za poluugao:
+    1 + cos x = 2 cos²(x/2),
+    1 − cos x = 2 sin²(x/2).
+  Zato:
+    (1+cos x)/(1-cos x) = 2 cos²(x/2) / (2 sin²(x/2)) = ctg²(x/2),
+    (1-cos x)/(1+cos x) = tg²(x/2).
+
+  KORAK 2. Korenovanje. Za 0 < x < π/2 imamo x/2 ∈ (0, π/4).
+  Na tom intervalu i sin(x/2), i cos(x/2), i tg(x/2), i ctg(x/2) su pozitivni.
+  Zato:
+    sqrt(ctg²(x/2)) = ctg(x/2),
+    sqrt(tg²(x/2))  = tg(x/2).
+
+  KORAK 3. Sabiranje:
+    E = ctg(x/2) + tg(x/2)
+      = cos(x/2)/sin(x/2) + sin(x/2)/cos(x/2)
+      = (cos²(x/2) + sin²(x/2)) / (sin(x/2) cos(x/2))
+      = 1 / (sin(x/2) cos(x/2)).
+
+  KORAK 4. Iskoristimo sin x = 2 sin(x/2) cos(x/2), tj. sin(x/2) cos(x/2) = sin x / 2:
+    E = 1 / (sin x / 2) = 2 / sin x.
+
+  Odgovor: (C)  2/sin x.
+
+  Numerička provera (x = π/3):
+    cos(π/3) = 1/2.
+    1+cos x = 3/2, 1−cos x = 1/2.
+    Prvi koren: sqrt((3/2)/(1/2)) = sqrt(3) ≈ 1,7321.
+    Drugi koren: sqrt((1/2)/(3/2)) = sqrt(1/3) ≈ 0,5774.
+    E ≈ 1,7321 + 0,5774 = 2,3094.
+    2/sin x = 2/sin(π/3) = 2/(√3/2) = 4/√3 ≈ 2,3094.  ✓
+  Provera ostalih:
+    (A) 2/sin²x = 2/(3/4) = 8/3 ≈ 2,667 — NE.
+    (B) 2/(sin x cos x) = 2/(√3/2 · 1/2) = 8/√3 ≈ 4,619 — NE.
+    (D) 1/(sin x cos x) = 4/√3 ≈ 2,309. STOP — i (D) daje 2,309! Numerički nije razdvojeno za x = π/3!
+    Razlog: za x = π/3, sin x cos x = (√3/2)(1/2) = √3/4, pa 1/(sin x cos x) = 4/√3.
+    A 2/sin x = 2/(√3/2) = 4/√3. Isto za ovu vrednost!
+  Proverimo sa x = π/4:
+    sin x = cos x = √2/2.
+    2/sin x = 2/(√2/2) = 4/√2 = 2√2 ≈ 2,828.
+    1/(sin x cos x) = 1/((√2/2)(√2/2)) = 1/(1/2) = 2 — različito.
+  Ručno za x = π/4:
+    cos x = √2/2.
+    1+cos x = 1 + √2/2 = (2+√2)/2.
+    1−cos x = (2−√2)/2.
+    (1+cos x)/(1−cos x) = (2+√2)/(2−√2) = ((2+√2)²)/((2−√2)(2+√2)) = (4+4√2+2)/(4−2) = (6+4√2)/2 = 3+2√2.
+    sqrt(3+2√2) = √2+1 (jer (√2+1)² = 2+2√2+1 = 3+2√2). OK.
+    Slično drugi: sqrt(1/(3+2√2)) = 1/(√2+1) = √2−1 (racionalisanjem).
+    E = (√2+1) + (√2−1) = 2√2 ≈ 2,828.  ✓ Slaže se sa (C).
+  Stalo do (D)?  1/(sin x cos x) za x = π/4 daje 2 ≠ 2√2. Dakle (D) je pogrešno.
+  Tačan odgovor: (C) 2/sin x.
+
+  Vizuelno: jedinična kružnica + grafik funkcije f(x) = 2/sin x na (0, π/2).
+  Posebno označiti tačku x = π/3 ili neku konkretnu vrednost.
+  Ova vrsta zadatka NE traži interaktivnost — pravo upraštavanje algebarsko.
+  Statički grafik je dovoljan. Idemo na 2 panela u jednom canvas-u (ili samo
+  jedan veliki statički prikaz). Bolje: statički grafik f(x) = 2/sin x sa
+  numeričkom proverom za x = π/4 i x = π/3 obeleženim tačkama.
+</script>
+
+<h1 data-card="problem-title">Zbir korenova razlomaka sa kosinusom</h1>
+<p data-card="problem-subtitle" class="subtitle">Trigonometrija &mdash; formule za poluugao, transformacija \( 1 \pm \cos x \) u kvadrate</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Izraz</p>
+  <div class="math-block">\[ \sqrt{\dfrac{1+\cos x}{1-\cos x}} + \sqrt{\dfrac{1-\cos x}{1+\cos x}} \]</div>
+  <p>za \( 0 < x < \dfrac{\pi}{2} \) je identički jednak:</p>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \dfrac{2}{\sin^2 x} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \dfrac{2}{\sin x \cos x} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \dfrac{2}{\sin x} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \dfrac{1}{\sin x \cos x} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \dfrac{1}{1-\cos x} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Iskoristićemo dve poluugaone formule: \( 1+\cos x = 2\cos^2(x/2) \) i \( 1-\cos x = 2\sin^2(x/2) \). Tada se razlomci pod korenima pretvaraju u <em>kvadrate</em> izraza \( \operatorname{ctg}(x/2) \) i \( \operatorname{tg}(x/2) \). Posle uzimanja kvadratnog korena (svi izrazi su pozitivni na intervalu) zbir se svodi na \( \operatorname{ctg}(x/2)+\operatorname{tg}(x/2) \), što se konačno svodi na \( 2/\sin x \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Formule za poluugao i osnovne veze</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Poluugaone formule (najvažnije ovde):</strong> \[ 1 + \cos x = 2 \cos^2 \dfrac{x}{2}, \qquad 1 - \cos x = 2 \sin^2 \dfrac{x}{2}. \] Dobijaju se iz \( \cos x = \cos^2(x/2) - \sin^2(x/2) \) plus \( \sin^2 + \cos^2 = 1 \).</li>
+        <li><strong>Sinus dvostrukog ugla:</strong> \( \sin x = 2 \sin(x/2) \cos(x/2) \). Iz toga \( \sin(x/2)\cos(x/2) = \dfrac{\sin x}{2} \).</li>
+        <li><strong>Identitet zbira ctg + tg:</strong> \[ \operatorname{ctg} \alpha + \operatorname{tg} \alpha = \dfrac{\cos\alpha}{\sin\alpha} + \dfrac{\sin\alpha}{\cos\alpha} = \dfrac{1}{\sin\alpha \cos\alpha} = \dfrac{2}{\sin 2\alpha}. \]</li>
+        <li><strong>Korenovanje:</strong> \( \sqrt{a^2} = |a| \). Znak apsolutne vrednosti se uklanja samo kad je \( a \geq 0 \) &mdash; ovde pažljivo proveravamo da je tako.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="720" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Grafik funkcije \( f(x) = 2/\sin x \) na intervalu \( (0, \pi/2) \). Tri obeležene tačke pokazuju kako se sva tri izraza &mdash; početni zbir, srednji oblik \( \operatorname{ctg}(x/2)+\operatorname{tg}(x/2) \) i konačni rezultat \( 2/\sin x \) &mdash; u potpunosti slažu. Funkcija raste ka beskonačno kad \( x \to 0^+ \) (jer tada \( \sin x \to 0 \)), a u tački \( x = \pi/2 \) ima minimum \( f(\pi/2) = 2 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Iskoristimo formule za poluugao u \( 1 \pm \cos x \)</h3>
+      <p>Iz tabličnih identiteta:</p>
+      <div class="math-block">\[ 1 + \cos x = 2 \cos^2 \dfrac{x}{2}, \qquad 1 - \cos x = 2 \sin^2 \dfrac{x}{2}. \]</div>
+      <p>Zamenimo u oba razlomka pod korenima:</p>
+      <div class="math-block">\[ \dfrac{1+\cos x}{1-\cos x} = \dfrac{2 \cos^2(x/2)}{2 \sin^2(x/2)} = \dfrac{\cos^2(x/2)}{\sin^2(x/2)} = \operatorname{ctg}^2 \dfrac{x}{2}, \]</div>
+      <div class="math-block">\[ \dfrac{1-\cos x}{1+\cos x} = \dfrac{\sin^2(x/2)}{\cos^2(x/2)} = \operatorname{tg}^2 \dfrac{x}{2}. \]</div>
+      <p>Razlomci pod korenima su sada <em>kvadrati</em> &mdash; mnogo lakši za korenovanje.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Korenujemo, vodeći računa o znaku</h3>
+      <p>Iz \( 0 < x < \pi/2 \) sledi \( 0 < \dfrac{x}{2} < \dfrac{\pi}{4} \). Na tom intervalu su <em>i</em> \( \sin(x/2) \), <em>i</em> \( \cos(x/2) \) pozitivni, pa su i \( \operatorname{tg}(x/2) \) i \( \operatorname{ctg}(x/2) \) pozitivni:</p>
+      <div class="math-block">\[ \sqrt{\operatorname{ctg}^2 \dfrac{x}{2}} = \left|\operatorname{ctg} \dfrac{x}{2}\right| = \operatorname{ctg} \dfrac{x}{2}, \qquad \sqrt{\operatorname{tg}^2 \dfrac{x}{2}} = \operatorname{tg} \dfrac{x}{2}. \]</div>
+      <p>Tako se ceo polazni izraz svodi na:</p>
+      <div class="math-block">\[ \sqrt{\dfrac{1+\cos x}{1-\cos x}} + \sqrt{\dfrac{1-\cos x}{1+\cos x}} = \operatorname{ctg} \dfrac{x}{2} + \operatorname{tg} \dfrac{x}{2}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: šta bi se desilo da je \( x \) u intervalu \( (\pi, 3\pi/2) \)?</summary>
+          <div class="detail-content"><p>Tada bi \( x/2 \) bio u \( (\pi/2, 3\pi/4) \), pa bi \( \cos(x/2) < 0 \), \( \sin(x/2) > 0 \). Onda \( \operatorname{ctg}(x/2) < 0 \), \( \operatorname{tg}(x/2) < 0 \), i koreni bi <em>menjali znak</em>: \( \sqrt{\operatorname{ctg}^2(x/2)} = -\operatorname{ctg}(x/2) \). Konačni odgovor bi tada bio \( -\operatorname{ctg}(x/2) - \operatorname{tg}(x/2) = -2/\sin x \), tj. minus prethodnog. Zato uslov \( 0 < x < \pi/2 \) <em>nije</em> nevažan kozmetički detalj &mdash; on direktno određuje znak.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Saberimo \( \operatorname{ctg}(x/2) + \operatorname{tg}(x/2) \) preko zajedničkog imenioca</h3>
+      <p>Pišemo svaki sabirak kao razlomak sa \( \sin \) i \( \cos \) poluugla i svodimo na zajednički imenilac:</p>
+      <div class="math-block">\[ \operatorname{ctg} \dfrac{x}{2} + \operatorname{tg} \dfrac{x}{2} = \dfrac{\cos(x/2)}{\sin(x/2)} + \dfrac{\sin(x/2)}{\cos(x/2)} = \dfrac{\cos^2(x/2) + \sin^2(x/2)}{\sin(x/2) \cos(x/2)}. \]</div>
+      <p>U brojiocu koristimo glavni Pitagorin identitet \( \sin^2 + \cos^2 = 1 \):</p>
+      <div class="math-block">\[ = \dfrac{1}{\sin(x/2) \cos(x/2)}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Pretvorimo proizvod \( \sin(x/2)\cos(x/2) \) u \( \sin x \) preko dvostrukog ugla</h3>
+      <p>Iz \( \sin x = 2 \sin(x/2) \cos(x/2) \) sledi \( \sin(x/2) \cos(x/2) = \dfrac{\sin x}{2} \). Zamenom:</p>
+      <div class="math-block">\[ \dfrac{1}{\sin(x/2) \cos(x/2)} = \dfrac{1}{\sin x / 2} = \dfrac{2}{\sin x}. \]</div>
+      <p>Konačno, polazni izraz se svodi na <span class="result">\( \dfrac{2}{\sin x} \)</span> &mdash; opcija (C).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera za \( x = \pi/4 \)</h3>
+      <p>Za \( x = \pi/4 \): \( \cos x = \dfrac{\sqrt{2}}{2} \), pa \( 1 + \cos x = \dfrac{2 + \sqrt{2}}{2} \), \( 1 - \cos x = \dfrac{2 - \sqrt{2}}{2} \). Tada:</p>
+      <div class="math-block">\[ \dfrac{1+\cos x}{1-\cos x} = \dfrac{2+\sqrt{2}}{2-\sqrt{2}} = \dfrac{(2+\sqrt{2})^2}{(2-\sqrt{2})(2+\sqrt{2})} = \dfrac{6 + 4\sqrt{2}}{2} = 3 + 2\sqrt{2}. \]</div>
+      <p>A \( 3 + 2\sqrt{2} = (\sqrt{2} + 1)^2 \), pa je prvi koren \( \sqrt{2} + 1 \). Drugi koren je tada njegov recipročan: \( \sqrt{2} - 1 \) (zbog \( (\sqrt{2}+1)(\sqrt{2}-1) = 1 \)). Zbir:</p>
+      <div class="math-block">\[ (\sqrt{2}+1) + (\sqrt{2}-1) = 2\sqrt{2}. \]</div>
+      <p>Formula (C): \( \dfrac{2}{\sin(\pi/4)} = \dfrac{2}{\sqrt{2}/2} = \dfrac{4}{\sqrt{2}} = 2\sqrt{2} \). \( \checkmark \)</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto provera za \( x = \pi/3 \) ne razdvaja (C) i (D)?</summary>
+          <div class="detail-content"><p>Za \( x = \pi/3 \): \( \sin x = \dfrac{\sqrt{3}}{2} \), \( \cos x = \dfrac{1}{2} \). Tada \( \dfrac{2}{\sin x} = \dfrac{4}{\sqrt{3}} \) i \( \dfrac{1}{\sin x \cos x} = \dfrac{1}{(\sqrt{3}/2)(1/2)} = \dfrac{4}{\sqrt{3}} \) &mdash; iste vrednosti! Razlog je što baš za \( x = \pi/3 \) važi \( \cos x = 1/2 \), pa \( 2 = 1/\cos x \) i obe formule daju isti broj. Da bismo razdvojili kandidate, biramo drugu vrednost, npr. \( x = \pi/4 \): tada \( \cos x = \sqrt{2}/2 \neq 1/2 \), pa se formule razilaze. <em>Pouka:</em> kod izbora vrednosti za testiranje, biraj takve koje razdvajaju što više opcija.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kad god u trigonometrijskom zadatku vidiš \( 1 + \cos x \) ili \( 1 - \cos x \), prva misao mora biti: &bdquo;Ovo je kvadrat poluugla!&ldquo;. Identiteti \( 1+\cos x = 2\cos^2(x/2) \) i \( 1-\cos x = 2\sin^2(x/2) \) izvuku kvadrat iz korenog izraza i otvore put za sve dalje skraćivanje. Drugi korak je još važniji: kod kvadratnog korena <em>uvek</em> proveri znak na zadatom intervalu &mdash; ovde nam \( 0 < x < \pi/2 \) garantuje da poluugao \( x/2 \in (0, \pi/4) \), gde su sve trigonometrijske funkcije pozitivne, pa apsolutna vrednost &bdquo;nestaje&ldquo;.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \sqrt{\dfrac{1+\cos x}{1-\cos x}} + \sqrt{\dfrac{1-\cos x}{1+\cos x}} = \dfrac{2}{\sin x} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( \dfrac{2}{\sin^2 x} \)</span>
+    <span class="answer-option" data-option="B">(B) \( \dfrac{2}{\sin x \cos x} \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( \dfrac{2}{\sin x} \)</span>
+    <span class="answer-option" data-option="D">(D) \( \dfrac{1}{\sin x \cos x} \)</span>
+    <span class="answer-option" data-option="E">(E) \( \dfrac{1}{1-\cos x} \)</span>
+  </div>
+  <p class="verification">Provera za \( x = \pi/4 \): polazni izraz iznosi \( 2\sqrt{2} \), a \( 2/\sin(\pi/4) = 4/\sqrt{2} = 2\sqrt{2} \). Tačno (C). \( \checkmark \)</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Sabiranje umesto sređivanja proizvoda.</strong> Često se piše \( \operatorname{ctg}(x/2) + \operatorname{tg}(x/2) = \dfrac{1}{\sin x \cos x} \) (pogrešno) umesto \( \dfrac{1}{\sin(x/2)\cos(x/2)} \) &mdash; promene se &bdquo;zaborave&ldquo; na poluugao. Greška vodi na opciju (D).</li>
+    <li><strong>Zaboravljen faktor 2 iz \( \sin x = 2\sin(x/2)\cos(x/2) \).</strong> Tada se na kraju dobije \( \dfrac{1}{\sin x} \) umesto \( \dfrac{2}{\sin x} \) &mdash; takav odgovor uopšte nije u listi, ali signal je da je negde &bdquo;negotov&ldquo; račun.</li>
+    <li><strong>Neproveravanje znaka.</strong> \( \sqrt{a^2} = |a| \), ne automatski \( a \). Ovo je presudno za probleme sa drugačijim intervalima &mdash; ovde nas spasava \( x \in (0, \pi/2) \).</li>
+    <li><strong>Pokušaj svođenja na \( \sin x \) i \( \cos x \) direktno,</strong> bez prelaska na poluugao. Tada se izraz pod korenom ne svodi na čist kvadrat i račun postaje neprohodan.</li>
+    <li><strong>Provera samo za \( x = \pi/3 \).</strong> Kao što smo videli, baš za tu vrednost se (C) i (D) numerički poklapaju (\( 4/\sqrt{3} \)). Uvek izaberi vrednost koja razdvaja kandidate &mdash; npr. \( x = \pi/4 \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Pokušaj sada da uprostiš <em>razliku</em> istih korenova:</p>
+  <div class="math-block">\[ \sqrt{\dfrac{1+\cos x}{1-\cos x}} - \sqrt{\dfrac{1-\cos x}{1+\cos x}}, \qquad 0 < x < \dfrac{\pi}{2}. \]</div>
+  <p>Pre nego što kreneš da računaš &mdash; pogodi: hoće li rezultat sadržati \( \sin x \), \( \cos x \), ili oba? Da li će biti pozitivan ili negativan na ovom intervalu?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Postupkom kao u zadatku dobiješ \( \operatorname{ctg}(x/2) - \operatorname{tg}(x/2) = \dfrac{\cos^2(x/2) - \sin^2(x/2)}{\sin(x/2)\cos(x/2)} = \dfrac{\cos x}{\sin x/2} = \dfrac{2 \cos x}{\sin x} = 2 \operatorname{ctg} x \). Dakle razlika je \( 2 \operatorname{ctg} x \). Pozitivna je na \( (0, \pi/2) \) jer su tu i \( \sin x \) i \( \cos x \) pozitivni. <em>Primeti</em> simetriju sa originalnim zadatkom: zbir bio \( 2/\sin x \), razlika je \( 2 \cos x / \sin x \). Razlika između &bdquo;zbira&ldquo; i &bdquo;razlike&ldquo; je faktor \( \cos x \) &mdash; tačno ono što se očekuje od formula \( \cos x = \cos^2(x/2) - \sin^2(x/2) \) (razlika kvadrata u brojiocu).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var tertiary  = cv('--sol-canvas-tertiary');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Tri jednaka izraza na intervalu (0, π/2)', W/2, 26);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('√((1+cos x)/(1−cos x)) + √((1−cos x)/(1+cos x))  =  ctg(x/2) + tg(x/2)  =  2/sin x', W/2, 46);
+
+    // Plot area
+    var plotTop = 70;
+    var plotBottom = H - 110;
+    var plotLeft = 70;
+    var plotRight = W - 40;
+    var plotW = plotRight - plotLeft;
+    var plotH = plotBottom - plotTop;
+
+    var xMin = 0, xMax = Math.PI/2 + 0.05;
+    var yMin = 0, yMax = 7;
+    var sx = plotW / (xMax - xMin);
+    var sy = plotH / (yMax - yMin);
+    function X(x) { return plotLeft + (x - xMin) * sx; }
+    function Y(y) { return plotTop + plotH - (y - yMin) * sy; }
+
+    // Plot background
+    ctx.fillStyle = cvAlpha('--sol-canvas-grid', 0.18);
+    ctx.fillRect(plotLeft, plotTop, plotW, plotH);
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 3]);
+    // vertical grid every π/12
+    var step = Math.PI / 12;
+    for (var k = 0; k <= 6; k++) {
+      var xv = k * step;
+      ctx.beginPath();
+      ctx.moveTo(X(xv), plotTop);
+      ctx.lineTo(X(xv), plotBottom);
+      ctx.stroke();
+    }
+    for (var yi = 0; yi <= 7; yi++) {
+      ctx.beginPath();
+      ctx.moveTo(plotLeft, Y(yi));
+      ctx.lineTo(plotRight, Y(yi));
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(plotLeft, Y(0));
+    ctx.lineTo(plotRight, Y(0));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(plotLeft, plotTop);
+    ctx.lineTo(plotLeft, plotBottom);
+    ctx.stroke();
+
+    // Axis labels (x ticks)
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    var ticks = [
+      { v: 0, label: '0' },
+      { v: Math.PI/6, label: 'π/6' },
+      { v: Math.PI/4, label: 'π/4' },
+      { v: Math.PI/3, label: 'π/3' },
+      { v: Math.PI/2, label: 'π/2' }
+    ];
+    for (var i = 0; i < ticks.length; i++) {
+      var t = ticks[i];
+      ctx.fillText(t.label, X(t.v), Y(0) + 16);
+      // small tick mark
+      ctx.strokeStyle = axis;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(X(t.v), Y(0));
+      ctx.lineTo(X(t.v), Y(0) + 4);
+      ctx.stroke();
+    }
+    // y ticks
+    ctx.textAlign = 'right';
+    for (var yi2 = 0; yi2 <= 7; yi2++) {
+      ctx.fillText(yi2.toString(), plotLeft - 6, Y(yi2) + 4);
+      ctx.strokeStyle = axis;
+      ctx.beginPath();
+      ctx.moveTo(plotLeft, Y(yi2));
+      ctx.lineTo(plotLeft - 4, Y(yi2));
+      ctx.stroke();
+    }
+
+    // Axis arrows + labels
+    ctx.fillStyle = text;
+    ctx.font = 'italic bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('x', plotRight - 14, Y(0) - 8);
+    ctx.textAlign = 'right';
+    ctx.fillText('y', plotLeft - 4, plotTop + 14);
+
+    // Plot f(x) = 2/sin x
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    var started = false;
+    for (var px = 1; px <= plotW; px += 1) {
+      var xv2 = xMin + px / sx;
+      if (xv2 <= 0.02) continue;
+      var fv = 2 / Math.sin(xv2);
+      if (fv > yMax) continue;
+      var sxp = X(xv2);
+      var syp = Y(fv);
+      if (!started) {
+        ctx.moveTo(sxp, syp);
+        started = true;
+      } else {
+        ctx.lineTo(sxp, syp);
+      }
+    }
+    ctx.stroke();
+
+    // Highlighted points
+    var pts = [
+      { x: Math.PI/4, name: 'x = π/4',  desc: 'f = 2√2 ≈ 2,828', color: accent,    av: '--sol-canvas-accent' },
+      { x: Math.PI/3, name: 'x = π/3',  desc: 'f = 4/√3 ≈ 2,309', color: highlight, av: '--sol-canvas-highlight' },
+      { x: Math.PI/2 - 0.01, name: 'x → π/2', desc: 'f → 2 (min)', color: warning,   av: '--sol-canvas-warning' }
+    ];
+    for (var pi = 0; pi < pts.length; pi++) {
+      var p = pts[pi];
+      var fp = 2 / Math.sin(p.x);
+      ctx.beginPath();
+      ctx.arc(X(p.x), Y(fp), 11, 0, Math.PI * 2);
+      ctx.fillStyle = cvAlpha(p.av, 0.28);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(X(p.x), Y(fp), 5.5, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.fill();
+      ctx.strokeStyle = bg;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      // dashed drop to x-axis
+      ctx.strokeStyle = p.color;
+      ctx.setLineDash([3, 4]);
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(X(p.x), Y(fp));
+      ctx.lineTo(X(p.x), Y(0));
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // Vertical asymptote indicator at x = 0
+    ctx.strokeStyle = cvAlpha('--sol-canvas-danger', 0.7);
+    ctx.setLineDash([5, 4]);
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(plotLeft, plotTop);
+    ctx.lineTo(plotLeft, plotBottom);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = cv('--sol-canvas-danger');
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('x = 0: vertikalna asimptota', plotLeft + 8, plotTop + 16);
+
+    // Legend
+    ctx.fillStyle = cvAlpha('--sol-canvas-bg', 0.96);
+    ctx.fillRect(plotRight - 200, plotTop + 8, 188, 56);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 1.2;
+    ctx.strokeRect(plotRight - 200, plotTop + 8, 188, 56);
+
+    ctx.fillStyle = primary;
+    ctx.fillRect(plotRight - 192, plotTop + 24, 16, 3);
+    ctx.fillStyle = text;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('f(x) = 2 / sin x', plotRight - 170, plotTop + 28);
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.fillText('Konačni oblik izraza', plotRight - 170, plotTop + 46);
+
+    // Bottom info band
+    var fY = H - 90;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.14);
+    ctx.fillRect(40, fY, W - 80, 70);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.6;
+    ctx.strokeRect(40, fY, W - 80, 70);
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Provera u tri tačke:', W/2, fY + 20);
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('x = π/6:  zbir = 4 = 2/sin(π/6)     |     x = π/4:  zbir = 2√2 = 2/sin(π/4)', W/2, fY + 40);
+    ctx.fillText('x = π/3:  zbir = 4/√3 = 2/sin(π/3)     |     x = π/2:  zbir = 2 = 2/sin(π/2)', W/2, fY + 58);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Zbir korenova razlomaka sa 1 ± cos x",
+  "subject": "math",
+  "unit": "trigonometry",
+  "topic_tags": ["trigonometrijski identiteti", "formule poluugla", "1+cos x", "1-cos x", "tg(x/2)", "ctg(x/2)"]
+}
+BRAINSPARK_META-->

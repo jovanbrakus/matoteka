@@ -1,0 +1,518 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Zadatak: a, b, c su uzastopni clanovi RASTUCEG aritmetickog niza, a brojevi a, b, c+3 su
+  uzastopni clanovi geometrijskog niza. Dato je a + b + c = 10. Naci a^2 + b^2 + c^2.
+
+  Korak 1 — uslov AP:
+    2b = a + c   =>   a + b + c = 3b = 10   =>   b = 10/3.
+
+  Korak 2 — uslov GP na (a, b, c + 3):
+    b^2 = a (c + 3).
+    b^2 = (10/3)^2 = 100/9.
+
+  Korak 3 — sistem za a i c. Iz AP: a + c = 2b = 20/3. Dakle c = 20/3 - a. Uvrsti:
+    100/9 = a (c + 3) = a (20/3 - a + 3) = a (29/3 - a).
+    Mnozi sa 9:    100 = 9 a (29/3 - a) = 3 a (29 - 3a) = 87a - 9a^2.
+    9a^2 - 87a + 100 = 0.
+
+  Korak 4 — diskriminanta:
+    D = 87^2 - 4*9*100 = 7569 - 3600 = 3969.
+    sqrt(D) = 63 (jer 63^2 = 3969). Provera: 60^2 = 3600, 63^2 = 3969 ✓.
+    a = (87 ± 63)/18.
+    a = 150/18 = 25/3  ili  a = 24/18 = 4/3.
+
+  Korak 5 — biranje "rastuci AP":
+    Rastuci AP: a < b < c. b = 10/3 ≈ 3.33.
+    Ako je a = 25/3 ≈ 8.33 > 10/3 = b — krsi a < b.
+    Ako je a = 4/3 ≈ 1.33 < 10/3 — OK.
+    Dakle a = 4/3, c = 20/3 - 4/3 = 16/3.
+    Provera: 4/3 < 10/3 < 16/3, razlika d = 10/3 - 4/3 = 6/3 = 2; 16/3 - 10/3 = 6/3 = 2. ✓
+    GP provera: a = 4/3, b = 10/3, c + 3 = 16/3 + 9/3 = 25/3.
+       Kolicnik (10/3)/(4/3) = 10/4 = 5/2; (25/3)/(10/3) = 25/10 = 5/2. ✓
+
+  Korak 6 — racunanje:
+    a^2 = 16/9, b^2 = 100/9, c^2 = 256/9.
+    a^2 + b^2 + c^2 = (16 + 100 + 256)/9 = 372/9 = 124/3.
+
+  Odgovor: (B) 124/3.
+
+  Distraktor analiza:
+   (A) 116/3 = blizak ali pogresan zbir.
+   (B) 124/3 = TACAN.
+   (C) 42 = ako se zbuni i postavi a + c = 2b umesto sa pomakom. Ako neko izabere pogresan
+       koren a = 25/3 i jos uradi gresku u kvadriranju mozda dobije 42.
+   (D) 50 = ako se uzmu celi brojevi.
+   (E) 142/3 = blizak ali pogresan.
+
+  Veza GP <-> AP (kljucna ideja):
+    Isti princip kao u zadatku 19, ali "uloge" su zamenjene:
+      - sada je trojka (a, b, c) u AP (a ne u GP)
+      - "deformisana" trojka (a, b, c+3) je u GP
+    Postoji prelaz: 2b = a + c (AP, aditivni most), b^2 = a(c+3) (GP, multiplikativni most).
+    Srednji clan b ispada DIREKTNO iz AP-uslova: b = 10/3, jer 3b = zbir.
+
+  Vizuelno: brojevna prava sa razlomcima (multipli 1/3).
+    AP arhitekture: a = 4/3, b = 10/3, c = 16/3. Strelice koje pokazuju + d = +2 (= 6/3).
+    GP arhitekture: a = 4/3, b = 10/3, c + 3 = 25/3. Strelice koje pokazuju x q = x 5/2.
+    Pomak +3 (= 9/3) na c, vidljiv kao strelica od 16/3 do 25/3.
+
+  Najcesce greske:
+   * "Rastuci AP" zaborav, izbor a = 25/3 — daje (25/3, 10/3, -5/3), opadajuci niz.
+   * Pisati GP-uslov na pogresnu trojku (b^2 = ac umesto b^2 = a(c+3)).
+   * Greska u kvadriranju (10/3)^2 = 100/9, ne 10/9.
+   * Loše sredjivanje 9a^2 - 87a + 100 — greska u znaku.
+   * Vraćanje na a^2 + b^2 + c^2 = (a+b+c)^2 - 2(ab+bc+ca) bez izracunatih ab+bc+ca.
+</script>
+
+<h1 data-card="problem-title">AP &amp; GP most: brojevi <em>a, b, c</em> u rastućoj AP i <em>a, b, c+3</em> u GP</h1>
+<p data-card="problem-subtitle" class="subtitle">Recipročna postavka klasičnog zadatka: ovde je AP "primarni" niz, a GP "deformisani" &mdash; ali tehnika je ista.</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Brojevi \( a,\, b,\, c \) su uzastopni članovi <strong>rastućeg aritmetičkog niza</strong>, a brojevi \( a,\, b,\, c + 3 \) su uzastopni članovi <strong>geometrijskog niza</strong>. Ako je \( a + b + c = 10 \), onda je \( a^2 + b^2 + c^2 \) jednako:</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">trojka u AP (rastuća)</span>
+      <span class="given-value">\( a,\, b,\, c \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">trojka u GP</span>
+      <span class="given-value">\( a,\, b,\, c + 3 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">uslov zbira</span>
+      <span class="given-value">\( a + b + c = 10 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">traženo</span>
+      <span class="given-value">\( a^2 + b^2 + c^2 = ? \)</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \dfrac{116}{3} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \dfrac{124}{3} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 42 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 50 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \dfrac{142}{3} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Iz uslova AP odmah dobijamo \( b \) iz zbira (\( 3b = 10 \)). Potom iskoristimo uslov GP \( b^2 = a(c+3) \) u kombinaciji sa \( a + c = 2b \) da svedemo na kvadratnu jednačinu po \( a \). Uslov "rastuća AP" izdvaja jedinstveni koren, a na kraju zbir kvadrata izračunamo iz dobijenih \( a, b, c \) (ili preko identiteta \( a^2 + b^2 + c^2 = (a+b+c)^2 - 2(ab+bc+ca) \) &mdash; oba puta dobijemo isto).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule: AP, GP i njihov "most"</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Aritmetička sredina (AP):</strong> ako su \( a, b, c \) tri uzastopna člana AP, tada je \( 2b = a + c \), pa zbir trojke je \( a + b + c = 3b \). <em>Srednji član se izvlači direktno iz zbira!</em></li>
+        <li><strong>Geometrijska sredina (GP):</strong> ako su \( x, y, z \) tri uzastopna člana GP, tada je \( y^2 = x z \).</li>
+        <li><strong>Most AP↔GP:</strong> kada ista trojka brojeva (uz malu korekciju jednog krajnjeg člana) zadovoljava i AP i GP uslov, dobijamo sistem koji je elegantno rešiv. AP daje brzi izlaz za \( b \); GP daje sekundarnu kvadratnu jednačinu za \( a, c \).</li>
+        <li><strong>Identitet zbira kvadrata:</strong> \( a^2 + b^2 + c^2 = (a + b + c)^2 - 2(ab + bc + ca) \). Koristan kada se zna zbir i parno-proizvodi.</li>
+        <li><strong>Rastuća AP:</strong> razlika \( d = b - a = c - b > 0 \), tj. \( a < b < c \). Ovo razdvaja korene kvadratne jednačine.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Brojevna prava: most između AP i GP (sa razlomcima)">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-bridge" width="780" height="460"></canvas>
+  </div>
+  <p class="canvas-caption">Trojka \( (a, b, c) = (\tfrac{4}{3}, \tfrac{10}{3}, \tfrac{16}{3}) \) je u rastućoj AP sa razlikom \( d = 2 \) (donji red strelica, sabiranje). Trojka \( (a, b, c{+}3) = (\tfrac{4}{3}, \tfrac{10}{3}, \tfrac{25}{3}) \) je u GP sa količnikom \( q = \tfrac{5}{2} \) (gornji red strelica, množenje). Pomak \( +3 \) odnosi \( c = \tfrac{16}{3} \) ka \( c + 3 = \tfrac{25}{3} \) &mdash; tu se "spaja" most.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Iz AP odmah dobijamo \( b \)</h3>
+      <p>Pošto su \( a, b, c \) tri uzastopna člana AP, srednji član je aritmetička sredina krajnjih:</p>
+      <div class="math-block">\[ 2b = a + c \;\Longrightarrow\; a + b + c = 3b. \]</div>
+      <p>Iz datog zbira \( a + b + c = 10 \) sledi:</p>
+      <div class="math-block">\[ 3b = 10 \;\Longrightarrow\; b = \frac{10}{3}. \]</div>
+      <p>Posledica: <span class="result">\( b = \tfrac{10}{3} \)</span>. Takođe, \( a + c = 2b = \tfrac{20}{3} \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je zbir tri uzastopna člana AP uvek tri puta srednji član?</summary>
+          <div class="detail-content"><p>Označimo razliku AP-a sa \( d \). Tada su tri uzastopna člana \( b - d,\ b,\ b + d \). Njihov zbir je \( (b - d) + b + (b + d) = 3b \) &mdash; razlike \( \pm d \) se potru. Ova lepa simetrija je razlog zašto je AP "ljubazna" prema zbirovima.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Zapisujemo uslov GP</h3>
+      <p>Brojevi \( a, b, c + 3 \) su uzastopni članovi GP, pa srednji član je geometrijska sredina krajnjih:</p>
+      <div class="math-block">\[ b^2 = a (c + 3). \]</div>
+      <p>Pošto je \( b = \tfrac{10}{3} \), imamo:</p>
+      <div class="math-block">\[ b^2 = \frac{100}{9}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Eliminišemo \( c \) i dobijamo kvadratnu po \( a \)</h3>
+      <p>Iz \( a + c = \tfrac{20}{3} \) sledi \( c = \tfrac{20}{3} - a \). Uvrstimo u GP-uslov:</p>
+      <div class="math-block">\[ \frac{100}{9} = a\Bigl(\tfrac{20}{3} - a + 3\Bigr) = a\Bigl(\tfrac{29}{3} - a\Bigr). \]</div>
+      <p>Pomnožimo sa \( 9 \), pa razvijemo i prenesemo na jednu stranu:</p>
+      <div class="math-block">\[ 100 = 3a(29 - 3a) = 87a - 9a^2 \;\Longleftrightarrow\; 9a^2 - 87a + 100 = 0. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Rešavamo kvadratnu jednačinu</h3>
+      <p>Diskriminanta:</p>
+      <div class="math-block">\[ D = 87^2 - 4 \cdot 9 \cdot 100 = 7569 - 3600 = 3969. \]</div>
+      <p>Pošto je \( 63^2 = 3969 \), imamo \( \sqrt{D} = 63 \). Onda:</p>
+      <div class="math-block">\[ a = \frac{87 \pm 63}{18} \;\Longrightarrow\; a = \frac{150}{18} = \frac{25}{3} \quad \text{ili} \quad a = \frac{24}{18} = \frac{4}{3}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kako brzo proceniti \( \sqrt{3969} \)?</summary>
+          <div class="detail-content"><p>\( 60^2 = 3600 \) i \( 70^2 = 4900 \), pa je \( \sqrt{3969} \) između \( 60 \) i \( 70 \). Pošto se završava na \( 9 \), kvadratni koren se završava na \( 3 \) ili \( 7 \). Probajmo \( 63^2 = 3969 \). ✓ Trik: \( (60 + 3)^2 = 3600 + 360 + 9 = 3969 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Biramo koren iz uslova "rastuća AP"</h3>
+      <p>Rastuća AP zahteva \( a < b < c \), tj. \( a < \tfrac{10}{3} \).</p>
+      <div class="compare-grid">
+        <div class="compare-left">
+          <p><strong>Koren \( a = \tfrac{25}{3} \approx 8{,}33 \):</strong></p>
+          <p>\( \tfrac{25}{3} > \tfrac{10}{3} = b \), pa \( a > b \) &mdash; AP <span class="crossed">opada</span>. Odbacujemo.</p>
+        </div>
+        <div class="compare-right">
+          <p><strong>Koren \( a = \tfrac{4}{3} \approx 1{,}33 \):</strong></p>
+          <p>\( \tfrac{4}{3} < \tfrac{10}{3} = b \), pa AP raste. <strong>Prihvatamo!</strong></p>
+        </div>
+      </div>
+      <p>Dakle <span class="result">\( a = \tfrac{4}{3} \)</span>, a iz \( c = \tfrac{20}{3} - a \) sledi <span class="result">\( c = \tfrac{16}{3} \)</span>.</p>
+      <p>Provera AP: razlika \( d = b - a = \tfrac{10}{3} - \tfrac{4}{3} = 2 \), i \( c - b = \tfrac{16}{3} - \tfrac{10}{3} = 2 \). ✓</p>
+      <p>Provera GP na \( (a, b, c+3) = \bigl(\tfrac{4}{3}, \tfrac{10}{3}, \tfrac{25}{3}\bigr) \): količnik \( \tfrac{b}{a} = \tfrac{10/3}{4/3} = \tfrac{10}{4} = \tfrac{5}{2} \), a \( \tfrac{c+3}{b} = \tfrac{25/3}{10/3} = \tfrac{25}{10} = \tfrac{5}{2} \). ✓</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo \( a^2 + b^2 + c^2 \)</h3>
+      <p>Trojka je \( \bigl(\tfrac{4}{3}, \tfrac{10}{3}, \tfrac{16}{3}\bigr) \). Direktno:</p>
+      <div class="math-block">\[ a^2 + b^2 + c^2 = \frac{16}{9} + \frac{100}{9} + \frac{256}{9} = \frac{16 + 100 + 256}{9} = \frac{372}{9}. \]</div>
+      <p>Skratimo \( \tfrac{372}{9} \): brojnik i imenilac dele se sa \( 3 \), pa</p>
+      <div class="math-block">\[ a^2 + b^2 + c^2 = \frac{124}{3}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: isti rezultat preko identiteta \( (a+b+c)^2 = a^2 + b^2 + c^2 + 2(ab + bc + ca) \)?</summary>
+          <div class="detail-content">
+            <p>Imamo \( (a+b+c)^2 = 10^2 = 100 \) i:</p>
+            <p>\( ab = \tfrac{4}{3} \cdot \tfrac{10}{3} = \tfrac{40}{9} \), \( bc = \tfrac{10}{3} \cdot \tfrac{16}{3} = \tfrac{160}{9} \), \( ca = \tfrac{16}{3} \cdot \tfrac{4}{3} = \tfrac{64}{9} \). Zbir: \( \tfrac{40 + 160 + 64}{9} = \tfrac{264}{9} \).</p>
+            <p>Pa \( a^2 + b^2 + c^2 = 100 - 2 \cdot \tfrac{264}{9} = 100 - \tfrac{528}{9} = \tfrac{900 - 528}{9} = \tfrac{372}{9} = \tfrac{124}{3}. \) ✓</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kada zadatak kombinuje AP i GP na istoj (ili skoro istoj) trojci, <strong>uslov AP gotovo uvek brzo daje srednji član \( b \)</strong>, jer \( a + b + c = 3b \). To je <em>aditivni most</em>. Uslov GP daje multiplikativnu vezu \( b^2 = a(c \pm \text{pomak}) \), koja u kombinaciji sa \( a + c \) iz AP svodi sve na jednu kvadratnu jednačinu. Uslov "rastuća" (ili "opadajuća") je esencijalan &mdash; bez njega oba korena bi formalno bila rešenja, ali samo jedan zadovoljava uređenost. Uporedi sa prethodnim zadatkom (\( a, b, c \) u GP, \( a, b, c-1 \) u AP): tamo je <em>multiplikativna</em> strana primarna, a aditivna sekundarna. Tehnika je simetrična, samo se uloge zamenjuju.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ a^2 + b^2 + c^2 = \frac{16 + 100 + 256}{9} = \frac{372}{9} = \frac{124}{3} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( \dfrac{116}{3} \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( \dfrac{124}{3} \)</span>
+    <span class="answer-option" data-option="C">(C) \( 42 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 50 \)</span>
+    <span class="answer-option" data-option="E">(E) \( \dfrac{142}{3} \)</span>
+  </div>
+  <p class="verification">Provera AP: \( \tfrac{4}{3}, \tfrac{10}{3}, \tfrac{16}{3} \), razlika \( d = 2 \), zbir \( = 10 \) ✓. Provera GP: \( \tfrac{4}{3}, \tfrac{10}{3}, \tfrac{25}{3} \), količnik \( q = \tfrac{5}{2} \), srednji kvadrat \( \tfrac{100}{9} = \tfrac{4}{3} \cdot \tfrac{25}{3} \) ✓.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Zaboravljanje uslova "rastuća":</strong> izabrati \( a = \tfrac{25}{3} \) i dobiti opadajuću AP \( (\tfrac{25}{3}, \tfrac{10}{3}, -\tfrac{5}{3}) \). Tada \( a^2 + b^2 + c^2 = \tfrac{625 + 100 + 25}{9} = \tfrac{750}{9} = \tfrac{250}{3} \) &mdash; potpuno drugačiji odgovor. Uslov "rastuća" je presudan.</li>
+    <li><strong>GP-uslov na pogrešnu trojku:</strong> pisati \( b^2 = ac \) (umesto \( b^2 = a(c+3) \)). To je <em>tihi</em> tip greške jer se ne primeti odmah &mdash; dobija se \( ac = \tfrac{100}{9} \), pa kvadratna jednačina ima dvostruki koren \( a = c = \tfrac{10}{3} \), tj. trojka degeneriše u konstantni niz \( (\tfrac{10}{3}, \tfrac{10}{3}, \tfrac{10}{3}) \), pa "rastuća" nije zadovoljena.</li>
+    <li><strong>Greška u kvadriranju razlomka:</strong> \( \bigl(\tfrac{10}{3}\bigr)^2 = \tfrac{100}{9} \), <em>ne</em> \( \tfrac{10}{9} \) ili \( \tfrac{100}{3} \). Treba kvadrirati i brojnik i imenilac.</li>
+    <li><strong>Skraćivanje \( \tfrac{372}{9} \):</strong> \( \gcd(372, 9) = 3 \), pa je \( \tfrac{372}{9} = \tfrac{124}{3} \), <em>ne</em> \( \tfrac{41{,}3...}{1} \) niti zaobljavanje. Tačan odgovor je razlomak.</li>
+    <li><strong>Mešanje znaka u standardnom obliku:</strong> iz \( 100 = 87a - 9a^2 \) dobiti \( 9a^2 + 87a - 100 = 0 \) (sa pogrešnim znakom srednjeg člana) &mdash; pa diskriminanta i koreni ispadaju drugačiji.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Generalizacija: pretpostavi da je \( a, b, c \) rastuća AP sa \( a + b + c = S \), a \( a, b, c + k \) je GP (za realan parametar \( k > 0 \)). Izrazi \( a^2 + b^2 + c^2 \) preko \( S \) i \( k \). Za koje \( S, k \) zadatak ima realna i pozitivna rešenja? Provjeri formulu na originalu (\( S = 10, k = 3 \)).</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Iz AP: \( b = \tfrac{S}{3} \), \( a + c = \tfrac{2S}{3} \). Iz GP: \( b^2 = a(c + k) = a\bigl(\tfrac{2S}{3} - a + k\bigr) \). To je kvadratna jednačina po \( a \): \( a^2 - \bigl(\tfrac{2S}{3} + k\bigr) a + b^2 = 0 \), tj. \( 9a^2 - (6S + 9k)a + S^2 = 0 \). Diskriminanta: \( (6S + 9k)^2 - 36 S^2 = 36 \cdot 3 k S + 81 k^2 = 9k(12S + 9k) \). Za realna rešenja: \( k(12S + 9k) \geq 0 \). Za \( S = 10, k = 3 \): \( D = 9 \cdot 3 \cdot (120 + 27) = 27 \cdot 147 = 3969 \) ✓ &mdash; baš naša diskriminanta. Pomoću \( S \) i izabranog manjeg korena \( a \), izračunaš \( a^2 + b^2 + c^2 \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-bridge');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  // Number line in units of 1/3 from x=0 to x=9 (i.e. 0/3, 3/3, 6/3, 9/3, 12/3, 15/3, 18/3, 21/3, 24/3, 27/3)
+  // We will plot positions in /3 units. Visible range: 0 to 27/3 = 9.
+  var marginL = 70, marginR = 50;
+  var xMinF = 0, xMaxF = 9; // in real units
+  var plotW = canvas.width - marginL - marginR;
+  function xPix(v) { return marginL + (v - xMinF) / (xMaxF - xMinF) * plotW; }
+  var yLine = 280;
+  var yGPArrow = 130;  // upper arc apex (GP)
+  var yAPArrow = 400;  // lower arc apex (AP)
+
+  function drawArcArrow(x1, x2, baselineY, apexY, color, label, lineWidth) {
+    var mx = (x1 + x2) / 2;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = lineWidth;
+    ctx.beginPath();
+    ctx.moveTo(x1, baselineY);
+    ctx.quadraticCurveTo(mx, apexY, x2, baselineY);
+    ctx.stroke();
+
+    // Arrowhead at end
+    var tx = 2 * (x2 - mx);
+    var ty = 2 * (baselineY - apexY);
+    var len = Math.hypot(tx, ty) || 1;
+    tx /= len; ty /= len;
+    var headLen = 10;
+    var ax = x2, ay = baselineY;
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(ax, ay);
+    var leftX = ax - headLen * (tx * Math.cos(0.5) - ty * Math.sin(0.5));
+    var leftY = ay - headLen * (tx * Math.sin(0.5) + ty * Math.cos(0.5));
+    var rightX = ax - headLen * (tx * Math.cos(-0.5) - ty * Math.sin(-0.5));
+    var rightY = ay - headLen * (tx * Math.sin(-0.5) + ty * Math.cos(-0.5));
+    ctx.lineTo(leftX, leftY);
+    ctx.lineTo(rightX, rightY);
+    ctx.closePath();
+    ctx.fill();
+
+    if (label) {
+      ctx.fillStyle = color;
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      var labelY = (apexY < baselineY) ? apexY - 6 : apexY + 16;
+      ctx.fillText(label, mx, labelY);
+    }
+  }
+
+  function drawDot(x, y, color, radius) {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title and subtitle
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Most AP <-> GP: trojka (a, b, c) i pomak +3 na c', marginL, 28);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Dole: AP (sabiranje d = 2). Gore: GP (mnozenje q = 5/2), sa c + 3 = 25/3.', marginL, 48);
+
+    // Legend
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = cv('--sol-canvas-primary');
+    ctx.fillRect(marginL, 70, 18, 12);
+    ctx.fillStyle = text;
+    ctx.fillText('GP: a, b, c + 3   (q = 5/2)', marginL + 26, 80);
+    ctx.fillStyle = cv('--sol-canvas-accent');
+    ctx.fillRect(marginL + 280, 70, 18, 12);
+    ctx.fillStyle = text;
+    ctx.fillText('AP: a, b, c   (rastuca, d = 2)', marginL + 280 + 26, 80);
+
+    // Number line baseline
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(xPix(xMinF) - 10, yLine);
+    ctx.lineTo(xPix(xMaxF) + 10, yLine);
+    ctx.stroke();
+    // Arrow tip
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(xPix(xMaxF) + 10, yLine);
+    ctx.lineTo(xPix(xMaxF) + 2, yLine - 5);
+    ctx.lineTo(xPix(xMaxF) + 2, yLine + 5);
+    ctx.closePath();
+    ctx.fill();
+
+    // Tick marks at integers and 1/3 multiples (light grid)
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var k = 0; k <= 27; k++) {
+      var v = k / 3;
+      var x = xPix(v);
+      ctx.beginPath();
+      ctx.moveTo(x, yLine - 3);
+      ctx.lineTo(x, yLine + 3);
+      ctx.stroke();
+    }
+    // Labels at every integer
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var iv = 0; iv <= 9; iv++) {
+      ctx.fillText(String(iv), xPix(iv), yLine + 20);
+    }
+
+    // Important points: a = 4/3, b = 10/3, c = 16/3, c+3 = 25/3
+    var xA = xPix(4 / 3);
+    var xB = xPix(10 / 3);
+    var xC = xPix(16 / 3);
+    var xCplus3 = xPix(25 / 3);
+
+    // a, b, c are AP terms (accent green); b is shared with GP (highlight pink)
+    drawDot(xA, yLine, cv('--sol-canvas-accent'), 8);
+    drawDot(xB, yLine, cv('--sol-canvas-highlight'), 9); // shared
+    drawDot(xC, yLine, cv('--sol-canvas-accent'), 8);
+
+    // c + 3 is a GP terminal (primary blue, outlined to distinguish from AP cluster)
+    ctx.beginPath();
+    ctx.arc(xCplus3, yLine, 8, 0, Math.PI * 2);
+    ctx.fillStyle = bg;
+    ctx.fill();
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = cv('--sol-canvas-primary');
+    ctx.stroke();
+    // Inner dot
+    drawDot(xCplus3, yLine, cv('--sol-canvas-primary'), 4);
+
+    // Labels: bold, colored
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = cv('--sol-canvas-accent');
+    ctx.fillText('a = 4/3', xA, yLine - 14);
+    ctx.fillStyle = cv('--sol-canvas-highlight');
+    ctx.fillText('b = 10/3', xB, yLine - 14);
+    ctx.fillStyle = cv('--sol-canvas-accent');
+    ctx.fillText('c = 16/3', xC, yLine - 14);
+    ctx.fillStyle = cv('--sol-canvas-primary');
+    ctx.fillText('c + 3 = 25/3', xCplus3, yLine - 14);
+
+    // Dashed line showing the +3 shift from c to c+3
+    ctx.save();
+    ctx.setLineDash([4, 3]);
+    ctx.strokeStyle = cv('--sol-canvas-muted');
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(xC, yLine + 10);
+    ctx.lineTo(xCplus3, yLine + 10);
+    ctx.stroke();
+    ctx.restore();
+    ctx.fillStyle = cv('--sol-canvas-muted');
+    ctx.font = 'italic 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('pomak + 3 (= 9/3)', (xC + xCplus3) / 2, yLine + 35);
+
+    // Upper register: GP arrows (a -> b, b -> c+3), labeled "x 5/2"
+    drawArcArrow(xA, xB, yLine - 14, yGPArrow, cv('--sol-canvas-primary'), 'x 5/2', 2.5);
+    drawArcArrow(xB, xCplus3, yLine - 14, yGPArrow, cv('--sol-canvas-primary'), 'x 5/2', 2.5);
+
+    // Lower register: AP arrows (a -> b, b -> c), labeled "+2"
+    drawArcArrow(xA, xB, yLine + 14, yAPArrow, cv('--sol-canvas-accent'), '+ 2', 2.5);
+    drawArcArrow(xB, xC, yLine + 14, yAPArrow, cv('--sol-canvas-accent'), '+ 2', 2.5);
+
+    // Bottom annotations: key equations
+    ctx.fillStyle = text;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('2b = a + c   ⇔   20/3 = 4/3 + 16/3   ✓', canvas.width / 2 - 140, canvas.height - 14);
+    ctx.fillText('b^2 = a (c + 3)   ⇔   100/9 = (4/3)·(25/3)   ✓', canvas.width / 2 + 140, canvas.height - 14);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "AP i GP most: brojevi a, b, c u rastućoj AP i a, b, c+3 u GP, zbir 10",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["aritmetička progresija", "geometrijska progresija", "sistem jednačina", "kvadratna jednačina", "zbir kvadrata", "aritmetička sredina"]
+}
+BRAINSPARK_META-->

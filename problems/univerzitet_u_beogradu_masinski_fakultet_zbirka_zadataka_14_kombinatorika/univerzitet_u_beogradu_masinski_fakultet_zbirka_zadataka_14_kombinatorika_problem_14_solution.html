@@ -1,0 +1,438 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Zadatak: a > 0, n iz N. U razvoju (sqrt(a) + 1/cetvrti_koren(a))^n,
+  koeficijenti 3. i 4. clana se odnose kao 1:2. Odrediti srednji clan.
+
+  Opsti clan binoma (a+b)^n: T_{k+1} = C(n,k) * a^{n-k} * b^k, za k = 0, 1, ..., n.
+  Drugi clan T_2 ima k=1, treci T_3 ima k=2, cetvrti T_4 ima k=3.
+
+  Koeficijenti (binomni) trece i cetvrte:
+     C(n,2) i C(n,3).
+
+  Uslov: C(n,2) : C(n,3) = 1 : 2
+     C(n,2)/C(n,3) = 1/2
+     [n!/(2!(n-2)!)] / [n!/(3!(n-3)!)] = 1/2
+     = 3!(n-3)! / (2!(n-2)!) = 3/(n-2)
+     Pa 3/(n-2) = 1/2 → 2·3 = n-2 → n - 2 = 6 → n = 8.
+
+  Provera: C(8,2) = 28, C(8,3) = 56. Odnos 28:56 = 1:2. ✓
+
+  Srednji clan: n = 8 (parno), broj clanova n+1 = 9, srednji je 5. clan, k = 4.
+  Izraz: (a^(1/2))^(8-4) * (a^(-1/4))^4 = a^(4/2) * a^(-1) = a^2 / a = a.
+  Koeficijent: C(8,4) = 70.
+  T_5 = 70a.
+
+  Provera eksponenata:
+     sqrt(a) = a^(1/2). (a^(1/2))^4 = a^2.
+     1/(cetvrti_koren(a)) = a^(-1/4). (a^(-1/4))^4 = a^(-1).
+     Spajanje: a^2 · a^(-1) = a^(2-1) = a^1 = a. ✓
+
+  Odgovor: (A) 70a.
+
+  Vizualizacija: Paskalov trougao, isticati red n = 8 sa svim binomnim koeficijentima
+     1, 8, 28, 56, 70, 56, 28, 8, 1. Marker za C(8,2) i C(8,3) (uz odnos), i poseban
+     marker za sredinu C(8,4) = 70.
+     Staticki — kombinatorika.
+
+  Najcesce greske:
+   * Pobrkati broj clana sa indeksom k. (k+1 = broj clana).
+   * Kod sredine: n parno → srednji je clan na k = n/2 (ne k = (n-1)/2).
+   * Greska u eksponentima: zaboraviti minus iz 1/sqrt[4](a).
+   * Racunati T_4 umesto T_5 kao srednji za n=8.
+</script>
+
+<h1 data-card="problem-title">Binomni razvoj — odnos koeficijenata i srednji član</h1>
+<p data-card="problem-subtitle" class="subtitle">Binomna formula, opšti član razvoja i traženje srednjeg člana iz uslova o koeficijentima</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Neka su \( a > 0 \) i \( n \in \mathbb{N} \). Ako se koeficijenti trećeg i četvrtog člana u razvoju izraza \( \left(\sqrt{a} + \dfrac{1}{\sqrt[4]{a}}\right)^n \) odnose kao \( 1:2 \), onda je srednji član tog razvoja jednak:</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">prvi sabirak</span>
+      <span class="given-value">\( \sqrt{a} = a^{1/2} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">drugi sabirak</span>
+      <span class="given-value">\( \dfrac{1}{\sqrt[4]{a}} = a^{-1/4} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">uslov</span>
+      <span class="given-value">\( \dbinom{n}{2} : \dbinom{n}{3} = 1 : 2 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">traženo</span>
+      <span class="given-value">srednji član</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 70a \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 6a^{1/2} \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 924a^{3/2} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 20a^{3/4} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 252a^{5/4} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Iz uslova o odnosu trećeg i četvrtog binomnog koeficijenta pronaći ćemo \( n \). Onda, znajući da je \( n \) parno, srednji član je \( T_{n/2 + 1} \), pa primenjujemo opšti član binomnog razvoja i sredjujemo eksponente od \( a \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Binomna formula i opšti član</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Binomna teorema</span> \( (x + y)^n = \sum_{k=0}^{n} \binom{n}{k} x^{n-k} y^k \).</li>
+        <li><span class="formula-label">Opšti član</span> \( T_{k+1} = \binom{n}{k} x^{n-k} y^k \) za \( k = 0, 1, \ldots, n \). Prvi član je \( T_1 \) (k=0), treći \( T_3 \) (k=2), četvrti \( T_4 \) (k=3).</li>
+        <li><span class="formula-label">Binomni koeficijent</span> \( \binom{n}{k} = \dfrac{n!}{k!(n-k)!} \), simetrija: \( \binom{n}{k} = \binom{n}{n-k} \).</li>
+        <li><span class="formula-label">Srednji član</span> Za parno \( n \): razvoj ima \( n+1 \) članova, srednji je \( T_{n/2 + 1} \) (jer indeks ide \( k = n/2 \)).</li>
+        <li>Korisno: \( \dfrac{\binom{n}{k}}{\binom{n}{k-1}} = \dfrac{n-k+1}{k} \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="760" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Paskalov trougao do reda \( n = 8 \). Istaknuti su \( \binom{8}{2}=28 \) i \( \binom{8}{3}=56 \) (njihov odnos \( 1:2 \)) i sredina reda \( \binom{8}{4}=70 \), koja je binomni koeficijent srednjeg člana \( T_5 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Opšti član razvoja</h3>
+      <p>Primenjujemo binomnu formulu sa \( x = \sqrt{a} = a^{1/2} \) i \( y = \dfrac{1}{\sqrt[4]{a}} = a^{-1/4} \).</p>
+      <div class="math-block">\[ T_{k+1} = \binom{n}{k}\, (a^{1/2})^{\,n-k}\, (a^{-1/4})^{\,k} = \binom{n}{k}\, a^{\,(n-k)/2 \;-\; k/4}. \]</div>
+      <p>Treći član odgovara \( k = 2 \), četvrti \( k = 3 \). Njihovi <em>binomni</em> koeficijenti su \( \binom{n}{2} \) i \( \binom{n}{3} \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavi uslov o odnosu \( 1:2 \)</h3>
+      <p>Iz uslova \( \dbinom{n}{2} : \dbinom{n}{3} = 1 : 2 \) imamo:</p>
+      <div class="math-block">\[ \frac{\binom{n}{2}}{\binom{n}{3}} = \frac{1}{2}. \]</div>
+      <p>Iskoristimo poznatu relaciju \( \dfrac{\binom{n}{k}}{\binom{n}{k+1}} = \dfrac{k+1}{n-k} \), gde uzimamo \( k=2 \):</p>
+      <div class="math-block">\[ \frac{\binom{n}{2}}{\binom{n}{3}} = \frac{3}{n-2}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: odakle dolazi razlomak \( \dfrac{3}{n-2} \)?</summary>
+          <div class="detail-content"><p>Razvijemo: \( \dfrac{n!/(2!(n-2)!)}{n!/(3!(n-3)!)} = \dfrac{3!(n-3)!}{2!(n-2)!} = \dfrac{3}{n-2} \), jer je \( 3!/2! = 3 \) i \( (n-3)!/(n-2)! = 1/(n-2) \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Reši po \( n \)</h3>
+      <p>Sad imamo jednostavnu jednačinu:</p>
+      <div class="math-block">\[ \frac{3}{n-2} = \frac{1}{2} \;\;\Longrightarrow\;\; n - 2 = 6 \;\;\Longrightarrow\;\; \boxed{n = 8}. \]</div>
+      <p>Brza provera: \( \binom{8}{2} = 28 \), \( \binom{8}{3} = 56 \). Odnos \( 28 : 56 = 1 : 2 \). ✓</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Identifikuj srednji član</h3>
+      <p>Za \( n = 8 \) razvoj ima \( n + 1 = 9 \) članova. Srednji (peti) je \( T_5 \), koji odgovara \( k = 4 \) (jer je \( T_{k+1} \) sa \( k = n/2 = 4 \)).</p>
+      <div class="math-block">\[ T_5 = \binom{8}{4}\, a^{\,(8-4)/2 \;-\; 4/4} = \binom{8}{4}\, a^{\,2 - 1} = \binom{8}{4}\, a. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunaj \( \binom{8}{4} \)</h3>
+      <p>Po definiciji binomnog koeficijenta:</p>
+      <div class="math-block">\[ \binom{8}{4} = \frac{8!}{4!\,4!} = \frac{8 \cdot 7 \cdot 6 \cdot 5}{4 \cdot 3 \cdot 2 \cdot 1} = \frac{1680}{24} = 70. \]</div>
+      <p>Dakle srednji član je <span class="result">\( T_5 = 70\, a \)</span>.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš \( T_5 \), a ne \( T_4 \) ili \( T_6 \)?</summary>
+          <div class="detail-content"><p>Razvoj ima 9 članova: \( T_1, T_2, \ldots, T_9 \). Tačno u sredini je peti — sa po četiri sa svake strane. Drugačije: srednji indeks je \( (1+9)/2 = 5 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Uzastopni binomni koeficijenti se odnose vrlo prosto: \( \dfrac{\binom{n}{k+1}}{\binom{n}{k}} = \dfrac{n-k}{k+1} \). Tek što napišeš taj &bdquo;link&ldquo;, uslov o odnosu se pretvara u jednostavnu linearnu jednačinu po \( n \). Nije potrebno razvijati pun \( n! \) izraz.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ T_5 = \binom{8}{4}\, a = 70\, a. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 70a \)</span>
+    <span class="answer-option" data-option="B">(B) \( 6a^{1/2} \)</span>
+    <span class="answer-option" data-option="C">(C) \( 924a^{3/2} \)</span>
+    <span class="answer-option" data-option="D">(D) \( 20a^{3/4} \)</span>
+    <span class="answer-option" data-option="E">(E) \( 252a^{5/4} \)</span>
+  </div>
+  <p class="verification">Provera eksponenta: \( (a^{1/2})^4 \cdot (a^{-1/4})^4 = a^{2} \cdot a^{-1} = a^{1} = a \). Provera koeficijenta: \( \binom{8}{4} = 70 \). Odnos je potvrđen: \( \binom{8}{2}:\binom{8}{3} = 28:56 = 1:2 \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pobrkati &bdquo;broj člana&ldquo; sa indeksom \( k \). \( T_3 \) ima \( k = 2 \), \( T_4 \) ima \( k = 3 \) (jer \( T_{k+1} \)).</li>
+    <li>Za \( n = 8 \) (parno) srednji član je \( T_5 \) (sa \( k = n/2 = 4 \)). Ne \( T_4 \) i ne \( T_{4{,}5} \).</li>
+    <li>Zaboraviti minus u eksponentu kada se \( \dfrac{1}{\sqrt[4]{a}} \) prepiše kao \( a^{-1/4} \).</li>
+    <li>Pomešati \( \binom{n}{2}:\binom{n}{3} \) sa \( \binom{n}{3}:\binom{n}{2} \) — uslov je \( 1:2 \), pa \( \binom{n}{2} \) je <em>manji</em>, što ima smisla (manji binomni koeficijent kod ivice trougla, na kraju \( n = 8 \)).</li>
+    <li>Pokušati &bdquo;da svi članovi imaju isti eksponent&ldquo; — to nije ono što se traži; traži se konkretan srednji član.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>U istom razvoju \( \left(\sqrt{a} + \dfrac{1}{\sqrt[4]{a}}\right)^{8} \), odredi član koji <em>ne sadrži</em> \( a \) (slobodan član), ako on uopšte postoji.</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Postavi eksponent od \( a \) na nulu: \( \dfrac{8-k}{2} - \dfrac{k}{4} = 0 \Rightarrow 2(8-k) = k \Rightarrow k = \dfrac{16}{3} \). Pošto \( k \) nije ceo broj, slobodan član <em>ne postoji</em> u ovom razvoju. Razvoj ima samo članove \( a^{2 - 3k/4} \) za \( k = 0, 1, \ldots, 8 \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function binomial(n, k) {
+    if (k < 0 || k > n) return 0;
+    var r = 1;
+    for (var i = 0; i < k; i++) r = r * (n - i) / (i + 1);
+    return Math.round(r);
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var W = canvas.width;
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 17px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Paskalov trougao do reda n = 8', W/2, 16);
+
+    // Pascal's triangle: rows 0 .. 8
+    var rows = 9;
+    var topY = 60;
+    var rowH = 36;
+    var cellW = 56;
+
+    for (var r = 0; r < rows; r++) {
+      var count = r + 1;
+      var rowWidth = count * cellW;
+      var startX = (W - rowWidth) / 2;
+      var y = topY + r * rowH;
+      for (var k = 0; k <= r; k++) {
+        var x = startX + k * cellW + cellW/2;
+        var val = binomial(r, k);
+
+        var isLastRow = (r === 8);
+        var isHighlight2 = (r === 8 && k === 2);
+        var isHighlight3 = (r === 8 && k === 3);
+        var isMid = (r === 8 && k === 4);
+        var isLastRowOther = (r === 8 && !isHighlight2 && !isHighlight3 && !isMid);
+
+        // Draw circle / chip
+        var radius = 17;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        if (isHighlight2 || isHighlight3) {
+          ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.30);
+          ctx.strokeStyle = warning;
+          ctx.lineWidth = 2.5;
+        } else if (isMid) {
+          ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.30);
+          ctx.strokeStyle = accent;
+          ctx.lineWidth = 3;
+        } else if (isLastRowOther) {
+          ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.12);
+          ctx.strokeStyle = primary;
+          ctx.lineWidth = 1.5;
+        } else {
+          ctx.fillStyle = cvAlpha('--sol-canvas-muted', 0.08);
+          ctx.strokeStyle = muted;
+          ctx.lineWidth = 1;
+        }
+        ctx.fill();
+        ctx.stroke();
+
+        // Value text
+        if (isHighlight2 || isHighlight3 || isMid) {
+          ctx.fillStyle = text;
+          ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+        } else if (isLastRowOther) {
+          ctx.fillStyle = text;
+          ctx.font = '13px Inter, system-ui, sans-serif';
+        } else {
+          ctx.fillStyle = muted;
+          ctx.font = '12px Inter, system-ui, sans-serif';
+        }
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(String(val), x, y);
+      }
+
+      // Row label on the left
+      ctx.fillStyle = muted;
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('n=' + r, (W - rowWidth) / 2 - 12, y);
+    }
+
+    // Annotations for row n=8
+    var row8Y = topY + 8 * rowH;
+    var row8Width = 9 * cellW;
+    var row8StartX = (W - row8Width) / 2;
+
+    function arrowFromTextToCircle(textX, textY, circX, circY, color) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(textX, textY);
+      ctx.lineTo(circX, circY);
+      ctx.stroke();
+      // arrow head
+      var dx = circX - textX, dy = circY - textY;
+      var len = Math.hypot(dx, dy);
+      var ux = dx / len, uy = dy / len;
+      var hx = circX - ux * 22;
+      var hy = circY - uy * 22;
+      var px = -uy, py = ux;
+      ctx.beginPath();
+      ctx.moveTo(hx + px*5, hy + py*5);
+      ctx.lineTo(circX - ux*15, circY - uy*15);
+      ctx.lineTo(hx - px*5, hy - py*5);
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.fill();
+    }
+
+    // C(8,2) marker — 28
+    var c82x = row8StartX + 2 * cellW + cellW/2;
+    // C(8,3) marker — 56
+    var c83x = row8StartX + 3 * cellW + cellW/2;
+    // C(8,4) marker — 70 (middle)
+    var c84x = row8StartX + 4 * cellW + cellW/2;
+
+    // Annotation labels below the triangle
+    var annY = row8Y + 56;
+
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('C(8,2) = 28', 40, annY);
+    ctx.fillText('C(8,3) = 56', 40, annY + 22);
+    ctx.fillStyle = text;
+    ctx.fillText('odnos 28 : 56 = 1 : 2 ✓', 40, annY + 44);
+
+    arrowFromTextToCircle(170, annY, c82x, row8Y + 17, warning);
+    arrowFromTextToCircle(170, annY + 22, c83x, row8Y + 17, warning);
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('SREDNJI ČLAN', W - 40, annY);
+    ctx.fillText('C(8,4) = 70', W - 40, annY + 22);
+    ctx.fillStyle = text;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillText('T₅ = 70 · a', W - 40, annY + 44);
+
+    arrowFromTextToCircle(W - 200, annY, c84x, row8Y + 17, accent);
+
+    // Bottom formula
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('(√a + 1/⁴√a)⁸  →  T₅ = C(8,4) · a² · a⁻¹ = 70 a', W/2, canvas.height - 14);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Binomni razvoj: odnos koeficijenata i srednji član",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["binomna formula", "binomni koeficijenti", "Paskalov trougao", "opšti član", "srednji član"]
+}
+BRAINSPARK_META-->

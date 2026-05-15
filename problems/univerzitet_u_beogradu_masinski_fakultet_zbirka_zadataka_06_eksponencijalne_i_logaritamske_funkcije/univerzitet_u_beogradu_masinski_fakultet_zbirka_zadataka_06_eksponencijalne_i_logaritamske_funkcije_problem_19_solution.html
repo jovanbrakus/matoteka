@@ -1,0 +1,469 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Zadatak: koliko ima celih brojeva u intervalu [-6, 8] koji zadovoljavaju
+|x - 3|^(2x^2 - 7x) >= 1.
+
+Označimo a = |x - 3| (baza) i E = 2x^2 - 7x (eksponent).
+Pitanje je: kada važi a^E >= 1?
+
+Razlika slučajeva po bazi a >= 0:
+(i)  a = 0 (tj. x = 3): 0^E definisano je samo za E > 0 i tada je 0. 0 nije >= 1.
+     Takođe E = 2*9 - 21 = -3, pa je 0^(-3) nedefinisano. NE prolazi.
+(ii) a = 1 (tj. |x-3| = 1, x = 2 ili x = 4): 1^E = 1 >= 1 uvek. PROLAZI.
+(iii) a > 1 (|x - 3| > 1, tj. x < 2 ili x > 4):
+      a^E >= 1  <=> E >= 0 (jer log_a strogo raste za a > 1).
+      E = 2x^2 - 7x = x(2x - 7) >= 0  <=> x <= 0 ili x >= 7/2.
+      U [-6,8] s x < 2: x in {-6,-5,-4,-3,-2,-1,0} = 7 celih.
+      (x = 1: E = 2 - 7 = -5 < 0, ne prolazi. Provera direktno: |1-3|^(-5) = 2^(-5) = 1/32 < 1.)
+      U [-6,8] s x > 4: x in {5,6,7,8} = 4 cela. (Svi imaju x >= 7/2 = 3,5, pa E > 0.)
+(iv) 0 < a < 1 (|x - 3| < 1, tj. 2 < x < 4, x != 3):
+      a^E >= 1  <=> E <= 0 (eksp. opadajuca po E za 0 < a < 1).
+      U otvorenom intervalu (2, 4) s celim brojevima, samo x = 3, koji je već isključen.
+      Nema novih celih.
+
+Ukupno: 7 (x <= 0) + 4 (x >= 5) + 2 (x = 2, x = 4) + 0 (x = 3 ne prolazi) = 13.
+
+Tačan odgovor: (C) 13.
+
+Provera nekoliko vrednosti:
+  x = -6: |x-3| = 9, E = 72 + 42 = 114. 9^114 ogromno, >> 1. ✓
+  x = 0:  |x-3| = 3, E = 0. 3^0 = 1 >= 1. ✓
+  x = 1:  |x-3| = 2, E = -5. 2^(-5) = 1/32. NE >= 1. ✗
+  x = 2:  |x-3| = 1, E = -6. 1^(-6) = 1. ✓
+  x = 3:  |x-3| = 0, E = -3. 0^(-3) NEDEFINISANO. ✗
+  x = 4:  |x-3| = 1, E = -4. 1^(-4) = 1. ✓
+  x = 5:  |x-3| = 2, E = 15. 2^15 = 32768. ✓
+  x = 8:  |x-3| = 5, E = 72. 5^72 ogromno. ✓
+
+Spisak rešenja: {-6,-5,-4,-3,-2,-1, 0, 2, 4, 5, 6, 7, 8}. Brojanje: 7 + 2 + 4 = 13.
+</script>
+
+<h1 data-card="problem-title">Brojanje celih rešenja nejednačine s parametarskim eksponentom</h1>
+<p data-card="problem-subtitle" class="subtitle">Eksponencijalne nejednačine sa promenljivom bazom — slučajeva analiza</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Koliko ima celih brojeva u intervalu \( [-6,\, 8] \) koji zadovoljavaju nejednačinu</p>
+  <div class="math-block">\[ |x-3|^{\,2x^2 - 7x} \;\geq\; 1\;? \]</div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 12 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 15 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 13 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 14 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 11 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Pošto je baza \( a = |x-3| \) <em>promenljiva</em> i može biti veća, manja ili jednaka 1, ne smemo „logaritmovati" bez razmišljanja. Razdvojimo slučajeve prema bazi: \( a > 1 \), \( a = 1 \), \( 0 < a < 1 \), \( a = 0 \). U svakom slučaju zaključimo kada je \( a^{E} \geq 1 \), gde je \( E = 2x^2 - 7x \), a onda prebrojimo cele brojeve u \( [-6, 8] \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Kada je \( a^E \geq 1 \)?</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Baza \(>1\)</span> \( a^E \geq 1 \iff E \geq 0 \). Funkcija \( t \mapsto a^t \) je <em>rastuća</em>, pa je \( \geq a^0 = 1 \) tačno onda kad je \( E \geq 0 \).</li>
+        <li><span class="formula-label">Baza \(=1\)</span> \( 1^E = 1 \) za sve realne \( E \). Uvek je \( \geq 1 \).</li>
+        <li><span class="formula-label">Baza u \((0,1)\)</span> \( a^E \geq 1 \iff E \leq 0 \). Funkcija je <em>opadajuća</em>: smer nejednakosti se okreće.</li>
+        <li><span class="formula-label">Baza \(=0\)</span> \( 0^E \) definisano je samo za \( E > 0 \) (i tada je \( 0 \)). U svakom slučaju nije \( \geq 1 \).</li>
+        <li><span class="formula-label">Apsolutna vrednost</span> \( |x-3| = 1 \iff x = 2 \) ili \( x = 4 \); \( |x-3| < 1 \iff 2 < x < 4 \); \( |x-3| > 1 \iff x < 2 \) ili \( x > 4 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz: prebrojavanje rešenja na pravoj">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram19" width="780" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Gore: znak eksponenta \( E(x) = 2x^2 - 7x \) i tri zone baze \( |x-3| \) (\( <1 \), \(=1\), \(>1\)). Dole: brojevna prava \( [-6, 8] \) s celim brojevima — zeleno su rešenja, crveno su odbacivanja, sa kratkim razlogom za svaki. Ukupno: <strong>13</strong> zelenih.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Uvedimo baze i eksponent</h3>
+      <p>Postavimo \( a = |x-3| \geq 0 \) i \( E = 2x^2 - 7x \). Tražimo: kada je \( a^E \geq 1 \)?</p>
+      <p>Kritične granice baze su \( a = 0 \) i \( a = 1 \), pa razlikujemo četiri slučaja po vrednosti \( x \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto se ne smemo „odmah logaritmovati" levu stranu?</summary>
+          <div class="detail-content"><p>Logaritmovanje \( a^E \geq 1 \) sa \( \log_a \) zahteva da bazu \( a \) znamo: ako je \( a > 1 \) smer ostaje, ako je \( a \in (0,1) \) smer se okreće, a ako je \( a = 1 \) deljenje sa \( \log a = 0 \) nije dozvoljeno. Zato razdvajamo slučajeve.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj \( a = 1 \) — uvek prolazi</h3>
+      <p>\( |x-3| = 1 \iff x = 2 \) ili \( x = 4 \). Tada je \( 1^E = 1 \geq 1 \) za bilo koje \( E \). Dakle:</p>
+      <div class="math-block">\[ x = 2,\; x = 4 \quad \Rightarrow \quad \text{rešenja.} \]</div>
+      <p>Doprinos: <span class="result">2 cela broja</span>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj \( a = 0 \) — otpada</h3>
+      <p>\( |x-3| = 0 \iff x = 3 \). Tada je \( E = 2\cdot 9 - 21 = -3 \), pa je izraz \( 0^{-3} \) <em>nedefinisan</em>. Ako bismo se ograničili na \( 0^E \) za \( E > 0 \), vrednost je \( 0 \), takođe \( < 1 \).</p>
+      <p>U svakom slučaju, \( x = 3 \) nije rešenje.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj \( a > 1 \): potreban je \( E \geq 0 \)</h3>
+      <p>\( |x-3| > 1 \iff x < 2 \) ili \( x > 4 \). U tom slučaju \( a^E \geq 1 \iff E \geq 0 \). Rešimo:</p>
+      <div class="math-block">\[ E = 2x^2 - 7x = x(2x-7) \geq 0 \;\Longleftrightarrow\; x \leq 0 \;\text{ili}\; x \geq \tfrac{7}{2}. \]</div>
+      <p>Preseci sa „bazom \(>1\)" delom:</p>
+      <ul>
+        <li>\( x < 2 \) i \( x \leq 0 \): \( x \leq 0 \). U \( [-6,8] \): \( \{-6,-5,-4,-3,-2,-1,0\} \) — <span class="result">7 celih</span>.</li>
+        <li>\( x > 4 \) i \( x \geq 7/2 \): \( x > 4 \). Celi u \( [-6,8] \): \( \{5,6,7,8\} \) — <span class="result">4 cela</span>.</li>
+      </ul>
+      <p>Doprinos slučaja: <strong>11 celih brojeva</strong>.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto \( x = 1 \) nije rešenje, iako je \( a = 2 > 1 \)?</summary>
+          <div class="detail-content"><p>Za \( x = 1 \): \( E = 2 - 7 = -5 \). Pošto je baza \(>1\), nejednakost \( a^E \geq 1 \) zahteva \( E \geq 0 \). Ovde je \( E = -5 < 0 \), pa je \( 2^{-5} = 1/32 < 1 \). Ne prolazi.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Slučaj \( 0 < a < 1 \): potreban je \( E \leq 0 \)</h3>
+      <p>\( 0 < |x-3| < 1 \iff 2 < x < 4 \;\wedge\; x \neq 3 \). U <em>otvorenom</em> intervalu \( (2,4) \) jedini je celi broj \( x = 3 \), a on je već isključen (slučaj \( a = 0 \) tek u širem smislu — ovde \( x = 3 \) daje \( a = 0 \), van ovog podslučaja).</p>
+      <p>Ovaj slučaj <em>ne donosi nove cele brojeve</em>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Sumiranje</h3>
+      <p>Sva rešenja u \( [-6, 8] \cap \mathbb{Z} \):</p>
+      <div class="math-block">\[ \{-6,-5,-4,-3,-2,-1,\,0\} \;\cup\; \{2,\,4\} \;\cup\; \{5,\,6,\,7,\,8\}. \]</div>
+      <p>Brojanje: \( 7 + 2 + 4 = \) <span class="result">\( 13 \)</span>.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koja dva cela broja u \( [-6,8] \) <em>najlakše</em> previdimo?</summary>
+          <div class="detail-content"><p>\( x = 2 \) i \( x = 4 \). Često se pomisli „baza \(=1\), eksponent negativan, znak \( \geq \)" pa se po inerciji odbacuju — ali \( 1 \) na bilo koju stepenu ostaje \( 1 \). Drugi tipičan promašaj je \( x = 0 \), gde \( E = 0 \) i \( 3^0 = 1 \): tačno na granici, prolazi zbog znaka \( \geq \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kad eksponencijalna nejednačina ima <em>promenljivu bazu</em>, pravilo „smer zadržati / okrenuti" mora se primeniti na svaku zonu baze posebno: \( (0,1) \), \( \{1\} \), \( (1,\infty) \), pa i izolovanu tačku \( \{0\} \). Granične tačke \( a = 1 \) i \( a = 0 \) treba pažljivo proveriti — često su one „besplatna" ili „opaka" rešenja.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \text{Broj celih rešenja} = 13. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 12 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 15 \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( 13 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 14 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 11 \)</span>
+  </div>
+  <p class="verification">Provera direktnim uvrštavanjem: \( x = -6 \) daje \( 9^{114} \gg 1 \) ✓; \( x = 0 \) daje \( 3^0 = 1 \) ✓; \( x = 2 \) daje \( 1^{-6} = 1 \) ✓; \( x = 1 \) daje \( 2^{-5} = 1/32 < 1 \) ✗. Skup \( \{-6,\dots,0,2,4,5,\dots,8\} \) ima \( 7 + 2 + 4 = 13 \) elemenata.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>„Logaritmovati" obe strane bez razmatranja baze — kada je \( |x-3| < 1 \), smer nejednakosti se okreće, što se često zaboravlja.</li>
+    <li>Zaboraviti slučaj \( |x-3| = 1 \) (tj. \( x = 2 \) i \( x = 4 \)). Pošto je \( 1^E = 1 \), oni <em>uvek</em> ispunjavaju \( \geq 1 \), bez obzira na eksponent.</li>
+    <li>Uključiti \( x = 3 \) jer je \( |x-3| = 0 \): \( 0^E \) je nedefinisano za \( E \leq 0 \), a u našem slučaju \( E(3) = -3 \).</li>
+    <li>Brojati cele brojeve <em>strogo</em> u intervalu, zaboravljajući krajnje tačke: \( -6 \) i \( 8 \) su uključeni jer je interval zatvoren.</li>
+    <li>Pogrešno rešiti \( x(2x-7) \geq 0 \) — rešenje je \( x \leq 0 \) ili \( x \geq 7/2 \), a ne \( 0 \leq x \leq 7/2 \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Kako se odgovor menja ako u istoj nejednačini znak <em>okrenemo</em> u strogu nejednakost \( |x-3|^{\,2x^2-7x} > 1 \)? Koje cele brojeve iz prethodnog spiska treba izbaciti?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>„Stroga" tačnost zahteva \( a \neq 1 \) ili \( E \neq 0 \) (jer je \( a^0 = 1 \) i \( 1^E = 1 \)). Izbacujemo: \( x = 2 \) i \( x = 4 \) (baza \(=1\)) i \( x = 0 \) (jer je \( E(0) = 0 \), pa je \( 3^0 = 1 \), tačno na granici). Ostaje \( 13 - 3 = 10 \) celih brojeva.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram19');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var danger = cv('--sol-canvas-danger');
+    var warning = cv('--sol-canvas-warning');
+
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // ── TOP HALF: E(x) and zones of |x-3| ──
+    ctx.font = 'bold 16px Inter, system-ui';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.fillText('E(x) = 2x² − 7x  i  zone baze |x − 3|', W/2, 24);
+
+    var padL = 56, padR = 28, padT = 44;
+    var plotW = W - padL - padR;
+    var plotH = 220;
+    var plotX = padL, plotY = padT;
+
+    var xMin = -6.5, xMax = 8.5;
+    var yMin = -12, yMax = 100;
+
+    function tx(x) { return plotX + (x - xMin) / (xMax - xMin) * plotW; }
+    function ty(y) { return plotY + plotH - (y - yMin) / (yMax - yMin) * plotH; }
+
+    // Background zones for base |x-3|
+    // |x-3| > 1: x < 2 or x > 4  (highlight green-ish: accent)
+    // |x-3| = 1: x = 2 or x = 4  (lines)
+    // |x-3| < 1: 2 < x < 4       (warning)
+    ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.16);
+    ctx.fillRect(tx(2), plotY, tx(4) - tx(2), plotH);
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var gx = -6; gx <= 8; gx++) {
+      ctx.beginPath();
+      ctx.moveTo(tx(gx), plotY);
+      ctx.lineTo(tx(gx), plotY + plotH);
+      ctx.stroke();
+    }
+    for (var gy = 0; gy <= 100; gy += 20) {
+      ctx.beginPath();
+      ctx.moveTo(plotX, ty(gy));
+      ctx.lineTo(plotX + plotW, ty(gy));
+      ctx.stroke();
+    }
+
+    // Axis
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(plotX, ty(0)); ctx.lineTo(plotX + plotW, ty(0)); ctx.stroke();
+
+    // Vertical markers at x=2 and x=4 (boundary |x-3|=1)
+    ctx.strokeStyle = warning;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath(); ctx.moveTo(tx(2), plotY); ctx.lineTo(tx(2), plotY + plotH); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(tx(4), plotY); ctx.lineTo(tx(4), plotY + plotH); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Mark zeros of E: x=0 and x=7/2
+    ctx.strokeStyle = highlight;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath(); ctx.moveTo(tx(0), plotY); ctx.lineTo(tx(0), plotY + plotH); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(tx(3.5), plotY); ctx.lineTo(tx(3.5), plotY + plotH); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Plot E(x)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    var first = true;
+    for (var i = 0; i <= 400; i++) {
+      var x = xMin + (xMax - xMin) * i / 400;
+      var y = 2*x*x - 7*x;
+      if (y < yMin - 2 || y > yMax + 2) { first = true; continue; }
+      var cx = tx(x), cy = ty(y);
+      if (first) { ctx.moveTo(cx, cy); first = false; } else ctx.lineTo(cx, cy);
+    }
+    ctx.stroke();
+
+    // Axis labels
+    ctx.font = '11px Inter, system-ui';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'center';
+    for (var ix = -6; ix <= 8; ix++) {
+      if (ix === 0) continue;
+      ctx.fillText(String(ix), tx(ix), ty(0) + 14);
+    }
+    ctx.textAlign = 'right';
+    for (var iy = 0; iy <= 100; iy += 20) {
+      if (iy === 0) continue;
+      ctx.fillText(String(iy), tx(0) - 5, ty(iy) + 4);
+    }
+
+    // Labels for zero crossings
+    ctx.font = 'bold 11px Inter, system-ui';
+    ctx.fillStyle = highlight;
+    ctx.textAlign = 'center';
+    ctx.fillText('E=0', tx(0), plotY - 4);
+    ctx.fillText('E=0', tx(3.5), plotY - 4);
+
+    ctx.fillStyle = warning;
+    ctx.fillText('|x−3|=1', tx(2), plotY + plotH + 28);
+    ctx.fillText('|x−3|=1', tx(4), plotY + plotH + 28);
+
+    // E(x) label on curve
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.fillStyle = primary;
+    ctx.textAlign = 'left';
+    ctx.fillText('E(x) = 2x² − 7x', tx(-5.5), ty(75));
+
+    // Legend strip
+    var lgY = plotY + plotH + 46;
+    ctx.font = '12px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.45);
+    ctx.fillRect(plotX + 6, lgY - 9, 14, 12);
+    ctx.fillStyle = text;
+    ctx.fillText('Zona |x−3| < 1 (2 < x < 4): nema celih brojeva (sem 3, koji otpada)', plotX + 26, lgY);
+
+    // ── BOTTOM HALF: number line of integer x in [-6, 8] ──
+    var lineY = H - 110;
+    ctx.font = 'bold 15px Inter, system-ui';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.fillText('Celi brojevi u [−6, 8]: rešenja (✓) protiv odbačenih (✗)', W/2, lineY - 36);
+
+    // Draw the number line
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(tx(-6.5), lineY);
+    ctx.lineTo(tx(8.5), lineY);
+    ctx.stroke();
+
+    // For each integer, plot a marker
+    // Solutions: -6..0, 2, 4, 5..8 (13 total)
+    // Rejected: 1 (E<0, base>1), 3 (base=0)
+    var integers = [-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8];
+    var status = {
+      '-6':'ok','-5':'ok','-4':'ok','-3':'ok','-2':'ok','-1':'ok','0':'ok',
+      '1':'rej', '2':'ok', '3':'rej', '4':'ok',
+      '5':'ok','6':'ok','7':'ok','8':'ok'
+    };
+    for (var k = 0; k < integers.length; k++) {
+      var xi = integers[k];
+      var px = tx(xi);
+      var s = status[String(xi)];
+      var color = (s === 'ok') ? accent : danger;
+      // Glow
+      ctx.beginPath();
+      ctx.arc(px, lineY, 11, 0, Math.PI * 2);
+      ctx.fillStyle = cvAlpha((s === 'ok') ? '--sol-canvas-accent' : '--sol-canvas-danger', 0.22);
+      ctx.fill();
+      // Solid dot
+      ctx.beginPath();
+      ctx.arc(px, lineY, 6, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+      // Label number above
+      ctx.font = 'bold 12px Inter, system-ui';
+      ctx.fillStyle = text;
+      ctx.textAlign = 'center';
+      ctx.fillText(String(xi), px, lineY - 16);
+      // Tick mark
+      ctx.strokeStyle = muted;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(px, lineY - 4);
+      ctx.lineTo(px, lineY + 4);
+      ctx.stroke();
+      // Check/cross below
+      ctx.font = 'bold 14px Inter, system-ui';
+      ctx.fillStyle = color;
+      ctx.fillText((s === 'ok') ? '✓' : '✗', px, lineY + 26);
+    }
+
+    // Reason annotations under specific points
+    ctx.font = '10.5px Inter, system-ui';
+    ctx.fillStyle = danger;
+    ctx.textAlign = 'center';
+    ctx.fillText('E<0, baza>1', tx(1), lineY + 44);
+    ctx.fillText('baza=0', tx(3), lineY + 44);
+
+    // Counts box
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.fillStyle = accent;
+    ctx.textAlign = 'left';
+    ctx.fillText('Rešenja: 7 (x≤0) + 2 (x∈{2,4}) + 4 (x≥5) = 13', plotX + 6, H - 18);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Brojanje celih rešenja nejednačine |x−3|^(2x²−7x) ≥ 1",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["eksponencijalne nejednačine", "apsolutna vrednost", "promenljiva baza", "prebrojavanje celih brojeva"]
+}
+BRAINSPARK_META-->

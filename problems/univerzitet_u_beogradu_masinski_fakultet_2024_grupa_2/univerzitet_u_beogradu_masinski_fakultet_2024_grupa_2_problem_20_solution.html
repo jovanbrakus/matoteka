@@ -1,0 +1,613 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Zadatak: Na koliko načina se može formirati petočlana komisija od 2 matematičara i 8 inženjera
+tako da u njoj bude bar jedan matematičar?
+
+Postavka:
+  Ukupno ljudi: 2 + 8 = 10.
+  Komisija: 5 članova, izabranih bez ponavljanja, redosled nebitan (komisija je skup).
+  Uslov: bar 1 matematičar (znači 1 ili 2 matematičara, jer ih ukupno ima 2).
+
+Pristup 1 — komplementarna metoda:
+  Broj svih komisija (bez ograničenja) − broj komisija BEZ matematičara.
+  Sve: C(10,5) = 10!/(5!·5!) = 252.
+  Bez matematičara (svih 5 iz 8 inženjera): C(8,5) = 8!/(5!·3!) = 56.
+  Sa bar 1 matematičarem: 252 − 56 = 196.
+
+Pristup 2 — direktna metoda (slučajevi):
+  Slučaj A: tačno 1 matematičar + 4 inženjera.
+    C(2,1) · C(8,4) = 2 · 70 = 140.
+  Slučaj B: oba matematičara (tj. 2) + 3 inženjera.
+    C(2,2) · C(8,3) = 1 · 56 = 56.
+  Ukupno: 140 + 56 = 196. ✓
+
+Tačan odgovor: (E) 196.
+
+Provera C(10,5):
+  C(10,5) = (10·9·8·7·6)/(5·4·3·2·1) = 30240/120 = 252. ✓
+Provera C(8,5):
+  C(8,5) = C(8,3) = (8·7·6)/(3·2·1) = 336/6 = 56. ✓
+Provera C(8,4):
+  C(8,4) = (8·7·6·5)/(4·3·2·1) = 1680/24 = 70. ✓
+Provera C(8,3):
+  C(8,3) = (8·7·6)/(3·2·1) = 56. ✓
+
+Zašto komplementarna metoda dobro radi:
+  "Bar 1 matematičar" je komplement "Nijedan matematičar". Direktna podela je takođe jednostavna
+  jer je broj matematičara mali (samo 2), pa je broj slučajeva (1 ili 2) mali.
+
+Pedagogija:
+  - Definicija binomnog koeficijenta i njegovo značenje (broj k-podskupova n-skupa).
+  - Komplementarno brojanje kao stalni "trik" kad je "bar jedan" lakše negirati.
+  - Pravilo proizvoda × pravilo zbira: za nezavisne izbore × kombinujemo, za isključujuće slučajeve +.
+  - Provera: dvostruki put istih rezultata.
+
+Vizuelizacija:
+  Statička, Vennov-stilski prikaz:
+    Levo "matematičari" {M1, M2}, desno "inženjeri" {I1..I8}.
+    Komisija = peteročlani podskup. Različite konfiguracije:
+      (0+5) — zabranjeno
+      (1+4)
+      (2+3)
+    Bar šematski prikaz tabele sa brojevima:
+      Slučaj   | matematičari | inženjeri | C(2,k)·C(8,5-k) | broj
+      A (k=0)  | C(2,0)=1     | C(8,5)=56 | 1·56            | 56   ← izuzeto
+      B (k=1)  | C(2,1)=2     | C(8,4)=70 | 2·70            | 140  ← uključeno
+      C (k=2)  | C(2,2)=1     | C(8,3)=56 | 1·56            | 56   ← uključeno
+                                                              Total odgovora 196 (B+C)
+
+  Drugi canvas: vizualizacija komplementarnog brojanja (skup svih komisija → izuzimanje crvenog dela).
+
+Pitfalls:
+  - Brojati permutacije (sa redosledom) umesto kombinacija: pomeranje 5! puta.
+  - Zaboraviti "bar jedan" — uzeti samo (1+4) bez (2+3) → 140 (nije ponuđeno).
+  - Pogrešno pomisliti da treba množiti C(2,1)·C(9,4) (pretpostavljajući da "izabran je 1 matematičar, ostali iz 9") — to <em>duplo broji</em> komisije sa 2 matematičara.
+  - Pomešati C(8,4) sa C(8,5) ili C(8,3).
+  - Pisati C(10,5) − C(2,0)·C(8,5) i dobiti 252 − 56 = 196 → tačno, ali zbog drugog razloga.
+
+Trik sa "biranje jednog pa ostalih" — duplo brojanje:
+  Naivno: izaberi 1 matematičara (C(2,1) = 2 načina), pa preostala 4 mesta iz preostalih 9 (C(9,4) = 126).
+  Total: 2·126 = 252. Ali ovo NIJE 196! Razlika je 56, što je tačno broj komisija sa OBA matematičara.
+  Naime, komisija {M1, M2, I1, I2, I3} biva dva puta brojana: jednom kad fiksiramo M1 a M2 izađe iz 9,
+  drugi put kad fiksiramo M2 a M1 izađe iz 9. Tipičan razlog zašto je komplementarna metoda
+  bezbednija.
+
+Challenge:
+  Ako bismo želeli komisiju u kojoj je 1 matematičar predsednik (znači biraju se 4 inženjera običnih
+  članova i 1 matematičar predsednik), koliko ima takvih komisija?
+  Predsednik (matematičar): C(2,1) = 2 izbora.
+  Ostalih 4 članova (inženjeri): C(8,4) = 70.
+  Ukupno: 2·70 = 140.
+  Ili ako se traži još i sekretar među inženjerima: C(2,1) · C(8,1) (sekretar) · C(7,3) (ostali) = 2·8·35 = 560.
+</script>
+
+<h1 data-card="problem-title">Petočlana komisija sa bar jednim matematičarem</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorika — binomni koeficijent, komplementarno brojanje, pravilo zbira i proizvoda</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Na koliko načina se može formirati petočlana komisija od dva matematičara i osam inženjera tako da u njoj bude bar jedan matematičar?</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">Matematičari</span>
+      <span class="given-value">\( 2 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Inženjeri</span>
+      <span class="given-value">\( 8 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Veličina komisije</span>
+      <span class="given-value">\( 5 \) članova</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Uslov</span>
+      <span class="given-value">bar \( 1 \) matematičar</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 56 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 70 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 129 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 182 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 196 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Koristićemo <strong>komplementarno brojanje</strong>: od broja <em>svih</em> petočlanih komisija oduzećemo broj komisija u kojima <em>nema nijednog</em> matematičara. To je standardni trik kad uslov glasi „bar jedan…", jer je njegov komplement („nijedan") obično lakše prebrojati. Na kraju ćemo isti rezultat potvrditi i direktnom metodom (slučajevi prema broju matematičara u komisiji).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Kombinacije i komplementarno brojanje</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Binomni koeficijent</span> \( \dbinom{n}{k} = \dfrac{n!}{k!(n-k)!} \) je broj <em>k-članih podskupova</em> skupa od \( n \) elemenata. Redosled biranja je nebitan.</li>
+        <li><span class="formula-label">Simetrija</span> \( \dbinom{n}{k} = \dbinom{n}{n-k} \). Posebno korisno: \( \dbinom{8}{5} = \dbinom{8}{3} \), \( \dbinom{10}{5} = \dbinom{10}{5} \) (sredina).</li>
+        <li><span class="formula-label">Pravilo proizvoda</span> Ako se izbor sastoji od <em>više nezavisnih koraka</em>, broj načina je proizvod broja načina za svaki korak. Npr. izaberi \( k \) matematičara iz \( 2 \) <em>i</em> \( 5-k \) inženjera iz \( 8 \): \( \dbinom{2}{k} \cdot \dbinom{8}{5-k} \).</li>
+        <li><span class="formula-label">Pravilo zbira</span> Ako se izbor svodi na <em>međusobno isključive slučajeve</em>, broj načina je zbir slučajeva.</li>
+        <li><span class="formula-label">Komplementarno brojanje</span> Za uslov „bar jedan X", radije prebroji „nijedan X" pa oduzmi od ukupnog broja: \( |A| = |U| - |A^c| \). Često je „nijedan" jedan jedinstven slučaj, dok „bar jedan" pokriva više slučajeva.</li>
+        <li><span class="formula-label">Identitet Vandermondea</span> \( \dbinom{m+n}{r} = \displaystyle\sum_{k=0}^{r} \dbinom{m}{k}\dbinom{n}{r-k} \). Ovde \( m = 2, n = 8, r = 5 \): \( \dbinom{10}{5} = \dbinom{2}{0}\dbinom{8}{5} + \dbinom{2}{1}\dbinom{8}{4} + \dbinom{2}{2}\dbinom{8}{3} \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz: razbijanje na slučajeve">
+  <h2>📐 Vizuelni prikaz: koliko matematičara u komisiji?</h2>
+  <div class="canvas-wrapper">
+    <canvas id="comisDiag" width="780" height="540"></canvas>
+  </div>
+  <p class="canvas-caption">Sva moguća sastavljanja petočlane komisije iz \( 2 \) matematičara i \( 8 \) inženjera grupisana po broju matematičara \( k \in \{0, 1, 2\} \). Slučaj \( k = 0 \) (bez matematičara) je <em>izuzet</em> jer ne ispunjava uslov. Zbir „dozvoljenih" slučajeva (\( k = 1 \) i \( k = 2 \)) daje odgovor \( 196 \). Alternativno, isti odgovor dobijamo komplementarnom metodom: \( \dbinom{10}{5} - \dbinom{8}{5} = 252 - 56 = 196 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postaviti model — kombinacije, ne permutacije</h3>
+      <p>Komisija je <em>skup</em> ljudi — redosled biranja članova nije bitan, niti se osoba pojavljuje dva puta. Zato koristimo binomne koeficijente (kombinacije), ne permutacije.</p>
+      <p>Ukupno imamo \( 2 + 8 = 10 \) ljudi i biramo komisiju od \( 5 \) članova. Označimo:</p>
+      <ul>
+        <li>\( M \) = skup matematičara, \( |M| = 2 \);</li>
+        <li>\( I \) = skup inženjera, \( |I| = 8 \);</li>
+        <li>\( k \) = broj matematičara u komisiji, \( k \in \{0, 1, 2\} \) (jer ih ukupno ima samo 2).</li>
+      </ul>
+      <p>Uslov „bar jedan matematičar" znači \( k \ge 1 \), tj. \( k \in \{1, 2\} \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto \( k \) ne može biti veće od \( 2 \)?</summary>
+          <div class="detail-content"><p>Jer u ukupnoj populaciji ima samo \( 2 \) matematičara. Ne možemo odabrati \( 3 \) ili više matematičara iz skupa od \( 2 \). Formalno: \( \binom{2}{k} = 0 \) za \( k > 2 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Metoda 1 — komplementarno brojanje</h3>
+      <p>Broj komisija u kojima je <em>bar jedan</em> matematičar jednak je razlici između <em>svih</em> komisija i komisija u kojima <em>nema nijednog</em> matematičara:</p>
+      <div class="math-block">\[ N_{\ge 1} \;=\; N_{\text{svih}} \;-\; N_{0}. \]</div>
+      <p><strong>(a)</strong> Sve petočlane komisije iz \( 10 \) ljudi:</p>
+      <div class="math-block">\[ N_{\text{svih}} \;=\; \binom{10}{5} \;=\; \frac{10 \cdot 9 \cdot 8 \cdot 7 \cdot 6}{5!} \;=\; \frac{30240}{120} \;=\; 252. \]</div>
+      <p><strong>(b)</strong> Komisije bez matematičara — sva petorica iz osam inženjera:</p>
+      <div class="math-block">\[ N_{0} \;=\; \binom{8}{5} \;=\; \binom{8}{3} \;=\; \frac{8 \cdot 7 \cdot 6}{3!} \;=\; \frac{336}{6} \;=\; 56. \]</div>
+      <p>Konačno:</p>
+      <div class="math-block">\[ N_{\ge 1} \;=\; 252 - 56 \;=\; 196. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( \binom{8}{5} = \binom{8}{3} \)?</summary>
+          <div class="detail-content"><p>Po simetriji binomnih koeficijenata, \( \binom{n}{k} = \binom{n}{n-k} \). Izabrati \( 5 \) inženjera koji <em>jesu</em> u komisiji isto je što i izabrati \( 3 \) inženjera koji <em>nisu</em>. Jednostavnije je računati sa manjim brojem: \( \binom{8}{3} = 56 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Metoda 2 — direktna podela na slučajeve</h3>
+      <p>Razdelimo „bar jedan matematičar" na dva međusobno isključiva slučaja:</p>
+
+      <div class="substep" data-substep="a)">
+        <p><strong>Slučaj A: tačno 1 matematičar i 4 inženjera.</strong></p>
+        <p>Po pravilu proizvoda — \( \binom{2}{1} \) načina za izbor matematičara i \( \binom{8}{4} \) načina za izbor inženjera:</p>
+        <div class="math-block">\[ N_A \;=\; \binom{2}{1} \cdot \binom{8}{4} \;=\; 2 \cdot \frac{8 \cdot 7 \cdot 6 \cdot 5}{4!} \;=\; 2 \cdot 70 \;=\; 140. \]</div>
+      </div>
+
+      <div class="substep" data-substep="b)">
+        <p><strong>Slučaj B: oba matematičara i 3 inženjera.</strong></p>
+        <div class="math-block">\[ N_B \;=\; \binom{2}{2} \cdot \binom{8}{3} \;=\; 1 \cdot 56 \;=\; 56. \]</div>
+      </div>
+
+      <p>Po pravilu zbira (slučajevi su isključivi):</p>
+      <div class="math-block">\[ N_{\ge 1} \;=\; N_A + N_B \;=\; 140 + 56 \;=\; 196. \]</div>
+      <p>Dve potpuno različite metode daju <em>isti</em> rezultat — odlična međusobna provera.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Sanity-check kroz Vandermondeov identitet</h3>
+      <p>Identitet Vandermondea kaže da je</p>
+      <div class="math-block">\[ \binom{10}{5} \;=\; \sum_{k=0}^{5} \binom{2}{k}\binom{8}{5-k}. \]</div>
+      <p>Pošto je \( \binom{2}{k} = 0 \) za \( k \ge 3 \), zbir ima samo tri nenula sabiraka:</p>
+      <div class="math-block">\[ \binom{10}{5} \;=\; \underbrace{\binom{2}{0}\binom{8}{5}}_{= 1 \cdot 56 = 56} \;+\; \underbrace{\binom{2}{1}\binom{8}{4}}_{= 2 \cdot 70 = 140} \;+\; \underbrace{\binom{2}{2}\binom{8}{3}}_{= 1 \cdot 56 = 56}. \]</div>
+      <div class="math-block">\[ 56 + 140 + 56 \;=\; 252 \;=\; \binom{10}{5}. \;\checkmark \]</div>
+      <p>Naš odgovor (zbir <em>bez</em> slučaja \( k = 0 \)) je \( 140 + 56 = 196 \). Razlomak se savršeno uklapa u celinu.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz: komplementarna metoda">
+  <h2>📐 Vizuelni prikaz: oduzimanje „bez matematičara" od svih komisija</h2>
+  <div class="canvas-wrapper">
+    <canvas id="compMethod" width="780" height="380"></canvas>
+  </div>
+  <p class="canvas-caption">Skup svih petočlanih komisija ima \( \binom{10}{5} = 252 \) elementa. Crveno označen poddeo predstavlja komisije <em>bez ijednog</em> matematičara — njih je \( \binom{8}{5} = 56 \). Tražene komisije (sa bar jednim matematičarem) čine ostatak: \( 252 - 56 = 196 \).</p>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Ključni potez je <strong>komplementarno brojanje</strong>: fraza „bar jedan" je nezgodna jer pokriva više slučajeva (\( k = 1, 2, 3, \ldots \)), dok je njen <em>komplement</em> „nijedan" samo jedan jedini slučaj — i obično mu se odgovara direktna formula. Ovde je „nijedan matematičar" jednostavno „svih pet iz osam inženjera" \( = \binom{8}{5} \). Otud računamo lako: <em>sve minus zabranjeno</em>. Kao bonus, dobijamo dvostruku proveru: i direktna podela na \( k = 1 \) i \( k = 2 \) daje istih \( 196 \), što je manifestacija <em>Vandermondeovog identiteta</em> \( \binom{2+8}{5} = \sum_k \binom{2}{k}\binom{8}{5-k} \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Korišćenje permutacija umesto kombinacija.</strong> Komisija je skup ljudi, redosled biranja je nebitan. Ako se pomeša permutacija \( P(10,5) = 30240 \), dobijaju se ogromni brojevi koji ni ne postoje u opcijama.</li>
+    <li><strong>Trik „odaberi 1 matematičara pa 4 iz preostalih 9": \( 2 \cdot \binom{9}{4} = 2 \cdot 126 = 252 \).</strong> Ovo <em>duplo broji</em> komisije sa oba matematičara! Komisija \( \{M_1, M_2, I_1, I_2, I_3\} \) se broji jednom kao „izabran \( M_1 \), pa \( M_2 \) među preostalim 9" i drugi put kao „izabran \( M_2 \), pa \( M_1 \) među preostalim 9". Razlika \( 252 - 196 = 56 \) je upravo broj komisija sa dva matematičara — onih koji su udvostručeni.</li>
+    <li><strong>Računanje samo slučaja sa tačno \( 1 \) matematičarem.</strong> \( \binom{2}{1}\binom{8}{4} = 140 \) (nije u opcijama). Mora se dodati i slučaj „oba matematičara": \( + 56 = 196 \).</li>
+    <li><strong>Pomešani \( \binom{8}{3} \) i \( \binom{8}{4} \).</strong> Kod \( k = 2 \) preostalo je \( 5 - 2 = 3 \) inženjera (ne 4!). Kod \( k = 1 \) preostalo je \( 5 - 1 = 4 \). Lako se zameni.</li>
+    <li><strong>Pogrešno tumačenje „bar jednog".</strong> „Bar jedan" znači \( \ge 1 \), tj. <em>jedan ili više</em>. Nije „tačno jedan" (\( = 1 \)). Greška se vidi po tome što izostavlja slučaj \( k = 2 \).</li>
+    <li><strong>Računanje \( \binom{2}{1}\binom{8}{4} + \binom{2}{2}\binom{8}{3} \) sa pomakom indeksa</strong> (npr. \( \binom{2}{2}\binom{8}{4} = 70 \) → \( 140 + 70 = 210 \), nepostojeća opcija). Bitno je da zbir \( k + (5-k) = 5 \).</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \binom{10}{5} - \binom{8}{5} \;=\; 252 - 56 \;=\; 196 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 56 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 70 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 129 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 182 \)</span>
+    <span class="answer-option correct" data-option="E">(E) \( 196 \)</span>
+  </div>
+  <p class="verification">Provera direktnom podelom: \( \binom{2}{1}\binom{8}{4} + \binom{2}{2}\binom{8}{3} = 2 \cdot 70 + 1 \cdot 56 = 140 + 56 = 196 \). Isti rezultat dvema metodama — Vandermondeov identitet potvrđuje konzistentnost: \( 56 + 140 + 56 = 252 = \binom{10}{5} \). Tačan odgovor (E).</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Pretpostavi da komisiji nije dovoljno samo da ima bar jednog matematičara, nego i da <em>jedan od matematičara bude predsednik</em> komisije. Ako se predsednik bira <em>posle</em> formiranja komisije (iz onih matematičara koji su ušli), na koliko načina se to može uraditi? <em>(Pomoć: prvo izračunaj očekivani broj matematičara u našim \( 196 \) komisija.)</em></p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Razdelimo po slučajevima:</p>
+      <ul>
+        <li><strong>Slučaj A</strong> (tačno 1 matematičar): \( 140 \) komisija; predsednik je jedinstveno određen — \( 140 \cdot 1 = 140 \) konfiguracija.</li>
+        <li><strong>Slučaj B</strong> (2 matematičara): \( 56 \) komisija; predsednika biramo između 2 matematičara — \( 56 \cdot 2 = 112 \) konfiguracija.</li>
+      </ul>
+      <p>Ukupno: \( 140 + 112 = 252 \) načina.</p>
+      <p>Zanimljivo, baš \( 252 = \binom{10}{5} \) — slučajnost? Ne baš. Postoji bijekcija (vežba): svakoj „komisiji + predsednik-matematičar" odgovara petočlana komisija iz \( 10 \) bez ograničenja, što se može pokazati kroz pažljivo prebrojavanje. Naravno, to važi samo zato što su brojevi \( 2 \) i \( 8 \) i veličina \( 5 \) podešeni baš tako!</p>
+      <p>Alternativna formulacija: <em>očekivani</em> broj matematičara u nasumičnoj komisiji od \( 196 \) jeste \( \frac{140 \cdot 1 + 56 \cdot 2}{196} = \frac{252}{196} = \frac{9}{7} \approx 1{,}29 \).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  // CANVAS 1: cases breakdown
+  var c1 = document.getElementById('comisDiag');
+  if (c1) {
+    var ctx1 = c1.getContext('2d');
+    var W1 = c1.width, H1 = c1.height;
+
+    function draw1() {
+      styles = getComputedStyle(root);
+      var bg = cv('--sol-canvas-bg');
+      var primary = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text = cv('--sol-canvas-text');
+      var muted = cv('--sol-canvas-muted');
+      var danger = cv('--sol-canvas-danger');
+      var warning = cv('--sol-canvas-warning');
+
+      ctx1.clearRect(0, 0, W1, H1);
+      ctx1.fillStyle = bg;
+      ctx1.fillRect(0, 0, W1, H1);
+
+      // Title
+      ctx1.fillStyle = text;
+      ctx1.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx1.textAlign = 'center';
+      ctx1.fillText('Slučajevi prema broju matematičara u komisiji (komisija ima 5 članova)', W1 / 2, 26);
+
+      // Three columns for k = 0, 1, 2
+      var cases = [
+        { k: 0, mat: 0, ing: 5, c_mat: 1, c_ing: 56, total: 56, allowed: false, label: 'k = 0 (bez matematičara)' },
+        { k: 1, mat: 1, ing: 4, c_mat: 2, c_ing: 70, total: 140, allowed: true,  label: 'k = 1' },
+        { k: 2, mat: 2, ing: 3, c_mat: 1, c_ing: 56, total: 56,  allowed: true,  label: 'k = 2 (oba)' }
+      ];
+
+      var colW = (W1 - 80) / 3;
+      var topY = 60;
+      var boxH = 380;
+
+      for (var i = 0; i < cases.length; i++) {
+        var ci = cases[i];
+        var x = 40 + i * colW;
+        var cx = x + colW / 2;
+
+        // Box background
+        var fillCol = ci.allowed ? cvAlpha('--sol-canvas-accent', 0.10) : cvAlpha('--sol-canvas-danger', 0.10);
+        var strokeCol = ci.allowed ? accent : danger;
+        ctx1.fillStyle = fillCol;
+        ctx1.fillRect(x + 10, topY, colW - 20, boxH);
+        ctx1.strokeStyle = strokeCol;
+        ctx1.lineWidth = 2;
+        ctx1.strokeRect(x + 10, topY, colW - 20, boxH);
+
+        // Header
+        ctx1.fillStyle = strokeCol;
+        ctx1.font = 'bold 15px Inter, system-ui, sans-serif';
+        ctx1.textAlign = 'center';
+        ctx1.fillText(ci.label, cx, topY + 24);
+
+        // Status badge
+        ctx1.fillStyle = strokeCol;
+        ctx1.font = 'bold 11px Inter, system-ui, sans-serif';
+        ctx1.fillText(ci.allowed ? '✓ DOZVOLJENO' : '✗ ZABRANJENO', cx, topY + 44);
+
+        // People rows: matematicari (top), inzenjeri (bottom)
+        var rowY1 = topY + 80;
+        var rowY2 = topY + 165;
+
+        // Matematicari
+        ctx1.fillStyle = muted;
+        ctx1.font = '12px Inter, system-ui, sans-serif';
+        ctx1.textAlign = 'left';
+        ctx1.fillText('Matematičari (' + ci.mat + ' od 2):', x + 22, rowY1 - 8);
+        // Draw 2 circles, fill ci.mat of them
+        for (var m = 0; m < 2; m++) {
+          var mx = x + 40 + m * 30;
+          var my = rowY1 + 18;
+          ctx1.beginPath();
+          ctx1.arc(mx, my, 12, 0, Math.PI * 2);
+          if (m < ci.mat) {
+            ctx1.fillStyle = secondary;
+            ctx1.fill();
+            ctx1.fillStyle = bg;
+            ctx1.font = 'bold 12px Inter, system-ui, sans-serif';
+            ctx1.textAlign = 'center';
+            ctx1.fillText('M', mx, my + 4);
+          } else {
+            ctx1.fillStyle = cvAlpha('--sol-canvas-muted', 0.18);
+            ctx1.fill();
+            ctx1.strokeStyle = muted;
+            ctx1.lineWidth = 1;
+            ctx1.beginPath();
+            ctx1.arc(mx, my, 12, 0, Math.PI * 2);
+            ctx1.stroke();
+          }
+        }
+
+        // Inzenjeri
+        ctx1.fillStyle = muted;
+        ctx1.font = '12px Inter, system-ui, sans-serif';
+        ctx1.textAlign = 'left';
+        ctx1.fillText('Inženjeri (' + ci.ing + ' od 8):', x + 22, rowY2 - 8);
+        // Draw 8 circles in 2 rows of 4
+        for (var j = 0; j < 8; j++) {
+          var col = j % 4;
+          var row = Math.floor(j / 4);
+          var ix = x + 30 + col * 26;
+          var iy = rowY2 + 14 + row * 26;
+          ctx1.beginPath();
+          ctx1.arc(ix, iy, 9, 0, Math.PI * 2);
+          if (j < ci.ing) {
+            ctx1.fillStyle = primary;
+            ctx1.fill();
+            ctx1.fillStyle = bg;
+            ctx1.font = 'bold 9px Inter, system-ui, sans-serif';
+            ctx1.textAlign = 'center';
+            ctx1.fillText('I', ix, iy + 3);
+          } else {
+            ctx1.fillStyle = cvAlpha('--sol-canvas-muted', 0.18);
+            ctx1.fill();
+            ctx1.strokeStyle = muted;
+            ctx1.lineWidth = 1;
+            ctx1.beginPath();
+            ctx1.arc(ix, iy, 9, 0, Math.PI * 2);
+            ctx1.stroke();
+          }
+        }
+
+        // Formula
+        var fY = topY + 280;
+        ctx1.fillStyle = text;
+        ctx1.font = 'bold 13px Inter, system-ui, sans-serif';
+        ctx1.textAlign = 'center';
+        var sub2 = '(2 nad ' + ci.mat + ')';
+        var sub8 = '(8 nad ' + ci.ing + ')';
+        ctx1.fillText('C' + sub2 + ' · C' + sub8, cx, fY);
+        ctx1.font = '13px Inter, system-ui, sans-serif';
+        ctx1.fillStyle = muted;
+        ctx1.fillText('= ' + ci.c_mat + ' · ' + ci.c_ing + ' = ' + ci.total, cx, fY + 22);
+
+        // Big number
+        ctx1.fillStyle = strokeCol;
+        ctx1.font = 'bold 32px Inter, system-ui, sans-serif';
+        ctx1.textAlign = 'center';
+        ctx1.fillText(String(ci.total), cx, fY + 70);
+      }
+
+      // Bottom: total
+      ctx1.fillStyle = cvAlpha('--sol-canvas-accent', 0.12);
+      ctx1.fillRect(40, H1 - 70, W1 - 80, 50);
+      ctx1.strokeStyle = accent;
+      ctx1.lineWidth = 1.5;
+      ctx1.setLineDash([4, 3]);
+      ctx1.strokeRect(40, H1 - 70, W1 - 80, 50);
+      ctx1.setLineDash([]);
+
+      ctx1.fillStyle = accent;
+      ctx1.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx1.textAlign = 'center';
+      ctx1.fillText('Bar jedan matematičar  =  140  +  56  =  196', W1 / 2, H1 - 42);
+      ctx1.fillStyle = muted;
+      ctx1.font = 'italic 11px Inter, system-ui, sans-serif';
+      ctx1.fillText('(sabiramo samo dozvoljene slučajeve k = 1 i k = 2; slučaj k = 0 izuzet)', W1 / 2, H1 - 26);
+    }
+
+    draw1();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() { styles = getComputedStyle(root); draw1(); }, 50);
+      }
+    });
+  }
+
+  // CANVAS 2: complementary method (big set minus forbidden subset)
+  var c2 = document.getElementById('compMethod');
+  if (c2) {
+    var ctx2 = c2.getContext('2d');
+    var W2 = c2.width, H2 = c2.height;
+
+    function draw2() {
+      styles = getComputedStyle(root);
+      var bg = cv('--sol-canvas-bg');
+      var primary = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent = cv('--sol-canvas-accent');
+      var text = cv('--sol-canvas-text');
+      var muted = cv('--sol-canvas-muted');
+      var danger = cv('--sol-canvas-danger');
+
+      ctx2.clearRect(0, 0, W2, H2);
+      ctx2.fillStyle = bg;
+      ctx2.fillRect(0, 0, W2, H2);
+
+      // Title
+      ctx2.fillStyle = text;
+      ctx2.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx2.textAlign = 'center';
+      ctx2.fillText('Komplementarna metoda: sve komisije − komisije bez matematičara', W2 / 2, 28);
+
+      // Big rectangle: all comissions, 252
+      var bigX = 60, bigY = 70, bigW = 420, bigH = 220;
+      ctx2.fillStyle = cvAlpha('--sol-canvas-primary', 0.18);
+      ctx2.fillRect(bigX, bigY, bigW, bigH);
+      ctx2.strokeStyle = primary;
+      ctx2.lineWidth = 2.5;
+      ctx2.strokeRect(bigX, bigY, bigW, bigH);
+
+      // Inner red rectangle: no-math, 56
+      // Proportionally 56/252 ≈ 22% of area
+      var innerW = 120, innerH = 100;
+      var innerX = bigX + 20;
+      var innerY = bigY + bigH - innerH - 20;
+      ctx2.fillStyle = cvAlpha('--sol-canvas-danger', 0.35);
+      ctx2.fillRect(innerX, innerY, innerW, innerH);
+      ctx2.strokeStyle = danger;
+      ctx2.lineWidth = 2;
+      ctx2.strokeRect(innerX, innerY, innerW, innerH);
+
+      // Labels
+      ctx2.fillStyle = primary;
+      ctx2.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx2.textAlign = 'left';
+      ctx2.fillText('Sve komisije   C(10,5) = 252', bigX + 10, bigY + 22);
+
+      ctx2.fillStyle = danger;
+      ctx2.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx2.textAlign = 'center';
+      ctx2.fillText('Bez matematičara', innerX + innerW / 2, innerY + 35);
+      ctx2.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx2.fillText('C(8,5) = 56', innerX + innerW / 2, innerY + 56);
+      ctx2.font = 'italic 11px Inter, system-ui, sans-serif';
+      ctx2.fillText('(zabranjene)', innerX + innerW / 2, innerY + 78);
+
+      // Label of the green region (the rest)
+      ctx2.fillStyle = accent;
+      ctx2.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx2.textAlign = 'center';
+      ctx2.fillText('Bar 1 matematičar', bigX + bigW * 0.65, bigY + 110);
+      ctx2.font = 'bold 22px Inter, system-ui, sans-serif';
+      ctx2.fillText('196', bigX + bigW * 0.65, bigY + 145);
+      ctx2.font = 'italic 12px Inter, system-ui, sans-serif';
+      ctx2.fillStyle = muted;
+      ctx2.fillText('(zelena oblast — ostatak velikog pravougaonika)', bigX + bigW * 0.65, bigY + 170);
+
+      // Equation on the right
+      var eqX = 520, eqY = 130;
+      ctx2.fillStyle = cvAlpha('--sol-canvas-accent', 0.08);
+      ctx2.fillRect(eqX, eqY - 40, 220, 140);
+      ctx2.strokeStyle = accent;
+      ctx2.lineWidth = 1.5;
+      ctx2.setLineDash([4, 3]);
+      ctx2.strokeRect(eqX, eqY - 40, 220, 140);
+      ctx2.setLineDash([]);
+
+      ctx2.fillStyle = accent;
+      ctx2.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx2.textAlign = 'left';
+      ctx2.fillText('Komplementarno:', eqX + 12, eqY - 18);
+
+      ctx2.fillStyle = text;
+      ctx2.font = '13px Inter, system-ui, sans-serif';
+      ctx2.fillText('N(bar 1) = N(sve) − N(0)', eqX + 12, eqY + 8);
+      ctx2.fillText('= C(10,5) − C(8,5)', eqX + 12, eqY + 30);
+      ctx2.fillText('= 252 − 56', eqX + 12, eqY + 52);
+      ctx2.fillStyle = accent;
+      ctx2.font = 'bold 14px Inter, system-ui, sans-serif';
+      ctx2.fillText('= 196.', eqX + 12, eqY + 76);
+
+      // Bottom note
+      ctx2.fillStyle = muted;
+      ctx2.font = 'italic 11px Inter, system-ui, sans-serif';
+      ctx2.textAlign = 'center';
+      ctx2.fillText('Pravilo: kad uslov glasi „bar jedan X", radije prebroji „nijedan X" i oduzmi od ukupnog broja.', W2 / 2, H2 - 18);
+    }
+
+    draw2();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() { styles = getComputedStyle(root); draw2(); }, 50);
+      }
+    });
+  }
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Petočlana komisija sa bar jednim matematičarem",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["binomni koeficijent", "kombinacije", "komplementarno brojanje", "pravilo zbira", "Vandermonde"]
+}
+BRAINSPARK_META-->

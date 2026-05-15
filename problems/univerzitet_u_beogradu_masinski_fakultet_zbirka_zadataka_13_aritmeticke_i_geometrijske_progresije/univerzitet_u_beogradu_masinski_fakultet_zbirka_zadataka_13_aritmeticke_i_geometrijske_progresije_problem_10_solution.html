@@ -1,0 +1,426 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Zadatak: aritmetički niz, za svako n je S_n = 5n^2 - 4n.
+  Treba: proizvod prva tri člana a_1 * a_2 * a_3.
+
+  Strategija 1 (direktna, najsigurnija):
+    a_1 = S_1 = 5(1)^2 - 4(1) = 5 - 4 = 1.
+    S_2 = 5(4) - 4(2) = 20 - 8 = 12, pa a_2 = S_2 - S_1 = 12 - 1 = 11.
+    S_3 = 5(9) - 4(3) = 45 - 12 = 33, pa a_3 = S_3 - S_2 = 33 - 12 = 21.
+    Proizvod = 1 * 11 * 21 = 231. (D)
+
+  Strategija 2 (preko opšteg člana, lepa potvrda da je niz zaista aritmetički):
+    Za n >= 2: a_n = S_n - S_{n-1} = (5n^2 - 4n) - (5(n-1)^2 - 4(n-1))
+                  = 5n^2 - 4n - 5(n^2 - 2n + 1) + 4n - 4
+                  = 5n^2 - 4n - 5n^2 + 10n - 5 + 4n - 4
+                  = 10n - 9.
+    Provera za n = 1: 10(1) - 9 = 1, pa formula a_n = 10n - 9 važi i za n=1.
+    Razlika: d = a_{n+1} - a_n = 10(n+1) - 9 - (10n - 9) = 10. Niz JESTE aritmetički (d=10).
+    a_1 = 1, a_2 = 11, a_3 = 21. Proizvod = 231.
+
+  Šablon: kada je S_n = An^2 + Bn (kvadratni polinom bez slobodnog člana),
+  niz je aritmetički sa a_n = 2An + (B - A), d = 2A, a_1 = A + B.
+  Kod nas: A=5, B=-4, pa a_1 = 5 + (-4) = 1, d = 10. ✓
+
+  Vizuelni prikaz: stubasti dijagram (bar chart) sa a_1=1, a_2=11, a_3=21, jedan po jedan
+  rastu. Možemo dodati i a_4=31 za ilustraciju konstantne razlike d=10. Statika je dovoljna,
+  niz nije prostorni objekat — interaktivnost ovde ne donosi novu intuiciju.
+
+  Najčešće greške:
+   * Pretpostaviti a_1 = S_1 i a_2 = S_2 (a ne S_2 - S_1) — dobija se 1 * 12 * ... pogrešno.
+   * Računati a_3 kao S_3 = 33 a ne kao S_3 - S_2 = 21 — daje 1*11*33 = 363, što nije u opcijama.
+   * Pogrešno razviti (n-1)^2 — npr. (n-1)^2 = n^2 - 1 — što kvari opšti član.
+   * Pomešati aritmetički i geometrijski niz (tražiti q umesto d).
+
+  Distractori po smislu:
+    (A) 101, (B) 111, (C) 201, (D) 231 ✓, (E) 301.
+    231 = 1 * 11 * 21. 101 ≈ "okrugla" greška. 111 = 1*1*111 ili 3*37 (besmisleno).
+    201 = 3*67. 301 = 7*43. Sve ostalo su klopke.
+
+  Odgovor: (D) 231.
+</script>
+
+<h1 data-card="problem-title">Proizvod prva tri člana aritmetičkog niza iz formule za \( S_n \)</h1>
+<p data-card="problem-subtitle" class="subtitle">Aritmetički niz &mdash; veza između zbira prvih \( n \) članova i opšteg člana</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Za svaki prirodan broj \( n \), zbir prvih \( n \) članova aritmetičkog niza jednak je \( S_n = 5n^2 - 4n \). Tada je proizvod prva tri člana tog niza jednak:</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">zbir</span>
+      <span class="given-value">\( S_n = 5n^2 - 4n \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">traženo</span>
+      <span class="given-value">\( a_1 \cdot a_2 \cdot a_3 = ? \)</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 101 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 111 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 201 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 231 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 301 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Iz formule za \( S_n \) izvučemo prva tri člana koristeći dve ključne veze: \( a_1 = S_1 \) i \( a_n = S_n - S_{n-1} \) za \( n \ge 2 \). Zatim pomnožimo \( a_1 \cdot a_2 \cdot a_3 \). Usput ćemo potvrditi da je niz zaista aritmetički tako što ćemo izvesti opšti član \( a_n \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i veze</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Zbir i opšti član:</strong> \( a_1 = S_1 \), a za \( n \ge 2 \) važi \( a_n = S_n - S_{n-1} \). Razlog: \( S_n = a_1 + a_2 + \dots + a_n \), pa "ono što novo dođe" na \( n \)-tom mestu je \( S_n - S_{n-1} = a_n \).</li>
+        <li><strong>Aritmetički niz:</strong> niz sa konstantnom razlikom \( d = a_{n+1} - a_n \). Opšti član je \( a_n = a_1 + (n-1)d \).</li>
+        <li><strong>Zbir aritmetičkog niza:</strong> \( S_n = \dfrac{n}{2}\bigl(2a_1 + (n-1)d\bigr) = \dfrac{d}{2}n^2 + \Bigl(a_1 - \dfrac{d}{2}\Bigr)n \). Dakle, \( S_n \) je <em>kvadratni polinom po \( n \) bez slobodnog člana</em>.</li>
+        <li><strong>Prepoznavanje:</strong> ako je \( S_n = An^2 + Bn \), tada je \( d = 2A \) i \( a_1 = A + B \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz prva četiri člana niza">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-bars" width="720" height="460"></canvas>
+  </div>
+  <p class="canvas-caption">Stubasti prikaz prva četiri člana: \( a_1 = 1,\ a_2 = 11,\ a_3 = 21,\ a_4 = 31 \). Visine stubova rastu za konstantnu vrednost \( d = 10 \) &mdash; to je geometrijska potvrda da je niz aritmetički.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Prvi član: \( a_1 = S_1 \)</h3>
+      <p>Zbir prvog jednog člana je sam taj član, pa direktno uvrstimo \( n = 1 \) u formulu:</p>
+      <div class="math-block">\[ a_1 = S_1 = 5\cdot 1^2 - 4\cdot 1 = 5 - 4 = 1. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš \( a_1 = S_1 \)?</summary>
+          <div class="detail-content"><p>Po definiciji \( S_n = a_1 + a_2 + \dots + a_n \), za \( n = 1 \) imamo samo jedan sabirak, dakle \( S_1 = a_1 \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Drugi član: \( a_2 = S_2 - S_1 \)</h3>
+      <p>Izračunamo \( S_2 \), pa oduzmemo \( S_1 \) &mdash; jer je \( S_2 = a_1 + a_2 \), odakle \( a_2 = S_2 - a_1 = S_2 - S_1 \):</p>
+      <div class="math-block">\[ S_2 = 5\cdot 2^2 - 4\cdot 2 = 20 - 8 = 12, \qquad a_2 = 12 - 1 = 11. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Treći član: \( a_3 = S_3 - S_2 \)</h3>
+      <p>Analogno, \( S_3 = a_1 + a_2 + a_3 \), pa \( a_3 = S_3 - S_2 \):</p>
+      <div class="math-block">\[ S_3 = 5\cdot 3^2 - 4\cdot 3 = 45 - 12 = 33, \qquad a_3 = 33 - 12 = 21. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: da li je razlika konstantna?</summary>
+          <div class="detail-content"><p>Da: \( a_2 - a_1 = 11 - 1 = 10 \) i \( a_3 - a_2 = 21 - 11 = 10 \). Razlika \( d = 10 \) je konstantna, što i jeste karakteristika aritmetičkog niza.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Opšti član (lepa kontrola)</h3>
+      <p>Da bismo bili sigurni da imamo aritmetički niz, izvedimo opšti član \( a_n = S_n - S_{n-1} \):</p>
+      <div class="math-block">\[ \begin{aligned} a_n &= (5n^2 - 4n) - \bigl(5(n-1)^2 - 4(n-1)\bigr) \\ &= 5n^2 - 4n - 5(n^2 - 2n + 1) + 4n - 4 \\ &= 5n^2 - 4n - 5n^2 + 10n - 5 + 4n - 4 \\ &= 10n - 9. \end{aligned} \]</div>
+      <p>Za \( n = 1 \): \( 10 - 9 = 1 = a_1 \) &mdash; formula važi i za prvi član. Razlika je \( d = a_{n+1} - a_n = 10 \), tako da je niz zaista aritmetički.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Proizvod prva tri člana</h3>
+      <p>Sada samo pomnožimo:</p>
+      <div class="math-block">\[ a_1 \cdot a_2 \cdot a_3 = 1 \cdot 11 \cdot 21 = 11 \cdot 21 = 231. \]</div>
+      <p>Korisno je proveriti i razlaganje: \( 231 = 3 \cdot 7 \cdot 11 \) &mdash; baš \( 21 = 3\cdot 7 \) i \( 11 \). Sve se slaže.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Veza \( a_n = S_n - S_{n-1} \) je univerzalan most između <em>zbira</em> i <em>člana</em> kod bilo kog niza &mdash; ne samo aritmetičkog. Sa druge strane, čim vidimo da je \( S_n \) kvadratni polinom oblika \( An^2 + Bn \) (bez slobodnog člana!), odmah znamo da je niz aritmetički, sa razlikom \( d = 2A \) i prvim članom \( a_1 = A + B \). U našem zadatku: \( A = 5 \), \( B = -4 \), pa \( d = 10 \) i \( a_1 = 5 + (-4) = 1 \), tačno onako kako smo i izračunali.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ a_1 \cdot a_2 \cdot a_3 = 1 \cdot 11 \cdot 21 = 231 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 101 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 111 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 201 \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 231 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 301 \)</span>
+  </div>
+  <p class="verification">Provera kroz zbir: \( a_1 + a_2 + a_3 = 1 + 11 + 21 = 33 = S_3 \). ✓ A formula za zbir aritmetičkog niza: \( S_3 = \tfrac{3}{2}(2a_1 + 2d) = \tfrac{3}{2}(2 + 20) = \tfrac{3}{2}\cdot 22 = 33 \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Mešanje pojmova: računati \( a_3 = S_3 = 33 \) umesto \( a_3 = S_3 - S_2 = 21 \). Tada se dobija \( 1\cdot 11\cdot 33 = 363 \) &mdash; pogrešno, i ta vrednost <em>nije</em> u opcijama (klopka koja "preživi" do pogrešnog konačnog tipovanja).</li>
+    <li>Pretpostavka da je \( a_2 = S_2 = 12 \) (ignorisanje da treba oduzeti \( S_1 \)). Daje \( 1\cdot 12\cdot 21 = 252 \) &mdash; takođe nije u opcijama, ali često navodi na sumnju u tačan odgovor.</li>
+    <li>Algebarska greška pri razvoju \( (n-1)^2 \) &mdash; pisanje \( (n-1)^2 = n^2 - 1 \) umesto \( n^2 - 2n + 1 \). Tada opšti član ispada pogrešno i razlika \( d \) nije konstantna, što znači da niz "nije aritmetički" iako bi morao biti.</li>
+    <li>Brkanje \( S_n \) i \( a_n \) na nivou imena: \( S_n \) je zbir, \( a_n \) je član. Indeks \( n \) u oba slučaja označava istu poziciju, ali objekti su različiti.</li>
+    <li>Pokušaj da se odmah primeni formula \( S_n = \tfrac{n}{2}(2a_1 + (n-1)d) \) bez određivanja \( a_1 \) i \( d \) &mdash; legalno, ali zahteva sistem dve jednačine. Brže je iskoristiti \( a_1 = S_1 \) i \( a_2 = S_2 - S_1 \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Pretpostavi da imaš drugi aritmetički niz čiji je zbir prvih \( n \) članova jednak \( T_n = 3n^2 + 2n \). Odredi: (a) prvi član i razliku, (b) deseti član, (c) zbir prvih 10 članova &mdash; pa proveri rezultat preko formule \( S_n = \tfrac{n}{2}(2a_1 + (n-1)d) \).</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Iz oblika \( T_n = An^2 + Bn \) sa \( A = 3,\ B = 2 \) odmah pročitaš: \( d = 2A = 6 \) i \( a_1 = A + B = 5 \). Tada \( a_{10} = a_1 + 9d = 5 + 54 = 59 \), a zbir \( T_{10} = 3\cdot 100 + 2\cdot 10 = 320 \). Provera: \( \tfrac{10}{2}(2\cdot 5 + 9\cdot 6) = 5\cdot 64 = 320 \). ✓</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-bars');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  // Bar chart of a_1..a_4 = 1, 11, 21, 31
+  var terms = [
+    { n: 1, val: 1,  label: 'a₁ = 1' },
+    { n: 2, val: 11, label: 'a₂ = 11' },
+    { n: 3, val: 21, label: 'a₃ = 21' },
+    { n: 4, val: 31, label: 'a₄ = 31 (bonus)' }
+  ];
+
+  var marginL = 70, marginR = 40, marginT = 60, marginB = 90;
+  var plotW = canvas.width - marginL - marginR;
+  var plotH = canvas.height - marginT - marginB;
+  var maxVal = 35; // headroom above a_4 = 31
+  var nBars = terms.length;
+  var gap = 28;
+  var barW = (plotW - gap * (nBars - 1)) / nBars;
+
+  function barX(i) { return marginL + i * (barW + gap); }
+  function barY(v) { return marginT + plotH - (v / maxVal) * plotH; }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+    var tertiary  = cv('--sol-canvas-tertiary');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Aritmetički niz aₙ = 10n − 9   (d = 10, a₁ = 1)', canvas.width / 2, 14);
+
+    // Y-axis grid + ticks at 0, 10, 20, 30
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    var yTicks = [0, 10, 20, 30];
+    for (var t = 0; t < yTicks.length; t++) {
+      var yy = barY(yTicks[t]);
+      ctx.beginPath();
+      ctx.moveTo(marginL - 4, yy);
+      ctx.lineTo(marginL + plotW, yy);
+      ctx.stroke();
+      ctx.fillStyle = muted;
+      ctx.fillText(yTicks[t].toString(), marginL - 10, yy);
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(marginL, marginT);
+    ctx.lineTo(marginL, marginT + plotH);
+    ctx.lineTo(marginL + plotW, marginT + plotH);
+    ctx.stroke();
+
+    // Y-axis label
+    ctx.save();
+    ctx.translate(22, marginT + plotH / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillStyle = text;
+    ctx.font = 'italic 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('vrednost člana aₙ', 0, 0);
+    ctx.restore();
+
+    // X-axis label
+    ctx.fillStyle = text;
+    ctx.font = 'italic 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('indeks n', marginL + plotW / 2, marginT + plotH + 56);
+
+    // Bars
+    for (var i = 0; i < terms.length; i++) {
+      var x0 = barX(i);
+      var y0 = barY(terms[i].val);
+      var h = (terms[i].val / maxVal) * plotH;
+
+      var fillColor = (i < 3) ? primary : tertiary; // a4 muted color
+      ctx.fillStyle = cvAlpha(i < 3 ? '--sol-canvas-primary' : '--sol-canvas-tertiary', 0.85);
+      ctx.fillRect(x0, y0, barW, h);
+
+      ctx.strokeStyle = fillColor;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x0, y0, barW, h);
+
+      // Value label above bar
+      ctx.fillStyle = text;
+      ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(terms[i].val.toString(), x0 + barW / 2, y0 - 6);
+
+      // n-label on x-axis
+      ctx.fillStyle = text;
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText('n = ' + terms[i].n, x0 + barW / 2, marginT + plotH + 8);
+
+      // a_n label below n=
+      ctx.fillStyle = (i < 3) ? primary : muted;
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.fillText(terms[i].label, x0 + barW / 2, marginT + plotH + 28);
+    }
+
+    // Difference arrows between bar tops (a2-a1, a3-a2, a4-a3) showing d = 10
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 4]);
+    for (var j = 0; j < terms.length - 1; j++) {
+      var x1 = barX(j) + barW / 2;
+      var x2 = barX(j + 1) + barW / 2;
+      var y1 = barY(terms[j].val) - 22;
+      var y2 = barY(terms[j + 1].val) - 22;
+
+      // Horizontal segment at level of left bar top (extended right)
+      var midY = Math.min(y1, y2) - 8;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x1, midY);
+      ctx.lineTo(x2, midY);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // "d = 10" labels in the middle of each segment
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    for (var k = 0; k < terms.length - 1; k++) {
+      var mx = (barX(k) + barX(k + 1) + barW) / 2;
+      var my = Math.min(barY(terms[k].val), barY(terms[k + 1].val)) - 32;
+      ctx.fillText('+d = +10', mx, my);
+    }
+
+    // Highlight box around bars 1..3 (the ones we multiply)
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([3, 3]);
+    var hx = barX(0) - 8;
+    var hy = marginT + plotH - (21 / maxVal) * plotH - 50;
+    var hw = (barX(2) + barW) - barX(0) + 16;
+    var hh = (marginT + plotH) - hy + 6;
+    ctx.strokeRect(hx, hy, hw, hh);
+    ctx.setLineDash([]);
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('proizvod a₁·a₂·a₃ = 1·11·21 = 231', hx, hy - 6);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Proizvod prva tri člana aritmetičkog niza kada je S_n = 5n² − 4n",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["aritmetički niz", "zbir niza", "opšti član", "razlika niza", "S_n minus S_{n-1}"]
+}
+BRAINSPARK_META-->

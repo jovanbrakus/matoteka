@@ -1,0 +1,819 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Zadatak: Pravilan tetraedar sa ivicom a = √2. Naći razdaljinu između središta
+  dveju naspramnih ivica.
+
+  Definicije: u tetraedru ABCD parovi naspramnih ivica (skew) su:
+    AB <-> CD
+    AC <-> BD
+    AD <-> BC
+  Svaki par je u međusobno mimoilaznim („skew“) pravim. Centrala prema dva
+  ovakva mimoilazna pravca u pravilnom tetraedru je upravo zajednička normala.
+
+  Klasična teorema: u pravilnom tetraedru sa ivicom a, dužina spojnice
+  središta dve naspramne ivice (centralna zajednička normala) iznosi
+    d = a / √2 = a√2 / 2.
+
+  Sa a = √2: d = √2 / √2 = 1.
+
+  Sintetički dokaz (bez koordinata):
+  Neka su M = sredina AB, N = sredina CD u pravilnom tetraedru ABCD.
+  Razmotri trougao MCD: M je tačka, C i D su tjemena.
+    MC = visina jednakostraničnog trougla ABC (jer M je sredina AB) = a√3/2.
+    MD = visina jednakostraničnog trougla ABD (slično) = a√3/2.
+  Trougao MCD je jednakokrak: MC = MD = a√3/2, osnovica CD = a.
+  Spojnica MN gde je N sredina CD je visina ovog trouga iz vrha M:
+    MN² = MC² - (CD/2)² = 3a²/4 - a²/4 = 2a²/4 = a²/2.
+    MN = a/√2.
+
+  Sa a = √2: MN = √2 / √2 = 1.
+
+  Dodatno: MN je upravna i na AB i na CD. Dokaz:
+   - Trougao ACD je jednakostraničan i AN je visina iz A na CD, pa AN ⊥ CD.
+     Slično BN ⊥ CD. Dakle CD je upravna na ravan AB-N? Zapravo CD ⊥ ravan ABN,
+     pa CD ⊥ MN.
+   - Po simetriji, AB ⊥ MN.
+  Tako MN je zajednička normala dveju naspramnih ivica AB i CD i njena dužina
+  je rastojanje između tih (mimoilaznih) ivica.
+
+  Brza provera kosinusnom u trouglu MNC ili koordinatama:
+  Koordinate: A=(1,1,1)/√2, B=(-1,-1,1)/√2, C=(-1,1,-1)/√2, D=(1,-1,-1)/√2.
+  (Ivica = 2√2/√2 = 2. Ne baš a=√2.)
+  Promenimo skalu: ako koordinate skaliramo tako da ivica bude a:
+    Tjemena pravilnog tetraedra: (1,1,1), (1,-1,-1), (-1,1,-1), (-1,-1,1).
+    Ivica = √8 = 2√2.
+    Za a=√2 podelimo sa 2: tjemena = (1/2,1/2,1/2) itd. Ivica = √(3·(1)²)/√(odgovarajuće).
+  Bolje: koristi tetraedar sa ivicom a generičko, formula d = a/√2 standardna.
+
+  Plan korak po korak:
+  1. Identifikuj naspramne ivice u tetraedru -- pojašnjenje "naspramno" znači
+     mimoilazno (nema zajedničkog tjem&eacute;na).
+  2. Označi M = sredina AB, N = sredina CD.
+  3. Trouglovi BMC i AMC pokažu MC = visina jednakostraničnog trougla = a√3/2.
+  4. Trougao MCD: MC = MD = a√3/2, CD = a. Visina iz M na CD pogodi N (zbog simetrije).
+  5. Pitagora: MN² = MC² - (CD/2)² = 3a²/4 - a²/4 = a²/2.
+  6. MN = a/√2. Sa a = √2 dobija se MN = 1.
+
+  Dodatno svojstvo (za key-insight): tri spojnice središta naspramnih ivica
+  prolaze kroz isti tačku (centroid tetraedra) i međusobno su upravne (one
+  čine tri "ose" zatvorenog kocke u koju je tetraedar upisan).
+
+  Vizuelizacija:
+   1) 3D prikaz pravilnog tetraedra ABCD sa istaknutim ivicama AB, CD i
+      njihovim sredinama M, N. Spojnica MN naglašena.
+   2) "Razvijena" / izvučena slika trouga MCD sa MC = MD = a√3/2 i osnovicom
+      CD = a, sa visinom MN.
+   3) Jedna od dijagonalnih ravni: trougao ABN gde je N sredina CD, sa
+      visinom NM iz N na AB.
+
+  Interaktivnost: korisno bi bilo omogućiti pomicanje središta po ivici CD
+  (slajder t ∈ [0,1] koji pomera "tačku N" duž CD), pa pratiti dužinu MN'
+  u zavisnosti od t. Minimum je u sredini -- vizuelizacija fenomena.
+  Implementiraćemo to: jedan interaktivni canvas u trećem visual-aidu.
+
+  Odgovor: (B) 1.
+</script>
+
+<h1 data-card="problem-title">Razdaljina između središta naspramnih ivica pravilnog tetraedra</h1>
+<p data-card="problem-subtitle" class="subtitle">Stereometrija &mdash; pravilan tetraedar, naspramne (mimoilazne) ivice, zajednička normala</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Ako je dužina ivice pravilnog tetraedra jednaka \( \sqrt{2} \), onda rastojanje između središta dveju njegovih <em>naspramnih</em> ivica iznosi:</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">ivica tetraedra</span>
+      <span class="given-value">\( a = \sqrt{2} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">naspramne ivice</span>
+      <span class="given-value">npr. \( AB \) i \( CD \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">tačke</span>
+      <span class="given-value">\( M = \text{sred}(AB) \), \( N = \text{sred}(CD) \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">traženo</span>
+      <span class="given-value">\( MN = ? \)</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( \sqrt{3} \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \dfrac{\sqrt{3}}{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \sqrt{2} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \dfrac{1}{\sqrt{2}} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Identifikujmo naspramne ivice \( AB \) i \( CD \) sa središtima \( M \) i \( N \). Iskoristimo da su \( MC \) i \( MD \) <em>visine</em> jednakostraničnih trouglova \( \triangle ABC \) i \( \triangle ABD \) iz tjem&eacute;na \( C \) (odn. \( D \)) na \( AB \), pa \( MC = MD = \tfrac{a\sqrt 3}{2} \). Trougao \( MCD \) je jednakokraki sa osnovicom \( CD = a \) i \( N \) je sredina osnovice &mdash; \( MN \) je njegova visina. Pitagorina teorema daje \( MN = \tfrac{a}{\sqrt 2} \), pa za \( a=\sqrt 2 \) dobijamo \( MN = 1 \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Pravilan tetraedar, naspramne ivice i visina jednakostraničnog trougla</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Pravilan tetraedar:</strong> piramida čije su sve četiri strane jednakostranični trouglovi sa istom stranicom \( a \). Ima 4 tjem&eacute;na, 6 ivica i 4 strane. Sve ivice su jednake.</li>
+        <li><strong>Naspramne ivice:</strong> dve ivice koje <em>nemaju</em> zajedničko tjeme. U tetraedru \( ABCD \) tri su para naspramnih ivica:
+          \[ (AB, CD), \quad (AC, BD), \quad (AD, BC). \]
+          Naspramne ivice su <em>mimoilazne</em> (engl. „skew“) &mdash; ne seku se i nisu paralelne.</li>
+        <li><strong>Visina jednakostraničnog trougla stranice \( a \):</strong>
+          \[ h_{\triangle} = \dfrac{a\sqrt 3}{2}. \]</li>
+        <li><strong>Težišnica/visina = ista:</strong> u jednakokrakom trouglu, težišnica iz vrha na osnovicu je istovremeno i visina (i simetrala osnovice). Ovo je ključ za pokazivanje da je \( MN \) upravna na \( CD \).</li>
+        <li><strong>Spojnica središta naspramnih ivica:</strong> u pravilnom tetraedru sa ivicom \( a \),
+          \[ \boxed{\; MN = \dfrac{a}{\sqrt 2} = \dfrac{a\sqrt 2}{2}. \;} \]
+          Ova spojnica je <em>zajednička normala</em> dveju mimoilaznih naspramnih ivica i predstavlja rastojanje između njih.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Pravilan tetraedar sa istaknutim središtima">
+  <h2>📐 Pravilan tetraedar \( ABCD \) i spojnica \( MN \)</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagramTetra9" width="720" height="500"></canvas>
+  </div>
+  <p class="canvas-caption">Pravilan tetraedar \( ABCD \) sa ivicom \( a = \sqrt 2 \). Označene su sredine naspramnih ivica: \( M \) na \( AB \), \( N \) na \( CD \). Spojnica \( MN \) (zelena) je upravna i na \( AB \) i na \( CD \) &mdash; to je <em>zajednička normala</em> dveju mimoilaznih pravih.</p>
+</div>
+
+<div data-card="visual-aid" data-title="Pomoćni jednakokraki trougao \( MCD \)">
+  <h2>📐 Trougao \( MCD \) izvučen u ravan</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagramTrougao9" width="720" height="440"></canvas>
+  </div>
+  <p class="canvas-caption">Trougao \( MCD \) sa kracima \( MC = MD = \tfrac{a\sqrt 3}{2} \) i osnovicom \( CD = a \). \( N \) je sredina \( CD \), pa je \( MN \) visina iz vrha \( M \) na osnovicu. Pitagora daje \( MN = \sqrt{(a\sqrt 3/2)^2 - (a/2)^2} = \tfrac{a}{\sqrt 2} \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Interaktivno: pomeranje tačke \( P \) po ivici \( CD \)">
+  <h2>📐 Zašto je \( N = \text{sred}(CD) \) optimalna tačka?</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagramInter9" width="720" height="460"></canvas>
+  </div>
+  <p class="canvas-caption">Prevuci tačku \( P \) po ivici \( CD \) i posmatraj kako se menja dužina \( MP \). Minimum se postiže baš u sredini \( P = N \) &mdash; jer je tada \( MP \) upravna na \( CD \) (visina jednakokrakog trougla iz vrha pada na sredinu osnovice).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Izbor naspramnih ivica</h3>
+      <p>Neka je \( ABCD \) pravilan tetraedar sa ivicom \( a \). Izaberimo par naspramnih ivica &mdash; npr. \( AB \) i \( CD \) (po simetriji izbor je nebitan). Označimo:</p>
+      <div class="math-block">\[ M = \text{sredina } AB, \qquad N = \text{sredina } CD. \]</div>
+      <p>Tražimo dužinu \( MN \).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto su \( AB \) i \( CD \) mimoilazne (skew)?</summary>
+          <div class="detail-content"><p>Da bi se dve prave sekle, moraju imati zajedničku tačku. Ivice \( AB \) i \( CD \) imaju četiri različita tjem&eacute;na (\( A, B, C, D \)) i ne dele ni jedno &mdash; presek im je prazan. Da bi bile paralelne, morale bi ležati u istoj ravni. Ali u pravilnom tetraedru ne postoji ravan koja sadrži obe ivice (tetraedar nije pljosnat). Dakle su mimoilazne.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Dužine \( MC \) i \( MD \) &mdash; visine jednakostraničnih strana</h3>
+      <p>Strana \( \triangle ABC \) je jednakostranični trougao sa stranicom \( a \). Tačka \( M \) je sredina \( AB \), pa je \( CM \) <em>težišnica</em> iz tjem&eacute;na \( C \) na stranicu \( AB \). U jednakostraničnom trouglu, težišnica je ujedno i visina:</p>
+      <div class="math-block">\[ MC = \dfrac{a\sqrt 3}{2}. \]</div>
+      <p>Analogno, strana \( \triangle ABD \) je jednakostranična, a \( MD \) je visina iz \( D \) na \( AB \):</p>
+      <div class="math-block">\[ MD = \dfrac{a\sqrt 3}{2}. \]</div>
+      <p>Dakle \( MC = MD \) &mdash; trougao \( MCD \) je <em>jednakokraki</em>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Trougao \( MCD \) i njegova visina iz \( M \)</h3>
+      <p>U trouglu \( MCD \) imamo:</p>
+      <div class="math-block">\[ MC = MD = \dfrac{a\sqrt 3}{2}, \qquad CD = a. \]</div>
+      <p>Pošto je trougao jednakokraki, težišnica iz vrha \( M \) na osnovicu \( CD \) pada tačno u sredinu osnovice &mdash; a to je upravo \( N \). Ta težišnica je istovremeno i <em>visina</em>:</p>
+      <div class="math-block">\[ MN \perp CD, \qquad CN = ND = \dfrac{a}{2}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: u jednakokrakom trouglu, zašto težišnica iz vrha pada na sredinu osnovice?</summary>
+          <div class="detail-content"><p>Jednakokraki trougao je simetričan u odnosu na simetralu osnovice (osa simetrije prolazi kroz vrh i sredinu osnovice). Vrh, dakle, leži na toj osi, a težišnica iz vrha je upravo segment osa simetrije unutar trougla. Otud je ona i upravna na osnovicu i deli je na pola.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Pitagora u pravouglom trouglu \( MNC \)</h3>
+      <p>Trougao \( MNC \) je pravougli sa pravim uglom kod \( N \) (jer \( MN \perp CD \) iz koraka 3). Katete: \( MN = ? \) i \( NC = \tfrac{a}{2} \); hipotenuza: \( MC = \tfrac{a\sqrt 3}{2} \). Pitagorina teorema:</p>
+      <div class="math-block">\[ MC^2 = MN^2 + NC^2, \]</div>
+      <div class="math-block">\[ \left(\dfrac{a\sqrt 3}{2}\right)^2 = MN^2 + \left(\dfrac{a}{2}\right)^2, \]</div>
+      <div class="math-block">\[ \dfrac{3a^2}{4} = MN^2 + \dfrac{a^2}{4}, \]</div>
+      <div class="math-block">\[ MN^2 = \dfrac{3a^2 - a^2}{4} = \dfrac{2a^2}{4} = \dfrac{a^2}{2}. \]</div>
+      <p>Odakle:</p>
+      <div class="math-block">\[ \boxed{\; MN = \dfrac{a}{\sqrt 2} = \dfrac{a\sqrt 2}{2}. \;} \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Numerička vrednost za \( a = \sqrt 2 \)</h3>
+      <p>Ubacimo \( a = \sqrt 2 \) u dobijenu formulu:</p>
+      <div class="math-block">\[ MN = \dfrac{\sqrt 2}{\sqrt 2} = 1. \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Spojnica \( MN \) je <em>zajednička normala</em> mimoilaznih pravih \( AB \) i \( CD \) &mdash; tj. najkraće rastojanje između njih. Razlog: po simetriji tetraedra, ne samo da je \( MN \perp CD \) (kao visina jednakokrakog trougla \( MCD \)), nego je i \( MN \perp AB \) (po istom argumentu sa zamenom uloga ivica). Štaviše: sve tri spojnice središta naspramnih ivica \( (AB,CD) \), \( (AC,BD) \), \( (AD,BC) \) prolaze kroz isti tačku (centroid tetraedra) i međusobno su upravne! Pravilan tetraedar se može upisati u kocku, a ove tri spojnice postaju upravo tri ose te kocke. Brojevi se uklope: \( a^2/2 \) je „polovina kvadrata ivice“ &mdash; klasičan obrazac \( 1 : \sqrt 2 \) iz dijagonale kvadrata.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ MN = \dfrac{a}{\sqrt 2} = \dfrac{\sqrt 2}{\sqrt 2} = 1. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( \sqrt{3} \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( 1 \)</span>
+    <span class="answer-option" data-option="C">(C) \( \dfrac{\sqrt{3}}{2} \)</span>
+    <span class="answer-option" data-option="D">(D) \( \sqrt{2} \)</span>
+    <span class="answer-option" data-option="E">(E) \( \dfrac{1}{\sqrt{2}} \)</span>
+  </div>
+  <p class="verification">Provera koordinatama: stavimo tjemena tetraedra u kocku stranice 1: \( A=(0,0,0) \), \( B=(1,1,0) \), \( C=(1,0,1) \), \( D=(0,1,1) \). Sve ivice imaju dužinu \( \sqrt 2 \). Sredine: \( M=(1/2,1/2,0) \), \( N=(1/2,1/2,1) \). \( MN = \sqrt{0+0+1} = 1 \). \( \checkmark \) Tačno (B). Primeti i da je \( MN \) paralelna sa \( z \)-osom, dok su \( AB \) i \( CD \) projektovane u dve mimoilazne dijagonale kocke.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Pogrešna definicija „naspramnih ivica“.</strong> U tetraedru, naspramne su one koje <em>nemaju</em> zajedničko tjeme. Ako neko izabere ivice koje imaju zajedničko tjeme (npr. \( AB \) i \( AC \)), one se seku u tjem&eacute;nu \( A \) i njihova „središna razdaljina“ je drugi problem (razdaljina između sredina koje pripadaju trouglu).</li>
+    <li><strong>Davanje odgovora \( \tfrac{1}{\sqrt 2} \).</strong> Tačna formula je \( MN = \tfrac{a}{\sqrt 2} \). Za \( a=\sqrt 2 \) ovo daje \( \tfrac{\sqrt 2}{\sqrt 2} = 1 \), a ne \( \tfrac{1}{\sqrt 2} \). Ovo je klasična greška &mdash; uvrstiti \( a=\sqrt 2 \) u brojilac, ali zaboraviti da se sa imeniocem skrati.</li>
+    <li><strong>Pretpostavka da je \( MN \) jednako visini tetraedra.</strong> Visina tetraedra (iz tjem&eacute;na na suprotnu stranu) je \( h = a\sqrt{2/3} = \tfrac{a\sqrt 6}{3} \). Spojnica središta naspramnih ivica je nešto drugo &mdash; manja. Za \( a=\sqrt 2 \): visina \( = \tfrac{\sqrt{12}}{3} = \tfrac{2\sqrt 3}{3} \approx 1{,}15 \), dok je \( MN = 1 \).</li>
+    <li><strong>Nepravilna primena formule za jednakokrak trougao.</strong> Krak je \( a\sqrt 3/2 \), <em>ne</em> \( a \) (jer je krak visina jednakostraničnog trougla, a ne stranica). Ako se uzme krak \( = a \), dobija se pogrešno \( MN = \sqrt{a^2 - a^2/4} = a\sqrt 3/2 \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>U pravilnom tetraedru \( ABCD \) sa ivicom \( a \), pokaži da tri spojnice središta naspramnih ivica &mdash; \( M_1N_1 \) (za \( AB,CD \)), \( M_2N_2 \) (za \( AC,BD \)), \( M_3N_3 \) (za \( AD,BC \)) &mdash; prolaze kroz <em>istu</em> tačku i da su <em>međusobno upravne</em>. Šta je ta zajednička tačka i koji geometrijski oblik formiraju kraje&shy;vi šest tih sredina?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Sve tri spojnice prolaze kroz <em>centroid</em> tetraedra (presek četiri „medijane“ od tjem&eacute;na do težišta naspramne strane). Šest sredina ivica formiraju tjemena pravilnog <em>oktaedra</em> sa ivicom \( a/2 \). U oktaedru postoje tri ose koje povezuju parove naspramnih tjem&eacute;na &mdash; to su upravo tri zajedničke normale, međusobno upravne, sve dužine \( a/\sqrt 2 \). To čini elegantnu vezu: <em>tetraedar ↔ oktaedar ↔ kocka</em>, tri tela koja se prirodno upisuju jedno u drugo.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3),16), g = parseInt(c.slice(3,5),16), b = parseInt(c.slice(5,7),16);
+      return 'rgba('+r+','+g+','+b+','+alpha+')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagramTetra9');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, Hh = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var primary = cv('--sol-canvas-primary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var tertiary = cv('--sol-canvas-tertiary');
+
+    ctx.clearRect(0,0,W,Hh);
+    ctx.fillStyle = bg; ctx.fillRect(0,0,W,Hh);
+
+    // Place tetrahedron as upright with base ABC (jednakostraničan) and apex D.
+    // Use oblique projection.
+    var cx = W/2, cy = Hh/2 + 60;
+    var R = 150; // base "radius"
+
+    // Base triangle in plane (x,y), apex above center.
+    // Vertices of equilateral base (centered at origin), then projected.
+    var Avec = {x: R*Math.cos(Math.PI*7/6), y: R*Math.sin(Math.PI*7/6), z: 0}; // back-left
+    var Bvec = {x: R*Math.cos(Math.PI*11/6), y: R*Math.sin(Math.PI*11/6), z: 0}; // back-right
+    var Cvec = {x: R*Math.cos(Math.PI/2),    y: R*Math.sin(Math.PI/2),    z: 0}; // front-bottom
+    var hHeight = R * Math.sqrt(2/3); // apex height for regular tetrahedron (a = R√3)
+    var Dvec = {x: 0, y: 0, z: hHeight};
+
+    // Project to canvas. y is "depth" (positive = back).
+    var depthCos = 0.5 * Math.cos(Math.PI/8);
+    var depthSin = 0.5 * Math.sin(Math.PI/8);
+    function proj(v) {
+      return { X: cx + v.x + depthCos * (-v.y), Y: cy - v.z - depthSin * (-v.y) };
+    }
+    // Wait -- I'm conflating axes. Let me reset.
+    // Use (x,y) as 2D plane of the base (top-down). Map this to oblique by:
+    //   x' = x + factor*y*cos
+    //   z'_screen = -z - factor*y*sin (z is up)
+    // Where "factor*y" gives depth offset, with y in base plane.
+    function proj2(p) {
+      // p.x, p.y in base; p.z up
+      var X = cx + p.x + (-p.y) * depthCos;
+      var Y = cy - p.z + (-p.y) * depthSin;
+      return {X: X, Y: Y};
+    }
+
+    var A = proj2(Avec), B = proj2(Bvec), C = proj2(Cvec), D = proj2(Dvec);
+
+    // Mid points
+    function midPt(P, Q) { return {X: (P.X + Q.X)/2, Y: (P.Y + Q.Y)/2}; }
+    var M = midPt(A, B); // sredina AB
+    var N = midPt(C, D); // sredina CD
+
+    // Draw faces faintly first
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.06);
+    ctx.beginPath();
+    ctx.moveTo(A.X, A.Y); ctx.lineTo(B.X, B.Y); ctx.lineTo(C.X, C.Y); ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(A.X, A.Y); ctx.lineTo(C.X, C.Y); ctx.lineTo(D.X, D.Y); ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(B.X, B.Y); ctx.lineTo(C.X, C.Y); ctx.lineTo(D.X, D.Y); ctx.closePath();
+    ctx.fill();
+
+    // Edges: visible (front) solid, hidden dashed
+    // Edge AB is "back" (both at back of base) -- dashed
+    // Edge AD, BD, CD, AC, BC visible
+    ctx.lineWidth = 1.8;
+    function edge(p, q, vis, color) {
+      ctx.strokeStyle = color || muted;
+      if (vis) ctx.setLineDash([]); else ctx.setLineDash([5,5]);
+      ctx.beginPath(); ctx.moveTo(p.X, p.Y); ctx.lineTo(q.X, q.Y); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    edge(A, B, false, muted); // back edge hidden
+    edge(A, C, true, muted);
+    edge(B, C, true, muted);
+    edge(A, D, true, muted);
+    edge(B, D, true, muted);
+    edge(C, D, true, muted);
+
+    // Highlight AB and CD as the "naspramne ivice"
+    ctx.strokeStyle = primary; ctx.lineWidth = 3.5;
+    ctx.setLineDash([5,5]);
+    ctx.beginPath(); ctx.moveTo(A.X, A.Y); ctx.lineTo(B.X, B.Y); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.strokeStyle = primary; ctx.lineWidth = 3.5;
+    ctx.beginPath(); ctx.moveTo(C.X, C.Y); ctx.lineTo(D.X, D.Y); ctx.stroke();
+
+    // Highlight MN
+    ctx.strokeStyle = accent; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(M.X, M.Y); ctx.lineTo(N.X, N.Y); ctx.stroke();
+
+    // Right angle markers conceptually (just put a small "⊥" near M and N)
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 12px Inter, system-ui';
+    ctx.fillText('⊥', M.X - 18, M.Y + 4);
+    ctx.fillText('⊥', N.X + 8, N.Y - 6);
+
+    // Vertex dots and labels
+    function dot(P, color) {
+      ctx.fillStyle = color;
+      ctx.beginPath(); ctx.arc(P.X, P.Y, 4, 0, Math.PI*2); ctx.fill();
+    }
+    dot(A, text); dot(B, text); dot(C, text); dot(D, text);
+    dot(M, primary); dot(N, primary);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 18px Inter, system-ui';
+    ctx.fillText('A', A.X - 22, A.Y + 4);
+    ctx.fillText('B', B.X + 8, B.Y + 4);
+    ctx.fillText('C', C.X - 6, C.Y + 24);
+    ctx.fillText('D', D.X - 4, D.Y - 12);
+    ctx.fillStyle = primary;
+    ctx.fillText('M', M.X + 8, M.Y - 8);
+    ctx.fillText('N', N.X + 10, N.Y + 4);
+
+    // Edge labels
+    ctx.font = 'italic 14px Inter, system-ui';
+    ctx.fillStyle = primary;
+    // AB label
+    ctx.fillText('a', (A.X + B.X)/2 - 5, (A.Y + B.Y)/2 - 8);
+    ctx.fillText('a', (C.X + D.X)/2 + 10, (C.Y + D.Y)/2);
+
+    // MN label
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.fillText('MN = a/√2', (M.X + N.X)/2 - 65, (M.Y + N.Y)/2);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui';
+    ctx.fillText('Pravilan tetraedar ABCD, ivica a = √2', 24, 32);
+    ctx.fillStyle = muted;
+    ctx.font = '13px Inter, system-ui';
+    ctx.fillText('Naspramne ivice: AB i CD (plave, AB iza ⇒ isprekidana).', 24, 54);
+    ctx.fillText('M = sred(AB), N = sred(CD). Spojnica MN (zelena) ⊥ AB i ⊥ CD.', 24, 74);
+  }
+
+  draw();
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function(){ styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3),16), g = parseInt(c.slice(3,5),16), b = parseInt(c.slice(5,7),16);
+      return 'rgba('+r+','+g+','+b+','+alpha+')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagramTrougao9');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, Hh = canvas.height;
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var primary = cv('--sol-canvas-primary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0,0,W,Hh);
+    ctx.fillStyle = bg; ctx.fillRect(0,0,W,Hh);
+
+    // Triangle MCD with M at top, C and D on the bottom
+    // Use a = 1 for drawing; visualization purpose
+    var aDraw = 260;
+    var Cx = 250, Cy = 340;
+    var Dx = Cx + aDraw, Dy = Cy;
+    // M is above the midpoint of CD
+    var Mx = (Cx + Dx)/2;
+    // Compute My from triangle: MC = MD = aDraw*√3/2 in REAL units, but our triangle has CD = aDraw and MC = aDraw*(√3/2). So height = sqrt(MC^2 - (CD/2)^2) = aDraw * sqrt(3/4 - 1/4) = aDraw * sqrt(2)/2 = aDraw / sqrt(2).
+    var My = Cy - aDraw / Math.sqrt(2);
+    var Nx = Mx, Ny = Cy;
+
+    // Fill
+    ctx.beginPath();
+    ctx.moveTo(Mx, My); ctx.lineTo(Cx, Cy); ctx.lineTo(Dx, Dy); ctx.closePath();
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.10);
+    ctx.fill();
+
+    // Triangle sides
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = primary;
+    ctx.beginPath();
+    ctx.moveTo(Mx, My); ctx.lineTo(Cx, Cy); // MC
+    ctx.lineTo(Dx, Dy); // CD
+    ctx.lineTo(Mx, My); // DM
+    ctx.stroke();
+
+    // Visina MN
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.5;
+    ctx.setLineDash([7,5]);
+    ctx.beginPath();
+    ctx.moveTo(Mx, My); ctx.lineTo(Nx, Ny);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Right angle marker at N
+    var sq = 14;
+    ctx.strokeStyle = text;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(Nx + sq, Ny);
+    ctx.lineTo(Nx + sq, Ny - sq);
+    ctx.lineTo(Nx, Ny - sq);
+    ctx.stroke();
+
+    // Vertex dots
+    ctx.fillStyle = text;
+    ctx.beginPath(); ctx.arc(Mx, My, 4, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(Cx, Cy, 4, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(Dx, Dy, 4, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = accent;
+    ctx.beginPath(); ctx.arc(Nx, Ny, 4, 0, Math.PI*2); ctx.fill();
+
+    // Labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 18px Inter, system-ui';
+    ctx.fillText('M', Mx - 6, My - 12);
+    ctx.fillText('C', Cx - 22, Cy + 8);
+    ctx.fillText('D', Dx + 8, Dy + 8);
+    ctx.fillStyle = accent;
+    ctx.fillText('N', Nx - 6, Ny + 24);
+
+    // Side labels
+    ctx.font = 'italic 16px Inter, system-ui';
+    ctx.fillStyle = primary;
+    ctx.fillText('MC = a√3 / 2', (Mx + Cx)/2 - 110, (My + Cy)/2);
+    ctx.fillText('MD = a√3 / 2', (Mx + Dx)/2 + 12, (My + Dy)/2);
+    ctx.fillStyle = text;
+    ctx.fillText('a/2', (Cx + Nx)/2 - 15, Cy + 22);
+    ctx.fillText('a/2', (Nx + Dx)/2 - 15, Cy + 22);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold italic 16px Inter, system-ui';
+    ctx.fillText('MN = a/√2', Mx + 16, (My + Ny)/2);
+
+    // Pitagora callout
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui';
+    ctx.fillText('Pitagora u △MNC:', 30, 50);
+    ctx.font = '14px Inter, system-ui';
+    ctx.fillText('MC² = MN² + NC²', 30, 76);
+    ctx.fillText('(a√3/2)² = MN² + (a/2)²', 30, 100);
+    ctx.fillText('3a²/4 − a²/4 = MN²', 30, 124);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 16px Inter, system-ui';
+    ctx.fillText('⇒  MN² = a²/2, MN = a/√2', 30, 154);
+
+    // Caption
+    ctx.fillStyle = muted;
+    ctx.font = '13px Inter, system-ui';
+    ctx.fillText('Jednakokrak trougao MCD: krak a√3/2, osnovica a, visina iz vrha = a/√2.', 30, Hh - 20);
+  }
+
+  draw();
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function(){ styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3),16), g = parseInt(c.slice(3,5),16), b = parseInt(c.slice(5,7),16);
+      return 'rgba('+r+','+g+','+b+','+alpha+')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagramInter9');
+  if (!canvas) return;
+  ctx = canvas.getContext('2d');
+  var ctx;
+  ctx = canvas.getContext('2d');
+  var W = canvas.width, Hh = canvas.height;
+  canvas.style.touchAction = 'none';
+
+  // Use the triangle MCD analog: M at top, CD horizontal. P slides along CD.
+  // t in [0,1]: P = C + t*(D - C).
+  var t = 0.5;
+  var dragging = false;
+
+  var aDraw = 280;
+  var Cx = 220, Cy = 320;
+  var Dx = Cx + aDraw, Dy = Cy;
+  var Mx = (Cx + Dx)/2;
+  var My = Cy - aDraw / Math.sqrt(2);
+
+  function pPt(tt) { return { x: Cx + tt*(Dx - Cx), y: Cy }; }
+
+  function MPdist(tt) {
+    // Real distance: MC = MD = aDraw*sqrt(3)/2 (in canvas units relative to a=aDraw)
+    // P at distance t*a from C along CD. By law of cosines or direct:
+    // MP^2 = MN^2 + (P - N)^2 where N is midpoint => |P-N| = a*|t-0.5|
+    var MN = aDraw / Math.sqrt(2);
+    var PN = aDraw * Math.abs(tt - 0.5);
+    return Math.sqrt(MN*MN + PN*PN);
+  }
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var primary = cv('--sol-canvas-primary');
+    var accent = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0,0,W,Hh);
+    ctx.fillStyle = bg; ctx.fillRect(0,0,W,Hh);
+
+    // Triangle MCD
+    ctx.beginPath();
+    ctx.moveTo(Mx, My); ctx.lineTo(Cx, Cy); ctx.lineTo(Dx, Dy); ctx.closePath();
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.08);
+    ctx.fill();
+
+    ctx.lineWidth = 2.2;
+    ctx.strokeStyle = primary;
+    ctx.beginPath();
+    ctx.moveTo(Mx, My); ctx.lineTo(Cx, Cy); ctx.lineTo(Dx, Dy); ctx.lineTo(Mx, My);
+    ctx.stroke();
+
+    // Midpoint N marked (reference)
+    var Nx = (Cx + Dx)/2, Ny = Cy;
+    ctx.fillStyle = muted;
+    ctx.beginPath(); ctx.arc(Nx, Ny, 3, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 12px Inter, system-ui';
+    ctx.fillText('N (sredina)', Nx - 32, Ny + 36);
+
+    // Current P
+    var P = pPt(t);
+
+    // Line MP (live)
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(Mx, My); ctx.lineTo(P.x, P.y);
+    ctx.stroke();
+
+    // P point and label
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.2);
+    ctx.beginPath(); ctx.arc(P.x, P.y, 12, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = primary;
+    ctx.beginPath(); ctx.arc(P.x, P.y, 7, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui';
+    ctx.fillText('P', P.x + 12, P.y + 28);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillText('prevuci →', P.x - 30, P.y + 50);
+
+    // M and labels
+    ctx.fillStyle = text;
+    ctx.beginPath(); ctx.arc(Mx, My, 4, 0, Math.PI*2); ctx.fill();
+    ctx.font = 'bold 17px Inter, system-ui';
+    ctx.fillText('M', Mx - 8, My - 12);
+    ctx.beginPath(); ctx.arc(Cx, Cy, 4, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(Dx, Dy, 4, 0, Math.PI*2); ctx.fill();
+    ctx.fillText('C', Cx - 22, Cy + 8);
+    ctx.fillText('D', Dx + 8, Dy + 8);
+
+    // Display MP value
+    var d = MPdist(t);
+    // Convert canvas units to "a units" knowing aDraw = our a in drawing
+    var dInA = d / aDraw; // multiples of a
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui';
+    ctx.fillText('t = CP / CD = ' + t.toFixed(2), 30, 40);
+    ctx.fillText('MP = ' + dInA.toFixed(3) + ' · a', 30, 64);
+    ctx.fillStyle = (Math.abs(t - 0.5) < 0.01) ? accent : muted;
+    ctx.font = '14px Inter, system-ui';
+    ctx.fillText('minimum: t = 0,5  ⇒  MP = a/√2 ≈ 0,707 · a', 30, 88);
+
+    // Numerical for a = sqrt(2): MP_min = 1
+    ctx.fillStyle = text;
+    ctx.font = '13px Inter, system-ui';
+    ctx.fillText('Za a = √2: MP|t=0,5 = 1.', 30, 108);
+
+    // Mini formula for current MP
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillText('MP(t) = √( (a/√2)² + (a·|t−0,5|)² )', 30, 130);
+
+    // Mini graph at bottom-right
+    var gx = 480, gy = 360, gw = 200, gh = 70;
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(gx, gy, gw, gh);
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui';
+    ctx.fillText('MP(t)', gx, gy - 6);
+    ctx.fillText('0', gx - 5, gy + gh + 12);
+    ctx.fillText('1', gx + gw - 5, gy + gh + 12);
+    // plot curve
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    var maxD = MPdist(0); // at endpoint
+    for (var k=0;k<=80;k++){
+      var tt = k/80;
+      var dd = MPdist(tt);
+      var x = gx + tt*gw;
+      var y = gy + gh - (dd / maxD) * gh * 0.9 - 5;
+      if (k===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+    // current dot
+    var cdx = gx + t*gw;
+    var cdy = gy + gh - (MPdist(t) / maxD) * gh * 0.9 - 5;
+    ctx.fillStyle = accent;
+    ctx.beginPath(); ctx.arc(cdx, cdy, 4, 0, Math.PI*2); ctx.fill();
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui';
+    ctx.fillText('Prevuci tačku P po CD i posmatraj dužinu MP', 30, Hh - 20);
+  }
+
+  draw();
+
+  function getPos(e) {
+    var r = canvas.getBoundingClientRect();
+    var evt = e.touches ? e.touches[0] : e;
+    return { x: evt.clientX - r.left, y: evt.clientY - r.top };
+  }
+  function isNear(pos) {
+    var P = pPt(t);
+    return Math.hypot(pos.x - P.x, pos.y - P.y) < 22;
+  }
+  function setFromPos(pos) {
+    // project onto CD: clamp t = (x - Cx) / (Dx - Cx)
+    var nt = (pos.x - Cx) / (Dx - Cx);
+    nt = Math.max(0, Math.min(1, nt));
+    t = nt;
+  }
+
+  canvas.addEventListener('mousedown', function(e){
+    var pos = getPos(e);
+    if (isNear(pos) || (pos.y > Cy - 40 && pos.y < Cy + 40 && pos.x > Cx - 20 && pos.x < Dx + 20)) {
+      dragging = true;
+      setFromPos(pos);
+      canvas.style.cursor = 'grabbing';
+      draw();
+    }
+  });
+  canvas.addEventListener('mousemove', function(e){
+    var pos = getPos(e);
+    if (dragging) {
+      setFromPos(pos);
+      draw();
+    } else {
+      canvas.style.cursor = isNear(pos) ? 'grab' : 'default';
+    }
+  });
+  canvas.addEventListener('mouseup', function(){ dragging = false; canvas.style.cursor = 'default'; });
+  canvas.addEventListener('mouseleave', function(){ dragging = false; canvas.style.cursor = 'default'; });
+
+  canvas.addEventListener('touchstart', function(e){
+    var pos = getPos(e);
+    if (isNear(pos) || (pos.y > Cy - 40 && pos.y < Cy + 40 && pos.x > Cx - 20 && pos.x < Dx + 20)) {
+      dragging = true;
+      setFromPos(pos);
+      e.preventDefault();
+      draw();
+    }
+  }, { passive: false });
+  canvas.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    e.preventDefault();
+    setFromPos(getPos(e));
+    draw();
+  }, { passive: false });
+  canvas.addEventListener('touchend', function(){ dragging = false; });
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function(){ styles = getComputedStyle(root); draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Razdaljina između središta naspramnih ivica pravilnog tetraedra ivice √2",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["stereometrija", "pravilan tetraedar", "naspramne ivice", "zajednička normala", "Pitagorina teorema"]
+}
+BRAINSPARK_META-->

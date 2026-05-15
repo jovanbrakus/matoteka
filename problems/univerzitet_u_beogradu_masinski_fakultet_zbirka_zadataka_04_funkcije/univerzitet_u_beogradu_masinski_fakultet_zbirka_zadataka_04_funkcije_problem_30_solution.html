@@ -1,0 +1,460 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Zadato: f(x) = x^3 + 3x^2 - 9x + 1 na segmentu [-2, 2]. Pitanje: razlika najveće i najmanje vrednosti.
+
+Strategija: Najveća/najmanja vrednost neprekidne funkcije na zatvorenom segmentu se dostiže ili u krajevima segmenta ili u kritičnim tačkama unutar njega.
+
+Korak 1 — izvod:
+f'(x) = 3x^2 + 6x - 9 = 3(x^2 + 2x - 3) = 3(x - 1)(x + 3).
+Nule izvoda: x = 1 i x = -3.
+
+Korak 2 — filtriranje po segmentu [-2, 2]:
+x = 1 ∈ [-2, 2]. ✓
+x = -3 ∉ [-2, 2]. ✗ (ignorišemo)
+
+Korak 3 — vrednosti u kandidatima:
+f(-2) = (-2)^3 + 3(-2)^2 - 9(-2) + 1 = -8 + 12 + 18 + 1 = 23.
+f(1)  = 1 + 3 - 9 + 1 = -4.
+f(2)  = 8 + 12 - 18 + 1 = 3.
+
+Korak 4 — najveća i najmanja:
+Max = max(23, -4, 3) = 23 (u x = -2).
+Min = min(23, -4, 3) = -4 (u x = 1).
+Razlika = 23 - (-4) = 27.
+
+Provera: f'(x) = 3(x-1)(x+3) — na [-2, 1] imamo x-1 ≤ 0 i x+3 > 0, pa f' ≤ 0 → funkcija opada. Stoga f(-2) > f(1). ✓
+Na [1, 2] imamo x-1 ≥ 0 i x+3 > 0, pa f' ≥ 0 → funkcija raste. Stoga f(1) < f(2). ✓
+Zaključak: na celom segmentu max u levom kraju (-2), min u kritičnoj tački 1.
+
+Vizuelizacija: grafik f(x) na [-2.3, 2.3], označiti tri ključne tačke (-2, 23), (1, -4), (2, 3), maksimum i minimum istaknuti različitim bojama, dodati vertikalnu strelicu visine = razlika između max i min = 27.
+
+Odgovor: (C) 27.
+</script>
+
+<h1 data-card="problem-title">Razlika ekstrema kubne funkcije na segmentu</h1>
+<p data-card="problem-subtitle" class="subtitle">Globalni maksimum i minimum neprekidne funkcije na zatvorenom intervalu</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Razlika najveće i najmanje vrednosti funkcije \( f(x) = x^3 + 3x^2 - 9x + 1 \) na segmentu \( [-2, 2] \) je:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 7 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 20 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 27 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( -20 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 32 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Najveća i najmanja vrednost neprekidne funkcije na zatvorenom segmentu se dostižu u krajevima ili u kritičnim tačkama (gde je \( f'(x) = 0 \)). Naći ćemo \( f'(x) \), izdvojiti kritične tačke koje pripadaju \( [-2, 2] \), izračunati \( f \) u tri kandidata i uzeti razliku.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ekstremi na zatvorenom segmentu (Vajerštrasova teorema)</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Vajerštras:</strong> Neprekidna funkcija na zatvorenom i ograničenom intervalu dostiže svoju najveću i najmanju vrednost.</li>
+        <li>Te vrednosti se dostižu ili u krajevima segmenta, ili u <em>kritičnim tačkama</em> u unutrašnjosti (tačke gde je \( f'(x) = 0 \) ili \( f' \) ne postoji).</li>
+        <li>Algoritam: izračunati \( f \) u krajevima i u svim kritičnim tačkama unutar segmenta, pa uporediti dobijene brojeve.</li>
+        <li>Izvod polinoma: \( (x^n)' = n x^{n-1} \).</li>
+        <li>Faktorizacija kvadrata: \( x^2 + 2x - 3 = (x - 1)(x + 3) \) (zbir korena \( -2 \), proizvod \( -3 \)).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Grafik funkcije sa ekstremima na segmentu">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="p30-canvas" width="700" height="600"></canvas>
+  </div>
+  <p class="canvas-caption">Grafik funkcije \( f(x) = x^3 + 3x^2 - 9x + 1 \) ograničen na segment \( [-2, 2] \). Označene su tri kandidat-tačke: levi kraj \( (-2, 23) \) — <strong>maksimum</strong>, kritična tačka \( (1, -4) \) — <strong>minimum</strong>, i desni kraj \( (2, 3) \). Vertikalna strelica desno prikazuje razliku \( 23 - (-4) = 27 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunajmo i faktorišemo izvod</h3>
+      <p>Pravilom za izvod polinoma:</p>
+      <div class="math-block">\[ f'(x) = 3x^2 + 6x - 9 = 3(x^2 + 2x - 3) = 3(x - 1)(x + 3). \]</div>
+      <p>Nule izvoda: \( x = 1 \) i \( x = -3 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Filtriramo kritične tačke po segmentu</h3>
+      <p>Razmatramo samo kritične tačke koje pripadaju \( [-2, 2] \):</p>
+      <ul>
+        <li>\( x = 1 \in [-2, 2] \) ✓ — uzimamo u obzir.</li>
+        <li>\( x = -3 \notin [-2, 2] \) ✗ — ignorišemo.</li>
+      </ul>
+      <p>Lista kandidata za ekstreme: krajevi segmenta \( x = -2 \) i \( x = 2 \), plus kritična tačka \( x = 1 \) — ukupno <strong>tri kandidata</strong>.</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto izvod ne moramo proveravati nigde drugo?</summary>
+          <div class="detail-content"><p>Polinom je svuda diferencijabilan, pa \( f' \) postoji u svakoj tački. Jedine sumnjive tačke unutar segmenta su one gde \( f'(x) = 0 \). Krajeve uvek razmatramo posebno, jer u njima funkcija može „skočiti" u maksimum ili minimum bez da je nagib nula.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo \( f \) u sva tri kandidata</h3>
+      <div class="math-block">\[ \begin{aligned} f(-2) &= (-2)^3 + 3(-2)^2 - 9(-2) + 1 \\ &= -8 + 12 + 18 + 1 = 23, \\[4pt] f(1) &= 1^3 + 3 \cdot 1^2 - 9 \cdot 1 + 1 \\ &= 1 + 3 - 9 + 1 = -4, \\[4pt] f(2) &= 2^3 + 3 \cdot 2^2 - 9 \cdot 2 + 1 \\ &= 8 + 12 - 18 + 1 = 3. \end{aligned} \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Određujemo maksimum i minimum</h3>
+      <p>Upoređujemo dobijene tri vrednosti:</p>
+      <div class="math-block">\[ 23, \quad -4, \quad 3 \quad \Longrightarrow \quad \max = 23, \quad \min = -4. \]</div>
+      <p>Dakle, najveća vrednost je \( f(-2) = 23 \) (u levom kraju), a najmanja \( f(1) = -4 \) (u kritičnoj tački).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: znak izvoda na komadima [-2, 1] i [1, 2].</summary>
+          <div class="detail-content">
+            <p>Na \( [-2, 1] \): faktor \( x + 3 > 0 \), faktor \( x - 1 \le 0 \), pa \( f'(x) = 3(x-1)(x+3) \le 0 \) — funkcija opada od \( 23 \) ka \( -4 \). Na \( [1, 2] \): oba faktora nenegativna, \( f'(x) \ge 0 \) — raste od \( -4 \) ka \( 3 \). Min je dakle u \( x = 1 \), max u \( x = -2 \), što potvrđuje rezultat.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo razliku</h3>
+      <div class="math-block">\[ \max f - \min f = 23 - (-4) = 23 + 4 = 27. \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kubna funkcija u opštem slučaju ima dve kritične tačke (jedan lokalni maks i jedan lokalni min). U ovom zadatku jedna od njih, \( x = -3 \), <strong>leži van segmenta</strong> — to je upravo lokalni maksimum cele funkcije, koji bismo na \( \mathbb{R} \) iskoristili. Pošto je on van \( [-2, 2] \), uloga maksimuma na našem segmentu „prelazi" na <em>kraj</em> \( x = -2 \). Ovo je tipičan trik kod ovakvih zadataka: uvek filtrirati kritične tačke kroz domen.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \max_{[-2,2]} f - \min_{[-2,2]} f = 23 - (-4) = 27 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 7 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 20 \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( 27 \)</span>
+    <span class="answer-option" data-option="D">(D) \( -20 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 32 \)</span>
+  </div>
+  <p class="verification">Provera ponašanja: na \( [-2, 1] \) je \( f'(x) \le 0 \) (opada), na \( [1, 2] \) je \( f'(x) \ge 0 \) (raste). Stoga je tačka \( x = 1 \) sigurno minimum, a maksimum je u jednom od krajeva. Pošto \( f(-2) = 23 > 3 = f(2) \), maksimum je u levom kraju.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Računanje \( f \) i u tački \( x = -3 \), iako ona <em>ne pripada</em> segmentu \( [-2, 2] \) — uzimanje \( f(-3) = 28 \) kao maksimuma daje pogrešan odgovor.</li>
+    <li>Zaboravljanje da se proveri kraj \( x = -2 \): ako se računaju samo \( f(1) \) i \( f(2) \), dobija se \( 3 - (-4) = 7 \), tj. (A) — pogrešno.</li>
+    <li>Predznak: \( 23 - (-4) = 27 \), a ne \( 23 - 4 = 19 \). Razlika je uvek pozitivna kada se oduzima manja od veće.</li>
+    <li>Pogrešna faktorizacija \( x^2 + 2x - 3 \) (npr. \( (x+1)(x-3) \) umesto \( (x-1)(x+3) \)).</li>
+    <li>Greška u znaku pri računanju \( f(-2) = (-8) + (+12) + (+18) + 1 \): zaboraviti da je \( -9 \cdot (-2) = +18 \) i napisati \( -18 \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Za istu funkciju \( f(x) = x^3 + 3x^2 - 9x + 1 \), kolika je razlika najveće i najmanje vrednosti na <strong>proširenom</strong> segmentu \( [-4, 2] \)? Da li se sada lokalni maksimum u \( x = -3 \) „aktivira" kao kandidat?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Sada kandidate su \( x = -4 \), \( x = -3 \), \( x = 1 \) i \( x = 2 \). Izračunaj: \( f(-4) = -64 + 48 + 36 + 1 = 21 \); \( f(-3) = -27 + 27 + 27 + 1 = 28 \); \( f(1) = -4 \); \( f(2) = 3 \). Maks \( 28 \) (u \( x = -3 \), lokalni max), min \( -4 \) (u \( x = 1 \)), razlika \( 32 \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('p30-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  // Math coords
+  var xMin = -2.6, xMax = 2.6;
+  var yMin = -8, yMax = 28;
+  var marginL = 60, marginR = 100, marginT = 50, marginB = 80;
+  var plotW = W - marginL - marginR;
+  var plotH = H - marginT - marginB;
+  function X(x) { return marginL + (x - xMin) / (xMax - xMin) * plotW; }
+  function Y(y) { return marginT + (yMax - y) / (yMax - yMin) * plotH; }
+
+  function f(x) { return x*x*x + 3*x*x - 9*x + 1; }
+
+  function draw() {
+    styles = getComputedStyle(root);
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+    var danger    = cv('--sol-canvas-danger');
+    var tertiary  = cv('--sol-canvas-tertiary');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Highlight segment region
+    ctx.fillStyle = cvAlpha('--sol-canvas-tertiary', 0.10);
+    ctx.fillRect(X(-2), marginT, X(2) - X(-2), plotH);
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (var gx = -2; gx <= 2; gx++) {
+      ctx.moveTo(X(gx), Y(yMin));
+      ctx.lineTo(X(gx), Y(yMax));
+    }
+    for (var gy = -5; gy <= 25; gy += 5) {
+      ctx.moveTo(X(xMin), Y(gy));
+      ctx.lineTo(X(xMax), Y(gy));
+    }
+    ctx.stroke();
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(X(xMin), Y(0));
+    ctx.lineTo(X(xMax), Y(0));
+    ctx.moveTo(X(0), Y(yMin));
+    ctx.lineTo(X(0), Y(yMax));
+    ctx.stroke();
+
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText('x', X(xMax) - 14, Y(0) - 8);
+    ctx.fillText('y', X(0) + 8, Y(yMax) + 14);
+
+    // Tick labels (x)
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui';
+    ctx.textAlign = 'center';
+    for (var tx = -2; tx <= 2; tx++) {
+      if (tx === 0) continue;
+      ctx.fillText(tx.toString(), X(tx), Y(0) + 16);
+    }
+    // y tick labels
+    ctx.textAlign = 'right';
+    var yticks = [-5, 5, 10, 15, 20, 25];
+    for (var i = 0; i < yticks.length; i++) {
+      ctx.fillText(yticks[i].toString(), X(0) - 6, Y(yticks[i]) + 4);
+    }
+
+    // Dashed vertical lines for segment endpoints
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(X(-2), Y(yMin)); ctx.lineTo(X(-2), Y(yMax));
+    ctx.moveTo(X(2), Y(yMin)); ctx.lineTo(X(2), Y(yMax));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Curve, full visible part
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    var steps = 300;
+    for (var k = 0; k <= steps; k++) {
+      var xv = xMin + (xMax - xMin) * k / steps;
+      var yv = f(xv);
+      if (yv > yMax + 5 || yv < yMin - 5) {
+        // skip out-of-range
+      }
+      var cx = X(xv), cy = Y(yv);
+      if (k === 0) ctx.moveTo(cx, cy);
+      else ctx.lineTo(cx, cy);
+    }
+    ctx.stroke();
+
+    // Highlighted portion on [-2, 2] thicker
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    var steps2 = 200;
+    for (var m = 0; m <= steps2; m++) {
+      var xv2 = -2 + 4 * m / steps2;
+      var yv2 = f(xv2);
+      var cx2 = X(xv2), cy2 = Y(yv2);
+      if (m === 0) ctx.moveTo(cx2, cy2);
+      else ctx.lineTo(cx2, cy2);
+    }
+    ctx.stroke();
+
+    // Mark three key points
+    function keyPoint(x0, y0, color, isMax, isMin) {
+      var px = X(x0), py = Y(y0);
+      ctx.fillStyle = cvAlpha(isMax ? '--sol-canvas-danger' : (isMin ? '--sol-canvas-accent' : '--sol-canvas-secondary'), 0.22);
+      ctx.beginPath(); ctx.arc(px, py, 14, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = color;
+      ctx.beginPath(); ctx.arc(px, py, 7, 0, Math.PI*2); ctx.fill();
+      ctx.strokeStyle = bg;
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(px, py, 7, 0, Math.PI*2); ctx.stroke();
+    }
+
+    // Max at (-2, 23) — red/danger
+    keyPoint(-2, 23, danger, true, false);
+    // Min at (1, -4) — green/accent
+    keyPoint(1, -4, accent, false, true);
+    // Endpoint (2, 3) — secondary
+    keyPoint(2, 3, secondary, false, false);
+
+    // Labels with backgrounds
+    function labelBox(text1, text2, x0, y0, color, dx, dy) {
+      var px = X(x0) + dx, py = Y(y0) + dy;
+      ctx.font = 'bold 12px Inter, system-ui';
+      var w1 = ctx.measureText(text1).width;
+      ctx.font = '11px Inter, system-ui';
+      var w2 = ctx.measureText(text2).width;
+      var boxW = Math.max(w1, w2) + 14;
+      var boxH = 36;
+      ctx.fillStyle = cvAlpha('--sol-canvas-bg', 0.95);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      ctx.fillRect(px, py, boxW, boxH);
+      ctx.strokeRect(px, py, boxW, boxH);
+      ctx.textAlign = 'left';
+      ctx.font = 'bold 12px Inter, system-ui';
+      ctx.fillStyle = color;
+      ctx.fillText(text1, px + 7, py + 15);
+      ctx.font = '11px Inter, system-ui';
+      ctx.fillStyle = cv('--sol-canvas-text');
+      ctx.fillText(text2, px + 7, py + 30);
+    }
+
+    labelBox('MAX = 23', 'f(-2) = 23', -2, 23, danger, 12, -10);
+    labelBox('MIN = -4', 'f(1) = -4', 1, -4, accent, 12, 8);
+    labelBox('f(2) = 3', 'desni kraj', 2, 3, secondary, -88, 14);
+
+    // Difference arrow on right side
+    var arrowX = X(2.45);
+    var topY = Y(23);
+    var botY = Y(-4);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(arrowX, topY);
+    ctx.lineTo(arrowX, botY);
+    // arrowheads at both ends
+    ctx.moveTo(arrowX, topY); ctx.lineTo(arrowX - 6, topY + 10);
+    ctx.moveTo(arrowX, topY); ctx.lineTo(arrowX + 6, topY + 10);
+    ctx.moveTo(arrowX, botY); ctx.lineTo(arrowX - 6, botY - 10);
+    ctx.moveTo(arrowX, botY); ctx.lineTo(arrowX + 6, botY - 10);
+    ctx.stroke();
+
+    // Difference label
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText('Δ = 27', arrowX + 10, (topY + botY) / 2 + 4);
+
+    // Helper dashed horizontals to extend max/min to the arrow
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(X(-2), topY); ctx.lineTo(arrowX, topY);
+    ctx.moveTo(X(1), botY); ctx.lineTo(arrowX, botY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Segment range label below x-axis
+    ctx.fillStyle = tertiary;
+    ctx.font = 'bold 12px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('segment [-2, 2]', X(0), Y(0) + 38);
+
+    // Title
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.fillText('f(x) = x³ + 3x² - 9x + 1', W/2, 26);
+
+    // Bottom note
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'left';
+    ctx.fillText('Kritična tačka x = -3 leži van segmenta — ignorišemo je.', marginL, H - 22);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() { draw(); }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Razlika maksimuma i minimuma kubne funkcije na segmentu [-2, 2]",
+  "subject": "math",
+  "unit": "calculus",
+  "topic_tags": ["ekstremi", "prvi izvod", "zatvoreni segment", "kubna funkcija", "kritične tačke"]
+}
+BRAINSPARK_META-->

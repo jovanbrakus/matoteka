@@ -1,0 +1,620 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Zadatak: AP. a_5 = 4. Naći d za koje je f(d) = a_2^2 + a_6^2 minimalno.
+
+  a_5 = a_1 + 4d = 4  →  a_1 = 4 − 4d.
+  a_2 = a_1 + d = 4 − 4d + d = 4 − 3d.
+  a_6 = a_1 + 5d = 4 − 4d + 5d = 4 + d.
+
+  f(d) = (4 − 3d)^2 + (4 + d)^2
+       = 16 − 24d + 9d^2 + 16 + 8d + d^2
+       = 10d^2 − 16d + 32.
+
+  Parabola otvorena nagore. Minimum kvadratnog trinoma Ad^2 + Bd + C u d* = −B/(2A):
+  d* = 16 / (2·10) = 16/20 = 0,8.
+
+  f(0,8) = 10·0,64 − 16·0,8 + 32 = 6,4 − 12,8 + 32 = 25,6.
+
+  Alternativa preko izvoda:
+  f'(d) = 20d − 16 = 0  →  d = 0,8. ✓
+
+  Geometrijska/algebarska veza: a_2 i a_6 su simetrični oko a_4 (jer je 2,6 → razmak +2,−2 od 4).
+  Tačnije, a_2 + a_6 = 2 a_4 = 2(a_1 + 3d) = 2(4 − 4d + 3d) = 2(4 − d) = 8 − 2d.
+  Identitet: x^2 + y^2 = (x+y)^2/2 + (x−y)^2/2.
+  Sa x = a_2, y = a_6: x + y = 8 − 2d, x − y = a_2 − a_6 = (4 − 3d) − (4 + d) = −4d.
+  Pa f(d) = (8 − 2d)^2/2 + (−4d)^2/2 = (8 − 2d)^2/2 + 16d^2/2 = (8 − 2d)^2/2 + 8d^2.
+  Razvija: ((8 − 2d)^2)/2 = (64 − 32d + 4d^2)/2 = 32 − 16d + 2d^2.
+  Pa f(d) = 32 − 16d + 2d^2 + 8d^2 = 10d^2 − 16d + 32. ✓ — isto.
+
+  Tačan odgovor: (B) 0,8.
+
+  Najčešće greške:
+   * Pomešati a_2 = a_1 − d (umesto a_1 + d).
+   * Računati a_5 = a_1 + 5d umesto a_1 + 4d.
+   * Pri kvadriranju (4 − 3d)^2 ispustiti dvostruki proizvod ili pogrešno mu staviti znak.
+   * Pisati formulu temena d* = B/(2A) bez znaka minus.
+
+  Vizualizacija:
+   - Interaktivna: parabola f(d) = 10d^2 − 16d + 32, slider za d ∈ [−0,3, 1,9].
+     Pokazati tačke (a_2, 0) i (a_6, 0) na malom prikazu? Možda previše.
+     Bolje: glavna parabola sa trenutnom vrednošću d kao draggable tačkom NA parabolama,
+     i ispod broj-line sa pozicijama a_2 i a_6, pokazujući kako zavise od d.
+     Tačka minimuma jasno označena na d = 0,8.
+   - Na canvasu: prevuci tačku po horizontalnoj osi, parabola statična, vertikala
+     pokazuje trenutno d i visinu f(d). Live readout f(d), a_2, a_6.
+</script>
+
+<h1 data-card="problem-title">Razlika progresije koja minimizira zbir kvadrata dva člana</h1>
+<p data-card="problem-subtitle" class="subtitle">Aritmetička progresija i minimum kvadratne funkcije — optimizacija po parametru \( d \)</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Peti član aritmetičkog niza je \( 4 \). Vrednost razlike niza za koju je zbir kvadrata drugog i šestog člana najmanji iznosi:</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">Peti član</span>
+      <span class="given-value">\( a_5 = 4 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Cilj</span>
+      <span class="given-value">\( a_2^2 + a_6^2 \to \min \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Promenljiva</span>
+      <span class="given-value">\( d = ? \)</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 0{,}9 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 0{,}8 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 0{,}7 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 0{,}6 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 0{,}5 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Iskoristićemo \( a_5 = 4 \) da izrazimo \( a_1 \) preko \( d \), pa \( a_2 \) i \( a_6 \) postanu linearne funkcije od \( d \). Zbir njihovih kvadrata je tada kvadratna funkcija \( f(d) = A\,d^2 + B\,d + C \), pa minimum nalazimo formulom temena \( d^{*} = -\dfrac{B}{2A} \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule</summary>
+    <div class="detail-content">
+      <ul>
+        <li>Opšti član aritmetičke progresije: \( a_n = a_1 + (n-1)\,d \).</li>
+        <li>Kvadrat binoma: \( (p + q)^2 = p^2 + 2pq + q^2 \).</li>
+        <li>Teme parabole \( f(d) = A\,d^2 + B\,d + C \) za \( A > 0 \) je u tački \( d^{*} = -\dfrac{B}{2A} \) i tu se postiže minimum.</li>
+        <li>Korisna simetrija: \( a_2 \) i \( a_6 \) su simetrični oko \( a_4 \), pa \( a_2 + a_6 = 2\,a_4 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Interaktivni prikaz funkcije f(d)">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-main" width="780" height="540"></canvas>
+  </div>
+  <div class="canvas-controls">
+    <label for="d-slider">Razlika \( d \): <output id="d-readout">0,80</output></label>
+    <input id="d-slider" type="range" min="-30" max="190" step="1" value="80" />
+  </div>
+  <p class="canvas-caption">Parabola \( f(d) = 10d^2 - 16d + 32 \). Prevuci klizač da menjaš \( d \) — vertikalna linija prati trenutnu vrednost. Minimum (\( d = 0{,}8 \), \( f = 25{,}6 \)) označen je zelenom tačkom. Levi panel pokazuje kako se vrednosti \( a_2 = 4 - 3d \) i \( a_6 = 4 + d \) menjaju.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Izrazimo \( a_1 \) preko \( d \)</h3>
+      <p>Iz \( a_5 = a_1 + 4d = 4 \) sledi:</p>
+      <div class="math-block">\[ a_1 = 4 - 4d. \]</div>
+      <p>Sve ostale članove sada možemo izraziti samo preko \( d \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo \( a_2 \) i \( a_6 \)</h3>
+      <div class="math-block">\[ a_2 = a_1 + d = (4 - 4d) + d = 4 - 3d. \]</div>
+      <div class="math-block">\[ a_6 = a_1 + 5d = (4 - 4d) + 5d = 4 + d. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zbir \( a_2 + a_6 \) ne zavisi od \( a_1 \). Zašto?</summary>
+          <div class="detail-content"><p>Indeksi \( 2 \) i \( 6 \) su simetrični oko \( 4 \) — sredina je \( a_4 \). Za aritmetičku progresiju važi \( a_2 + a_6 = 2 a_4 \). Pošto smo fiksirali \( a_5 = 4 \), nije ni \( a_4 \) konstantno — ali zato \( a_2 + a_6 = 2(4 - d) = 8 - 2d \) ima jednostavnu zavisnost od \( d \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Formiramo funkciju \( f(d) \)</h3>
+      <p>Zbir kvadrata:</p>
+      <div class="math-block">\[ f(d) = a_2^2 + a_6^2 = (4 - 3d)^2 + (4 + d)^2. \]</div>
+      <p>Razvijamo oba kvadrata:</p>
+      <div class="math-block">\[ (4 - 3d)^2 = 16 - 24d + 9d^2, \qquad (4 + d)^2 = 16 + 8d + d^2. \]</div>
+      <p>Sabiramo:</p>
+      <div class="math-block">\[ f(d) = 10\,d^2 - 16\,d + 32. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( -24d + 8d = -16d \)?</summary>
+          <div class="detail-content"><p>Dvostruki proizvod kod \( (4 - 3d)^2 \) je \( 2 \cdot 4 \cdot (-3d) = -24d \). Kod \( (4 + d)^2 \) je \( 2 \cdot 4 \cdot d = 8d \). Zbir: \( -24d + 8d = -16d \). Ako se izgubi minus u \( -24d \) (česta greška), dobija se pogrešna parabola.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Tražimo minimum parabole</h3>
+      <p>Koeficijent uz \( d^2 \) je \( A = 10 > 0 \), pa parabola ima minimum (a ne maksimum). Apscisa temena:</p>
+      <div class="math-block">\[ d^{*} = -\frac{B}{2A} = -\frac{-16}{2 \cdot 10} = \frac{16}{20} = 0{,}8. \]</div>
+      <p>Vrednost minimuma:</p>
+      <div class="math-block">\[ f(0{,}8) = 10 \cdot 0{,}64 - 16 \cdot 0{,}8 + 32 = 6{,}4 - 12{,}8 + 32 = 25{,}6. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera kandidata iz susednih opcija</h3>
+      <p>Za sigurnost, izračunajmo \( f \) u \( d = 0{,}7 \), \( d = 0{,}8 \), \( d = 0{,}9 \):</p>
+      <div class="math-block">\[ \begin{aligned} f(0{,}7) &= 10 \cdot 0{,}49 - 16 \cdot 0{,}7 + 32 = 4{,}9 - 11{,}2 + 32 = 25{,}7, \\ f(0{,}8) &= 25{,}6, \\ f(0{,}9) &= 10 \cdot 0{,}81 - 16 \cdot 0{,}9 + 32 = 8{,}1 - 14{,}4 + 32 = 25{,}7. \end{aligned} \]</div>
+      <p>Vrednosti sa obe strane od \( 0{,}8 \) su veće — minimum je zaista u \( d = 0{,}8 \). ✓</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kad fiksiramo jedan član aritmetičke progresije, ostali članovi postaju linearne funkcije od razlike \( d \). Bilo koja kvadratna mera (zbir kvadrata, kvadrat razlike, itd.) onda postaje <em>kvadratna</em> funkcija od \( d \), pa se njen ekstrem nalazi standardnom formulom za teme parabole. Trik je prepoznati strukturu: linearno u \( d \) plus kvadriranje ⇒ kvadratno u \( d \) ⇒ teme \( d^{*} = -B/(2A) \).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ d = 0{,}8 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 0{,}9 \)</span>
+    <span class="answer-option correct" data-option="B">(B) \( 0{,}8 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 0{,}7 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 0{,}6 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 0{,}5 \)</span>
+  </div>
+  <p class="verification">Provera: \( f(0{,}8) = 25{,}6 \). \( f(0{,}7) = 25{,}7 \) i \( f(0{,}9) = 25{,}7 \) su obe veće, pa je u \( d = 0{,}8 \) zaista minimum. ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pisati \( a_5 = a_1 + 5d \) umesto \( a_1 + 4d \) — broj koraka je za jedan manji od indeksa.</li>
+    <li>Pogrešan znak dvostrukog proizvoda u \( (4 - 3d)^2 \): napisati \( +24d \) umesto \( -24d \). Posledica je \( B = 32 \) umesto \( -16 \) i pogrešna vrednost temena.</li>
+    <li>Zaboraviti minus u formuli temena: pisati \( d^{*} = \dfrac{B}{2A} \) (bez minusa), što za \( B = -16 \) daje \( d = -0{,}8 \) — što nije u ponuđenim odgovorima, ali u sličnim zadacima može voditi do pogrešne opcije.</li>
+    <li>Računati minimum tako što se uzmu kandidatske vrednosti iz odgovora i probaju u \( f \) — može uspeti, ali je trošno i lako se napravi računska greška; metoda temena je sigurnija.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Ako bismo umesto \( a_2^2 + a_6^2 \) tražili minimum funkcije \( a_3^2 + a_7^2 \) (i dalje uz \( a_5 = 4 \)), koja bi vrednost \( d \) davala minimum? Pretpostavi pre nego što izračunaš — da li bi optimum bio veći, manji, ili isti?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Sada \( a_3 = a_5 - 2d = 4 - 2d \) i \( a_7 = a_5 + 2d = 4 + 2d \). Zbir kvadrata \( (4 - 2d)^2 + (4 + 2d)^2 = 32 + 8d^2 \). To je parna funkcija od \( d \) — minimum u \( d = 0 \). Razlika je u simetriji: \( a_3 \) i \( a_7 \) su simetrični oko \( a_5 \), pa nemaju "preferencu" da \( d \) bude pozitivno. Kod \( a_2, a_6 \) sredina je \( a_4 \neq a_5 \), pa pojava \( a_5 = 4 \) "gura" optimum dalje od nule.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-main');
+  var slider = document.getElementById('d-slider');
+  var readout = document.getElementById('d-readout');
+  if (!canvas || !slider || !readout) return;
+  var ctx = canvas.getContext('2d');
+
+  // Function: f(d) = 10 d^2 − 16 d + 32; minimum at d* = 0.8, f* = 25.6
+  function f(d) { return 10 * d * d - 16 * d + 32; }
+
+  // Plot area (right panel — main parabola)
+  var marginT = 60, marginB = 80;
+  var rightL = 280;
+  var rightR = canvas.width - 50;
+  var plotW = rightR - rightL;
+  var plotH = canvas.height - marginT - marginB;
+
+  // d range: [-0.3, 1.9] in math units
+  var dMin = -0.3, dMax = 1.9;
+  var fMin = 24, fMax = 50;
+  function tx(d) { return rightL + (d - dMin) / (dMax - dMin) * plotW; }
+  function ty(fv) { return marginT + (fMax - fv) / (fMax - fMin) * plotH; }
+
+  // Left panel: number line for a_2 and a_6
+  var leftL = 50, leftR = 250;
+  var leftPanelW = leftR - leftL;
+  var leftAxisY = marginT + plotH / 2 + 20;
+  // a-values range from roughly -2 to 8
+  var aMin = -3, aMax = 9;
+  function tax(av) { return leftL + (av - aMin) / (aMax - aMin) * leftPanelW; }
+
+  function fmtComma(num, decimals) {
+    return num.toFixed(decimals).replace('.', ',');
+  }
+
+  function draw(currentD) {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // ----- Title -----
+    ctx.fillStyle = text;
+    ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('f(d) = a₂² + a₆² = 10d² − 16d + 32  —  minimum u d = 0,8', canvas.width / 2, 14);
+
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText('a₅ = 4 fiksirano, a₂ = 4 − 3d, a₆ = 4 + d', canvas.width / 2, 34);
+
+    // ============================================================
+    // LEFT PANEL: number line showing a_2 and a_6 for current d
+    // ============================================================
+    // Panel title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Brojevna prava: a₂, a₅, a₆', (leftL + leftR) / 2, marginT + 4);
+
+    // Number line
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(leftL - 10, leftAxisY);
+    ctx.lineTo(leftR + 10, leftAxisY);
+    ctx.stroke();
+
+    // Ticks
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (var v = -2; v <= 8; v += 2) {
+      var x = tax(v);
+      ctx.strokeStyle = grid;
+      ctx.beginPath();
+      ctx.moveTo(x, leftAxisY - 4);
+      ctx.lineTo(x, leftAxisY + 4);
+      ctx.stroke();
+      ctx.fillStyle = muted;
+      ctx.fillText(v.toString(), x, leftAxisY + 6);
+    }
+
+    // a_5 = 4 (fixed)
+    var a5x = tax(4);
+    ctx.beginPath();
+    ctx.arc(a5x, leftAxisY, 7, 0, Math.PI * 2);
+    ctx.fillStyle = warning;
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('a₅ = 4', a5x, leftAxisY - 12);
+
+    // a_2 = 4 − 3d
+    var a2 = 4 - 3 * currentD;
+    var a2x = tax(a2);
+    ctx.beginPath();
+    ctx.arc(a2x, leftAxisY, 8, 0, Math.PI * 2);
+    ctx.fillStyle = primary;
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('a₂ = ' + fmtComma(a2, 2), a2x, leftAxisY + 24);
+
+    // a_6 = 4 + d
+    var a6 = 4 + currentD;
+    var a6x = tax(a6);
+    ctx.beginPath();
+    ctx.arc(a6x, leftAxisY, 8, 0, Math.PI * 2);
+    ctx.fillStyle = accent;
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('a₆ = ' + fmtComma(a6, 2), a6x, leftAxisY - 14);
+
+    // Live readout box below the number line
+    var boxTop = leftAxisY + 50;
+    var boxH = 86;
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.08);
+    ctx.fillRect(leftL, boxTop, leftPanelW, boxH);
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(leftL, boxTop, leftPanelW, boxH);
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('d = ' + fmtComma(currentD, 2), leftL + 10, boxTop + 8);
+    ctx.fillStyle = primary;
+    ctx.fillText('a₂² = ' + fmtComma(a2 * a2, 2), leftL + 10, boxTop + 28);
+    ctx.fillStyle = accent;
+    ctx.fillText('a₆² = ' + fmtComma(a6 * a6, 2), leftL + 10, boxTop + 46);
+    ctx.fillStyle = text;
+    ctx.fillText('f(d) = ' + fmtComma(f(currentD), 2), leftL + 10, boxTop + 66);
+
+    // ============================================================
+    // RIGHT PANEL: parabola
+    // ============================================================
+    // Panel title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Parabola f(d)', (rightL + rightR) / 2, marginT + 4);
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    // Vertical grid every 0.2 d-units
+    for (var d = 0; d <= 1.8 + 0.001; d += 0.2) {
+      var gx = tx(d);
+      if (gx < rightL || gx > rightR) continue;
+      ctx.beginPath();
+      ctx.moveTo(gx, marginT + 30);
+      ctx.lineTo(gx, marginT + plotH);
+      ctx.stroke();
+    }
+    // Horizontal grid every 5 f-units
+    for (var fv = 25; fv <= fMax; fv += 5) {
+      var gy = ty(fv);
+      if (gy < marginT + 30 || gy > marginT + plotH) continue;
+      ctx.beginPath();
+      ctx.moveTo(rightL, gy);
+      ctx.lineTo(rightR, gy);
+      ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    // x-axis at bottom
+    ctx.beginPath();
+    ctx.moveTo(rightL, marginT + plotH);
+    ctx.lineTo(rightR, marginT + plotH);
+    ctx.stroke();
+    // y-axis at the left edge
+    ctx.beginPath();
+    ctx.moveTo(rightL, marginT + 30);
+    ctx.lineTo(rightL, marginT + plotH);
+    ctx.stroke();
+
+    // X-axis tick labels
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    [0, 0.4, 0.8, 1.2, 1.6].forEach(function(dv) {
+      var tickX = tx(dv);
+      ctx.strokeStyle = axis;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(tickX, marginT + plotH);
+      ctx.lineTo(tickX, marginT + plotH + 4);
+      ctx.stroke();
+      ctx.fillStyle = muted;
+      ctx.fillText(fmtComma(dv, 1), tickX, marginT + plotH + 8);
+    });
+    // Y-axis tick labels
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    [25, 30, 35, 40, 45].forEach(function(fv) {
+      var tickY = ty(fv);
+      ctx.strokeStyle = axis;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(rightL - 4, tickY);
+      ctx.lineTo(rightL, tickY);
+      ctx.stroke();
+      ctx.fillStyle = muted;
+      ctx.fillText(fv.toString(), rightL - 6, tickY);
+    });
+
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = 'italic 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('d', (rightL + rightR) / 2, marginT + plotH + 28);
+    ctx.save();
+    ctx.translate(rightL - 36, (marginT + 30 + marginT + plotH) / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('f(d)', 0, 0);
+    ctx.restore();
+
+    // Plot the parabola
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    var first = true;
+    for (var px = 0; px <= plotW; px++) {
+      var dv = dMin + (px / plotW) * (dMax - dMin);
+      var fv2 = f(dv);
+      var cx = rightL + px;
+      var cy = ty(fv2);
+      // Clip to plot area
+      if (cy < marginT + 30) cy = marginT + 30;
+      if (cy > marginT + plotH) cy = marginT + plotH;
+      if (first) { ctx.moveTo(cx, cy); first = false; }
+      else { ctx.lineTo(cx, cy); }
+    }
+    ctx.stroke();
+
+    // Minimum marker at (0.8, 25.6)
+    var minDx = tx(0.8);
+    var minFy = ty(25.6);
+    // dashed lines down/left from minimum
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(minDx, marginT + plotH);
+    ctx.lineTo(minDx, minFy);
+    ctx.lineTo(rightL, minFy);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // Minimum point
+    ctx.beginPath();
+    ctx.arc(minDx, minFy, 9, 0, Math.PI * 2);
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.25);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(minDx, minFy, 5, 0, Math.PI * 2);
+    ctx.fillStyle = accent;
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    // Label
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('min:  (0,8;  25,6)', minDx + 10, minFy - 8);
+
+    // Current d marker (interactive)
+    var curDx = tx(currentD);
+    var curFy = ty(f(currentD));
+    // Vertical guide
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(curDx, marginT + plotH);
+    ctx.lineTo(curDx, curFy);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // Point on parabola
+    ctx.beginPath();
+    ctx.arc(curDx, curFy, 10, 0, Math.PI * 2);
+    ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.3);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(curDx, curFy, 6, 0, Math.PI * 2);
+    ctx.fillStyle = highlight;
+    ctx.fill();
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Vertex formula at bottom
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('d* = −B / (2A) = 16 / 20 = 0,8', canvas.width / 2, canvas.height - 14);
+  }
+
+  function currentDFromSlider() {
+    return parseInt(slider.value, 10) / 100;
+  }
+
+  function update() {
+    var d = currentDFromSlider();
+    readout.textContent = fmtComma(d, 2);
+    draw(d);
+  }
+
+  slider.addEventListener('input', update);
+
+  update();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        update();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Razlika aritmetičke progresije koja minimizira zbir kvadrata drugog i šestog člana",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["aritmetička progresija", "razlika progresije", "minimum kvadratne funkcije", "teme parabole", "optimizacija"]
+}
+BRAINSPARK_META-->

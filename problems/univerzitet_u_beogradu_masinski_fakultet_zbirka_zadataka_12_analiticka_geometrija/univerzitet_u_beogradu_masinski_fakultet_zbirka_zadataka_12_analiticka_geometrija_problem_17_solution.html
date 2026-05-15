@@ -1,0 +1,634 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Problem: Circle with center C(3, -1) cuts a chord of length 6 on the line 2x - 5y + 18 = 0. Find the radius R.
+
+Step 1: Distance from point C(x0, y0) to line Ax + By + C0 = 0:
+  d = |A*x0 + B*y0 + C0| / sqrt(A^2 + B^2)
+For line 2x - 5y + 18 = 0 and point (3, -1):
+  numerator: |2*3 - 5*(-1) + 18| = |6 + 5 + 18| = |29| = 29
+  denominator: sqrt(4 + 25) = sqrt(29)
+  d = 29 / sqrt(29) = sqrt(29).
+
+Step 2: Geometry of chord and center:
+  Drop perpendicular from C to the line. Foot M is the midpoint of the chord.
+  Triangle CMA is right-angled at M, with legs |CM| = d and |MA| = chord/2 = 3, and hypotenuse |CA| = R.
+  By Pythagoras: R^2 = d^2 + (chord/2)^2 = 29 + 9 = 38.
+  R = sqrt(38).
+
+Answer: (C) sqrt(38).
+
+Sanity check d < R required (else line doesn't cut a chord):
+  d^2 = 29 < 38 = R^2 ✓
+  Numerically d ≈ 5.385, R ≈ 6.164, chord = 2*sqrt(R^2 - d^2) = 2*3 = 6 ✓
+
+Foot M of perpendicular from C(3,-1) to line 2x - 5y + 18 = 0:
+  Direction of normal: (2, -5)/sqrt(29).
+  Signed distance (with sign of numerator): 29/sqrt(29) = sqrt(29) > 0,
+  so we go in the -normal direction to reach the line.
+  M = C - sqrt(29) * (2, -5)/sqrt(29) = (3, -1) - (2, -5) = (1, 4).
+  Check M on line: 2*1 - 5*4 + 18 = 2 - 20 + 18 = 0 ✓
+  Check CM length: sqrt((3-1)^2 + (-1-4)^2) = sqrt(4 + 25) = sqrt(29) ✓
+
+Chord endpoints A, B: M ± 3 * unit direction of line.
+  Direction along line (perpendicular to normal (2,-5)): (5, 2)/sqrt(29).
+  A = (1, 4) + 3*(5, 2)/sqrt(29) = (1 + 15/sqrt(29), 4 + 6/sqrt(29))
+  B = (1, 4) - 3*(5, 2)/sqrt(29) = (1 - 15/sqrt(29), 4 - 6/sqrt(29))
+  Numerically: 1/sqrt(29) ≈ 0.1857
+  A ≈ (3.785, 5.114)
+  B ≈ (-1.785, 2.886)
+
+Verify R: |CA|^2 = (3.785 - 3)^2 + (5.114 - (-1))^2 = 0.616 + 37.38 ≈ 38 ✓
+
+Distinct from (E) sqrt(29): that's d, easy mistake — confusing d (which is sqrt(29)) with R.
+Distinct from (A) 6: that's the chord length, not radius.
+Distinct from (B) 29: that's R^2 (or numerator), not R.
+Distinct from (D) 4*sqrt(3): that's sqrt(48), wrong arithmetic.
+</script>
+
+<h1 data-card="problem-title">Poluprečnik kružnice iz tetive na pravoj</h1>
+<p data-card="problem-subtitle" class="subtitle">Analitička geometrija u ravni: rastojanje tačke od prave, tetiva i Pitagorina teorema</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Dužina poluprečnika kružnice sa centrom \( C(3, -1) \) koja na pravoj \( 2x - 5y + 18 = 0 \) odseca tetivu dužine \( 6 \) je:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">Centar</span>
+      <span class="given-value">\( C(3,\,-1) \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Prava</span>
+      <span class="given-value">\( 2x - 5y + 18 = 0 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Tetiva</span>
+      <span class="given-value">\( |AB| = 6 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Traži se</span>
+      <span class="given-value">\( R = ? \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 6 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 29 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \sqrt{38} \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 4\sqrt{3} \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \sqrt{29} \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Izračunaj rastojanje \( d \) centra \( C \) od date prave. Spuštanjem normale iz \( C \) na pravu dobija se pravougli trougao s katetama \( d \) i pola tetive, a hipotenuza je poluprečnik \( R \). Pitagorina teorema daje \( R = \sqrt{d^2 + 3^2} \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Rastojanje tačke od prave</span> Rastojanje tačke \( (x_0, y_0) \) od prave \( Ax + By + C = 0 \) iznosi \( d = \dfrac{|A x_0 + B y_0 + C|}{\sqrt{A^2 + B^2}}. \)</li>
+        <li><span class="formula-label">Normala na tetivu kroz centar</span> Normala iz centra kružnice na tetivu uvek polovi tu tetivu. Drugim rečima, podnožje normale je tačno sredina tetive.</li>
+        <li><span class="formula-label">Pitagorina teorema</span> U pravouglom trouglu s katetama \( a, b \) i hipotenuzom \( c \): \( c^2 = a^2 + b^2 \).</li>
+        <li><span class="formula-label">Veza tetive i poluprečnika</span> Ako je \( d \) rastojanje centra od prave koja seče kružnicu, a \( \ell \) dužina dobijene tetive, onda je \( R^2 = d^2 + \left( \dfrac{\ell}{2} \right)^2. \)</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz konstrukcije">
+  <h2>📐 Vizuelni prikaz konstrukcije</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-chord" width="720" height="640"></canvas>
+  </div>
+  <p class="canvas-caption">Centar \( C(3,-1) \), prava \( 2x - 5y + 18 = 0 \) i tetiva \( AB \) dužine \( 6 \). Normala iz \( C \) na pravu polovi tetivu u tački \( M(1, 4) \); trougao \( CMA \) je pravougli sa \( |CM| = \sqrt{29} \), \( |MA| = 3 \) i \( |CA| = R \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Pravougli trougao izoštreno">
+  <h2>📐 Pravougli trougao izoštreno</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-triangle" width="720" height="460"></canvas>
+  </div>
+  <p class="canvas-caption">Pitagora u trouglu \( CMA \): \( R^2 = (\sqrt{29})^2 + 3^2 = 29 + 9 = 38 \), pa je \( R = \sqrt{38}. \)</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavi sliku: centar, prava, tetiva</h3>
+      <p>Kružnica ima centar \( C(3, -1) \). Prava \( p: 2x - 5y + 18 = 0 \) <em>seče</em> kružnicu i ostavlja tetivu \( AB \) dužine \( 6 \). Spustimo normalu iz \( C \) na pravu \( p \) — neka njeno podnožje bude \( M \).</p>
+      <p>Ključna osobina: <em>normala iz centra kružnice na tetivu uvek polovi tetivu</em>. Dakle \( M \) je sredina \( AB \), pa je \( |MA| = |MB| = 3 \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Izračunaj rastojanje \( d = |CM| \) centra od prave</h3>
+      <p>Koristimo formulu za rastojanje tačke od prave. Za pravu \( 2x - 5y + 18 = 0 \) imamo \( A = 2, B = -5, C = 18 \), a za centar \( C(3, -1) \):</p>
+      <div class="math-block">\[ d = \frac{|2 \cdot 3 + (-5) \cdot (-1) + 18|}{\sqrt{2^2 + (-5)^2}} = \frac{|6 + 5 + 18|}{\sqrt{4 + 25}} = \frac{29}{\sqrt{29}} = \sqrt{29}. \]</div>
+      <p>Lepa pojednostavljenje: \( \dfrac{29}{\sqrt{29}} = \dfrac{29}{\sqrt{29}} \cdot \dfrac{\sqrt{29}}{\sqrt{29}} = \dfrac{29\sqrt{29}}{29} = \sqrt{29} \).</p>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( d = \sqrt{29} \) razumno?</summary>
+          <div class="detail-content"><p>Tetiva ima dužinu \( 6 \), pa pola tetive iznosi \( 3 \). Da bi kružnica uopšte zaista preseca pravu, mora biti \( d < R \). Vidimo da je \( \sqrt{29} \approx 5{,}39 \), što je razumno manje od poluprečnika koji ćemo dobiti u sledećem koraku (\( \sqrt{38} \approx 6{,}16 \)).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Primeni Pitagorinu teoremu u trouglu \( CMA \)</h3>
+      <p>Trougao \( CMA \) je pravougli (prav ugao u \( M \), jer je \( CM \perp p \)). Njegove katete su:</p>
+      <ul>
+        <li>\( |CM| = d = \sqrt{29} \) — rastojanje centra od prave,</li>
+        <li>\( |MA| = \dfrac{|AB|}{2} = 3 \) — pola tetive.</li>
+      </ul>
+      <p>Hipotenuza \( |CA| \) je poluprečnik kružnice, jer su \( C \) centar i \( A \) tačka na kružnici. Pitagora daje:</p>
+      <div class="math-block">\[ R^2 = |CA|^2 = |CM|^2 + |MA|^2 = (\sqrt{29})^2 + 3^2 = 29 + 9 = 38. \]</div>
+      <p>Odatle:</p>
+      <div class="math-block">\[ R = \sqrt{38}. \]</div>
+
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: da li je \( \sqrt{38} \) već u najjednostavnijem obliku?</summary>
+          <div class="detail-content"><p>Da. \( 38 = 2 \cdot 19 \), bez kvadratnih faktora, pa se ne može „izvući” ništa ispred korena. Posebno, \( \sqrt{38} \neq 4\sqrt{3} \) (jer je \( (4\sqrt{3})^2 = 48 \neq 38 \)).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera: sastavi jednačinu kružnice i tetivu</h3>
+      <p>Sa \( R^2 = 38 \), kružnica je \( (x - 3)^2 + (y + 1)^2 = 38. \) Lako se proverava da je tačka \( M(1, 4) \) (presek normale iz \( C \) sa pravom \( p \)) na pravoj: \( 2 \cdot 1 - 5 \cdot 4 + 18 = 0 \) ✓, i da je \( |CM| = \sqrt{(3-1)^2 + (-1-4)^2} = \sqrt{4 + 25} = \sqrt{29} \) ✓.</p>
+      <p>Najzad, dužina tetive iznosi:</p>
+      <div class="math-block">\[ |AB| = 2\sqrt{R^2 - d^2} = 2\sqrt{38 - 29} = 2\sqrt{9} = 6. \;\checkmark \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Za bilo koju tetivu kružnice važi sasvim jednostavna formula: \( R^2 = d^2 + (\ell/2)^2 \), gde je \( d \) rastojanje centra od prave na kojoj leži tetiva, a \( \ell \) dužina tetive. Ova „kratka” relacija proizilazi iz dve geometrijske činjenice: (1) normala iz centra na tetivu je polovi i (2) Pitagora u nastalom pravouglom trouglu. Kad god je centar zadat i znaš tetivu — pravougli trougao se sam nameće.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Mešanje \( R \) i \( d \). Rastojanje centra od prave je \( \sqrt{29} \) — to je <span class="crossed">(E)</span>, ne rezultat. Poluprečnik je <em>hipotenuza</em>, a ne kateta.</li>
+    <li>Korišćenje cele dužine tetive \( 6 \) kao katete umesto njene polovine. Tačno je \( |MA| = 3 \), a ne \( 6 \) — jer normala iz centra polovi tetivu.</li>
+    <li>Zaboravljanje apsolutne vrednosti u brojiocu formule za rastojanje tačke od prave. Iako se ovde ne menja znak (\( 29 > 0 \)), u opštem slučaju izostavljanje \( |\cdot| \) može da da negativno „rastojanje”.</li>
+    <li>Mešanje \( R^2 \) i \( R \). \( R^2 = 38 \) je samo međurezultat — odgovor je \( R = \sqrt{38} \). Opcija <span class="crossed">(B) \( 29 \)</span> je tipičan tragač za nepažljivima.</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ R = \sqrt{38} \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 6 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 29 \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( \sqrt{38} \)</span>
+    <span class="answer-option" data-option="D">(D) \( 4\sqrt{3} \)</span>
+    <span class="answer-option" data-option="E">(E) \( \sqrt{29} \)</span>
+  </div>
+  <p class="verification">Provera: za \( R = \sqrt{38} \) i \( d = \sqrt{29} \), dužina tetive je \( 2\sqrt{R^2 - d^2} = 2\sqrt{9} = 6 \), što se slaže sa uslovom zadatka. Tačan odgovor je (C).</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Posmatraj istu kružnicu \( (x - 3)^2 + (y + 1)^2 = 38 \). Odredi sve vrednosti realnog broja \( k \) za koje prava \( y = kx \) (kroz koordinatni početak) seče kružnicu po tetivi dužine \( 6 \). Postoje li takve prave i, ako da, koliko ih je?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Najpre prevedi pravu \( y = kx \) u opšti oblik \( kx - y = 0 \). Izračunaj rastojanje centra \( C(3, -1) \) od te prave kao funkciju od \( k \), pa postavi uslov \( d^2 + 9 = 38 \), tj. \( d = \sqrt{29} \). Dobijaš jednačinu po \( k \) — koliko realnih rešenja ima, toliko ima i takvih pravih. Razmisli i o smislu: koliko najviše tetiva fiksne dužine prolazi kroz istu fiksnu tačku van kružnice?</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  // ===== Canvas 1: chord construction =====
+  var canvas = document.getElementById('diagram-chord');
+  if (canvas) {
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, H = canvas.height;
+
+    // Pick origin so that interesting region (C around (3,-1), M around (1,4)) is visible
+    var scale = 38; // px per unit
+    var originX = W / 2 - 1.5 * scale;  // shift so range x ~ -5..10 visible
+    var originY = H / 2 + 1.5 * scale;  // shift so range y ~ -6..7 visible
+
+    function toCx(x) { return originX + x * scale; }
+    function toCy(y) { return originY - y * scale; }
+
+    function drawChord() {
+      styles = getComputedStyle(root);
+      var bg        = cv('--sol-canvas-bg');
+      var grid      = cv('--sol-canvas-grid');
+      var axis      = cv('--sol-canvas-axis');
+      var primary   = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent    = cv('--sol-canvas-accent');
+      var highlight = cv('--sol-canvas-highlight');
+      var text      = cv('--sol-canvas-text');
+      var muted     = cv('--sol-canvas-muted');
+      var warning   = cv('--sol-canvas-warning');
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      // Grid
+      ctx.strokeStyle = grid;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      var xMin = Math.ceil(-originX / scale);
+      var xMax = Math.floor((W - originX) / scale);
+      for (var i = xMin; i <= xMax; i++) {
+        var gx = toCx(i);
+        ctx.moveTo(gx, 0); ctx.lineTo(gx, H);
+      }
+      var yMin = Math.ceil(-(H - originY) / scale);
+      var yMax = Math.floor(originY / scale);
+      for (var j = yMin; j <= yMax; j++) {
+        var gy = toCy(j);
+        ctx.moveTo(0, gy); ctx.lineTo(W, gy);
+      }
+      ctx.stroke();
+
+      // Axes
+      ctx.strokeStyle = axis;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, originY); ctx.lineTo(W, originY);
+      ctx.moveTo(originX, 0); ctx.lineTo(originX, H);
+      ctx.stroke();
+
+      // Axis labels
+      ctx.font = 'bold 14px Inter, system-ui';
+      ctx.fillStyle = text;
+      ctx.fillText('x', W - 16, originY - 10);
+      ctx.fillText('y', originX + 10, 16);
+
+      // Tick labels
+      ctx.font = '11px Inter, system-ui';
+      ctx.fillStyle = muted;
+      ctx.textAlign = 'center';
+      for (var t = xMin; t <= xMax; t++) {
+        if (t === 0) continue;
+        if (toCx(t) > 14 && toCx(t) < W - 14) {
+          ctx.fillText(t.toString(), toCx(t), originY + 14);
+        }
+      }
+      ctx.textAlign = 'right';
+      for (var s = yMin; s <= yMax; s++) {
+        if (s === 0) continue;
+        if (toCy(s) > 14 && toCy(s) < H - 14) {
+          ctx.fillText(s.toString(), originX - 6, toCy(s) + 4);
+        }
+      }
+      ctx.textAlign = 'left';
+
+      // Center, geometry
+      var cx0 = 3, cy0 = -1;
+      var mx0 = 1, my0 = 4;
+      var R = Math.sqrt(38);
+      // Chord endpoints
+      var dirX = 5 / Math.sqrt(29), dirY = 2 / Math.sqrt(29);
+      var ax0 = mx0 + 3 * dirX, ay0 = my0 + 3 * dirY;
+      var bx0 = mx0 - 3 * dirX, by0 = my0 - 3 * dirY;
+
+      // Line 2x - 5y + 18 = 0 → y = (2x + 18)/5
+      ctx.strokeStyle = highlight;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      var xL = (0 - originX) / scale;
+      var xR = (W - originX) / scale;
+      var yL = (2 * xL + 18) / 5;
+      var yR = (2 * xR + 18) / 5;
+      ctx.moveTo(toCx(xL), toCy(yL));
+      ctx.lineTo(toCx(xR), toCy(yR));
+      ctx.stroke();
+
+      // Circle
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.arc(toCx(cx0), toCy(cy0), R * scale, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.05);
+      ctx.beginPath();
+      ctx.arc(toCx(cx0), toCy(cy0), R * scale, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Chord (segment inside circle) — emphasised
+      ctx.strokeStyle = cv('--sol-canvas-accent');
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.moveTo(toCx(ax0), toCy(ay0));
+      ctx.lineTo(toCx(bx0), toCy(by0));
+      ctx.stroke();
+
+      // Perpendicular from C to M (dashed)
+      ctx.strokeStyle = secondary;
+      ctx.lineWidth = 2.5;
+      ctx.setLineDash([7, 4]);
+      ctx.beginPath();
+      ctx.moveTo(toCx(cx0), toCy(cy0));
+      ctx.lineTo(toCx(mx0), toCy(my0));
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Radius CA (dashed)
+      ctx.strokeStyle = warning;
+      ctx.lineWidth = 2.5;
+      ctx.setLineDash([3, 4]);
+      ctx.beginPath();
+      ctx.moveTo(toCx(cx0), toCy(cy0));
+      ctx.lineTo(toCx(ax0), toCy(ay0));
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Right angle marker at M
+      var perpSize = 12;
+      // Along chord direction (dirX,dirY) and along perpendicular direction from M to C
+      var nx0 = (cx0 - mx0), ny0 = (cy0 - my0);
+      var nL = Math.sqrt(nx0*nx0 + ny0*ny0);
+      nx0 /= nL; ny0 /= nL;
+      var p1mx = mx0 + dirX * 0.32, p1my = my0 + dirY * 0.32;
+      var p2mx = p1mx + nx0 * 0.32, p2my = p1my + ny0 * 0.32;
+      var p3mx = mx0 + nx0 * 0.32, p3my = my0 + ny0 * 0.32;
+      ctx.strokeStyle = text;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(toCx(p1mx), toCy(p1my));
+      ctx.lineTo(toCx(p2mx), toCy(p2my));
+      ctx.lineTo(toCx(p3mx), toCy(p3my));
+      ctx.stroke();
+
+      // Points
+      function drawPoint(x, y, color, label, labelDx, labelDy) {
+        var px = toCx(x), py = toCy(y);
+        ctx.beginPath();
+        ctx.arc(px, py, 11, 0, Math.PI * 2);
+        ctx.fillStyle = cvAlpha(color, 0.25);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(px, py, 6, 0, Math.PI * 2);
+        ctx.fillStyle = cv(color);
+        ctx.fill();
+        ctx.strokeStyle = bg;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.font = 'bold 16px Inter, system-ui';
+        ctx.fillStyle = text;
+        ctx.fillText(label, px + labelDx, py + labelDy);
+      }
+      drawPoint(cx0, cy0, '--sol-canvas-primary', 'C(3, −1)', 12, -10);
+      drawPoint(mx0, my0, '--sol-canvas-secondary', 'M(1, 4)', 10, -10);
+      drawPoint(ax0, ay0, '--sol-canvas-accent', 'A', 12, -6);
+      drawPoint(bx0, by0, '--sol-canvas-accent', 'B', -22, 16);
+
+      // Length annotations
+      ctx.font = 'bold 13px Inter, system-ui';
+      // CM = sqrt(29)
+      var cmMidX = (cx0 + mx0) / 2, cmMidY = (cy0 + my0) / 2;
+      // offset to side
+      ctx.fillStyle = cv('--sol-canvas-secondary');
+      ctx.fillText('|CM| = √29', toCx(cmMidX) + 8, toCy(cmMidY) + 4);
+
+      // MA = 3
+      var maMidX = (mx0 + ax0) / 2, maMidY = (my0 + ay0) / 2;
+      ctx.fillStyle = cv('--sol-canvas-accent');
+      ctx.fillText('|MA| = 3', toCx(maMidX) + 6, toCy(maMidY) - 12);
+
+      // CA = R
+      var caMidX = (cx0 + ax0) / 2, caMidY = (cy0 + ay0) / 2;
+      ctx.fillStyle = cv('--sol-canvas-warning');
+      ctx.fillText('R', toCx(caMidX) + 8, toCy(caMidY) - 4);
+
+      // Legend top-left
+      var lx = 14, ly = 26;
+      ctx.font = 'bold 13px Inter, system-ui';
+      ctx.fillStyle = primary;
+      ctx.fillRect(lx, ly - 10, 18, 4);
+      ctx.fillStyle = text;
+      ctx.fillText('kružnica  (x−3)² + (y+1)² = 38', lx + 26, ly - 4);
+
+      ctx.fillStyle = highlight;
+      ctx.fillRect(lx, ly + 14, 18, 4);
+      ctx.fillStyle = text;
+      ctx.fillText('prava  2x − 5y + 18 = 0', lx + 26, ly + 20);
+
+      ctx.fillStyle = cv('--sol-canvas-accent');
+      ctx.fillRect(lx, ly + 38, 18, 4);
+      ctx.fillStyle = text;
+      ctx.fillText('tetiva AB,  |AB| = 6', lx + 26, ly + 44);
+    }
+
+    drawChord();
+
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() {
+          styles = getComputedStyle(root);
+          drawChord();
+        }, 50);
+      }
+    });
+  }
+
+  // ===== Canvas 2: zoomed-in right triangle =====
+  var canvas2 = document.getElementById('diagram-triangle');
+  if (canvas2) {
+    var ctx2 = canvas2.getContext('2d');
+    var W2 = canvas2.width, H2 = canvas2.height;
+
+    function drawTri() {
+      styles = getComputedStyle(root);
+      var bg        = cv('--sol-canvas-bg');
+      var primary   = cv('--sol-canvas-primary');
+      var secondary = cv('--sol-canvas-secondary');
+      var accent    = cv('--sol-canvas-accent');
+      var warning   = cv('--sol-canvas-warning');
+      var text      = cv('--sol-canvas-text');
+      var muted     = cv('--sol-canvas-muted');
+
+      ctx2.clearRect(0, 0, W2, H2);
+      ctx2.fillStyle = bg;
+      ctx2.fillRect(0, 0, W2, H2);
+
+      // Triangle in canvas coordinates
+      // M at bottom-left, A at bottom-right, C at top above M
+      // legs: MA = 3 units (along ground), CM = sqrt(29) ≈ 5.385 units (vertical)
+      // hypotenuse: CA = sqrt(38)
+      // pick px-per-unit scale that fits
+      var s = 65;
+      var Mpx = { x: 140, y: H2 - 90 };
+      var Apx = { x: Mpx.x + 3 * s, y: Mpx.y };
+      var Cpx = { x: Mpx.x, y: Mpx.y - Math.sqrt(29) * s };
+
+      // Filled triangle (subtle)
+      ctx2.fillStyle = cvAlpha('--sol-canvas-primary', 0.08);
+      ctx2.beginPath();
+      ctx2.moveTo(Mpx.x, Mpx.y);
+      ctx2.lineTo(Apx.x, Apx.y);
+      ctx2.lineTo(Cpx.x, Cpx.y);
+      ctx2.closePath();
+      ctx2.fill();
+
+      // Sides
+      ctx2.lineWidth = 3;
+      // MA — accent (half-chord, length 3)
+      ctx2.strokeStyle = accent;
+      ctx2.beginPath();
+      ctx2.moveTo(Mpx.x, Mpx.y);
+      ctx2.lineTo(Apx.x, Apx.y);
+      ctx2.stroke();
+      // CM — secondary (distance, length √29)
+      ctx2.strokeStyle = secondary;
+      ctx2.beginPath();
+      ctx2.moveTo(Cpx.x, Cpx.y);
+      ctx2.lineTo(Mpx.x, Mpx.y);
+      ctx2.stroke();
+      // CA — warning (hypotenuse R)
+      ctx2.strokeStyle = warning;
+      ctx2.lineWidth = 3.5;
+      ctx2.beginPath();
+      ctx2.moveTo(Cpx.x, Cpx.y);
+      ctx2.lineTo(Apx.x, Apx.y);
+      ctx2.stroke();
+
+      // Right angle at M
+      ctx2.strokeStyle = text;
+      ctx2.lineWidth = 1.5;
+      ctx2.beginPath();
+      ctx2.moveTo(Mpx.x + 16, Mpx.y);
+      ctx2.lineTo(Mpx.x + 16, Mpx.y - 16);
+      ctx2.lineTo(Mpx.x, Mpx.y - 16);
+      ctx2.stroke();
+
+      // Vertex dots + labels
+      function dot(p, color, label, dx, dy) {
+        ctx2.beginPath();
+        ctx2.arc(p.x, p.y, 6, 0, Math.PI * 2);
+        ctx2.fillStyle = cv(color);
+        ctx2.fill();
+        ctx2.strokeStyle = bg;
+        ctx2.lineWidth = 2;
+        ctx2.stroke();
+        ctx2.font = 'bold 18px Inter, system-ui';
+        ctx2.fillStyle = text;
+        ctx2.fillText(label, p.x + dx, p.y + dy);
+      }
+      dot(Mpx, '--sol-canvas-text', 'M', -22, 24);
+      dot(Apx, '--sol-canvas-accent', 'A', 12, 22);
+      dot(Cpx, '--sol-canvas-primary', 'C', -22, -10);
+
+      // Side length labels
+      ctx2.font = 'bold 16px Inter, system-ui';
+      ctx2.fillStyle = cv('--sol-canvas-accent');
+      ctx2.fillText('|MA| = 3', (Mpx.x + Apx.x) / 2 - 36, Mpx.y + 34);
+
+      ctx2.fillStyle = cv('--sol-canvas-secondary');
+      ctx2.save();
+      ctx2.translate(Mpx.x - 14, (Mpx.y + Cpx.y) / 2);
+      ctx2.rotate(-Math.PI / 2);
+      ctx2.textAlign = 'center';
+      ctx2.fillText('|CM| = √29', 0, 0);
+      ctx2.restore();
+      ctx2.textAlign = 'left';
+
+      ctx2.fillStyle = cv('--sol-canvas-warning');
+      // Label along hypotenuse
+      var mid = { x: (Cpx.x + Apx.x) / 2, y: (Cpx.y + Apx.y) / 2 };
+      ctx2.save();
+      var ang = Math.atan2(Apx.y - Cpx.y, Apx.x - Cpx.x);
+      ctx2.translate(mid.x, mid.y - 12);
+      ctx2.rotate(ang);
+      ctx2.textAlign = 'center';
+      ctx2.fillText('R = √38', 0, 0);
+      ctx2.restore();
+      ctx2.textAlign = 'left';
+
+      // Pythagoras formula bottom
+      ctx2.font = 'bold 18px Inter, system-ui';
+      ctx2.fillStyle = text;
+      ctx2.textAlign = 'center';
+      ctx2.fillText('R² = (√29)² + 3² = 29 + 9 = 38', W2 / 2 + 60, H2 - 36);
+      ctx2.font = 'bold 20px Inter, system-ui';
+      ctx2.fillStyle = cv('--sol-canvas-accent');
+      ctx2.fillText('R = √38', W2 / 2 + 60, H2 - 10);
+      ctx2.textAlign = 'left';
+
+      // Heading
+      ctx2.font = 'bold 14px Inter, system-ui';
+      ctx2.fillStyle = muted;
+      ctx2.fillText('Pravougli trougao CMA  (prav ugao u M)', 14, 24);
+    }
+
+    drawTri();
+
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'matoteka-theme') {
+        setTimeout(function() {
+          styles = getComputedStyle(root);
+          drawTri();
+        }, 50);
+      }
+    });
+  }
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Poluprečnik kružnice iz tetive — rastojanje tačke od prave i Pitagora",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["analitička geometrija", "kružnica", "tetiva", "rastojanje tačke od prave", "Pitagorina teorema"]
+}
+BRAINSPARK_META-->

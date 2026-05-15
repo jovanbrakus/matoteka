@@ -1,0 +1,625 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Problem: Skup svih vrednosti funkcije y = 3^{x²-4x} na intervalu [1, 5].
+
+Strategija: kompozicija dve monotone funkcije. y = 3^u, gde u = g(x) = x² - 4x.
+
+Korak 1 — Skup vrednosti unutrašnje funkcije u = g(x) = x² - 4x na [1, 5].
+g je parabola sa temenom u x = 2 (g'(x) = 2x - 4 = 0 ⇒ x = 2). g(2) = 4 - 8 = -4. To je minimum (parabola otvorena nagore).
+Maksimum na zatvorenom intervalu: u krajnjim tačkama ili izvan teme.
+g(1) = 1 - 4 = -3.
+g(5) = 25 - 20 = 5.
+Maksimum = max(g(1), g(5)) = max(-3, 5) = 5 (postignut u x = 5).
+Minimum = -4 (u x = 2).
+Pošto je g neprekidna na [1, 5], a [1, 5] sadrži teme x = 2, slika je [min, max] = [-4, 5].
+Dakle u ∈ [-4, 5].
+
+Korak 2 — y = 3^u je strogo rastuća (baza 3 > 1).
+Slika strogo rastuće funkcije na [-4, 5] je [3^(-4), 3^5] = [1/81, 243].
+
+Odgovor: (C) [1/81, 243].
+
+Provera:
+3^(-4) = 1/81 ✓
+3^5 = 243 ✓
+g(2) = -4 ✓
+g(5) = 5 ✓
+g(1) = -3 (između -4 i 5, OK)
+Na intervalu [1, 5], g uzima sve vrednosti iz [-4, 5] (kontinualnost garantuje to po Bolcanu-Vajerštrasu).
+
+Vizuelni prikaz:
+- INTERAKTIVNO (parameter has spatial location — point on the curve!): draggable point on g(x) = x² - 4x in [1, 5], showing live u-value and live y = 3^u value.
+- Two stacked plots: g(x) above, 3^u below (or side-by-side). Visina ~650px.
+- Static is acceptable too but interactivity here naturally illustrates "kako se domen mapira u slici".
+- Implementacija: jedna canvas-a, dva grafa stack-ovana vertikalno. Tačka P sa x ∈ [1, 5] može se prevlačiti. Prikazuje se i odgovarajuća tačka na 3^u grafu.
+
+Decided: interactive single canvas with stacked plots. Drag x on top plot (g), see corresponding y on bottom plot (3^u).
+</script>
+
+<h1 data-card="problem-title">Skup vrednosti funkcije \( y = 3^{x^2 - 4x} \) na intervalu \( [1, 5] \)</h1>
+<p data-card="problem-subtitle" class="subtitle">Kompozicija funkcija — slika unutrašnje kvadratne funkcije i monotonost eksponencijalne</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Skup svih vrednosti funkcije</p>
+  <div class="math-block">\[ y = 3^{x^2 - 4x} \]</div>
+  <p>na intervalu \( [1, 5] \) je:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( [\tfrac{1}{27},\, 243] \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( [\tfrac{1}{81},\, 9] \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( [\tfrac{1}{81},\, 243] \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( [\tfrac{1}{27},\, 9] \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( [\tfrac{1}{81},\, 81] \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Funkcija je kompozicija \( y = 3^{u} \) gde \( u = g(x) = x^2 - 4x \). Prvo nađemo sliku unutrašnje funkcije \( g \) na \( [1, 5] \) (teme parabole je u \( x = 2 \), minimum \( -4 \); maksimum u kraju \( x = 5 \) iznosi \( 5 \), pa \( u \in [-4, 5] \)). Zatim primenjujemo strogo rastuću eksponencijalnu \( 3^u \) na taj interval i dobijamo \( y \in [3^{-4}, 3^{5}] = [\tfrac{1}{81}, 243] \).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Slika složene funkcije i ekstremi kvadratne</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Teme parabole:</strong> za \( g(x) = ax^2 + bx + c \), apscisa temena je \( x_v = -\tfrac{b}{2a} \). Ako je \( a > 0 \), \( g(x_v) \) je <em>minimum</em>; ako \( a < 0 \), to je maksimum.</li>
+        <li><strong>Slika neprekidne funkcije na zatvorenom intervalu:</strong> kompaktan podskup od \( \mathbb{R} \) → kompaktan, pa je slika oblika \( [m, M] \) gde su \( m, M \) minimum i maksimum funkcije (Bolcano-Vajerštrasova teorema).</li>
+        <li><strong>Maksimum kvadratne sa \( a > 0 \) na zatvorenom intervalu:</strong> postiže se u jednoj od <em>krajnjih</em> tačaka intervala.</li>
+        <li><strong>Slika kompozicije monotonih:</strong> ako je spoljna funkcija \( h \) strogo monotona (rastuća ili opadajuća), tada slika kompozicije \( h \circ g \) na \( [a, b] \) je interval čije su krajnje tačke \( h(\min g) \) i \( h(\max g) \).</li>
+        <li><strong>Monotonost eksponencijalne:</strong> \( y = a^u \) je strogo rastuća kad \( a > 1 \) (kod nas \( a = 3 \)) i strogo opadajuća kad \( 0 < a < 1 \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="780" height="660"></canvas>
+  </div>
+  <p class="canvas-caption">Prevuci tačku \( P \) duž krive \( u = g(x) = x^2 - 4x \) (gornji grafik) i posmatraj kako se odgovarajuća vrednost \( y = 3^u \) menja na donjem grafiku. Kada se \( x \) kreće po \( [1, 5] \), \( u \) prelazi interval \( [-4, 5] \), a \( y \) interval \( [\tfrac{1}{81}, 243] \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Razloži kompoziciju</h3>
+      <p>Označi unutrašnju funkciju:</p>
+      <div class="math-block">\[ u = g(x) = x^2 - 4x, \qquad y = 3^{u}. \]</div>
+      <p>Cilj: prvo naći sliku \( g \) na \( [1, 5] \), zatim primeniti \( 3^u \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Slika kvadratne \( g(x) = x^2 - 4x \) na \( [1, 5] \)</h3>
+      <p>Teme parabole je u \( x_v = -\tfrac{-4}{2 \cdot 1} = 2 \). Kako \( 2 \in [1, 5] \), teme je unutar intervala, pa je tu globalni <em>minimum</em>:</p>
+      <div class="math-block">\[ g(2) = 4 - 8 = -4. \]</div>
+      <p>Maksimum se postiže u jednoj od krajnjih tačaka. Računamo obe:</p>
+      <div class="math-block">\[ g(1) = 1 - 4 = -3, \qquad g(5) = 25 - 20 = 5. \]</div>
+      <p>Maksimum je \( \max(-3, 5) = 5 \), postignut u \( x = 5 \).</p>
+      <p>Pošto je \( g \) neprekidna na \( [1, 5] \), njena slika je tačno:</p>
+      <div class="math-block">\[ g\bigl([1, 5]\bigr) = [-4,\, 5]. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto baš krajnja tačka \( x = 5 \), a ne \( x = 1 \)?</summary>
+          <div class="detail-content"><p>Tačka \( x = 5 \) je <em>dalje</em> od temena \( x = 2 \) (rastojanje 3) nego \( x = 1 \) (rastojanje 1). Parabola sa \( a > 0 \) raste kako se udaljavamo od temena, pa daljina tačka daje veću vrednost. Geometrijski: \( g \) je simetrična oko \( x = 2 \), pa \( g(5) = g(2 - 3) = g(-1) = 1 + 4 = 5 \) — što potvrđuje istu vrednost.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Primeni \( y = 3^u \) na \( u \in [-4, 5] \)</h3>
+      <p>Funkcija \( u \mapsto 3^u \) je strogo <em>rastuća</em> (baza \( 3 > 1 \)). Slika strogo rastuće funkcije na intervalu je opet interval, pa:</p>
+      <div class="math-block">\[ 3^u : [-4, 5] \;\longrightarrow\; [3^{-4},\, 3^{5}]. \]</div>
+      <p>Izračunamo krajnje vrednosti:</p>
+      <div class="math-block">\[ 3^{-4} = \frac{1}{3^4} = \frac{1}{81}, \qquad 3^{5} = 243. \]</div>
+      <p>Pa je tražena slika:</p>
+      <div class="math-block">\[ \boxed{\,y \in \left[\tfrac{1}{81},\; 243\right]\,}. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Sanity check: provera u krajnjim tačkama</h3>
+      <p>Direktno izračunaj \( y \) u tri ključne tačke:</p>
+      <ul>
+        <li>\( x = 2 \): \( y = 3^{-4} = \tfrac{1}{81} \approx 0{,}0123 \) (globalni minimum).</li>
+        <li>\( x = 5 \): \( y = 3^{5} = 243 \) (globalni maksimum).</li>
+        <li>\( x = 1 \): \( y = 3^{-3} = \tfrac{1}{27} \approx 0{,}0370 \) (između).</li>
+      </ul>
+      <p>Sve tri vrednosti su unutar \( [\tfrac{1}{81}, 243] \) i krajnje pokrivaju granice. Slika je tačno taj zatvoreni interval.</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Trik kod složenih funkcija oblika \( a^{g(x)} \) (sa \( a > 1 \)): <strong>monotonost spoljne eksponencijalne čuva strukturu intervala</strong> — minimum unutrašnje funkcije postaje minimum cele, maksimum unutrašnje postaje maksimum cele. Glavni posao je dakle <em>nalaženje slike unutrašnje funkcije</em>. Kod kvadratne na zatvorenom intervalu, ne zaboravi da <em>provero da li teme upada u interval</em>: ako da — to je minimum (za \( a > 0 \)); ako ne — i minimum i maksimum su u krajevima. Kod nas teme \( x = 2 \in [1, 5] \), pa je daje globalni minimum.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>Računanje samo u krajevima intervala:</strong> ako ignorisšeš teme parabole i samo izračunaš \( g(1) = -3 \) i \( g(5) = 5 \), dobiješ pogrešnu sliku \( [3^{-3}, 3^{5}] = [\tfrac{1}{27}, 243] \) — odgovor (A), koji <em>ne uključuje</em> stvarni minimum.</li>
+    <li><strong>Ignorisanje da je teme unutar intervala:</strong> teme \( x = 2 \) je između \( 1 \) i \( 5 \), pa <em>mora</em> biti razmatrano kao kandidat za minimum.</li>
+    <li><strong>Računanje samo "asimetričnog" maksimuma:</strong> kvadratna sa pozitivnim vodećim koeficijentom raste izvan temena u oba smera; pa moraš proveriti <em>obe</em> krajnje tačke i uzeti veću kao maksimum. \( g(5) = 5 \) je veća od \( |g(1)| = 3 \).</li>
+    <li><strong>Računske greške u \( 3^{-4} \):</strong> \( 3^{-4} = \tfrac{1}{3^4} = \tfrac{1}{81} \), <em>ne</em> \( \tfrac{1}{27} \). I \( 3^5 = 243 \), <em>ne</em> \( 81 \) ili \( 81 \cdot 3 = ... \) (ovo je tačno 243).</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ y \in \left[\tfrac{1}{81},\; 243\right]. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( [\tfrac{1}{27},\, 243] \)</span>
+    <span class="answer-option" data-option="B">(B) \( [\tfrac{1}{81},\, 9] \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( [\tfrac{1}{81},\, 243] \)</span>
+    <span class="answer-option" data-option="D">(D) \( [\tfrac{1}{27},\, 9] \)</span>
+    <span class="answer-option" data-option="E">(E) \( [\tfrac{1}{81},\, 81] \)</span>
+  </div>
+  <p class="verification">Provera: minimum \( g \) na \( [1,5] \) je \( g(2) = -4 \), maksimum \( g(5) = 5 \). Kompozicija sa strogo rastućom \( 3^u \) daje \( [3^{-4}, 3^5] = [\tfrac{1}{81}, 243] \). ✓</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Šta se dešava ako u istom problemu zamenimo bazu \( 3 \) sa \( \tfrac{1}{3} \), tj. razmatramo \( y = \bigl(\tfrac{1}{3}\bigr)^{x^2 - 4x} \) na istom intervalu \( [1, 5] \)? Koja se opcija (A)–(E) sada „aktivira"?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content">
+      <p>Sada je spoljna funkcija \( u \mapsto (1/3)^u \) strogo <em>opadajuća</em>. Slika opadajuće funkcije na \( [-4, 5] \) je \( [(1/3)^5, (1/3)^{-4}] = [\tfrac{1}{243}, 81] \). Naš novi odgovor bi bio \( [\tfrac{1}{243}, 81] \), što nije ni jedan od ponuđenih (A)–(E) — što sugeriše da konstrukcija problema namerno koristi rastuću eksponencijalnu. Generalizacija: za bazu \( a \), slika je uvek "duga": dužine \( a^5 - a^{-4} \) kod \( a > 1 \) ili \( a^{-4} - a^5 \) kod \( 0 < a < 1 \).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  // Interactive state: x in [1, 5]
+  var dragX = 2;  // start at minimum
+  var dragging = false;
+  var GRAB_RADIUS = 22;
+
+  // Geometry constants
+  var W = canvas.width, H = canvas.height;
+  var marginL = 70, marginR = 30;
+  var plotW = W - marginL - marginR;
+
+  // Top plot: u = g(x) = x²-4x  on [1, 5]
+  var topT = 60, topH = 230;
+  var xMin = 0.5, xMax = 5.5;
+  var uMin = -5, uMax = 6;
+  function XT(x) { return marginL + (x - xMin) / (xMax - xMin) * plotW; }
+  function YT(u) { return topT + (uMax - u) / (uMax - uMin) * topH; }
+
+  // Bottom plot: y = 3^u on u ∈ [-5, 6]
+  var botT = topT + topH + 70, botH = 220;
+  var uMin2 = -5, uMax2 = 6;
+  var yMin2 = -10, yMax2 = 260;
+  function XB(u) { return marginL + (u - uMin2) / (uMax2 - uMin2) * plotW; }
+  function YB(y) { return botT + (yMax2 - y) / (yMax2 - yMin2) * botH; }
+
+  function pointPosTop() {
+    var u = dragX * dragX - 4 * dragX;
+    return { x: XT(dragX), y: YT(u), u: u };
+  }
+
+  function getPos(e) {
+    var r = canvas.getBoundingClientRect();
+    var evt = e.touches ? e.touches[0] : e;
+    return { x: evt.clientX - r.left, y: evt.clientY - r.top };
+  }
+
+  function isNear(pos) {
+    var p = pointPosTop();
+    return Math.hypot(pos.x - p.x, pos.y - p.y) < GRAB_RADIUS;
+  }
+
+  function constrainX(x) {
+    return Math.max(1, Math.min(5, x));
+  }
+
+  function setFromPos(pos) {
+    // Convert pos.x to x value via top plot
+    var x = xMin + (pos.x - marginL) / plotW * (xMax - xMin);
+    dragX = constrainX(x);
+    draw();
+  }
+
+  canvas.style.touchAction = 'none';
+
+  canvas.addEventListener('mousedown', function(e) {
+    var pos = getPos(e);
+    if (isNear(pos)) { dragging = true; canvas.style.cursor = 'grabbing'; }
+  });
+  canvas.addEventListener('mousemove', function(e) {
+    var pos = getPos(e);
+    if (dragging) { setFromPos(pos); }
+    else { canvas.style.cursor = isNear(pos) ? 'grab' : 'default'; }
+  });
+  canvas.addEventListener('mouseup', function() { dragging = false; canvas.style.cursor = 'default'; });
+  canvas.addEventListener('mouseleave', function() { dragging = false; canvas.style.cursor = 'default'; });
+  canvas.addEventListener('touchstart', function(e) {
+    var pos = getPos(e);
+    if (isNear(pos)) { dragging = true; e.preventDefault(); }
+  }, { passive: false });
+  canvas.addEventListener('touchmove', function(e) {
+    if (!dragging) return;
+    e.preventDefault();
+    setFromPos(getPos(e));
+  }, { passive: false });
+  canvas.addEventListener('touchend', function() { dragging = false; });
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Kompozicija:  x  →  u = x² − 4x  →  y = 3^u', W / 2, 30);
+
+    // ─── TOP PLOT ───
+    ctx.fillStyle = muted;
+    ctx.font = '13px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Gore: u = g(x) = x² − 4x na x ∈ [1, 5]', marginL, topT - 10);
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var i = 1; i <= 5; i++) {
+      ctx.beginPath();
+      ctx.moveTo(XT(i), topT);
+      ctx.lineTo(XT(i), topT + topH);
+      ctx.stroke();
+    }
+    for (var j = uMin + 1; j <= uMax; j++) {
+      ctx.beginPath();
+      ctx.moveTo(marginL, YT(j));
+      ctx.lineTo(marginL + plotW, YT(j));
+      ctx.stroke();
+    }
+
+    // Shaded x ∈ [1, 5] region
+    ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.07);
+    ctx.fillRect(XT(1), topT, XT(5) - XT(1), topH);
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(marginL, YT(0)); ctx.lineTo(marginL + plotW, YT(0));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(XT(0), topT); ctx.lineTo(XT(0), topT + topH);
+    ctx.stroke();
+
+    // Axis labels (top)
+    ctx.fillStyle = text;
+    ctx.font = '12px sans-serif';
+    ctx.textAlign = 'center';
+    for (var ii = 1; ii <= 5; ii++) {
+      ctx.fillText(ii.toString(), XT(ii), YT(0) + 16);
+    }
+    ctx.textAlign = 'right';
+    for (var jj = uMin + 1; jj <= uMax; jj += 2) {
+      if (jj === 0) continue;
+      ctx.fillText(jj.toString(), marginL - 6, YT(jj) + 4);
+    }
+    ctx.textAlign = 'left';
+    ctx.font = 'italic 13px sans-serif';
+    ctx.fillText('x', marginL + plotW + 6, YT(0) + 5);
+    ctx.fillText('u', XT(0) + 6, topT - 4);
+
+    // Plot g(x) on [1, 5]
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    for (var xx = 1; xx <= 5; xx += 0.02) {
+      var uVal = xx*xx - 4*xx;
+      var px = XT(xx), py = YT(uVal);
+      if (xx === 1) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+
+    // Lighter dashed extension outside [1, 5]
+    ctx.strokeStyle = cvAlpha('--sol-canvas-primary', 0.35);
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    var startedL = false;
+    for (var xxL = xMin; xxL < 1; xxL += 0.02) {
+      var uL = xxL*xxL - 4*xxL;
+      var pxL = XT(xxL), pyL = YT(uL);
+      if (!startedL) { ctx.moveTo(pxL, pyL); startedL = true; }
+      else ctx.lineTo(pxL, pyL);
+    }
+    ctx.stroke();
+    ctx.beginPath();
+    var startedR = false;
+    for (var xxR = 5; xxR <= xMax; xxR += 0.02) {
+      var uR = xxR*xxR - 4*xxR;
+      var pxR = XT(xxR), pyR = YT(uR);
+      if (!startedR) { ctx.moveTo(pxR, pyR); startedR = true; }
+      else ctx.lineTo(pxR, pyR);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Mark endpoints and vertex of g on [1,5]
+    ctx.fillStyle = highlight;
+    ctx.beginPath(); ctx.arc(XT(1), YT(-3), 4, 0, Math.PI*2); ctx.fill();  // (1, -3)
+    ctx.beginPath(); ctx.arc(XT(2), YT(-4), 5, 0, Math.PI*2); ctx.fill();  // vertex (2, -4)
+    ctx.beginPath(); ctx.arc(XT(5), YT(5), 4, 0, Math.PI*2); ctx.fill();    // (5, 5)
+    ctx.fillStyle = text;
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('(1, −3)', XT(1) + 7, YT(-3) - 2);
+    ctx.fillText('teme (2, −4) min', XT(2) + 7, YT(-4) + 14);
+    ctx.fillText('(5, 5) max', XT(5) - 60, YT(5) - 6);
+
+    // Draggable point on g
+    var p = pointPosTop();
+    ctx.beginPath(); ctx.arc(p.x, p.y, 12, 0, Math.PI*2);
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.25); ctx.fill();
+    ctx.beginPath(); ctx.arc(p.x, p.y, 7, 0, Math.PI*2);
+    ctx.fillStyle = accent; ctx.fill();
+    // Hint
+    ctx.fillStyle = muted;
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('prevuci', p.x + 14, p.y - 8);
+
+    // Vertical guide from P to x-axis
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 3]);
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y); ctx.lineTo(p.x, YT(0));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Live readout for top
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('x = ' + dragX.toFixed(2).replace('.', ',') + ',   u = x² − 4x = ' + p.u.toFixed(2).replace('.', ','),
+      marginL, topT + topH + 32);
+
+    // Mapping arrow
+    var arrowY = topT + topH + 50;
+    ctx.strokeStyle = secondary;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(W/2 - 40, arrowY);
+    ctx.lineTo(W/2 + 40, arrowY);
+    ctx.lineTo(W/2 + 35, arrowY - 4);
+    ctx.moveTo(W/2 + 40, arrowY);
+    ctx.lineTo(W/2 + 35, arrowY + 4);
+    ctx.stroke();
+    ctx.fillStyle = secondary;
+    ctx.font = 'italic 13px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('y = 3^u', W/2, arrowY - 6);
+
+    // ─── BOTTOM PLOT ───
+    ctx.fillStyle = muted;
+    ctx.font = '13px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Dole: y = 3^u na u ∈ [−4, 5]  →  y ∈ [1/81, 243]', marginL, botT - 10);
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    for (var ii2 = uMin2; ii2 <= uMax2; ii2 += 1) {
+      ctx.beginPath();
+      ctx.moveTo(XB(ii2), botT);
+      ctx.lineTo(XB(ii2), botT + botH);
+      ctx.stroke();
+    }
+    for (var jy = 0; jy <= yMax2; jy += 50) {
+      ctx.beginPath();
+      ctx.moveTo(marginL, YB(jy));
+      ctx.lineTo(marginL + plotW, YB(jy));
+      ctx.stroke();
+    }
+
+    // Shaded u ∈ [-4, 5] region
+    ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.07);
+    ctx.fillRect(XB(-4), botT, XB(5) - XB(-4), botH);
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(marginL, YB(0)); ctx.lineTo(marginL + plotW, YB(0));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(XB(0), botT); ctx.lineTo(XB(0), botT + botH);
+    ctx.stroke();
+
+    // Axis labels (bottom)
+    ctx.fillStyle = text;
+    ctx.font = '12px sans-serif';
+    ctx.textAlign = 'center';
+    for (var ix = uMin2; ix <= uMax2; ix++) {
+      if (ix === 0) continue;
+      ctx.fillText(ix.toString(), XB(ix), YB(0) + 14);
+    }
+    ctx.textAlign = 'right';
+    [0, 50, 100, 150, 200, 243].forEach(function(yv) {
+      if (yv === 0) return;
+      ctx.fillText(yv.toString(), marginL - 6, YB(yv) + 4);
+    });
+    ctx.textAlign = 'left';
+    ctx.font = 'italic 13px sans-serif';
+    ctx.fillText('u', marginL + plotW + 6, YB(0) + 5);
+    ctx.fillText('y', XB(0) + 6, botT - 4);
+
+    // Plot 3^u on [-5, 6]
+    ctx.strokeStyle = cvAlpha('--sol-canvas-primary', 0.4);
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    var startedB = false;
+    for (var uu = uMin2; uu <= -4; uu += 0.02) {
+      var yV = Math.pow(3, uu);
+      if (yV > yMax2) continue;
+      var px2 = XB(uu), py2 = YB(yV);
+      if (!startedB) { ctx.moveTo(px2, py2); startedB = true; }
+      else ctx.lineTo(px2, py2);
+    }
+    ctx.stroke();
+    ctx.beginPath();
+    startedB = false;
+    for (var uu2 = 5; uu2 <= uMax2; uu2 += 0.02) {
+      var yV2 = Math.pow(3, uu2);
+      if (yV2 > yMax2) continue;
+      var px3 = XB(uu2), py3 = YB(yV2);
+      if (!startedB) { ctx.moveTo(px3, py3); startedB = true; }
+      else ctx.lineTo(px3, py3);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Solid on [-4, 5]
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    for (var uA = -4; uA <= 5; uA += 0.02) {
+      var yA = Math.pow(3, uA);
+      if (yA > yMax2) continue;
+      var pxA = XB(uA), pyA = YB(yA);
+      if (uA === -4) ctx.moveTo(pxA, pyA);
+      else ctx.lineTo(pxA, pyA);
+    }
+    ctx.stroke();
+
+    // Mark min/max of y
+    ctx.fillStyle = highlight;
+    ctx.beginPath(); ctx.arc(XB(-4), YB(1/81), 5, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(XB(5), YB(243), 5, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = text;
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('(−4, 1/81) min', XB(-4) + 7, YB(1/81) - 6);
+    ctx.fillText('(5, 243) max', XB(5) - 80, YB(243) - 6);
+
+    // Corresponding point on bottom plot
+    var yNow = Math.pow(3, p.u);
+    ctx.beginPath(); ctx.arc(XB(p.u), YB(yNow), 12, 0, Math.PI*2);
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.25); ctx.fill();
+    ctx.beginPath(); ctx.arc(XB(p.u), YB(yNow), 7, 0, Math.PI*2);
+    ctx.fillStyle = accent; ctx.fill();
+
+    // Vertical guide from bottom point to u-axis
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 3]);
+    ctx.beginPath();
+    ctx.moveTo(XB(p.u), YB(yNow)); ctx.lineTo(XB(p.u), YB(0));
+    ctx.stroke();
+    // Horizontal guide to y-axis
+    ctx.beginPath();
+    ctx.moveTo(XB(p.u), YB(yNow)); ctx.lineTo(XB(0), YB(yNow));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Live readout for bottom
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px sans-serif';
+    ctx.textAlign = 'left';
+    var yStr;
+    if (yNow < 1) yStr = yNow.toFixed(4).replace('.', ',');
+    else if (yNow < 10) yStr = yNow.toFixed(3).replace('.', ',');
+    else yStr = yNow.toFixed(2).replace('.', ',');
+    ctx.fillText('y = 3^u ≈ ' + yStr, marginL, botT + botH + 28);
+
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 14px sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('Slika: y ∈ [1/81 ≈ 0,0123;  243]', W - marginR, botT + botH + 28);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Skup vrednosti funkcije y = 3^{x² − 4x} na [1, 5]",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["eksponencijalna funkcija", "kompozicija funkcija", "slika funkcije", "kvadratna funkcija", "ekstremi", "interval"]
+}
+BRAINSPARK_META-->

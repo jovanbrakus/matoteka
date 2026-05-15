@@ -1,0 +1,642 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Zadatak: pojednostaviti (sin 3x - cos 3y) / (sin x + cos y).
+
+  Strategija: razložiti sin 3x i cos 3y u oblik koji ima zajednički faktor sa sin x + cos y.
+  Najlakše je preko sumiranja u proizvod. Cilj: prepoznati da i brojilac i imenilac sadrže
+  isti "zbirno-proizvodni" faktor.
+
+  Korak 1. Prevodimo razliku u zbir koristeći cos 3y = sin(π/2 - 3y).
+    sin 3x - cos 3y = sin 3x - sin(π/2 - 3y).
+    Formula: sin P - sin Q = 2 cos((P+Q)/2) sin((P-Q)/2).
+    P = 3x, Q = π/2 - 3y.
+      (P+Q)/2 = (3x + π/2 - 3y)/2 = 3·(x - y)/2 + π/4
+      (P-Q)/2 = (3x - π/2 + 3y)/2 = 3·(x + y)/2 - π/4
+    Označimo:
+      A = (x - y)/2 + π/4
+      B = (x + y)/2 - π/4
+    Tako:
+      sin 3x - cos 3y = 2 cos(3A) sin(3B) ... NE.
+      Tačnije: (P+Q)/2 = 3A, (P-Q)/2 = 3B. Pa:
+        sin 3x - sin(π/2 - 3y) = 2 cos(3A) sin(3B).
+
+  Korak 2. Sličan tretman za imenilac.
+    sin x + cos y = sin x + sin(π/2 - y).
+    Formula: sin P + sin Q = 2 sin((P+Q)/2) cos((P-Q)/2).
+    P = x, Q = π/2 - y.
+      (P+Q)/2 = (x - y)/2 + π/4 = A
+      (P-Q)/2 = (x + y)/2 - π/4 = B
+    Tako:
+      sin x + cos y = 2 sin A cos B.
+
+  Korak 3. Količnik:
+    (sin 3x - cos 3y) / (sin x + cos y) = [2 cos 3A sin 3B] / [2 sin A cos B]
+                                        = (sin 3B / cos B) · (cos 3A / sin A) ... preuredimo:
+                                        = (cos 3A / sin A) · (sin 3B / cos B).
+
+  Sad koristimo formule trostrukog ugla:
+    sin 3θ = 3 sin θ - 4 sin³θ = sin θ (3 - 4 sin²θ) = sin θ (1 + 2 cos 2θ)
+                                                  jer 3 - 4 sin²θ = 3 - 2(1 - cos 2θ) = 1 + 2 cos 2θ
+    cos 3θ = 4 cos³θ - 3 cos θ = cos θ (4 cos²θ - 3) = cos θ (2 cos 2θ - 1)
+                                                  jer 4 cos²θ - 3 = 2(1 + cos 2θ) - 3 = 2 cos 2θ - 1
+
+    Dakle:  cos 3A / sin A    =  cos 3A / sin A.  Pošto cos 3A = cos A (2 cos 2A - 1), trebao
+            bih da sin A bude faktor — ne baš. Bolje pišimo direktno:
+            cos 3A = cos A · (2 cos 2A - 1) — to nije baš podeljivo sa sin A.
+
+    Razmislim ponovo. Količnik je
+       (sin 3B / cos B) · (cos 3A / sin A)
+    Iz sin 3B = sin B (1 + 2 cos 2B), pa sin 3B / cos B = sin B (1 + 2 cos 2B) / cos B. Hmm.
+    Pričekaj — bolji put: koristim sin 3θ = sin θ (1 + 2 cos 2θ) za sin 3B, ali tu nema cos B.
+
+    Pravilo (Čebišev): sin 3θ = (3 sin θ - 4 sin³θ). Nema sin 3B/cos B kao tihu identifikaciju.
+
+  Pokušaj 2 (direktan): Ako uzmem identitete
+      sin 3θ = sin θ (1 + 2 cos 2θ)
+      cos 3θ = cos θ (2 cos 2θ - 1) = -cos θ (1 - 2 cos 2θ)
+    onda:
+      sin 3x - cos 3y = sin x (1 + 2 cos 2x) + cos y (1 - 2 cos 2y)   [pažljivo sa znakom]
+        = sin x (1 + 2 cos 2x) - cos y (2 cos 2y - 1).
+    Pokušaj da ovo "podelim" sa (sin x + cos y):
+      Stavim u = sin x, v = cos y. Da li je
+         u(1 + 2 cos 2x) - v(2 cos 2y - 1)  =  (u + v) · ???
+      Razvij: imati formu (u + v) · K + (u - v) · L da bi dobio polinomski količnik.
+      Neka:  (u + v) · K = uK + vK. Sa K = 1 + 2 cos 2x:  uK + vK = u(1 + 2 cos 2x) + v(1 + 2 cos 2x).
+      Razlika sa našom levom stranom:
+         [u(1+2cos2x) - v(2cos2y - 1)] - [u(1+2cos2x) + v(1+2cos2x)]
+         = -v(2cos2y - 1) - v(1+2cos2x) = -v(2cos2y - 1 + 1 + 2cos2x) = -v(2cos2y + 2cos2x)
+         = -2v(cos 2x + cos 2y).
+      Neuredno. Hajde pojednostavljeno preko sume-proizvoda kao u Koraku 3 pa završimo.
+
+  Pravi put (sumno-proizvodni — najsigurniji):
+    Brojilac = 2 cos 3A · sin 3B
+    Imenilac = 2 sin A · cos B
+    Količnik = (cos 3A / sin A) · (sin 3B / cos B)
+
+    Za ovo treba (cos 3θ / sin θ) i (sin 3θ / cos θ) izraze:
+      sin 3θ / cos θ = (3 sin θ cos²θ + cos²θ · (...) ) / cos θ ... iskoristim:
+        sin 3θ = sin(2θ + θ) = sin 2θ cos θ + cos 2θ sin θ = 2 sin θ cos²θ + cos 2θ sin θ
+               = sin θ (2 cos²θ + cos 2θ) = sin θ (1 + cos 2θ + cos 2θ) = sin θ (1 + 2 cos 2θ).
+        OK. Dakle sin 3θ / cos θ = sin θ (1 + 2 cos 2θ) / cos θ — ne pomera mnogo.
+
+    Drugi pristup: sin 3θ = sin θ + 2 sin θ cos 2θ = sin θ + (sin 3θ - sin(-θ))?
+      Ovo se vrti u krug. Bolja varijanta — ne deljenje, već uvid:
+      Količnik = 2 cos 3A sin 3B / (2 sin A cos B).
+      Ali postoji još jedan trik: koristim sin 3B / cos B = (sin 3B / sin(π/2 - B))?
+      To je sin(P)/sin(Q). Ako P = 3B, Q = π/2 - B, onda Q = π/2 - B. Hm.
+
+    Najčistiji put: direktna provera ekspanzije izraza (A) — proverim da li je tačan.
+    Hint već dokazuje da (A) odgovara. Provera za konkretne vrednosti:
+      x = π/2, y = 0:  LHS = (sin 3π/2 - cos 0)/(sin π/2 + cos 0) = (-1 - 1)/(1 + 1) = -1.
+      RHS(A) = 2 cos π - 2 cos 0 + 4 sin(π/2) cos 0 - 1 = 2(-1) - 2(1) + 4(1)(1) - 1
+             = -2 - 2 + 4 - 1 = -1. ✓
+      x = π/4, y = π/4: LHS = (sin 3π/4 - cos 3π/4)/(sin π/4 + cos π/4) = (√2/2 - (-√2/2))/(√2/2 + √2/2) = √2/√2 = 1.
+      RHS(A) = 2 cos π/2 - 2 cos π/2 + 4 sin π/4 cos π/4 - 1 = 0 - 0 + 4·(√2/2)·(√2/2) - 1 = 4·(1/2) - 1 = 1. ✓
+      x = 0, y = π/2: LHS = (sin 0 - cos 3π/2)/(sin 0 + cos π/2) = (0 - 0)/(0 + 0) — neodređeno.
+      x = π/3, y = π/6:
+        sin 3·π/3 = sin π = 0. cos 3·π/6 = cos π/2 = 0. Brojilac = 0.
+        Imenilac: sin π/3 + cos π/6 = √3/2 + √3/2 = √3. LHS = 0.
+        RHS(A) = 2 cos 2π/3 - 2 cos π/3 + 4 sin π/3 cos π/6 - 1 = 2·(-1/2) - 2·(1/2) + 4·(√3/2)·(√3/2) - 1
+               = -1 - 1 + 3 - 1 = 0. ✓
+    Odlično — odgovor (A) je potvrđen na više tačaka.
+
+  Konstruišem rigorozno izvođenje za step-solution:
+
+  Korak 1: Zapisati sin 3x = sin x (1 + 2 cos 2x), cos 3y = cos y (2 cos 2y - 1).
+    Provera: sin 3θ = 3 sin θ - 4 sin³θ = sin θ (3 - 4 sin²θ) = sin θ (3 - 2 + 2 cos 2θ) = sin θ (1 + 2 cos 2θ). ✓
+            cos 3θ = 4 cos³θ - 3 cos θ = cos θ (4 cos²θ - 3) = cos θ (2 + 2 cos 2θ - 3) = cos θ (2 cos 2θ - 1). ✓
+
+  Korak 2: Brojilac sin 3x - cos 3y = sin x (1 + 2 cos 2x) - cos y (2 cos 2y - 1)
+                                    = sin x (1 + 2 cos 2x) + cos y (1 - 2 cos 2y)
+                                    = (sin x + cos y) + 2 sin x cos 2x - 2 cos y cos 2y.
+
+  Korak 3: Treba pokazati da je 2 sin x cos 2x - 2 cos y cos 2y deljivo sa (sin x + cos y),
+    i naći količnik. Probam transformacije:
+      2 sin x cos 2x = sin 3x - sin x   (jer 2 sin A cos B = sin(A+B) + sin(A-B), A=x, B=2x: sin 3x + sin(-x) = sin 3x - sin x).
+      Zapravo bolje: 2 sin A cos B = sin(A+B) + sin(A-B). A = x, B = 2x: 2 sin x cos 2x = sin 3x + sin(-x) = sin 3x - sin x.
+      2 cos y cos 2y = cos 3y + cos y.
+    Dakle: 2 sin x cos 2x - 2 cos y cos 2y = sin 3x - sin x - cos 3y - cos y.
+    To je krug (sadrži sin 3x - cos 3y koji sređujemo).
+
+  Bolji put — koristim suma-proizvod:
+    Prvo brojilac sa "sin 3x - cos 3y" → "sin 3x - sin(π/2 - 3y)".
+    sin α - sin β = 2 cos((α+β)/2) sin((α-β)/2). α=3x, β=π/2-3y.
+      (α+β)/2 = (3x + π/2 - 3y)/2 = 3(x-y)/2 + π/4
+      (α-β)/2 = (3x - π/2 + 3y)/2 = 3(x+y)/2 - π/4
+    Imenilac sin x + cos y = sin x + sin(π/2 - y).
+    sin α + sin β = 2 sin((α+β)/2) cos((α-β)/2). α=x, β=π/2-y.
+      (α+β)/2 = (x-y)/2 + π/4
+      (α-β)/2 = (x+y)/2 - π/4
+    Označim:  A = (x-y)/2 + π/4,  B = (x+y)/2 - π/4. Onda:
+      brojilac = 2 cos(3A) sin(3B)
+      imenilac = 2 sin A · cos B
+      količnik = cos(3A)/sin A · sin(3B)/cos B.
+
+  Korak 4: Razvijem cos 3A i sin 3B kao polinome trećeg stepena:
+      cos 3A = 4 cos³A - 3 cos A    NE — to ima cos A, ali imenilac je sin A. Bolje:
+      cos 3A = cos A (4 cos²A - 3) — nemoguće deliti sa sin A direktno.
+
+    Ipak, postoji alternativni razvoj:
+      cos 3θ = cos θ - 4 sin²θ cos θ + ?   pričekaj: cos 3θ = cos(2θ + θ) = cos 2θ cos θ - sin 2θ sin θ
+              = (1 - 2sin²θ) cos θ - 2 sin θ cos θ · sin θ
+              = cos θ - 2 sin²θ cos θ - 2 sin²θ cos θ
+              = cos θ - 4 sin²θ cos θ
+              = cos θ (1 - 4 sin²θ). Ne pomaže.
+
+    Pravi trik (najlakši put): zapravo deli da li (cos 3A)/(sin A) postoji u zatvorenoj formi?
+       cos 3A = sin(π/2 - 3A). A imenilac je sin A. Ne baš.
+
+    Probam direktno: cos 3θ sin θ = ? (proizvod-u-zbir):
+       cos 3θ sin θ = (1/2)[sin(θ + 3θ) - sin(3θ - θ)] = (1/2)(sin 4θ - sin 2θ).
+       Pa cos 3θ / sin θ nije polinomski izraz.
+
+    Pa kako se onda izvodi rezultat? Hajde da idem direktnom verifikacijom:
+
+    Sa zamenama A, B kako sam ih definisao, vidim da je:
+       cos 2A = cos((x-y) + π/2) = -sin(x-y)
+       sin 2A = sin((x-y) + π/2) = cos(x-y)
+       cos 2B = cos((x+y) - π/2) = sin(x+y)
+       sin 2B = sin((x+y) - π/2) = -cos(x+y)
+
+    Sad iskoristim ono što hint kaže:
+       sin 3θ / sin θ = 1 + 2 cos 2θ (iz sin 3θ = sin θ + 2 sin θ cos 2θ = sin θ (1 + 2 cos 2θ))
+       cos 3θ / cos θ = 2 cos 2θ - 1
+
+    Naša formula:  (cos 3A / sin A) · (sin 3B / cos B). Ne pasuje direktno.
+
+    Ali primetimo: cos 3A = sin(π/2 - 3A) = sin(3(π/2 - A)/... ?? Ne.
+       cos 3A = cos(3A). Ako uzmemo da je 3A = 3((x-y)/2 + π/4) = 3(x-y)/2 + 3π/4
+                                                = 3(x-y)/2 + π/2 + π/4
+                onda cos(3A) = cos(3(x-y)/2 + π/2 + π/4) = -sin(3(x-y)/2 + π/4).
+       I sin A = sin((x-y)/2 + π/4).
+       Pa cos 3A / sin A = -sin(3·((x-y)/2 + π/4) - (?)) ... hmm.
+
+    Pričekaj — ovo treba čistiji put. Vraćamo se na suma-proizvod od pre, ali iskoristimo
+    da je 3A pomak od A tako da je sin(3α)/sin(α) = 1 + 2 cos 2α (vrlo lepa formula!).
+    A sad provera:  cos 3A / sin A — može li biti sličan razvoj?
+       cos 3A = cos(2A + A) = cos 2A cos A - sin 2A sin A
+       cos 3A / sin A = (cos 2A cos A - sin 2A sin A) / sin A = (cos 2A · cos A / sin A) - sin 2A.
+                     = cos 2A · ctg A - sin 2A.
+       Ne lepo.
+
+  Hmm. Alternativno, koristim raspored:
+       cos 3A · sin 3B = ?
+       sin A · cos B = ?
+    Ne, ovo nije put.
+
+  Pokušaj 3 (najjednostavniji direktan razvoj):
+    Brojilac = sin 3x - cos 3y. Iskoristim direktne formule trostrukog ugla:
+       sin 3x = 3 sin x - 4 sin³x
+       cos 3y = 4 cos³y - 3 cos y
+    Brojilac = 3 sin x - 4 sin³x - 4 cos³y + 3 cos y
+            = 3(sin x + cos y) - 4(sin³x + cos³y).
+    Sada faktorisanje sin³x + cos³y = (sin x + cos y)(sin²x - sin x cos y + cos²y)!  (a³ + b³ formula)
+    Dakle:
+       Brojilac = (sin x + cos y) [3 - 4(sin²x - sin x cos y + cos²y)]
+                = (sin x + cos y) [3 - 4 sin²x - 4 cos²y + 4 sin x cos y].
+
+    PODELIMO SA (sin x + cos y):
+       Količnik = 3 - 4 sin²x - 4 cos²y + 4 sin x cos y.
+
+    Sad sredimo:  -4 sin²x = -2(1 - cos 2x) = -2 + 2 cos 2x.
+                  -4 cos²y = -2(1 + cos 2y) = -2 - 2 cos 2y.
+    Zato:  3 - 4 sin²x - 4 cos²y = 3 + (-2 + 2 cos 2x) + (-2 - 2 cos 2y) = -1 + 2 cos 2x - 2 cos 2y.
+    Dodajemo 4 sin x cos y:
+       Količnik = -1 + 2 cos 2x - 2 cos 2y + 4 sin x cos y
+                = 2 cos 2x - 2 cos 2y + 4 sin x cos y - 1.
+
+    To je tačno odgovor (A). ✓✓✓
+
+  Sjajno — ovo je čisti, direktan put. Idemo sa OVIM rešenjem.
+
+  Provera (već urađena za tačke x = π/2, y = 0;  x = π/4, y = π/4;  x = π/3, y = π/6).
+
+  Odgovor: (A) 2 cos 2x - 2 cos 2y + 4 sin x cos y - 1.
+
+  Vizuelni prikaz: statična heat-map ili grafik, ali bolji izbor je prosta tabela
+  vrednosti — pokazati da se LHS i RHS poklapaju za nekoliko različitih (x, y).
+  Ipak, kanvas mora postojati. Načiniću grafik funkcije F(x) = LHS - RHS(A) za fiksno y = π/6
+  (gde nema deljenja sa nulom), i pokazati da je nula svuda. Statika je dovoljna —
+  ovo je identitet, ne istraživanje.
+</script>
+
+<h1 data-card="problem-title">Pojednostavljivanje izraza \( \dfrac{\sin 3x - \cos 3y}{\sin x + \cos y} \)</h1>
+<p data-card="problem-subtitle" class="subtitle">Trigonometrija &mdash; formule trostrukog ugla, faktorizacija zbira kubova, dvostruki ugao</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Čemu je jednak izraz</p>
+  <div class="math-block">\[ E \;=\; \dfrac{\sin 3x - \cos 3y}{\sin x + \cos y} \;? \]</div>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">brojilac</span>
+      <span class="given-value">\( \sin 3x - \cos 3y \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">imenilac</span>
+      <span class="given-value">\( \sin x + \cos y \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">uslov</span>
+      <span class="given-value">\( \sin x + \cos y \neq 0 \)</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 2\cos 2x - 2\cos 2y + 4\sin x \cos y - 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 2\cos 2x + 2\cos 2y - 4\sin x \cos y + 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 2\sin 2x + 2\cos 2y + 4\sin x \cos y - 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( \cos 2x - \cos 2y + 4\cos x \cos y + 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( \cos 2x - 2\cos 2y + 3 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Razvićemo \( \sin 3x \) i \( \cos 3y \) preko formula trostrukog ugla, pa razdvojiti članove tako da brojilac ima dva dela: jedan koji je proporcionalan sa \( \sin x + \cos y \), i jedan koji je razlika kubova \( \sin^3 x + \cos^3 y \). Ova razlika kubova faktoriše se kao \( (\sin x + \cos y)(\sin^2 x - \sin x\cos y + \cos^2 y) \), pa se imenilac skraćuje. Konačno, ostatak ćemo izraziti preko \( \cos 2x \), \( \cos 2y \) i \( \sin x \cos y \) primenom formula za spuštanje stepena.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Formule koje ćemo koristiti</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Trostruki ugao:</strong> \( \sin 3\theta = 3\sin\theta - 4\sin^3\theta \), \( \cos 3\theta = 4\cos^3\theta - 3\cos\theta \).</li>
+        <li><strong>Zbir kubova:</strong> \( a^3 + b^3 = (a + b)(a^2 - ab + b^2) \).</li>
+        <li><strong>Dvostruki ugao (spuštanje stepena):</strong> \( \cos 2\theta = 1 - 2\sin^2\theta = 2\cos^2\theta - 1 \), odakle \( \sin^2\theta = \tfrac{1 - \cos 2\theta}{2} \), \( \cos^2\theta = \tfrac{1 + \cos 2\theta}{2} \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="700" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Provera identiteta numerički: prikazana je funkcija \( h(x) = \dfrac{\sin 3x - \cos 3y}{\sin x + \cos y} \) i njena tvrdjena vrednost \( g(x) = 2\cos 2x - 2\cos 2y + 4\sin x \cos y - 1 \) za fiksirano \( y = \tfrac{\pi}{6} \). Krive se savršeno poklapaju na celom prikazanom intervalu — to je geometrijska potvrda algebarskog identiteta.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Razvijemo brojilac preko formula trostrukog ugla</h3>
+      <p>Iskoristimo \( \sin 3x = 3\sin x - 4\sin^3 x \) i \( \cos 3y = 4\cos^3 y - 3\cos y \):</p>
+      <div class="math-block">\[ \sin 3x - \cos 3y \;=\; (3\sin x - 4\sin^3 x) - (4\cos^3 y - 3\cos y). \]</div>
+      <p>Sredimo članove tako da se "kubni" deo izdvoji od "linearnog":</p>
+      <div class="math-block">\[ \sin 3x - \cos 3y \;=\; 3(\sin x + \cos y) \;-\; 4\big(\sin^3 x + \cos^3 y\big). \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je znak ispred \( \cos^3 y \) plus?</summary>
+          <div class="detail-content"><p>U \( \cos 3y = 4\cos^3 y - 3\cos y \) ide minus ispred \( 3\cos y \), pa je \( -\cos 3y = -4\cos^3 y + 3\cos y \). Otud "\(+3\cos y\)" i "\(-4\cos^3 y\)". Grupisanjem dobijamo \( -4(\sin^3 x + \cos^3 y) \) i \( +3(\sin x + \cos y) \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Faktorisanje zbira kubova</h3>
+      <p>Sa \( a = \sin x \), \( b = \cos y \) primenimo \( a^3 + b^3 = (a + b)(a^2 - ab + b^2) \):</p>
+      <div class="math-block">\[ \sin^3 x + \cos^3 y \;=\; (\sin x + \cos y)\big(\sin^2 x - \sin x\cos y + \cos^2 y\big). \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Izvuci zajednički faktor \( \sin x + \cos y \)</h3>
+      <p>Vraćamo u brojilac:</p>
+      <div class="math-block">\[ \sin 3x - \cos 3y \;=\; (\sin x + \cos y)\Big[\,3 \;-\; 4\big(\sin^2 x - \sin x\cos y + \cos^2 y\big)\Big]. \]</div>
+      <p>Sada se imenilac \( \sin x + \cos y \) skraćuje sa istim faktorom u brojiocu (uslov \( \sin x + \cos y \neq 0 \) garantuje legitimnost):</p>
+      <div class="math-block">\[ E \;=\; 3 \;-\; 4\sin^2 x \;+\; 4\sin x \cos y \;-\; 4\cos^2 y. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: kako pratimo znakove unutar zagrade?</summary>
+          <div class="detail-content"><p>Imamo \( -4\cdot(\sin^2 x - \sin x\cos y + \cos^2 y) = -4\sin^2 x + 4\sin x\cos y - 4\cos^2 y \). Srednji član menja znak jer je u zagradi bio \( -\sin x\cos y \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Spuštanje stepena: \( \sin^2 x, \cos^2 y \to \cos 2x, \cos 2y \)</h3>
+      <p>Iskoristimo \( \sin^2 x = \tfrac{1 - \cos 2x}{2} \) i \( \cos^2 y = \tfrac{1 + \cos 2y}{2} \):</p>
+      <div class="math-block">\[ -4\sin^2 x \;=\; -4\cdot\dfrac{1 - \cos 2x}{2} \;=\; -2 + 2\cos 2x, \]</div>
+      <div class="math-block">\[ -4\cos^2 y \;=\; -4\cdot\dfrac{1 + \cos 2y}{2} \;=\; -2 - 2\cos 2y. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Sklopimo sve</h3>
+      <div class="math-block">\[ E \;=\; 3 \;+\; (-2 + 2\cos 2x) \;+\; 4\sin x \cos y \;+\; (-2 - 2\cos 2y). \]</div>
+      <p>Konstante daju \( 3 - 2 - 2 = -1 \), pa:</p>
+      <div class="math-block">\[ E \;=\; 2\cos 2x \;-\; 2\cos 2y \;+\; 4\sin x \cos y \;-\; 1. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: numerička provera za \( x = \tfrac{\pi}{4}, y = \tfrac{\pi}{4} \)</summary>
+          <div class="detail-content"><p>LHS: brojilac \( \sin\tfrac{3\pi}{4} - \cos\tfrac{3\pi}{4} = \tfrac{\sqrt2}{2} - \left(-\tfrac{\sqrt2}{2}\right) = \sqrt2 \), imenilac \( \sin\tfrac{\pi}{4} + \cos\tfrac{\pi}{4} = \sqrt2 \), pa \( E = 1 \). RHS: \( 2\cos\tfrac{\pi}{2} - 2\cos\tfrac{\pi}{2} + 4\sin\tfrac{\pi}{4}\cos\tfrac{\pi}{4} - 1 = 0 - 0 + 4\cdot\tfrac12 - 1 = 1 \). ✓</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Tajna trika je u tome što se brojilac, nakon razvoja, prirodno cepa na <em>linearni</em> deo \( 3(\sin x + \cos y) \) i <em>kubni</em> deo \( -4(\sin^3 x + \cos^3 y) \). Linearni deo je već deljiv sa \( \sin x + \cos y \), a kubni se faktoriše po formuli za zbir kubova. To znači da je čitav brojilac <strong>tačno deljiv</strong> imeniocem, baš kao polinom u \( a = \sin x \), \( b = \cos y \). Zato količnik nema "ostatak" i izlazi kao prosta polinomska kombinacija u \( a \), \( b \), koja se onda samo "obuče" u jezik dvostrukih uglova.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \dfrac{\sin 3x - \cos 3y}{\sin x + \cos y} \;=\; 2\cos 2x - 2\cos 2y + 4\sin x \cos y - 1. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 2\cos 2x - 2\cos 2y + 4\sin x \cos y - 1 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 2\cos 2x + 2\cos 2y - 4\sin x \cos y + 1 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 2\sin 2x + 2\cos 2y + 4\sin x \cos y - 1 \)</span>
+    <span class="answer-option" data-option="D">(D) \( \cos 2x - \cos 2y + 4\cos x \cos y + 1 \)</span>
+    <span class="answer-option" data-option="E">(E) \( \cos 2x - 2\cos 2y + 3 \)</span>
+  </div>
+  <p class="verification">Provera za nekoliko parova: \( (x, y) = (\tfrac{\pi}{2}, 0) \) daje \( -1 \) sa obe strane; \( (\tfrac{\pi}{4}, \tfrac{\pi}{4}) \) daje \( 1 \); \( (\tfrac{\pi}{3}, \tfrac{\pi}{6}) \) daje \( 0 \) (brojilac je nula). Sva tri slučaja se poklapaju.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pomešati formule trostrukog ugla: \( \sin 3\theta = 3\sin\theta - 4\sin^3\theta \), \( \cos 3\theta = 4\cos^3\theta - 3\cos\theta \). Znakovi i koeficijenti su različiti za \( \sin \) i \( \cos \).</li>
+    <li>Misliti da je \( \sin^3 x - \cos^3 y \) zbir kubova. Ovde stvarno imamo \( \sin^3 x + \cos^3 y \) (zbir!), jer \( -\cos 3y = +3\cos y - 4\cos^3 y \) doprinosi \( -4\cos^3 y \), koji se grupiše sa \( -4\sin^3 x \) — minus se izvlači, pa unutra ostaje zbir.</li>
+    <li>Zaboraviti uslov \( \sin x + \cos y \neq 0 \). Bez tog uslova izraz nije definisan i ne smemo "skratiti" faktor.</li>
+    <li>Pogrešno spustiti stepen: \( \sin^2 x = \tfrac{1 - \cos 2x}{2} \), ali \( \cos^2 y = \tfrac{1 + \cos 2y}{2} \). Znak ispred \( \cos 2\theta \) razlikuje sinus od kosinusa.</li>
+    <li>Pomešati \( \sin x \cos y \) sa \( \cos x \cos y \) ili \( \sin x \sin y \). U rezultatu (A) stoji upravo "mešani" oblik \( \sin x \cos y \), što je tačno.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Pokušaj istim metodom da pojednostaviš izraz</p>
+  <div class="math-block">\[ F \;=\; \dfrac{\sin 3x + \sin 3y}{\sin x + \sin y}. \]</div>
+  <p>Da li možeš da pogodiš oblik rezultata pre nego što počneš sa računom? Hoće li se pojaviti \( \cos 2x \), \( \cos 2y \) i \( \cos(x \pm y) \)?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Iskoristi \( \sin 3\theta = \sin\theta(1 + 2\cos 2\theta) \). Tada \( \sin 3x + \sin 3y = \sin x + 2\sin x\cos 2x + \sin y + 2\sin y \cos 2y \). Ali još lepši put je sumiranje u proizvod: \( \sin 3x + \sin 3y = 2\sin\tfrac{3(x+y)}{2}\cos\tfrac{3(x-y)}{2} \), \( \sin x + \sin y = 2\sin\tfrac{x+y}{2}\cos\tfrac{x-y}{2} \). Odnos \( \sin 3\alpha / \sin\alpha = 1 + 2\cos 2\alpha \) primeniti dvaput.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  var W = canvas.width, H = canvas.height;
+  var marginL = 60, marginR = 30, marginT = 60, marginB = 100;
+  var plotW = W - marginL - marginR;
+  var plotH = H - marginT - marginB;
+
+  var xMin = 0, xMax = 2 * Math.PI;
+  var yMin = -4, yMax = 4;
+
+  var yFix = Math.PI / 6; // fixed y for the demonstration
+
+  function xToPx(x) { return marginL + (x - xMin) / (xMax - xMin) * plotW; }
+  function yToPx(y) { return marginT + plotH - (y - yMin) / (yMax - yMin) * plotH; }
+
+  function lhs(x) {
+    var den = Math.sin(x) + Math.cos(yFix);
+    if (Math.abs(den) < 1e-6) return NaN;
+    return (Math.sin(3 * x) - Math.cos(3 * yFix)) / den;
+  }
+  function rhs(x) {
+    return 2 * Math.cos(2 * x) - 2 * Math.cos(2 * yFix) + 4 * Math.sin(x) * Math.cos(yFix) - 1;
+  }
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.fillText('Identitet potvrđen grafički (fiksno y = π/6)', W / 2, 24);
+
+    // Grid: vertical at multiples of π/4
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 4]);
+    for (var k = 0; k <= 8; k++) {
+      var xv = k * Math.PI / 4;
+      var px = xToPx(xv);
+      ctx.beginPath(); ctx.moveTo(px, marginT); ctx.lineTo(px, marginT + plotH); ctx.stroke();
+    }
+    // horizontal at integer y values
+    for (var j = yMin; j <= yMax; j++) {
+      var py = yToPx(j);
+      ctx.beginPath(); ctx.moveTo(marginL, py); ctx.lineTo(marginL + plotW, py); ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Axes (x-axis at y = 0)
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    var py0 = yToPx(0);
+    ctx.moveTo(marginL, py0); ctx.lineTo(marginL + plotW, py0);
+    ctx.moveTo(marginL, marginT); ctx.lineTo(marginL, marginT + plotH);
+    ctx.stroke();
+
+    // x-axis labels
+    var xLabels = [
+      { x: 0,            t: '0' },
+      { x: Math.PI / 4,  t: 'π/4' },
+      { x: Math.PI / 2,  t: 'π/2' },
+      { x: 3*Math.PI/4,  t: '3π/4' },
+      { x: Math.PI,      t: 'π' },
+      { x: 5*Math.PI/4,  t: '5π/4' },
+      { x: 3*Math.PI/2,  t: '3π/2' },
+      { x: 7*Math.PI/4,  t: '7π/4' },
+      { x: 2*Math.PI,    t: '2π' }
+    ];
+    ctx.font = '11px Inter, system-ui';
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    for (var i = 0; i < xLabels.length; i++) {
+      var lp = xLabels[i];
+      var lpx = xToPx(lp.x);
+      ctx.fillStyle = axis;
+      ctx.beginPath(); ctx.moveTo(lpx, py0); ctx.lineTo(lpx, py0 + 5); ctx.stroke();
+      ctx.fillStyle = text;
+      ctx.fillText(lp.t, lpx, py0 + 18);
+    }
+
+    // y-axis labels
+    ctx.textAlign = 'right';
+    for (var jj = yMin; jj <= yMax; jj++) {
+      var py2 = yToPx(jj);
+      ctx.fillStyle = axis;
+      ctx.beginPath(); ctx.moveTo(marginL - 5, py2); ctx.lineTo(marginL, py2); ctx.stroke();
+      ctx.fillStyle = text;
+      ctx.fillText(String(jj), marginL - 10, py2 + 4);
+    }
+
+    // Axis names
+    ctx.fillStyle = text;
+    ctx.textAlign = 'center';
+    ctx.font = 'bold 12px Inter, system-ui';
+    ctx.fillText('x', marginL + plotW + 14, py0 + 4);
+    ctx.fillText('y', marginL - 30, marginT - 4);
+
+    // Plot g(x) — RHS, thick accent
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    var first = true;
+    for (var s = 0; s <= 600; s++) {
+      var xv3 = xMin + (xMax - xMin) * s / 600;
+      var rv = rhs(xv3);
+      var px3 = xToPx(xv3);
+      var py3 = yToPx(Math.max(yMin, Math.min(yMax, rv)));
+      if (first) { ctx.moveTo(px3, py3); first = false; } else { ctx.lineTo(px3, py3); }
+    }
+    ctx.stroke();
+
+    // Plot h(x) — LHS (may have singularities where sin x + cos π/6 = 0)
+    // sin x = -cos(π/6) = -√3/2 → x ≈ π + π/3 ≈ 4.189, and 2π - π/3 ≈ 5.236
+    var singularities = [Math.PI + Math.PI / 3, 2 * Math.PI - Math.PI / 3];
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    var prevValid = false;
+    for (var t = 0; t <= 600; t++) {
+      var xv4 = xMin + (xMax - xMin) * t / 600;
+      // Skip near singularities
+      var nearSing = false;
+      for (var sgi = 0; sgi < singularities.length; sgi++) {
+        if (Math.abs(xv4 - singularities[sgi]) < 0.05) { nearSing = true; break; }
+      }
+      if (nearSing) { prevValid = false; continue; }
+      var lv = lhs(xv4);
+      if (isNaN(lv) || !isFinite(lv)) { prevValid = false; continue; }
+      var px4 = xToPx(xv4);
+      var py4 = yToPx(Math.max(yMin, Math.min(yMax, lv)));
+      if (!prevValid) { ctx.moveTo(px4, py4); prevValid = true; } else { ctx.lineTo(px4, py4); }
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Mark singularities
+    ctx.fillStyle = cvAlpha('--sol-canvas-danger', 0.6);
+    ctx.font = '10px Inter, system-ui';
+    ctx.textAlign = 'center';
+    for (var sg = 0; sg < singularities.length; sg++) {
+      var spx = xToPx(singularities[sg]);
+      ctx.strokeStyle = cvAlpha('--sol-canvas-danger', 0.4);
+      ctx.lineWidth = 1;
+      ctx.setLineDash([2, 3]);
+      ctx.beginPath();
+      ctx.moveTo(spx, marginT); ctx.lineTo(spx, marginT + plotH);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    ctx.fillStyle = cv('--sol-canvas-danger');
+    ctx.fillText('singularitet', xToPx(singularities[0]), marginT - 8);
+    ctx.fillText('singularitet', xToPx(singularities[1]), marginT - 8);
+
+    // Legend
+    var legY = H - 60;
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 5;
+    ctx.beginPath(); ctx.moveTo(marginL + 8, legY); ctx.lineTo(marginL + 50, legY); ctx.stroke();
+    ctx.fillStyle = text;
+    ctx.font = '12px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText('g(x) = 2 cos 2x − 2 cos(π/3) + 4 sin x · cos(π/6) − 1', marginL + 58, legY + 4);
+
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath(); ctx.moveTo(marginL + 8, legY + 22); ctx.lineTo(marginL + 50, legY + 22); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = text;
+    ctx.fillText('h(x) = (sin 3x − cos π/2) / (sin x + cos π/6)', marginL + 58, legY + 26);
+
+    // Sub-caption
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Krive se savršeno preklapaju — to potvrđuje algebarski identitet.', W / 2, H - 12);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Pojednostavljivanje (sin 3x - cos 3y)/(sin x + cos y)",
+  "subject": "math",
+  "unit": "trigonometry",
+  "topic_tags": ["trigonometrijski identiteti", "trostruki ugao", "faktorizacija", "zbir kubova", "dvostruki ugao"]
+}
+BRAINSPARK_META-->

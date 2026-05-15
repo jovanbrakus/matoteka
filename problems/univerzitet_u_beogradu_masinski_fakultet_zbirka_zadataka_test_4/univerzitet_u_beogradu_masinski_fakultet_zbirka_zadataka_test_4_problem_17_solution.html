@@ -1,0 +1,853 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Pravougli trapez: a = 20 cm (duža osnovica), b = 8 cm (kraća osnovica), c = 5 cm (kraći krak, upravan na obe osnovice). Pošto a > b, kraći krak je upravan na obe osnovice, a drugi (kosi) krak BC spaja "isturene" krajeve.
+
+Koordinatno radimo radi jasnoće (ali rezultat je čisto geometrijska zapremina rotacije):
+- Postavimo A = (0,0), B = (20,0) (duža osnovica AB)
+- Kraći krak AD upravan na AB, dužine 5: D = (0,5)
+- DC paralelna AB, dužine 8: C = (8,5)
+- Kosi krak BC: od (8,5) do (20,0). Dužina = √((20-8)² + (0-5)²) = √(144+25) = √169 = 13.
+
+Slučaj 1: rotacija oko duže osnovice AB (oko x-ose).
+Trapez ABCD rotira oko AB. U svakom preseku x:
+- za x ∈ [0,8]: presek vertikalno ide od y=0 (na AB) do y=5 (na DC). Disk poluprečnika 5.
+- za x ∈ [8,20]: presek ide od y=0 (na AB) do y na BC. Prava BC: od (8,5) do (20,0), parametrizovano y = 5 - 5(x-8)/12 = 5(1 - (x-8)/12) = 5(20-x)/12. Pri x=8 daje y=5, pri x=20 daje y=0. Disk poluprečnika r(x).
+Zapremina:
+V1 = π ∫_0^8 5² dx + π ∫_8^20 [5(20-x)/12]² dx
+   = π · 25 · 8 + π ∫_8^20 25(20-x)²/144 dx
+Smena u = 20 - x, du = -dx, granice 12 → 0:
+   = 200π + (25π/144) ∫_0^12 u² du
+   = 200π + (25π/144) · (1728/3)
+   = 200π + (25π/144) · 576
+   = 200π + 100π
+   = 300π cm³.
+
+Geometrijski: cilindar (visina 8, poluprečnik 5) zapremine 200π + konus (visina 12, poluprečnik osnove 5) zapremine (1/3)π·25·12 = 100π. Ukupno 300π. ✓
+
+Slučaj 2: rotacija oko kraće osnovice DC.
+Postavimo novi koordinatni sistem sa osom DC (gornja osnovica) kao x-osa. Onda je trapez ispod ose. Prebacujem koordinate:
+- D' = (0, 0), C' = (8, 0) (na osi)
+- A' = (0, -5) (ispod D'), B' = (20, -5) (ispod C'+12 = 20, na visini -5)
+- AB postaje y = -5, dužine 20: od (0,-5) do (20,-5).
+
+Rotiramo oko x-ose (linije DC). U svakom preseku x:
+- za x ∈ [0, 8]: presek ide od y=0 (gornja granica DC) do y=-5 (donja granica AB). U rotaciji oko x-ose, dobijamo disk poluprečnika 5 (od y=0 do y=-5; |y_max|=5). Disk.
+- za x ∈ [8, 20]: x je VAN segmenta DC! Dakle gornja granica oblasti trapeza nije y=0 nego BC. BC prava od B'=(20,-5) do C'=(8,0): y = 0 + (-5-0)/(20-8) · (x-8) = -5(x-8)/12. Pri x=8: y=0, pri x=20: y=-5.
+Dakle za x ∈ [8,20], oblast trapeza je od y_top = -5(x-8)/12 (na BC) do y_bot = -5 (na AB).
+Pri rotaciji oko x-ose (y=0), oblast od y=y_bot=-5 do y=y_top vrti se. Spoljašnji poluprečnik = max|y|, unutrašnji = min|y|. |y_top| = 5(x-8)/12, |y_bot|=5. Pošto |y_bot|≥|y_top|, spoljašnji = 5, unutrašnji = 5(x-8)/12. To je ANULUS (prsten)!
+Zapremina ovog dela:
+V_anulus = π ∫_8^20 [5² - (5(x-8)/12)²] dx
+        = π ∫_8^20 [25 - 25(x-8)²/144] dx
+Smena u = x-8:
+        = π ∫_0^12 [25 - 25u²/144] du
+        = π[25u - 25u³/(3·144)]_0^12
+        = π[25·12 - 25·1728/432]
+        = π[300 - 25·4]
+        = π[300 - 100]
+        = 200π cm³.
+
+V2 = 200π (cilindar od x∈[0,8]) + 200π (anulus od x∈[8,20]) = 400π cm³.
+
+Geometrijska interpretacija dela [8,20]: To je rotacija pravouglog trougla CB(projekcija). Spoljašnji oblik je cilindar poluprečnika 5 i visine 12, zapremine π·25·12 = 300π. Iz njega se izvuče konus poluprečnika 5 i visine 12 (rotacija dela iznad BC), zapremine (1/3)π·25·12 = 100π. Razlika: 300π - 100π = 200π. ✓
+
+Odnos: V1 : V2 = 300π : 400π = 3 : 4.
+
+Odgovor: (D) 3:4. ✓
+
+Provera Pappus: ne mora; direktan integralni račun radi.
+
+Visualizacije:
+1) Trapez sa svim dimenzijama (a=20, b=8, c=5, slant=13)
+2) Rotacija oko AB → cilindar + konus
+3) Rotacija oko DC → cilindar (deo) + anulus (drugi deo, prikazan kao razlika cilindar - konus)
+</script>
+
+<h1 data-card="problem-title">Odnos zapremina pri rotaciji pravouglog trapeza oko dve osnovice</h1>
+<p data-card="problem-subtitle" class="subtitle">Tela rotacije: kako biranje ose rotacije menja oblik i zapreminu</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Pravougli trapez čije su osnovice \( a = 20\,\text{cm} \) i \( b = 8\,\text{cm} \), a kraći krak \( c = 5\,\text{cm} \) rotira prvi put oko duže, a drugi put oko kraće osnovice. Odnos zapremina tako dobijenih tela je:</p>
+
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">Duža osnovica</span>
+      <span class="given-value">\( a = 20\,\text{cm} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Kraća osnovica</span>
+      <span class="given-value">\( b = 8\,\text{cm} \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Kraći krak</span>
+      <span class="given-value">\( c = 5\,\text{cm} \) (upravan)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">Traži se</span>
+      <span class="given-value">\( V_1 : V_2 \)</span>
+    </div>
+  </div>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 1 : 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 1 : 2 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 2 : 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 3 : 4 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 1 : 3 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Prvo ćemo skicirati trapez i izračunati kosi krak Pitagorinom teoremom. Za rotaciju oko duže osnovice, telo rotacije se prirodno raspada na cilindar (deo iznad kraće osnovice) i konus (deo iznad kosog kraka). Za rotaciju oko kraće osnovice, telo se raspada na cilindar (iznad duže osnovice u zoni \( [0, b] \)) i razliku „cilindar minus konus“ (u zoni \( [b, a] \), gde kosi krak izlazi van projekcije). Saberemo zapremine i podelimo.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i teoreme</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Pitagora</span> U pravouglom trouglu: \( c^2 = a^2 + b^2 \), gde je \( c \) hipotenuza.</li>
+        <li><span class="formula-label">Zapremina cilindra</span> \( V_{\text{cil}} = \pi r^2 h \), gde je \( r \) poluprečnik osnove, \( h \) visina.</li>
+        <li><span class="formula-label">Zapremina konusa</span> \( V_{\text{kon}} = \dfrac{1}{3}\pi r^2 h \), gde je \( r \) poluprečnik osnove, \( h \) visina. Konus ima trećinu zapremine cilindra istog poluprečnika i visine.</li>
+        <li><span class="formula-label">Telo rotacije ravne figure</span> Rotacijom ravne oblasti oko ose dobija se telo čija je zapremina jednaka zbiru zapremina elementarnih oblika (diskova / anulusa) duž ose.</li>
+        <li><span class="formula-label">Pravougli trapez</span> Trapez sa jednim krakom upravnim na obe paralelne osnovice. Taj krak je istovremeno i visina trapeza.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Pravougli trapez sa dimenzijama">
+  <h2>📐 Pravougli trapez sa dimenzijama</h2>
+  <div class="canvas-wrapper">
+    <canvas id="trapezoid" width="700" height="400"></canvas>
+  </div>
+  <p class="canvas-caption">Pravougli trapez \( ABCD \): osnovice \( AB = 20 \) i \( DC = 8 \), kraći (upravni) krak \( AD = 5 \). Kosi krak \( BC \) povezuje istureni kraj duže osnovice (B) sa krajem kraće (C). Iz pravouglog trougla \( CEB \) (gde je \( E \) projekcija \( C \) na \( AB \)): \( BC = \sqrt{12^2 + 5^2} = 13 \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Telo rotacije oko duže osnovice AB">
+  <h2>📐 Telo rotacije oko duže osnovice AB</h2>
+  <div class="canvas-wrapper">
+    <canvas id="rotateAB" width="700" height="430"></canvas>
+  </div>
+  <p class="canvas-caption">Pri rotaciji oko duže osnovice \( AB \), trapez „melje“ vazduh u dva tela: <strong>cilindar</strong> visine 8 cm i poluprečnika 5 cm (deo \( ADCE \)), pa <strong>konus</strong> visine 12 cm i poluprečnika osnove 5 cm (deo \( ECB \)). \( V_1 = \pi \cdot 25 \cdot 8 + \dfrac{1}{3}\pi \cdot 25 \cdot 12 = 200\pi + 100\pi = 300\pi \).</p>
+</div>
+
+<div data-card="visual-aid" data-title="Telo rotacije oko kraće osnovice DC">
+  <h2>📐 Telo rotacije oko kraće osnovice DC</h2>
+  <div class="canvas-wrapper">
+    <canvas id="rotateDC" width="700" height="430"></canvas>
+  </div>
+  <p class="canvas-caption">Pri rotaciji oko kraće osnovice \( DC \), telo je složenije: u zoni \( [0, 8] \) ispod \( DC \) dobijamo <strong>cilindar</strong> visine 8 cm i poluprečnika 5 cm. U zoni \( [8, 20] \), \( B \) viri van projekcije \( DC \), pa se rotacijom dobija <strong>cilindar minus konus</strong>: spoljašnji cilindar (\( h = 12, r = 5 \)) zapremine \( 300\pi \) iz koga se izvuče konus (rotacija dela iznad kosog kraka \( BC \)) zapremine \( 100\pi \). Ukupno: \( V_2 = 200\pi + (300\pi - 100\pi) = 400\pi \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Crtamo trapez i nalazimo kosi krak</h3>
+      <p>Postavimo trapez \( ABCD \) sa \( AB \) (duža osnovica, \( a = 20 \)) dole i \( DC \) (kraća, \( b = 8 \)) gore. Kraći krak \( AD = c = 5 \) je upravan na obe osnovice — on je istovremeno i visina trapeza. Neka je \( E \) podnožje normale iz \( C \) na \( AB \). Tada važi:</p>
+      <div class="math-block">\[ AE = DC = 8, \quad EB = AB - AE = 20 - 8 = 12, \quad CE = AD = 5. \]</div>
+      <p>Pravougli trougao \( CEB \) daje kosi krak \( BC \) po Pitagori:</p>
+      <div class="math-block">\[ BC = \sqrt{EB^2 + CE^2} = \sqrt{12^2 + 5^2} = \sqrt{169} = 13. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je kraći krak upravan na obe osnovice baš visina trapeza?</summary>
+          <div class="detail-content"><p>Visina trapeza je rastojanje između paralelnih osnovica, mereno duž normale. Ako jedan krak već zaklapa prav ugao sa obe paralelne osnovice, onda je on ta normala — tj. visina.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">\( V_1 \): rotacija oko duže osnovice \( AB \)</h3>
+      <p>Trapez se nalazi <em>iznad</em> ose \( AB \). Pri rotaciji oko \( AB \), telo se prirodno deli na dva dela duž ose:</p>
+      <ul>
+        <li>Deo \( ADCE \) je <strong>pravougaonik</strong> sa stranicama \( AE = 8 \) i \( CE = 5 \). Rotacijom oko \( AB \) daje <strong>cilindar</strong>:
+          <div class="math-block">\[ V_{\text{cil}} = \pi \cdot 5^2 \cdot 8 = 200\pi. \]</div>
+        </li>
+        <li>Deo \( ECB \) je <strong>pravougli trougao</strong> sa katetama \( EB = 12 \) i \( CE = 5 \) (kateta uz osu rotacije i kateta upravna na osu). Rotacijom oko ose \( EB \) daje <strong>konus</strong> visine 12 i poluprečnika osnove 5:
+          <div class="math-block">\[ V_{\text{kon}} = \frac{1}{3}\pi \cdot 5^2 \cdot 12 = \frac{1}{3} \cdot 300\pi = 100\pi. \]</div>
+        </li>
+      </ul>
+      <p>Ukupna zapremina prvog tela:</p>
+      <div class="math-block">\[ V_1 = 200\pi + 100\pi = \boxed{300\pi}\;\text{cm}^3. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">\( V_2 \): rotacija oko kraće osnovice \( DC \)</h3>
+      <p>Sada je osa rotacije linija \( DC \). Tačke \( D \) i \( C \) su na osi; \( A \) i \( B \) su <em>ispod</em> ose na rastojanju 5 (visina trapeza). Ali pažljivo: \( DC \) ima dužinu 8, a \( B \) je horizontalno udaljeno 20 od \( D \). Znači, \( B \) viri 12 cm <em>van</em> segmenta \( DC \) (jer \( 20 - 8 = 12 \)). To znači da telo ima dva različita „regiona“ duž ose:</p>
+      <p><strong>Region I — ispod segmenta \( DC \) (širina 8):</strong> tu se trapez prostire pravougaono ispod ose (od \( D \) do \( C \) i od ose do duže osnovice). Rotacijom dobijamo <strong>cilindar</strong> poluprečnika 5 i visine 8:</p>
+      <div class="math-block">\[ V_I = \pi \cdot 5^2 \cdot 8 = 200\pi. \]</div>
+      <p><strong>Region II — van segmenta \( DC \) (od \( C \) na 8 cm do iznad \( B \) na 20 cm):</strong> tu je oblast trapeza pravougli trougao \( CEB \). Pri rotaciji oko \( DC \), tačke trougla čija je projekcija na osi na rastojanju \( x \in [8, 20] \) prave anulus (prsten):
+        <span class="result">spoljašnji poluprečnik = 5</span> (donja stranica \( AB \), uvek udaljena 5 od ose),
+        <span class="result">unutrašnji poluprečnik = kosi krak \( BC \)</span> (jednačina prave \( BC \) određuje gornju granicu oblasti).</p>
+      <p>Ekvivalentno (i lakše za pamćenje): puni cilindar nad zonom \( [8, 20] \) ima poluprečnik 5 i visinu 12, zapremine \( 300\pi \). Iz njega <em>izvadimo</em> konus koji nastaje rotacijom dela <em>iznad</em> \( BC \) (pravougli trougao sa katetama 12 i 5, ali sa katetom uz osu = 5 i daljom katetom = 12) — tako da je to konus poluprečnika 5 i visine 12, zapremine \( 100\pi \):</p>
+      <div class="math-block">\[ V_{II} = \underbrace{\pi \cdot 5^2 \cdot 12}_{\text{cilindar}} - \underbrace{\frac{1}{3}\pi \cdot 5^2 \cdot 12}_{\text{konus}} = 300\pi - 100\pi = 200\pi. \]</div>
+      <p>Ukupno:</p>
+      <div class="math-block">\[ V_2 = V_I + V_{II} = 200\pi + 200\pi = \boxed{400\pi}\;\text{cm}^3. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto se u Regionu II oduzima konus, a ne dodaje?</summary>
+          <div class="detail-content"><p>U Regionu II oblast trapeza je samo <em>donji</em> deo (između kosog kraka \( BC \) i osnovice \( AB \)). Iznad \( BC \), izlazimo iz trapeza. Da bi rezultat bio rotacija samo te donje oblasti, najlakše je: rotirajmo ceo pravougaonik (\( 12 \times 5 \)) i dobijamo cilindar, pa od njega oduzmemo telo iznad \( BC \) — to je rotacija pravouglog trougla iznad \( BC \), tj. konus.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo odnos</h3>
+      <p>Sada delimo:</p>
+      <div class="math-block">\[ \frac{V_1}{V_2} = \frac{300\pi}{400\pi} = \frac{3}{4}. \]</div>
+      <p>Dakle <span class="result">\( V_1 : V_2 = 3 : 4 \)</span>.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koje telo je veće — ono dobijeno rotacijom oko duže ili kraće osnovice?</summary>
+          <div class="detail-content"><p>Veće je telo dobijeno rotacijom oko <em>kraće</em> osnovice. Intuitivno: kada rotiramo oko kraće, neke tačke trapeza (npr. \( B \)) opisuju kružnicu poluprečnika 5; ali horizontalna „razlika“ između osnovica (12 cm) takođe rotira sa značajnim poluprečnikom, što napuhava telo dodatnim cilindričnim slojevima. Pravilo „što je osa rotacije bliže težištu, manje je telo“ (Pappusov princip) ovde radi suprotno: duža osnovica je „centralnije“ postavljena ka težištu trapeza, pa daje manje telo.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Telo rotacije se uvek može razložiti na elementarne komade — cilindre, konuse, ili razlike istih — odredive prema preseku ravne figure i ose rotacije. Kada osa <em>seče</em> ili je <em>kraća</em> od horizontalnog opsega figure, dobijaju se „složeni“ regioni (cilindar minus konus, anulus). Ključni trik: u svakoj zoni duž ose, identifikuj koji je oblik preseka oblasti, pa primeni odgovarajuću formulu. Ovde, oba tela ispadaju iste komplikovanosti, ali rotacija oko kraće osnovice daje veći volumen jer dalje tačke (sa većim rotacionim poluprečnikom) rotiraju kroz veću zonu prostora.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ V_1 : V_2 = 300\pi : 400\pi = 3 : 4 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 1 : 1 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 1 : 2 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 2 : 3 \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( 3 : 4 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 1 : 3 \)</span>
+  </div>
+  <p class="verification">Provera (Pappusova teorema, kao kontrola): površina trapeza je \( P = \dfrac{(20+8)\cdot 5}{2} = 70 \). Centroid trapeza je u tački \( \bar y \) iznad \( AB \), gde \( \bar y = \dfrac{c}{3}\cdot\dfrac{a+2b}{a+b} = \dfrac{5}{3}\cdot\dfrac{20+16}{28} = \dfrac{5 \cdot 36}{84} = \dfrac{15}{7} \) (klasična formula). Pa \( V_1 = 2\pi \bar y \cdot P = 2\pi \cdot \dfrac{15}{7} \cdot 70 = 300\pi \) ✓. Za rotaciju oko \( DC \), centroid je na \( c - \bar y = 5 - \dfrac{15}{7} = \dfrac{20}{7} \) ispod \( DC \): \( V_2 = 2\pi \cdot \dfrac{20}{7} \cdot 70 = 400\pi \) ✓.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pomešati duže i kraće osnovice. „Prvi put oko duže“ → \( V_1 \) je rotacija oko \( AB = 20 \). Ako se zameni redosled, izračunaće se \( V_2 : V_1 = 4 : 3 \), što nije ponuđen odgovor — ali se može pogrešno aproksimirati na \( 1 : 1 \).</li>
+    <li>Zaboraviti da pri rotaciji oko kraće osnovice deo trapeza viri van segmenta \( DC \) (jer \( B \) je horizontalno dalji od \( D \) nego što je \( C \)). Ako se to ignoriše, telo se računa samo kao cilindar 8×5×rotacija = 200π, pa odnos ispada 3:2, što takođe nije među ponuđenim.</li>
+    <li>Pogrešno koristiti dužinu kosog kraka \( BC = 13 \) kao visinu konusa. Visina konusa pri rotaciji oko \( AB \) je horizontalna projekcija kosog kraka, tj. \( EB = 12 \), a poluprečnik osnove je vertikalna kateta \( CE = 5 \).</li>
+    <li>Za drugo telo, dodati konus umesto da se oduzme. To bi dalo \( V_2 = 200\pi + 300\pi + 100\pi = 600\pi \), odnos 1:2 — pa „upadamo“ u odgovor (B) na pogrešnim osnovama.</li>
+    <li>Računati zapreminu kao \( \pi r^2 h \) gde se \( r \) i \( h \) brkaju u zavisnosti od ose rotacije. Pravilo: <em>poluprečnik je rastojanje od ose</em>, <em>visina je dužina projekcije na osu</em>.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Sada rotiraj isti trapez oko <em>kraćeg kraka</em> \( c \) (umesto oko osnovice). Kolika je dobijena zapremina? Da li se može izraziti kao razlika cilindra i konusa, ili je potrebna drukčija dekompozicija?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Osa rotacije je \( AD \). Sve tačke trapeza su sa iste strane ose. U svakom horizontalnom nivou \( y \in [0, 5] \), širina trapeza je linearna funkcija \( y \): pri \( y=0 \) (osnovica \( AB \)) širina = 20, pri \( y = 5 \) (osnovica \( DC \)) širina = 8. Dakle, rotacija oko \( AD \) daje <em>frustum</em> (zarubljeni konus) sa visinom 5, poluprečnikom donje osnove 20 i poluprečnikom gornje osnove 8. Zapremina: \( V_3 = \dfrac{\pi h}{3}(R^2 + Rr + r^2) = \dfrac{5\pi}{3}(400 + 160 + 64) = \dfrac{5\pi}{3}\cdot 624 = \dfrac{3120\pi}{3} = 1040\pi \,\text{cm}^3 \). Mnogo veće telo — jer tačke daleko od ose (kao \( B \), \( C \)) imaju ogromne rotacione poluprečnike.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('trapezoid');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var warning = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var W = canvas.width, H = canvas.height;
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Pravougli trapez ABCD', W/2, 28);
+
+    // Geometry: scale 1 cm = 25 px
+    var scale = 22;
+    // Trapezoid in math coordinates (cm):
+    // A = (0,0), B = (20,0), D = (0,5), C = (8,5)
+    var originX = (W - 20*scale) / 2;
+    var originY = H - 100;
+
+    function P(x, y) { return { x: originX + x*scale, y: originY - y*scale }; }
+
+    var A = P(0, 0);
+    var B = P(20, 0);
+    var C = P(8, 5);
+    var D = P(0, 5);
+    var E = P(8, 0); // foot of normal from C to AB
+
+    // Fill trapezoid
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.12);
+    ctx.beginPath();
+    ctx.moveTo(A.x, A.y);
+    ctx.lineTo(B.x, B.y);
+    ctx.lineTo(C.x, C.y);
+    ctx.lineTo(D.x, D.y);
+    ctx.closePath();
+    ctx.fill();
+
+    // Auxiliary line CE (dashed)
+    ctx.save();
+    ctx.setLineDash([5, 4]);
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(C.x, C.y); ctx.lineTo(E.x, E.y);
+    ctx.stroke();
+    ctx.restore();
+
+    // Trapezoid edges
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); // AB
+    ctx.moveTo(D.x, D.y); ctx.lineTo(C.x, C.y); // DC
+    ctx.moveTo(A.x, A.y); ctx.lineTo(D.x, D.y); // AD
+    ctx.stroke();
+
+    // Slant edge BC (highlight)
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(B.x, B.y); ctx.lineTo(C.x, C.y);
+    ctx.stroke();
+
+    // Right angle markers at A and D and E
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.5;
+    var rs = 10;
+    // At A
+    ctx.beginPath();
+    ctx.moveTo(A.x + rs, A.y);
+    ctx.lineTo(A.x + rs, A.y - rs);
+    ctx.lineTo(A.x, A.y - rs);
+    ctx.stroke();
+    // At D
+    ctx.beginPath();
+    ctx.moveTo(D.x + rs, D.y);
+    ctx.lineTo(D.x + rs, D.y + rs);
+    ctx.lineTo(D.x, D.y + rs);
+    ctx.stroke();
+    // At E
+    ctx.beginPath();
+    ctx.moveTo(E.x, E.y - rs);
+    ctx.lineTo(E.x + rs, E.y - rs);
+    ctx.lineTo(E.x + rs, E.y);
+    ctx.stroke();
+
+    // Dots and labels
+    function dot(p, color, label, dx, dy) {
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 5, 0, Math.PI*2);
+      ctx.fill();
+      ctx.fillStyle = text;
+      ctx.font = 'bold 16px Inter, system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, p.x + dx, p.y + dy);
+    }
+    dot(A, primary, 'A', -10, 18);
+    dot(B, primary, 'B', 10, 18);
+    dot(C, primary, 'C', 0, -10);
+    dot(D, primary, 'D', -14, -8);
+    dot(E, muted, 'E', 0, 18);
+
+    // Edge labels
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.fillStyle = primary;
+    // AB length 20 below
+    ctx.textAlign = 'center';
+    ctx.fillText('a = 20 cm', (A.x + B.x)/2, B.y + 38);
+    // DC length 8 above
+    ctx.fillText('b = 8 cm', (D.x + C.x)/2, D.y - 12);
+    // AD length 5 left
+    ctx.textAlign = 'right';
+    ctx.fillText('c = 5', A.x - 12, (A.y + D.y)/2 + 5);
+    // BC slant
+    ctx.fillStyle = warning;
+    ctx.textAlign = 'left';
+    ctx.fillText('BC = 13', (B.x + C.x)/2 + 12, (B.y + C.y)/2 - 4);
+    // CE height in part 2
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText('CE = 5', C.x + 6, (C.y + E.y)/2 + 4);
+    // EB = 12
+    ctx.fillText('EB = 12', (E.x + B.x)/2, E.y + 18);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('rotateAB');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var warning = cv('--sol-canvas-warning');
+    var tertiary = cv('--sol-canvas-tertiary');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var W = canvas.width, H = canvas.height;
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Rotacija oko duže osnovice AB:  cilindar + konus', W/2, 28);
+
+    // We'll draw the resulting solid: cylinder of height 8, r=5 (left) plus cone of height 12, r=5 (right)
+    // Use scale to fit width: total length 20cm, height 5 (top), -5 (bottom)
+    var scale = 22;
+    var totalW = 20 * scale;
+    var startX = (W - totalW) / 2;
+    var axisY = H/2 + 30; // axis of rotation (AB)
+
+    // Cylinder body: x from 0..8
+    var cylX1 = startX + 0*scale;
+    var cylX2 = startX + 8*scale;
+    var cylY1 = axisY - 5*scale;
+    var cylY2 = axisY + 5*scale;
+
+    // Cone tip: at (20, 0)
+    var coneTipX = startX + 20*scale;
+
+    // Draw cylinder side
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.15);
+    ctx.fillRect(cylX1, cylY1, cylX2 - cylX1, cylY2 - cylY1);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(cylX1, cylY1, cylX2 - cylX1, cylY2 - cylY1);
+
+    // Cylinder end caps (ellipses) — left end (open) and right end (joined with cone base)
+    // Left cap: ellipse at x=cylX1
+    function drawEllipseEnd(cx, cy, ry, fill, stroke, dashed) {
+      var rx = 9; // perspective squish
+      ctx.save();
+      if (dashed) ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI*2);
+      if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth = 1.8;
+      ctx.stroke();
+      ctx.restore();
+    }
+    drawEllipseEnd(cylX1, axisY, 5*scale, cvAlpha('--sol-canvas-primary', 0.30), primary, false);
+
+    // Draw cone (right side, from cylX2 to coneTipX), height 12, base radius 5
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.15);
+    ctx.beginPath();
+    ctx.moveTo(cylX2, cylY1);
+    ctx.lineTo(coneTipX, axisY);
+    ctx.lineTo(cylX2, cylY2);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cylX2, cylY1);
+    ctx.lineTo(coneTipX, axisY);
+    ctx.moveTo(cylX2, cylY2);
+    ctx.lineTo(coneTipX, axisY);
+    ctx.stroke();
+
+    // Cone base ellipse (between cylinder and cone)
+    drawEllipseEnd(cylX2, axisY, 5*scale, null, muted, true);
+
+    // Axis line AB
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2;
+    ctx.save();
+    ctx.setLineDash([8, 4]);
+    ctx.beginPath();
+    ctx.moveTo(startX - 30, axisY);
+    ctx.lineTo(coneTipX + 30, axisY);
+    ctx.stroke();
+    ctx.restore();
+
+    // Axis labels
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText('A', startX - 18, axisY + 5);
+    ctx.fillText('B', coneTipX + 8, axisY + 5);
+    ctx.textAlign = 'center';
+    ctx.fillText('osa rotacije', (startX + coneTipX)/2, axisY + 90);
+
+    // Labels for cylinder and cone
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('CILINDAR', (cylX1 + cylX2)/2, axisY - 5*scale - 20);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillText('h = 8, r = 5', (cylX1 + cylX2)/2, axisY - 5*scale - 4);
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.fillText('V = 200π', (cylX1 + cylX2)/2, axisY + 5*scale + 32);
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.fillText('KONUS', (cylX2 + coneTipX)/2, axisY - 5*scale - 20);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillText('h = 12, r = 5', (cylX2 + coneTipX)/2, axisY - 5*scale - 4);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.fillText('V = 100π', (cylX2 + coneTipX)/2, axisY + 5*scale + 32);
+
+    // Total bottom
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui';
+    ctx.fillText('V₁ = 200π + 100π = 300π cm³', W/2, H - 18);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#')) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('rotateDC');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg = cv('--sol-canvas-bg');
+    var primary = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent = cv('--sol-canvas-accent');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var warning = cv('--sol-canvas-warning');
+    var highlight = cv('--sol-canvas-highlight');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var W = canvas.width, H = canvas.height;
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Rotacija oko kraće osnovice DC:  cilindar + (cilindar − konus)', W/2, 28);
+
+    var scale = 22;
+    // Total length from x=0 (=D) to x=20 (above B). Axis is at top.
+    var totalW = 20 * scale;
+    var startX = (W - totalW) / 2;
+    var axisY = H/2 - 60;
+
+    // Region I: cylinder of height 8 (D to C), radius 5 (extends below axis by 5)
+    var c1X1 = startX + 0*scale;
+    var c1X2 = startX + 8*scale;
+    var c1Y1 = axisY;
+    var c1Y2 = axisY + 5*scale;
+
+    // Region II: from x=8 to x=20, outer cylinder r=5, with cone interior cut out (cone tip at x=8, base at x=20)
+    var c2X1 = startX + 8*scale;
+    var c2X2 = startX + 20*scale;
+
+    // Fill region I (cylinder)
+    ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.18);
+    ctx.fillRect(c1X1, c1Y1, c1X2 - c1X1, c1Y2 - c1Y1);
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(c1X1, c1Y1, c1X2 - c1X1, c1Y2 - c1Y1);
+
+    // Cylinder end cap at x=0
+    function drawEllipseEnd(cx, cy, ry, fill, stroke, dashed) {
+      var rx = 9;
+      ctx.save();
+      if (dashed) ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI*2);
+      if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth = 1.8;
+      ctx.stroke();
+      ctx.restore();
+    }
+    drawEllipseEnd(c1X1, (c1Y1 + c1Y2)/2, (c1Y2 - c1Y1)/2, cvAlpha('--sol-canvas-primary', 0.3), primary, false);
+
+    // Region II: outer cylinder shape (rectangle from x=8 to x=20, y=axisY to axisY+5*scale)
+    // With the kosi krak BC going from (8, axisY+0) to (20, axisY+5*scale)
+    // We display the anulus by showing the outer rectangle filled, and overlay the "inner cone" (above BC) as cut
+    var rY1 = axisY;
+    var rY2 = axisY + 5*scale;
+
+    // Fill outer cylinder lightly
+    ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.12);
+    ctx.fillRect(c2X1, rY1, c2X2 - c2X1, rY2 - rY1);
+
+    // Fill the cone interior (above BC) with a different color to show "cut out"
+    // BC: from (8, axisY) to (20, axisY+5*scale)
+    ctx.fillStyle = cvAlpha('--sol-canvas-danger', 0.10);
+    ctx.beginPath();
+    ctx.moveTo(c2X1, rY1);
+    ctx.lineTo(c2X2, rY2);
+    ctx.lineTo(c2X1, rY2);
+    // Wait — cone above BC is between BC line and the axis (top). Let me think again.
+    // The "trapezoid" region in II is BELOW BC (between BC and AB).
+    // Rotation gives: outer cylinder MINUS cone (cone is above BC, between BC and axis).
+    // Cone region (above BC): triangle with vertices (8, axisY) (=C, on axis), (20, axisY) (above B, on axis), (20, axisY+5*scale) (=B).
+    ctx.closePath();
+    ctx.fill();
+
+    // Actually let's redo: clear the previous incorrect fill
+    ctx.fillStyle = bg;
+    ctx.fillRect(c2X1, rY1, c2X2 - c2X1, rY2 - rY1);
+
+    // Redo outer cylinder fill
+    ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.15);
+    ctx.fillRect(c2X1, rY1, c2X2 - c2X1, rY2 - rY1);
+
+    // The actual annulus region (which represents the rotated trapezoid in zone II) is BELOW the BC line.
+    // BC line goes from (c2X1, rY1) (=C on axis) down to (c2X2, rY2) (B at axisY+5*scale).
+    // Region BELOW BC and within rectangle: the lower-right triangle.
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.20);
+    ctx.beginPath();
+    ctx.moveTo(c2X1, rY1);
+    ctx.lineTo(c2X2, rY2);
+    ctx.lineTo(c2X1, rY2);
+    ctx.closePath();
+    ctx.fill();
+
+    // Cone region (above BC): upper-right triangle — this is the "removed" cone
+    // Hatch it to show removal
+    ctx.save();
+    ctx.strokeStyle = cvAlpha('--sol-canvas-danger', 0.4);
+    ctx.lineWidth = 1;
+    var hatchStart = c2X1, hatchEnd = c2X2;
+    var hatchTop = rY1, hatchBot = rY2;
+    for (var hx = 0; hx < (hatchEnd - hatchStart) + (hatchBot - hatchTop); hx += 8) {
+      ctx.beginPath();
+      ctx.moveTo(hatchStart + hx, hatchTop);
+      ctx.lineTo(hatchStart + hx - (hatchBot - hatchTop), hatchBot);
+      ctx.stroke();
+    }
+    ctx.restore();
+    // Clip the hatch to be only above BC (we'll redraw the lower triangle solid color over the hatch)
+    ctx.fillStyle = bg;
+    ctx.beginPath();
+    ctx.moveTo(c2X1, rY1);
+    ctx.lineTo(c2X2, rY2);
+    ctx.lineTo(c2X1, rY2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.30);
+    ctx.beginPath();
+    ctx.moveTo(c2X1, rY1);
+    ctx.lineTo(c2X2, rY2);
+    ctx.lineTo(c2X1, rY2);
+    ctx.closePath();
+    ctx.fill();
+
+    // Outer cylinder outline
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(c2X1, rY1, c2X2 - c2X1, rY2 - rY1);
+
+    // BC line (slant, separating annulus body from removed cone)
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(c2X1, rY1);
+    ctx.lineTo(c2X2, rY2);
+    ctx.stroke();
+
+    // End cap at x=20 (right end of outer cylinder)
+    drawEllipseEnd(c2X2, (rY1 + rY2)/2, (rY2 - rY1)/2, null, muted, true);
+
+    // Axis line DC (top), extended
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    ctx.save();
+    ctx.setLineDash([8, 4]);
+    ctx.beginPath();
+    ctx.moveTo(startX - 30, axisY);
+    ctx.lineTo(c2X2 + 30, axisY);
+    ctx.stroke();
+    ctx.restore();
+
+    // Axis labels D, C, then ext
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 14px Inter, system-ui';
+    ctx.textAlign = 'right';
+    ctx.fillText('D', startX - 8, axisY + 5);
+    ctx.textAlign = 'center';
+    ctx.fillText('C', c2X1, axisY - 8);
+    ctx.fillText('(B↑)', c2X2, axisY - 8);
+    ctx.fillText('osa: DC', (startX + c2X2)/2, axisY - 28);
+
+    // Labels for parts
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('REGION I', (c1X1 + c1X2)/2, c1Y2 + 22);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillText('cilindar (h=8, r=5)', (c1X1 + c1X2)/2, c1Y2 + 40);
+    ctx.fillStyle = primary;
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.fillText('V = 200π', (c1X1 + c1X2)/2, c1Y2 + 58);
+
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.fillText('REGION II', (c2X1 + c2X2)/2, rY2 + 22);
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillText('cilindar − konus (h=12, r=5)', (c2X1 + c2X2)/2, rY2 + 40);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui';
+    ctx.fillText('V = 300π − 100π = 200π', (c2X1 + c2X2)/2, rY2 + 58);
+
+    // Legend for removed cone hatch
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText('(šrafirano = uklonjeni konus)', c2X1 + 8, rY1 + 14);
+
+    // Total
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('V₂ = 200π + 200π = 400π cm³', W/2, H - 16);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Odnos zapremina pri rotaciji pravouglog trapeza oko dve osnovice",
+  "subject": "math",
+  "unit": "geometry",
+  "topic_tags": ["telo rotacije", "trapez", "zapremina", "Pitagorina teorema"]
+}
+BRAINSPARK_META-->

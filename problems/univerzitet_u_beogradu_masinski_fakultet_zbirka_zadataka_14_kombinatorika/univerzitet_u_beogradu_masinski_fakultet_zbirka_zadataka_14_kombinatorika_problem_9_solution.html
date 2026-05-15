@@ -1,0 +1,457 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Zadatak: Koliko ima petocifrenih prirodnih brojeva u cijem se zapisu cifra 0 pojavljuje tacno dva puta?
+
+  Petocifren broj: P_1 P_2 P_3 P_4 P_5, P_1 != 0.
+  Uslov: tacno dve cifre jednake 0; ostale tri cifre razlicite od 0
+   (jer ako je neka od tri "neulnih" zapravo 0, broj nula bi bio > 2).
+
+  Korak 1: Gde stoje dve nule?
+   Posto P_1 != 0, dve nule biraju 2 od pozicija {P_2, P_3, P_4, P_5} — to je 4 pozicija.
+   Broj nacina: C(4,2) = 6.
+
+  Korak 2: Tri preostale pozicije (P_1 + dve od pozicija {P_2..P_5} koje nisu nule).
+   Svaka mora da bude iz {1, 2, 3, ..., 9} — 9 izbora po poziciji.
+   (P_1 ionako ne sme biti 0; ostale dve ne smeju biti 0 da broj nula ne bi prekoracio 2.)
+
+   Broj nacina: 9^3 = 729.
+
+  Ukupno: C(4,2) * 9^3 = 6 * 729 = 4374. Odgovor (C).
+
+  Provera/sanity:
+  Alternativni nacin: izaberi pozicije za dve nule iz svih 5, pa oduzmi one koje stavljaju 0 na P_1.
+   Sve: C(5,2) = 10. Sa P_1 = 0: izaberi 1 mesto za drugu nulu iz {P_2..P_5}: C(4,1) = 4.
+   Dakle 10 - 4 = 6 = C(4,2). ✓
+
+  Distrakori:
+  - (A) 2916 = 4 * 9^3 (nacin gde se zaboravlja C(4,2) ali neki drugi 4)
+  - (B) 3024 — nesto u stilu permutacija sa ponavljanjem
+  - (D) 5040 = 7! ili 10 * 504, neka greska
+  - (E) 7290 = 10 * 729 = C(5,2) * 9^3 (greska: ne iskljuciti pozicije gde je P_1=0)
+
+  Najcesce greske:
+  * Racunati C(5,2) * 9^3 = 7290 (E) — zaboraviti uslov P_1 != 0
+  * Racunati C(4,2) * 9^3 * (nesto sa permutacijama)
+  * Dozvoliti da druge cifre budu 0 — pogresno racunanje 6 * 10^3 ili slicno
+  * Brkati "tacno 2 nule" sa "bar 2 nule"
+
+  Vizualizacija: 5 slotova, prvi obojen drugacije (P_1 != 0).
+   Pokazati koje 2 od 4 pozicija (P_2..P_5) su nule, i koje 3 pozicije primaju cifru iz {1..9}.
+   Specifican primer: 1 0 7 0 5 ili 5 0 0 7 1 itd.
+   Tabela sa svih C(4,2)=6 mogucih rasporeda dveju nula.
+   Staticna, kombinatorika.
+
+  Formalno: C(4,2) = 4!/(2!*2!) = 6.
+   9^3 = 729; 6*729 = 4374.
+</script>
+
+<h1 data-card="problem-title">Petocifreni brojevi sa tačno dve nule</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinatorni izbor pozicija i multiplikativni princip sa ograničenjima</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Koliko ima petocifrenih prirodnih brojeva u čijem se zapisu cifra \( 0 \) pojavljuje tačno dva puta?</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">broj pozicija</span>
+      <span class="given-value">\( 5 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">vodeća cifra</span>
+      <span class="given-value">\( P_1 \neq 0 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">broj nula</span>
+      <span class="given-value">tačno \( 2 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">ostale cifre</span>
+      <span class="given-value">\( \in \{1, 2, \dots, 9\} \)</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 2916 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 3024 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 4374 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 5040 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 7290 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Razdvojićemo zadatak na dva nezavisna koraka: (1) izbor pozicija za dve nule &mdash; pošto vodeća cifra ne sme biti \( 0 \), biramo \( 2 \) od preostale \( 4 \) pozicije, što daje \( \dbinom{4}{2} \); (2) popunjavanje preostale tri pozicije (uključujući vodeću) ciframa iz \( \{1, 2, \dots, 9\} \), gde svaka pozicija ima \( 9 \) izbora &mdash; ukupno \( 9^3 \). Konačan odgovor je proizvod ova dva koraka.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule i pojmovi</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Kombinacije bez ponavljanja:</strong> \( \dbinom{n}{k} = \dfrac{n!}{k!\,(n-k)!} \) &mdash; broj načina da iz \( n \) objekata izaberemo \( k \) bez obraćanja pažnje na redosled.</li>
+        <li>Specijalno: \( \dbinom{4}{2} = \dfrac{4!}{2!\,2!} = \dfrac{24}{4} = 6 \).</li>
+        <li><strong>Multiplikativni princip:</strong> kada se nezavisni izbori prave jedan za drugim, ukupan broj kombinacija je proizvod broja opcija u svakom koraku.</li>
+        <li><strong>Strategija "izaberi pozicije, pa popuni":</strong> kada neke cifre treba da se ponove (npr. tačno dve nule), prvo odlučujemo <em>gde</em> stoje te identične cifre, a zatim posebno popunjavamo ostatak.</li>
+        <li><strong>Uslov "tačno":</strong> ako neka cifra treba da se pojavi <em>tačno</em> \( k \) puta, ostale pozicije moraju biti popunjene <em>različitim</em> simbolima od te cifre.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Raspored dveju nula i preostalih pozicija">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-zeros-9" width="800" height="600"></canvas>
+  </div>
+  <p class="canvas-caption">Gore: tipičan primer popunjenog broja, sa istaknutim "nula-pozicijama" (P_2 i P_4) i "ne-nula" pozicijama (P_1, P_3, P_5). Dole: svih \( \dbinom{4}{2} = 6 \) načina da se izaberu dve od četiri pozicije za nule. Svaki red odgovara jednom obrascu; ostale tri pozicije se nezavisno popunjavaju ciframa iz \( \{1, \dots, 9\} \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Pažljivo čitamo uslov "tačno dva puta"</h3>
+      <p>U zapisu broja \( \overline{P_1 P_2 P_3 P_4 P_5} \) tačno dve od pet cifara su jednake \( 0 \), a ostale tri cifre <strong>nisu</strong> \( 0 \). Inače bi se uslov "tačno dve nule" narušio.</p>
+      <div class="callout callout-info">
+        <p>Dakle, ostale tri cifre dolaze iz skupa \( \{1, 2, 3, 4, 5, 6, 7, 8, 9\} \), koji ima <strong>\( 9 \)</strong> elemenata.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Biramo pozicije za dve nule</h3>
+      <p>Vodeća cifra \( P_1 \) <em>ne sme</em> biti \( 0 \) (jer bi broj imao manje od \( 5 \) cifara). Zato dve nule biramo iz preostale \( 4 \) pozicije: \( \{P_2, P_3, P_4, P_5\} \).</p>
+      <div class="math-block">\[ \binom{4}{2} = \frac{4!}{2!\,2!} = \frac{24}{4} = 6. \]</div>
+      <p>Postoji tačno \( 6 \) različitih obrazaca za smeštaj dveju nula:</p>
+      <div class="math-block">\[ \{P_2,P_3\},\ \{P_2,P_4\},\ \{P_2,P_5\},\ \{P_3,P_4\},\ \{P_3,P_5\},\ \{P_4,P_5\}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto ne biramo iz svih \( 5 \) pozicija, tj. \( \binom{5}{2} \)?</summary>
+          <div class="detail-content"><p>Pošto \( P_1 \) ne sme biti \( 0 \), pozicija \( P_1 \) je <em>isključena</em> iz mogućih pozicija za nulu. Da smo birali \( \binom{5}{2} = 10 \), uračunali bismo i \( 4 \) slučaja gde je \( P_1 = 0 \) &mdash; ti slučajevi su zabranjeni. Provera: \( 10 - 4 = 6 = \binom{4}{2} \). ✓</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Popunjavamo preostale tri pozicije</h3>
+      <p>Nakon što smo odlučili gde stoje nule, ostaju nam <em>tri prazne pozicije</em>: jedna od njih je obavezno \( P_1 \), a druge dve su među \( \{P_2, P_3, P_4, P_5\} \). Svaku od tih tri pozicija popunjavamo cifrom iz \( \{1, 2, \dots, 9\} \) &mdash; nezavisno i sa dozvoljenim ponavljanjima:</p>
+      <div class="math-block">\[ 9 \cdot 9 \cdot 9 = 9^3 = 729. \]</div>
+      <div class="callout callout-warning">
+        <p>Zašto baš \( \{1, \dots, 9\} \) (devet izbora), a ne \( \{0, 1, \dots, 9\} \) (deset)? Ako bismo dozvolili da bilo koja od te tri pozicije bude \( 0 \), dobili bismo bar tri nule, što ne ispunjava uslov "<em>tačno</em> dve". Zato je \( 0 \) isključena na svakoj od ne-nula pozicija.</p>
+      </div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: smeju li se cifre na ne-nula pozicijama ponavljati?</summary>
+          <div class="detail-content"><p>Da. Tekst zadatka kaže samo da se cifra \( 0 \) pojavljuje tačno \( 2 \) puta &mdash; ne ograničava ostale cifre. Tako je npr. \( 1\,0\,1\,0\,1 \) ispravan broj (dve nule, tri jedinice).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Spajamo dve faze multiplikativnim principom</h3>
+      <p>Faza izbora pozicija (\( 6 \) načina) i faza popunjavanja preostalih cifara (\( 729 \) načina) su <em>nezavisne</em> &mdash; svaki obrazac pozicija se može kombinovati sa svakom popunom. Zato množimo:</p>
+      <div class="math-block">\[ N = \binom{4}{2} \cdot 9^3 = 6 \cdot 729. \]</div>
+      <p>Računamo proizvod:</p>
+      <div class="math-block">\[ 6 \cdot 729 = 6 \cdot 700 + 6 \cdot 29 = 4200 + 174 = 4374. \]</div>
+      <p>Dakle, postoji <span class="result">\( 4374 \)</span> petocifrenih prirodnih brojeva u čijem se zapisu cifra \( 0 \) pojavljuje tačno dva puta.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera komplementarnim brojanjem</h3>
+      <p>Drugi pristup: izaberemo \( 2 \) od svih \( 5 \) pozicija (\( \binom{5}{2} = 10 \)) za nule, popunimo ostale tri sa \( 9 \) izbora (\( 9^3 = 729 \)), pa oduzmemo nedozvoljene slučajeve gde je \( P_1 = 0 \).</p>
+      <p>Slučajeva sa \( P_1 = 0 \): druga nula je u \( \binom{4}{1} = 4 \) preostalih pozicija, popuna ostalih tri sa \( 9^3 = 729 \). Dakle \( 4 \cdot 729 = 2916 \) zabranjenih.</p>
+      <div class="math-block">\[ N = 10 \cdot 729 - 4 \cdot 729 = (10 - 4) \cdot 729 = 6 \cdot 729 = 4374. \;\checkmark \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kada problem traži da se određena cifra pojavi <em>tačno</em> \( k \) puta, najefikasnije je razdvojiti zadatak na dve faze: <strong>prvo</strong> izabrati <em>pozicije</em> te cifre (kombinacije, jer redosled među istim ciframa nije bitan), <strong>zatim</strong> popuniti ostale pozicije pažljivo, isključujući tu cifru iz njihovog skupa (inače bi se "tačno \( k \)" pretvorilo u "barem \( k \)"). Vodeća cifra ne sme biti \( 0 \) &mdash; zato se broj raspoloživih pozicija za nule smanjuje sa \( \binom{5}{2} \) na \( \binom{4}{2} \). Ovaj obrazac "izaberi pozicije, pa popuni" radi i za druge slične zadatke (tačno tri sedmice, tačno dve neparne cifre, itd.).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ N = \binom{4}{2} \cdot 9^3 = 6 \cdot 729 = 4374 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 2916 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 3024 \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( 4374 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 5040 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 7290 \)</span>
+  </div>
+  <p class="verification">Provera komplementarnim brojanjem: \( \binom{5}{2} \cdot 9^3 - 4 \cdot 9^3 = 10 \cdot 729 - 4 \cdot 729 = 6 \cdot 729 = 4374 \). ✓ Distraktor \( (E)\ 7290 = 10 \cdot 729 \) odgovara grešci "zaboravljanja" uslova \( P_1 \neq 0 \); distraktor \( (A)\ 2916 = 4 \cdot 729 \) je broj <em>nedozvoljenih</em> slučajeva &mdash; dvosmislen broj koji upravo treba <strong>oduzeti</strong>.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Izračunavanje \( \dbinom{5}{2} \cdot 9^3 = 7290 \) (distraktor E) &mdash; <em>najopasnija greška</em>: birati nule iz svih \( 5 \) pozicija, čime se prećutno dozvoljava \( P_1 = 0 \).</li>
+    <li>Popunjavanje ne-nula pozicija ciframa iz \( \{0, 1, \dots, 9\} \) umesto \( \{1, \dots, 9\} \) &mdash; čime se uslov "tačno dve nule" prekrši (postaje "barem dve").</li>
+    <li>Brkanje "tačno dve" sa "bar dve" ili "najviše dve" nule &mdash; sva tri uslova daju različite odgovore.</li>
+    <li>Greška u računanju \( \dbinom{4}{2} \) &mdash; pisanje \( 4 \) (varijacije \( V(4,2) = 12 \)) ili \( 12 \) umesto \( 6 \). Setiti se da je \( \dbinom{4}{2} = \dbinom{4}{4-2} = \dbinom{4}{2} = 6 \).</li>
+    <li>Pomnoziti rezultat sa \( 2! = 2 \) misleći da treba <em>poređati</em> dve nule &mdash; ali nule su identične, redosled među njima ne čini novi broj.</li>
+    <li>Računska greška: \( 6 \cdot 729 = 4374 \), a ne \( 4374 - \) nešto ili \( 4734 \).</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Koliko ima petocifrenih prirodnih brojeva u kojima se cifra \( 0 \) pojavljuje <em>tačno tri puta</em>? A koliko ima petocifrenih brojeva u kojima se \( 0 \) pojavljuje <strong>bar jednom</strong>? Provera: zbir svih slučajeva "tačno \( k \) nula" za \( k = 0, 1, 2, 3, 4 \) treba da bude tačno \( 90\,000 \) (ukupno petocifrenih brojeva).</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Za "tačno \( 3 \) nule": biraj \( 3 \) pozicije za nule iz \( \{P_2, P_3, P_4, P_5\} \): \( \binom{4}{3} = 4 \). Ostale dve pozicije (uključujući \( P_1 \)) popuni iz \( \{1,\dots,9\} \): \( 9^2 = 81 \). Ukupno: \( 4 \cdot 81 = 324 \). Za "bar jednom \( 0 \)": koristi komplement &mdash; \( 90\,000 - (\text{brojevi bez ijedne nule}) = 90\,000 - 9^5 = 90\,000 - 59\,049 = 30\,951 \). Možeš proveriti i sumom: \( 30\,951 = 30\,951 \) (slučajevi \( k=1,2,3,4 \) nula).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-zeros-9');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+    var danger    = cv('--sol-canvas-danger');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // ── Top section: a concrete sample number ──
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Primer: petocifren broj sa tacno dve nule', 30, 28);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Nule (zeleno) na P2 i P4; ostale pozicije (plavo) primaju cifru iz {1..9}.', 30, 48);
+
+    // sample digits
+    var sample = ['7', '0', '3', '0', '5'];
+    var isZero = [false, true, false, true, false];
+    var boxW = 90;
+    var boxH = 78;
+    var gap = 16;
+    var totalW = 5 * boxW + 4 * gap;
+    var startX = (canvas.width - totalW) / 2;
+    var sampleY = 70;
+
+    for (var i = 0; i < 5; i++) {
+      var x = startX + i * (boxW + gap);
+      // background
+      if (i === 0) {
+        ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.10);
+      } else if (isZero[i]) {
+        ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.22);
+      } else {
+        ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.10);
+      }
+      ctx.fillRect(x, sampleY, boxW, boxH);
+      // border
+      if (i === 0) {
+        ctx.strokeStyle = warning;
+      } else if (isZero[i]) {
+        ctx.strokeStyle = accent;
+      } else {
+        ctx.strokeStyle = primary;
+      }
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x, sampleY, boxW, boxH);
+
+      // P_i label
+      ctx.fillStyle = muted;
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('P' + (i + 1), x + boxW / 2, sampleY + 16);
+
+      // digit
+      ctx.fillStyle = isZero[i] ? accent : text;
+      ctx.font = 'bold 36px Inter, system-ui, sans-serif';
+      ctx.fillText(sample[i], x + boxW / 2, sampleY + boxH / 2 + 14);
+    }
+
+    // P_1 label below sample
+    ctx.fillStyle = warning;
+    ctx.font = 'italic bold 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('(ne sme biti 0)', startX + boxW / 2, sampleY + boxH + 16);
+
+    // ── Middle: arrow down ──
+    ctx.fillStyle = muted;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Sistematski pregled: svih C(4,2) = 6 rasporeda dveju nula u {P2, P3, P4, P5}', canvas.width / 2, sampleY + boxH + 50);
+
+    // ── Bottom: 6 patterns, 2 rows of 3 each ──
+    var patterns = [
+      { zeros: [1, 2], label: '{P2, P3}' },
+      { zeros: [1, 3], label: '{P2, P4}' },
+      { zeros: [1, 4], label: '{P2, P5}' },
+      { zeros: [2, 3], label: '{P3, P4}' },
+      { zeros: [2, 4], label: '{P3, P5}' },
+      { zeros: [3, 4], label: '{P4, P5}' }
+    ];
+
+    var pBoxW = 22;
+    var pBoxH = 30;
+    var pGap = 3;
+    var rowW = 5 * pBoxW + 4 * pGap;
+    var cols = 3;
+    var rows = 2;
+    var colGap = 60;
+    var rowGap = 50;
+    var labelW = 70;
+    var cellW = labelW + rowW;
+    var gridW = cols * cellW + (cols - 1) * colGap;
+    var gridStartX = (canvas.width - gridW) / 2;
+    var gridStartY = 200;
+
+    for (var p = 0; p < patterns.length; p++) {
+      var col = p % cols;
+      var row = Math.floor(p / cols);
+      var cellX = gridStartX + col * (cellW + colGap);
+      var cellY = gridStartY + row * (pBoxH + rowGap);
+
+      // pattern label
+      ctx.fillStyle = text;
+      ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(patterns[p].label, cellX, cellY + 19);
+
+      // small slot row
+      var srowX = cellX + labelW;
+      for (var i = 0; i < 5; i++) {
+        var sx = srowX + i * (pBoxW + pGap);
+        var isZ = patterns[p].zeros.indexOf(i) !== -1;
+        var isFirst = (i === 0);
+
+        if (isZ) {
+          ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.30);
+          ctx.strokeStyle = accent;
+        } else if (isFirst) {
+          ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.15);
+          ctx.strokeStyle = warning;
+        } else {
+          ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.12);
+          ctx.strokeStyle = primary;
+        }
+        ctx.fillRect(sx, cellY, pBoxW, pBoxH);
+        ctx.lineWidth = 1.4;
+        ctx.strokeRect(sx, cellY, pBoxW, pBoxH);
+
+        ctx.textAlign = 'center';
+        if (isZ) {
+          ctx.fillStyle = accent;
+          ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+          ctx.fillText('0', sx + pBoxW / 2, cellY + pBoxH / 2 + 6);
+        } else {
+          ctx.fillStyle = muted;
+          ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+          ctx.fillText('★', sx + pBoxW / 2, cellY + pBoxH / 2 + 5);
+        }
+      }
+    }
+
+    // Legend below the grid
+    var legendY = gridStartY + rows * (pBoxH + rowGap) - 10;
+    ctx.fillStyle = muted;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('★ = bilo koja od 9 cifara iz {1, 2, ..., 9}    (9 izbora po pozicija)', canvas.width / 2, legendY);
+
+    // ── Final formula ──
+    var finalY = canvas.height - 30;
+    ctx.fillStyle = text;
+    ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('C(4,2) · 9³  =  6 · 729  =  4374', canvas.width / 2, finalY);
+
+    // underline
+    var resultStr = 'C(4,2) · 9³  =  6 · 729  =  4374';
+    var resW = ctx.measureText(resultStr).width;
+    var ulX = canvas.width / 2 + resW / 2 - 50;
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(ulX, finalY + 6);
+    ctx.lineTo(ulX + 50, finalY + 6);
+    ctx.stroke();
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Petocifreni brojevi sa tacno dve nule",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["kombinacije", "multiplikativni princip", "tacno k pojavljivanja", "vodeca cifra", "komplementarno brojanje"]
+}
+BRAINSPARK_META-->

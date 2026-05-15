@@ -1,0 +1,592 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Zadatak: zbir najveće i najmanje vrednosti funkcije f(x) = -x^2 + 8x + 1
+na segmentu [1, 7].
+
+Strategija: kvadratna funkcija sa a = -1 < 0 je parabola otvorena nadole.
+Globalni maksimum je u temenu. Na zatvorenom intervalu, kandidati za max/min su:
+- teme (ako je u intervalu)
+- krajnje tačke intervala.
+
+1) Teme: x_T = -b/(2a) = -8/(2·(-1)) = 4. Pripada [1,7]: 1 ≤ 4 ≤ 7. ✓
+2) Maksimum f_max = f(4):
+   f(4) = -16 + 32 + 1 = 17.
+3) Vrednosti u krajevima:
+   f(1) = -1 + 8 + 1 = 8.
+   f(7) = -49 + 56 + 1 = 8.
+   Lepota: f(1) = f(7) = 8 (simetrija! 1 i 7 su jednako udaljeni od 4: |1-4|=3, |7-4|=3).
+4) Pošto je parabola otvorena nadole, minimum na [1, 7] je u krajevima:
+   f_min = 8.
+5) Zbir: f_max + f_min = 17 + 8 = 25.
+
+Odgovor: (E) 25.
+
+Alternativno preko temenskog oblika:
+f(x) = -(x^2 - 8x) + 1 = -((x-4)^2 - 16) + 1 = -(x-4)^2 + 17.
+Maksimum je 17 (kada je x = 4); na intervalu [1,7] minimum je tamo gde je (x-4)^2 najveće,
+a to je u krajevima (gde |x-4| = 3, pa (x-4)^2 = 9, pa f = 17 - 9 = 8).
+
+Eliminacija ostalih odgovora:
+(A) 14 = 17 + (-3)? Ne odgovara našim vrednostima.
+(B) 17 = max sam za sebe, ali se traži zbir.
+(C) 18 — mogućan ako student zameni f(1) = 8 i greškom računa f(1) = 1 + ne uračuna minus,
+    ili druge tipične zabune.
+(D) 23 = 17 + 6? Možda ako f(7) = -49 + 56 + 1 i greškom doda 6 umesto 8.
+(E) 25 = 17 + 8. ✓
+
+Vizuelizacija: INTERAKTIVNA — draggable tačka P duž segmenta [1, 7] na paraboli.
+Pokazuje live vrednost f(x). Crtam celu parabolu (svetlo siva van [1,7], puna boja
+nad [1,7]). Tačno tri specijalne tačke: A(1, 8), V(4, 17), B(7, 8) su istaknute.
+Korisnik prevlači P i vidi kako se f(x) menja od 8 do 17 do 8.
+
+Pitfalls:
+- Misliti da je minimum vrednost u temenu (zato što je „izvod 0"); ali to je MAX kod parabole
+  otvorene nadole.
+- Zaboraviti da proveri da li teme pripada intervalu. (Da je interval bio [5, 7], teme x=4
+  ne bi bilo unutra, pa bi max bio f(5) = -25+40+1 = 16, a min f(7) = 8.)
+- Pogrešno znak na -x^2: f(7) = -49 + 56 + 1, ne 49 + 56 + 1.
+</script>
+
+<h1 data-card="problem-title">Ekstremne vrednosti parabole na segmentu</h1>
+<p data-card="problem-subtitle" class="subtitle">Kvadratna funkcija na zatvorenom intervalu — teme i krajnje tačke kao kandidati za maksimum i minimum</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Zbir najveće i najmanje vrednosti funkcije</p>
+  <div class="math-block">\[ f(x) = -x^2 + 8x + 1 \]</div>
+  <p>na segmentu \( [1, 7] \) jednak je:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 14 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 17 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 18 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 23 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 25 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Kvadratna funkcija sa negativnim koeficijentom uz \( x^2 \) je parabola otvorena nadole, pa svoj maksimum dostiže u temenu. Na zatvorenom intervalu kandidati su <em>teme</em> (ako pripada intervalu) i <em>oba kraja</em>. Nađimo apscisu temena, proverimo pripadnost intervalu \( [1, 7] \), pa izračunajmo \( f \) u temenu i u \( x=1 \) i \( x=7 \). Najveća od te tri vrednosti je maksimum, najmanja je minimum, a zatim ih saberemo.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ekstremi kvadratne funkcije i Weierstrassov princip</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Teme parabole</span> Za \( f(x) = ax^2 + bx + c \) teme ima apscisu \( x_T = -\dfrac{b}{2a} \) i ordinatu \( f(x_T) \). Ako je \( a < 0 \), teme je <em>maksimum</em>; ako je \( a > 0 \), teme je minimum.</li>
+        <li><span class="formula-label">Temenski oblik</span> Dopunjavanjem do potpunog kvadrata: \( f(x) = a(x - x_T)^2 + f(x_T) \). Drugi član je konstantan, a prvi je \( \le 0 \) za \( a < 0 \) — odatle direktno vidimo da je \( f(x_T) \) maksimum.</li>
+        <li><span class="formula-label">Ekstremi na zatvorenom segmentu</span> Neprekidna funkcija na \( [\alpha, \beta] \) dostiže svoj maksimum i minimum. Za <em>diferencijabilnu</em> funkciju kandidati su: krajnje tačke \( \alpha, \beta \) i stacionarne tačke (gde je \( f'(x) = 0 \)) koje su unutar segmenta.</li>
+        <li><span class="formula-label">Simetrija parabole</span> Parabola je simetrična u odnosu na vertikalu \( x = x_T \). Ako su krajevi intervala simetrični oko temena (kao ovde \( 1 \) i \( 7 \) oko \( 4 \)), vrednosti \( f(\alpha) \) i \( f(\beta) \) su <em>identične</em>.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Vizuelni prikaz: parabola na [1, 7]">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="720" height="560"></canvas>
+  </div>
+  <p class="canvas-caption">Prevuci tačku \( P \) duž segmenta \( [1, 7] \) na paraboli i posmatraj kako se vrednost \( f(x) \) menja. Plave tačke označavaju kandidate za ekstrem: teme \( V(4,\,17) \) je maksimum, a krajevi \( A(1,\,8) \) i \( B(7,\,8) \) su minimum.</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Prepoznajemo oblik parabole</h3>
+      <p>Funkcija \( f(x) = -x^2 + 8x + 1 \) je kvadratna sa koeficijentom \( a = -1 < 0 \). Dakle, parabola je otvorena <em>nadole</em>: njen graf raste, dostiže maksimum u temenu, pa opada.</p>
+      <div class="math-block">\[ a = -1, \quad b = 8, \quad c = 1. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je važan znak koeficijenta uz \( x^2 \)?</summary>
+          <div class="detail-content"><p>Znak određuje orijentaciju parabole. Za \( a > 0 \) parabola je otvorena nagore (teme je minimum, „udolina"), a za \( a < 0 \) nadole (teme je maksimum, „brdo"). Ovde \( a = -1 \), pa očekujemo maksimum u temenu i minimume u krajevima intervala.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Nalazimo teme</h3>
+      <p>Apscisa temena je \( x_T = -b/(2a) \):</p>
+      <div class="math-block">\[ x_T = -\frac{8}{2 \cdot (-1)} = -\frac{8}{-2} = 4. \]</div>
+      <p>Proveravamo: \( 1 \le 4 \le 7 \), pa <em>teme pripada</em> segmentu \( [1, 7] \). To znači da maksimum funkcije na ovom segmentu jeste u temenu.</p>
+      <div class="math-block">\[ f(4) = -(4)^2 + 8 \cdot 4 + 1 = -16 + 32 + 1 = 17. \]</div>
+      <p>Dakle, <span class="result">\( f_{\max} = 17 \)</span>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo vrednosti u krajevima</h3>
+      <p>Kandidati za minimum su \( x = 1 \) i \( x = 7 \):</p>
+      <div class="math-block">\[ f(1) = -1 + 8 + 1 = 8, \qquad f(7) = -49 + 56 + 1 = 8. \]</div>
+      <p>Vrednosti su jednake — što je elegantna posledica simetrije: tačke \( 1 \) i \( 7 \) su jednako udaljene od temena \( x_T = 4 \) (\( |1-4| = |7-4| = 3 \)), pa parabola u njima uzima istu vrednost.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je f(1) = f(7) nužno?</summary>
+          <div class="detail-content"><p>Parabola je simetrična oko vertikalne ose \( x = x_T = 4 \). Refleksija tačke \( 1 \) oko \( 4 \) je \( 4 + (4-1) = 7 \), pa su \( (1, f(1)) \) i \( (7, f(7)) \) zrcalne tačke na grafiku — imaju istu \( y \)-koordinatu.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Identifikujemo minimum i sabiramo</h3>
+      <p>Pošto je parabola otvorena nadole, na intervalu \( [1, 7] \) funkcija opada od temena ka krajevima. Minimum je u krajevima:</p>
+      <div class="math-block">\[ f_{\min} = 8. \]</div>
+      <p>Konačno, zbir je:</p>
+      <div class="math-block">\[ f_{\max} + f_{\min} = 17 + 8 = \boxed{25}. \]</div>
+      <p>To je <span class="result">odgovor (E)</span>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera preko temenskog oblika</h3>
+      <p>Dopunimo do potpunog kvadrata:</p>
+      <div class="math-block">\[ f(x) = -\bigl(x^2 - 8x\bigr) + 1 = -\bigl((x - 4)^2 - 16\bigr) + 1 = -(x-4)^2 + 17. \]</div>
+      <p>Iz ovog oblika je očigledno: drugi član \( 17 \) je maksimum (dostiže se kada je \( (x-4)^2 = 0 \), tj. \( x = 4 \)). Na segmentu \( [1, 7] \) je \( (x-4)^2 \in [0, 9] \), pa je \( f(x) \in [17 - 9, 17 - 0] = [8, 17] \). Zbir krajnjih vrednosti je \( 8 + 17 = 25 \). ✓</p>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Za parabolu na zatvorenom segmentu, ekstremi su uvek <em>među tri kandidata</em>: teme (ako je u intervalu) i dva kraja. Ako je teme van intervala, parabola je monotona na segmentu, pa su oba ekstrema u krajevima. Ovde teme \( x = 4 \) jeste u \( [1, 7] \), a krajevi su mu simetrični — zato i dobijamo „čistih" \( 17 \) i \( 8 \).</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Zaključiti da je <em>minimum</em> u temenu jer je „tu izvod nula". Kod parabole otvorene nadole teme je <em>maksimum</em>, nikako minimum.</li>
+    <li>Zaboraviti proveriti da li teme uopšte pripada zadatom intervalu. Da je segment bio npr. \( [5, 9] \), teme \( x = 4 \) bi bilo van, pa bi maksimum bio u kraju \( x = 5 \) (\( f(5) = -25+40+1 = 16 \)), a minimum u \( x = 9 \) (\( f(9) = -81+72+1 = -8 \)).</li>
+    <li>Pogrešiti znak: \( f(7) = -49 + 56 + 1 \), a ne \( 49 + 56 + 1 \). Kvadrat se odnosi samo na \( x \), a minus je ispred celog \( x^2 \).</li>
+    <li>Zameniti zahtev — uzeti razliku, proizvod ili samo maksimum. Zadatak izričito traži <em>zbir</em> najveće i najmanje vrednosti.</li>
+    <li>Tražiti minimum unutar intervala koristeći izvod, pa zaključiti da minimum „ne postoji" jer \( f'(x) = -2x + 8 \) ima jedinstvenu nulu u \( x = 4 \) (maksimum). Na zatvorenom segmentu ekstremi mogu biti i na rubu, što izvod ne otkriva direktno.</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ f_{\max} + f_{\min} = 17 + 8 = 25 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 14 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 17 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 18 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 23 \)</span>
+    <span class="answer-option correct" data-option="E">(E) \( 25 \)</span>
+  </div>
+  <p class="verification">Provera (temenski oblik): \( f(x) = -(x-4)^2 + 17 \), na \( [1,7] \) je \( (x-4)^2 \in [0,9] \), pa \( f(x) \in [8, 17] \). Zbir krajnjih je \( 25 \). ✓</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Pretpostavimo da menjamo segment: za koje vrednosti realnog broja \( t \ge 1 \) je zbir najveće i najmanje vrednosti funkcije \( f(x) = -x^2 + 8x + 1 \) na segmentu \( [1, t] \) jednak \( 25 \)? A za koje \( t \) je taj zbir <em>maksimalan</em>?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Razdvoji slučajeve po položaju temena \( x_T = 4 \) u odnosu na \( t \). Ako je \( t \le 4 \), parabola raste na \( [1, t] \), pa je \( f_{\max} = f(t) \) i \( f_{\min} = f(1) = 8 \). Ako je \( 4 \le t \le 7 \), maksimum je u temenu (\( 17 \)), a minimum je manji od \( f(1) \) i \( f(t) \). Za \( t = 7 \) imamo zbir \( 25 \), kao u zadatku. Za \( t > 7 \) maksimum ostaje \( 17 \), a minimum se preselja u \( f(t) \) koje stalno opada. Zbir je maksimalan upravo u tački gde su \( f(1) = f(t) \) (simetrija oko temena), a to je \( t = 7 \). Za \( t > 7 \) zbir opada.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  canvas.style.touchAction = 'none';
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  // Math coords: x in [-1, 9], y in [-4, 20]
+  var xMin = -1, xMax = 9;
+  var yMin = -4, yMax = 20;
+  var marginL = 56, marginR = 26, marginT = 56, marginB = 86;
+  var plotW = W - marginL - marginR;
+  var plotH = H - marginT - marginB;
+
+  function tx(x) { return marginL + ((x - xMin) / (xMax - xMin)) * plotW; }
+  function ty(y) { return marginT + ((yMax - y) / (yMax - yMin)) * plotH; }
+  function toMathX(cx) { return xMin + ((cx - marginL) / plotW) * (xMax - xMin); }
+
+  function f(x) { return -x * x + 8 * x + 1; }
+
+  function fmt(v, d) {
+    return v.toFixed(d == null ? 2 : d).replace('.', ',');
+  }
+
+  var dragX = 4;       // start at vertex
+  var dragging = false;
+  var GRAB_RADIUS = 22;
+
+  function clampDrag(x) {
+    if (x < 1) return 1;
+    if (x > 7) return 7;
+    return x;
+  }
+
+  function getPos(e) {
+    var r = canvas.getBoundingClientRect();
+    var evt = e.touches && e.touches.length ? e.touches[0] : e;
+    return { x: evt.clientX - r.left, y: evt.clientY - r.top };
+  }
+
+  function pointOnDrag(pos) {
+    var p = { x: tx(dragX), y: ty(f(dragX)) };
+    return Math.hypot(pos.x - p.x, pos.y - p.y) < GRAB_RADIUS;
+  }
+
+  function draw(x0) {
+    styles = getComputedStyle(root);
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var tertiary  = cv('--sol-canvas-tertiary');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('f(x) = −x² + 8x + 1   na segmentu [1, 7]', W / 2, 24);
+
+    // Grid (every 1 on x, every 2 on y)
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (var gx = Math.ceil(xMin); gx <= xMax; gx++) {
+      if (gx === 0) continue;
+      ctx.moveTo(tx(gx), marginT);
+      ctx.lineTo(tx(gx), marginT + plotH);
+    }
+    for (var gy = Math.ceil(yMin); gy <= yMax; gy += 2) {
+      if (gy === 0) continue;
+      ctx.moveTo(marginL, ty(gy));
+      ctx.lineTo(marginL + plotW, ty(gy));
+    }
+    ctx.stroke();
+
+    // Shaded vertical strip for [1, 7]
+    ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.10);
+    ctx.fillRect(tx(1), marginT, tx(7) - tx(1), plotH);
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(marginL, ty(0));
+    ctx.lineTo(marginL + plotW, ty(0));
+    ctx.moveTo(tx(0), marginT);
+    ctx.lineTo(tx(0), marginT + plotH);
+    ctx.stroke();
+
+    // Arrows
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(marginL + plotW, ty(0));
+    ctx.lineTo(marginL + plotW - 8, ty(0) - 5);
+    ctx.lineTo(marginL + plotW - 8, ty(0) + 5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(tx(0), marginT);
+    ctx.lineTo(tx(0) - 5, marginT + 8);
+    ctx.lineTo(tx(0) + 5, marginT + 8);
+    ctx.closePath();
+    ctx.fill();
+
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('x', marginL + plotW + 6, ty(0) + 4);
+    ctx.textAlign = 'right';
+    ctx.fillText('y', tx(0) - 8, marginT + 4);
+
+    // Tick labels
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var xt = Math.ceil(xMin); xt <= xMax; xt++) {
+      if (xt === 0) continue;
+      ctx.fillText(String(xt), tx(xt), ty(0) + 14);
+    }
+    ctx.textAlign = 'right';
+    for (var yt = Math.ceil(yMin); yt <= yMax; yt += 4) {
+      if (yt === 0) continue;
+      ctx.fillText(String(yt), tx(0) - 6, ty(yt) + 4);
+    }
+
+    // Parabola full (faint outside [1,7])
+    ctx.strokeStyle = cvAlpha('--sol-canvas-primary', 0.35);
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    var startedFaint = false;
+    for (var i = 0; i <= 600; i++) {
+      var xv = xMin + (i / 600) * (xMax - xMin);
+      if (xv >= 1 && xv <= 7) {
+        if (startedFaint) { ctx.stroke(); ctx.beginPath(); startedFaint = false; }
+        continue;
+      }
+      var yv = f(xv);
+      if (yv < yMin || yv > yMax) {
+        if (startedFaint) { ctx.stroke(); ctx.beginPath(); startedFaint = false; }
+        continue;
+      }
+      if (!startedFaint) { ctx.moveTo(tx(xv), ty(yv)); startedFaint = true; }
+      else ctx.lineTo(tx(xv), ty(yv));
+    }
+    ctx.stroke();
+
+    // Parabola bold on [1, 7]
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3.5;
+    ctx.beginPath();
+    var startedBold = false;
+    for (var j = 0; j <= 600; j++) {
+      var xb = 1 + (j / 600) * 6;
+      var yb = f(xb);
+      if (!startedBold) { ctx.moveTo(tx(xb), ty(yb)); startedBold = true; }
+      else ctx.lineTo(tx(xb), ty(yb));
+    }
+    ctx.stroke();
+
+    // Mark segment endpoints on x-axis with vertical dashed lines
+    ctx.strokeStyle = warning;
+    ctx.setLineDash([5, 4]);
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(tx(1), marginT);
+    ctx.lineTo(tx(1), marginT + plotH);
+    ctx.moveTo(tx(7), marginT);
+    ctx.lineTo(tx(7), marginT + plotH);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Endpoint labels on x-axis
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('1', tx(1), ty(0) + 28);
+    ctx.fillText('7', tx(7), ty(0) + 28);
+
+    // Vertex point V(4, 17) — accent (green) — MAX
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(tx(4), ty(17), 7, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('V(4, 17)  —  max', tx(4) + 10, ty(17) - 6);
+
+    // Endpoint A(1, 8) and B(7, 8) — highlight pink (min)
+    ctx.fillStyle = highlight;
+    ctx.beginPath();
+    ctx.arc(tx(1), ty(8), 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(tx(7), ty(8), 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = text;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('A(1, 8)  min', tx(1) - 8, ty(8) + 4);
+    ctx.textAlign = 'left';
+    ctx.fillText('B(7, 8)  min', tx(7) + 8, ty(8) + 4);
+
+    // Dashed horizontal at y = 8 and y = 17
+    ctx.strokeStyle = cvAlpha('--sol-canvas-muted', 0.6);
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 4]);
+    ctx.beginPath();
+    ctx.moveTo(tx(1), ty(8));
+    ctx.lineTo(tx(7), ty(8));
+    ctx.moveTo(marginL, ty(17));
+    ctx.lineTo(tx(4), ty(17));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // y-axis ticks for 8 and 17 highlighted
+    ctx.fillStyle = highlight;
+    ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('8', tx(0) - 6, ty(8) + 4);
+    ctx.fillStyle = accent;
+    ctx.fillText('17', tx(0) - 6, ty(17) + 4);
+
+    // Draggable point P at (x0, f(x0))
+    var yP = f(x0);
+    var px = tx(x0), py = ty(yP);
+
+    // Glow ring
+    ctx.fillStyle = cvAlpha('--sol-canvas-tertiary', 0.25);
+    ctx.beginPath();
+    ctx.arc(px, py, 14, 0, Math.PI * 2);
+    ctx.fill();
+    // Solid dot
+    ctx.fillStyle = tertiary;
+    ctx.beginPath();
+    ctx.arc(px, py, 7, 0, Math.PI * 2);
+    ctx.fill();
+    // White center
+    ctx.fillStyle = bg;
+    ctx.beginPath();
+    ctx.arc(px, py, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Hint
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('prevuci P', px + 14, py - 10);
+
+    // Drop a vertical line to x-axis
+    ctx.strokeStyle = cvAlpha('--sol-canvas-tertiary', 0.6);
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(px, py);
+    ctx.lineTo(px, ty(0));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Bottom banner with live values
+    var bannerY = H - 58;
+    var bannerH = 40;
+    var bannerW = 580;
+    var bannerX = (W - bannerW) / 2;
+    ctx.fillStyle = cvAlpha('--sol-canvas-tertiary', 0.15);
+    ctx.strokeStyle = tertiary;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(bannerX + 10, bannerY);
+    ctx.lineTo(bannerX + bannerW - 10, bannerY);
+    ctx.quadraticCurveTo(bannerX + bannerW, bannerY, bannerX + bannerW, bannerY + 10);
+    ctx.lineTo(bannerX + bannerW, bannerY + bannerH - 10);
+    ctx.quadraticCurveTo(bannerX + bannerW, bannerY + bannerH, bannerX + bannerW - 10, bannerY + bannerH);
+    ctx.lineTo(bannerX + 10, bannerY + bannerH);
+    ctx.quadraticCurveTo(bannerX, bannerY + bannerH, bannerX, bannerY + bannerH - 10);
+    ctx.lineTo(bannerX, bannerY + 10);
+    ctx.quadraticCurveTo(bannerX, bannerY, bannerX + 10, bannerY);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = text;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('P: x = ' + fmt(x0, 2) + '   →   f(x) = ' + fmt(yP, 2) +
+                 '     |     max + min = 17 + 8 = 25',
+                 W / 2, bannerY + 25);
+  }
+
+  draw(dragX);
+
+  canvas.addEventListener('mousedown', function(e) {
+    var pos = getPos(e);
+    if (pointOnDrag(pos)) {
+      dragging = true;
+      canvas.style.cursor = 'grabbing';
+    }
+  });
+  canvas.addEventListener('mousemove', function(e) {
+    var pos = getPos(e);
+    if (dragging) {
+      var mx = clampDrag(toMathX(pos.x));
+      dragX = mx;
+      draw(dragX);
+    } else {
+      canvas.style.cursor = pointOnDrag(pos) ? 'grab' : 'default';
+    }
+  });
+  canvas.addEventListener('mouseup', function() { dragging = false; canvas.style.cursor = 'default'; });
+  canvas.addEventListener('mouseleave', function() { dragging = false; canvas.style.cursor = 'default'; });
+
+  canvas.addEventListener('touchstart', function(e) {
+    var pos = getPos(e);
+    if (pointOnDrag(pos)) {
+      dragging = true;
+      e.preventDefault();
+    }
+  }, { passive: false });
+  canvas.addEventListener('touchmove', function(e) {
+    if (!dragging) return;
+    e.preventDefault();
+    var pos = getPos(e);
+    var mx = clampDrag(toMathX(pos.x));
+    dragX = mx;
+    draw(dragX);
+  }, { passive: false });
+  canvas.addEventListener('touchend', function() { dragging = false; });
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw(dragX);
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Ekstremne vrednosti parabole f(x) = −x² + 8x + 1 na segmentu [1, 7]",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["kvadratna funkcija", "teme parabole", "ekstremi na segmentu", "maksimum i minimum", "temenski oblik"]
+}
+BRAINSPARK_META-->

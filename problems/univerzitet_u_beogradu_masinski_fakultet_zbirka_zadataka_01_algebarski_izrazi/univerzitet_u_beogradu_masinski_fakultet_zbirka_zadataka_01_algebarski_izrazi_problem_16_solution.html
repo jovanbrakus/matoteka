@@ -1,0 +1,471 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Zadatak: za x >= 0 i x != 1 uprostiti
+  E = (1 + x^0,5) / (1 + x^0,5 + x)  :  1 / (x^1,5 - 1)
+
+Strategija (smena t = sqrt(x) > 0, t != 1):
+  x      = t^2
+  x^0,5  = t
+  x^1,5  = x * sqrt(x) = t^2 * t = t^3.
+
+Zato je
+  E = (1 + t) / (1 + t + t^2)  :  1 / (t^3 - 1)
+    = (1 + t) / (1 + t + t^2)  *  (t^3 - 1)
+    = (1 + t)(t^3 - 1) / (1 + t + t^2).
+
+Razlika kubova:
+  t^3 - 1 = (t - 1)(t^2 + t + 1) = (t - 1)(1 + t + t^2).
+
+Skraćivanje (1 + t + t^2):
+  E = (1 + t)(t - 1) = t^2 - 1 = x - 1.
+
+Domen i deljenje:
+  - x >= 0 i x != 1, pa je t = sqrt(x) >= 0 i t != 1.
+  - 1 + t + t^2 > 0 za sve realne t (diskriminanta = 1 - 4 = -3 < 0, vodeći koeficijent > 0), tako da nema deljenja nulom u prvom razlomku.
+  - Drugi razlomak ima imenilac 1, brojilac t^3 - 1 = 0 akko t = 1, što je isključeno.
+  - Operacija "deljenje sa 1/(t^3 - 1)" je množenje sa (t^3 - 1), legalno za t != 1.
+
+Provera numerički:
+  x = 4 -> t = 2: brojilac (1+2)/(1+2+4) = 3/7. Zatim * (8-1) = 7. Dakle (3/7)*7 = 3. Tačno x - 1 = 3. ✓
+  x = 9 -> t = 3: (1+3)/(1+3+9) = 4/13. * (27-1) = 26. (4/13)*26 = 8. Tačno 9 - 1 = 8. ✓
+  x = 0,25 -> t = 0,5: (1+0,5)/(1+0,5+0,25) = 1,5/1,75 = 6/7. * (0,125-1) = -0,875. (6/7)*(-0,875) = -0,75. Tačno x - 1 = -0,75. ✓
+
+Provere ostalih ponuđenih odgovora za x = 4 (rezultat = 3):
+  (A) x = 4   -> ne.
+  (B) sqrt(x) - 1 = 1 -> ne.
+  (C) sqrt(x) + 1 = 3 -> slučajno se poklapa za x = 4 (t = 2 daje t+1 = 3), ali za x = 9 imamo sqrt(9)+1 = 4 != 8. Ne.
+  (D) x - 1 = 3 -> da.
+  (E) x + 1 = 5 -> ne.
+Dakle samo (D) važi identički.
+
+Vizuelizacija: statički "tok algebre" pokazuje smenu t = sqrt(x), faktorizaciju razlike kubova
+i skraćivanje zajedničkog faktora (1 + t + t^2). Naglasak na dva crvena polja koja se uzajamno
+poništavaju, i zelenom finalnom rezultatu (1+t)(t-1) = t^2 - 1 = x - 1.
+
+Odgovor: (D) x - 1.
+</script>
+
+<h1 data-card="problem-title">Smena pomoću kvadratnog korena i razlika kubova</h1>
+<p data-card="problem-subtitle" class="subtitle">Pojednostavljivanje racionalnog izraza sa stepenima razlomljenog izložioca</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Ako je \( x \ge 0 \) i \( x \ne 1 \), onda je izraz</p>
+  <div class="math-block">\[ \dfrac{1 + x^{0{,}5}}{1 + x^{0{,}5} + x} \;:\; \dfrac{1}{x^{1{,}5} - 1} \]</div>
+  <p>identički jednak:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( x \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( \sqrt{x} - 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( \sqrt{x} + 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( x - 1 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( x + 1 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Uvodimo smenu \( t = \sqrt{x} \) da bismo se rešili razlomljenih eksponenata. Tada \( x^{0{,}5} = t \), a \( x^{1{,}5} = t^3 \), pa imenilac \( x^{1{,}5} - 1 \) postaje razlika kubova \( t^3 - 1 \). Pravilo „deliti razlomkom = množiti njegovom recipročnom vrednošću” pretvara izraz u proizvod, a faktorizacija \( t^3 - 1 = (t-1)(1 + t + t^2) \) skraćuje upravo onaj faktor koji nas je smetao u prvom imeniocu.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Razlomljeni eksponenti, deljenje razlomaka i razlika kubova</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Razlomljeni stepen</span> Za \( a \ge 0 \) važi \( a^{1/2} = \sqrt{a} \) i \( a^{3/2} = a \cdot \sqrt{a} = (\sqrt{a})^3 \). Konkretno, \( x^{0{,}5} = \sqrt{x} \) i \( x^{1{,}5} = (\sqrt{x})^3 \).</li>
+        <li><span class="formula-label">Deljenje razlomaka</span> \( \dfrac{A}{B} : \dfrac{C}{D} = \dfrac{A}{B} \cdot \dfrac{D}{C} \). Posebno, \( \dfrac{A}{B} : \dfrac{1}{D} = \dfrac{A \cdot D}{B} \).</li>
+        <li><span class="formula-label">Razlika kubova</span> \( a^3 - b^3 = (a - b)(a^2 + ab + b^2) \). Za \( b = 1 \): \( a^3 - 1 = (a - 1)(a^2 + a + 1) \).</li>
+        <li><span class="formula-label">Pozitivnost trinoma</span> Za realno \( t \) je \( 1 + t + t^2 > 0 \) jer mu je diskriminanta \( 1 - 4 = -3 < 0 \), a vodeći koeficijent pozitivan. Zato deljenje tim faktorom ne može da nas „izbaci” iz domena.</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Tok algebre: smena, faktorizacija i skraćivanje">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram" width="720" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Tri reda prikazuju put rešavanja. <strong>Gore:</strong> polazni izraz pre i posle smene \( t = \sqrt{x} \). <strong>Sredina:</strong> deljenje razlomka pretvoreno u množenje, sa razlikom kubova faktorisanom kao \( (t-1)(1+t+t^2) \). <strong>Dole:</strong> crveni okviri označavaju zajednički faktor \( 1 + t + t^2 \) koji se skraćuje, pa ostaje \( (1+t)(t-1) = t^2 - 1 = x - 1 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Smena \( t = \sqrt{x} \) uklanja razlomljene eksponente</h3>
+      <p>Pošto je \( x \ge 0 \), broj \( \sqrt{x} \) je dobro definisan. Označimo \( t = \sqrt{x} \). Onda važi:</p>
+      <div class="math-block">\[ x = t^2, \qquad x^{0{,}5} = t, \qquad x^{1{,}5} = x \cdot \sqrt{x} = t^2 \cdot t = t^3. \]</div>
+      <p>Uslov \( x \ne 1 \) prevodi se u \( t \ne 1 \) (jer iz \( t \ge 0 \) i \( t^2 \ne 1 \) sledi \( t \ne 1 \)).</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto je \( x^{1{,}5} = t^3 \), a ne \( t^{1{,}5} \)?</summary>
+          <div class="detail-content"><p>Eksponent \( 1{,}5 = \tfrac{3}{2} \), pa je \( x^{3/2} = (x^{1/2})^3 = t^3 \). Pravilo: kada zameniš osnovicu, eksponenti ostaju isti, ali se „spuste” na novu promenljivu po pravilu \( (a^m)^n = a^{mn} \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Prepišimo izraz pomoću \( t \)</h3>
+      <p>Zamenom \( x^{0{,}5} \to t \), \( x \to t^2 \), \( x^{1{,}5} \to t^3 \) dobijamo:</p>
+      <div class="math-block">\[ \dfrac{1 + t}{1 + t + t^2} \;:\; \dfrac{1}{t^3 - 1}. \]</div>
+      <p>Sada radimo sa polinomima u promenljivoj \( t \), bez ijednog korena.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Deljenje razlomkom = množenje recipročnim</h3>
+      <p>Recipročna vrednost izraza \( \dfrac{1}{t^3 - 1} \) je \( t^3 - 1 \). Zato:</p>
+      <div class="math-block">\[ \dfrac{1 + t}{1 + t + t^2} \cdot (t^3 - 1) = \dfrac{(1 + t)(t^3 - 1)}{1 + t + t^2}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: smemo li da množimo sa \( t^3 - 1 \) ako je \( t \ne 1 \)?</summary>
+          <div class="detail-content"><p>Da. Zbog uslova \( t \ne 1 \), broj \( t^3 - 1 \) nije nula, pa je \( \dfrac{1}{t^3 - 1} \) dobro definisana, a recipročna vrednost \( t^3 - 1 \) je obična brojna vrednost kojom slobodno množimo.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Faktorizacija razlike kubova</h3>
+      <p>Iskoristimo identitet \( a^3 - 1 = (a - 1)(a^2 + a + 1) \) za \( a = t \):</p>
+      <div class="math-block">\[ t^3 - 1 = (t - 1)(t^2 + t + 1) = (t - 1)\,(1 + t + t^2). \]</div>
+      <p>Pažljivo zapazimo da je upravo \( 1 + t + t^2 \) onaj polinom koji stoji u imeniocu prvog razlomka — to je <em>cilj</em> faktorizacije.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Skraćivanje zajedničkog faktora</h3>
+      <p>Ubacimo faktorizaciju u izraz iz koraka 3:</p>
+      <div class="math-block">\[ \dfrac{(1 + t)\,(t - 1)\,(1 + t + t^2)}{1 + t + t^2}. \]</div>
+      <p>Pošto je \( 1 + t + t^2 > 0 \) za svako realno \( t \), smemo da skratimo:</p>
+      <div class="math-block">\[ (1 + t)(t - 1). \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="6">
+    <div class="step-badge">6</div>
+    <div class="step-content">
+      <h3 class="step-title">Razlika kvadrata i povratak na \( x \)</h3>
+      <p>Proizvod \( (1 + t)(t - 1) \) je razlika kvadrata sa zamenjenim redosledom činilaca:</p>
+      <div class="math-block">\[ (1 + t)(t - 1) = (t + 1)(t - 1) = t^2 - 1. \]</div>
+      <p>Vraćamo smenu \( t^2 = x \):</p>
+      <div class="math-block">\[ t^2 - 1 = x - 1. \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Pojava polinoma \( 1 + t + t^2 \) u imeniocu prvog razlomka <em>nije slučajnost</em>: on je drugi činilac kanonske razlike kubova \( t^3 - 1 = (t-1)(t^2 + t + 1) \). Cela konstrukcija zadatka projektovana je tako da se taj „nezgodan” trinom skrati i ostavi „čisto” \( (t-1)(t+1) \). Kad god vidiš trinom \( 1 + a + a^2 \) zajedno sa \( a^3 - 1 \), pomisli na razliku kubova — to je gotovo siguran znak da treba faktorisati.</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \dfrac{1 + x^{0{,}5}}{1 + x^{0{,}5} + x} : \dfrac{1}{x^{1{,}5} - 1} = x - 1. \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( x \)</span>
+    <span class="answer-option" data-option="B">(B) \( \sqrt{x} - 1 \)</span>
+    <span class="answer-option" data-option="C">(C) \( \sqrt{x} + 1 \)</span>
+    <span class="answer-option correct" data-option="D">(D) \( x - 1 \)</span>
+    <span class="answer-option" data-option="E">(E) \( x + 1 \)</span>
+  </div>
+  <p class="verification">Brza numerička provera za \( x = 4 \) (\( t = 2 \)): polazni izraz je \( \dfrac{3}{7} \cdot (8 - 1) = 3 \), a \( x - 1 = 3 \). Za \( x = 9 \) (\( t = 3 \)): \( \dfrac{4}{13} \cdot 26 = 8 = 9 - 1 \). Identitet potvrđen.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li><strong>„Eksponent \( 1{,}5 \) je \( 1{,}5 \)-ti stepen broja \( t \).”</strong> Ne — eksponent ostaje \( 3/2 \) i kada se osnova promeni: \( x^{3/2} = (\sqrt{x})^3 = t^3 \), nije \( t^{3/2} \).</li>
+    <li><strong>Pogrešno deljenje razlomaka.</strong> \( \dfrac{A}{B} : \dfrac{1}{D} \) je \( \dfrac{A \cdot D}{B} \), a ne \( \dfrac{A}{B \cdot D} \). Recipročnost se uzima samo desnom razlomku.</li>
+    <li><strong>Brkanje zbira i razlike kubova.</strong> Lako je napisati \( t^3 - 1 = (t-1)(t^2 - t + 1) \) (to je formula za \( t^3 + 1 \) sa pogrešnim znakom). Tačno je \( t^3 - 1 = (t-1)(t^2 + t + 1) \) — sve \( + \) u drugom činiocu.</li>
+    <li><strong>Numerička provera samo na jednoj vrednosti.</strong> Za \( x = 4 \) i odgovor (C) \( \sqrt{x} + 1 \) takođe daje \( 3 \), pa bi se moglo pogrešno potvrditi. Uvek proveri bar dve različite vrednosti pre nego što zaključiš.</li>
+    <li><strong>Zaboravljeni domen.</strong> Uslov \( x \ne 1 \) je ključan: za \( t = 1 \) imenilac \( t^3 - 1 \) postaje nula, pa polazni izraz nije ni definisan. Ali finalna vrednost \( x - 1 \) jeste definisana i u \( x = 1 \) — to je rupa u domenu identiteta, ne greška u rezultatu.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Pretpostavimo da je u istom izrazu \( x^{0{,}5} \) zamenjeno sa \( x^{1/3} \), \( x \) sa \( x^{2/3} \), a \( x^{1{,}5} \) sa \( x \). Drugim rečima, posmatraj</p>
+  <div class="math-block">\[ \dfrac{1 + x^{1/3}}{1 + x^{1/3} + x^{2/3}} \;:\; \dfrac{1}{x - 1}, \quad x \ge 0,\; x \ne 1. \]</div>
+  <p>Šta dobijaš nakon pojednostavljivanja? Da li i ovde igra istu ulogu razlika kubova?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Stavi smenu \( s = x^{1/3} \). Tada je \( x^{2/3} = s^2 \) i \( x = s^3 \), pa imenilac postaje \( s^3 - 1 = (s - 1)(s^2 + s + 1) = (s - 1)(1 + s + s^2) \). Identičnim postupkom skraćivanja dobijaš \( (1 + s)(s - 1) = s^2 - 1 = x^{2/3} - 1 \). Dakle, geometrija problema (smena → razlika kubova → skraćivanje) ostaje ista — menja se samo „dubina” korena.</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  function drawArrow(x1, y1, x2, y2, color) {
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    var ang = Math.atan2(y2 - y1, x2 - x1);
+    var ah = 8;
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - ah * Math.cos(ang - 0.4), y2 - ah * Math.sin(ang - 0.4));
+    ctx.lineTo(x2 - ah * Math.cos(ang + 0.4), y2 - ah * Math.sin(ang + 0.4));
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function drawBox(x, y, w, h, fill, stroke, dashed) {
+    ctx.fillStyle = fill;
+    ctx.fillRect(x, y, w, h);
+    if (stroke) {
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth = dashed ? 2 : 1.6;
+      if (dashed) ctx.setLineDash([6, 4]);
+      ctx.strokeRect(x, y, w, h);
+      ctx.setLineDash([]);
+    }
+  }
+
+  function draw() {
+    styles = getComputedStyle(root);
+    var bg        = cv('--sol-canvas-bg');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var danger    = cv('--sol-canvas-danger');
+    var tertiary  = cv('--sol-canvas-tertiary');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.textBaseline = 'middle';
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Smena t = √x, deljenje, faktorizacija i skraćivanje', W / 2, 24);
+
+    // ─── Row 1: original → after substitution ───
+    var rowY1 = 70;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'left';
+    ctx.fillText('1 ▸ Smena t = √x  (x ≥ 0,  x ≠ 1)', 30, rowY1 - 22);
+
+    drawBox(30, rowY1 - 4, 280, 56, cvAlpha('--sol-canvas-primary', 0.10), primary, false);
+    ctx.fillStyle = text;
+    ctx.font = '15px "Cambria Math", Cambria, Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('(1 + x⁰′⁵) / (1 + x⁰′⁵ + x)', 170, rowY1 + 12);
+    ctx.fillText('÷  1 / (x¹′⁵ − 1)', 170, rowY1 + 36);
+
+    drawArrow(320, rowY1 + 24, 400, rowY1 + 24, secondary);
+    ctx.fillStyle = secondary;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('t = √x', 360, rowY1 + 12);
+
+    drawBox(410, rowY1 - 4, 280, 56, cvAlpha('--sol-canvas-secondary', 0.10), secondary, false);
+    ctx.fillStyle = text;
+    ctx.font = '15px "Cambria Math", Cambria, Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('(1 + t) / (1 + t + t²)', 550, rowY1 + 12);
+    ctx.fillText('÷  1 / (t³ − 1)', 550, rowY1 + 36);
+
+    // ─── Row 2: division → multiplication, factor cubes ───
+    var rowY2 = 200;
+    ctx.fillStyle = muted;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('2 ▸ Deljenje razlomkom = množenje recipročnim, pa razlika kubova', 30, rowY2 - 22);
+
+    drawBox(30, rowY2 - 4, 320, 56, cvAlpha('--sol-canvas-secondary', 0.10), secondary, false);
+    ctx.fillStyle = text;
+    ctx.font = '15px "Cambria Math", Cambria, Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('(1 + t)(t³ − 1)', 190, rowY2 + 8);
+    // fraction bar
+    ctx.strokeStyle = text;
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(110, rowY2 + 18);
+    ctx.lineTo(270, rowY2 + 18);
+    ctx.stroke();
+    ctx.fillText('1 + t + t²', 190, rowY2 + 32);
+
+    drawArrow(360, rowY2 + 14, 430, rowY2 + 14, accent);
+    ctx.fillStyle = accent;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('t³ − 1 =', 395, rowY2 - 2);
+    ctx.fillText('(t − 1)(1 + t + t²)', 395, rowY2 + 30);
+
+    drawBox(440, rowY2 - 4, 250, 56, cvAlpha('--sol-canvas-accent', 0.12), accent, false);
+    ctx.fillStyle = text;
+    ctx.font = '15px "Cambria Math", Cambria, Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('(1+t)(t−1)(1+t+t²)', 565, rowY2 + 8);
+    ctx.beginPath();
+    ctx.moveTo(465, rowY2 + 18);
+    ctx.lineTo(665, rowY2 + 18);
+    ctx.stroke();
+    ctx.fillText('1 + t + t²', 565, rowY2 + 32);
+
+    // ─── Row 3: cancel common factor → result ───
+    var rowY3 = 330;
+    ctx.fillStyle = muted;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('3 ▸ Skraćivanje zajedničkog činioca 1 + t + t²', 30, rowY3 - 22);
+
+    drawBox(30, rowY3 - 4, 280, 70, cvAlpha('--sol-canvas-bg', 1), text, false);
+    // The expression
+    ctx.fillStyle = text;
+    ctx.font = '15px "Cambria Math", Cambria, Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('(1+t)(t−1) · (1+t+t²)', 170, rowY3 + 8);
+    ctx.beginPath();
+    ctx.strokeStyle = text;
+    ctx.lineWidth = 1.4;
+    ctx.moveTo(60, rowY3 + 22);
+    ctx.lineTo(280, rowY3 + 22);
+    ctx.stroke();
+    ctx.fillText('1 + t + t²', 170, rowY3 + 38);
+
+    // Red strike-through boxes on the two (1+t+t²) factors that cancel
+    ctx.strokeStyle = danger;
+    ctx.lineWidth = 2.2;
+    // numerator factor
+    ctx.strokeRect(190, rowY3 - 1, 110, 18);
+    // denominator factor
+    ctx.strokeRect(110, rowY3 + 28, 120, 20);
+    // diagonal cross marks
+    ctx.beginPath();
+    ctx.moveTo(190, rowY3 - 1);
+    ctx.lineTo(300, rowY3 + 17);
+    ctx.moveTo(110, rowY3 + 28);
+    ctx.lineTo(230, rowY3 + 48);
+    ctx.stroke();
+
+    drawArrow(320, rowY3 + 22, 410, rowY3 + 22, accent);
+    ctx.fillStyle = accent;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('skraćuje se', 365, rowY3 + 8);
+
+    drawBox(420, rowY3 - 4, 270, 60, cvAlpha('--sol-canvas-accent', 0.18), accent, false);
+    ctx.fillStyle = text;
+    ctx.font = 'bold 17px "Cambria Math", Cambria, Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('(1 + t)(t − 1) = t² − 1', 555, rowY3 + 24);
+
+    // ─── Row 4: back to x ───
+    var rowY4 = 440;
+    ctx.fillStyle = muted;
+    ctx.font = '13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('4 ▸ Vraćanje smene t² = x', 30, rowY4 - 22);
+
+    drawBox(30, rowY4 - 4, 240, 50, cvAlpha('--sol-canvas-bg', 1), text, false);
+    ctx.fillStyle = text;
+    ctx.font = '16px "Cambria Math", Cambria, Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('t² − 1', 150, rowY4 + 22);
+
+    drawArrow(280, rowY4 + 20, 370, rowY4 + 20, accent);
+    ctx.fillStyle = accent;
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('t² = x', 325, rowY4 + 8);
+
+    drawBox(380, rowY4 - 4, 310, 60, cvAlpha('--sol-canvas-accent', 0.28), accent, false);
+    ctx.fillStyle = text;
+    ctx.font = 'bold 22px "Cambria Math", Cambria, Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('= x − 1', 535, rowY4 + 26);
+
+    // Tag the final answer
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('odgovor (D)', 535, rowY4 - 14);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Pojednostavljivanje izraza sa x^0,5 i x^1,5 — razlika kubova i smena t = √x",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["algebarski izrazi", "razlomljeni eksponenti", "razlika kubova", "smena promenljive", "racionalni izrazi"]
+}
+BRAINSPARK_META-->

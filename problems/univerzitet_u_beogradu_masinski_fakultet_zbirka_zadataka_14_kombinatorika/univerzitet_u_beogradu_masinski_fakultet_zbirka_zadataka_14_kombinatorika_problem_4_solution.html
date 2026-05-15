@@ -1,0 +1,449 @@
+<!--MATOTEKA_FORMAT v2-->
+
+<script type="text/info" id="logic-scratchpad">
+  Zadatak: Dat je skup S = {t, e, h, n, i, k, a}. Koliko trochlanih podskupova skupa S postoji?
+  Opcije: (A) 35; (B) 210; (C) 343; (D) 2187; (E) 5040.
+
+  Korak 1 — sta se trazi?
+  Tracazi se broj trochlanih PODSKUPOVA. Podskup je skup, a skup nema poredak,
+  pa biranje {t, e, h} i {h, t, e} predstavlja JEDAN isti podskup. Dakle, ovde
+  je rec o KOMBINACIJAMA, ne o varijacijama.
+
+  Korak 2 — formula.
+  Broj k-toclanih podskupova skupa od n elemenata je:
+     C(n, k) = n! / (k! * (n-k)!).
+  Za nas: n = 7, k = 3.
+     C(7, 3) = 7! / (3! * 4!) = (7 * 6 * 5) / (3 * 2 * 1) = 210 / 6 = 35.
+
+  Korak 3 — zasto se deli sa 3!?
+  Ako bi poredak vazio, broj uredjenih trojki je
+     V(7, 3) = 7 * 6 * 5 = 210
+  (prvi clan: 7 izbora, drugi: 6, treci: 5). Ali svaka neuredjena trojka
+  {a, b, c} se moze poredjati na 3! = 6 nacina (abc, acb, bac, bca, cab, cba),
+  a sve te varijacije daju ISTI podskup. Dakle pravi broj podskupova je
+     210 / 6 = 35.
+
+  Korak 4 — eliminacija pogresnih odgovora.
+  (B) 210 = V(7,3) = uredjene trojke (poredak vazi) — pogresno za podskupove.
+  (C) 343 = 7^3 = uredjene trojke SA ponavljanjem — pogresno.
+  (D) 2187 = 3^7 = broj svih podskupova preslikavanja {1..7} -> {tri klase}; pogresno.
+              [Inace, 2^7 = 128 je broj SVIH podskupova skupa S.]
+  (E) 5040 = 7! = sve permutacije skupa S (svih 7 elemenata, poredak vazi).
+  Tacan odgovor: (A) 35.
+
+  Korak 5 — provera nabrajanjem.
+  C(7,3) = C(7,4). Mozemo nabrojati po malo:
+    Sa elementom 't': trochlani podskupovi koji sadrze t su {t, ?, ?} gde se ? ?
+    bira iz preostalih 6 elemenata na C(6,2) = 15 nacina.
+    Bez elementa 't': trochlani podskupovi cele preostale sestcoclane podgrupe je C(6,3) = 20.
+    Ukupno: 15 + 20 = 35. ✓ (To je Paskalov identitet: C(7,3) = C(6,2) + C(6,3).)
+
+  Vizuelni prikaz:
+    Tri slota (kruzni isecak) sa znakom "ne mari za poredak" i formulom
+    C(7,3) = 7!/(3! * 4!) = 35, plus mali prikaz Paskalovog trougla sa
+    istaknutom celijom (7,3) = 35.
+    Staticki canvas (kombinatorika je u "keep static" listi).
+</script>
+
+<h1 data-card="problem-title">Broj trochlanih podskupova skupa od 7 elemenata</h1>
+<p data-card="problem-subtitle" class="subtitle">Kombinacije bez ponavljanja &mdash; biramo neuređenu trojku iz skupa</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Dat je skup \( S = \{t, e, h, n, i, k, a\} \). Koliko tročlanih podskupova skupa \( S \) postoji?</p>
+  <div class="given-grid">
+    <div class="given-item">
+      <span class="given-label">veličina skupa</span>
+      <span class="given-value">\( |S| = 7 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">veličina podskupa</span>
+      <span class="given-value">\( k = 3 \)</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">poredak elemenata</span>
+      <span class="given-value">nije bitan</span>
+    </div>
+    <div class="given-item">
+      <span class="given-label">traženo</span>
+      <span class="given-value">\( \binom{7}{3} = ? \)</span>
+    </div>
+  </div>
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 35 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 210 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 343 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 2187 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 5040 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Pošto je podskup neuređena celina, broj tročlanih podskupova računamo kao broj <strong>kombinacija</strong> bez ponavljanja: \( \binom{7}{3} \). Najpre ćemo razumeti zašto delimo sa \( 3! \), zatim izračunati vrednost i uporediti sa pogrešnim opcijama (koje odgovaraju varijacijama, varijacijama sa ponavljanjem i permutacijama).</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Ključne formule kombinatorike</summary>
+    <div class="detail-content">
+      <ul>
+        <li><strong>Permutacije</strong> (poredak svih \( n \) elemenata): \( P_n = n! \).</li>
+        <li><strong>Varijacije bez ponavljanja</strong> (biramo i ređamo \( k \) različitih elemenata iz \( n \)): \[ V(n,k) = n \cdot (n-1) \cdots (n - k + 1) = \frac{n!}{(n-k)!}. \]</li>
+        <li><strong>Varijacije sa ponavljanjem</strong> (poredak bitan, element se može ponoviti): \( \overline{V}(n,k) = n^k \).</li>
+        <li><strong>Kombinacije bez ponavljanja</strong> (poredak NIJE bitan): \[ \binom{n}{k} = \frac{n!}{k!\,(n-k)!} = \frac{V(n,k)}{k!}. \]</li>
+        <li>Veza: <span class="formula-label">Paskalov identitet</span> \( \binom{n}{k} = \binom{n-1}{k-1} + \binom{n-1}{k} \).</li>
+        <li>Simetrija: \( \binom{n}{k} = \binom{n}{n-k} \), pa je \( \binom{7}{3} = \binom{7}{4} \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Tri slota bez poretka">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="diagram-combinations" width="720" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Tri slota se popunjavaju iz skupa \( S \) sa \( 7 \) različitih slova. Ako se računa poredak, dobijamo \( 7 \cdot 6 \cdot 5 = 210 \) uređenih trojki. Pošto je podskup neuređen, svaku trojku smo izbrojali \( 3! = 6 \) puta, pa delimo: \( 210 / 6 = 35 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Šta tačno tražimo?</h3>
+      <p>Tražimo broj <strong>tročlanih podskupova</strong>, a podskup je skup &mdash; nema poredak ni ponavljanje. Na primer, \( \{t, e, h\} \) i \( \{h, t, e\} \) su <em>jedan isti</em> podskup. Zato ovo nije problem varijacija (gde poredak vredi), već <strong>kombinacija</strong>.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto skup \( \{a, b, c\} \) i uređena trojka \( (a, b, c) \) nisu isto?</summary>
+          <div class="detail-content"><p>Skup je definisan samo svojim elementima &mdash; \( \{a, b, c\} = \{c, a, b\} \). Uređena trojka brine i o redosledu &mdash; \( (a, b, c) \neq (c, a, b) \). Zato jedan skup od tri elementa odgovara sa \( 3! = 6 \) različitih uređenih trojki.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Postavljamo formulu</h3>
+      <p>Broj načina da od \( n \) različitih elemenata izaberemo \( k \)-točlanu neuređenu grupu je binomni koeficijent:</p>
+      <div class="math-block">\[ \binom{n}{k} = \frac{n!}{k!\,(n-k)!}. \]</div>
+      <p>Kod nas je \( n = 7 \) (broj slova u \( S \)) i \( k = 3 \), pa imamo \( \binom{7}{3} \).</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Računamo \( \binom{7}{3} \)</h3>
+      <p>Ne pišemo cele faktorijele &mdash; skraćujemo \( 4! \) iz brojioca i imenioca:</p>
+      <div class="math-block">\[ \binom{7}{3} = \frac{7!}{3!\,4!} = \frac{7 \cdot 6 \cdot 5 \cdot \cancel{4!}}{3! \cdot \cancel{4!}} = \frac{7 \cdot 6 \cdot 5}{3 \cdot 2 \cdot 1}. \]</div>
+      <div class="math-block">\[ = \frac{210}{6} = 35. \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Geometrijska interpretacija deljenja sa \( 3! \)</h3>
+      <p>Ako prvo brojimo <em>uređene</em> trojke različitih slova (varijacije bez ponavljanja):</p>
+      <div class="math-block">\[ V(7,3) = 7 \cdot 6 \cdot 5 = 210. \]</div>
+      <p>Svaku tročlanu grupu \( \{a, b, c\} \) smo prebrojili tačno \( 3! = 6 \) puta &mdash; po jednom za svaki redosled \( abc, acb, bac, bca, cab, cba \). Zato delimo sa \( 6 \):</p>
+      <div class="math-block">\[ \binom{7}{3} = \frac{V(7,3)}{3!} = \frac{210}{6} = \mathbf{35}. \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: koliko ima permutacija trojke \( \{t, e, h\} \)? Nabroji.</summary>
+          <div class="detail-content"><p>\( teh,\ the,\ eth,\ eht,\ het,\ hte \) &mdash; ukupno \( 3! = 6 \) redosleda. Sve daju isti skup \( \{t, e, h\} \).</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera Paskalovim identitetom</h3>
+      <p>Možemo da podelimo podskupove na one koji sadrže slovo \( t \) i one koji ga ne sadrže:</p>
+      <ul>
+        <li>Sadrže \( t \): tada još biramo \( 2 \) elementa iz preostalih \( 6 \), broj \( \binom{6}{2} = 15 \).</li>
+        <li>Ne sadrže \( t \): biramo svih \( 3 \) iz preostalih \( 6 \), broj \( \binom{6}{3} = 20 \).</li>
+      </ul>
+      <div class="math-block">\[ \binom{7}{3} = \binom{6}{2} + \binom{6}{3} = 15 + 20 = 35. \;\checkmark \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Kad god u zadatku piše <strong>"podskup"</strong>, "<em>skup</em>", "grupa", "tim", "izbor" &mdash; poredak <em>ne vredi</em>, i koristimo \( \binom{n}{k} \). Kad piše <em>"redosled"</em>, "<em>raspored</em>", "uređena \( k \)-torka" &mdash; koristimo \( V(n, k) \). Razlika je tačno faktor \( k! \): \( \binom{n}{k} = V(n,k) / k! \). U ovom zadatku zamka su opcije \( 210 \) (uređene trojke), \( 343 = 7^3 \) (sa ponavljanjem) i \( 5040 = 7! \) (sve permutacije skupa).</p>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ \binom{7}{3} = \frac{7!}{3! \cdot 4!} = 35 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option correct" data-option="A">(A) \( 35 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 210 \)</span>
+    <span class="answer-option" data-option="C">(C) \( 343 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 2187 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 5040 \)</span>
+  </div>
+  <p class="verification">Dvostruka provera: \( V(7,3) = 7 \cdot 6 \cdot 5 = 210 \), pa je \( \binom{7}{3} = 210 / 3! = 210 / 6 = 35 \). Takođe Paskal: \( \binom{6}{2} + \binom{6}{3} = 15 + 20 = 35 \). ✓</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Računati \( 7 \cdot 6 \cdot 5 = 210 \) i ostaviti tako &mdash; to je broj <em>uređenih</em> trojki, ne podskupova. Zaboraviti da se deli sa \( 3! \).</li>
+    <li>Pisati \( 7^3 = 343 \) &mdash; to je broj uređenih trojki <em>sa ponavljanjem</em> (kao kod trocifrenih brojeva sa istim ciframa), što ovde nije moguće (skup nema ponovljene elemente).</li>
+    <li>Pisati \( 7! = 5040 \) &mdash; to je broj permutacija svih \( 7 \) slova, što nije tročlani podskup.</li>
+    <li>Mešati formulu: \( \binom{7}{3} \neq \dfrac{7!}{3!} = 840 \) &mdash; deli se i sa \( (n-k)! = 4! \).</li>
+    <li>Pisati \( 3^7 = 2187 \) (svako od \( 7 \) slova "ide" u jednu od \( 3 \) klasa) &mdash; potpuno drugi model, neprimenjiv na ovaj zadatak.</li>
+  </ul>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Iz istog skupa \( S = \{t, e, h, n, i, k, a\} \) odgovori na sledeća pitanja:</p>
+  <ol>
+    <li>Koliko ima <em>uređenih</em> tročlanih nizova različitih slova (npr. reči dužine 3 bez ponavljanja)?</li>
+    <li>Koliko ima trocifrenih (zapravo &mdash; tročlanih) nizova ako se slova <em>mogu ponavljati</em>?</li>
+    <li>Koliki je ukupan broj <em>svih</em> podskupova skupa \( S \), uključujući prazan skup i sam \( S \)?</li>
+  </ol>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>(1) Varijacije bez ponavljanja: \( V(7,3) = 7 \cdot 6 \cdot 5 = 210 \). (2) Varijacije sa ponavljanjem: \( 7^3 = 343 \). (3) Svaki element ima \( 2 \) opcije &mdash; "u podskupu" ili "nije", pa je broj svih podskupova \( 2^7 = 128 \). Provera: \( \binom{7}{0} + \binom{7}{1} + \cdots + \binom{7}{7} = 1+7+21+35+35+21+7+1 = 128. \;\checkmark \)</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1,3), 16);
+      var g = parseInt(c.slice(3,5), 16);
+      var b = parseInt(c.slice(5,7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('diagram-combinations');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  function draw() {
+    var bg        = cv('--sol-canvas-bg');
+    var grid      = cv('--sol-canvas-grid');
+    var axis      = cv('--sol-canvas-axis');
+    var primary   = cv('--sol-canvas-primary');
+    var secondary = cv('--sol-canvas-secondary');
+    var accent    = cv('--sol-canvas-accent');
+    var highlight = cv('--sol-canvas-highlight');
+    var text      = cv('--sol-canvas-text');
+    var muted     = cv('--sol-canvas-muted');
+    var warning   = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Biramo 3 slova iz S = {t, e, h, n, i, k, a}', 30, 30);
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Poredak NIJE bitan — racunamo kombinacije C(7,3).', 30, 50);
+
+    // Top row: 7 letter chips (source set S)
+    var letters = ['t','e','h','n','i','k','a'];
+    var chipR = 22;
+    var chipY = 100;
+    var totalChipsWidth = letters.length * 60;
+    var chipStartX = (canvas.width - totalChipsWidth) / 2 + 30;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    for (var i = 0; i < letters.length; i++) {
+      var cx = chipStartX + i * 60;
+      // chip circle
+      ctx.beginPath();
+      ctx.arc(cx, chipY, chipR, 0, Math.PI * 2);
+      ctx.fillStyle = cvAlpha('--sol-canvas-primary', 0.18);
+      ctx.fill();
+      ctx.strokeStyle = primary;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = primary;
+      ctx.fillText(letters[i], cx, chipY + 1);
+    }
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Skup S — 7 razlicitih slova', canvas.width / 2, chipY + chipR + 22);
+
+    // Arrow down
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 2;
+    var arrowX = canvas.width / 2;
+    ctx.beginPath();
+    ctx.moveTo(arrowX, chipY + chipR + 30);
+    ctx.lineTo(arrowX, chipY + chipR + 60);
+    ctx.stroke();
+    // arrowhead
+    ctx.beginPath();
+    ctx.moveTo(arrowX, chipY + chipR + 64);
+    ctx.lineTo(arrowX - 6, chipY + chipR + 54);
+    ctx.lineTo(arrowX + 6, chipY + chipR + 54);
+    ctx.closePath();
+    ctx.fillStyle = axis;
+    ctx.fill();
+
+    // Three slots — neuredjeni
+    var slotY = 230;
+    var slotW = 90, slotH = 70;
+    var slotGap = 30;
+    var slotsTotalW = 3 * slotW + 2 * slotGap;
+    var slotStartX = (canvas.width - slotsTotalW) / 2;
+    var sampleLetters = ['t','e','h'];
+    for (var s = 0; s < 3; s++) {
+      var sx = slotStartX + s * (slotW + slotGap);
+      // slot rect with rounded corners
+      ctx.beginPath();
+      var r = 10;
+      ctx.moveTo(sx + r, slotY);
+      ctx.lineTo(sx + slotW - r, slotY);
+      ctx.quadraticCurveTo(sx + slotW, slotY, sx + slotW, slotY + r);
+      ctx.lineTo(sx + slotW, slotY + slotH - r);
+      ctx.quadraticCurveTo(sx + slotW, slotY + slotH, sx + slotW - r, slotY + slotH);
+      ctx.lineTo(sx + r, slotY + slotH);
+      ctx.quadraticCurveTo(sx, slotY + slotH, sx, slotY + slotH - r);
+      ctx.lineTo(sx, slotY + r);
+      ctx.quadraticCurveTo(sx, slotY, sx + r, slotY);
+      ctx.closePath();
+      ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.12);
+      ctx.fill();
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6, 4]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      // sample letter inside
+      ctx.font = 'bold 26px Inter, system-ui, sans-serif';
+      ctx.fillStyle = accent;
+      ctx.fillText(sampleLetters[s], sx + slotW / 2, slotY + slotH / 2);
+    }
+    // Curly brace around the slots — indicating a SET
+    ctx.strokeStyle = text;
+    ctx.lineWidth = 2;
+    var braceL = slotStartX - 18, braceR = slotStartX + slotsTotalW + 18;
+    var braceTop = slotY - 6, braceBot = slotY + slotH + 6;
+    ctx.beginPath();
+    ctx.moveTo(braceL + 8, braceTop);
+    ctx.quadraticCurveTo(braceL, braceTop, braceL, (braceTop + braceBot) / 2 - 6);
+    ctx.quadraticCurveTo(braceL, (braceTop + braceBot) / 2, braceL - 6, (braceTop + braceBot) / 2);
+    ctx.quadraticCurveTo(braceL, (braceTop + braceBot) / 2, braceL, (braceTop + braceBot) / 2 + 6);
+    ctx.quadraticCurveTo(braceL, braceBot, braceL + 8, braceBot);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(braceR - 8, braceTop);
+    ctx.quadraticCurveTo(braceR, braceTop, braceR, (braceTop + braceBot) / 2 - 6);
+    ctx.quadraticCurveTo(braceR, (braceTop + braceBot) / 2, braceR + 6, (braceTop + braceBot) / 2);
+    ctx.quadraticCurveTo(braceR, (braceTop + braceBot) / 2, braceR, (braceTop + braceBot) / 2 + 6);
+    ctx.quadraticCurveTo(braceR, braceBot, braceR - 8, braceBot);
+    ctx.stroke();
+
+    // Label below slots: "podskup — bez poretka"
+    ctx.font = 'italic 13px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Podskup {t, e, h} = {h, t, e} — poredak ne vredi', canvas.width / 2, slotY + slotH + 26);
+
+    // Formula box at bottom
+    var formulaY = 380;
+    var boxW = 560, boxH = 110;
+    var boxX = (canvas.width - boxW) / 2;
+    ctx.fillStyle = cvAlpha('--sol-canvas-highlight', 0.10);
+    ctx.strokeStyle = highlight;
+    ctx.lineWidth = 2;
+    // rounded box
+    ctx.beginPath();
+    var rr = 12;
+    ctx.moveTo(boxX + rr, formulaY);
+    ctx.lineTo(boxX + boxW - rr, formulaY);
+    ctx.quadraticCurveTo(boxX + boxW, formulaY, boxX + boxW, formulaY + rr);
+    ctx.lineTo(boxX + boxW, formulaY + boxH - rr);
+    ctx.quadraticCurveTo(boxX + boxW, formulaY + boxH, boxX + boxW - rr, formulaY + boxH);
+    ctx.lineTo(boxX + rr, formulaY + boxH);
+    ctx.quadraticCurveTo(boxX, formulaY + boxH, boxX, formulaY + boxH - rr);
+    ctx.lineTo(boxX, formulaY + rr);
+    ctx.quadraticCurveTo(boxX, formulaY, boxX + rr, formulaY);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Formula text
+    ctx.textAlign = 'center';
+    ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+    ctx.fillStyle = text;
+    ctx.fillText('C(7, 3) = 7! / (3! · 4!) = (7·6·5) / (3·2·1) = 210 / 6', canvas.width / 2, formulaY + 38);
+
+    ctx.font = 'bold 24px Inter, system-ui, sans-serif';
+    ctx.fillStyle = accent;
+    ctx.fillText('= 35', canvas.width / 2, formulaY + 78);
+
+    // Side note: V(7,3) vs C(7,3)
+    ctx.textAlign = 'left';
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = muted;
+    ctx.fillText('Uredjene trojke (varijacije): V(7,3) = 210', 30, 510);
+    ctx.textAlign = 'right';
+    ctx.fillText('Neuredjene (kombinacije): 210 / 3! = 35', canvas.width - 30, 510);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Tročlani podskupovi skupa od 7 elemenata",
+  "subject": "math",
+  "unit": "combinatorics",
+  "topic_tags": ["kombinacije", "binomni koeficijent", "podskupovi", "Paskalov identitet"]
+}
+BRAINSPARK_META-->

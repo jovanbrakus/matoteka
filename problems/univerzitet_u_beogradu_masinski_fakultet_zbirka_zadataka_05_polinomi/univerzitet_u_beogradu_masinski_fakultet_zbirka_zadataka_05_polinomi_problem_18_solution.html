@@ -1,0 +1,576 @@
+<!--MATOTEKA_FORMAT v2-->
+<script type="text/info" id="logic-scratchpad">
+Zadatak: jedno rešenje jednačine x^3 - 6x^2 + ax - 6 = 0 je 3 (a iz R). Naći zbir kvadrata svih rešenja.
+
+Korak 1 — naći parametar a.
+Pošto je x = 3 rešenje, ubaci u jednačinu:
+3^3 - 6*3^2 + a*3 - 6 = 0
+27 - 54 + 3a - 6 = 0
+-33 + 3a = 0
+3a = 33
+a = 11.
+
+Korak 2 — sad imamo kompletnu jednačinu x^3 - 6x^2 + 11x - 6 = 0.
+
+Korak 3 — Vijetove formule za x^3 + Bx^2 + Cx + D (vodeći koef = 1):
+  x1 + x2 + x3 = -B = 6
+  x1 x2 + x1 x3 + x2 x3 = C = 11
+  x1 x2 x3 = -D = 6
+
+Korak 4 — identitet:
+  x1^2 + x2^2 + x3^2 = (x1 + x2 + x3)^2 - 2(x1 x2 + x1 x3 + x2 x3)
+                    = 6^2 - 2*11
+                    = 36 - 22
+                    = 14.
+
+Odgovor: (C) 14.
+
+Provera — naći sva tri korena.
+Pošto je x = 3 koren, deli sa (x - 3) Hornerovom šemom:
+  1 | -6 | 11 | -6
+  3:    3 | -9 |  6
+  ----------------
+       1 | -3 |  2 | 0
+Količnik: x^2 - 3x + 2 = (x - 1)(x - 2).
+Sva tri rešenja: 1, 2, 3.
+Zbir kvadrata: 1 + 4 + 9 = 14. ✓
+
+Lepa činjenica: koreni su tačno 1, 2, 3, i polinom je (x-1)(x-2)(x-3).
+
+Pogrešne opcije:
+(A) 13 = 36 - 23 — greška u sabiranju.
+(B) 3 — zbir samih korena (a ne kvadrata).
+(D) 25 — možda 5^2 ako se izračuna 1+2+3 = 6 ali se onda kvadrira ukupna suma korena umesto sume kvadrata.
+(E) 36 — (x1+x2+x3)^2 bez oduzimanja 2*(sume parnih proizvoda), tipična greška.
+
+Vizuelni prikaz: nacrtati y = x^3 - 6x^2 + 11x - 6 = (x-1)(x-2)(x-3).
+Označiti sve tri nule 1, 2, 3, plus označiti x=3 kao "dato" da bismo razlikovali.
+Drugi canvas: Vijetove formule za normalizovani kubni polinom — pokazati koja se relacija koristi za zbir kvadrata.
+
+Pitfalls:
+- (x1+x2+x3)^2 nije x1^2+x2^2+x3^2;
+- mešati znakove u Vijetu (-B umesto B);
+- zaboraviti da pre Vijete treba naći a.
+</script>
+
+<h1 data-card="problem-title">Zbir kvadrata rešenja kubne jednačine sa parametrom</h1>
+<p data-card="problem-subtitle" class="subtitle">Određivanje parametra iz datog korena i Vijetove formule za zbir kvadrata</p>
+
+<div data-card="problem-statement" data-title="Tekst zadatka">
+  <h2>📋 Tekst zadatka</h2>
+  <p>Jedno rešenje jednačine</p>
+  <div class="math-block">\[ x^3 - 6x^2 + a x - 6 = 0, \quad a \in \mathbb{R}, \]</div>
+  <p>je \( x_1 = 3 \). Zbir kvadrata svih rešenja te jednačine je:</p>
+
+  <div class="answer-grid">
+    <div class="answer-option" data-option="A">
+      <span class="answer-label">(A)</span>
+      <span class="answer-value">\( 13 \)</span>
+    </div>
+    <div class="answer-option" data-option="B">
+      <span class="answer-label">(B)</span>
+      <span class="answer-value">\( 3 \)</span>
+    </div>
+    <div class="answer-option" data-option="C">
+      <span class="answer-label">(C)</span>
+      <span class="answer-value">\( 14 \)</span>
+    </div>
+    <div class="answer-option" data-option="D">
+      <span class="answer-label">(D)</span>
+      <span class="answer-value">\( 25 \)</span>
+    </div>
+    <div class="answer-option" data-option="E">
+      <span class="answer-label">(E)</span>
+      <span class="answer-value">\( 36 \)</span>
+    </div>
+  </div>
+</div>
+
+<div data-card="plan" data-title="Plan rešavanja">
+  <h2>🎯 Plan rešavanja</h2>
+  <p class="plan-text">Prvo ćemo iskoristiti činjenicu da je \( x = 3 \) rešenje da bismo odredili parametar \( a \). Zatim, kada je kubna jednačina potpuno poznata, primenićemo Vijetove formule da nađemo zbir korena \( \sum x_i \) i zbir proizvoda po dva \( \sum x_i x_j \). Algebarski identitet \( \sum x_i^2 = \bigl(\sum x_i\bigr)^2 - 2 \sum x_i x_j \) daje traženu vrednost bez nalaženja samih korena.</p>
+</div>
+
+<div data-card="theory" data-title="Podsetnik iz teorije">
+  <h2>📚 Podsetnik iz teorije</h2>
+  <details>
+    <summary>Vijetove formule i identitet za zbir kvadrata</summary>
+    <div class="detail-content">
+      <ul>
+        <li><span class="formula-label">Faktorizacija kubnog polinoma</span> Ako su \( x_1, x_2, x_3 \) koreni jednačine \( x^3 + Bx^2 + Cx + D = 0 \) (vodeći koeficijent \( 1 \)), onda je \( x^3 + Bx^2 + Cx + D = (x - x_1)(x - x_2)(x - x_3) \).</li>
+        <li><span class="formula-label">Razvijanje</span> \( (x - x_1)(x - x_2)(x - x_3) = x^3 - (x_1 + x_2 + x_3)\,x^2 + (x_1 x_2 + x_1 x_3 + x_2 x_3)\,x - x_1 x_2 x_3 \).</li>
+        <li><span class="formula-label">Vijetove formule</span> Poređenjem koeficijenata: \( x_1 + x_2 + x_3 = -B \), \( x_1 x_2 + x_1 x_3 + x_2 x_3 = C \), \( x_1 x_2 x_3 = -D \).</li>
+        <li><span class="formula-label">Identitet za zbir kvadrata</span> \( (x_1 + x_2 + x_3)^2 = x_1^2 + x_2^2 + x_3^2 + 2(x_1 x_2 + x_1 x_3 + x_2 x_3) \). Odatle: \( x_1^2 + x_2^2 + x_3^2 = \bigl(\sum x_i\bigr)^2 - 2 \sum x_i x_j \). Ovo je standardni „simetrični" trik.</li>
+        <li><span class="formula-label">Bezuova teorema</span> Broj \( \alpha \) je koren polinoma \( p(x) \) akko \( p(\alpha) = 0 \), što je ekvivalentno: \( (x - \alpha) \mid p(x) \).</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+<div data-card="visual-aid" data-title="Grafik kubne funkcije sa parametrom">
+  <h2>📐 Vizuelni prikaz</h2>
+  <div class="canvas-wrapper">
+    <canvas id="cubic-plot" width="720" height="520"></canvas>
+  </div>
+  <p class="canvas-caption">Grafik funkcije \( y = x^3 - 6x^2 + 11x - 6 \) (posle određivanja \( a = 11 \)). Funkcija se faktoriše kao \( (x-1)(x-2)(x-3) \) — tri cele nule \( 1, 2, 3 \). Dato rešenje \( x_1 = 3 \) označeno je narandžastom; ostala dva (koja smo dobili izvodjenjem) zelenom bojom.</p>
+
+  <div class="canvas-wrapper">
+    <canvas id="vieta-diagram" width="720" height="460"></canvas>
+  </div>
+  <p class="canvas-caption">Šema: koje dve Vijetove relacije koristimo da izračunamo zbir kvadrata. Iz \( -B \) dolazi \( \sum x_i \), iz \( C \) dolazi \( \sum x_i x_j \); identitet ih kombinuje u \( \sum x_i^2 \).</p>
+</div>
+
+<div data-card="step-solution" data-title="Rešenje korak po korak">
+  <h2>✏️ Rešenje korak po korak</h2>
+
+  <div class="step" data-step="1">
+    <div class="step-badge">1</div>
+    <div class="step-content">
+      <h3 class="step-title">Određujemo parametar \( a \)</h3>
+      <p>Pošto je \( x = 3 \) rešenje jednačine, mora biti \( p(3) = 0 \). Ubacujemo \( x = 3 \) u izraz \( x^3 - 6x^2 + a x - 6 \):</p>
+      <div class="math-block">\[ 3^3 - 6 \cdot 3^2 + a \cdot 3 - 6 \;=\; 27 - 54 + 3a - 6 \;=\; 3a - 33. \]</div>
+      <p>Postavljamo to na nulu:</p>
+      <div class="math-block">\[ 3a - 33 = 0 \;\Longrightarrow\; a = 11. \]</div>
+      <p>Dakle kompletna jednačina je <span class="result">\( x^3 - 6x^2 + 11x - 6 = 0 \)</span>.</p>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: zašto smo morali prvo da nađemo \( a \)?</summary>
+          <div class="detail-content"><p>Vijetove formule daju koeficijente kao izraze u korenima. Da bismo ih primenili, polinom mora imati <em>poznate</em> brojne koeficijente. Sa nepoznatim \( a \), koeficijent uz \( x \) je neodređen, pa ne možemo da izračunamo \( \sum x_i x_j \). Korišćenjem \( p(3) = 0 \) eliminišemo nepoznatu.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-badge">2</div>
+    <div class="step-content">
+      <h3 class="step-title">Pišemo Vijetove formule</h3>
+      <p>Za jednačinu \( x^3 + Bx^2 + Cx + D = 0 \) (vodeći koeficijent je \( 1 \), pa ne moramo da delimo) sa korenima \( x_1, x_2, x_3 \):</p>
+      <div class="math-block">\[ x_1 + x_2 + x_3 = -B, \quad x_1 x_2 + x_1 x_3 + x_2 x_3 = C, \quad x_1 x_2 x_3 = -D. \]</div>
+      <p>Iz naše jednačine: \( B = -6 \), \( C = 11 \), \( D = -6 \). Zato:</p>
+      <div class="math-block">\[ \begin{aligned} x_1 + x_2 + x_3 &amp;= -(-6) = 6, \\ x_1 x_2 + x_1 x_3 + x_2 x_3 &amp;= 11, \\ x_1 x_2 x_3 &amp;= -(-6) = 6. \end{aligned} \]</div>
+    </div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-badge">3</div>
+    <div class="step-content">
+      <h3 class="step-title">Koristimo simetrični identitet</h3>
+      <p>Zbir kvadrata se može izraziti preko zbira i zbira proizvoda po dva — bez nalaženja samih korena. Razvijmo \( (x_1 + x_2 + x_3)^2 \):</p>
+      <div class="math-block">\[ (x_1 + x_2 + x_3)^2 \;=\; x_1^2 + x_2^2 + x_3^2 + 2\,(x_1 x_2 + x_1 x_3 + x_2 x_3). \]</div>
+      <p>Odatle:</p>
+      <div class="math-block">\[ x_1^2 + x_2^2 + x_3^2 \;=\; (x_1 + x_2 + x_3)^2 - 2\,(x_1 x_2 + x_1 x_3 + x_2 x_3). \]</div>
+      <div class="checkpoint">
+        <details>
+          <summary>Proveri sebe: odakle dolazi koeficijent \( 2 \) ispred parnih proizvoda?</summary>
+          <div class="detail-content"><p>Kada se \( (x_1 + x_2 + x_3)^2 \) razvije, parni proizvodi \( x_i x_j \) (\( i \ne j \)) se pojavljuju <em>dva puta</em>: jednom kao \( x_i x_j \), jednom kao \( x_j x_i \). Otud koeficijent \( 2 \). Drugi izraz \( \sum x_i x_j \) sabira svaki paran proizvod samo jednom (\( x_1 x_2 + x_1 x_3 + x_2 x_3 \)), pa moramo da pomnožimo sa \( 2 \) da pokrijemo oba ponavljanja.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-badge">4</div>
+    <div class="step-content">
+      <h3 class="step-title">Ubacujemo Vijetove vrednosti</h3>
+      <p>Iz koraka 2 imamo: \( \sum x_i = 6 \) i \( \sum x_i x_j = 11 \). Smena:</p>
+      <div class="math-block">\[ x_1^2 + x_2^2 + x_3^2 \;=\; 6^2 - 2 \cdot 11 \;=\; 36 - 22 \;=\; 14. \]</div>
+      <p>Konačno: <span class="result">\( x_1^2 + x_2^2 + x_3^2 = 14 \)</span>.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-badge">5</div>
+    <div class="step-content">
+      <h3 class="step-title">Provera nalaženjem svih korena</h3>
+      <p>Pošto je \( x = 3 \) koren, delimo \( p(x) = x^3 - 6x^2 + 11x - 6 \) sa \( (x - 3) \) Hornerovom šemom:</p>
+      <div class="math-block">\[ \begin{array}{c|rrrr} & 1 & -6 & 11 & -6 \\ 3 & & 3 & -9 & 6 \\ \hline & 1 & -3 & 2 & \boxed{0} \end{array} \]</div>
+      <p>Količnik je \( x^2 - 3x + 2 = (x - 1)(x - 2) \). Dakle:</p>
+      <div class="math-block">\[ p(x) = (x - 1)(x - 2)(x - 3). \]</div>
+      <p>Sva tri korena su \( x_1 = 3 \), \( x_2 = 2 \), \( x_3 = 1 \). Direktnim računom:</p>
+      <div class="math-block">\[ x_1^2 + x_2^2 + x_3^2 \;=\; 9 + 4 + 1 \;=\; 14. \;\checkmark \]</div>
+    </div>
+  </div>
+</div>
+
+<div data-card="key-insight" data-title="Ključni uvid">
+  <h2>💡 Ključni uvid</h2>
+  <p>Ovaj zadatak ilustruje dve zaboravljive ali moćne ideje. <strong>Prva:</strong> ako je broj \( \alpha \) koren polinoma, smena \( x = \alpha \) odmah daje jednu linearnu vezu između parametara — koristi se za eliminaciju nepoznate (\( a = 11 \)). <strong>Druga:</strong> simetrični izrazi po korenima (\( \sum x_i^2 \), \( \sum x_i^3 \), \( \sum \tfrac{1}{x_i} \), itd.) uvek se mogu izraziti preko elementarnih simetričnih izraza \( \sum x_i \), \( \sum x_i x_j \), \( x_1 x_2 x_3 \), tj. preko koeficijenata polinoma. To znači da nikada nije potrebno eksplicitno nalaziti same korene da bismo izračunali ovakve veličine.</p>
+</div>
+
+<div data-card="pitfalls" data-title="Česte greške">
+  <h2>⚠️ Česte greške</h2>
+  <ul class="pitfall-list">
+    <li>Pisati \( x_1^2 + x_2^2 + x_3^2 = (x_1 + x_2 + x_3)^2 = 36 \) (opcija E) — to je <em>kvadrat zbira</em>, a ne zbir kvadrata. Nedostaje član \( -2 \sum x_i x_j \).</li>
+    <li>Pomešati znak u Vijetovoj formuli: pisati \( x_1 + x_2 + x_3 = B = -6 \) umesto \( -B = 6 \). Tada bi izraz \( (-6)^2 - 2 \cdot 11 = 14 \) i dalje slučajno dao isti rezultat (jer se kvadrira), ali drugi koraci bi se pokvarili.</li>
+    <li>Početi sa Vijetom pre nego što se odredi \( a \). Sa nepoznatim \( a \), \( \sum x_i x_j = a \) ostaje nepoznato i ne možemo dobiti brojnu vrednost.</li>
+    <li>Tvrditi da je odgovor \( 3 \) (opcija B) jer je „dato \( x_1 = 3 \)". To je samo jedan koren — pitanje je zbir <em>svih</em> kvadrata.</li>
+    <li>Pomešati \( -2 \sum x_i x_j \) sa \( -2 \cdot \sum x_i \): računati \( 6^2 - 2 \cdot 6 = 36 - 12 = 24 \). Drugi član Vijete je \( C \), ne ponovljeni \( -B \).</li>
+  </ul>
+</div>
+
+<div data-card="final-answer" data-title="Konačan odgovor">
+  <h2>✅ Konačan odgovor</h2>
+  <div class="final-answer-display">
+    <p class="final-answer-text">\[ x_1^2 + x_2^2 + x_3^2 \;=\; \Bigl(\sum x_i\Bigr)^2 - 2\sum x_i x_j \;=\; 6^2 - 2 \cdot 11 \;=\; 14 \]</p>
+  </div>
+  <div class="answer-options">
+    <span class="answer-option" data-option="A">(A) \( 13 \)</span>
+    <span class="answer-option" data-option="B">(B) \( 3 \)</span>
+    <span class="answer-option correct" data-option="C">(C) \( 14 \)</span>
+    <span class="answer-option" data-option="D">(D) \( 25 \)</span>
+    <span class="answer-option" data-option="E">(E) \( 36 \)</span>
+  </div>
+  <p class="verification">Provera: faktorizacija daje \( p(x) = (x-1)(x-2)(x-3) \), pa su koreni \( 1, 2, 3 \). Direktno: \( 1^2 + 2^2 + 3^2 = 1 + 4 + 9 = 14 \). \( \checkmark \)</p>
+</div>
+
+<div data-card="challenge" data-title="Dodatni izazov">
+  <h2>🏆 Dodatni izazov</h2>
+  <p>Pretpostavimo da je za istu jednačinu \( x^3 - 6x^2 + ax - 6 = 0 \) <em>zbir kvadrata</em> svih rešenja jednak \( 22 \). Koja bi onda bila vrednost parametra \( a \)? Da li takvo \( a \) zaista daje tri realna korena, ili neka od njih može biti kompleksna?</p>
+  <details>
+    <summary>Pogledaj nagoveštaj</summary>
+    <div class="detail-content"><p>Iz Vijete (uz vodeći koef. \( 1 \)): \( \sum x_i = 6 \) (uvek, ne zavisi od \( a \)) i \( \sum x_i x_j = a \). Identitet: \( \sum x_i^2 = 36 - 2a \). Postavi \( 36 - 2a = 22 \Rightarrow a = 7 \). Da li su koreni realni? Za \( x^3 - 6x^2 + 7x - 6 = 0 \) diskriminanta kubne jednačine je negativna, pa postoje jedan realan i dva konjugovano-kompleksna korena. Vijetove formule i dalje važe — ali tada „zbir kvadrata" uključuje i \( |z|^2 + |\bar z|^2 \) za kompleksni par; tačnije, \( z^2 + \bar z^2 \) (algebarski zbir, ne moduli). Identitet ostaje važeći u \( \mathbb{C} \).</p></div>
+  </details>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('cubic-plot');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  var xMin = -0.5, xMax = 4.5;
+  var yMin = -2.5, yMax = 5;
+  var marginL = 60, marginR = 28, marginT = 56, marginB = 70;
+  var plotW = W - marginL - marginR;
+  var plotH = H - marginT - marginB;
+  var sx = plotW / (xMax - xMin);
+  var sy = plotH / (yMax - yMin);
+
+  function tx(x) { return marginL + (x - xMin) * sx; }
+  function ty(y) { return marginT + (yMax - y) * sy; }
+  function f(x) { return x * x * x - 6 * x * x + 11 * x - 6; }
+
+  function draw() {
+    styles = getComputedStyle(root);
+    var bg = cv('--sol-canvas-bg');
+    var grid = cv('--sol-canvas-grid');
+    var axis = cv('--sol-canvas-axis');
+    var primary = cv('--sol-canvas-primary');
+    var accent = cv('--sol-canvas-accent');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var warning = cv('--sol-canvas-warning');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('y = x³ − 6x² + 11x − 6 = (x−1)(x−2)(x−3)', W / 2, 24);
+
+    // Grid
+    ctx.strokeStyle = grid;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (var gx = 0; gx <= 4; gx++) {
+      ctx.moveTo(tx(gx), marginT);
+      ctx.lineTo(tx(gx), marginT + plotH);
+    }
+    for (var gy = -2; gy <= 5; gy++) {
+      if (gy === 0) continue;
+      ctx.moveTo(marginL, ty(gy));
+      ctx.lineTo(marginL + plotW, ty(gy));
+    }
+    ctx.stroke();
+
+    // Axes
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(marginL, ty(0));
+    ctx.lineTo(marginL + plotW, ty(0));
+    ctx.moveTo(tx(0), marginT);
+    ctx.lineTo(tx(0), marginT + plotH);
+    ctx.stroke();
+
+    // Arrows
+    ctx.fillStyle = axis;
+    ctx.beginPath();
+    ctx.moveTo(marginL + plotW, ty(0));
+    ctx.lineTo(marginL + plotW - 8, ty(0) - 5);
+    ctx.lineTo(marginL + plotW - 8, ty(0) + 5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(tx(0), marginT);
+    ctx.lineTo(tx(0) - 5, marginT + 8);
+    ctx.lineTo(tx(0) + 5, marginT + 8);
+    ctx.closePath();
+    ctx.fill();
+
+    // Axis labels
+    ctx.fillStyle = text;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('x', marginL + plotW + 6, ty(0) + 4);
+    ctx.textAlign = 'right';
+    ctx.fillText('y', tx(0) - 8, marginT + 4);
+
+    // Tick labels
+    ctx.fillStyle = muted;
+    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    for (var xt = 0; xt <= 4; xt++) {
+      if (xt === 0) continue;
+      ctx.fillText(String(xt), tx(xt), ty(0) + 14);
+    }
+    ctx.textAlign = 'right';
+    for (var yt = -2; yt <= 5; yt++) {
+      if (yt === 0) continue;
+      ctx.fillText(String(yt), tx(0) - 6, ty(yt) + 4);
+    }
+
+    // Curve
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    var started = false;
+    for (var xpx = 0; xpx <= plotW; xpx += 1) {
+      var xv = xMin + (xpx / plotW) * (xMax - xMin);
+      var yv = f(xv);
+      if (yv < yMin - 0.5 || yv > yMax + 0.5) { started = false; continue; }
+      var px = tx(xv), py = ty(yv);
+      if (!started) { ctx.moveTo(px, py); started = true; }
+      else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+
+    // Roots — 1 and 2 (derived), 3 (given)
+    var roots = [
+      { x: 1, label: 'x = 1', color: accent, dy: -16 },
+      { x: 2, label: 'x = 2', color: accent, dy: 22 },
+      { x: 3, label: 'x = 3  (dato)', color: warning, dy: -16 }
+    ];
+    for (var k = 0; k < roots.length; k++) {
+      var r = roots[k];
+      ctx.beginPath();
+      ctx.arc(tx(r.x), ty(0), 8, 0, Math.PI * 2);
+      ctx.fillStyle = r.color;
+      ctx.fill();
+      ctx.strokeStyle = bg;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = r.color;
+      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(r.label, tx(r.x), ty(0) + r.dy);
+    }
+
+    // Annotation: sum of squares
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Zbir kvadrata: 1² + 2² + 3² = 1 + 4 + 9 = 14', marginL + 10, marginT + 32);
+
+    // Bottom caption
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Sve tri nule su cele: 1, 2 i 3. Vijete bez nalaženja korena: 6² − 2·11 = 14.', W / 2, H - 16);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var styles = getComputedStyle(root);
+  function cv(name) { return styles.getPropertyValue(name).trim(); }
+  function cvAlpha(name, alpha) {
+    var c = cv(name);
+    if (c.startsWith('#') && c.length === 7) {
+      var r = parseInt(c.slice(1, 3), 16);
+      var g = parseInt(c.slice(3, 5), 16);
+      var b = parseInt(c.slice(5, 7), 16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    return c;
+  }
+
+  var canvas = document.getElementById('vieta-diagram');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  function draw() {
+    styles = getComputedStyle(root);
+    var bg = cv('--sol-canvas-bg');
+    var text = cv('--sol-canvas-text');
+    var muted = cv('--sol-canvas-muted');
+    var warning = cv('--sol-canvas-warning');
+    var accent = cv('--sol-canvas-accent');
+    var primary = cv('--sol-canvas-primary');
+    var tertiary = cv('--sol-canvas-tertiary');
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = text;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Vijetove relacije koje koristimo za zbir kvadrata', W / 2, 28);
+
+    // Top row: coefficients
+    var topY = 90;
+    var spacing = 130;
+    var startX = W / 2 - 1.5 * spacing;
+
+    var terms = [
+      { coef: '1', sym: 'x³', a: 'a = 1', hi: muted },
+      { coef: '−6', sym: 'x²', a: 'B = −6', hi: warning },
+      { coef: '+11', sym: 'x', a: 'C = 11', hi: tertiary },
+      { coef: '−6', sym: '', a: 'D = −6', hi: muted }
+    ];
+
+    for (var i = 0; i < terms.length; i++) {
+      var t = terms[i];
+      var x = startX + i * spacing;
+      var hiVar = t.hi === warning ? '--sol-canvas-warning' : (t.hi === tertiary ? '--sol-canvas-tertiary' : '--sol-canvas-muted');
+      ctx.fillStyle = cvAlpha(hiVar, 0.12);
+      ctx.fillRect(x - 50, topY - 28, 100, 56);
+      ctx.strokeStyle = t.hi;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x - 50, topY - 28, 100, 56);
+
+      ctx.fillStyle = text;
+      ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(t.coef + ' ' + t.sym, x, topY + 6);
+
+      ctx.fillStyle = t.hi;
+      ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+      ctx.fillText(t.a, x, topY - 36);
+    }
+
+    // Two boxes for Vieta relations
+    var midY = 220;
+    var leftBoxX = 50, rightBoxX = W / 2 + 30;
+    var boxW = W / 2 - 80, boxH = 80;
+
+    // Left box: sum
+    ctx.fillStyle = cvAlpha('--sol-canvas-warning', 0.12);
+    ctx.fillRect(leftBoxX, midY, boxW, boxH);
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(leftBoxX, midY, boxW, boxH);
+    ctx.fillStyle = warning;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Zbir korena (iz B)', leftBoxX + boxW / 2, midY + 22);
+    ctx.fillStyle = text;
+    ctx.font = '15px Inter, system-ui, sans-serif';
+    ctx.fillText('x₁ + x₂ + x₃ = −B = 6', leftBoxX + boxW / 2, midY + 50);
+
+    // Right box: sum of pairs
+    ctx.fillStyle = cvAlpha('--sol-canvas-tertiary', 0.12);
+    ctx.fillRect(rightBoxX, midY, boxW, boxH);
+    ctx.strokeStyle = tertiary;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(rightBoxX, midY, boxW, boxH);
+    ctx.fillStyle = tertiary;
+    ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+    ctx.fillText('Zbir parnih proizvoda (iz C)', rightBoxX + boxW / 2, midY + 22);
+    ctx.fillStyle = text;
+    ctx.font = '15px Inter, system-ui, sans-serif';
+    ctx.fillText('x₁x₂ + x₁x₃ + x₂x₃ = C = 11', rightBoxX + boxW / 2, midY + 50);
+
+    // Arrows from coef boxes to relation boxes
+    ctx.strokeStyle = warning;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(startX + spacing, topY + 28);
+    ctx.lineTo(leftBoxX + boxW / 2, midY);
+    ctx.stroke();
+    ctx.strokeStyle = tertiary;
+    ctx.beginPath();
+    ctx.moveTo(startX + 2 * spacing, topY + 28);
+    ctx.lineTo(rightBoxX + boxW / 2, midY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Final formula
+    var fy = 360;
+    ctx.fillStyle = cvAlpha('--sol-canvas-accent', 0.12);
+    ctx.fillRect(40, fy, W - 80, 70);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(40, fy, W - 80, 70);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('x₁² + x₂² + x₃² = (x₁+x₂+x₃)² − 2(x₁x₂+x₁x₃+x₂x₃)', W / 2, fy + 28);
+    ctx.fillStyle = text;
+    ctx.font = '15px Inter, system-ui, sans-serif';
+    ctx.fillText('= 6² − 2·11 = 36 − 22 = 14', W / 2, fy + 52);
+
+    // Bottom caption
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 12px Inter, system-ui, sans-serif';
+    ctx.fillText('Identitet kombinuje dve Vijetove relacije — koeficijent uz x² i koeficijent uz x.', W / 2, H - 12);
+  }
+
+  draw();
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'matoteka-theme') {
+      setTimeout(function() {
+        styles = getComputedStyle(root);
+        draw();
+      }, 50);
+    }
+  });
+})();
+</script>
+
+<!--BRAINSPARK_META
+{
+  "format": "v2",
+  "title": "Zbir kvadrata rešenja kubne jednačine x³ − 6x² + ax − 6 = 0 sa korenom 3",
+  "subject": "math",
+  "unit": "algebra",
+  "topic_tags": ["polinomi", "Vijetove formule", "rešenja kubne jednačine", "zbir kvadrata korena", "simetrične funkcije"]
+}
+BRAINSPARK_META-->
