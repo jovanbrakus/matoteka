@@ -51,7 +51,7 @@ export default function AboutPage() {
         <h2 className="mb-6 text-2xl font-bold text-heading">Šta nudimo</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           {[
-            { icon: "menu_book", text: "4000+ rešenih zadataka sa prijemnih ispita" },
+            { icon: "menu_book", text: "5000+ rešenih zadataka sa prijemnih ispita" },
             { icon: "auto_stories", text: "59 interaktivnih lekcija sa laboratorijumima" },
             { icon: "quiz", text: "Simulacija ispita sa tajmerom i analizom" },
             { icon: "analytics", text: "Praćenje napretka i personalizovana statistika" },

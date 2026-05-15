@@ -14,9 +14,9 @@ const publicSans = Public_Sans({ subsets: ["latin", "latin-ext"], variable: "--f
 
 export const metadata: Metadata = {
   ...createMetadata({
-    title: "Matoteka — Prijemni ispit iz matematike | 4000+ zadataka",
+    title: "Matoteka — Prijemni ispit iz matematike | 5000+ zadataka",
     description:
-      "Besplatna platforma za pripremu prijemnog ispita iz matematike. 4000+ rešenih zadataka, 59 interaktivnih lekcija i simulacije ispita za ETF, MATF, FON i druge fakultete Univerziteta u Beogradu.",
+      "Besplatna platforma za pripremu prijemnog ispita iz matematike. 5000+ rešenih zadataka, 59 interaktivnih lekcija i simulacije ispita za ETF, MATF, FON i druge fakultete Univerziteta u Beogradu.",
     path: "/",
     keywords: [
       "prijemni ispit",

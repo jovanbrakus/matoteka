@@ -37,7 +37,7 @@ export default function LandingHero() {
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#ec5b13]" />
-                  Bazu od preko 4000 detaljno rešenih zadataka sa prijemnih ispita
+                  Bazu od preko 5000 detaljno rešenih zadataka sa prijemnih ispita
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#ec5b13]" />
@@ -77,7 +77,7 @@ export default function LandingHero() {
                 </div>
                 <div className="h-8 w-px bg-[var(--tint-strong)]" />
                 <div className="flex items-center gap-2 text-sm text-text-secondary">
-                  <span className="text-2xl font-black text-heading">4000+</span>
+                  <span className="text-2xl font-black text-heading">5000+</span>
                   <span>rešenih zadataka</span>
                 </div>
               </div>
@@ -124,12 +124,12 @@ export default function LandingHero() {
         </div>
       </header>
 
-      {/* ─── The 4000+ Edge ─── */}
+      {/* ─── The 5000+ Edge ─── */}
       <section id="zadaci" className="relative bg-surface-dark py-24">
         <div className="mx-auto max-w-7xl px-6">
           <div className="mx-auto mb-20 flex max-w-3xl flex-col gap-4 text-center">
             <h2 className="text-5xl font-black text-heading">
-              The 4000+ Edge
+              The 5000+ Edge
             </h2>
             <p className="text-lg text-text-secondary">
               Najobimnija baza rešenih zadataka sa prethodnih prijemnih ispita,

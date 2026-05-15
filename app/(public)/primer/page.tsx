@@ -882,7 +882,7 @@ export default function PrimerPage() {
           </h2>
           <p className="mx-auto mb-6 max-w-lg leading-relaxed text-text-secondary">
             Pristupi kompletnoj bazi od{" "}
-            <strong className="text-heading">4000+ zadataka</strong>{" "}
+            <strong className="text-heading">5000+ zadataka</strong>{" "}
             sa prijemnih ispita, rešenih korak po korak &mdash; sa
             interaktivnim graficima, AI tutorom i simulacijama ispita.
           </p>

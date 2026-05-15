@@ -13,7 +13,7 @@ const PLANS = {
     monthlyNote: null,
     seasonalNote: null,
     features: [
-      "Pristup kompletnoj bazi zadataka za pripremu prijemnih ispita (4000+ zadataka)",
+      "Pristup kompletnoj bazi zadataka za pripremu prijemnih ispita (5000+ zadataka)",
     ],
     cta: "Aktiviraj besplatno",
     ctaStyle: "border border-[var(--glass-border)] bg-[var(--tint)] text-heading hover:bg-[var(--tint-strong)]",
