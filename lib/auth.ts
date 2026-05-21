@@ -71,7 +71,7 @@ const providers = [
             displayName: user.displayName,
             role: user.role,
             targetFaculties: (user.targetFaculties as string[]) || [],
-            needsOnboarding: user.displayName === user.email?.split("@")[0],
+            onboardedAt: user.onboardedAt,
           };
         },
       })]
@@ -155,8 +155,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           token.displayName = dbUser[0].displayName;
           token.role = dbUser[0].role;
           token.targetFaculties = dbUser[0].targetFaculties;
-          token.needsOnboarding =
-            dbUser[0].displayName === dbUser[0].email?.split("@")[0];
+          token.onboardedAt = dbUser[0].onboardedAt;
         }
       } else if (account?.provider === "google") {
         const dbUser = await db
@@ -170,8 +169,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           token.displayName = dbUser[0].displayName;
           token.role = dbUser[0].role;
           token.targetFaculties = dbUser[0].targetFaculties;
-          token.needsOnboarding =
-            dbUser[0].displayName === dbUser[0].email?.split("@")[0];
+          token.onboardedAt = dbUser[0].onboardedAt;
         }
       } else if (trigger === "update" && token.userId) {
         // Re-read from DB when session.update() is called
@@ -185,8 +183,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           token.displayName = dbUser[0].displayName;
           token.role = dbUser[0].role;
           token.targetFaculties = dbUser[0].targetFaculties;
-          token.needsOnboarding =
-            dbUser[0].displayName === dbUser[0].email?.split("@")[0];
+          token.onboardedAt = dbUser[0].onboardedAt;
         }
       }
 
@@ -198,7 +195,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.displayName = token.displayName as string;
         session.user.role = token.role as string;
         session.user.targetFaculties = token.targetFaculties as string[];
-        session.user.needsOnboarding = token.needsOnboarding as boolean;
+        session.user.onboardedAt = (token.onboardedAt as Date | null) ?? null;
       }
       return session;
     },

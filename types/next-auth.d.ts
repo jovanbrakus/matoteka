@@ -6,7 +6,7 @@ declare module "next-auth" {
     displayName: string;
     role: string;
     targetFaculties: string[];
-    needsOnboarding: boolean;
+    onboardedAt: Date | null;
   }
 
   interface Session {
@@ -20,6 +20,6 @@ declare module "next-auth/jwt" {
     displayName: string;
     role: string;
     targetFaculties: string[];
-    needsOnboarding: boolean;
+    onboardedAt: Date | null;
   }
 }

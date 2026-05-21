@@ -15,7 +15,6 @@ export default async function AppLayout({
   }
 
   const user = session.user;
-  const targetFaculties = (user.targetFaculties as string[]) || [];
 
   return (
     <AuthenticatedLayout
@@ -23,7 +22,6 @@ export default async function AppLayout({
         displayName: user.displayName || user.name || "Korisnik",
         avatarUrl: user.image || null,
       }}
-      targetFaculties={targetFaculties}
     >
       {children}
     </AuthenticatedLayout>

@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
@@ -8,7 +8,6 @@ import Sidebar from "./sidebar";
 
 interface AuthenticatedLayoutProps {
   user: { displayName: string; avatarUrl: string | null };
-  targetFaculties?: string[];
   children: React.ReactNode;
 }
 
@@ -16,11 +15,9 @@ const SIDEBAR_KEY = "matoteka-sidebar-collapsed";
 
 export default function AuthenticatedLayout({
   user,
-  targetFaculties,
   children,
 }: AuthenticatedLayoutProps) {
   const pathname = usePathname();
-  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -30,18 +27,6 @@ export default function AuthenticatedLayout({
     if (stored === "true") setCollapsed(true);
     setMounted(true);
   }, []);
-
-  // Redirect to profile if user has no faculties selected
-  useEffect(() => {
-    if (
-      targetFaculties &&
-      targetFaculties.length === 0 &&
-      pathname !== "/profil" &&
-      pathname !== "/onboarding"
-    ) {
-      router.replace("/profil?selectFaculties=true");
-    }
-  }, [targetFaculties, pathname, router]);
 
   function toggleCollapsed() {
     setCollapsed((prev) => {

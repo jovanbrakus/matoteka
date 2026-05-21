@@ -28,6 +28,7 @@ export const users = pgTable("users", {
   lastActiveDate: date("last_active_date"),
   dailyGoal: integer("daily_goal").notNull().default(3),
   isActive: boolean("is_active").notNull().default(true),
+  onboardedAt: timestamp("onboarded_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
 });

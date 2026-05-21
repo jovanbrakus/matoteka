@@ -39,14 +39,14 @@ export default async function globalSetup() {
   const adminHash = await bcrypt.hash(TEST_ADMIN.password, 10);
 
   await sql`
-    INSERT INTO users (email, display_name, password_hash, role, target_faculties)
-    VALUES (${TEST_STUDENT.email}, ${TEST_STUDENT.displayName}, ${studentHash}, 'student', '["etf"]'::jsonb)
+    INSERT INTO users (email, display_name, password_hash, role, target_faculties, onboarded_at)
+    VALUES (${TEST_STUDENT.email}, ${TEST_STUDENT.displayName}, ${studentHash}, 'student', '["etf"]'::jsonb, NOW())
     ON CONFLICT (email) DO NOTHING
   `;
 
   await sql`
-    INSERT INTO users (email, display_name, password_hash, role, target_faculties)
-    VALUES (${TEST_ADMIN.email}, ${TEST_ADMIN.displayName}, ${adminHash}, 'admin', '["etf"]'::jsonb)
+    INSERT INTO users (email, display_name, password_hash, role, target_faculties, onboarded_at)
+    VALUES (${TEST_ADMIN.email}, ${TEST_ADMIN.displayName}, ${adminHash}, 'admin', '["etf"]'::jsonb, NOW())
     ON CONFLICT (email) DO NOTHING
   `;
 
