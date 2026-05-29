@@ -1,6 +1,7 @@
 import { requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { solutionViews, solutionDailyUsage, users } from "@/drizzle/schema";
+import { SOLUTION_DAILY_LIMIT } from "@/lib/utils/solution-rate-limit";
 import { sql, desc, eq, ilike, or, and, gte, lte } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -56,7 +57,7 @@ export async function GET(req: NextRequest) {
         .where(where),
     ]);
 
-    return NextResponse.json({ rows, total: Number(countResult[0]?.count ?? 0), page, limit });
+    return NextResponse.json({ rows, total: Number(countResult[0]?.count ?? 0), page, limit, solutionLimit: SOLUTION_DAILY_LIMIT });
   }
 
   // Default: audit log (individual views)
@@ -99,5 +100,5 @@ export async function GET(req: NextRequest) {
       .where(where),
   ]);
 
-  return NextResponse.json({ rows, total: Number(countResult[0]?.count ?? 0), page, limit });
+  return NextResponse.json({ rows, total: Number(countResult[0]?.count ?? 0), page, limit, solutionLimit: SOLUTION_DAILY_LIMIT });
 }

@@ -28,6 +28,7 @@ export default function SolutionViewsPage() {
   const [rows, setRows] = useState<any[]>([]);
   const [loadedTab, setLoadedTab] = useState<Tab | null>(null);
   const [total, setTotal] = useState(0);
+  const [solutionLimit, setSolutionLimit] = useState(50);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [dateFrom, setDateFrom] = useState("");
@@ -49,6 +50,7 @@ export default function SolutionViewsPage() {
     if (requestId !== requestIdRef.current) return;
     setRows(data.rows ?? []);
     setTotal(data.total ?? 0);
+    if (typeof data.solutionLimit === "number") setSolutionLimit(data.solutionLimit);
     setLoadedTab(tab);
     setLoading(false);
   }, [tab, page, search, dateFrom, dateTo]);
@@ -141,7 +143,7 @@ export default function SolutionViewsPage() {
             <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#ec5b13] border-t-transparent" />
           </div>
         ) : tab === "daily" ? (
-          <DailyTable rows={rows as DailyRow[]} />
+          <DailyTable rows={rows as DailyRow[]} limit={solutionLimit} />
         ) : (
           <ViewsTable rows={rows as ViewRow[]} />
         )}
@@ -175,7 +177,7 @@ export default function SolutionViewsPage() {
   );
 }
 
-function DailyTable({ rows }: { rows: DailyRow[] }) {
+function DailyTable({ rows, limit }: { rows: DailyRow[]; limit: number }) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-left border-collapse">
@@ -206,14 +208,14 @@ function DailyTable({ rows }: { rows: DailyRow[] }) {
               <td className="px-6 py-3 text-center">
                 <span
                   className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-bold ${
-                    r.count >= 25
+                    r.count >= limit * 0.8
                       ? "bg-red-500/10 text-red-500 border border-red-500/20"
-                      : r.count >= 15
+                      : r.count >= limit * 0.5
                         ? "bg-amber-500/10 text-amber-600 border border-amber-500/20"
                         : "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
                   }`}
                 >
-                  {r.count}/30
+                  {r.count}/{limit}
                 </span>
               </td>
             </tr>

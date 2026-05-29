@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import { solutionDailyUsage, solutionViews } from "@/drizzle/schema";
 import { eq, and, sql, gte, desc } from "drizzle-orm";
 
-const SOLUTION_DAILY_LIMIT = parseInt(process.env.SOLUTION_DAILY_LIMIT || "50", 10);
+export const SOLUTION_DAILY_LIMIT = parseInt(process.env.SOLUTION_DAILY_LIMIT || "50", 10);
 // Audit-log dedup window: collapse duplicate inserts from iframe reloads,
 // React StrictMode double-mounts, and rapid revisits into a single row.
 const AUDIT_DEDUP_WINDOW_MS = 60_000;
