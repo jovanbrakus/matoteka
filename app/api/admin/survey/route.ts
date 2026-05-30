@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { users, surveyResponses } from "@/drizzle/schema";
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, isNull, sql } from "drizzle-orm";
 import { requireAdmin } from "@/lib/admin";
 
 // GET — survey responses + aggregate averages, for the admin viewer.
@@ -52,10 +52,13 @@ export async function GET() {
   });
 }
 
-// POST — flag all active students to be auto-shown the survey on their next visit.
-// The 1-week-since-registration rule and "already completed" check are enforced
-// at display time (proxy.ts), so flagging everyone is safe; newer accounts simply
-// start seeing it once they cross the one-week mark.
+// POST — flag active students to be auto-shown the survey on their next visit.
+// Only users who have NOT already completed it are flagged, and surveyCompletedAt
+// is never cleared — so completion is permanent. This is what guarantees that a
+// user who answered via the emailed /anketa link (which sets surveyCompletedAt the
+// same way) is never auto-shown the survey again, regardless of when the admin runs
+// this bulk request. The 1-week-since-registration rule is enforced at display time
+// (proxy.ts); newer accounts start seeing it once they cross the one-week mark.
 export async function POST() {
   const session = await requireAdmin();
   if (!session) {
@@ -64,8 +67,14 @@ export async function POST() {
 
   const flagged = await db
     .update(users)
-    .set({ surveyRequestedAt: new Date(), surveyCompletedAt: null })
-    .where(and(eq(users.isActive, true), eq(users.role, "student")))
+    .set({ surveyRequestedAt: new Date() })
+    .where(
+      and(
+        eq(users.isActive, true),
+        eq(users.role, "student"),
+        isNull(users.surveyCompletedAt)
+      )
+    )
     .returning({ id: users.id });
 
   return NextResponse.json({ ok: true, count: flagged.length });

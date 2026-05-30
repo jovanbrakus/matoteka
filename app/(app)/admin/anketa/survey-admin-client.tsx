@@ -64,7 +64,7 @@ export default function SurveyAdminClient() {
   async function sendSurvey() {
     if (
       !confirm(
-        "Anketa će se automatski prikazati svim aktivnim korisnicima koji su registrovani duže od nedelju dana. Nastaviti?"
+        "Anketa će se automatski prikazati aktivnim korisnicima koji su registrovani duže od nedelju dana i koji je još nisu popunili. Nastaviti?"
       )
     )
       return;
