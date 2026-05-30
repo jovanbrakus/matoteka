@@ -161,6 +161,14 @@ export default function AdminDashboard() {
           Komentari
           <span className="material-symbols-outlined text-base">arrow_forward</span>
         </Link>
+        <Link
+          href="/admin/anketa"
+          className="inline-flex items-center gap-2 rounded-xl bg-[var(--tint)] px-5 py-3 text-sm font-bold text-text-secondary hover:bg-[#ec5b13]/10 hover:text-[#ec5b13] transition-colors"
+        >
+          <span className="material-symbols-outlined text-base">poll</span>
+          Anketa
+          <span className="material-symbols-outlined text-base">arrow_forward</span>
+        </Link>
       </div>
 
       {/* User management */}

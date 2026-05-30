@@ -36,8 +36,8 @@ export default function AuthenticatedLayout({
     });
   }
 
-  // Onboarding doesn't need sidebar
-  const skipSidebar = pathname === "/onboarding";
+  // Onboarding and the full-page survey don't need the sidebar
+  const skipSidebar = pathname === "/onboarding" || pathname === "/anketa";
 
   if (skipSidebar) {
     return <>{children}</>;

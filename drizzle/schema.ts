@@ -29,6 +29,11 @@ export const users = pgTable("users", {
   dailyGoal: integer("daily_goal").notNull().default(3),
   isActive: boolean("is_active").notNull().default(true),
   onboardedAt: timestamp("onboarded_at", { withTimezone: true }),
+  // Feedback survey: surveyRequestedAt is set by the admin bulk action to flag a
+  // user for the auto-shown survey; surveyCompletedAt is set when the user submits
+  // or skips it (so it never auto-appears again).
+  surveyRequestedAt: timestamp("survey_requested_at", { withTimezone: true }),
+  surveyCompletedAt: timestamp("survey_completed_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
 });
@@ -257,3 +262,22 @@ export const userAnalytics = pgTable("user_analytics", {
   readinessBreakdown: jsonb("readiness_breakdown").default({}),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
 });
+
+export const surveyResponses = pgTable(
+  "survey_responses",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    // 1 (worst) – 5 (best) ratings
+    ratingUi: integer("rating_ui"),
+    ratingIntuitive: integer("rating_intuitive"),
+    ratingSolutions: integer("rating_solutions"),
+    ratingCategories: integer("rating_categories"),
+    feedback: text("feedback"),
+    featureRequest: text("feature_request"),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  },
+  (table) => [index("idx_survey_responses_user").on(table.userId)]
+);

@@ -80,6 +80,54 @@ export default auth(async (req) => {
     return NextResponse.redirect(url);
   }
 
+  // Feedback survey: onboarded users flagged for the survey (registered > 1 week
+  // ago, not yet completed) get redirected to /anketa once — same forceful pattern
+  // as onboarding. The flag is set by the admin AFTER the JWT was issued, so the
+  // JWT can't carry it; we consult the DB but cache the "no survey pending" result
+  // in the `mt-survey` cookie (set here and by /api/anketa) to keep the hot path
+  // free of repeated queries.
+  const surveyDone = req.cookies.get("mt-survey")?.value === "done";
+  if (
+    onboardedAt &&
+    !surveyDone &&
+    req.method === "GET" &&
+    req.auth.user?.id &&
+    pathname !== "/anketa" &&
+    !pathname.startsWith("/anketa/") &&
+    !pathname.startsWith("/api/")
+  ) {
+    try {
+      const rows = await db
+        .select({
+          surveyRequestedAt: users.surveyRequestedAt,
+          surveyCompletedAt: users.surveyCompletedAt,
+          createdAt: users.createdAt,
+        })
+        .from(users)
+        .where(eq(users.id, req.auth.user.id as string))
+        .limit(1);
+      const row = rows[0];
+      const weekMs = 7 * 24 * 60 * 60 * 1000;
+      const registeredOverAWeek =
+        !!row?.createdAt && Date.now() - new Date(row.createdAt).getTime() > weekMs;
+      const pending =
+        !!row?.surveyRequestedAt && !row?.surveyCompletedAt && registeredOverAWeek;
+      if (pending) {
+        return NextResponse.redirect(new URL("/anketa", req.url));
+      }
+      // No survey pending — cache that decision for ~1h to avoid re-querying.
+      const res = NextResponse.next();
+      res.cookies.set("mt-survey", "done", {
+        maxAge: 3600,
+        path: "/",
+        sameSite: "lax",
+      });
+      return res;
+    } catch {
+      // DB unreachable — don't block navigation.
+    }
+  }
+
   return NextResponse.next();
 });
 
