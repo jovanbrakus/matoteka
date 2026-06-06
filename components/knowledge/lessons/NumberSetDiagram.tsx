@@ -22,27 +22,27 @@ const SETS: SetInfo[] = [
   {
     key: "R",
     label: "Realni brojevi",
-    symbol: "\u211D",
+    symbol: "ℝ",
     color: "rgba(143, 215, 255, 0.85)",
     colorFill: "rgba(143, 215, 255, 0.06)",
-    examples: "\u221A2, \u03C0, e, \u221A5, ...",
+    examples: "√2, π, e, √5, ...",
     description:
       "Svi brojevi na brojevnoj pravoj. Obuhvataju i racionalne i iracionalne.",
   },
   {
     key: "Q",
     label: "Racionalni brojevi",
-    symbol: "\u211A",
+    symbol: "ℚ",
     color: "rgba(207, 183, 255, 0.85)",
     colorFill: "rgba(207, 183, 255, 0.08)",
-    examples: "1/2, -3/4, 0.25, 0.\u03053, ...",
+    examples: "1/2, -3/4, 0.25, 0.̅3, ...",
     description:
-      "Brojevi koji se mogu zapisati kao razlomak p/q gde su p i q celi, q \u2260 0.",
+      "Brojevi koji se mogu zapisati kao razlomak p/q gde su p i q celi, q ≠ 0.",
   },
   {
     key: "Z",
     label: "Celi brojevi",
-    symbol: "\u2124",
+    symbol: "ℤ",
     color: "rgba(255, 197, 127, 0.85)",
     colorFill: "rgba(255, 197, 127, 0.08)",
     examples: "..., -3, -2, -1, 0, 1, 2, 3, ...",
@@ -52,7 +52,7 @@ const SETS: SetInfo[] = [
   {
     key: "N",
     label: "Prirodni brojevi",
-    symbol: "\u2115",
+    symbol: "ℕ",
     color: "rgba(121, 223, 184, 0.85)",
     colorFill: "rgba(121, 223, 184, 0.10)",
     examples: "1, 2, 3, 4, 5, ...",
@@ -140,7 +140,7 @@ export default function NumberSetDiagram() {
     ctx.font = `500 ${irrActive ? 13 : 11}px Inter, system-ui, sans-serif`;
     ctx.textAlign = "left";
     ctx.fillText(
-      "\u211D \\ \u211A (iracionalni)",
+      "ℝ \\ ℚ (iracionalni)",
       cx + cssWidth * 0.2,
       cy - cssHeight * 0.12,
     );
@@ -151,10 +151,10 @@ export default function NumberSetDiagram() {
       { label: "5", x: cx + cssWidth * 0.06, y: cy - cssHeight * 0.04, set: "N" },
       { label: "0", x: cx - cssWidth * 0.18, y: cy, set: "Z" },
       { label: "-3", x: cx + cssWidth * 0.16, y: cy + cssHeight * 0.08, set: "Z" },
-      { label: "\u00BD", x: cx - cssWidth * 0.28, y: cy - cssHeight * 0.06, set: "Q" },
-      { label: "0.\u03053", x: cx + cssWidth * 0.26, y: cy + cssHeight * 0.15, set: "Q" },
-      { label: "\u221A2", x: cx - cssWidth * 0.38, y: cy + cssHeight * 0.08, set: "R" },
-      { label: "\u03C0", x: cx + cssWidth * 0.36, y: cy - cssHeight * 0.2, set: "R" },
+      { label: "½", x: cx - cssWidth * 0.28, y: cy - cssHeight * 0.06, set: "Q" },
+      { label: "0.̅3", x: cx + cssWidth * 0.26, y: cy + cssHeight * 0.15, set: "Q" },
+      { label: "√2", x: cx - cssWidth * 0.38, y: cy + cssHeight * 0.08, set: "R" },
+      { label: "π", x: cx + cssWidth * 0.36, y: cy - cssHeight * 0.2, set: "R" },
     ];
 
     for (const ex of examples) {

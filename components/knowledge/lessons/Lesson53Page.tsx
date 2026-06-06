@@ -55,7 +55,7 @@ export default function Lesson53Page() {
           {
             label: "Najveća zamka",
             description:
-              "Mešanje formule c\u00B2 = a\u00B2 + b\u00B2 sa elipsom i ignorisanje toga da nagib tangente mora da poštuje asimptote.",
+              "Mešanje formule c² = a² + b² sa elipsom i ignorisanje toga da nagib tangente mora da poštuje asimptote.",
           },
           {
             label: "Prijemni fokus",

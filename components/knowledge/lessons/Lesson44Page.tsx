@@ -42,7 +42,7 @@ export default function Lesson44Page() {
             <span className={cs.tHeroAccent}>Planimetrija</span>
           </>
         }
-        description={'U zadacima iz planimetrije nije dovoljno da vidiš samo \u201Eneki četvorougao\u201C. Potrebno je da odmah prepoznaš porodicu lika, znaš koje osobine dijagonala i uglova su sigurne, a koje važe samo u specijalnim slučajevima. Tada se crtež otvara: jedan trapez postaje zbir pravougaonika i trouglova, jedan romb krije dva prava trougla, a pravilan mnogougao se rastavlja na jednostavne delove.'}
+        description={'U zadacima iz planimetrije nije dovoljno da vidiš samo „neki četvorougao“. Potrebno je da odmah prepoznaš porodicu lika, znaš koje osobine dijagonala i uglova su sigurne, a koje važe samo u specijalnim slučajevima. Tada se crtež otvara: jedan trapez postaje zbir pravougaonika i trouglova, jedan romb krije dva prava trougla, a pravilan mnogougao se rastavlja na jednostavne delove.'}
         heroImageSrc="/images/lessons/lesson44_hero.png"
         heroImageAlt="Apstraktna matematička ilustracija sa četvorouglovima, mnogouglovima i geometrijskim konstrukcijama"
         cards={[
@@ -170,7 +170,7 @@ export default function Lesson44Page() {
       <LessonSection
         id="prepoznavanje"
         eyebrow="Mapa figure"
-        title={'Prvo pitanje nije \u201Ekoja formula?\u201C, nego \u201Ekoji je ovo lik?\u201C'}
+        title={'Prvo pitanje nije „koja formula?“, nego „koji je ovo lik?“'}
         description="Dobra priprema za prijemni znači da u nekoliko sekundi umeš da pročitaš crtež. Porodica paralelograma i porodica trapeza imaju svoje stabilne osobine. Ako ih pomešaš, račun više nije pouzdan."
       >
         <div className={s.grid2}>
@@ -396,7 +396,7 @@ export default function Lesson44Page() {
         </div>
 
         <div className={s.grid2} style={{ marginTop: 16 }}>
-          <SectionCard title={'\u0160ta su \u201Esigurne\u201C osobine dijagonala?'}>
+          <SectionCard title={'Šta su „sigurne“ osobine dijagonala?'}>
             <p>
               U svakom paralelogramu dijagonale seku jedna drugu na polovine. To
               je osnovna, univerzalna osobina. Međutim, jednakost dijagonala nije
@@ -448,7 +448,7 @@ export default function Lesson44Page() {
         id="trapezi"
         eyebrow="Trapezi"
         title="Kod trapeza je ključ u visini, a ne u kraku"
-        description={'Trapez ima samo jedan par paralelnih stranica, pa nije dovoljno da ga tretiraš kao \u201Eskoro paralelogram\u201C. Najvažnije duži su baze, visina i eventualno dijagonale. Posebno su važni jednakokraki i pravougli trapez, jer daju dodatnu strukturu koja skraćuje račun.'}
+        description={'Trapez ima samo jedan par paralelnih stranica, pa nije dovoljno da ga tretiraš kao „skoro paralelogram“. Najvažnije duži su baze, visina i eventualno dijagonale. Posebno su važni jednakokraki i pravougli trapez, jer daju dodatnu strukturu koja skraćuje račun.'}
       >
         <div className={s.grid3}>
           <SectionCard title="Opšti trapez">
@@ -807,7 +807,7 @@ export default function Lesson44Page() {
         id="formule"
         eyebrow="Zakoni / obrasci / ključne formule"
         title="Formula nema vrednost ako ne znaš kad sme da se upotrebi"
-        description={'Sledeće formule su centralne za ovu oblast. Uz svaku pamti i njenu \u201Ezonu važenja\u201C, odnosno u kom liku i pod kojim uslovom je dozvoljeno da je koristiš.'}
+        description={'Sledeće formule su centralne za ovu oblast. Uz svaku pamti i njenu „zonu važenja“, odnosno u kom liku i pod kojim uslovom je dozvoljeno da je koristiš.'}
       >
         <div className={s.formulaGrid}>
           <FormulaCard

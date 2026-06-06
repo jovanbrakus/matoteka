@@ -582,10 +582,10 @@ const BASE_OPTIONS = [
 ];
 
 const OP_OPTIONS: { value: LabState["operator"]; label: string }[] = [
-  { value: "<=", label: "\u2264" },
+  { value: "<=", label: "≤" },
   { value: "<", label: "<" },
   { value: ">", label: ">" },
-  { value: ">=", label: "\u2265" },
+  { value: ">=", label: "≥" },
 ];
 
 export default function ExpInequalityLab() {

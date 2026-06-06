@@ -53,12 +53,12 @@ export default function Lesson56Page() {
           {
             label: "Naučićeš",
             description:
-              "Kako da iz teksta zadatka izvučeš a\u2081, q, a\u2099, S\u2099 i po potrebi S\u221E.",
+              "Kako da iz teksta zadatka izvučeš a₁, q, aₙ, Sₙ i po potrebi S∞.",
           },
           {
             label: "Najveća zamka",
             description:
-              "Mešanje sume prvih n članova sa beskonačnom sumom i zaboravljanje da za S\u221E mora važiti |q| < 1.",
+              "Mešanje sume prvih n članova sa beskonačnom sumom i zaboravljanje da za S∞ mora važiti |q| < 1.",
           },
           {
             label: "Prijemni fokus",
@@ -78,12 +78,12 @@ export default function Lesson56Page() {
           {
             label: "Glavna veština",
             description:
-              "Prevedi tekst u a\u2081 i q pa odluči sta tražiš.",
+              "Prevedi tekst u a₁ i q pa odluči sta tražiš.",
           },
           {
             label: "Interaktivno",
             description:
-              "Canvas laboratorija niza i suma sa promenljivim a\u2081 i q.",
+              "Canvas laboratorija niza i suma sa promenljivim a₁ i q.",
           },
         ]}
       />

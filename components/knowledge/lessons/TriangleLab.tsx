@@ -18,7 +18,7 @@ function toDeg(rad: number) {
 }
 
 function fmt(value: number, digits = 2): string {
-  if (!Number.isFinite(value)) return "\u2014";
+  if (!Number.isFinite(value)) return "—";
   return Number(value)
     .toFixed(digits)
     .replace(/\.00$/, "");
@@ -559,12 +559,12 @@ export default function TriangleLab() {
     focusLabel = "Kosinusna teorema";
     summaryText =
       "Zadate su stranice b i c i zahvaćeni ugao A. Trougao je zato jednoznačno određen.";
-    primary = `a \u2248 ${fmt(cosState.a)}`;
-    primaryText = "Treća stranica se dobija iz a\u00B2 = b\u00B2 + c\u00B2 \u2212 2bc cos A.";
-    secondary = `P \u2248 ${fmt(cosState.area)}`;
+    primary = `a ≈ ${fmt(cosState.a)}`;
+    primaryText = "Treća stranica se dobija iz a² = b² + c² − 2bc cos A.";
+    secondary = `P ≈ ${fmt(cosState.area)}`;
     secondaryText =
-      "Površina se dobija najkraćim putem iz P = 1/2 \u00B7 b \u00B7 c \u00B7 sin A.";
-    tertiary = `h\u2099 \u2248 ${fmt(cosState.hc)}`;
+      "Površina se dobija najkraćim putem iz P = 1/2 · b · c · sin A.";
+    tertiary = `hₙ ≈ ${fmt(cosState.hc)}`;
     tertiaryText =
       "Visina na stranicu c jednaka je b sin A i pokazuje poreklo formule za površinu.";
     quaternary = `Ugao A je ${angleLabel}`;
@@ -599,7 +599,7 @@ export default function TriangleLab() {
       "Visina h = b sin A je ključna veličina za proveru dvosmislenog slučaja.";
     if (sols.length >= 1) {
       const f = sols[0];
-      tertiary = `B\u2081 \u2248 ${fmt(f.Bdeg)}\u00B0, C\u2081 \u2248 ${fmt(f.Cdeg)}\u00B0, c\u2081 \u2248 ${fmt(f.c)}`;
+      tertiary = `B₁ ≈ ${fmt(f.Bdeg)}°, C₁ ≈ ${fmt(f.Cdeg)}°, c₁ ≈ ${fmt(f.c)}`;
       tertiaryText =
         "Prvo rešenje dolazi iz prvog preseka kružnice i osnovne poluprave.";
     } else {
@@ -609,7 +609,7 @@ export default function TriangleLab() {
     }
     if (sols.length >= 2) {
       const sc = sols[1];
-      quaternary = `B\u2082 \u2248 ${fmt(sc.Bdeg)}\u00B0, C\u2082 \u2248 ${fmt(sc.Cdeg)}\u00B0, c\u2082 \u2248 ${fmt(sc.c)}`;
+      quaternary = `B₂ ≈ ${fmt(sc.Bdeg)}°, C₂ ≈ ${fmt(sc.Cdeg)}°, c₂ ≈ ${fmt(sc.c)}`;
       quaternaryText =
         "Drugo rešenje je druga geometrijska konfiguracija sa istim početnim podacima.";
     } else if (sols.length === 1) {

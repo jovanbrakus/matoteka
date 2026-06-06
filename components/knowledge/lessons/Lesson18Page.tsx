@@ -82,7 +82,7 @@ export default function Lesson18Page() {
           {
             label: "Interaktivni deo",
             description:
-              "Canvas laboratorija za izraz |x\u2212a| + |x\u2212b| \u25FB c sa grafikom, prelomnim tačkama i skupom rešenja.",
+              "Canvas laboratorija za izraz |x−a| + |x−b| ◻ c sa grafikom, prelomnim tačkama i skupom rešenja.",
           },
         ]}
       />
@@ -163,9 +163,9 @@ export default function Lesson18Page() {
             </MathBlock>
             <p>
               Ako vidiš <InlineMath>{"|x-3| = 2"}</InlineMath>, čitaj to ovako:
-              {" \u201E"}Nađi sve brojeve koji su udaljeni{" "}
+              {" „"}Nađi sve brojeve koji su udaljeni{" "}
               <InlineMath>{"2"}</InlineMath> od tačke{" "}
-              <InlineMath>{"3"}</InlineMath>.{"\u201C"} Zato odmah dobijaš dva
+              <InlineMath>{"3"}</InlineMath>.{"“"} Zato odmah dobijaš dva
               kandidata: <InlineMath>{"x=1"}</InlineMath> i{" "}
               <InlineMath>{"x=5"}</InlineMath>.
             </p>
@@ -236,12 +236,12 @@ export default function Lesson18Page() {
             }
           />
           <FormulaCard
-            title="Obrazac 2: |A(x)| \u2264 c"
+            title="Obrazac 2: |A(x)| ≤ c"
             formula={"|A(x)| \\le c \\iff -c \\le A(x) \\le c \\quad \\text{za } c \\ge 0."}
             note={
               <>
                 Ovde dobijaš <strong>presek</strong>, ne uniju. Izraz u zagradi
-                je {"\u201E"}zarobljen{"\u201C"} između{" "}
+                je {"„"}zarobljen{"“"} između{" "}
                 <InlineMath>{"-c"}</InlineMath> i{" "}
                 <InlineMath>{"c"}</InlineMath>. Mini-primer:{" "}
                 <InlineMath>{"|3x+1| < 7"}</InlineMath> daje{" "}
@@ -250,7 +250,7 @@ export default function Lesson18Page() {
             }
           />
           <FormulaCard
-            title="Obrazac 3: |A(x)| \u2265 c"
+            title="Obrazac 3: |A(x)| ≥ c"
             formula={"|A(x)| \\ge c \\iff A(x) \\le -c \\;\\; \\text{ili} \\;\\; A(x) \\ge c \\quad \\text{za } c \\ge 0."}
             note={
               <>
@@ -278,7 +278,7 @@ export default function Lesson18Page() {
         </div>
 
         <MicroCheck
-          question="Mikro-provera: zašto u zadatku |2x−1| = x+5 prvo gledamo x+5 \u2265 0?"
+          question="Mikro-provera: zašto u zadatku |2x−1| = x+5 prvo gledamo x+5 ≥ 0?"
           answer={
             <p>
               Zato što leva strana nikada nije negativna. Ako je{" "}
@@ -332,7 +332,7 @@ export default function Lesson18Page() {
           <SectionCard title="Korak 4: Skini zagrade i reši">
             <p>
               Kada znakovi postanu poznati, zadatak više nije{" "}
-              {"\u201E"}apsolutna vrednost{"\u201C"}, nego obična linearna
+              {"„"}apsolutna vrednost{"“"}, nego obična linearna
               jednačina ili nejednačina na datom intervalu.
             </p>
           </SectionCard>
@@ -403,7 +403,7 @@ export default function Lesson18Page() {
         eyebrow="Interaktivni deo"
         title="Laboratorija: pogledaj kako nastaje rešenje"
         description={
-          "Ovde menjaš tačke a i b, vrednost c i relaciju. Graf narandžaste funkcije f(x) = |x\u2212a| + |x\u2212b| pokazuje kako se zadatak zapravo ponaša, a brojna prava ispod odmah prikazuje skup rešenja za izabranu relaciju."
+          "Ovde menjaš tačke a i b, vrednost c i relaciju. Graf narandžaste funkcije f(x) = |x−a| + |x−b| pokazuje kako se zadatak zapravo ponaša, a brojna prava ispod odmah prikazuje skup rešenja za izabranu relaciju."
         }
       >
         <AbsValueLab />
@@ -641,7 +641,7 @@ export default function Lesson18Page() {
           <FormulaCard
             title="Desna strana mora imati smisla"
             formula={"|A(x)| = B(x) \\Rightarrow B(x) \\ge 0"}
-            note="Isti princip važi i za |A(x)| \u2264 B(x). Bez ovog uslova zadatak se rešava pogrešno od starta."
+            note="Isti princip važi i za |A(x)| ≤ B(x). Bez ovog uslova zadatak se rešava pogrešno od starta."
           />
         </div>
       </LessonSection>
@@ -676,7 +676,7 @@ export default function Lesson18Page() {
             <p>
               Na intervalu <InlineMath>{"x < -1"}</InlineMath> dobiješ, recimo,{" "}
               <InlineMath>{"x \\ge -2"}</InlineMath>. Pravo parcijalno rešenje
-              nije {"\u201E"}<InlineMath>{"x \\ge -2"}</InlineMath>{"\u201C"},
+              nije {"„"}<InlineMath>{"x \\ge -2"}</InlineMath>{"“"},
               nego <InlineMath>{"[-2,-1)"}</InlineMath>, jer moraš poštovati
               interval u kome si skinuo zagrade.
             </p>
@@ -718,14 +718,14 @@ export default function Lesson18Page() {
         id="prijemni"
         eyebrow="Veza sa prijemnim zadacima"
         title="Ispitna strategija"
-        description="Na prijemnom se tema obično ne zove \u201Eapsolutna vrednost\u201C, nego dolazi prerušena u zadatak koji izgleda kratko. Tvoj posao je da odmah prepoznaš strukturu i da ne pogrešiš u organizaciji slučajeva."
+        description="Na prijemnom se tema obično ne zove „apsolutna vrednost“, nego dolazi prerušena u zadatak koji izgleda kratko. Tvoj posao je da odmah prepoznaš strukturu i da ne pogrešiš u organizaciji slučajeva."
       >
         <div className={s.grid3}>
           <SectionCard title="Kako se najčešće pojavljuje">
             <p>
               Kao jednačina sa jednom zagradom, nejednačina sa dve zagrade,
               zadatak sa promenljivom na desnoj strani, ili kao skraćeni{" "}
-              {"\u201E"}odredi skup rešenja{"\u201C"} gde nema mesta za nered u
+              {"„"}odredi skup rešenja{"“"} gde nema mesta za nered u
               zapisu.
             </p>
           </SectionCard>

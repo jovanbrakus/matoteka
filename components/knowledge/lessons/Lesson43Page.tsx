@@ -316,7 +316,7 @@ export default function Lesson43Page() {
                 [
                   "Jednu stranicu i njoj naspramni ugao, plus još jedan ugao ili još jednu stranicu",
                   "Sinusna teorema",
-                  "Ona direktno upoređuje parove \u201Estratranica naspram ugao\u201C.",
+                  "Ona direktno upoređuje parove „stratranica naspram ugao“.",
                 ],
                 [
                   "Dve stranice i ugao između njih (SAS)",
@@ -330,7 +330,7 @@ export default function Lesson43Page() {
                 ],
                 [
                   "Dve stranice i zahvaćen ugao, a traži se površina",
-                  "P = \u00BD xy sin \u03B8",
+                  "P = ½ xy sin θ",
                   "To je najkraći put: ne moraš prvo da tražiš visinu ili treću stranicu.",
                 ],
                 [
@@ -443,7 +443,7 @@ export default function Lesson43Page() {
         id="sinusna"
         eyebrow="Sinusna teorema"
         title="Sinusna teorema povezuje svaku stranicu sa njenim naspramnim uglom"
-        description="Ovo je osnovna formula kada u trouglu znaš makar jedan pouzdan par \u201Estratranica naspram ugao\u201C. Intuitivno, ona govori da se veličina stranice menja u skladu sa sinusom naspramnog ugla. Veći ugao traži veću stranicu, ali ne linearno, nego preko funkcije sinus."
+        description="Ovo je osnovna formula kada u trouglu znaš makar jedan pouzdan par „stratranica naspram ugao“. Intuitivno, ona govori da se veličina stranice menja u skladu sa sinusom naspramnog ugla. Veći ugao traži veću stranicu, ali ne linearno, nego preko funkcije sinus."
       >
         <div className={s.formulaGrid}>
           <FormulaCard
@@ -860,7 +860,7 @@ export default function Lesson43Page() {
         </div>
 
         <MicroCheck
-          question="Mikro-provera: šta možeš odmah zaključiti ako važi a\u00B2 = b\u00B2 + c\u00B2?"
+          question="Mikro-provera: šta možeš odmah zaključiti ako važi a² = b² + c²?"
           answer={
             <p>
               Ugao <InlineMath>{"A"}</InlineMath> je prav, pa je trougao
@@ -898,7 +898,7 @@ export default function Lesson43Page() {
           <FormulaCard
             title="Odakle dolazi?"
             formula={"h_c=b\\sin A \\quad \\Rightarrow \\quad P=\\frac12 c\\cdot h_c=\\frac12 bc\\sin A"}
-            note="Formula je samo standardna površina \u00BD \u00B7 osnovica \u00B7 visina, ali je visina izražena preko sinusa."
+            note="Formula je samo standardna površina ½ · osnovica · visina, ali je visina izražena preko sinusa."
           />
           <FormulaCard
             title="Bonus formula"
@@ -1218,7 +1218,7 @@ export default function Lesson43Page() {
           <FormulaCard
             title="Sinusna teorema"
             formula={"\\frac{a}{\\sin A}=\\frac{b}{\\sin B}=\\frac{c}{\\sin C}"}
-            note={'Kada imaš jedan poznat par \u201Estratranica naspram ugao\u201C.'}
+            note={'Kada imaš jedan poznat par „stratranica naspram ugao“.'}
           />
           <FormulaCard
             title="Kosinusna teorema"
@@ -1253,7 +1253,7 @@ export default function Lesson43Page() {
         id="greske"
         eyebrow="Česte greške"
         title="Ovo su greške koje odnose bodove i kada je ideja dobra"
-        description="Greške u ovoj oblasti retko nastaju zato što je formula \u201Eteška\u201C. Obično su uzrokovane brzopletošću i lošim čitanjem crteža ili podataka."
+        description="Greške u ovoj oblasti retko nastaju zato što je formula „teška“. Obično su uzrokovane brzopletošću i lošim čitanjem crteža ili podataka."
       >
         <div className={s.tipGrid}>
           <article className={s.tipCard}>
@@ -1545,7 +1545,7 @@ export default function Lesson43Page() {
       <LessonSection
         eyebrow="Završni uvid"
         title="Glavna poruka ove teme"
-        description="Kosinusna teorema ti kaže kako ugao menja treću stranicu. Sinusna teorema ti kaže kako su naspramne stranice i uglovi međusobno usklađeni. Formula za površinu ti pokazuje da se visina može \u201Esakriti\u201C unutar sinusa."
+        description="Kosinusna teorema ti kaže kako ugao menja treću stranicu. Sinusna teorema ti kaže kako su naspramne stranice i uglovi međusobno usklađeni. Formula za površinu ti pokazuje da se visina može „sakriti“ unutar sinusa."
       >
         <InsightCard title="Najvažniji princip">
           <p>

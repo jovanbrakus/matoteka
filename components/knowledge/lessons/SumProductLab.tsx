@@ -68,10 +68,10 @@ const MODES: Record<Mode, ModeConfig> = {
 };
 
 const PRESETS: { alpha: number; beta: number; mode: Mode; label: string }[] = [
-  { alpha: 75, beta: 15, mode: "sin-plus", label: "75\u00B0 i 15\u00B0" },
-  { alpha: 70, beta: 10, mode: "sin-minus", label: "70\u00B0 i 10\u00B0" },
-  { alpha: 80, beta: 40, mode: "cos-plus", label: "80\u00B0 i 40\u00B0" },
-  { alpha: 140, beta: 20, mode: "cos-minus", label: "140\u00B0 i 20\u00B0" },
+  { alpha: 75, beta: 15, mode: "sin-plus", label: "75° i 15°" },
+  { alpha: 70, beta: 10, mode: "sin-minus", label: "70° i 10°" },
+  { alpha: 80, beta: 40, mode: "cos-plus", label: "80° i 40°" },
+  { alpha: 140, beta: 20, mode: "cos-minus", label: "140° i 20°" },
 ];
 
 function degToRad(deg: number) {
@@ -210,8 +210,8 @@ export default function SumProductLab() {
       ctx.fillText(label, lp.x, lp.y);
     }
 
-    drawRay(alpha, radius, "#ec5b13", 5, "\u03B1");
-    drawRay(beta, radius, "#8fd7ff", 5, "\u03B2");
+    drawRay(alpha, radius, "#ec5b13", 5, "α");
+    drawRay(beta, radius, "#8fd7ff", 5, "β");
     drawRay(midpoint, radius * 0.92, "#8fe28c", 4, "m");
 
     /* center dot */
@@ -225,13 +225,13 @@ export default function SumProductLab() {
     ctx.fillStyle = "#f1e2d7";
     ctx.font = `700 ${fs}px sans-serif`;
     ctx.textAlign = "left";
-    ctx.fillText("m = (\u03B1 + \u03B2) / 2", 24, 36);
-    ctx.fillText("d = (\u03B1 - \u03B2) / 2", 24, 36 + fs + 8);
+    ctx.fillText("m = (α + β) / 2", 24, 36);
+    ctx.fillText("d = (α - β) / 2", 24, 36 + fs + 8);
 
     ctx.font = `600 ${fs * 0.82}px sans-serif`;
     ctx.fillStyle = "rgba(241,226,215,0.84)";
-    ctx.fillText("narand\u017Easto: \u03B1", 24, H - 68);
-    ctx.fillText("plavo: \u03B2", 24, H - 42);
+    ctx.fillText("narandžasto: α", 24, H - 68);
+    ctx.fillText("plavo: β", 24, H - 42);
     ctx.fillText("zeleno: srednji ugao m", 24, H - 16);
   }, [alpha, beta, midpoint]);
 
@@ -250,13 +250,13 @@ export default function SumProductLab() {
           ref={canvasRef}
           className={s.polarCanvas}
           style={{ aspectRatio: "1/1" }}
-          aria-label="Interaktivna kru\u017Enica za transformacije zbira u proizvod"
+          aria-label="Interaktivna kružnica za transformacije zbira u proizvod"
         />
         <p className={cs.diagramCaption} style={{ marginTop: 10 }}>
-          Narand\u017Easti krak je{" "}
+          Narandžasti krak je{" "}
           <InlineMath>{String.raw`\alpha`}</InlineMath>, plavi je{" "}
           <InlineMath>{String.raw`\beta`}</InlineMath>, zeleni je srednji ugao{" "}
-          <InlineMath>{"m"}</InlineMath>, a ljubi\u010Dasti luk meri koliko su{" "}
+          <InlineMath>{"m"}</InlineMath>, a ljubičasti luk meri koliko su{" "}
           <InlineMath>{String.raw`\alpha`}</InlineMath> i{" "}
           <InlineMath>{String.raw`\beta`}</InlineMath> udaljeni.
         </p>

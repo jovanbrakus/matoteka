@@ -245,7 +245,7 @@ export default function Lesson5Page() {
       <LessonSection
         id="apsolutna"
         eyebrow="3. Brojevna prava i apsolutna vrednost"
-        title={'Apsolutna vrednost nije \u201Eskidanje minusa\u201C, nego udaljenost od nule'}
+        title={'Apsolutna vrednost nije „skidanje minusa“, nego udaljenost od nule'}
         description="Brojevna prava pomaže da broj vidiš prostorno: levo su manji brojevi, desno veći, a nula je prirodna referentna tačka. Odatle dolazi i najvažnije značenje apsolutne vrednosti."
       >
         <div className={s.grid2}>

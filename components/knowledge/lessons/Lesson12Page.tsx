@@ -80,7 +80,7 @@ const SCENARIOS: Record<ScenarioKey, Scenario> = {
     left: { title: "Razlomak 1", num: "x+1", den: "x-2", denFactors: ["x-2"] },
     right: { title: "Razlomak 2", num: "3", den: "x-2", denFactors: ["x-2"] },
     result: { title: "Rezultat", num: "x+4", den: "x-2", denFactors: ["x-2"] },
-    ribbon: ["domen: x \u2260 2", "NZS: x-2"],
+    ribbon: ["domen: x ≠ 2", "NZS: x-2"],
   },
   lcd: {
     title: "Različiti linearni imenioci",
@@ -104,7 +104,7 @@ const SCENARIOS: Record<ScenarioKey, Scenario> = {
       den: "x(x+1)",
       denFactors: ["x", "x+1"],
     },
-    ribbon: ["domen: x \u2260 0", "domen: x \u2260 -1", "NZS: x(x+1)"],
+    ribbon: ["domen: x ≠ 0", "domen: x ≠ -1", "NZS: x(x+1)"],
   },
   factor: {
     title: "Faktorisi pre sabiranja",
@@ -116,14 +116,14 @@ const SCENARIOS: Record<ScenarioKey, Scenario> = {
       "x^2-1=(x-1)(x+1) \\quad\\Rightarrow\\quad \\frac{1}{(x-1)(x+1)}+\\frac{x-1}{(x-1)(x+1)} = \\frac{x}{x^2-1}",
     recognition:
       "Kvadratni imenilac krije razliku kvadrata. Bez faktorizacije ne vidiš pravi NZS.",
-    hint: "Ako vidiš x\u00B2-1, proveri razliku kvadrata pre bilo kakvog sabiranja.",
+    hint: "Ako vidiš x²-1, proveri razliku kvadrata pre bilo kakvog sabiranja.",
     strategy: "Pre NZS-a proveri da li se neki imenilac može faktorisati.",
     type: "add",
     operation: "+",
     left: {
       title: "Razlomak 1",
       num: "1",
-      den: "x\u00B2-1",
+      den: "x²-1",
       denFactors: ["x-1", "x+1"],
     },
     right: {
@@ -135,10 +135,10 @@ const SCENARIOS: Record<ScenarioKey, Scenario> = {
     result: {
       title: "Rezultat",
       num: "x",
-      den: "x\u00B2-1",
+      den: "x²-1",
       denFactors: ["x-1", "x+1"],
     },
-    ribbon: ["domen: x \u2260 1", "domen: x \u2260 -1", "NZS: (x-1)(x+1)"],
+    ribbon: ["domen: x ≠ 1", "domen: x ≠ -1", "NZS: (x-1)(x+1)"],
   },
   division: {
     title: "Deljenje algebarskih razlomaka",
@@ -155,11 +155,11 @@ const SCENARIOS: Record<ScenarioKey, Scenario> = {
     strategy:
       "Deljenje razlomkom odmah menjaš u množenje recipročnim izrazom.",
     type: "division",
-    operation: "\u00F7",
+    operation: "÷",
     left: {
       title: "Prvi razlomak",
-      num: "x\u00B2-1",
-      den: "x\u00B2-2x+1",
+      num: "x²-1",
+      den: "x²-2x+1",
       numFactors: ["x-1", "x+1"],
       denFactors: ["x-1", "x-1"],
     },
@@ -171,7 +171,7 @@ const SCENARIOS: Record<ScenarioKey, Scenario> = {
       denFactors: ["x-1"],
     },
     result: { title: "Rezultat", num: "1", den: "", denFactors: [] },
-    ribbon: ["domen: x \u2260 1", "domen: x \u2260 -1", "množi recipročnim"],
+    ribbon: ["domen: x ≠ 1", "domen: x ≠ -1", "množi recipročnim"],
   },
 };
 
@@ -450,7 +450,7 @@ function renderCanvas(
     drawFractionCard(ctx, scenario.right, 28, top, cardW, cardH, T.accentRight, true, T);
     drawText(
       ctx,
-      "\u2193",
+      "↓",
       width / 2,
       top + cardH + 28,
       T.accentOp,
@@ -503,7 +503,7 @@ function renderCanvas(
     );
     drawText(
       ctx,
-      "\u2192",
+      "→",
       rightX + cardW + 24,
       leftY + cardH * 0.54,
       T.accentOp,

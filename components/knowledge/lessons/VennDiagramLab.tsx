@@ -82,11 +82,11 @@ const OP_KEYS: OpKey[] = [
 ];
 
 const OP_BUTTON_LABELS: Record<OpKey, string> = {
-  union: "A \u222a B",
-  intersection: "A \u2229 B",
+  union: "A ∪ B",
+  intersection: "A ∩ B",
   aMinusB: "A \\ B",
   bMinusA: "B \\ A",
-  symDiff: "A \u25b3 B",
+  symDiff: "A △ B",
 };
 
 /* ── Positions relative to a 980x480 logical space ── */
@@ -398,8 +398,8 @@ export default function VennDiagramLab() {
         <div className={s.resultCard}>
           <strong>Izabrani element: {activeEl.value}</strong>
           <p style={{ color: "var(--lesson-muted)", marginTop: 8, fontSize: "0.92rem" }}>
-            {activeEl.value} {belongsA ? "\u2208 A" : "\u2209 A"},{" "}
-            {activeEl.value} {belongsB ? "\u2208 B" : "\u2209 B"}.
+            {activeEl.value} {belongsA ? "∈ A" : "∉ A"},{" "}
+            {activeEl.value} {belongsB ? "∈ B" : "∉ B"}.
           </p>
           <p
             style={{
@@ -411,7 +411,7 @@ export default function VennDiagramLab() {
             }}
           >
             {activeEl.value}{" "}
-            {belongsResult ? "\u2208" : "\u2209"}{" "}
+            {belongsResult ? "∈" : "∉"}{" "}
             {OP_BUTTON_LABELS[activeOp]}
           </p>
         </div>

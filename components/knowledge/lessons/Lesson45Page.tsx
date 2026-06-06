@@ -48,18 +48,18 @@ function formatNum(v: number, digits = 3) {
 const DEG2RAD = Math.PI / 180;
 
 const KNOWN_RADIAN: Record<number, string> = {
-  30: "\u03C0/6",
-  45: "\u03C0/4",
-  60: "\u03C0/3",
-  90: "\u03C0/2",
-  120: "2\u03C0/3",
-  135: "3\u03C0/4",
-  150: "5\u03C0/6",
-  180: "\u03C0",
-  225: "5\u03C0/4",
-  270: "3\u03C0/2",
-  300: "5\u03C0/3",
-  315: "7\u03C0/4",
+  30: "π/6",
+  45: "π/4",
+  60: "π/3",
+  90: "π/2",
+  120: "2π/3",
+  135: "3π/4",
+  150: "5π/6",
+  180: "π",
+  225: "5π/4",
+  270: "3π/2",
+  300: "5π/3",
+  315: "7π/4",
 };
 
 function radianText(deg: number) {
@@ -264,7 +264,7 @@ function CircleLab() {
         "#ffd166"
       );
       drawLabel(
-        `\u03C6 = ${angleDeg}\u00B0`,
+        `φ = ${angleDeg}°`,
         cx + 72,
         cy - 8,
         "#ffcf9b",
@@ -381,10 +381,10 @@ function CircleLab() {
       ctx.font = '500 18px "Public Sans",system-ui,sans-serif';
       ctx.textAlign = "left";
       [
-        `\u2220A \u2248 ${formatNum(aA, 1)}\u00B0`,
-        `\u2220C \u2248 ${formatNum(aC, 1)}\u00B0`,
-        `\u2220A + \u2220C \u2248 ${formatNum(aA + aC, 1)}\u00B0`,
-        `\u2220B + \u2220D \u2248 ${formatNum(aB + aD, 1)}\u00B0`,
+        `∠A ≈ ${formatNum(aA, 1)}°`,
+        `∠C ≈ ${formatNum(aC, 1)}°`,
+        `∠A + ∠C ≈ ${formatNum(aA + aC, 1)}°`,
+        `∠B + ∠D ≈ ${formatNum(aB + aD, 1)}°`,
       ].forEach((line, i) => {
         ctx.fillText(line, 580, 136 + i * 28);
       });
@@ -708,7 +708,7 @@ export default function Lesson45Page() {
             <span className={cs.tHeroAccent}>delovi kruga</span>
           </>
         }
-        description={'Ova lekcija spaja dve stvari koje u\u010Denici \u010Desto u\u010De odvojeno, a na prijemnom se pojavljuju zajedno: ra\u010Dunanje obima, povr\u0161ine, luka i kru\u017Enog ise\u010Dka, kao i prepoznavanje osobina tetivnih i tangentnih \u010Detvorouglova. Kada razume\u0161 da je centralni ugao glavna \u201Ekomanda\u201C koja upravlja lukom, tetivom i ise\u010Dkom, formule prestaju da budu ne\u0161to za bubanje i postaju logi\u010Dne.'}
+        description={'Ova lekcija spaja dve stvari koje učenici često uče odvojeno, a na prijemnom se pojavljuju zajedno: računanje obima, površine, luka i kružnog isečka, kao i prepoznavanje osobina tetivnih i tangentnih četvorouglova. Kada razumeš da je centralni ugao glavna „komanda“ koja upravlja lukom, tetivom i isečkom, formule prestaju da budu nešto za bubanje i postaju logične.'}
         heroImageSrc="/images/lessons/lesson45_hero.png"
         heroImageAlt="Ilustracija kruga i delova kruga"
         cards={[
@@ -720,7 +720,7 @@ export default function Lesson45Page() {
           {
             label: "Najveća zamka",
             description:
-              "Mešanje stepeni i radijana — formula l=r\u03C6 važi tek kada je ugao izražen u radijanima.",
+              "Mešanje stepeni i radijana — formula l=rφ važi tek kada je ugao izražen u radijanima.",
           },
           {
             label: "Prijemni fokus",
@@ -736,7 +736,7 @@ export default function Lesson45Page() {
           {
             label: "Predznanje",
             description:
-              "Uglovi, trouglovi, Pitagorina teorema i osnovno računanje sa \u03C0",
+              "Uglovi, trouglovi, Pitagorina teorema i osnovno računanje sa π",
           },
           {
             label: "Glavna veština",
@@ -757,8 +757,8 @@ export default function Lesson45Page() {
       <LessonSection
         id="zasto"
         eyebrow="Zašto je ova lekcija važna"
-        title={'Krug je mesto gde se geometrija \u201Esabija\u201C u nekoliko mo\u0107nih ideja'}
-        description={'Na prijemnom zadatak retko glasi samo: \u201Eizra\u010Dunaj obim kruga\u201C. Mnogo \u010De\u0161\u0107e su obim, luk, tangenta, tetiva ili \u010Detvorougao deo \u0161ire pri\u010De. U\u010Denik koji razume odnose unutar kruga vidi pre\u010Dicu: iz centralnog ugla prelazi na luk, iz luka na sektor, iz upisanosti na relaciju uglova, a iz tangentnosti na relaciju stranica.'}
+        title={'Krug je mesto gde se geometrija „sabija“ u nekoliko moćnih ideja'}
+        description={'Na prijemnom zadatak retko glasi samo: „izračunaj obim kruga“. Mnogo češće su obim, luk, tangenta, tetiva ili četvorougao deo šire priče. Učenik koji razume odnose unutar kruga vidi prečicu: iz centralnog ugla prelazi na luk, iz luka na sektor, iz upisanosti na relaciju uglova, a iz tangentnosti na relaciju stranica.'}
       >
         <div className={s.grid3}>
           <SectionCard title="Za računanje">
@@ -796,7 +796,7 @@ export default function Lesson45Page() {
         id="osnove"
         eyebrow="Osnovni pojmovi"
         title="Šta su krug, kružnica i osnovni delovi kruga"
-        description={'U \u0161kolskom govoru \u010Desto se ka\u017Ee \u201Ekrug\u201C za sve, ali formalno razlikujemo krug i kru\u017Enicu. Ta razlika ume da bude va\u017Ena kada zadatak govori o povr\u0161ini, dodiru ili polo\u017Eaju ta\u010Daka.'}
+        description={'U školskom govoru često se kaže „krug“ za sve, ali formalno razlikujemo krug i kružnicu. Ta razlika ume da bude važna kada zadatak govori o površini, dodiru ili položaju tačaka.'}
       >
         <div className={s.formulaGrid}>
           <FormulaCard
@@ -912,7 +912,7 @@ export default function Lesson45Page() {
         id="radijani"
         eyebrow="Radijansko merenje i osnovne formule"
         title="Radijan je ključ koji povezuje ugao sa lukom"
-        description={'U stepenima govori\u0161 koliki deo punog kruga zauzima ugao. U radijanima govori\u0161 koliko je odgovaraju\u0107i luk \u201Eduga\u010Dak u jedinicama polupre\u010Dnika\u201C. Zbog toga su formule za luk i kru\u017Eni ise\u010Dak u radijanima kra\u0107e i prirodnije.'}
+        description={'U stepenima govoriš koliki deo punog kruga zauzima ugao. U radijanima govoriš koliko je odgovarajući luk „dugačak u jedinicama poluprečnika“. Zbog toga su formule za luk i kružni isečak u radijanima kraće i prirodnije.'}
       >
         <div className={s.grid2}>
           <SectionCard title="Kako nastaje radijan">
@@ -975,7 +975,7 @@ export default function Lesson45Page() {
         </div>
 
         <div className={s.grid2} style={{ marginTop: 16 }}>
-          <SectionCard title="Zašto važi l=r\u03C6">
+          <SectionCard title="Zašto važi l=rφ">
             <p>
               Puni krug ima ugao <InlineMath>{"2\\pi"}</InlineMath> i obim{" "}
               <InlineMath>{"2\\pi r"}</InlineMath>. Ako neki ugao zauzima
@@ -986,7 +986,7 @@ export default function Lesson45Page() {
               {"\\frac{l}{2\\pi r}=\\frac{\\varphi}{2\\pi}\\quad \\Rightarrow \\quad l=r\\varphi."}
             </MathBlock>
           </SectionCard>
-          <SectionCard title="Poluprečnik 6 cm, ugao 60\u00B0">
+          <SectionCard title="Poluprečnik 6 cm, ugao 60°">
             <p>
               Prvo pretvori ugao u radijane:
             </p>
@@ -1023,7 +1023,7 @@ export default function Lesson45Page() {
         </SectionCard>
 
         <MicroCheck
-          question="Mikro-provera 3: koliko radijana ima ugao od 45\u00B0?"
+          question="Mikro-provera 3: koliko radijana ima ugao od 45°?"
           answer={
             <p>
               Pošto <InlineMath>{"180^\\circ = \\pi"}</InlineMath>,
@@ -1049,7 +1049,7 @@ export default function Lesson45Page() {
         id="cetvorouglovi"
         eyebrow="Tetivni i tangentni četvorouglovi"
         title="Dva posebna četvorougla koja stalno izlaze na prijemnom"
-        description={'U ovoj lekciji naziv \u201Etetivni \u010Detvorougao\u201C koristimo za \u010Detvorougao \u010Dija sva temena le\u017Ee na jednoj kru\u017Enici. \u201ETangentni \u010Detvorougao\u201C je \u010Detvorougao oko kog mo\u017Ee da se upi\u0161e kru\u017Enica, odnosno njegova svaka stranica dodiruje tu kru\u017Enicu. Ova dva tipa ne treba me\u0161ati: jedan je vezan za temena na kru\u017Enici, a drugi za stranice koje dodiruju kru\u017Enicu.'}
+        description={'U ovoj lekciji naziv „tetivni četvorougao“ koristimo za četvorougao čija sva temena leže na jednoj kružnici. „Tangentni četvorougao“ je četvorougao oko kog može da se upiše kružnica, odnosno njegova svaka stranica dodiruje tu kružnicu. Ova dva tipa ne treba mešati: jedan je vezan za temena na kružnici, a drugi za stranice koje dodiruju kružnicu.'}
       >
         <div className={s.grid2}>
           <SectionCard title="Tetivni četvorougao">
@@ -1089,7 +1089,7 @@ export default function Lesson45Page() {
           <FormulaCard
             title="Naspramni uglovi su suplementni"
             formula={"\\angle C = 180^\\circ - \\angle A"}
-            note="Ovo znači da im je zbir 180\u00B0. Jedan ugao često dobijaš odmah oduzimanjem od 180\u00B0."
+            note="Ovo znači da im je zbir 180°. Jedan ugao često dobijaš odmah oduzimanjem od 180°."
           />
           <FormulaCard
             title="Oko četvorougla je upisana kružnica"
@@ -1109,7 +1109,7 @@ export default function Lesson45Page() {
           <FormulaCard
             title="Traži skrivenu relaciju"
             formula={"\\text{upisanost} \\Rightarrow \\text{uslov}"}
-            note={'Kad zadatak izgleda \u201Ebez dovoljno podataka\u201C, proveri da li upravo upisanost ili tangentnost dodaje jedan skriven uslov.'}
+            note={'Kad zadatak izgleda „bez dovoljno podataka“, proveri da li upravo upisanost ili tangentnost dodaje jedan skriven uslov.'}
           />
         </div>
 
@@ -1173,7 +1173,7 @@ export default function Lesson45Page() {
         id="interaktivno"
         eyebrow="Interaktivni laboratorijum"
         title="Menjaj ugao i temena i gledaj kako se menjaju relacije"
-        description="Laboratorija ima dva režima. U prvom posmatraš kako centralni ugao upravlja lukom, tetivom i površinom kružnog isečka. U drugom režimu pomeraš temena tetivnog četvorougla i vidiš da zbir naspramnih uglova ostaje 180\u00B0, bez obzira na oblik četvorougla."
+        description="Laboratorija ima dva režima. U prvom posmatraš kako centralni ugao upravlja lukom, tetivom i površinom kružnog isečka. U drugom režimu pomeraš temena tetivnog četvorougla i vidiš da zbir naspramnih uglova ostaje 180°, bez obzira na oblik četvorougla."
       >
         <CircleLab />
       </LessonSection>
@@ -1274,7 +1274,7 @@ export default function Lesson45Page() {
             <div className={s.walkthrough}>
               <WalkStep
                 number={1}
-                title={'Klju\u010Dna re\u010D je \u201Eupisanom u kru\u017Enicu\u201C, dakle \u010Detvorougao je tetivni.'}
+                title={'Ključna reč je „upisanom u kružnicu“, dakle četvorougao je tetivni.'}
               />
               <WalkStep
                 number={2}

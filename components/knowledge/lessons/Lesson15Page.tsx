@@ -44,7 +44,7 @@ export default function Lesson15Page() {
             <span className={cs.tHeroAccent}>Viètove formule</span>
           </>
         }
-        description={'Ova lekcija povezuje tri ideje koje se na prijemnom stalno ukrštaju: nule polinoma, faktorski zapis i koeficijente polinoma. Kada razumeš kako se korenovi \u201Eupisuju\u201C u koeficijente, mnogi zadaci prestaju da budu nasumično računanje i postaju jasan sistem uslova.'}
+        description={'Ova lekcija povezuje tri ideje koje se na prijemnom stalno ukrštaju: nule polinoma, faktorski zapis i koeficijente polinoma. Kada razumeš kako se korenovi „upisuju“ u koeficijente, mnogi zadaci prestaju da budu nasumično računanje i postaju jasan sistem uslova.'}
         heroImageSrc="/images/lessons/lesson15_hero.png"
         heroImageAlt="Ilustracija nula polinoma i Vijetovih formula"
         cards={[
@@ -56,7 +56,7 @@ export default function Lesson15Page() {
           {
             label: "Najveća zamka",
             description:
-              'Znakovi i vodeći koeficijent \u2014 formule nisu samo \u201Eprepisivanje\u201C koeficijenata, znakovi se smenjuju.',
+              'Znakovi i vodeći koeficijent — formule nisu samo „prepisivanje“ koeficijenata, znakovi se smenjuju.',
           },
           {
             label: "Prijemni fokus",
@@ -92,7 +92,7 @@ export default function Lesson15Page() {
         id="zasto"
         eyebrow="Zašto je ova lekcija važna"
         title="Od koeficijenata do korenova i nazad"
-        description={'Na prijemnom se retko traži samo \u201Enađi korenove\u201C. Mnogo češće dobijaš dodatni uslov: jedan koren je poznat, korenovi su u progresiji, dve nule imaju isti zbir ili treba konstruisati polinom po zadatim osobinama. Viètove formule tada pretvaraju priču o korenovima u sistem jednačina nad koeficijentima.'}
+        description={'Na prijemnom se retko traži samo „nađi korenove“. Mnogo češće dobijaš dodatni uslov: jedan koren je poznat, korenovi su u progresiji, dve nule imaju isti zbir ili treba konstruisati polinom po zadatim osobinama. Viètove formule tada pretvaraju priču o korenovima u sistem jednačina nad koeficijentima.'}
       >
         <div className={s.grid2}>
           <SectionCard title="Zašto je to važno baš na prijemnom">
@@ -128,7 +128,7 @@ export default function Lesson15Page() {
         eyebrow="Ključna veza"
         title="Od nule polinoma do faktora"
         description={
-          'Sve počinje od jedne jednostavne, ali presudne ideje: broj \\(\\alpha\\) je nula polinoma \\(P(x)\\) ako i samo ako važi \\(P(\\alpha)=0\\). To nije samo definicija. To je most između \u201Ebroja koji poništava polinom\u201C i \u201Ečinioca koji ulazi u faktorizaciju\u201C.'
+          'Sve počinje od jedne jednostavne, ali presudne ideje: broj \\(\\alpha\\) je nula polinoma \\(P(x)\\) ako i samo ako važi \\(P(\\alpha)=0\\). To nije samo definicija. To je most između „broja koji poništava polinom“ i „činioca koji ulazi u faktorizaciju“.'
         }
       >
         <div className={s.grid3}>
@@ -483,7 +483,7 @@ export default function Lesson15Page() {
         id="laboratorija"
         eyebrow="Interaktivni deo"
         title="Interaktivna Viète laboratorija"
-        description={'U ovom delu sam biraš realne korenove i pratiš kako se iz njih formiraju koeficijenti. Cilj nije samo računanje, već stvaranje osećaja: kada se korenovi pomere, polinom menja \u201Epotpis\u201C u svojim koeficijentima.'}
+        description={'U ovom delu sam biraš realne korenove i pratiš kako se iz njih formiraju koeficijenti. Cilj nije samo računanje, već stvaranje osećaja: kada se korenovi pomere, polinom menja „potpis“ u svojim koeficijentima.'}
       >
         <VieteLab />
       </LessonSection>
@@ -786,7 +786,7 @@ export default function Lesson15Page() {
         id="prijemni"
         eyebrow="Veza sa prijemnim zadacima"
         title="Šta se najčešće traži na testu"
-        description={'Na prijemnom se ova lekcija najčešće ne pojavljuje kao \u201Ečista teorija\u201C, već kao deo složenijeg problema. Zbog toga je korisno imati kratku mentalnu kontrolnu listu.'}
+        description={'Na prijemnom se ova lekcija najčešće ne pojavljuje kao „čista teorija“, već kao deo složenijeg problema. Zbog toga je korisno imati kratku mentalnu kontrolnu listu.'}
       >
         <div className={s.grid2}>
           <SectionCard title="Tipični oblici zadataka">

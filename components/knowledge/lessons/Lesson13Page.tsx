@@ -170,7 +170,7 @@ function drawPolyLab(
     { label: "P(x)", poly: st.p, color: T.pColor },
     { label: "Q(x)", poly: st.q, color: T.qColor },
     {
-      label: st.op === "*" ? "P(x)\u00b7Q(x)" : "Rezultat",
+      label: st.op === "*" ? "P(x)·Q(x)" : "Rezultat",
       poly: result,
       color: T.rColor,
     },
@@ -291,7 +291,7 @@ function PolyLab() {
 
   const explanation = (() => {
     if (st.op === "+")
-      return "Sabiranje: gledaj samo kolone istog stepena. Koeficijenti uz x\u00B3, x\u00B2, x i konstante sabiraju se odvojeno.";
+      return "Sabiranje: gledaj samo kolone istog stepena. Koeficijenti uz x³, x², x i konstante sabiraju se odvojeno.";
     if (st.op === "-")
       return "Oduzimanje: prvo mentalno promeni znakove drugog polinoma, pa onda sabiraj kolone istog stepena.";
     const dp = getDeg(st.p);

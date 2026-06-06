@@ -267,14 +267,14 @@ export default function ParabolaConicLab() {
     const relationValue = 2 * state.k * state.l;
     const tIntercept = tangentLValue(state.p, state.k);
     setRelationText(
-      `Trenutno je 2kl = ${relationValue.toFixed(2)}, a p = ${state.p.toFixed(2)}. Za isti p i k, tangentni položaj bi imao l \u2248 ${tIntercept.toFixed(2)}.`
+      `Trenutno je 2kl = ${relationValue.toFixed(2)}, a p = ${state.p.toFixed(2)}. Za isti p i k, tangentni položaj bi imao l ≈ ${tIntercept.toFixed(2)}.`
     );
 
     if (curMode === "tangent") {
       const x0 = state.p / (2 * state.k * state.k);
       const y0 = state.p / state.k;
       setSummaryText(
-        `Važi 2kl \u2248 p, pa je prava tangenta. Tačka dodira je približno (${x0.toFixed(2)}, ${y0.toFixed(2)}).`
+        `Važi 2kl ≈ p, pa je prava tangenta. Tačka dodira je približno (${x0.toFixed(2)}, ${y0.toFixed(2)}).`
       );
       setCaptionText(
         "Prava je u graničnom položaju. Ako sada malo povećaš ili smanjiš l, videćeš kako tangenta prelazi u sečicu ili spoljašnju pravu."

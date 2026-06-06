@@ -457,7 +457,7 @@ export default function Lesson22Page() {
         </div>
 
         <MicroCheck
-          question={`Mikro-provera: za\u0161to uslov \u0394 \u2264 0 nije dovoljan za \u201Euvek pozitivno\u201C?`}
+          question={`Mikro-provera: zašto uslov Δ ≤ 0 nije dovoljan za „uvek pozitivno“?`}
           answer={
             <p>
               Nije dovoljan zato što kod{" "}

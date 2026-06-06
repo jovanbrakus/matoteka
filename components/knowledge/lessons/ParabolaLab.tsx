@@ -42,7 +42,7 @@ function fmt(value: number): string {
         .toFixed(2)
         .replace(/0+$/, "")
         .replace(/\.$/, "");
-  return text.replace("-", "\u2212");
+  return text.replace("-", "−");
 }
 
 function latexNum(value: number): string {
@@ -112,10 +112,10 @@ function rootsLatex(a: number, b: number, c: number): string {
   const d = getDiscriminant(a, b, c);
   const roots = getRoots(a, b, c);
   if (roots.length === 0) {
-    return `\\Delta=${latexNum(d)}<0 \\text{ \u2014 nema realnih nula.}`;
+    return `\\Delta=${latexNum(d)}<0 \\text{ — nema realnih nula.}`;
   }
   if (roots.length === 1) {
-    return `\\Delta=0 \\text{ \u2014 dvostruka nula: } x_0=${latexNum(roots[0])}`;
+    return `\\Delta=0 \\text{ — dvostruka nula: } x_0=${latexNum(roots[0])}`;
   }
   return `x_1=${latexNum(roots[0])},\\quad x_2=${latexNum(roots[1])}`;
 }
@@ -308,7 +308,7 @@ function drawParabola(
   drawPoint(xMark, yProbe, "#c0a2ff", "P");
 
   roots.forEach((root, i) => {
-    const lbl = roots.length === 1 ? "x\u2080" : i === 0 ? "x\u2081" : "x\u2082";
+    const lbl = roots.length === 1 ? "x₀" : i === 0 ? "x₁" : "x₂";
     drawPoint(root, 0, "#6bdfb7", lbl, 10, -12);
   });
 
@@ -340,7 +340,7 @@ function drawParabola(
     ctx.moveTo(mapX(left), ribbonY);
     ctx.lineTo(mapX(right), ribbonY);
     ctx.stroke();
-    const lbl = positive ? "+" : "\u2212";
+    const lbl = positive ? "+" : "−";
     ctx.fillStyle = positive ? "#6bdfb7" : "#ff9a92";
     ctx.font = '12px "Public Sans", system-ui, sans-serif';
     ctx.textAlign = "center";
@@ -363,13 +363,13 @@ function drawParabola(
   ctx.fillStyle = "rgba(255,255,255,0.9)";
   ctx.font = '600 13px "Public Sans", system-ui, sans-serif';
   ctx.fillText(
-    `f(x) = ${fmt(a)}x\u00B2 ${b >= 0 ? "+" : "\u2212"} ${fmt(Math.abs(b))}x ${c >= 0 ? "+" : "\u2212"} ${fmt(Math.abs(c))}`,
+    `f(x) = ${fmt(a)}x² ${b >= 0 ? "+" : "−"} ${fmt(Math.abs(b))}x ${c >= 0 ? "+" : "−"} ${fmt(Math.abs(c))}`,
     18,
     24
   );
   ctx.fillStyle = "rgba(255,215,185,0.9)";
   ctx.fillText(
-    `\u0394 = ${fmt(d)}   |   teme: (${fmt(vertex.x)}, ${fmt(vertex.y)})`,
+    `Δ = ${fmt(d)}   |   teme: (${fmt(vertex.x)}, ${fmt(vertex.y)})`,
     18,
     44
   );

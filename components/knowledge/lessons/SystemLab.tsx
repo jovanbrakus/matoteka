@@ -182,19 +182,19 @@ export default function SystemLab() {
     countText = "0 realnih rešenja";
     interpText =
       sol.discriminant !== null
-        ? `Posle redukcije diskriminanta je negativna: \u0394 = ${fmt(sol.discriminant!)}.`
+        ? `Posle redukcije diskriminanta je negativna: Δ = ${fmt(sol.discriminant!)}.`
         : "Krive se u realnoj ravni ne seku."
   } else if (points.length === 1) {
     countText = "1 realno rešenje";
     interpText =
       sol.discriminant !== null
-        ? `Jedan dodir. \u0394 = ${fmt(sol.discriminant!)}.`
+        ? `Jedan dodir. Δ = ${fmt(sol.discriminant!)}.`
         : "Redukcija vodi na linearnu jednačinu ili dvostruki koren.";
   } else {
     countText = `${points.length} realna rešenja`;
     interpText =
       sol.discriminant !== null
-        ? `Dva preseka. \u0394 = ${fmt(sol.discriminant!)}.`
+        ? `Dva preseka. Δ = ${fmt(sol.discriminant!)}.`
         : "Broj preseka potiče iz jednačine posle zamene.";
   }
 

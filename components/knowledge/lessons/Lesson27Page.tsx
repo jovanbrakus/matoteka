@@ -54,7 +54,7 @@ export default function Lesson27Page() {
           {
             label: "Najveća zamka",
             description:
-              "Negativan koren posle smene u=a^x ne sme da ostane u igri. Pošto je a^x > 0, svaki kandidat u \u2264 0 automatski otpada.",
+              "Negativan koren posle smene u=a^x ne sme da ostane u igri. Pošto je a^x > 0, svaki kandidat u ≤ 0 automatski otpada.",
           },
           {
             label: "Prijemni fokus",
@@ -71,7 +71,7 @@ export default function Lesson27Page() {
           {
             label: "Predznanje",
             description:
-              "Stepeni, faktorisanje i kvadratne jednačine. Posebno su važni zapisi a^{x+k}=a^x\u00B7a^k i (a^x)^2=a^{2x}.",
+              "Stepeni, faktorisanje i kvadratne jednačine. Posebno su važni zapisi a^{x+k}=a^x·a^k i (a^x)^2=a^{2x}.",
           },
           {
             label: "Glavna veština",

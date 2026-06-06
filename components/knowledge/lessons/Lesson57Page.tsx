@@ -95,7 +95,7 @@ export default function Lesson57Page() {
         id="zasto"
         eyebrow="Zašto je ova lekcija važna"
         title="Limes je jezik kojim analiza opisuje približavanje"
-        description={'U algebri često pitaš \u201Ekoliko je tačno?\u201C. U analizi vrlo često pitaš \u201Ešta se dešava kada idem sve bliže?\u201C. Ta promena perspektive je suštinska. Limes stoji iza kontinuiteta, izvoda, integrala, asimptota i ozbiljnog razumevanja grafika.'}
+        description={'U algebri često pitaš „koliko je tačno?“. U analizi vrlo često pitaš „šta se dešava kada idem sve bliže?“. Ta promena perspektive je suštinska. Limes stoji iza kontinuiteta, izvoda, integrala, asimptota i ozbiljnog razumevanja grafika.'}
       >
         <div className={s.grid3}>
           <SectionCard title="Most ka izvodima">
@@ -502,7 +502,7 @@ export default function Lesson57Page() {
               horizontalna asimptota je količnik vodećih koeficijenata.
             </p>
           </SectionCard>
-          <SectionCard title={'Asimptota ne mora biti \u201Ezid\u201C'}>
+          <SectionCard title={'Asimptota ne mora biti „zid“'}>
             <MathBlock>
               {
                 "\\text{asimptota opisuje približavanje, ne zabranu preseka}"
@@ -546,7 +546,7 @@ export default function Lesson57Page() {
         id="interaktivno"
         eyebrow="Interaktivna laboratorija"
         title="Posmatraj kako se limes vidi, a ne samo računa"
-        description={'Izaberi primer i menjaj opseg prikaza. Kod niza posmatraj kako se rep približava liniji limesa. Kod funkcije posmatraj da li se grafik približava istoj visini sa obe strane, da li postoji \u201Erupa\u201C ili se pojavljuje vertikalna asimptota.'}
+        description={'Izaberi primer i menjaj opseg prikaza. Kod niza posmatraj kako se rep približava liniji limesa. Kod funkcije posmatraj da li se grafik približava istoj visini sa obe strane, da li postoji „rupa“ ili se pojavljuje vertikalna asimptota.'}
       >
         <LimitLab />
 
@@ -770,17 +770,17 @@ export default function Lesson57Page() {
           <FormulaCard
             title="Oznaka limesa niza"
             formula={"\\lim_{n\\to\\infty} a_n = L"}
-            note={'Čita se: \u201Eniz a\u2099 teži broju L kada n teži beskonačnosti\u201C.'}
+            note={'Čita se: „niz aₙ teži broju L kada n teži beskonačnosti“.'}
           />
           <FormulaCard
             title="Oznaka limesa funkcije"
             formula={"\\lim_{x\\to a} f(x) = L"}
-            note={'Čita se: \u201Ef(x) teži broju L kada x teži broju a\u201C.'}
+            note={'Čita se: „f(x) teži broju L kada x teži broju a“.'}
           />
           <FormulaCard
             title="Račun sa limesima"
             formula={"\\lim(f \\pm g) = \\lim f \\pm \\lim g, \\qquad \\lim(fg) = (\\lim f)(\\lim g)"}
-            note={'Ako limesi postoje, sabiranje, oduzimanje i množenje rade \u201Enormalno\u201C.'}
+            note={'Ako limesi postoje, sabiranje, oduzimanje i množenje rade „normalno“.'}
           />
           <FormulaCard
             title="Deljenje je dozvoljeno uz uslov"
@@ -805,7 +805,7 @@ export default function Lesson57Page() {
         id="greske"
         eyebrow="Česte greške"
         title="Mesta na kojima se lako gube laki poeni"
-        description={'Većina grešaka u limesu nije \u201Eteška matematika\u201C, nego loš prvi potez. Ako prepoznaš sledeće zamke, smanjićeš broj grešaka gotovo odmah.'}
+        description={'Većina grešaka u limesu nije „teška matematika“, nego loš prvi potez. Ako prepoznaš sledeće zamke, smanjićeš broj grešaka gotovo odmah.'}
       >
         <div className={s.tipGrid}>
           <article className={s.tipCard}>

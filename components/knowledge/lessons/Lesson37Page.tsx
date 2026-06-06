@@ -238,7 +238,7 @@ export default function Lesson37Page() {
         id="formule"
         eyebrow="Ključne formule"
         title="Ovo je skup alata koji moraš da prepoznaješ u oba smera"
-        description={'U praksi ne postoji \u201Eva\u017Ena\u201C i \u201Eneva\u017Ena\u201C formula. Va\u017Eno je da ume\u0161 da izabere\u0161 pravi smer \u010Ditanja. Prve \u010Detiri formule uglavnom koriste\u0161 kada \u017Eeli\u0161 faktorizaciju, a druge \u010Detiri kada proizvod treba da vrati\u0161 u zbir ili razliku uglova.'}
+        description={'U praksi ne postoji „važna“ i „nevažna“ formula. Važno je da umeš da izabereš pravi smer čitanja. Prve četiri formule uglavnom koristeš kada želiš faktorizaciju, a druge četiri kada proizvod treba da vratiš u zbir ili razliku uglova.'}
       >
         {/* Zbir/razlika u proizvod */}
         <div className={s.grid2}>

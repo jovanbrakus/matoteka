@@ -423,7 +423,7 @@ function drawMatrix(
         'px "Public Sans", system-ui, sans-serif';
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText(inside ? "\u2713" : "\u00B7", x + cellSize / 2, y + cellSize / 2 + 1);
+      ctx.fillText(inside ? "✓" : "·", x + cellSize / 2, y + cellSize / 2 + 1);
 
       hitCellsRef.current.push({ x, y, w: cellSize, h: cellSize, a, b });
     });

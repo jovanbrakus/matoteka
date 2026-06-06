@@ -90,7 +90,7 @@ export default function Lesson48Page() {
         id="zasto"
         eyebrow="Zašto je ova lekcija važna"
         title="Ovo su zadaci u kojima prostorna inteligencija direktno utiče na rezultat"
-        description={'Na prijemnom se ova tema često javlja kao završni nivo stereometrije. Zadatak izgleda komplikovano jer u istom trenutku vidiš dva tela, više različitih mera i uslov dodira. Ali kada nađeš pravi presek, problem postaje mnogo mirniji: umesto \u201Elopte u kupi\u201C zapravo rešavaš \u201Ekrug upisan u jednakokraki trougao\u201C, a umesto \u201Evaljka u lopti\u201C rešavaš \u201Epravougaonik upisan u krug\u201C.'}
+        description={'Na prijemnom se ova tema često javlja kao završni nivo stereometrije. Zadatak izgleda komplikovano jer u istom trenutku vidiš dva tela, više različitih mera i uslov dodira. Ali kada nađeš pravi presek, problem postaje mnogo mirniji: umesto „lopte u kupi“ zapravo rešavaš „krug upisan u jednakokraki trougao“, a umesto „valjka u lopti“ rešavaš „pravougaonik upisan u krug“.'}
       >
         <div className={s.grid3}>
           <SectionCard title="Povezuje planimetriju i stereometriju">

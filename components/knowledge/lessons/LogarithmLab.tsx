@@ -520,7 +520,7 @@ function drawCanvas(canvas: HTMLCanvasElement, data: LabData) {
   );
 
   drawArrow(ctx, 152, 86, width * 0.33, 72, "+", theme.productColor);
-  drawArrow(ctx, 152, 162, width * 0.33, 146, "\u2212", theme.quotientColor);
+  drawArrow(ctx, 152, 162, width * 0.33, 146, "−", theme.quotientColor);
   drawArrow(ctx, 152, 86, width * 0.33, 220, "n", theme.powerColor);
   drawArrow(ctx, width * 0.33 + 140, 72, width * 0.68, 72, "log", theme.productColor);
   drawArrow(

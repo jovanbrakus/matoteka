@@ -135,7 +135,7 @@ export default function Lesson38Page() {
         id="osnovni-grafici"
         eyebrow="Osnovni modeli"
         title="Prvo moraš da razlikuješ porodice grafika"
-        description={'Pre nego što uopšte uključiš parametre, važno je da vidiš razliku između dve \u201Emirne\u201C oscilacije, sin x i cos x, i dve funkcije sa granama i asimptotama, tan x i cot x. To je osnova cele lekcije.'}
+        description={'Pre nego što uopšte uključiš parametre, važno je da vidiš razliku između dve „mirne“ oscilacije, sin x i cos x, i dve funkcije sa granama i asimptotama, tan x i cot x. To je osnova cele lekcije.'}
       >
         <div className={s.grid2}>
           <SectionCard title="Šta prvo gledaš">

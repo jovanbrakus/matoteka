@@ -159,7 +159,7 @@ function renderCanvas(
     ctx.fillStyle = "rgba(246,238,233,0.88)";
     ctx.font = "600 15px Inter, sans-serif";
     ctx.fillText(
-      `${step.dividend} = ${step.quotient} \u00B7 ${step.divisor} + ${step.remainder}`,
+      `${step.dividend} = ${step.quotient} · ${step.divisor} + ${step.remainder}`,
       barLeft,
       y - 12,
     );
@@ -186,8 +186,8 @@ function renderCanvas(
     ctx.font = "500 13px Inter, sans-serif";
     const explanation =
       step.remainder === 0
-        ? "ostatak 0 \u2192 algoritam staje"
-        : `slede\u0107i par: (${step.divisor}, ${step.remainder})`;
+        ? "ostatak 0 → algoritam staje"
+        : `sledeći par: (${step.divisor}, ${step.remainder})`;
     ctx.fillText(explanation, barLeft, y + 44);
   });
 

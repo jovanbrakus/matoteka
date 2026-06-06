@@ -26,7 +26,7 @@ interface FunctionPreset {
 const PRESETS: FunctionPreset[] = [
   {
     key: "poly",
-    label: "x\u00B3 \u2212 3x + 1",
+    label: "x³ − 3x + 1",
     min: -2.6,
     max: 2.6,
     step: 0.1,
@@ -42,7 +42,7 @@ const PRESETS: FunctionPreset[] = [
   },
   {
     key: "product",
-    label: "x\u00B2 sin x",
+    label: "x² sin x",
     min: -3,
     max: 3,
     step: 0.1,
@@ -58,7 +58,7 @@ const PRESETS: FunctionPreset[] = [
   },
   {
     key: "quotient",
-    label: "(x\u00B2+1)/(x+2)",
+    label: "(x²+1)/(x+2)",
     min: -1.7,
     max: 3.4,
     step: 0.1,
@@ -74,7 +74,7 @@ const PRESETS: FunctionPreset[] = [
   },
   {
     key: "chain",
-    label: "(3x\u00B2+1)\u2074",
+    label: "(3x²+1)⁴",
     min: -1.8,
     max: 1.8,
     step: 0.05,
@@ -84,13 +84,13 @@ const PRESETS: FunctionPreset[] = [
     ruleName: "Pravilo lanca",
     ruleFormula: "(u\\circ v)'(x)=u'(v(x))\\cdot v'(x)",
     advice:
-      "Spolja diferenciraš četvrti stepen, unutra ostaje 3x\u00B2+1, a na kraju obavezno množiš sa 6x.",
+      "Spolja diferenciraš četvrti stepen, unutra ostaje 3x²+1, a na kraju obavezno množiš sa 6x.",
     evaluate: (x) => Math.pow(3 * x * x + 1, 4),
     derivativeAt: (x) => 24 * x * Math.pow(3 * x * x + 1, 3),
   },
   {
     key: "sqrt",
-    label: "\u221A(2x+3)",
+    label: "√(2x+3)",
     min: -1.45,
     max: 3,
     step: 0.05,
@@ -106,7 +106,7 @@ const PRESETS: FunctionPreset[] = [
   },
   {
     key: "trigchain",
-    label: "sin(2x\u00B2\u22121)",
+    label: "sin(2x²−1)",
     min: -2,
     max: 2,
     step: 0.05,

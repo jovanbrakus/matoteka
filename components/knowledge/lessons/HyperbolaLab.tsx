@@ -467,16 +467,16 @@ export default function HyperbolaLab() {
   const c = Math.sqrt(state.a * state.a + state.b * state.b);
   const orientationText =
     state.orientation === "horizontal"
-      ? "Horizontalna hiperbola: x\u00B2/a\u00B2 \u2212 y\u00B2/b\u00B2 = 1"
-      : "Vertikalna hiperbola: y\u00B2/a\u00B2 \u2212 x\u00B2/b\u00B2 = 1";
+      ? "Horizontalna hiperbola: x²/a² − y²/b² = 1"
+      : "Vertikalna hiperbola: y²/a² − x²/b² = 1";
   const tangencyText =
     state.orientation === "horizontal"
-      ? "Uslov tangente: l\u00B2 = a\u00B2k\u00B2 \u2212 b\u00B2"
-      : "Uslov tangente: l\u00B2 = a\u00B2 \u2212 b\u00B2k\u00B2";
+      ? "Uslov tangente: l² = a²k² − b²"
+      : "Uslov tangente: l² = a² − b²k²";
   const slopeRule =
     state.orientation === "horizontal"
-      ? `Tangentni nagib mora zadovoljiti |k| \u2265 b/a = ${fmt(status.asymSlope)}.`
-      : `Tangentni nagib mora zadovoljiti |k| \u2264 a/b = ${fmt(status.asymSlope)}.`;
+      ? `Tangentni nagib mora zadovoljiti |k| ≥ b/a = ${fmt(status.asymSlope)}.`
+      : `Tangentni nagib mora zadovoljiti |k| ≤ a/b = ${fmt(status.asymSlope)}.`;
 
   return (
     <div className={s.interactiveShell}>

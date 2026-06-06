@@ -38,27 +38,27 @@ function explain(op: Operator, row: Row): string {
   switch (op) {
     case "not":
       return row.p
-        ? "U izabranom redu iskaz p je tačan, zato negacija \u00ACp mora biti netačna."
-        : "U izabranom redu iskaz p je netačan, zato negacija \u00ACp postaje tačna.";
+        ? "U izabranom redu iskaz p je tačan, zato negacija ¬p mora biti netačna."
+        : "U izabranom redu iskaz p je netačan, zato negacija ¬p postaje tačna.";
     case "and":
       if (row.p && row.q)
-        return "Ovde su i p i q tačni, zato je p \u2227 q tačno.";
+        return "Ovde su i p i q tačni, zato je p ∧ q tačno.";
       if (!row.p && !row.q)
         return "Ovde su i p i q netačni, pa konjunkcija sigurno nije tačna.";
       return "Jedan deo je netačan, a konjunkcija traži da oba dela budu tačna. Zato je rezultat netačan.";
     case "or":
       if (!row.p && !row.q)
-        return "Oba dela su netačna, a to je jedini slučaj kada je p \u2228 q netačno.";
-      return "Bar jedan deo je tačan, zato je disjunkcija p \u2228 q tačna.";
+        return "Oba dela su netačna, a to je jedini slučaj kada je p ∨ q netačno.";
+      return "Bar jedan deo je tačan, zato je disjunkcija p ∨ q tačna.";
     case "implies":
       if (row.p && !row.q)
-        return "Ovo je jedini zabranjeni slučaj: p je tačno, a q netačno, pa je p \u21D2 q netačno.";
+        return "Ovo je jedini zabranjeni slučaj: p je tačno, a q netačno, pa je p ⇒ q netačno.";
       if (!row.p)
         return 'Pošto je p netačno, nije se desio slučaj "tačno pa netačno". Zato implikacija ostaje tačna.';
       return "Ovde su p i q tačni, pa je uslov \"ako p, onda q\" ispunjen i implikacija je tačna.";
     case "equiv":
       if (row.p === row.q)
-        return "Ovde p i q imaju istu istinitosnu vrednost, zato je p \u21D4 q tačno.";
+        return "Ovde p i q imaju istu istinitosnu vrednost, zato je p ⇔ q tačno.";
       return "Ovde p i q nemaju istu istinitosnu vrednost, pa ekvivalencija mora biti netačna.";
   }
 }
@@ -258,7 +258,7 @@ export default function TruthTableLab() {
                       fontSize: "0.88rem",
                     }}
                   >
-                    {selected ? "Ovaj red je aktivan \u2193" : "Klikni za objašnjenje"}
+                    {selected ? "Ovaj red je aktivan ↓" : "Klikni za objašnjenje"}
                   </td>
                 </tr>
               );

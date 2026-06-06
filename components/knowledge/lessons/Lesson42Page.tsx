@@ -744,7 +744,7 @@ export default function Lesson42Page() {
         id="zasto"
         eyebrow="Zašto je ova lekcija važna"
         title="Geometrijski zadaci retko traže formulu, češće traže pravi ugao posmatranja"
-        description={'Na prijemnom zadatak skoro nikada ne kaže: \u201EPrimeni kriterijum SUS.\u201C Umesto toga dobiješ crtež sa paralelama, nekoliko jednakih uglova i jednu skrivenu konstrukciju. Tvoj posao je da prepoznaš da li treba da dokažeš podudarnost, da izvučeš sličnost ili da iskoristiš osobine centra trougla.'}
+        description={'Na prijemnom zadatak skoro nikada ne kaže: „Primeni kriterijum SUS.“ Umesto toga dobiješ crtež sa paralelama, nekoliko jednakih uglova i jednu skrivenu konstrukciju. Tvoj posao je da prepoznaš da li treba da dokažeš podudarnost, da izvučeš sličnost ili da iskoristiš osobine centra trougla.'}
       >
         <div className={s.grid3}>
           <SectionCard title="Kasnija primena">
@@ -912,7 +912,7 @@ export default function Lesson42Page() {
           <FormulaCard
             title="Podela stranica"
             formula={"\\frac{AD}{DB}=\\frac{AE}{EC}"}
-            note={'Ovaj oblik je posebno koristan kada su dati \u201Edelovi\u201C stranica, a ne cele stranice.'}
+            note={'Ovaj oblik je posebno koristan kada su dati „delovi“ stranica, a ne cele stranice.'}
           />
         </div>
 
@@ -1003,7 +1003,7 @@ export default function Lesson42Page() {
           }
         />
         <MicroCheck
-          question={'Napomena o drugoj \u201ETalesovoj teoremi\u201C koju mo\u017Eda zna\u0161 iz \u0161kole'}
+          question={'Napomena o drugoj „Talesovoj teoremi“ koju možda znaš iz škole'}
           answer={
             <p>
               U geometriji kruga često se pod Talesovom teoremom misli i na
@@ -1195,7 +1195,7 @@ export default function Lesson42Page() {
         </div>
 
         <MicroCheck
-          question={'Mikro-provera: za\u0161to kriterijum \u201Edve stranice i neki ugao\u201C nije uvek dovoljan za podudarnost?'}
+          question={'Mikro-provera: zašto kriterijum „dve stranice i neki ugao“ nije uvek dovoljan za podudarnost?'}
           answer={
             <p>
               Zato što ugao mora biti zahvaćen između te dve stranice. Ako je
@@ -1212,7 +1212,7 @@ export default function Lesson42Page() {
         eyebrow="Sličnost trouglova"
         title="Isti oblik, druga veličina"
         description={
-          "Slični trouglovi imaju jednake odgovarajuće uglove, a odgovarajuće stranice su proporcionalne. Ako je odnos sličnosti k, onda se sve dužine množe sa k, obimi sa k, a površine sa k\u00B2."
+          "Slični trouglovi imaju jednake odgovarajuće uglove, a odgovarajuće stranice su proporcionalne. Ako je odnos sličnosti k, onda se sve dužine množe sa k, obimi sa k, a površine sa k²."
         }
       >
         <div className={s.formulaGrid}>
@@ -1604,7 +1604,7 @@ export default function Lesson42Page() {
       <LessonSection
         id="formule"
         eyebrow="Ključne formule i relacije"
-        title={'Šta mora da ti bude \u201Eu ruci\u201C na prijemnom'}
+        title={'Šta mora da ti bude „u ruci“ na prijemnom'}
         description="Ove relacije nisu za bubanje bez razumevanja. Njihova vrednost je u tome što ti pomažu da brzo prepoznaš pravi potez u zadatku."
       >
         <div className={s.formulaGrid}>
@@ -1661,7 +1661,7 @@ export default function Lesson42Page() {
         id="greske"
         eyebrow="Česte greške"
         title="Greške koje ruše inače dobar zadatak"
-        description={'Slede\u0107e gre\u0161ke se ne de\u0161avaju zato \u0161to u\u010Denik \u201Ene zna matematiku\u201C, nego zato \u0161to brzopleto zaklju\u010Di vi\u0161e nego \u0161to je dato. Upravo zato ih treba nau\u010Diti da prepoznaje\u0161 unapred.'}
+        description={'Sledeće greške se ne dešavaju zato što učenik „ne zna matematiku“, nego zato što brzopleto zaključi više nego što je dato. Upravo zato ih treba naučiti da prepoznaješ unapred.'}
       >
         <div className={s.grid3}>
           <SectionCard title="Greška 1: iz tri ugla zaključiti podudarnost">
@@ -1708,7 +1708,7 @@ export default function Lesson42Page() {
         id="prijemni"
         eyebrow="Veza sa prijemnim zadacima"
         title="Kako se ova tema realno pojavljuje na testu"
-        description={'Na prijemnom retko pi\u0161e \u201Edokazati podudarnost\u201C. Obi\u010Dno dobije\u0161 jedan zadatak koji kombinuje vi\u0161e ideja: jednakokraki trougao, paralelu, jednu kru\u017Enicu ili neku povr\u0161inu. Tvoj zadatak je da vidi\u0161 skriveni mehanizam.'}
+        description={'Na prijemnom retko piše „dokazati podudarnost“. Obično dobiješ jedan zadatak koji kombinuje više ideja: jednakokraki trougao, paralelu, jednu kružnicu ili neku površinu. Tvoj zadatak je da vidiš skriveni mehanizam.'}
       >
         <div className={s.grid3}>
           <SectionCard title="Tip 1: skrivena sličnost">

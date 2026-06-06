@@ -473,7 +473,7 @@ export default function Lesson39Page() {
         id="interaktivno"
         eyebrow="Interaktivni deo"
         title="Laboratorija opštih rešenja"
-        description={'Izaberi funkciju i vrednost a. Gore na canvasu vidi\u0161 geometrijsko tuma\u010Denje na kru\u017Enici, a dole sva re\u0161enja u izabranom intervalu. Cilj nije da se \u201Eigra\u0161\u201C, ve\u0107 da vizuelno shvati\u0161 za\u0161to kod nekih jedna\u010Dina dobija\u0161 dve grane, a kod nekih jednu.'}
+        description={'Izaberi funkciju i vrednost a. Gore na canvasu vidiš geometrijsko tumačenje na kružnici, a dole sva rešenja u izabranom intervalu. Cilj nije da se „igraš“, već da vizuelno shvatiš zašto kod nekih jednačina dobijaš dve grane, a kod nekih jednu.'}
       >
         <TrigEquationLab />
 
@@ -1088,20 +1088,20 @@ interface IntervalOption {
 }
 
 const INTERVALS: IntervalOption[] = [
-  { label: "[-2\u03c0, 2\u03c0]", start: -2 * Math.PI, end: 2 * Math.PI },
-  { label: "[0, 2\u03c0]", start: 0, end: 2 * Math.PI },
-  { label: "[-\u03c0, 3\u03c0]", start: -Math.PI, end: 3 * Math.PI },
+  { label: "[-2π, 2π]", start: -2 * Math.PI, end: 2 * Math.PI },
+  { label: "[0, 2π]", start: 0, end: 2 * Math.PI },
+  { label: "[-π, 3π]", start: -Math.PI, end: 3 * Math.PI },
 ];
 
 const PRESETS = [
   { label: "0", value: 0 },
   { label: "1/2", value: 0.5 },
-  { label: "\u221a2/2", value: Math.SQRT2 / 2 },
-  { label: "\u221a3/2", value: Math.sqrt(3) / 2 },
+  { label: "√2/2", value: Math.SQRT2 / 2 },
+  { label: "√3/2", value: Math.sqrt(3) / 2 },
   { label: "1", value: 1 },
   { label: "-1/2", value: -0.5 },
   { label: "-1", value: -1 },
-  { label: "\u221a3", value: Math.sqrt(3) },
+  { label: "√3", value: Math.sqrt(3) },
 ];
 
 function nearlyEqual(a: number, b: number, eps = 1e-6) {
@@ -1159,9 +1159,9 @@ function angleFractionLabel(angle: number): string {
       if (n === 0) return "0";
       const sign = n < 0 ? "-" : "";
       const absN = Math.abs(n);
-      if (d === 1) return absN === 1 ? `${sign}\u03c0` : `${sign}${absN}\u03c0`;
-      if (absN === 1) return `${sign}\u03c0/${d}`;
-      return `${sign}${absN}\u03c0/${d}`;
+      if (d === 1) return absN === 1 ? `${sign}π` : `${sign}${absN}π`;
+      if (absN === 1) return `${sign}π/${d}`;
+      return `${sign}${absN}π/${d}`;
     }
   }
   return angle.toFixed(2);
@@ -1411,15 +1411,15 @@ function TrigEquationLab() {
       ctx.fillStyle = "rgba(255,155,143,0.7)";
       ctx.font = "14px system-ui, sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText("Nema realnih re\u0161enja", W * 0.5, H * 0.15);
+      ctx.fillText("Nema realnih rešenja", W * 0.5, H * 0.15);
     }
 
     // Labels
     ctx.fillStyle = "rgba(255,255,255,0.4)";
     ctx.font = "12px system-ui, sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText("Jedini\u010dna kru\u017enica", cx, cy + R + 30);
-    ctx.fillText(`Re\u0161enja na ${interval.label}`, (nlLeft + nlRight) / 2, nlY + 40);
+    ctx.fillText("Jedinična kružnica", cx, cy + R + 30);
+    ctx.fillText(`Rešenja na ${interval.label}`, (nlLeft + nlRight) / 2, nlY + 40);
   }, [eqType, a, interval, exists, bases, solutions]);
 
   useEffect(() => {
@@ -1444,17 +1444,17 @@ function TrigEquationLab() {
       : nearlyEqual(a, -0.5)
         ? "-1/2"
         : nearlyEqual(a, Math.SQRT2 / 2)
-          ? "\u221a2/2"
+          ? "√2/2"
           : nearlyEqual(a, -Math.SQRT2 / 2)
-            ? "-\u221a2/2"
+            ? "-√2/2"
             : nearlyEqual(a, Math.sqrt(3) / 2)
-              ? "\u221a3/2"
+              ? "√3/2"
               : nearlyEqual(a, -Math.sqrt(3) / 2)
-                ? "-\u221a3/2"
+                ? "-√3/2"
                 : nearlyEqual(a, Math.sqrt(3))
-                  ? "\u221a3"
+                  ? "√3"
                   : nearlyEqual(a, -Math.sqrt(3))
-                    ? "-\u221a3"
+                    ? "-√3"
                     : a.toFixed(2);
 
   return (

@@ -660,7 +660,7 @@ export default function Lesson50Page() {
         id="prijemni"
         eyebrow="Veza sa prijemnim zadacima"
         title="Kako se ova tema najčešće pojavljuje na prijemnom"
-        description={'Zadatak retko glasi samo \u201Enapiši formulu\u201C. Mnogo češće traži da iz jednačine očitaš položaj prave, da napišeš paralelu ili normalu, da odrediš ugao između dve prave ili da računaš rastojanje koje se kasnije koristi u nekoj geometrijskoj konfiguraciji.'}
+        description={'Zadatak retko glasi samo „napiši formulu“. Mnogo češće traži da iz jednačine očitaš položaj prave, da napišeš paralelu ili normalu, da odrediš ugao između dve prave ili da računaš rastojanje koje se kasnije koristi u nekoj geometrijskoj konfiguraciji.'}
       >
         <div className={s.grid3}>
           <SectionCard title="Tip 1: Prevedi i pročitaj">

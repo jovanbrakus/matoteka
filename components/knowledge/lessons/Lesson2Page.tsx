@@ -54,7 +54,7 @@ export default function Lesson2Page() {
           {
             label: "Najveća zamka",
             description:
-              "mešanje oznaka \u2208 i \u2286, kao i zamena unije i preseka.",
+              "mešanje oznaka ∈ i ⊆, kao i zamena unije i preseka.",
           },
           {
             label: "Prijemni fokus",
@@ -188,7 +188,7 @@ export default function Lesson2Page() {
         </div>
 
         <MicroCheck
-          question="Proveri sebe: šta je pogrešno u zapisu 2 \u2286 A?"
+          question="Proveri sebe: šta je pogrešno u zapisu 2 ⊆ A?"
           answer={
             <p>
               Broj <InlineMath>{"2"}</InlineMath> je element, nije skup. Zato
@@ -301,7 +301,7 @@ export default function Lesson2Page() {
         </SectionCard>
 
         <MicroCheck
-          question="Mikro-provera: da li je 3 \u2208 A \\ B?"
+          question="Mikro-provera: da li je 3 ∈ A \\ B?"
           answer={
             <p>
               Ne, jer je <InlineMath>{"3"}</InlineMath> i u skupu{" "}

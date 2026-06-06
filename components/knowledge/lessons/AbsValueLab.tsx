@@ -522,10 +522,10 @@ export default function AbsValueLab() {
   const middleHintText =
     p === q
       ? `Pošto je p=q, srednji deo se svodi na jednu tačku, a minimalna vrednost je 0.`
-      : `Minimalna vrednost funkcije je q\u2212p = ${plainNumber(middle)}, i postiže se na celom segmentu [${plainNumber(p)}, ${plainNumber(q)}].`;
+      : `Minimalna vrednost funkcije je q−p = ${plainNumber(middle)}, i postiže se na celom segmentu [${plainNumber(p)}, ${plainNumber(q)}].`;
 
   const relLabel =
-    relation === "le" ? "\u2264" : relation === "eq" ? "=" : "\u2265";
+    relation === "le" ? "≤" : relation === "eq" ? "=" : "≥";
 
   return (
     <div className={s.interactiveShell}>
@@ -604,9 +604,9 @@ export default function AbsValueLab() {
               font: "inherit",
             }}
           >
-            <option value="le">{"\u2264"}</option>
+            <option value="le">{"≤"}</option>
             <option value="eq">=</option>
-            <option value="ge">{"\u2265"}</option>
+            <option value="ge">{"≥"}</option>
           </select>
         </div>
 

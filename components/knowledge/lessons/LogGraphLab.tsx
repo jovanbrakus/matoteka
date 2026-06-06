@@ -26,7 +26,7 @@ const PRESETS: Preset[] = [
   { label: "Osnovni rast", base: 2, p: 0, q: 0, x: 2 },
   { label: "Osnovni pad", base: 0.5, p: 0, q: 0, x: 2 },
   { label: "Pomerena udesno", base: 3, p: 2, q: 1, x: 5 },
-  { label: "Argument 5\u2212x", base: 2, p: 0, q: 0, x: 3 },
+  { label: "Argument 5−x", base: 2, p: 0, q: 0, x: 3 },
 ];
 
 const BASE_OPTIONS = [
@@ -54,7 +54,7 @@ function fmt(value: number): string {
         .toFixed(2)
         .replace(/0+$/, "")
         .replace(/\.$/, "");
-  return text.replace("-", "\u2212");
+  return text.replace("-", "−");
 }
 
 function latexNum(value: number): string {
@@ -351,7 +351,7 @@ function drawLogGraph(
   ctx.fillStyle = "rgba(255,255,255,0.9)";
   ctx.font = '600 14px "Public Sans", system-ui, sans-serif';
   const baseStr = BASE_OPTIONS.find((o) => o.value === a)?.label ?? fmt(a);
-  ctx.fillText(`y = log_${baseStr}(${argumentLatex(p).replace(/\\/g, "")})${Math.abs(q) > 0.01 ? (q > 0 ? " + " : " \u2212 ") + fmt(Math.abs(q)) : ""}`, 18, 24);
+  ctx.fillText(`y = log_${baseStr}(${argumentLatex(p).replace(/\\/g, "")})${Math.abs(q) > 0.01 ? (q > 0 ? " + " : " − ") + fmt(Math.abs(q)) : ""}`, 18, 24);
   ctx.fillText(`A = (${fmt(p + 1)}, ${fmt(q)})`, 18, 46);
   if (probeArg > 0) {
     const yProbe = Math.log(probeArg) / Math.log(a) + q;

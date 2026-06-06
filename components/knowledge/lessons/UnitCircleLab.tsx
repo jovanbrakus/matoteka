@@ -292,9 +292,9 @@ function drawCanvas(canvas: HTMLCanvasElement, data: DrawData) {
 
   ctx.font = '600 12px "Public Sans", system-ui, sans-serif';
   ctx.fillStyle = "#8fd7ff";
-  ctx.fillText("cos \u03b1", (cx + x) / 2 - 16, cy + 20);
+  ctx.fillText("cos α", (cx + x) / 2 - 16, cy + 20);
   ctx.fillStyle = "#78dfb9";
-  ctx.fillText("sin \u03b1", x + 10, (cy + y) / 2);
+  ctx.fillText("sin α", x + 10, (cy + y) / 2);
 
   ctx.fillStyle = "rgba(255,255,255,0.55)";
   ctx.font = '600 13px "Public Sans", system-ui, sans-serif';
@@ -316,8 +316,8 @@ function drawCanvas(canvas: HTMLCanvasElement, data: DrawData) {
 
   ctx.fillStyle = "rgba(255,255,255,0.6)";
   ctx.font = '600 13px "Public Sans", system-ui, sans-serif';
-  ctx.fillText("Ukupan ugao: " + fmt(data.totalDeg, 0) + "\u00b0", panelX + 18, 78);
-  ctx.fillText("Glavni ugao: " + fmt(data.principalDeg, 0) + "\u00b0", panelX + 18, 102);
+  ctx.fillText("Ukupan ugao: " + fmt(data.totalDeg, 0) + "°", panelX + 18, 78);
+  ctx.fillText("Glavni ugao: " + fmt(data.principalDeg, 0) + "°", panelX + 18, 102);
   ctx.fillText("Kvadrant / osa: " + data.quadrant, panelX + 18, 126);
 
   // degree track
@@ -369,10 +369,10 @@ function drawCanvas(canvas: HTMLCanvasElement, data: DrawData) {
     180,
     [
       { value: 0, label: "0" },
-      { value: 90, label: "90\u00b0" },
-      { value: 180, label: "180\u00b0" },
-      { value: 270, label: "270\u00b0" },
-      { value: 360, label: "360\u00b0" },
+      { value: 90, label: "90°" },
+      { value: 180, label: "180°" },
+      { value: 270, label: "270°" },
+      { value: 360, label: "360°" },
     ],
     data.principalDeg,
     360,
@@ -385,10 +385,10 @@ function drawCanvas(canvas: HTMLCanvasElement, data: DrawData) {
     270,
     [
       { value: 0, label: "0" },
-      { value: 90, label: "\u03c0/2" },
-      { value: 180, label: "\u03c0" },
-      { value: 270, label: "3\u03c0/2" },
-      { value: 360, label: "2\u03c0" },
+      { value: 90, label: "π/2" },
+      { value: 180, label: "π" },
+      { value: 270, label: "3π/2" },
+      { value: 360, label: "2π" },
     ],
     data.principalDeg,
     360,
@@ -397,8 +397,8 @@ function drawCanvas(canvas: HTMLCanvasElement, data: DrawData) {
 
   ctx.fillStyle = "rgba(255,255,255,0.58)";
   ctx.font = '600 13px "Public Sans", system-ui, sans-serif';
-  ctx.fillText("Referentni ugao: " + fmt(data.refDeg, 0) + "\u00b0", panelX + 18, 336);
-  ctx.fillText("Dodaj ili oduzmi 360\u00b0 da bi dobio koterminalni ugao.", panelX + 18, 360);
+  ctx.fillText("Referentni ugao: " + fmt(data.refDeg, 0) + "°", panelX + 18, 336);
+  ctx.fillText("Dodaj ili oduzmi 360° da bi dobio koterminalni ugao.", panelX + 18, 360);
   ctx.fillText("Na kružnici važnija je krajnja tačka nego broj okreta.", panelX + 18, 384);
 }
 
@@ -489,11 +489,11 @@ export default function UnitCircleLab() {
               {PRESET_ANGLES.map((a) => (
                 <option key={a} value={a}>
                   {a === 360
-                    ? "360\u00b0 = 2\u03c0"
-                    : a + "\u00b0 = " +
+                    ? "360° = 2π"
+                    : a + "° = " +
                       degToPiTex(a)
                         .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, "$1/$2")
-                        .replace(/\\pi/g, "\u03c0")}
+                        .replace(/\\pi/g, "π")}
                 </option>
               ))}
             </select>
@@ -551,7 +551,7 @@ export default function UnitCircleLab() {
           <p style={{ color: "var(--lesson-muted-strong)" }}>
             {fmt(angleDeg, 0)}&deg; = {totalRadTex
               .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, "$1/$2")
-              .replace(/\\pi/g, "\u03c0")}
+              .replace(/\\pi/g, "π")}
           </p>
         </div>
         <div className={s.resultCard}>
@@ -559,7 +559,7 @@ export default function UnitCircleLab() {
           <p style={{ color: "var(--lesson-muted-strong)" }}>
             {fmt(principalDeg, 0)}&deg; = {principalRadTex
               .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, "$1/$2")
-              .replace(/\\pi/g, "\u03c0")}
+              .replace(/\\pi/g, "π")}
           </p>
         </div>
         <div className={s.resultCard}>
@@ -587,8 +587,8 @@ export default function UnitCircleLab() {
           <p style={{ color: "var(--lesson-muted-strong)" }}>
             {fmt(angleDeg, 0)}&deg; = {fmt(principalDeg, 0)}&deg;
             {turnPart
-              .replace(/\\cdot/g, "\u00b7")
-              .replace(/\\circ/g, "\u00b0") || ""}
+              .replace(/\\cdot/g, "·")
+              .replace(/\\circ/g, "°") || ""}
           </p>
         </div>
       </div>

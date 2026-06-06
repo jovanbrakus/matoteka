@@ -58,7 +58,7 @@ function fmt(value: number): string {
         .toFixed(2)
         .replace(/0+$/, "")
         .replace(/\.$/, "");
-  return text.replace("-", "\u2212");
+  return text.replace("-", "−");
 }
 
 function latexNum(value: number): string {
@@ -290,7 +290,7 @@ function drawExponential(
     else expr += `x + ${fmt(-p)}`;
     expr += ")";
     if (Math.abs(q) < 1e-9) return `y = ${expr}`;
-    return `y = ${expr} ${q > 0 ? "+" : "\u2212"} ${fmt(Math.abs(q))}`;
+    return `y = ${expr} ${q > 0 ? "+" : "−"} ${fmt(Math.abs(q))}`;
   })();
 
   ctx.fillStyle = "rgba(255,255,255,0.9)";

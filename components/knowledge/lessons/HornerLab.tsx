@@ -182,7 +182,7 @@ function renderCanvas(
   ctx.font = `700 ${titleFont}px Inter, sans-serif`;
   ctx.textAlign = "left";
   ctx.fillText(
-    `Hornerova \u0161ema za deljenje sa ${divisorLabel(root)}`,
+    `Hornerova šema za deljenje sa ${divisorLabel(root)}`,
     leftPad,
     36,
   );
@@ -190,7 +190,7 @@ function renderCanvas(
   ctx.fillStyle = T.note;
   ctx.font = `400 ${noteFont}px Inter, sans-serif`;
   ctx.fillText(
-    "Gornji red: koeficijenti \u00B7 Srednji red: umno\u0161ci \u00B7 Donji red: rezultat",
+    "Gornji red: koeficijenti · Srednji red: umnošci · Donji red: rezultat",
     leftPad,
     58,
   );
@@ -216,7 +216,7 @@ function renderCanvas(
   ctx.fillStyle = T.colLabel;
   ctx.font = `700 ${noteFont}px Inter, sans-serif`;
   ctx.fillText("koef.", 12, topY - 6);
-  ctx.fillText("umno\u0161ci", 8, midY - 6);
+  ctx.fillText("umnošci", 8, midY - 6);
   ctx.fillText("rezultat", 10, bottomY - 6);
 
   /* numbers */
@@ -254,8 +254,8 @@ interface Preset {
 }
 
 const PRESETS: Preset[] = [
-  { label: "Deljiv slu\u010Daj", coeffs: [1, -4, 1, 6, -8], root: 2 },
-  { label: "Nedostaje \u010Dlan", coeffs: [2, -3, 0, 5, -4], root: -1 },
+  { label: "Deljiv slučaj", coeffs: [1, -4, 1, 6, -8], root: 2 },
+  { label: "Nedostaje član", coeffs: [2, -3, 0, 5, -4], root: -1 },
   { label: "Ostatak 3", coeffs: [1, -2, 0, 5, -7], root: 2 },
 ];
 
@@ -297,7 +297,7 @@ export default function HornerLab() {
     setRoot(preset.root);
   }
 
-  const labels = ["x\u2074", "x\u00B3", "x\u00B2", "x", "sl. \u010Dlan"];
+  const labels = ["x⁴", "x³", "x²", "x", "sl. član"];
 
   return (
     <>
@@ -362,14 +362,14 @@ export default function HornerLab() {
         />
         <p style={{ marginTop: 10, color: "var(--lesson-muted)", fontSize: "0.92rem" }}>
           Na levom rubu stoji broj <MathJax inline dynamic>{"\\(a\\)"}</MathJax>, gore
-          koeficijenti polinoma, u srednjem redu umno\u0161ci, a dole koli\u010Dnik i ostatak.
+          koeficijenti polinoma, u srednjem redu umnošci, a dole količnik i ostatak.
         </p>
       </div>
 
       {/* Result panels */}
       <div className={s.interactiveShell} style={{ marginTop: 18 }}>
         <div className={s.sectionCard} style={{ padding: 22 }}>
-          <h3 className={cs.tCardTitle}>Koraci Hornerove \u0161eme</h3>
+          <h3 className={cs.tCardTitle}>Koraci Hornerove šeme</h3>
           <MathJax dynamic>
             {`Polinom: \\(${polyLatex}\\), delilac: \\(${divisor}\\), pa je \\(a=${formatNumber(root)}\\).`}
           </MathJax>
@@ -388,7 +388,7 @@ export default function HornerLab() {
           <h3 className={cs.tCardTitle}>Rezultat</h3>
           <div className={s.resultsGrid}>
             <div className={s.resultCard}>
-              <strong>Koli\u010Dnik</strong>
+              <strong>Količnik</strong>
               <MathJax dynamic>{`\\(${quotientLatex}\\)`}</MathJax>
             </div>
             <div className={s.resultCard}>
@@ -417,9 +417,9 @@ export default function HornerLab() {
             </div>
           </div>
           <div className={s.labNote}>
-            <strong style={{ color: "var(--lesson-accent)" }}>Savet za u\u010Denje:</strong>{" "}
-            Pre nego \u0161to pogleda\u0161 automatski rezultat, poku\u0161aj da sam odredi\u0161
-            slede\u0107i broj u donjem redu, pa tek onda proveri.
+            <strong style={{ color: "var(--lesson-accent)" }}>Savet za učenje:</strong>{" "}
+            Pre nego što pogledaš automatski rezultat, pokušaj da sam odrediš
+            sledeći broj u donjem redu, pa tek onda proveri.
           </div>
         </div>
       </div>

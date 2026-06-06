@@ -87,9 +87,9 @@ function piFractionLabel(num: number, den: number) {
   const sign = num < 0 ? "-" : "";
   const absNum = Math.abs(num);
   if (absNum === 0) return "0";
-  if (den === 1) return absNum === 1 ? sign + "\u03C0" : sign + absNum + "\u03C0";
-  if (absNum === 1) return sign + "\u03C0/" + den;
-  return sign + absNum + "\u03C0/" + den;
+  if (den === 1) return absNum === 1 ? sign + "π" : sign + absNum + "π";
+  if (absNum === 1) return sign + "π/" + den;
+  return sign + absNum + "π/" + den;
 }
 
 function formatDecimal(value: number, digits = 3) {
@@ -349,7 +349,7 @@ function solveHomogeneous(A: number, B: number, C: number, interval: Interval): 
     : "Ovde slučaj \\(\\cos x=0\\) ne daje rešenje, pa deljenje sa \\(\\cos^2 x\\) ne gubi korene.";
   state.generalTex = familyGeneralTex(uniqueFamilies, "k\\pi");
   state.periodNote =
-    "Svaki koren jednačine po t daje porodicu x=arctan(t)+k\u03C0, jer tangens ima periodu \u03C0.";
+    "Svaki koren jednačine po t daje porodicu x=arctan(t)+kπ, jer tangens ima periodu π.";
   state.intervalSolutions = generateSolutions(uniqueFamilies, interval.start, interval.end);
   state.intervalTex = solutionListTex(
     state.allReal ? "all" : state.intervalSolutions,
@@ -410,11 +410,11 @@ function solveLinear(a: number, b: number, c: number, interval: Interval): Solve
   const phi = Math.atan2(b, a);
   const ratio = c / R;
   state.condition =
-    "Prvi uslov je |c| \u2264 R. Ovde je R=" +
+    "Prvi uslov je |c| ≤ R. Ovde je R=" +
     valueToTex(R) +
     ", pa proveravaš da li je |" +
     valueToTex(c) +
-    "| \u2264 " +
+    "| ≤ " +
     valueToTex(R) +
     ".";
   state.transformTex = alignedDisplay([
@@ -456,7 +456,7 @@ function solveLinear(a: number, b: number, c: number, interval: Interval): Solve
     "Posle pomoćnog ugla zadatak više nije složen: ostaje bazna jednačina za sinus.";
   state.generalTex = familyGeneralTex(families, "2k\\pi");
   state.periodNote =
-    "Pošto si zadatak sveo na sinus, opšta rešenja se pišu sa periodom 2k\u03C0.";
+    "Pošto si zadatak sveo na sinus, opšta rešenja se pišu sa periodom 2kπ.";
   state.intervalSolutions = generateSolutions(families, interval.start, interval.end);
   state.intervalTex = solutionListTex(
     state.allReal ? "all" : state.intervalSolutions,
@@ -786,22 +786,22 @@ interface Preset {
 }
 
 const PRESETS: Preset[] = [
-  { label: "2s\u00B2-3sc+c\u00B2", mode: "homogeneous", c1: 2, c2: -3, c3: 1 },
-  { label: "sc-c\u00B2", mode: "homogeneous", c1: 0, c2: 1, c3: -1 },
-  { label: "s\u00B2+c\u00B2", mode: "homogeneous", c1: 1, c2: 0, c3: 1 },
+  { label: "2s²-3sc+c²", mode: "homogeneous", c1: 2, c2: -3, c3: 1 },
+  { label: "sc-c²", mode: "homogeneous", c1: 0, c2: 1, c3: -1 },
+  { label: "s²+c²", mode: "homogeneous", c1: 1, c2: 0, c3: 1 },
   { label: "sin+cos=1", mode: "linear", c1: 1, c2: 1, c3: 1 },
   { label: "3sin+4cos=5", mode: "linear", c1: 3, c2: 4, c3: 5 },
   { label: "2sin-2cos=1", mode: "linear", c1: 2, c2: -2, c3: 1 },
 ];
 
 const INTERVALS = [
-  { label: "[0, 2\u03C0]", value: "0," + String(TAU) },
-  { label: "[-\u03C0, \u03C0]", value: String(-Math.PI) + "," + String(Math.PI) },
-  { label: "[0, 4\u03C0]", value: "0," + String(TAU * 2) },
+  { label: "[0, 2π]", value: "0," + String(TAU) },
+  { label: "[-π, π]", value: String(-Math.PI) + "," + String(Math.PI) },
+  { label: "[0, 4π]", value: "0," + String(TAU * 2) },
 ];
 
 const MODE_LABELS: Record<Mode, [string, string, string]> = {
-  homogeneous: ["A uz sin\u00B2x", "B uz sinx cosx", "C uz cos\u00B2x"],
+  homogeneous: ["A uz sin²x", "B uz sinx cosx", "C uz cos²x"],
   linear: ["a uz sin x", "b uz cos x", "c desna strana"],
 };
 

@@ -49,12 +49,12 @@ export default function Lesson54Page() {
           {
             label: "Naučićeš",
             description:
-              "Kako iz jednačine odmah pročitaš geometriju parabole \u2014 teme, osa, fokus i direktrisa iz parametra p.",
+              "Kako iz jednačine odmah pročitaš geometriju parabole — teme, osa, fokus i direktrisa iz parametra p.",
           },
           {
             label: "Najveća zamka",
             description:
-              "Mešanje parametra p sa koordinatom fokusa \u2014 za y\u00B2=2px fokus je (p/2, 0), ne (p, 0).",
+              "Mešanje parametra p sa koordinatom fokusa — za y²=2px fokus je (p/2, 0), ne (p, 0).",
           },
           {
             label: "Prijemni fokus",
@@ -133,7 +133,7 @@ export default function Lesson54Page() {
         id="osnove"
         eyebrow="Osnovna slika"
         title="Kako da zamišljaš parabolu pre nego što počneš račun"
-        description="U ovoj lekciji kao glavni model koristimo parabolu y\u00B2=2px, gde je p>0. To je parabola sa temenom u koordinatnom početku, osom na x-osi i otvorom nadesno. Učeniku je najkorisnije da prvo nauči ovu sliku savršeno, pa tek onda da lakše prepoznaje rotirane ili pomerene varijante."
+        description="U ovoj lekciji kao glavni model koristimo parabolu y²=2px, gde je p>0. To je parabola sa temenom u koordinatnom početku, osom na x-osi i otvorom nadesno. Učeniku je najkorisnije da prvo nauči ovu sliku savršeno, pa tek onda da lakše prepoznaje rotirane ili pomerene varijante."
       >
         <div className={s.grid2}>
           <SectionCard title="Šta parabola geometrijski predstavlja">
@@ -378,7 +378,7 @@ export default function Lesson54Page() {
         id="lab"
         eyebrow="Interaktivna laboratorija"
         title="Pomeri pravu i gledaj kada nastaje tangenta"
-        description="U ovoj laboratoriji parabola je y\u00B2=2px, a prava je y=kx+l. Menjaj parametre i traži tacan trenutak kada se dve presečne tačke spoje u jednu. To je vizuelni način da uslov p=2kl dobije smisao."
+        description="U ovoj laboratoriji parabola je y²=2px, a prava je y=kx+l. Menjaj parametre i traži tacan trenutak kada se dve presečne tačke spoje u jednu. To je vizuelni način da uslov p=2kl dobije smisao."
       >
         <ParabolaConicLab />
       </LessonSection>

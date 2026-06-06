@@ -196,7 +196,7 @@ function drawSums(
     ctx.setLineDash([]);
     ctx.fillStyle = "rgba(146,228,196,0.95)";
     ctx.font = '700 11px "Inter",sans-serif';
-    ctx.fillText(`S\u221E = ${fmt(infSum)}`, cx + 10, ly - 8);
+    ctx.fillText(`S∞ = ${fmt(infSum)}`, cx + 10, ly - 8);
   }
 
   ctx.strokeStyle = "rgba(255,148,79,0.96)";
@@ -289,7 +289,7 @@ export default function GeometricSeriesLab() {
   const infLabel =
     conv.infSum === null
       ? "nije dozvoljena"
-      : `S\u221E = ${fmt(conv.infSum)}`;
+      : `S∞ = ${fmt(conv.infSum)}`;
   const remainderText =
     remainder !== null
       ? ` Posle prvih ${n} članova do granice ostaje još ${fmt(remainder)}.`

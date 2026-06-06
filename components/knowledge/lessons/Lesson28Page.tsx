@@ -150,7 +150,7 @@ export default function Lesson28Page() {
         eyebrow="Pojam i ideja"
         title="Šta zovemo eksponencijalnom nejednačinom"
         description={
-          "To je nejednačina u kojoj se nepoznata pojavljuje u eksponentu. Najjednostavniji oblik je a^{f(x)} \u25FB a^{g(x)}, ali zadaci često dolaze i kao zbir ili razlika više eksponencijalnih članova, ili kao kvadratna nejednačina po izrazu a^x."
+          "To je nejednačina u kojoj se nepoznata pojavljuje u eksponentu. Najjednostavniji oblik je a^{f(x)} ◻ a^{g(x)}, ali zadaci često dolaze i kao zbir ili razlika više eksponencijalnih članova, ili kao kvadratna nejednačina po izrazu a^x."
         }
       >
         <div className={s.grid2}>

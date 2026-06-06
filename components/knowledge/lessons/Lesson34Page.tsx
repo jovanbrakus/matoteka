@@ -57,12 +57,12 @@ export default function Lesson34Page() {
           {
             label: "Najveća zamka",
             description:
-              "Učenici često vide dobar mali ugao, ali pogrese znak ili zaborave da se kod 90\u00B0 \u00B1 \u03B1 menja funkcija u kofunkciju.",
+              "Učenici često vide dobar mali ugao, ali pogrese znak ili zaborave da se kod 90° ± α menja funkcija u kofunkciju.",
           },
           {
             label: "Prijemni fokus",
             description:
-              "Zadaci često traže brz proračun vrednosti poput sin 150\u00B0, cos(7\u03C0/6) ili tg 765\u00B0, bez kalkulatora.",
+              "Zadaci često traže brz proračun vrednosti poput sin 150°, cos(7π/6) ili tg 765°, bez kalkulatora.",
           },
         ]}
         stats={[
@@ -312,7 +312,7 @@ export default function Lesson34Page() {
         </MathBlock>
 
         <MicroCheck
-          question="Mikro-provera: kako iz sin\u00B2x + cos\u00B2x = 1 dobiješ identitet za tangens?"
+          question="Mikro-provera: kako iz sin²x + cos²x = 1 dobiješ identitet za tangens?"
           answer={
             <>
               <p>
@@ -471,7 +471,7 @@ export default function Lesson34Page() {
         </div>
 
         <MicroCheck
-          question="Mikro-provera: zašto sin(90\u00B0 \u2212 \u03B1) = cos \u03B1?"
+          question="Mikro-provera: zašto sin(90° − α) = cos α?"
           answer={
             <p>
               U pravouglom trouglu uglovi <InlineMath>{"\\alpha"}</InlineMath>{" "}
@@ -491,7 +491,7 @@ export default function Lesson34Page() {
         id="interaktivni"
         eyebrow="Interaktivni deo"
         title="Canvas laboratorija: promeni ugao i odmah vidi kako nastaje svođenje"
-        description="Ovaj alat služi upravo onome što se na papiru često preskoci: da svojim očima vidiš gde je ugao, koliki je referentni ugao i zašto se pojavljuje određeni znak ili kofunkcija. Biraš porodicu ugla, menjaš \u03B1, a laboratorija prikazuje rezultat za sin, cos, tg i ctg."
+        description="Ovaj alat služi upravo onome što se na papiru često preskoci: da svojim očima vidiš gde je ugao, koliki je referentni ugao i zašto se pojavljuje određeni znak ili kofunkcija. Biraš porodicu ugla, menjaš α, a laboratorija prikazuje rezultat za sin, cos, tg i ctg."
       >
         <ReductionLab />
 
@@ -751,15 +751,15 @@ export default function Lesson34Page() {
           <FormulaCard
             title="Komplementni uglovi"
             formula={"\\sin(90^\\circ-\\alpha)=\\cos\\alpha,\\quad \\cos(90^\\circ-\\alpha)=\\sin\\alpha,\\quad \\operatorname{tg}(90^\\circ-\\alpha)=\\operatorname{ctg}\\alpha"}
-            note="Kofunkcije nastaju jer posmatraš isti trougao iz ugla koji je dopunski do 90\u00B0."
+            note="Kofunkcije nastaju jer posmatraš isti trougao iz ugla koji je dopunski do 90°."
           />
           <FormulaCard
-            title="Oblik 90\u00B0 + \u03B1"
+            title="Oblik 90° + α"
             formula={"\\sin(90^\\circ+\\alpha)=\\cos\\alpha,\\quad \\cos(90^\\circ+\\alpha)=-\\sin\\alpha,\\quad \\operatorname{tg}(90^\\circ+\\alpha)=-\\operatorname{ctg}\\alpha"}
             note="Ovde se funkcija menja u kofunkciju, a znak uzimaš iz drugog kvadranta."
           />
           <FormulaCard
-            title="Obliči 270\u00B0 \u00B1 \u03B1"
+            title="Obliči 270° ± α"
             formula={"\\sin(270^\\circ-\\alpha)=-\\cos\\alpha,\\; \\cos(270^\\circ-\\alpha)=-\\sin\\alpha,\\; \\sin(270^\\circ+\\alpha)=-\\cos\\alpha,\\; \\cos(270^\\circ+\\alpha)=\\sin\\alpha"}
             note="Ovi obliči deluju teže, ali se i oni rešavaju istim principom: kvadrant plus kofunkcija."
           />
@@ -809,7 +809,7 @@ export default function Lesson34Page() {
           </article>
           <article className={s.tipCard}>
             <h3 className={cs.tCardTitle}>
-              Kod 90\u00B0 \u00B1 \u03B1 zaboravljena je kofunkcija
+              Kod 90° ± α zaboravljena je kofunkcija
             </h3>
             <p>
               Tipicna greška je{" "}
@@ -1188,7 +1188,7 @@ export default function Lesson34Page() {
               <InlineMath>{"180^\\circ"}</InlineMath>.
             </p>
           </SectionCard>
-          <SectionCard title="3. Kofunkcija je signal za uglove uz 90\u00B0 i 270\u00B0">
+          <SectionCard title="3. Kofunkcija je signal za uglove uz 90° i 270°">
             <p>
               Tu se funkcija menja: sinus prelazi u kosinus, kosinus u sinus,
               tangens u kotangens i obrnuto.

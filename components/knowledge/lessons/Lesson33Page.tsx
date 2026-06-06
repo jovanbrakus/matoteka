@@ -45,7 +45,7 @@ export default function Lesson33Page() {
             </span>
           </>
         }
-        description={'Ovo je lekcija koja otvara celu trigonometriju. Kada razume\u0161 \u0161ta je radijan i kako ugao odre\u0111uje ta\u010dku na jedini\u010dnoj kru\u017enici, sinus i kosinus prestaju da budu \u201Eformule iz trougla\u201C i postaju koordinate ta\u010dke za svaki realan ugao.'}
+        description={'Ovo je lekcija koja otvara celu trigonometriju. Kada razumeš šta je radijan i kako ugao određuje tačku na jediničnoj kružnici, sinus i kosinus prestaju da budu „formule iz trougla“ i postaju koordinate tačke za svaki realan ugao.'}
         heroImageSrc="/images/lessons/lesson33_hero.png"
         heroImageAlt="Apstraktna matematička tabla sa jediničnom kružnicom, radijanima i standardnim uglovima"
         cards={[
@@ -778,7 +778,7 @@ export default function Lesson33Page() {
         id="prijemni"
         eyebrow="Veza sa prijemnim zadacima"
         title="Kako se ova lekcija stvarno pojavljuje na prijemnom"
-        description={'Zadaci retko ostaju samo na \u201Epretvori u radijane\u201C. Naj\u010de\u0161\u0107e se kombinuju merenje ugla, polo\u017eaj na kru\u017enici i vrednost trigonometrijske funkcije.'}
+        description={'Zadaci retko ostaju samo na „pretvori u radijane“. Najčešće se kombinuju merenje ugla, položaj na kružnici i vrednost trigonometrijske funkcije.'}
       >
         <div className={s.grid2}>
           <SectionCard title="Najčešći tipovi zadataka">

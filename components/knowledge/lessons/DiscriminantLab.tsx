@@ -17,14 +17,14 @@ function fmt(value: number): string {
 
 function equationString(a: number, b: number, c: number): string {
   const parts: string[] = [];
-  const first = a === 1 ? "x\u00B2" : a === -1 ? "-x\u00B2" : `${fmt(a)}x\u00B2`;
+  const first = a === 1 ? "x²" : a === -1 ? "-x²" : `${fmt(a)}x²`;
   parts.push(first);
   if (b !== 0) {
     const bPart = Math.abs(b) === 1 ? "x" : `${fmt(Math.abs(b))}x`;
-    parts.push(`${b >= 0 ? "+" : "\u2212"} ${bPart}`);
+    parts.push(`${b >= 0 ? "+" : "−"} ${bPart}`);
   }
   if (c !== 0) {
-    parts.push(`${c >= 0 ? "+" : "\u2212"} ${fmt(Math.abs(c))}`);
+    parts.push(`${c >= 0 ? "+" : "−"} ${fmt(Math.abs(c))}`);
   }
   return `${parts.join(" ")} = 0`;
 }
@@ -41,10 +41,10 @@ function rootsDescription(a: number, b: number, delta: number): RootInfo {
     const x1 = (-b - sqrtDelta) / (2 * a);
     const x2 = (-b + sqrtDelta) / (2 * a);
     return {
-      nature: "Dva razli\u010Dita realna",
-      roots: `x\u2081 = ${fmt(x1)},  x\u2082 = ${fmt(x2)}`,
+      nature: "Dva različita realna",
+      roots: `x₁ = ${fmt(x1)},  x₂ = ${fmt(x2)}`,
       message:
-        "Diskriminanta je pozitivna, pa o\u010Dekujemo dva razli\u010Dita realna korena i dva preseka sa x-osom.",
+        "Diskriminanta je pozitivna, pa očekujemo dva različita realna korena i dva preseka sa x-osom.",
     };
   }
   if (delta === 0) {
@@ -60,7 +60,7 @@ function rootsDescription(a: number, b: number, delta: number): RootInfo {
   const imag = Math.sqrt(-delta) / Math.abs(2 * a);
   return {
     nature: "Nema realnih; postoje kompleksni",
-    roots: `x = ${fmt(real)} \u00B1 ${fmt(imag)}i`,
+    roots: `x = ${fmt(real)} ± ${fmt(imag)}i`,
     message:
       "Diskriminanta je negativna: nema realnih preseka sa x-osom, ali nad kompleksnim brojevima postoje konjugovani koreni.",
   };
@@ -225,8 +225,8 @@ function drawParabola(
     const sqD = Math.sqrt(delta);
     const x1 = (-b - sqD) / (2 * a);
     const x2 = (-b + sqD) / (2 * a);
-    drawPoint(x1, 0, "#70ddb6", `x\u2081=${fmt(x1)}`);
-    drawPoint(x2, 0, "#70ddb6", `x\u2082=${fmt(x2)}`);
+    drawPoint(x1, 0, "#70ddb6", `x₁=${fmt(x1)}`);
+    drawPoint(x2, 0, "#70ddb6", `x₂=${fmt(x2)}`);
   } else if (delta === 0) {
     const x = -b / (2 * a);
     drawPoint(x, 0, "#70ddb6", `x=${fmt(x)}`);
@@ -237,7 +237,7 @@ function drawParabola(
   ctx.font = '14px "Public Sans", system-ui, sans-serif';
   ctx.fillText(equationString(a, b, c), 18, 24);
   ctx.fillStyle = "#ffd7b9";
-  ctx.fillText(`\u0394 = ${fmt(delta)}`, 18, 46);
+  ctx.fillText(`Δ = ${fmt(delta)}`, 18, 46);
 }
 
 /* ── Component ── */
@@ -420,7 +420,7 @@ export default function DiscriminantLab() {
           <div className={s.resultCard}>
             <strong>Diskriminanta</strong>
             <p style={{ color: "var(--lesson-accent)", fontWeight: 700, fontSize: "1.05rem" }}>
-              {"\u0394"} = {fmt(safeDelta)}
+              {"Δ"} = {fmt(safeDelta)}
             </p>
           </div>
           <div className={s.resultCard}>

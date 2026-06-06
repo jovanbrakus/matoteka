@@ -25,7 +25,7 @@ function buildExpr(terms: Term[]): string {
   const parts: string[] = [];
   terms.forEach(({ coef, variable }) => {
     if (Math.abs(coef) < EPS) return;
-    const sign = coef < 0 ? "\u2212" : "+";
+    const sign = coef < 0 ? "−" : "+";
     const abs = Math.abs(coef);
     const coefText = variable
       ? Math.abs(abs - 1) < EPS
@@ -42,16 +42,16 @@ function buildExpr(terms: Term[]): string {
 
 function funcExpr(a: number, b: number, c: number, d: number): string {
   return `f(x) = ${buildExpr([
-    { coef: a, variable: "x\u00B3" },
-    { coef: b, variable: "x\u00B2" },
+    { coef: a, variable: "x³" },
+    { coef: b, variable: "x²" },
     { coef: c, variable: "x" },
     { coef: d, variable: "" },
   ])}`;
 }
 
 function derivExprStr(a: number, b: number, c: number): string {
-  return `f\u2032(x) = ${buildExpr([
-    { coef: 3 * a, variable: "x\u00B2" },
+  return `f′(x) = ${buildExpr([
+    { coef: 3 * a, variable: "x²" },
     { coef: 2 * b, variable: "x" },
     { coef: c, variable: "" },
   ])}`;
@@ -111,8 +111,8 @@ function analyseIntervals(
     else sample = (left + right) / 2;
     const val = fpVal(sample, a, b, c);
     const sign = val > EPS ? 1 : val < -EPS ? -1 : 0;
-    const bL = !Number.isFinite(left) ? "\u2212\u221E" : fmt(left);
-    const bR = !Number.isFinite(right) ? "+\u221E" : fmt(right);
+    const bL = !Number.isFinite(left) ? "−∞" : fmt(left);
+    const bR = !Number.isFinite(right) ? "+∞" : fmt(right);
     return {
       left,
       right,
@@ -134,7 +134,7 @@ function classifyRoot(
 ): { x: number; y: number; type: string } {
   const leftSign = intervals[idx]?.sign ?? 0;
   const rightSign = intervals[idx + 1]?.sign ?? 0;
-  let type = "stacionarna ta\u010Dka bez ekstrema";
+  let type = "stacionarna tačka bez ekstrema";
   if (leftSign > 0 && rightSign < 0) type = "lokalni maksimum";
   else if (leftSign < 0 && rightSign > 0) type = "lokalni minimum";
   return { x: root, y: fVal(root, a, b, c, d), type };
@@ -324,7 +324,7 @@ function drawCanvas(
   ctx.fillStyle = T.tangentLabel;
   ctx.font = '12px "Public Sans", system-ui, sans-serif';
   ctx.textAlign = "left";
-  ctx.fillText(`x\u2080=${fmt(x0)}`, px0 + 10, py0 - 10);
+  ctx.fillText(`x₀=${fmt(x0)}`, px0 + 10, py0 - 10);
 
   /* critical points */
   roots.forEach((root) => {
@@ -351,7 +351,7 @@ function drawCanvas(
   ctx.fillStyle = T.muted;
   ctx.font = '12px "Public Sans", system-ui, sans-serif';
   ctx.textAlign = "right";
-  ctx.fillText("f\u2032(x)", sR.x - 8, sR.y + sR.h / 2 + 4);
+  ctx.fillText("f′(x)", sR.x - 8, sR.y + sR.h / 2 + 4);
 
   intervals.forEach((iv) => {
     const leftPx = iv.left <= xMin ? sR.x : sx(iv.left);
@@ -370,7 +370,7 @@ function drawCanvas(
     ctx.font = 'bold 18px "Public Sans", system-ui, sans-serif';
     ctx.textAlign = "center";
     ctx.fillText(
-      iv.sign > 0 ? "+" : iv.sign < 0 ? "\u2212" : "0",
+      iv.sign > 0 ? "+" : iv.sign < 0 ? "−" : "0",
       (cL + cR) / 2,
       sR.y + sR.h / 2 + 7
     );
@@ -391,7 +391,7 @@ function drawCanvas(
   ctx.font = '11px "Public Sans", system-ui, sans-serif';
   ctx.textAlign = "center";
   ctx.fillText(
-    "Traka znakova f\u2032(x)",
+    "Traka znakova f′(x)",
     sR.x + sR.w / 2,
     sR.y + sR.h + 18
   );
@@ -459,7 +459,7 @@ export default function DerivativeApplicationLab() {
 
   const critSummary =
     roots.length === 0
-      ? "nema kriti\u010Dnih ta\u010Daka"
+      ? "nema kritičnih tačaka"
       : roots.map((r) => `x = ${fmt(r)}`).join(" i ");
   const critDetails =
     classifications.length === 0
@@ -473,7 +473,7 @@ export default function DerivativeApplicationLab() {
   const monoDetails =
     "znak izvoda: " +
     intervals
-      .map((iv) => (iv.sign > 0 ? "+" : iv.sign < 0 ? "\u2212" : "0"))
+      .map((iv) => (iv.sign > 0 ? "+" : iv.sign < 0 ? "−" : "0"))
       .join(", zatim ");
 
   return (
@@ -517,7 +517,7 @@ export default function DerivativeApplicationLab() {
               { label: "c", value: cVal, setter: setC, min: -6, max: 6, step: 0.25 },
               { label: "d", value: dVal, setter: setD, min: -6, max: 6, step: 0.5 },
               {
-                label: "x\u2080",
+                label: "x₀",
                 value: x0Val,
                 setter: setX0,
                 min: -3.5,
@@ -605,7 +605,7 @@ export default function DerivativeApplicationLab() {
             </p>
           </div>
           <div className={s.resultCard}>
-            <strong>Kriti\u010Dne ta\u010Dke</strong>
+            <strong>Kritične tačke</strong>
             <p style={{ color: "var(--lesson-muted-strong)", fontWeight: 600 }}>
               {critSummary}
             </p>
@@ -623,20 +623,20 @@ export default function DerivativeApplicationLab() {
             </p>
           </div>
           <div className={s.resultCard}>
-            <strong>Tangenta u ta\u010Dki x&#x2080;</strong>
+            <strong>Tangenta u tački x&#x2080;</strong>
             <p style={{ color: "var(--lesson-muted-strong)", fontWeight: 600 }}>
               {tangentExprStr(x0Val, y0, slope)}
             </p>
             <p style={{ color: "var(--lesson-muted)", marginTop: 4 }}>
-              nagib tangente jednak je vrednosti izvoda u izabranoj ta\u010Dki
+              nagib tangente jednak je vrednosti izvoda u izabranoj tački
             </p>
           </div>
         </div>
 
         <p className={s.labNote}>
-          Napomena: laboratorija pokriva i slu\u010Daj a=0, pa tada posmatraš
+          Napomena: laboratorija pokriva i slučaj a=0, pa tada posmatraš
           kvadratnu ili linearnu funkciju. To je korisno jer ista logika znaka
-          izvoda ostaje va\u017Ena, iako se tip funkcije menja.
+          izvoda ostaje važna, iako se tip funkcije menja.
         </p>
       </div>
     </div>

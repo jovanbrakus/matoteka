@@ -137,7 +137,7 @@ export default function SubstitutionLab() {
       ctx.fillText("u", width - padding.right + 6, toY(0) + 4);
       ctx.fillText("P(u)", toX(0) + 8, padding.top - 8);
       ctx.fillStyle = "rgba(255, 151, 141, 0.9)";
-      ctx.fillText("zabranjeno: u \u2264 0", padding.left + 8, padding.top + 18);
+      ctx.fillText("zabranjeno: u ≤ 0", padding.left + 8, padding.top + 18);
       ctx.fillStyle = "rgba(120, 223, 185, 0.9)";
       ctx.fillText("dozvoljeno: u > 0", toX(0) + 12, padding.top + 18);
 

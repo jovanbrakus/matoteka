@@ -38,7 +38,7 @@ function fmt(value: number): string {
         .toFixed(2)
         .replace(/0+$/, "")
         .replace(/\.$/, "");
-  return text.replace("-", "\u2212");
+  return text.replace("-", "−");
 }
 
 function latexNum(value: number): string {
@@ -252,14 +252,14 @@ function drawGraph(
   drawPoint(0, n, "#ffd7b9", "(0,n)");
   drawPoint(xMark, yMark, "#88d8ff", "P");
   if (Math.abs(k) > 1e-9) {
-    drawPoint(-n / k, 0, "#6bdfb7", "x\u2080");
+    drawPoint(-n / k, 0, "#6bdfb7", "x₀");
   }
 
   // Top-left info
   ctx.fillStyle = "rgba(255,255,255,0.84)";
   ctx.font = '600 14px "Public Sans", system-ui, sans-serif';
   ctx.fillText(
-    `y = ${fmt(k)}x ${n >= 0 ? "+" : "\u2212"} ${fmt(Math.abs(n))}`,
+    `y = ${fmt(k)}x ${n >= 0 ? "+" : "−"} ${fmt(Math.abs(n))}`,
     18,
     24
   );

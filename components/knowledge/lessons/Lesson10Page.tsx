@@ -542,7 +542,7 @@ export default function Lesson10Page() {
           <FormulaCard
             title="Poseban slučaj za realne rezultate"
             formula={"z^n \\in \\mathbb{R} \\Longleftrightarrow \\sin(n\\varphi)=0"}
-            note={'Ovo je veoma korisno u zadacima sa uslovom \u201Erealan\u201C ili \u201E\u010Disto imaginaran\u201C.'}
+            note={'Ovo je veoma korisno u zadacima sa uslovom „realan“ ili „čisto imaginaran“.'}
           />
         </div>
 
@@ -555,7 +555,7 @@ export default function Lesson10Page() {
         id="zamke"
         eyebrow="Česte greške"
         title="Ovde se gube laki poeni"
-        description={'Ve\u0107ina gre\u0161aka nije posledica \u201Ete\u0161ke formule\u201C, ve\u0107 lo\u0161e procene ugla ili nepa\u017Eljivog prelaza izme\u0111u oblika.'}
+        description={'Većina grešaka nije posledica „teške formule“, već loše procene ugla ili nepažljivog prelaza između oblika.'}
       >
         <div className={s.tipGrid}>
           <article className={s.tipCard}>

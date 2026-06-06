@@ -128,7 +128,7 @@ function rootsDescription(a: number, b: number, c: number): string {
   const delta = discriminant(a, b, c);
   if (delta < -EPS) return "Nema realnih nula.";
   const roots = getRoots(a, b, c);
-  if (roots.length === 1) return `x\\u2080 = ${fmt(roots[0])}`;
+  if (roots.length === 1) return `x_0 = ${fmt(roots[0])}`;
   return `x_1 \\approx ${fmt(roots[0])},\\quad x_2 \\approx ${fmt(roots[1])}`;
 }
 
@@ -143,45 +143,45 @@ function signComment(
   if (delta < -EPS) {
     if (a > 0)
       return relation === "gt" || relation === "ge"
-        ? "Parabola je otvorena navi\u0161e i nema realnih nula, pa je ceo grafik iznad x-ose."
-        : "Parabola je otvorena navi\u0161e i nema realnih nula, zato strogo ili nestrogo negativnih vrednosti nema.";
+        ? "Parabola je otvorena naviše i nema realnih nula, pa je ceo grafik iznad x-ose."
+        : "Parabola je otvorena naviše i nema realnih nula, zato strogo ili nestrogo negativnih vrednosti nema.";
     return relation === "lt" || relation === "le"
-      ? "Parabola je otvorena nani\u017Ee i nema realnih nula, pa je ceo grafik ispod x-ose."
-      : "Parabola je otvorena nani\u017Ee i nema realnih nula, zato pozitivnih vrednosti nema.";
+      ? "Parabola je otvorena naniže i nema realnih nula, pa je ceo grafik ispod x-ose."
+      : "Parabola je otvorena naniže i nema realnih nula, zato pozitivnih vrednosti nema.";
   }
 
   if (Math.abs(delta) <= EPS) {
     return a > 0
-      ? "Parabola dodiruje x-osu odozgo: nenegativna je za svaki x, a jednaka nuli samo u jednoj ta\u010Dki."
-      : "Parabola dodiruje x-osu odozdo: nepozitivna je za svaki x, a jednaka nuli samo u jednoj ta\u010Dki.";
+      ? "Parabola dodiruje x-osu odozgo: nenegativna je za svaki x, a jednaka nuli samo u jednoj tački."
+      : "Parabola dodiruje x-osu odozdo: nepozitivna je za svaki x, a jednaka nuli samo u jednoj tački.";
   }
 
   if (a > 0) {
     return relation === "gt" || relation === "ge"
-      ? "Parabola je otvorena navi\u0161e i se\u010De x-osu u dve ta\u010Dke, pa je pozitivna spolja, a negativna izme\u0111u nula."
-      : "Parabola je otvorena navi\u0161e i se\u010De x-osu u dve ta\u010Dke, pa je negativna izme\u0111u nula.";
+      ? "Parabola je otvorena naviše i seče x-osu u dve tačke, pa je pozitivna spolja, a negativna između nula."
+      : "Parabola je otvorena naviše i seče x-osu u dve tačke, pa je negativna između nula.";
   }
 
   return relation === "gt" || relation === "ge"
-    ? "Parabola je otvorena nani\u017Ee i se\u010De x-osu u dve ta\u010Dke, pa je pozitivna izme\u0111u nula."
-    : "Parabola je otvorena nani\u017Ee i se\u010De x-osu u dve ta\u010Dke, pa je negativna spolja.";
+    ? "Parabola je otvorena naniže i seče x-osu u dve tačke, pa je pozitivna između nula."
+    : "Parabola je otvorena naniže i seče x-osu u dve tačke, pa je negativna spolja.";
 }
 
 function parameterComment(a: number, b: number, c: number): string {
   const delta = discriminant(a, b, c);
   if (delta < -EPS && a > 0)
-    return 'Ovo je model \u201Euvek pozitivno\u201C: uslovi a > 0 i \u0394 < 0 su ispunjeni.';
+    return 'Ovo je model „uvek pozitivno“: uslovi a > 0 i Δ < 0 su ispunjeni.';
   if (Math.abs(delta) <= EPS && a > 0)
-    return 'Ovo je model \u201Euvek nenegativno\u201C: parabola dodiruje x-osu, pa za strogo > 0 otpada jedna ta\u010Dka.';
+    return 'Ovo je model „uvek nenegativno“: parabola dodiruje x-osu, pa za strogo > 0 otpada jedna tačka.';
   if (delta < -EPS && a < 0)
-    return 'Ovo je model \u201Euvek negativno\u201C: uslovi a < 0 i \u0394 < 0 su ispunjeni.';
+    return 'Ovo je model „uvek negativno“: uslovi a < 0 i Δ < 0 su ispunjeni.';
   if (Math.abs(delta) <= EPS && a < 0)
-    return 'Ovo je model \u201Euvek nepozitivno\u201C: cela parabola je ispod ili na x-osi.';
-  return "Po\u0161to postoje dve realne nule, ovaj trinom menja znak i zato ne mo\u017Ee biti svuda istog strogog znaka.";
+    return 'Ovo je model „uvek nepozitivno“: cela parabola je ispod ili na x-osi.';
+  return "Pošto postoje dve realne nule, ovaj trinom menja znak i zato ne može biti svuda istog strogog znaka.";
 }
 
 function relationSymbol(rel: Relation): string {
-  return { gt: ">", ge: "\u2265", lt: "<", le: "\u2264" }[rel];
+  return { gt: ">", ge: "≥", lt: "<", le: "≤" }[rel];
 }
 
 /* ── Presets ── */
@@ -197,8 +197,8 @@ interface Preset {
 const PRESETS: Preset[] = [
   { label: "Dve nule", a: 1, b: -5, c: 6, rel: "gt" },
   { label: "a < 0", a: -1, b: 1, c: 2, rel: "le" },
-  { label: "\u0394 < 0", a: 1, b: 4, c: 5, rel: "ge" },
-  { label: "\u0394 = 0", a: 1, b: -6, c: 9, rel: "le" },
+  { label: "Δ < 0", a: 1, b: 4, c: 5, rel: "ge" },
+  { label: "Δ = 0", a: 1, b: -6, c: 9, rel: "le" },
 ];
 
 /* ── Canvas ── */
@@ -355,7 +355,7 @@ function draw(
     ctx.fillStyle = "rgba(142, 215, 255, 0.96)";
     ctx.font = '600 12px "Public Sans", sans-serif';
     ctx.fillText(
-      `x${idx + 1}\u2248${fmt(root)}`,
+      `x${idx + 1}≈${fmt(root)}`,
       sx(root) + 8,
       sy(0) - 12
     );
@@ -398,11 +398,11 @@ function draw(
   /* labels */
   ctx.fillStyle = "rgba(246, 238, 233, 0.9)";
   ctx.font = '600 12px "Public Sans", sans-serif';
-  ctx.fillText("Re\u0161enje na brojevnoj pravoj", plotLeft, bandTop - 10);
+  ctx.fillText("Rešenje na brojevnoj pravoj", plotLeft, bandTop - 10);
 
   const sign = relationSymbol(relation);
   ctx.fillText(
-    `Nejednačina: ${fmt(a)}x\u00B2 ${b >= 0 ? "+" : "\u2212"} ${fmt(Math.abs(b))}x ${c >= 0 ? "+" : "\u2212"} ${fmt(Math.abs(c))} ${sign} 0`,
+    `Nejednačina: ${fmt(a)}x² ${b >= 0 ? "+" : "−"} ${fmt(Math.abs(b))}x ${c >= 0 ? "+" : "−"} ${fmt(Math.abs(c))} ${sign} 0`,
     plotLeft,
     plotTop + 14
   );
@@ -457,7 +457,7 @@ export default function QuadraticInequalityLab() {
         {/* Controls */}
         <div>
           <article className={s.interactiveCard} style={{ padding: 22 }}>
-            <div className={cs.tLabel}>Pode\u0161avanje modela</div>
+            <div className={cs.tLabel}>Podešavanje modela</div>
             <h3 className={cs.tCardTitle}>Trenutna nejednačina</h3>
 
             <div className={s.mathBlock} style={{ textAlign: "center" }}>
@@ -515,9 +515,9 @@ export default function QuadraticInequalityLab() {
                 onChange={(e) => setRel(e.target.value as Relation)}
               >
                 <option value="gt">&gt; 0</option>
-                <option value="ge">{"\u2265"} 0</option>
+                <option value="ge">{"≥"} 0</option>
                 <option value="lt">&lt; 0</option>
-                <option value="le">{"\u2264"} 0</option>
+                <option value="le">{"≤"} 0</option>
               </select>
             </div>
 
@@ -543,7 +543,7 @@ export default function QuadraticInequalityLab() {
             <h3 className={cs.tCardTitle}>Šta vidiš na slici</h3>
             <ul style={{ paddingLeft: 18, marginTop: 8 }}>
               <li style={{ color: "var(--lesson-muted)" }}>
-                Narandžasta kriva je parabola y = ax{"\u00B2"} + bx + c.
+                Narandžasta kriva je parabola y = ax{"²"} + bx + c.
               </li>
               <li style={{ color: "var(--lesson-muted)" }}>
                 Plave tačke su realne nule, a žuta tačka je teme parabole.
@@ -561,7 +561,7 @@ export default function QuadraticInequalityLab() {
           <article className={s.interactiveCard} style={{ padding: 22 }}>
             <div className={cs.tLabel}>Canvas prikaz</div>
             <h3 className={cs.tCardTitle}>
-              Parabola i skup re\u0161enja u istoj slici
+              Parabola i skup rešenja u istoj slici
             </h3>
             <p style={{ color: "var(--lesson-muted)", marginBottom: 12 }}>
               Za dobru intuiciju gledaj istovremeno gde je parabola u odnosu na
@@ -600,11 +600,11 @@ export default function QuadraticInequalityLab() {
           <MathJax dynamic>{`\\(${rootsDesc}\\)`}</MathJax>
         </article>
         <article className={s.resultCard}>
-          <strong>Skup re\u0161enja</strong>
+          <strong>Skup rešenja</strong>
           <MathJax dynamic>{`\\(S = ${solLatex}\\)`}</MathJax>
         </article>
         <article className={s.resultCard}>
-          <strong>Tuma\u010Denje</strong>
+          <strong>Tumačenje</strong>
           <p style={{ color: "var(--lesson-muted)", fontSize: "0.92rem" }}>
             {signDesc}
           </p>

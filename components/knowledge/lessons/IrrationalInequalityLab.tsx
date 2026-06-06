@@ -117,14 +117,14 @@ function setToLatex(intervals: Interval[]) {
 }
 
 function setToPlain(intervals: Interval[]) {
-  if (!intervals.length) return "\u2205";
+  if (!intervals.length) return "∅";
   return intervals
     .map(
       (i) =>
         `${i.openLeft ? "(" : "["}${valToLatex(i.left)}, ${valToLatex(i.right)}${i.openRight ? ")" : "]"}`
     )
-    .join(" \u222a ")
-    .replace(/\\infty/g, "\u221e");
+    .join(" ∪ ")
+    .replace(/\\infty/g, "∞");
 }
 
 type Op = ">=" | ">" | "<=" | "<";
@@ -586,10 +586,10 @@ export default function IrrationalInequalityLab() {
             <div className={s.field}>
               <label>Znak nejednakosti</label>
               <select value={op} onChange={(e) => handleOp(e.target.value as Op)}>
-                <option value=">=">{"\u221a"}(x+p) {"\u2265"} x+q</option>
-                <option value=">">{"\u221a"}(x+p) {">"} x+q</option>
-                <option value="<=">{"\u221a"}(x+p) {"\u2264"} x+q</option>
-                <option value="<">{"\u221a"}(x+p) {"<"} x+q</option>
+                <option value=">=">{"√"}(x+p) {"≥"} x+q</option>
+                <option value=">">{"√"}(x+p) {">"} x+q</option>
+                <option value="<=">{"√"}(x+p) {"≤"} x+q</option>
+                <option value="<">{"√"}(x+p) {"<"} x+q</option>
               </select>
             </div>
             <p style={{ marginTop: 8 }}>

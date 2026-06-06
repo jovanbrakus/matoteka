@@ -105,7 +105,7 @@ export default function Lesson32Page() {
           <SectionCard title="Prijemni benefit">
             <p>
               Kada znaš stabilan algoritam, zadatak više ne deluje
-              {"\u201E"}specijalno{"\u201C"}, nego postaje obična algebra pod
+              {"„"}specijalno{"“"}, nego postaje obična algebra pod
               kontrolom uslova.
             </p>
           </SectionCard>
@@ -649,7 +649,7 @@ export default function Lesson32Page() {
             </h3>
             <p>
               Pravila sabiranja i oduzimanja važe u domenu, ne u{" "}
-              {"\u201E"}vakuumu{"\u201C"}.
+              {"„"}vakuumu{"“"}.
             </p>
           </article>
           <article className={s.tipCard}>
@@ -939,7 +939,7 @@ export default function Lesson32Page() {
           </MathBlock>
           <p>
             Ako ovo zaista usvojiš, logaritamske nejednačine prestaju da
-            budu {"\u201E"}haotične{"\u201C"}. Postaju predvidljiv niz
+            budu {"„"}haotične{"“"}. Postaju predvidljiv niz
             odluka koji uvek možeš da kontrolišeš.
           </p>
           <p style={{ marginTop: 12, color: "var(--lesson-muted)" }}>

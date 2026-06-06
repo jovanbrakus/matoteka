@@ -35,7 +35,7 @@ interface Family {
 
 const FAMILIES: Record<FamilyKey, Family> = {
   direct: {
-    label: "\u03B8 = \u03B1",
+    label: "θ = α",
     patternLatex: "\\theta = \\alpha",
     note: "ugao je vec u prvom kvadrantu",
     theta: (a) => a,
@@ -47,7 +47,7 @@ const FAMILIES: Record<FamilyKey, Family> = {
     },
   },
   "180minus": {
-    label: "\u03B8 = 180\u00B0 \u2212 \u03B1",
+    label: "θ = 180° − α",
     patternLatex: "\\theta = 180^\\circ - \\alpha",
     note: "ista funkcija, znak iz II kvadranta",
     theta: (a) => 180 - a,
@@ -59,7 +59,7 @@ const FAMILIES: Record<FamilyKey, Family> = {
     },
   },
   "180plus": {
-    label: "\u03B8 = 180\u00B0 + \u03B1",
+    label: "θ = 180° + α",
     patternLatex: "\\theta = 180^\\circ + \\alpha",
     note: "ista funkcija, znak iz III kvadranta",
     theta: (a) => 180 + a,
@@ -71,7 +71,7 @@ const FAMILIES: Record<FamilyKey, Family> = {
     },
   },
   "360minus": {
-    label: "\u03B8 = 360\u00B0 \u2212 \u03B1",
+    label: "θ = 360° − α",
     patternLatex: "\\theta = 360^\\circ - \\alpha",
     note: "ista funkcija, znak iz IV kvadranta",
     theta: (a) => 360 - a,
@@ -83,7 +83,7 @@ const FAMILIES: Record<FamilyKey, Family> = {
     },
   },
   "90minus": {
-    label: "\u03B8 = 90\u00B0 \u2212 \u03B1",
+    label: "θ = 90° − α",
     patternLatex: "\\theta = 90^\\circ - \\alpha",
     note: "kofunkcija bez promene znaka",
     theta: (a) => 90 - a,
@@ -95,7 +95,7 @@ const FAMILIES: Record<FamilyKey, Family> = {
     },
   },
   "90plus": {
-    label: "\u03B8 = 90\u00B0 + \u03B1",
+    label: "θ = 90° + α",
     patternLatex: "\\theta = 90^\\circ + \\alpha",
     note: "kofunkcija uz znak iz II kvadranta",
     theta: (a) => 90 + a,
@@ -107,7 +107,7 @@ const FAMILIES: Record<FamilyKey, Family> = {
     },
   },
   "270minus": {
-    label: "\u03B8 = 270\u00B0 \u2212 \u03B1",
+    label: "θ = 270° − α",
     patternLatex: "\\theta = 270^\\circ - \\alpha",
     note: "kofunkcija uz znak iz III kvadranta",
     theta: (a) => 270 - a,
@@ -119,7 +119,7 @@ const FAMILIES: Record<FamilyKey, Family> = {
     },
   },
   "270plus": {
-    label: "\u03B8 = 270\u00B0 + \u03B1",
+    label: "θ = 270° + α",
     patternLatex: "\\theta = 270^\\circ + \\alpha",
     note: "kofunkcija uz znak iz IV kvadranta",
     theta: (a) => 270 + a,
@@ -330,7 +330,7 @@ function renderCanvas(
   ctx.fillStyle = "#ec5b13";
   ctx.font = `600 ${Math.round(size * 0.026)}px "Public Sans", sans-serif`;
   ctx.textAlign = "center";
-  ctx.fillText(`\u03B8 = ${Math.round(normalT)}\u00B0`, tX + 18, tY - 14);
+  ctx.fillText(`θ = ${Math.round(normalT)}°`, tX + 18, tY - 14);
 
   // dashed projections
   ctx.setLineDash([5, 5]);
@@ -370,7 +370,7 @@ function renderCanvas(
     ctx.fill();
     ctx.fillStyle = "#8fd7ff";
     ctx.font = `600 ${Math.round(size * 0.024)}px "Public Sans", sans-serif`;
-    ctx.fillText(`\u03B1 = ${Math.round(alphaDeg)}\u00B0`, aX + 16, aY - 10);
+    ctx.fillText(`α = ${Math.round(alphaDeg)}°`, aX + 16, aY - 10);
   }
 
   // quadrant labels
@@ -459,9 +459,9 @@ export default function ReductionLab() {
         {/* Alpha slider */}
         <div className={s.rangeWrap}>
           <label>
-            Referentni ugao \u03B1:{" "}
+            Referentni ugao α:{" "}
             <strong style={{ color: "var(--lesson-accent)" }}>
-              {alpha}\u00B0
+              {alpha}°
             </strong>
           </label>
           <input
@@ -490,7 +490,7 @@ export default function ReductionLab() {
               }
               onClick={() => setAlpha(p)}
             >
-              {p}\u00B0
+              {p}°
             </button>
           ))}
         </div>

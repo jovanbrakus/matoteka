@@ -220,7 +220,7 @@ function renderSquare(
   );
   drawLabel(
     ctx,
-    "\u2192 zbir \u010Detiri dela daje kvadrat binoma",
+    "→ zbir četiri dela daje kvadrat binoma",
     x0,
     y0 + aSize + bSize + 40,
     T.labelMuted,
@@ -260,7 +260,7 @@ function renderDifference(
     if (st.showLabels) {
       drawLabel(
         ctx,
-        `${st.a * st.a}x\u00B2`,
+        `${st.a * st.a}x²`,
         leftX + big * 0.24,
         topY + big * 0.55,
         T.labelSq,
@@ -276,7 +276,7 @@ function renderDifference(
       );
     }
 
-    drawLabel(ctx, "\u2193", width / 2 - 8, topY + big + 42, T.arrowColor, 28);
+    drawLabel(ctx, "↓", width / 2 - 8, topY + big + 42, T.arrowColor, 28);
 
     const rectW = (st.a + st.b) * unit;
     const rectH = Math.max(st.a - st.b, 1) * unit;
@@ -329,7 +329,7 @@ function renderDifference(
   if (st.showLabels) {
     drawLabel(
       ctx,
-      `${st.a * st.a}x\u00B2`,
+      `${st.a * st.a}x²`,
       leftX + big * 0.28,
       topY + big * 0.55,
       T.labelSq,
@@ -370,7 +370,7 @@ function renderDifference(
   }
 
   const arrowX = leftX + big + 52;
-  drawLabel(ctx, "\u2192", arrowX, topY + big * 0.52, T.arrowColor, 34);
+  drawLabel(ctx, "→", arrowX, topY + big * 0.52, T.arrowColor, 34);
 
   const rectX = arrowX + 56;
   const rectW = (st.a + st.b) * unit;
@@ -408,7 +408,7 @@ function renderDifference(
   );
   drawLabel(
     ctx,
-    "\u2192 rezultat se mo\u017Ee zapisati kao proizvod dva binoma",
+    "→ rezultat se može zapisati kao proizvod dva binoma",
     leftX,
     topY + big + 40,
     T.labelMuted,
@@ -456,7 +456,7 @@ function renderGrouping(
 
     drawLabel(
       ctx,
-      "\u2193",
+      "↓",
       width / 2 - 8,
       startY + 2 * (boxH + gap) + 10,
       T.arrowColor,
@@ -493,7 +493,7 @@ function renderGrouping(
 
     drawLabel(
       ctx,
-      "\u2193",
+      "↓",
       width / 2 - 8,
       midY + 2 * midH + 54,
       T.arrowColor,
@@ -570,7 +570,7 @@ function renderGrouping(
 
   drawLabel(
     ctx,
-    "\u2192",
+    "→",
     startX + 2 * (boxW + gap) + 36,
     startY + 88,
     T.arrowColor,
@@ -588,7 +588,7 @@ function renderGrouping(
   drawLabel(ctx, `${st.a}(x+y)`, fx + 50, fy + 48, T.labelContent, 22);
   drawLabel(ctx, `${st.b}(x+y)`, fx + 50, fy + 148, T.labelAb, 22);
 
-  drawLabel(ctx, "\u2192", fx + 236, startY + 88, T.arrowColor, 34);
+  drawLabel(ctx, "→", fx + 236, startY + 88, T.arrowColor, 34);
 
   ctx.fillStyle = T.resultFill;
   ctx.fillRect(fx + 292, startY + 56, 200, 100);
@@ -605,7 +605,7 @@ function renderGrouping(
 
   drawLabel(
     ctx,
-    "Grupi\u0161i tako da isti binom ispadne u obe grupe",
+    "Grupiši tako da isti binom ispadne u obe grupe",
     startX,
     48,
     T.labelAccent,

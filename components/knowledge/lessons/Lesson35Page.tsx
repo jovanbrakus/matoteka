@@ -57,7 +57,7 @@ export default function Lesson35Page() {
           {
             label: "Prijemni fokus",
             description:
-              "Zadaci često traže sin 75\u00B0, cos 15\u00B0, tg 105\u00B0, ali i prepoznavanje izraza kao što je sin x cos y + cos x sin y.",
+              "Zadaci često traže sin 75°, cos 15°, tg 105°, ali i prepoznavanje izraza kao što je sin x cos y + cos x sin y.",
           },
         ]}
         stats={[
@@ -146,7 +146,7 @@ export default function Lesson35Page() {
         id="intuicija"
         eyebrow="Intuitivno tumačenje"
         title="Zbir uglova znači dve uzastopne rotacije, ne samo dve brojke koje sabiraš"
-        description="Najbolji način da razumeš adicione teoreme jeste da na ugao gledaš kao na rotaciju. Prvo napraviš rotaciju za \u03B1, pa zatim na već rotiran položaj dodaš još \u03B2. Konačni položaj je upravo ugao \u03B1+\u03B2."
+        description="Najbolji način da razumeš adicione teoreme jeste da na ugao gledaš kao na rotaciju. Prvo napraviš rotaciju za α, pa zatim na već rotiran položaj dodaš još β. Konačni položaj je upravo ugao α+β."
       >
         <div className={s.grid2}>
           <SectionCard title="Geometrijska slika">
@@ -230,7 +230,7 @@ export default function Lesson35Page() {
           <FormulaCard
             title="Kako nastaje tangens"
             formula={"\\operatorname{tg}(\\alpha+\\beta)=\\frac{\\sin(\\alpha+\\beta)}{\\cos(\\alpha+\\beta)}=\\frac{\\sin\\alpha\\cos\\beta+\\cos\\alpha\\sin\\beta}{\\cos\\alpha\\cos\\beta-\\sin\\alpha\\sin\\beta}"}
-            note="Ako podeliš brojilac i imenilac sa cos \u03B1 cos \u03B2, dobijaš standardnu formulu za tangens zbira. Zato ona nije nova magična formula, već posledica prethodnih."
+            note="Ako podeliš brojilac i imenilac sa cos α cos β, dobijaš standardnu formulu za tangens zbira. Zato ona nije nova magična formula, već posledica prethodnih."
           />
         </div>
 
@@ -256,7 +256,7 @@ export default function Lesson35Page() {
         </div>
 
         <MicroCheck
-          question="Mikro-provera: kako da bez gledanja obnoviš formulu za cos(\u03B1\u2212\u03B2)?"
+          question="Mikro-provera: kako da bez gledanja obnoviš formulu za cos(α−β)?"
           answer={
             <>
               <p>
@@ -472,7 +472,7 @@ export default function Lesson35Page() {
                   <InlineMath>{"y=15^\\circ"}</InlineMath>.
                 </p>
               </WalkStep>
-              <WalkStep number={2} title="Zbir je 90\u00B0.">
+              <WalkStep number={2} title="Zbir je 90°.">
                 <MathBlock>
                   {
                     "\\sin 75^\\circ\\cos 15^\\circ+\\cos 75^\\circ\\sin 15^\\circ = \\sin(75^\\circ+15^\\circ) = \\sin 90^\\circ = 1"
@@ -493,7 +493,7 @@ export default function Lesson35Page() {
         id="obrasci"
         eyebrow="Obrasci i čitanje unazad"
         title="Najjači deo lekcije često nije računanje, nego prepoznavanje"
-        description="U mnogim zadacima neće ti pisati sin(\u03B1+\u03B2), nego upravo razvijen izraz. Tvoj posao je tada da prepoznaš šta taj izraz zapravo predstavlja. Zato ove obrasce treba videti i unapred i unazad."
+        description="U mnogim zadacima neće ti pisati sin(α+β), nego upravo razvijen izraz. Tvoj posao je tada da prepoznaš šta taj izraz zapravo predstavlja. Zato ove obrasce treba videti i unapred i unazad."
       >
         <div className={s.formulaGrid}>
           <FormulaCard

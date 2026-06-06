@@ -70,7 +70,7 @@ const PRESETS: NumberPreset[] = [
   },
   {
     key: "sqrt2",
-    label: "\u221A2",
+    label: "√2",
     mathLabel: "\\sqrt{2}",
     plainLabel: "sqrt(2)",
     value: Math.sqrt(2),
@@ -94,7 +94,7 @@ const PRESETS: NumberPreset[] = [
   },
   {
     key: "pi",
-    label: "\u03C0",
+    label: "π",
     mathLabel: "\\pi",
     plainLabel: "pi",
     value: Math.PI,

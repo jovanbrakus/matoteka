@@ -137,7 +137,7 @@ export default function Lesson49Page() {
         eyebrow="Osnovna ideja lekcije"
         title="Tačka je uređeni par, a razlika koordinata je skrivena geometrija"
         description={
-          "Kada napišemo A(x\u2081,y\u2081) i B(x\u2082,y\u2082), mi ne zapisujemo samo dve oznake. " +
+          "Kada napišemo A(x₁,y₁) i B(x₂,y₂), mi ne zapisujemo samo dve oznake. " +
           "Mi zapravo zapisujemo koliko se od tačke A ide levo-desno i dole-gore da bi se stiglo do tačke B. " +
           "Upravo iz tih promena nastaju i dužina duži, i sredina, i površina trougla."
         }
@@ -152,7 +152,7 @@ export default function Lesson49Page() {
               <InlineMath>{"(5,2)"}</InlineMath>.
             </p>
           </SectionCard>
-          <SectionCard title="Najvažniji su \u0394x i \u0394y">
+          <SectionCard title="Najvažniji su Δx i Δy">
             <p>
               Od <InlineMath>{"A"}</InlineMath> do{" "}
               <InlineMath>{"B"}</InlineMath> se pomeraš za{" "}
@@ -220,7 +220,7 @@ export default function Lesson49Page() {
         eyebrow="Udaljenost dve tačke"
         title="Formula za rastojanje nije za pamćenje napamet, već za prepoznavanje Pitagore u ravni"
         description={
-          "Ako iz tačaka A(x\u2081,y\u2081) i B(x\u2082,y\u2082) spustiš horizontalu i vertikalu, dobijaš pravougli trougao. " +
+          "Ako iz tačaka A(x₁,y₁) i B(x₂,y₂) spustiš horizontalu i vertikalu, dobijaš pravougli trougao. " +
           "Njegove katete su upravo horizontalna i vertikalna promena između tačaka. " +
           "Hipotenuza tog trougla je duž AB, pa se formula praktično sama nameće."
         }
@@ -305,7 +305,7 @@ export default function Lesson49Page() {
         </div>
 
         <MicroCheck
-          question="Mikro-provera: zašto je svejedno da li pišeš x\u2082\u2212x\u2081 ili x\u2081\u2212x\u2082 u formuli za rastojanje?"
+          question="Mikro-provera: zašto je svejedno da li pišeš x₂−x₁ ili x₁−x₂ u formuli za rastojanje?"
           answer={
             <p>
               Zato što se razlika kvadrira. Brojevi{" "}
@@ -345,7 +345,7 @@ export default function Lesson49Page() {
         </div>
 
         <div className={s.grid2} style={{ marginTop: 16 }}>
-          <SectionCard title={'Zašto je formula za podelu \u201Eobrnuta\u201C'}>
+          <SectionCard title={'Zašto je formula za podelu „obrnuta“'}>
             <p>
               Ako je <InlineMath>{"AP:PB=2:3"}</InlineMath>, onda je{" "}
               <InlineMath>{"P"}</InlineMath> bliže tački{" "}
@@ -663,7 +663,7 @@ export default function Lesson49Page() {
           <FormulaCard
             title="Površina"
             formula={"S=\\frac{1}{2}\\left|x_1(y_2-y_3)+x_2(y_3-y_1)+x_3(y_1-y_2)\\right|"}
-            note={'Naročito korisna kada baze i visine nisu \u201Ena prvi pogled\u201C vidljive.'}
+            note={'Naročito korisna kada baze i visine nisu „na prvi pogled“ vidljive.'}
           />
           <FormulaCard
             title="Kolinearnost"
@@ -678,7 +678,7 @@ export default function Lesson49Page() {
         id="greske"
         eyebrow="Česte greške"
         title="Većina grešaka nije teška matematika, nego loš refleks u zapisu"
-        description={'Dobra vest je da su tipične greške vrlo prepoznatljive. Loša vest je da se stalno ponavljaju upravo zato što učenik misli da je zadatak \u201Elak\u201C. Ovde treba biti disciplinovan.'}
+        description={'Dobra vest je da su tipične greške vrlo prepoznatljive. Loša vest je da se stalno ponavljaju upravo zato što učenik misli da je zadatak „lak“. Ovde treba biti disciplinovan.'}
       >
         <div className={s.tipGrid}>
           <article className={s.tipCard}>

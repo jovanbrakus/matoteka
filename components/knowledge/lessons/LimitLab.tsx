@@ -341,7 +341,7 @@ export default function LimitLab() {
       ctx.fillStyle = "rgba(255,230,214,0.88)";
       ctx.font = '700 14px "Public Sans",sans-serif';
       ctx.fillText("n", w - pad + 8, mapY(p.limit, yMin, yMax) + 18);
-      ctx.fillText("a\u2099", pad + 6, pad - 10);
+      ctx.fillText("aₙ", pad + 6, pad - 10);
       ctx.restore();
     } else if (p.mode === "function-point") {
       const radius = 2.8 / Math.max(3, slider / 2);

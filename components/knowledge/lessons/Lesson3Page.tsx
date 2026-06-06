@@ -50,7 +50,7 @@ export default function Lesson3Page() {
           {
             label: "Naučićeš",
             description:
-              "Kako da relaciju čitaš kao podskup skupa A\u00D7A i kako da proveriš njena svojstva.",
+              "Kako da relaciju čitaš kao podskup skupa A×A i kako da proveriš njena svojstva.",
           },
           {
             label: "Najveća zamka",
@@ -144,7 +144,7 @@ export default function Lesson3Page() {
         eyebrow="Osnovna ideja"
         title="Relacija je podskup Kartezijevog proizvoda"
         description={
-          "Ako su A i B skupovi, binarna relacija između njih je bilo koji podskup skupa A\u00D7B. Kada radimo svojstva kao što su refleksivnost i tranzitivnost, najčešće posmatramo relaciju na istom skupu, pa je R \u2286 A\u00D7A."
+          "Ako su A i B skupovi, binarna relacija između njih je bilo koji podskup skupa A×B. Kada radimo svojstva kao što su refleksivnost i tranzitivnost, najčešće posmatramo relaciju na istom skupu, pa je R ⊆ A×A."
         }
       >
         <div className={s.grid3}>
@@ -198,7 +198,7 @@ export default function Lesson3Page() {
         </p>
 
         <MicroCheck
-          question="Mikro-provera: ako je R \u2286 A\u00D7A, da li iz a \u2208 A i b \u2208 A automatski sledi aRb?"
+          question="Mikro-provera: ako je R ⊆ A×A, da li iz a ∈ A i b ∈ A automatski sledi aRb?"
           answer={
             <p>
               Ne. To samo znači da je par <InlineMath>{"(a,b)"}</InlineMath>{" "}
@@ -405,7 +405,7 @@ export default function Lesson3Page() {
         </div>
 
         <div className={s.grid3} style={{ marginTop: 16 }}>
-          <SectionCard title="\u2264 na realnim brojevima">
+          <SectionCard title="≤ na realnim brojevima">
             <p>
               Refleksivna je jer važi{" "}
               <InlineMath>{"x \\le x"}</InlineMath>. Antisimetrična je jer iz{" "}

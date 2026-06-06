@@ -284,7 +284,7 @@ export default function Lesson1Page() {
         </div>
 
         <MicroCheck
-          question={'Proveri sebe: da li je rečenica "x\u00B2 = 9" iskaz?'}
+          question={'Proveri sebe: da li je rečenica "x² = 9" iskaz?'}
           answer={
             <p>
               Sama po sebi nije iskaz, jer zavisi od vrednosti promenljive{" "}
@@ -481,7 +481,7 @@ export default function Lesson1Page() {
         </InsightCard>
 
         <MicroCheck
-          question={"Proveri sebe: kada je implikacija p \u21D2 q netačna?"}
+          question={"Proveri sebe: kada je implikacija p ⇒ q netačna?"}
           answer={
             <p>
               Samo u jednom slučaju: kada je <InlineMath>{"p"}</InlineMath>{" "}
