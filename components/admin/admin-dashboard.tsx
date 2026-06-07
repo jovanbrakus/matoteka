@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import DailyTrendChart, { type DailyPoint } from "@/components/admin/daily-trend-chart";
 
 interface Analytics {
   totalUsers: number;
@@ -11,6 +12,8 @@ interface Analytics {
   totalAiSolutions: number;
   activeUsersToday: number;
   newUsersThisWeek: number;
+  registrationsByDay: DailyPoint[];
+  viewsByDay: DailyPoint[];
 }
 
 interface UserRow {
@@ -94,6 +97,11 @@ export default function AdminDashboard() {
             <div key={i} className="h-32 animate-pulse rounded-2xl bg-[var(--tint)]" />
           ))}
         </div>
+        <div className="mb-8 grid gap-4 lg:grid-cols-2">
+          {[0, 1].map((i) => (
+            <div key={i} className="h-72 animate-pulse rounded-2xl bg-[var(--tint)]" />
+          ))}
+        </div>
         <div className="h-10 w-64 mb-4 animate-pulse rounded-xl bg-[var(--tint)]" />
         <div className="h-96 animate-pulse rounded-2xl bg-[var(--tint)]" />
       </div>
@@ -141,6 +149,22 @@ export default function AdminDashboard() {
             <p className="text-xs font-medium text-text-secondary">{card.label}</p>
           </div>
         ))}
+      </div>
+
+      {/* Daily trends */}
+      <div className="mb-8 grid gap-4 lg:grid-cols-2">
+        <DailyTrendChart
+          title="Nove registracije"
+          icon="person_add"
+          data={analytics?.registrationsByDay ?? []}
+          color="#ec5b13"
+        />
+        <DailyTrendChart
+          title="Pregledi rešenja"
+          icon="visibility"
+          data={analytics?.viewsByDay ?? []}
+          color="#0ea5e9"
+        />
       </div>
 
       {/* Quick links */}
