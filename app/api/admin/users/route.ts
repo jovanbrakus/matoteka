@@ -31,6 +31,8 @@ export async function GET(req: NextRequest) {
         lastActiveDate: users.lastActiveDate,
         streakCurrent: users.streakCurrent,
         avatarUrl: users.avatarUrl,
+        hasGoogle: sql<boolean>`${users.googleId} IS NOT NULL`,
+        hasPassword: sql<boolean>`${users.passwordHash} IS NOT NULL`,
       })
       .from(users)
       .where(where)
