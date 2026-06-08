@@ -3,6 +3,9 @@ import { Resend } from "resend";
 const FROM = "Matoteka <jovan@matoteka.com>";
 const REPLY_TO = "jovan@matoteka.com";
 const BRAND = "#ec5b13";
+// Absolute URL (email clients can't resolve relative paths). Served from prod so
+// the image loads regardless of which environment sent the mail.
+const LOGO_URL = "https://matoteka.com/logo-brain.png";
 
 function baseUrl(): string {
   return (process.env.AUTH_URL || "https://matoteka.com").replace(/\/$/, "");
@@ -32,7 +35,8 @@ function layout(opts: {
   return `<!DOCTYPE html><html lang="sr"><body style="margin:0;padding:0;background:#f5f5f5;">
 <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#1a1a1a;max-width:520px;margin:0 auto;padding:32px 24px;">
   <div style="text-align:center;margin-bottom:24px;">
-    <span style="font-size:24px;font-weight:700;color:${BRAND};">Matoteka</span>
+    <img src="${LOGO_URL}" alt="Matoteka" width="40" height="40" style="display:inline-block;vertical-align:middle;border:0;width:40px;height:40px;margin-right:10px;" />
+    <span style="display:inline-block;vertical-align:middle;font-size:24px;font-weight:700;color:${BRAND};">Matoteka</span>
   </div>
   <div style="background:#ffffff;border-radius:16px;padding:28px 28px 32px;border:1px solid #ececec;">
     <h1 style="margin:0 0 16px;font-size:20px;color:#1a1a1a;">${opts.heading}</h1>
