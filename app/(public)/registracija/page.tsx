@@ -156,6 +156,13 @@ export default function RegisterPage() {
                 Prijavi se
               </Link>
             </p>
+
+            <p className="mt-6 text-xs text-muted">
+              Registracijom prihvataš{" "}
+              <Link href="/terms" className="underline hover:text-primary">uslove korišćenja</Link>{" "}
+              i{" "}
+              <Link href="/privacy" className="underline hover:text-primary">politiku privatnosti</Link>.
+            </p>
           </>
         )}
       </div>

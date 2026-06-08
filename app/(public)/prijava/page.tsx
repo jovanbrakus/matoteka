@@ -234,7 +234,10 @@ export default function LoginPage() {
         )}
 
         <p className="mt-6 text-xs text-muted">
-          Prijavom prihvataš uslove korišćenja platforme.
+          Prijavom prihvataš{" "}
+          <Link href="/terms" className="underline hover:text-primary">uslove korišćenja</Link>{" "}
+          i{" "}
+          <Link href="/privacy" className="underline hover:text-primary">politiku privatnosti</Link>.
         </p>
       </div>
     </div>
