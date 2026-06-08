@@ -3,6 +3,7 @@
 import { signIn, getProviders, useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function LoginPage() {
   const { data: session, status } = useSession();
@@ -10,6 +11,9 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
+  const [unverified, setUnverified] = useState(false);
+  const [resent, setResent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [hasGoogle, setHasGoogle] = useState(false);
@@ -29,6 +33,12 @@ export default function LoginPage() {
     if (searchParams.get("error") === "AccountDisabled") {
       setError("Nažalost, onemogućen vam je pristup Matoteka servisu.");
     }
+    if (searchParams.get("verified") === "1") {
+      setNotice("Email je potvrđen. Prijavi se na svoj nalog.");
+    }
+    if (searchParams.get("reset") === "1") {
+      setNotice("Lozinka je promenjena. Prijavi se sa novom lozinkom.");
+    }
   }, [searchParams]);
 
   useEffect(() => {
@@ -41,6 +51,9 @@ export default function LoginPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    setNotice("");
+    setUnverified(false);
+    setResent(false);
     setLoading(true);
 
     const result = await signIn("credentials", {
@@ -54,12 +67,29 @@ export default function LoginPage() {
     if (result?.error) {
       if (result.code === "AccountDisabled") {
         setError("Nažalost, onemogućen vam je pristup Matoteka servisu.");
+      } else if (result.code === "EmailNotVerified") {
+        setUnverified(true);
+        setError("Potvrdi svoj mejl pre prijave.");
       } else {
         setError("Pogrešan email ili lozinka.");
       }
     } else {
       window.location.href = callbackUrl;
     }
+  }
+
+  async function handleResendVerification() {
+    setResent(false);
+    try {
+      await fetch("/api/resend-verification", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+    } catch {
+      // Always show the same confirmation regardless of outcome.
+    }
+    setResent(true);
   }
 
   return (
@@ -74,6 +104,12 @@ export default function LoginPage() {
         <p className="mb-8 text-text-secondary">
           Prijavi se da počneš sa pripremom
         </p>
+
+        {notice && (
+          <div className="mb-6 rounded-xl border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-500">
+            {notice}
+          </div>
+        )}
 
         {hasCredentials && (
           <form onSubmit={handleSubmit} className="mb-6 space-y-4 text-left">
@@ -116,6 +152,22 @@ export default function LoginPage() {
               <p className="text-sm text-error">{error}</p>
             )}
 
+            {unverified && (
+              resent ? (
+                <p className="text-sm text-text-secondary">
+                  Poslali smo novi link za potvrdu na tvoj mejl.
+                </p>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleResendVerification}
+                  className="text-sm text-primary hover:underline"
+                >
+                  Pošalji link za potvrdu ponovo
+                </button>
+              )
+            )}
+
             <button
               type="submit"
               disabled={loading}
@@ -123,6 +175,12 @@ export default function LoginPage() {
             >
               {loading ? "Prijavljivanje..." : "Prijavi se"}
             </button>
+
+            <div className="text-right">
+              <Link href="/zaboravljena-lozinka" className="text-sm text-text-secondary hover:text-primary hover:underline">
+                Zaboravljena lozinka?
+              </Link>
+            </div>
           </form>
         )}
 
@@ -164,6 +222,15 @@ export default function LoginPage() {
             </svg>
             Prijavi se sa Google nalogom
           </button>
+        )}
+
+        {hasCredentials && (
+          <p className="mt-6 text-sm text-text-secondary">
+            Nemaš nalog?{" "}
+            <Link href="/registracija" className="text-primary hover:underline">
+              Registruj se
+            </Link>
+          </p>
         )}
 
         <p className="mt-6 text-xs text-muted">

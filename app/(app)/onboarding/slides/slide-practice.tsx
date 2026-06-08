@@ -31,13 +31,13 @@ export default function SlidePractice() {
             animation: "rise-in 600ms cubic-bezier(0.22,1,0.36,1) 220ms both",
           }}
         >
-          Preko 5000 zadataka sa rešenjima kroz korake — i AI tutor kad zapneš.
+          Preko 5000 zadataka sa detaljnim rešenjima kroz korake — sa pravih prijemnih ispita.
         </p>
 
         <div className="mt-7 flex flex-col gap-3">
           {[
             { icon: "bolt", label: "5000+ zadataka", color: "var(--color-primary)" },
-            { icon: "psychology", label: "AI tutor objašnjava korake", color: "var(--color-accent)" },
+            { icon: "history_edu", label: "Zadaci sa pravih prijemnih", color: "var(--color-accent)" },
             { icon: "description", label: "Detaljna rešenja", color: "var(--color-banana)" },
           ].map((chip, i) => (
             <div

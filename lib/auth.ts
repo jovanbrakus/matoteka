@@ -12,6 +12,10 @@ class AccountDisabledError extends CredentialsSignin {
   code = "AccountDisabled";
 }
 
+class EmailNotVerifiedError extends CredentialsSignin {
+  code = "EmailNotVerified";
+}
+
 // In-memory rate limiter for credential auth (per email)
 const loginAttempts = new Map<string, { count: number; resetAt: number }>();
 const MAX_ATTEMPTS = 5;
@@ -58,6 +62,10 @@ const providers = [
 
           const isValid = await bcrypt.compare(password, user.passwordHash);
           if (!isValid) return null;
+
+          // Password is correct — gate on email verification (only password
+          // logins reach here; Google sign-ins prove ownership separately).
+          if (!user.emailVerified) throw new EmailNotVerifiedError();
 
           if (!user.isActive) throw new AccountDisabledError();
 
@@ -120,12 +128,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           if (!existingByEmail[0].isActive) {
             return "/prijava?error=AccountDisabled";
           }
-          // Link Google account to existing user
+          // Link Google account to existing user. Google proves email
+          // ownership, so mark verified if it wasn't already — otherwise a user
+          // who registered with a password but never clicked the verify link
+          // would stay blocked from password login.
           await db
             .update(users)
             .set({
               googleId: account.providerAccountId,
               avatarUrl: existingByEmail[0].avatarUrl || user.image,
+              emailVerified: existingByEmail[0].emailVerified ?? new Date(),
               updatedAt: new Date(),
             })
             .where(eq(users.id, existingByEmail[0].id));
@@ -135,6 +147,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             email: user.email,
             displayName: user.name || user.email.split("@")[0],
             avatarUrl: user.image,
+            emailVerified: new Date(), // Google verifies the address
             role: "student",
           });
         }

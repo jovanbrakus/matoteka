@@ -23,7 +23,7 @@ export default async function globalSetup() {
   const sql = neon(databaseUrl);
 
   console.log("[E2E] Truncating all tables...");
-  await sql`TRUNCATE TABLE solution_views, solution_daily_usage, user_analytics, leaderboard_scores, mock_exam_problems, mock_exams, problem_progress, bookmarks, users, faculties CASCADE`;
+  await sql`TRUNCATE TABLE auth_tokens, solution_views, solution_daily_usage, user_analytics, leaderboard_scores, mock_exam_problems, mock_exams, problem_progress, bookmarks, users, faculties CASCADE`;
 
   console.log("[E2E] Seeding faculties...");
   for (const f of FACULTIES) {
@@ -39,14 +39,14 @@ export default async function globalSetup() {
   const adminHash = await bcrypt.hash(TEST_ADMIN.password, 10);
 
   await sql`
-    INSERT INTO users (email, display_name, password_hash, role, target_faculties, onboarded_at)
-    VALUES (${TEST_STUDENT.email}, ${TEST_STUDENT.displayName}, ${studentHash}, 'student', '["etf"]'::jsonb, NOW())
+    INSERT INTO users (email, display_name, password_hash, role, target_faculties, onboarded_at, email_verified)
+    VALUES (${TEST_STUDENT.email}, ${TEST_STUDENT.displayName}, ${studentHash}, 'student', '["etf"]'::jsonb, NOW(), NOW())
     ON CONFLICT (email) DO NOTHING
   `;
 
   await sql`
-    INSERT INTO users (email, display_name, password_hash, role, target_faculties, onboarded_at)
-    VALUES (${TEST_ADMIN.email}, ${TEST_ADMIN.displayName}, ${adminHash}, 'admin', '["etf"]'::jsonb, NOW())
+    INSERT INTO users (email, display_name, password_hash, role, target_faculties, onboarded_at, email_verified)
+    VALUES (${TEST_ADMIN.email}, ${TEST_ADMIN.displayName}, ${adminHash}, 'admin', '["etf"]'::jsonb, NOW(), NOW())
     ON CONFLICT (email) DO NOTHING
   `;
 
