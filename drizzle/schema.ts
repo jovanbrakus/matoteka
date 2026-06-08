@@ -21,6 +21,10 @@ export const users = pgTable("users", {
   displayName: varchar("display_name", { length: 50 }).notNull(),
   avatarUrl: text("avatar_url"),
   passwordHash: varchar("password_hash", { length: 255 }),
+  // Set when the user confirms their email (via magic link) or proves ownership
+  // through Google sign-in / a password reset. Null = unverified password signup;
+  // the credentials login is blocked until this is set.
+  emailVerified: timestamp("email_verified", { withTimezone: true }),
   role: varchar("role", { length: 10 }).notNull().default("student"),
   targetFaculties: jsonb("target_faculties").default([]),
   streakCurrent: integer("streak_current").notNull().default(0),
@@ -53,6 +57,28 @@ export const faculties = pgTable("faculties", {
   description: text("description"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
+
+// Single-use tokens for email verification and password reset. The raw token
+// lives only in the emailed link; we store only its SHA-256 hash. A token is
+// deleted on consume, and prior tokens of the same type for a user are cleared
+// before a new one is issued.
+export const authTokens = pgTable(
+  "auth_tokens",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    tokenHash: varchar("token_hash", { length: 64 }).notNull(),
+    type: varchar("type", { length: 20 }).notNull(), // 'email_verify' | 'password_reset'
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  },
+  (table) => [
+    index("idx_auth_tokens_hash").on(table.tokenHash),
+    index("idx_auth_tokens_user_type").on(table.userId, table.type),
+  ]
+);
 
 export const bookmarks = pgTable(
   "bookmarks",

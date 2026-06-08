@@ -29,7 +29,7 @@ async function main() {
   if (existing.length > 0) {
     await db
       .update(schema.users)
-      .set({ passwordHash, role: "admin" })
+      .set({ passwordHash, role: "admin", emailVerified: new Date() })
       .where(eq(schema.users.email, email));
     console.log(`  Updated existing user ${email} to admin with password.`);
   } else {
@@ -38,6 +38,7 @@ async function main() {
       displayName: "Admin",
       passwordHash,
       role: "admin",
+      emailVerified: new Date(),
     });
     console.log(`  Created admin user ${email}.`);
   }
