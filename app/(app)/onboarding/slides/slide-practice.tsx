@@ -31,7 +31,7 @@ export default function SlidePractice() {
             animation: "rise-in 600ms cubic-bezier(0.22,1,0.36,1) 220ms both",
           }}
         >
-          Preko 5000 zadataka sa rešenjima kroz korake — i AI tutor kad zapneš.
+          Preko 5000 zadataka sa detaljnim rešenjima kroz korake — sa pravih prijemnih ispita.
         </p>
 
         <div className="mt-7 flex flex-col gap-3">
