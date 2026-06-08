@@ -23,7 +23,7 @@ export default async function globalSetup() {
   const sql = neon(databaseUrl);
 
   console.log("[E2E] Truncating all tables...");
-  await sql`TRUNCATE TABLE solution_views, solution_daily_usage, user_analytics, leaderboard_scores, mock_exam_problems, mock_exams, problem_progress, bookmarks, users, faculties CASCADE`;
+  await sql`TRUNCATE TABLE auth_tokens, solution_views, solution_daily_usage, user_analytics, leaderboard_scores, mock_exam_problems, mock_exams, problem_progress, bookmarks, users, faculties CASCADE`;
 
   console.log("[E2E] Seeding faculties...");
   for (const f of FACULTIES) {
