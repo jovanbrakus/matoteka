@@ -37,7 +37,7 @@ export default function SlidePractice() {
         <div className="mt-7 flex flex-col gap-3">
           {[
             { icon: "bolt", label: "5000+ zadataka", color: "var(--color-primary)" },
-            { icon: "psychology", label: "AI tutor objašnjava korake", color: "var(--color-accent)" },
+            { icon: "history_edu", label: "Zadaci sa pravih prijemnih", color: "var(--color-accent)" },
             { icon: "description", label: "Detaljna rešenja", color: "var(--color-banana)" },
           ].map((chip, i) => (
             <div
