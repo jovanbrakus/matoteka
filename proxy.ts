@@ -15,6 +15,7 @@ const publicPaths = [
   "/terms",
   "/privacy",
   "/primer",
+  "/kako-se-pripremiti-za-prijemni-iz-matematike",
   "/znanje",
   "/sitemap.xml",
   "/robots.txt",

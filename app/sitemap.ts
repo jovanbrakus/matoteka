@@ -7,6 +7,11 @@ const STATIC_ROUTES = [
   { path: "/znanje", changeFrequency: "weekly", priority: 0.9 },
   { path: "/about", changeFrequency: "monthly", priority: 0.6 },
   { path: "/primer", changeFrequency: "monthly", priority: 0.9 },
+  {
+    path: "/kako-se-pripremiti-za-prijemni-iz-matematike",
+    changeFrequency: "monthly",
+    priority: 0.9,
+  },
   { path: "/privacy", changeFrequency: "yearly", priority: 0.2 },
   { path: "/terms", changeFrequency: "yearly", priority: 0.2 },
 ] as const;

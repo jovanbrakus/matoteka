@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -32,6 +33,16 @@ export default function AboutPage() {
           svakom učeniku omogućimo pristup strukturiranom gradivu, realnim
           zadacima sa prijemnih ispita i alatima za praćenje napretka — potpuno
           besplatno.
+        </p>
+        <p className="mt-4 leading-relaxed text-text-secondary">
+          Ako tek krećeš, pročitaj naš vodič o tome{" "}
+          <Link
+            href="/kako-se-pripremiti-za-prijemni-iz-matematike"
+            className="font-semibold text-[#ec5b13] transition-colors hover:text-[#ff7a3d]"
+          >
+            kako se pripremiti za prijemni iz matematike
+          </Link>
+          .
         </p>
       </section>
 

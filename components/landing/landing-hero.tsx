@@ -502,8 +502,9 @@ export default function LandingHero() {
             </span>
           </div>
 
-          <div className="flex gap-8 text-sm text-muted">
+          <div className="flex flex-wrap justify-center gap-x-8 gap-y-3 text-sm text-muted">
             <Link href="/about" className="transition-colors hover:text-heading">O nama</Link>
+            <Link href="/kako-se-pripremiti-za-prijemni-iz-matematike" className="transition-colors hover:text-heading">Priprema za prijemni</Link>
             <Link href="/terms" className="transition-colors hover:text-heading">Uslovi korišćenja</Link>
             <Link href="/privacy" className="transition-colors hover:text-heading">Privatnost</Link>
           </div>
