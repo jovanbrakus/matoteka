@@ -34,7 +34,7 @@ export function TopNav() {
           {pathname !== "/prijava" ? (
             <Link
               href="/prijava"
-              className="rounded-xl bg-[#ec5b13] px-6 py-2.5 text-sm font-bold text-white shadow-[0_0_20px_rgba(236,91,19,0.2)] transition-transform hover:scale-105"
+              className="btn-shine rounded-full bg-[#ec5b13] px-6 py-2.5 text-xs font-black uppercase tracking-widest text-white shadow-[0_10px_30px_-10px_rgba(236,91,19,0.6)] transition-all hover:-translate-y-0.5 hover:brightness-110"
             >
               Prijava
             </Link>

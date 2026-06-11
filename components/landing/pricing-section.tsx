@@ -55,7 +55,7 @@ const PLANS = {
       "Personalizovane preporuke za učenje",
     ],
     cta: "Obavesti me",
-    ctaStyle: "border border-cyan-500/30 bg-cyan-500/10 text-cyan-500 hover:bg-cyan-500/20",
+    ctaStyle: "border border-[var(--glass-border)] bg-[var(--tint)] text-text-secondary hover:bg-[var(--tint-strong)]",
     highlight: false,
   },
 };
@@ -71,16 +71,26 @@ export default function PricingSection() {
       </div>
 
       <div className="relative z-10 mx-auto max-w-6xl px-6">
-        <div className="mb-16 text-center">
-          <h2 className="mb-8 text-6xl font-black text-heading md:text-7xl">
-            Tvoja{" "}
-            <span className="text-[#ec5b13]">budućnost</span>{" "}
-            počinje ovde.
+        <div className="text-center">
+          <h2 className="mb-8 font-headline text-5xl font-bold tracking-tight text-heading md:text-7xl">
+            Tvoja <span className="text-[#ec5b13]">budućnost</span>
+            <br className="hidden md:block" /> počinje ovde.
           </h2>
-          <p className="mx-auto mb-12 max-w-2xl text-xl leading-relaxed text-text-secondary">
+          <p className="mx-auto mb-10 max-w-2xl text-xl leading-relaxed text-text-secondary">
             Ne ostavljaj upis slučaju. Pridruži se stotinama učenika koji
             osvajaju mesta na najboljim tehničkim fakultetima u Srbiji i regionu.
           </p>
+          <div className="mb-4 flex justify-center">
+            <Link
+              href="/prijava"
+              className="btn-shine group inline-flex items-center gap-3 rounded-full bg-[#ec5b13] px-12 py-5 text-base font-black uppercase tracking-widest text-white shadow-[0_18px_50px_-14px_rgba(236,91,19,0.8)] transition-all hover:-translate-y-0.5 hover:brightness-110"
+            >
+              Počni besplatno
+              <span className="material-symbols-outlined transition-transform group-hover:translate-x-1">
+                arrow_forward
+              </span>
+            </Link>
+          </div>
 
           {/* Billing toggle */}
           {/* <div className="mx-auto mb-12 inline-flex items-center gap-1 rounded-full border border-[var(--glass-border)] bg-[var(--tint)] p-1">
@@ -123,7 +133,7 @@ export default function PricingSection() {
                   <span className={`whitespace-nowrap rounded-full px-4 py-1.5 text-xs font-bold ${
                     plan.name === "Premium"
                       ? "bg-[#ec5b13] text-white"
-                      : "bg-cyan-500/20 text-cyan-500 border border-cyan-500/30"
+                      : "bg-[var(--tint-strong)] text-text-secondary border border-[var(--glass-border)]"
                   }`}>
                     {plan.badge}
                   </span>
@@ -135,7 +145,7 @@ export default function PricingSection() {
                   plan.highlight ? "bg-[#ec5b13]/15" : "bg-[var(--tint-strong)]"
                 }`}>
                   <span className={`material-symbols-outlined text-2xl ${
-                    plan.name === "AI Tutor" ? "text-cyan-500" : "text-[#ec5b13]"
+                    "text-[#ec5b13]"
                   }`}>
                     {plan.icon}
                   </span>
@@ -200,25 +210,6 @@ export default function PricingSection() {
           ))}
         </div> */}
 
-        {/* Faculty logos */}
-        <div className="mt-16 flex flex-wrap items-center justify-center gap-12 opacity-50 transition-all duration-700 grayscale hover:opacity-100 hover:grayscale-0">
-          {[
-            ["school", "ETF"],
-            ["science", "FON"],
-            ["calculate", "MATF"],
-            ["precision_manufacturing", "MAŠF"],
-            ["apartment", "GRF"],
-            ["settings", "RGF"],
-            ["biotech", "TMF"],
-            ["commute", "SF"],
-            ["experiment", "FF"],
-          ].map(([icon, name]) => (
-            <div key={name} className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-2xl">{icon}</span>
-              <span className="font-bold">{name}</span>
-            </div>
-          ))}
-        </div>
       </div>
 
       {/* AI Tutor Dialog */}
@@ -239,8 +230,8 @@ export default function PricingSection() {
             </button>
 
             <div className="mb-4 flex justify-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-500/15">
-                <span className="material-symbols-outlined text-4xl text-cyan-500">smart_toy</span>
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#ec5b13]/15">
+                <span className="material-symbols-outlined text-4xl text-[#ec5b13]">smart_toy</span>
               </div>
             </div>
 
