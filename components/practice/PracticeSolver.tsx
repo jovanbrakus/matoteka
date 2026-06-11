@@ -6,6 +6,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import ProblemView from "@/components/problems/ProblemView";
 import ScoreCircle from "./ScoreCircle";
+import { scoreColor } from "@/lib/score-colors";
 
 const CATEGORY_NAMES: Record<string, string> = {
   percent_proportion: "Procenti i proporcija",
@@ -199,66 +200,78 @@ export default function PracticeSolver() {
   return (
     <div className="mx-auto max-w-[1000px] px-4 py-6">
       {/* Header */}
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+      <div className="dash-rise mb-6 flex flex-wrap items-center gap-x-4 gap-y-3">
+        {/* Context: back + group + readiness */}
+        <div className="flex min-w-0 flex-1 items-center gap-3">
           <Link
             href="/vezba"
-            className="flex items-center gap-2 rounded-lg border border-[var(--glass-border)] bg-[var(--tint)] px-3 py-2 text-sm font-semibold text-text-secondary transition-colors hover:text-heading sm:px-4 shrink-0"
+            aria-label="Nazad na izbor oblasti"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[var(--glass-border)] bg-[var(--tint)] text-text-secondary transition-colors hover:border-[#ec5b13]/40 hover:text-heading"
           >
-            <span className="material-symbols-outlined text-base">arrow_back</span>
-            Nazad
+            <span className="material-symbols-outlined text-xl">arrow_back</span>
           </Link>
-          {readinessScore !== null && <ScoreCircle score={readinessScore} size={36} />}
+          {readinessScore !== null && (
+            <ScoreCircle score={readinessScore} size={38} color={scoreColor(readinessScore)} />
+          )}
           <div className="min-w-0">
-            <h2 className="text-base sm:text-lg font-bold text-heading truncate">{label}</h2>
-            <p className="text-xs text-muted">Vežbanje u toku</p>
+            <h2 className="truncate font-headline text-base font-bold text-heading sm:text-lg">{label}</h2>
+            <p className="text-[11px] text-muted">
+              {sessionScore.total > 0 ? (
+                <>
+                  <span className="font-bold text-emerald-500">{sessionScore.correct}</span>
+                  <span> od {sessionScore.total} tačno u ovoj sesiji</span>
+                </>
+              ) : (
+                "Vežbanje u toku"
+              )}
+            </p>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 sm:flex-nowrap sm:gap-3">
-          <div className="flex items-center gap-1 rounded-lg border border-[var(--glass-border)] bg-[var(--tint)] p-1">
-            {([
-              { id: "easy", label: "Lako", icon: "sentiment_satisfied" },
-              { id: "medium", label: "Srednje", icon: "pace" },
-              { id: "hard", label: "Teško", icon: "local_fire_department" },
-            ] as const).map((tier) => {
-              const active = enabledDiffs.has(tier.id);
-              return (
-                <button
-                  key={tier.id}
-                  onClick={() => toggleDiff(tier.id)}
-                  className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-bold transition-all ${
-                    active
-                      ? "bg-primary text-white shadow-sm"
-                      : "text-muted hover:text-text-secondary"
-                  }`}
-                >
-                  <span className="material-symbols-outlined text-sm">{tier.icon}</span>
-                  {tier.label}
-                </button>
-              );
-            })}
-          </div>
-          {sessionScore.total > 0 && (
-            <div className="flex items-center gap-2 rounded-full border border-[var(--glass-border)] bg-[var(--tint)] px-4 py-2">
-              <span className="material-symbols-outlined text-base text-primary">check_circle</span>
-              <span className="text-sm font-bold text-heading">
-                {sessionScore.correct}/{sessionScore.total}
-              </span>
-              <span className="text-xs text-muted">tačno</span>
-            </div>
-          )}
+        {/* Difficulty filter */}
+        <div className="flex items-center gap-1 rounded-full border border-[var(--glass-border)] bg-[var(--tint)] p-1 pl-3">
+          <span className="mr-1 text-[9px] font-bold uppercase tracking-[0.2em] text-muted">
+            Težina
+          </span>
+          {([
+            { id: "easy", label: "Lako", icon: "sentiment_satisfied" },
+            { id: "medium", label: "Srednje", icon: "pace" },
+            { id: "hard", label: "Teško", icon: "local_fire_department" },
+          ] as const).map((tier) => {
+            const active = enabledDiffs.has(tier.id);
+            return (
+              <button
+                key={tier.id}
+                onClick={() => toggleDiff(tier.id)}
+                aria-pressed={active}
+                title={active ? `Isključi: ${tier.label}` : `Uključi: ${tier.label}`}
+                className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold transition-all ${
+                  active
+                    ? "border border-[#ec5b13]/30 bg-[#ec5b13]/12 text-[#ec5b13]"
+                    : "border border-transparent text-muted opacity-60 hover:opacity-100 hover:text-text-secondary"
+                }`}
+              >
+                <span className="material-symbols-outlined text-sm">{tier.icon}</span>
+                {tier.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Problem navigation */}
+        <div className="flex items-center gap-2">
           <button
             onClick={handlePrev}
             disabled={historyIdx <= 0}
-            className="flex items-center gap-2 rounded-lg border border-[var(--glass-border)] bg-[var(--tint)] px-4 py-2 text-sm font-bold text-text-secondary transition-colors hover:text-heading disabled:opacity-40 disabled:pointer-events-none"
+            aria-label="Prethodni zadatak"
+            title="Prethodni zadatak"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--glass-border)] bg-[var(--tint)] text-text-secondary transition-colors hover:border-[#ec5b13]/40 hover:text-heading disabled:pointer-events-none disabled:opacity-35"
           >
-            <span className="material-symbols-outlined text-base">arrow_back</span>
-            Prethodni
+            <span className="material-symbols-outlined text-xl">arrow_back</span>
           </button>
           <button
             onClick={handleNext}
-            className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-primary-glow"
+            className="btn-shine flex items-center gap-2 rounded-full bg-[#ec5b13] px-5 py-2.5 text-xs font-black uppercase tracking-widest text-white shadow-[0_10px_30px_-10px_rgba(236,91,19,0.6)] transition-all hover:-translate-y-0.5 hover:brightness-110"
           >
             Sledeći
             <span className="material-symbols-outlined text-base">arrow_forward</span>
