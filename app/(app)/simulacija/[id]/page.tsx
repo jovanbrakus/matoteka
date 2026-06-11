@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import { Flag, ChevronLeft, ChevronRight, Award } from "lucide-react";
 import AnswerOptions from "@/components/problems/AnswerOptions";
 import ProblemStatement from "@/components/problems/ProblemStatement";
+import { MATHJAX_PAGE_CONFIG, MATHJAX_SRC } from "@/lib/mathjax-config";
 
 interface ExamProblem {
   id: string;
@@ -125,17 +126,9 @@ export default function SimulationPage() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (!(window as any).MathJax) {
-      (window as any).MathJax = {
-        tex: {
-          inlineMath: [["$", "$"], ["\\(", "\\)"]],
-          displayMath: [["$$", "$$"], ["\\[", "\\]"]],
-        },
-        options: {
-          skipHtmlTags: ["script", "noscript", "style", "textarea", "code"],
-        },
-      };
+      (window as any).MathJax = MATHJAX_PAGE_CONFIG;
       const s = document.createElement("script");
-      s.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
+      s.src = MATHJAX_SRC;
       s.async = true;
       document.head.appendChild(s);
     }

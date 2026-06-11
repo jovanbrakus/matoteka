@@ -12,6 +12,17 @@
  * MathJax version bump) happens in one place.
  */
 
+/**
+ * Serbian trig notation (tg, ctg, ...) is not built into TeX — without these
+ * macros MathJax renders a red literal `\tg`. Shared by every consumer.
+ */
+const SERBIAN_TRIG_MACROS = {
+  tg: "\\operatorname{tg}",
+  ctg: "\\operatorname{ctg}",
+  arctg: "\\operatorname{arctg}",
+  arcctg: "\\operatorname{arcctg}",
+};
+
 /** Config for the React path (`better-react-mathjax` <MathJaxContext>). */
 export const MATHJAX_CONFIG = {
   loader: { load: ["[tex]/ams"] },
@@ -19,6 +30,7 @@ export const MATHJAX_CONFIG = {
     inlineMath: [["\\(", "\\)"]],
     displayMath: [["\\[", "\\]"]],
     packages: { "[+]": ["ams"] },
+    macros: SERBIAN_TRIG_MACROS,
   },
   svg: { fontCache: "global" },
   // v4: auto-break long equations at the container edge instead of clipping
@@ -81,3 +93,24 @@ const IFRAME_MATHJAX_CONFIG = {
 export const MATHJAX_INLINE_SCRIPT = `window.MathJax=${JSON.stringify(
   IFRAME_MATHJAX_CONFIG,
 )};`;
+
+/**
+ * Config for in-page (non-iframe) consumers that typeset raw problem HTML —
+ * answer options on the exam page and practice solver. Problem HTML emits
+ * both `$...$` and `$$...$$` delimiters, so accept them alongside the
+ * standard ones.
+ */
+export const MATHJAX_PAGE_CONFIG = {
+  ...IFRAME_MATHJAX_CONFIG,
+  tex: {
+    ...IFRAME_MATHJAX_CONFIG.tex,
+    displayMath: [
+      ["\\[", "\\]"],
+      ["$$", "$$"],
+    ],
+  },
+  options: {
+    ...MATHJAX_CONFIG.options,
+    skipHtmlTags: ["script", "noscript", "style", "textarea", "code"],
+  },
+};

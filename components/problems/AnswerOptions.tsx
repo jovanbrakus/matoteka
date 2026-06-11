@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, memo } from "react";
+import { MATHJAX_PAGE_CONFIG, MATHJAX_SRC } from "@/lib/mathjax-config";
 
 interface AnswerResult {
   isCorrect: boolean;
@@ -73,17 +74,9 @@ function useMathJaxLoad() {
     if ((window as any).MathJax?.typesetPromise) return;
 
     if (!(window as any).MathJax) {
-      (window as any).MathJax = {
-        tex: {
-          inlineMath: [["\\(", "\\)"], ["$", "$"]],
-          displayMath: [["\\[", "\\]"], ["$$", "$$"]],
-        },
-        options: {
-          skipHtmlTags: ["script", "noscript", "style", "textarea", "code"],
-        },
-      };
+      (window as any).MathJax = MATHJAX_PAGE_CONFIG;
       const s = document.createElement("script");
-      s.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
+      s.src = MATHJAX_SRC;
       s.async = true;
       document.head.appendChild(s);
     }
