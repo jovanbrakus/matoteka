@@ -3,7 +3,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { ArrowRight, Bookmark, Play } from "lucide-react";
 import ScoreCircle from "./ScoreCircle";
+import SectionLabel from "@/components/ui/section-label";
+import { scoreColor } from "@/lib/score-colors";
 
 /* ─── Types ─── */
 
@@ -60,13 +63,35 @@ const GROUP_META: Record<
   },
 };
 
-/* ─── Score color helper ─── */
+const ART_MASK = {
+  maskImage: "radial-gradient(130% 160% at 85% 45%, black 25%, transparent 72%)",
+  WebkitMaskImage: "radial-gradient(130% 160% at 85% 45%, black 25%, transparent 72%)",
+} as const;
 
-function scoreColor(pct: number): string {
-  if (pct === 0) return "#f9a8a8";
-  if (pct <= 30) return "#dc2626";
-  if (pct <= 60) return "#f5b731";
-  return "#22c55e";
+/* ─── hooks ─── */
+
+function useMounted() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  return mounted;
+}
+
+/* ─── Animated readiness bar ─── */
+
+function ScoreBar({ score, className = "" }: { score: number; className?: string }) {
+  const mounted = useMounted();
+  return (
+    <span className={`h-1 overflow-hidden rounded-full bg-[var(--tint-strong)] ${className}`}>
+      <span
+        className="block h-full rounded-full"
+        style={{
+          width: mounted ? `${Math.max(score, 2)}%` : "0%",
+          background: scoreColor(score),
+          transition: "width 1.2s cubic-bezier(0.22, 1, 0.36, 1)",
+        }}
+      />
+    </span>
+  );
 }
 
 /* ─── Recommended topic card ─── */
@@ -74,9 +99,11 @@ function scoreColor(pct: number): string {
 function RecommendedTopicCard({
   topic,
   groupName,
+  delay,
 }: {
   topic: SubcategoryStat;
   groupName: string;
+  delay: number;
 }) {
   const pct = topic.readinessScore;
   const color = scoreColor(pct);
@@ -84,99 +111,59 @@ function RecommendedTopicCard({
   return (
     <Link
       href={`/zadaci?topic=${topic.id}`}
-      className="glass-card rounded-2xl p-6 flex items-center justify-between gap-4 group transition-all hover:border-primary/40 hover:bg-primary/5"
+      className="dash-rise glass-card group flex items-center justify-between gap-4 rounded-3xl p-5 transition-all duration-300 hover:-translate-y-1 hover:border-[#ec5b13]/40 hover:shadow-[0_16px_40px_-18px_rgba(236,91,19,0.4)]"
+      style={{ animationDelay: `${delay}ms` }}
     >
       <div className="min-w-0 flex-1">
-        <p
-          className="text-[10px] font-black uppercase tracking-widest mb-1"
-          style={{ color }}
-        >
+        <p className="mb-1 text-[10px] font-black uppercase tracking-widest" style={{ color }}>
           {groupName}
         </p>
-        <h4 className="text-lg font-bold text-heading mb-3 truncate">
+        <h4 className="mb-3 truncate font-headline text-lg font-bold text-heading">
           {topic.name}
         </h4>
         <div className="flex items-center gap-3">
-          <div
-            className="flex-1 h-1.5 rounded-full overflow-hidden"
-            style={{ backgroundColor: "var(--tint-strong)" }}
-          >
-            <div
-              className="h-full rounded-full transition-all duration-700"
-              style={{
-                width: `${Math.max(pct, pct === 0 ? 100 : 0)}%`,
-                backgroundColor: color,
-              }}
-            />
-          </div>
-          <span
-            className="text-xs font-bold shrink-0"
-            style={{ color: pct === 0 ? "#dc2626" : color }}
-          >
+          <ScoreBar score={pct} className="flex-1" />
+          <span className="shrink-0 font-headline text-xs font-bold tabular-nums" style={{ color }}>
             {pct}
             <span className="text-muted">/100</span>
           </span>
         </div>
       </div>
       <span
-        className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center shadow-md shadow-primary/30 group-hover:scale-110 transition-transform shrink-0"
+        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#ec5b13] text-white shadow-[0_8px_20px_-6px_rgba(236,91,19,0.6)] transition-transform duration-300 group-hover:scale-110"
         aria-hidden
       >
-        <span
-          className="material-symbols-outlined"
-          style={{ fontVariationSettings: "'FILL' 1" }}
-        >
-          play_arrow
-        </span>
+        <Play size={17} fill="currentColor" />
       </span>
     </Link>
   );
 }
 
-/* ─── Compact topic row (default focus state) ─── */
+/* ─── Compact topic row (focus card) ─── */
 
 function TopicRow({ topic }: { topic: SubcategoryStat }) {
   const pct = topic.readinessScore;
   const color = scoreColor(pct);
   const isComplete = pct === 100;
   return (
-    <div className="flex flex-wrap sm:flex-nowrap items-center gap-y-2 gap-x-3 sm:gap-x-6 py-3 px-3 rounded-xl hover:bg-[var(--tint)] transition-colors group">
+    <div className="group flex flex-wrap items-center gap-x-3 gap-y-2 rounded-xl px-3 py-2.5 transition-colors hover:bg-[var(--tint)] sm:flex-nowrap sm:gap-x-6">
       <Link
         href={`/zadaci?topic=${topic.id}`}
-        className="w-full sm:w-auto sm:flex-1 sm:min-w-0 sm:truncate text-sm font-medium text-text-secondary group-hover:text-primary transition-colors"
+        className="w-full text-sm font-medium text-text-secondary transition-colors group-hover:text-[#ec5b13] sm:w-auto sm:min-w-0 sm:flex-1 sm:truncate"
       >
         {topic.name}
       </Link>
-      <div
-        className="flex-1 sm:flex-initial sm:w-2/5 h-1.5 rounded-full overflow-hidden shrink-0"
-        style={{ backgroundColor: "var(--tint-strong)" }}
-      >
-        <div
-          className="h-full rounded-full transition-all duration-700"
-          style={{
-            width: `${Math.max(pct, pct === 0 ? 100 : 0)}%`,
-            backgroundColor: color,
-          }}
-        />
-      </div>
-      <span
-        className="w-10 text-right text-xs font-bold shrink-0"
-        style={{ color: pct === 0 ? "#dc2626" : color }}
-      >
+      <ScoreBar score={pct} className="flex-1 shrink-0 sm:w-2/5 sm:flex-initial" />
+      <span className="w-10 shrink-0 text-right font-headline text-xs font-bold tabular-nums" style={{ color }}>
         {pct}
         <span className="text-muted">/100</span>
       </span>
       <Link
         href={`/zadaci?topic=${topic.id}`}
-        className="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center shadow-sm shadow-primary/30 hover:brightness-110 active:scale-90 transition-all shrink-0"
+        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#ec5b13] text-white shadow-sm shadow-[#ec5b13]/30 transition-all hover:brightness-110 active:scale-90"
         aria-label={`Vežbaj ${topic.name}`}
       >
-        <span
-          className="material-symbols-outlined text-base"
-          style={{ fontVariationSettings: "'FILL' 1" }}
-        >
-          {isComplete ? "check" : "play_arrow"}
-        </span>
+        <Play size={13} fill="currentColor" />
       </Link>
     </div>
   );
@@ -204,80 +191,87 @@ function FocusCard({
   const hiddenCount = Math.max(0, sortedTopics.length - COMPACT_LIMIT);
 
   return (
-    <section className="glass-card rounded-2xl overflow-hidden flex flex-col">
-      {/* Header */}
-      <div className="px-4 py-4 sm:px-8 sm:py-6 flex items-center justify-between gap-3 sm:gap-4 border-b border-[var(--glass-border)]">
-        <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+    <section
+      className="relative flex flex-col rounded-3xl p-px"
+      style={{
+        background:
+          "linear-gradient(135deg, rgba(236,91,19,0.5), var(--glass-border) 45%, transparent)",
+      }}
+    >
+      <div className="relative flex flex-1 flex-col overflow-hidden rounded-[calc(1.5rem-1px)] bg-[var(--color-card)]">
+        {/* Header with art backdrop */}
+        <div className="relative border-b border-[var(--glass-border)]">
           {meta.image && (
             <>
               <img
                 src={meta.image}
-                alt={group.name}
-                className="h-12 w-16 sm:h-14 sm:w-20 shrink-0 rounded-xl object-cover dark-only"
+                alt=""
+                aria-hidden
+                className="dark-only pointer-events-none absolute inset-y-0 right-0 h-full w-3/5 object-cover opacity-50"
+                style={ART_MASK}
               />
               <img
                 src={meta.imageLight}
-                alt={group.name}
-                className="h-12 w-16 sm:h-14 sm:w-20 shrink-0 rounded-xl object-cover light-only"
+                alt=""
+                aria-hidden
+                className="light-only pointer-events-none absolute inset-y-0 right-0 h-full w-3/5 object-cover opacity-40"
+                style={ART_MASK}
               />
             </>
           )}
-          <div className="min-w-0 flex-1">
-            <h4 className="font-headline text-xl sm:text-2xl font-black text-heading break-words">
-              {group.name}
-            </h4>
-            <p className="text-sm text-text-secondary mt-1">
-              {group.categories.length} dostupnih tema
-            </p>
+          <div className="relative flex items-center justify-between gap-3 px-4 py-4 sm:gap-4 sm:px-7 sm:py-6">
+            <div className="min-w-0 flex-1">
+              <h4 className="break-words font-headline text-xl font-bold text-heading sm:text-2xl">
+                {group.name}
+              </h4>
+              <p className="mt-1 text-sm text-text-secondary">
+                {group.categories.length} dostupnih tema
+              </p>
+            </div>
+            <div className="shrink-0 sm:hidden">
+              <ScoreCircle score={group.readinessScore} size={64} color={scoreColor(group.readinessScore)} />
+            </div>
+            <div className="hidden shrink-0 sm:block">
+              <ScoreCircle score={group.readinessScore} size={88} color={scoreColor(group.readinessScore)} />
+            </div>
           </div>
         </div>
-        <div className="shrink-0 sm:hidden">
-          <ScoreCircle score={group.readinessScore} size={64} />
-        </div>
-        <div className="shrink-0 hidden sm:block">
-          <ScoreCircle score={group.readinessScore} size={88} />
-        </div>
-      </div>
 
-      {/* Topic list */}
-      <div className="px-5 pt-4 pb-2 flex flex-col gap-1">
-        {visibleTopics.map((t) => (
-          <TopicRow key={t.id} topic={t} />
-        ))}
-      </div>
+        {/* Topic list */}
+        <div className="flex flex-col gap-1 px-4 pb-2 pt-4 sm:px-5">
+          {visibleTopics.map((t) => (
+            <TopicRow key={t.id} topic={t} />
+          ))}
+        </div>
 
-      {/* Footer with toggle + main CTA */}
-      <div className="px-8 pt-6 pb-8 flex flex-col items-center gap-4">
-        {!expanded && hiddenCount > 0 && (
-          <button
-            type="button"
-            onClick={onToggleExpand}
-            className="text-sm italic text-text-secondary hover:text-primary hover:underline transition-colors"
+        {/* Footer with toggle + main CTA */}
+        <div className="flex flex-col items-center gap-4 px-8 pb-7 pt-5">
+          {!expanded && hiddenCount > 0 && (
+            <button
+              type="button"
+              onClick={onToggleExpand}
+              className="text-xs font-bold text-text-secondary transition-colors hover:text-[#ec5b13]"
+            >
+              + još {hiddenCount} tema u ovoj kategoriji
+            </button>
+          )}
+          {expanded && group.categories.length > COMPACT_LIMIT && (
+            <button
+              type="button"
+              onClick={onToggleExpand}
+              className="text-xs font-bold text-text-secondary transition-colors hover:text-[#ec5b13]"
+            >
+              Sažmi listu
+            </button>
+          )}
+          <Link
+            href={`/zadaci?group=${group.id}`}
+            className="btn-shine inline-flex items-center gap-2 rounded-full bg-[#ec5b13] px-8 py-3 text-xs font-black uppercase tracking-widest text-white shadow-[0_10px_30px_-10px_rgba(236,91,19,0.6)] transition-all hover:-translate-y-0.5 hover:brightness-110"
           >
-            + još {hiddenCount} tema u ovoj kategoriji
-          </button>
-        )}
-        {expanded && group.categories.length > COMPACT_LIMIT && (
-          <button
-            type="button"
-            onClick={onToggleExpand}
-            className="text-sm italic text-text-secondary hover:text-primary hover:underline transition-colors"
-          >
-            Sažmi listu
-          </button>
-        )}
-        <Link
-          href={`/zadaci?group=${group.id}`}
-          className="rounded-xl bg-primary text-white px-10 py-4 font-black uppercase tracking-widest text-sm flex items-center gap-3 shadow-lg shadow-primary/20 hover:brightness-110 active:scale-[0.98] transition-all"
-        >
-          <span
-            className="material-symbols-outlined"
-            style={{ fontVariationSettings: "'FILL' 1" }}
-          >
-            rocket_launch
-          </span>
-          Vežbaj celu oblast
-        </Link>
+            Vežbaj celu oblast
+            <ArrowRight size={15} />
+          </Link>
+        </div>
       </div>
     </section>
   );
@@ -297,35 +291,37 @@ function SideGroupCard({
     <button
       type="button"
       onClick={() => onSelect(group.id)}
-      className="rounded-2xl py-7 px-6 flex items-center justify-between gap-4 text-left transition-all border border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-xl hover:border-[#ec5b13]/50 hover:bg-[#ec5b13]/5 hover:scale-[1.02] cursor-pointer"
+      className="glass-card group relative flex w-full cursor-pointer items-center justify-between gap-4 overflow-hidden rounded-3xl px-5 py-5 text-left transition-all duration-300 hover:-translate-y-1 hover:border-[#ec5b13]/40 hover:shadow-[0_16px_40px_-18px_rgba(236,91,19,0.4)]"
     >
-      <div className="flex items-center gap-4 min-w-0">
-        {meta.image ? (
-          <>
-            <img
-              src={meta.image}
-              alt={group.name}
-              className="h-14 w-20 shrink-0 rounded-lg object-cover dark-only"
-            />
-            <img
-              src={meta.imageLight}
-              alt={group.name}
-              className="h-14 w-20 shrink-0 rounded-lg object-cover light-only"
-            />
-          </>
-        ) : (
-          <span
-            className="w-14 h-14 rounded-xl shrink-0 flex items-center justify-center bg-[var(--tint-strong)] text-text-secondary material-symbols-outlined"
+      {meta.image && (
+        <>
+          <img
+            src={meta.image}
+            alt=""
             aria-hidden
-          >
-            {meta.icon}
-          </span>
-        )}
-        <h5 className="text-lg font-bold text-heading truncate min-w-0">
+            className="dark-only pointer-events-none absolute inset-y-0 right-0 h-full w-1/2 object-cover opacity-25 transition-opacity duration-500 group-hover:opacity-45"
+            style={ART_MASK}
+          />
+          <img
+            src={meta.imageLight}
+            alt=""
+            aria-hidden
+            className="light-only pointer-events-none absolute inset-y-0 right-0 h-full w-1/2 object-cover opacity-20 transition-opacity duration-500 group-hover:opacity-40"
+            style={ART_MASK}
+          />
+        </>
+      )}
+      <div className="relative min-w-0">
+        <h5 className="truncate font-headline text-base font-bold text-heading">
           {group.name}
         </h5>
+        <p className="mt-0.5 text-[11px] text-text-secondary">
+          {group.categories.length} tema
+        </p>
       </div>
-      <ScoreCircle score={group.readinessScore} size={60} />
+      <div className="relative shrink-0">
+        <ScoreCircle score={group.readinessScore} size={56} color={scoreColor(group.readinessScore)} />
+      </div>
     </button>
   );
 }
@@ -386,23 +382,20 @@ export default function PracticeHub() {
   /* ─── Loading State ─── */
   if (loading || sessionStatus === "loading") {
     return (
-      <div className="w-full px-8 py-8">
-        <div className="mb-12">
-          <div className="h-3 w-32 animate-pulse rounded bg-[var(--tint-strong)] mb-4" />
-          <div className="h-10 w-96 animate-pulse rounded-lg bg-[var(--tint-strong)]" />
+      <div className="mx-auto max-w-[1440px] p-4 sm:p-6 lg:p-7">
+        <div className="mb-7 h-10 w-96 max-w-full animate-pulse rounded-2xl bg-[var(--tint)]" />
+        <div className="mb-7 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+          <div className="h-28 animate-pulse rounded-3xl bg-[var(--tint)]" />
+          <div className="h-28 animate-pulse rounded-3xl bg-[var(--tint)]" />
+          <div className="h-28 animate-pulse rounded-3xl bg-[var(--tint)]" />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          <div className="h-32 animate-pulse rounded-2xl bg-[var(--tint)]" />
-          <div className="h-32 animate-pulse rounded-2xl bg-[var(--tint)]" />
-          <div className="h-32 animate-pulse rounded-2xl bg-[var(--tint)]" />
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-8 h-[480px] animate-pulse rounded-2xl bg-[var(--tint)]" />
-          <div className="lg:col-span-4 space-y-4">
-            <div className="h-24 animate-pulse rounded-2xl bg-[var(--tint)]" />
-            <div className="h-24 animate-pulse rounded-2xl bg-[var(--tint)]" />
-            <div className="h-24 animate-pulse rounded-2xl bg-[var(--tint)]" />
-            <div className="h-24 animate-pulse rounded-2xl bg-[var(--tint)]" />
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-12">
+          <div className="h-[480px] animate-pulse rounded-3xl bg-[var(--tint)] lg:col-span-8" />
+          <div className="space-y-4 lg:col-span-4">
+            <div className="h-24 animate-pulse rounded-3xl bg-[var(--tint)]" />
+            <div className="h-24 animate-pulse rounded-3xl bg-[var(--tint)]" />
+            <div className="h-24 animate-pulse rounded-3xl bg-[var(--tint)]" />
+            <div className="h-24 animate-pulse rounded-3xl bg-[var(--tint)]" />
           </div>
         </div>
       </div>
@@ -410,41 +403,45 @@ export default function PracticeHub() {
   }
 
   return (
-    <div className="w-full px-8 pb-12 pt-6">
-      {/* Page Intro — keep title styling identical to previous version */}
-      <div className="mb-6">
-        <h2 className="text-3xl font-black tracking-tight text-heading">
-          Slobodna <span className="text-primary">Vežba</span>
-        </h2>
-      </div>
+    <div className="mx-auto max-w-[1440px] p-4 sm:p-6 lg:p-7">
+      {/* ── Header ── */}
+      <header className="dash-rise mb-7 flex flex-wrap items-baseline gap-x-4 gap-y-1">
+        <h1 className="font-headline text-[28px] font-bold tracking-tight text-heading sm:text-3xl">
+          Slobodna vežba
+          <span className="text-[#ec5b13]">.</span>
+        </h1>
+        <p className="text-sm text-text-secondary">
+          Izaberi oblast i vežbaj tačno ono što ti treba.
+        </p>
+      </header>
 
-      {/* Zone 1: Recommendations */}
+      {/* ── Zone 1: Recommendations ── */}
       {(weakestTopics.length > 0 || savedCount !== null) && (
-        <section className="mb-8">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-xl font-black tracking-tight text-heading">
-              Preporučeno sledeće
-            </h3>
+        <section className="mb-7">
+          <div className="dash-rise mb-4" style={{ animationDelay: "60ms" }}>
+            <SectionLabel index="01">Preporučeno sledeće</SectionLabel>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {weakestTopics.map(({ topic, groupName }) => (
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {weakestTopics.map(({ topic, groupName }, i) => (
               <RecommendedTopicCard
                 key={topic.id}
                 topic={topic}
                 groupName={groupName}
+                delay={120 + i * 60}
               />
             ))}
 
             {/* Saved problems card — always shown as 3rd */}
             <Link
               href="/sacuvano"
-              className="glass-card rounded-2xl p-6 flex items-center justify-between gap-4 group transition-all hover:border-[#ec5b13]/40 hover:bg-[#ec5b13]/5"
+              className="dash-rise glass-card group flex items-center justify-between gap-4 rounded-3xl p-5 transition-all duration-300 hover:-translate-y-1 hover:border-[#ec5b13]/40 hover:shadow-[0_16px_40px_-18px_rgba(236,91,19,0.4)]"
+              style={{ animationDelay: "240ms" }}
             >
               <div className="min-w-0 flex-1">
-                <p className="text-[10px] font-black uppercase tracking-widest mb-1 text-[#ec5b13]">
+                <p className="mb-1 text-[10px] font-black uppercase tracking-widest text-[#ec5b13]">
                   Sačuvano
                 </p>
-                <h4 className="text-lg font-bold text-heading mb-3">
+                <h4 className="mb-3 font-headline text-lg font-bold text-heading">
                   Sačuvani zadaci
                 </h4>
                 <p className="text-sm text-text-secondary">
@@ -456,42 +453,35 @@ export default function PracticeHub() {
                 </p>
               </div>
               <span
-                className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center shadow-md shadow-primary/30 group-hover:scale-110 transition-transform shrink-0"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#ec5b13] text-white shadow-[0_8px_20px_-6px_rgba(236,91,19,0.6)] transition-transform duration-300 group-hover:scale-110"
                 aria-hidden
               >
-                <span
-                  className="material-symbols-outlined"
-                  style={{ fontVariationSettings: "'FILL' 1" }}
-                >
-                  play_arrow
-                </span>
+                <Bookmark size={17} fill="currentColor" />
               </span>
             </Link>
           </div>
         </section>
       )}
 
-      {/* Zone 2: Oblasti učenja — focus + side cards */}
+      {/* ── Zone 2: Oblasti učenja ── */}
       {selectedGroup && (
         <section>
-          <h3 className="text-xl font-black tracking-tight text-heading mb-3">
-            Oblasti učenja
-          </h3>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            <div className="lg:col-span-8">
+          <div className="dash-rise mb-4" style={{ animationDelay: "300ms" }}>
+            <SectionLabel index="02">Oblasti učenja</SectionLabel>
+          </div>
+          <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-12">
+            <div className="dash-rise lg:col-span-8" style={{ animationDelay: "360ms" }}>
               <FocusCard
                 group={selectedGroup}
                 expanded={expanded}
                 onToggleExpand={() => setExpanded((v) => !v)}
               />
             </div>
-            <aside className="lg:col-span-4 grid grid-cols-1 gap-4">
-              {sideGroups.map((g) => (
-                <SideGroupCard
-                  key={g.id}
-                  group={g}
-                  onSelect={handleSelectGroup}
-                />
+            <aside className="grid grid-cols-1 gap-4 lg:col-span-4">
+              {sideGroups.map((g, i) => (
+                <div key={g.id} className="dash-rise" style={{ animationDelay: `${420 + i * 70}ms` }}>
+                  <SideGroupCard group={g} onSelect={handleSelectGroup} />
+                </div>
               ))}
             </aside>
           </div>
