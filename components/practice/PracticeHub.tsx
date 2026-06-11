@@ -111,7 +111,7 @@ function RecommendedTopicCard({
   return (
     <Link
       href={`/zadaci?topic=${topic.id}`}
-      className="dash-rise glass-card group flex items-center justify-between gap-4 rounded-3xl p-5 transition-all duration-300 hover:-translate-y-1 hover:border-[#ec5b13]/40 hover:shadow-[0_16px_40px_-18px_rgba(236,91,19,0.4)]"
+      className="dash-rise glass-card group flex items-center justify-between gap-4 rounded-3xl p-5 transition-all duration-300 2xl:p-6 hover:-translate-y-1 hover:border-[#ec5b13]/40 hover:shadow-[0_16px_40px_-18px_rgba(236,91,19,0.4)]"
       style={{ animationDelay: `${delay}ms` }}
     >
       <div className="min-w-0 flex-1">
@@ -219,7 +219,7 @@ function FocusCard({
               />
             </>
           )}
-          <div className="relative flex items-center justify-between gap-3 px-4 py-4 sm:gap-4 sm:px-7 sm:py-6">
+          <div className="relative flex items-center justify-between gap-3 px-4 py-4 sm:gap-4 sm:px-7 sm:py-6 2xl:px-8 2xl:py-7">
             <div className="min-w-0 flex-1">
               <h4 className="break-words font-headline text-xl font-bold text-heading sm:text-2xl">
                 {group.name}
@@ -291,7 +291,7 @@ function SideGroupCard({
     <button
       type="button"
       onClick={() => onSelect(group.id)}
-      className="glass-card group relative flex w-full cursor-pointer items-center justify-between gap-4 overflow-hidden rounded-3xl px-5 py-5 text-left transition-all duration-300 hover:-translate-y-1 hover:border-[#ec5b13]/40 hover:shadow-[0_16px_40px_-18px_rgba(236,91,19,0.4)]"
+      className="glass-card group relative flex w-full cursor-pointer items-center justify-between gap-4 overflow-hidden rounded-3xl px-5 py-5 text-left 2xl:p-6 transition-all duration-300 hover:-translate-y-1 hover:border-[#ec5b13]/40 hover:shadow-[0_16px_40px_-18px_rgba(236,91,19,0.4)]"
     >
       {meta.image && (
         <>
@@ -382,14 +382,14 @@ export default function PracticeHub() {
   /* ─── Loading State ─── */
   if (loading || sessionStatus === "loading") {
     return (
-      <div className="mx-auto max-w-[1440px] p-4 sm:p-6 lg:p-7">
+      <div className="mx-auto max-w-[1440px] p-4 sm:p-6 lg:p-7 2xl:max-w-[1680px] 2xl:p-10">
         <div className="mb-7 h-10 w-96 max-w-full animate-pulse rounded-2xl bg-[var(--tint)]" />
-        <div className="mb-7 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mb-7 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 2xl:gap-6">
           <div className="h-28 animate-pulse rounded-3xl bg-[var(--tint)]" />
           <div className="h-28 animate-pulse rounded-3xl bg-[var(--tint)]" />
           <div className="h-28 animate-pulse rounded-3xl bg-[var(--tint)]" />
         </div>
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-12">
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-12 2xl:gap-6">
           <div className="h-[480px] animate-pulse rounded-3xl bg-[var(--tint)] lg:col-span-8" />
           <div className="space-y-4 lg:col-span-4">
             <div className="h-24 animate-pulse rounded-3xl bg-[var(--tint)]" />
@@ -403,10 +403,10 @@ export default function PracticeHub() {
   }
 
   return (
-    <div className="mx-auto max-w-[1440px] p-4 sm:p-6 lg:p-7">
+    <div className="mx-auto max-w-[1440px] p-4 sm:p-6 lg:p-7 2xl:max-w-[1680px] 2xl:p-10">
       {/* ── Header ── */}
       <header className="dash-rise mb-7 flex flex-wrap items-baseline gap-x-4 gap-y-1">
-        <h1 className="font-headline text-[28px] font-bold tracking-tight text-heading sm:text-3xl">
+        <h1 className="font-headline text-[28px] font-bold tracking-tight text-heading sm:text-3xl 2xl:text-4xl">
           Slobodna vežba
           <span className="text-[#ec5b13]">.</span>
         </h1>
@@ -421,7 +421,7 @@ export default function PracticeHub() {
           <div className="dash-rise mb-4" style={{ animationDelay: "60ms" }}>
             <SectionLabel index="01">Preporučeno sledeće</SectionLabel>
           </div>
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 2xl:gap-6">
             {weakestTopics.map(({ topic, groupName }, i) => (
               <RecommendedTopicCard
                 key={topic.id}
@@ -434,7 +434,7 @@ export default function PracticeHub() {
             {/* Saved problems card — always shown as 3rd */}
             <Link
               href="/sacuvano"
-              className="dash-rise glass-card group flex items-center justify-between gap-4 rounded-3xl p-5 transition-all duration-300 hover:-translate-y-1 hover:border-[#ec5b13]/40 hover:shadow-[0_16px_40px_-18px_rgba(236,91,19,0.4)]"
+              className="dash-rise glass-card group flex items-center justify-between gap-4 rounded-3xl p-5 transition-all duration-300 2xl:p-6 hover:-translate-y-1 hover:border-[#ec5b13]/40 hover:shadow-[0_16px_40px_-18px_rgba(236,91,19,0.4)]"
               style={{ animationDelay: "240ms" }}
             >
               <div className="min-w-0 flex-1">
@@ -469,7 +469,7 @@ export default function PracticeHub() {
           <div className="dash-rise mb-4" style={{ animationDelay: "300ms" }}>
             <SectionLabel index="02">Oblasti učenja</SectionLabel>
           </div>
-          <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-12">
+          <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-12 2xl:gap-6">
             <div className="dash-rise lg:col-span-8" style={{ animationDelay: "360ms" }}>
               <FocusCard
                 group={selectedGroup}

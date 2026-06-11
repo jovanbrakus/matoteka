@@ -183,7 +183,7 @@ export default function Dashboard({ user, initialData }: DashboardProps) {
     return (
       <div className="mx-auto max-w-[1440px] p-4 sm:p-6 lg:p-7">
         <div className="mb-6 h-12 w-96 max-w-full animate-pulse rounded-2xl bg-[var(--tint)]" />
-        <div className="grid grid-cols-12 gap-5">
+        <div className="grid grid-cols-12 gap-5 2xl:gap-6">
           <div className="col-span-12 h-52 animate-pulse rounded-3xl bg-[var(--tint)] lg:col-span-5" />
           <div className="col-span-12 h-52 animate-pulse rounded-3xl bg-[var(--tint)] lg:col-span-4" />
           <div className="col-span-12 h-52 animate-pulse rounded-3xl bg-[var(--tint)] lg:col-span-3" />
@@ -214,11 +214,11 @@ export default function Dashboard({ user, initialData }: DashboardProps) {
   const MONTHS_SHORT = ["jan", "feb", "mar", "apr", "maj", "jun", "jul", "avg", "sep", "okt", "nov", "dec"];
 
   return (
-    <div className="mx-auto max-w-[1440px] p-4 sm:p-6 lg:p-7">
+    <div className="mx-auto max-w-[1440px] p-4 sm:p-6 lg:p-7 2xl:max-w-[1680px] 2xl:p-10">
       {/* ── Header ── */}
       <header className="dash-rise mb-7 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-          <h1 className="font-headline text-[28px] font-bold tracking-tight text-heading sm:text-3xl">
+          <h1 className="font-headline text-[28px] font-bold tracking-tight text-heading sm:text-3xl 2xl:text-4xl">
             Zdravo, {user.displayName}
             <span className="text-[#ec5b13]">.</span>
           </h1>
@@ -236,7 +236,7 @@ export default function Dashboard({ user, initialData }: DashboardProps) {
       <div className="grid grid-cols-12 gap-4">
         {/* Readiness hero */}
         <section
-          className="dash-rise glass-card relative col-span-12 overflow-hidden rounded-3xl p-5 lg:col-span-5"
+          className="dash-rise glass-card relative col-span-12 overflow-hidden rounded-3xl p-5 lg:col-span-5 2xl:p-6"
           style={{ animationDelay: "60ms" }}
         >
           <div className="noise-overlay" />
@@ -275,7 +275,7 @@ export default function Dashboard({ user, initialData }: DashboardProps) {
 
         {/* Countdown */}
         <section
-          className="dash-rise glass-card relative col-span-12 flex flex-col overflow-hidden rounded-3xl p-5 lg:col-span-4"
+          className="dash-rise glass-card relative col-span-12 flex flex-col overflow-hidden rounded-3xl p-5 lg:col-span-4 2xl:p-6"
           style={{ animationDelay: "120ms" }}
         >
           <div
@@ -297,7 +297,7 @@ export default function Dashboard({ user, initialData }: DashboardProps) {
                   <div>
                     <p
                       suppressHydrationWarning
-                      className="font-headline text-4xl font-bold leading-none tracking-tight text-heading sm:text-[44px]"
+                      className="font-headline text-4xl font-bold leading-none tracking-tight text-heading sm:text-[44px] 2xl:text-5xl"
                     >
                       {String(block.value).padStart(2, "0")}
                     </p>
@@ -331,7 +331,7 @@ export default function Dashboard({ user, initialData }: DashboardProps) {
 
         {/* Today */}
         <section
-          className="dash-rise glass-card relative col-span-12 flex flex-col overflow-hidden rounded-3xl p-5 lg:col-span-3"
+          className="dash-rise glass-card relative col-span-12 flex flex-col overflow-hidden rounded-3xl p-5 lg:col-span-3 2xl:p-6"
           style={{ animationDelay: "180ms" }}
         >
           <SectionLabel index="03">Danas</SectionLabel>
@@ -379,7 +379,7 @@ export default function Dashboard({ user, initialData }: DashboardProps) {
           <div className="dash-rise mb-4" style={{ animationDelay: "240ms" }}>
             <SectionLabel index="04">Tvoj fokus</SectionLabel>
           </div>
-          <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 2xl:gap-6">
             {focus.map((group, i) => {
               const gs = group.readinessScore ?? 0;
               const gImage = CATEGORY_IMAGES[group.id];
@@ -397,7 +397,7 @@ export default function Dashboard({ user, initialData }: DashboardProps) {
                       "linear-gradient(135deg, rgba(236,91,19,0.5), var(--glass-border) 45%, transparent)",
                   }}
                 >
-                  <div className="relative flex min-h-[188px] flex-col overflow-hidden rounded-[calc(1.5rem-1px)] bg-[var(--color-card)] p-6 transition-shadow duration-300 group-hover:shadow-[0_20px_50px_-20px_rgba(236,91,19,0.45)]">
+                  <div className="relative flex h-full min-h-[188px] flex-col overflow-hidden rounded-[calc(1.5rem-1px)] bg-[var(--color-card)] p-6 2xl:min-h-[224px] 2xl:p-7 transition-shadow duration-300 group-hover:shadow-[0_20px_50px_-20px_rgba(236,91,19,0.45)]">
                     {gImage && (
                       <>
                         <img
@@ -469,7 +469,7 @@ export default function Dashboard({ user, initialData }: DashboardProps) {
           <div className="dash-rise mb-4" style={{ animationDelay: "420ms" }}>
             <SectionLabel index="05">Sve oblasti</SectionLabel>
           </div>
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 2xl:gap-6">
             {rest.map((group, i) => {
               const s = group.readinessScore ?? 0;
               const image = CATEGORY_IMAGES[group.id];
@@ -477,7 +477,7 @@ export default function Dashboard({ user, initialData }: DashboardProps) {
                 <Link
                   key={group.id}
                   href={`/zadaci?group=${group.id}`}
-                  className="dash-rise glass-card group relative flex flex-col overflow-hidden rounded-3xl p-6 transition-all duration-300 hover:-translate-y-1 hover:border-[#ec5b13]/40 hover:shadow-[0_16px_40px_-18px_rgba(236,91,19,0.4)]"
+                  className="dash-rise glass-card group relative flex min-h-0 flex-col overflow-hidden rounded-3xl p-6 transition-all 2xl:min-h-[150px] duration-300 hover:-translate-y-1 hover:border-[#ec5b13]/40 hover:shadow-[0_16px_40px_-18px_rgba(236,91,19,0.4)]"
                   style={{ animationDelay: `${480 + i * 70}ms` }}
                 >
                   {image && (
@@ -511,7 +511,7 @@ export default function Dashboard({ user, initialData }: DashboardProps) {
                       <span className="text-xs text-muted">/100</span>
                     </p>
                   </div>
-                  <div className="relative mt-4 flex items-center gap-3">
+                  <div className="relative mt-auto flex items-center gap-3 pt-4">
                     <span className="h-1 flex-1 overflow-hidden rounded-full bg-[var(--tint-strong)]">
                       <span
                         className="block h-full rounded-full"
