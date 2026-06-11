@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import {
   ClipboardList,
   Edit3,
@@ -16,6 +15,7 @@ import {
   Shield,
 } from "lucide-react";
 import Link from "next/link";
+import SectionLabel from "@/components/ui/section-label";
 
 type TestSize = 20 | 14 | 8;
 type TestMode = "timed" | "untimed";
@@ -58,7 +58,6 @@ function getDurationMinutes(testSize: TestSize): number {
 
 export default function SimulacijaPage() {
   const router = useRouter();
-  const { data: session } = useSession();
   const [testSize, setTestSize] = useState<TestSize>(20);
   const [mode, setMode] = useState<TestMode>("timed");
   const [loading, setLoading] = useState(false);
@@ -89,83 +88,83 @@ export default function SimulacijaPage() {
       <div className="absolute inset-0 backdrop-blur-sm" style={{ background: 'var(--overlay-bg)' }} />
 
       {/* Modal */}
-      <div className="relative w-full max-w-3xl mx-4 my-8 rounded-3xl overflow-hidden shadow-2xl flex flex-col bg-card backdrop-blur-xl border border-[var(--glass-border)]">
-        {/* Decorative gradients */}
-        <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#ec5b13]/10 blur-[100px] rounded-full -z-10" />
-        <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-cyan-500/10 blur-[100px] rounded-full -z-10" />
+      <div className="dash-rise relative mx-4 my-8 flex w-full max-w-3xl flex-col overflow-hidden rounded-3xl border border-[var(--glass-border)] bg-card shadow-2xl backdrop-blur-xl">
+        <div className="noise-overlay" />
+        {/* Decorative glow */}
+        <div
+          className="pointer-events-none absolute -right-24 -top-32 h-80 w-80 rounded-full opacity-20 blur-3xl"
+          style={{ background: "radial-gradient(circle, #ec5b13, transparent 70%)" }}
+        />
 
         {/* Header */}
-        <div className="px-8 pt-8 pb-4 flex justify-between items-start">
+        <div className="relative flex items-start justify-between px-8 pb-4 pt-8">
           <div>
-            <h1 className="text-3xl font-black text-heading tracking-tight">
-              Započni simulaciju
+            <h1 className="font-headline text-3xl font-bold tracking-tight text-heading">
+              Simulacija ispita
+              <span className="text-[#ec5b13]">.</span>
             </h1>
-            <p className="text-[#ec5b13] font-medium mt-1">
-              Konfiguriši svoj test za maksimalni učinak
+            <p className="mt-1 text-sm text-text-secondary">
+              Podesi test i proveri svoju spremnost u realnim uslovima.
             </p>
           </div>
           <Link
             href="/"
-            className="text-text-secondary hover:text-heading transition-colors"
+            aria-label="Zatvori"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--glass-border)] bg-[var(--tint)] text-text-secondary transition-colors hover:text-heading"
           >
-            <X size={24} />
+            <X size={18} />
           </Link>
         </div>
 
-        <div className="p-8 space-y-8">
+        <div className="relative space-y-7 p-8 pt-4">
           {/* Step 1: Test Size */}
           <section>
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-xs font-bold uppercase tracking-widest text-muted">
-Korak 1:
-              </span>
-              <h3 className="text-sm font-bold text-text">
-                VELIČINA TESTA
-              </h3>
+            <div className="mb-4">
+              <SectionLabel index="01">Veličina testa</SectionLabel>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               {TEST_SIZES.map(({ size, label, count, description, badge, icon: Icon }) => {
                 const isActive = testSize === size;
                 return (
                   <button
                     key={size}
                     onClick={() => setTestSize(size)}
-                    className={`rounded-2xl p-6 cursor-pointer text-left transition-all duration-300 ${
+                    aria-pressed={isActive}
+                    className={`cursor-pointer rounded-2xl p-5 text-left transition-all duration-300 ${
                       isActive
-                        ? "bg-[#ec5b13]/10 border border-[#ec5b13]/50 shadow-[0_0_20px_rgba(236,91,19,0.15)]"
-                        : "bg-bg border border-[var(--glass-border)] hover:bg-[var(--tint)]"
+                        ? "border border-[#ec5b13]/50 bg-[#ec5b13]/10 shadow-[0_12px_36px_-12px_rgba(236,91,19,0.45)]"
+                        : "border border-[var(--glass-border)] bg-[var(--glass-bg)] hover:-translate-y-0.5 hover:border-[#ec5b13]/30"
                     }`}
                   >
-                    <div className="flex justify-between items-start mb-4">
-                      <Icon
-                        size={32}
-                        className={isActive ? "text-[#ec5b13]" : "text-text-secondary"}
-                      />
-                      <div
-                        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                    <div className="mb-4 flex items-start justify-between">
+                      <span
+                        className={`flex h-10 w-10 items-center justify-center rounded-xl ${
+                          isActive ? "bg-[#ec5b13]/15 text-[#ec5b13]" : "bg-[var(--tint)] text-text-secondary"
+                        }`}
+                      >
+                        <Icon size={20} />
+                      </span>
+                      <span
+                        className={`flex h-5 w-5 items-center justify-center rounded-full border-2 ${
                           isActive ? "border-[#ec5b13]" : "border-[var(--glass-border)]"
                         }`}
                       >
-                        {isActive && (
-                          <div className="w-2.5 h-2.5 bg-[#ec5b13] rounded-full" />
-                        )}
-                      </div>
+                        {isActive && <span className="h-2.5 w-2.5 rounded-full bg-[#ec5b13]" />}
+                      </span>
                     </div>
-                    <h4 className="text-lg font-bold text-heading">{label}</h4>
-                    <p className="text-text-secondary text-sm mt-1">{count}</p>
+                    <h4 className="font-headline text-lg font-bold text-heading">{label}</h4>
+                    <p className="mt-0.5 text-sm text-text-secondary">{count}</p>
                     <div
-                      className={`mt-4 pt-4 border-t ${
+                      className={`mt-4 border-t pt-3 ${
                         isActive ? "border-[#ec5b13]/20" : "border-[var(--glass-border)]"
                       }`}
                     >
                       {badge ? (
-                        <p className="text-xs text-[#ec5b13]/80 flex items-center gap-1 uppercase font-bold tracking-tighter">
+                        <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-[#ec5b13]/80">
                           <Shield size={12} /> {badge}
                         </p>
                       ) : (
-                        <p className="text-xs text-muted font-medium">
-                          {description}
-                        </p>
+                        <p className="text-xs font-medium text-muted">{description}</p>
                       )}
                     </div>
                   </button>
@@ -176,97 +175,73 @@ Korak 1:
 
           {/* Step 2: Mode */}
           <section>
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-xs font-bold uppercase tracking-widest text-muted">
-                Korak 2:
-              </span>
-              <h3 className="text-sm font-bold text-text">REŽIM RADA</h3>
+            <div className="mb-4">
+              <SectionLabel index="02">Režim rada</SectionLabel>
             </div>
-            <div className="flex flex-col md:flex-row gap-4">
-              {/* Timed */}
-              <button
-                onClick={() => setMode("timed")}
-                className={`flex-1 flex items-center justify-between p-4 rounded-xl transition-all ${
-                  mode === "timed"
-                    ? "border-2 border-[#ec5b13] bg-[#ec5b13]/5"
-                    : "border border-[var(--glass-border)] bg-[var(--glass-bg)] hover:bg-[var(--tint)]"
-                }`}
-              >
-                <div className="flex items-center gap-4">
-                  <div
-                    className={`p-2 rounded-lg ${
-                      mode === "timed"
-                        ? "bg-[#ec5b13]/20 text-[#ec5b13]"
-                        : "bg-card text-text-secondary"
+            <div className="flex flex-col gap-4 md:flex-row">
+              {([
+                {
+                  id: "timed" as TestMode,
+                  icon: Timer,
+                  title: "Vremenski ograničen",
+                  subtitle: (
+                    <>
+                      Ograničenje: <span className="font-bold">{durationMin} min</span>
+                    </>
+                  ),
+                },
+                {
+                  id: "untimed" as TestMode,
+                  icon: Infinity,
+                  title: "Bez ograničenja",
+                  subtitle: "Vežba bez stresa",
+                },
+              ]).map(({ id, icon: ModeIcon, title, subtitle }) => {
+                const isActive = mode === id;
+                return (
+                  <button
+                    key={id}
+                    onClick={() => setMode(id)}
+                    aria-pressed={isActive}
+                    className={`flex flex-1 items-center justify-between rounded-2xl p-4 transition-all ${
+                      isActive
+                        ? "border border-[#ec5b13]/50 bg-[#ec5b13]/10 shadow-[0_12px_36px_-12px_rgba(236,91,19,0.45)]"
+                        : "border border-[var(--glass-border)] bg-[var(--glass-bg)] hover:border-[#ec5b13]/30"
                     }`}
                   >
-                    <Timer size={20} />
-                  </div>
-                  <div className="text-left">
-                    <p className="font-bold text-heading">Vremenski ograničen</p>
-                    <p
-                      className={`text-xs ${
-                        mode === "timed" ? "text-[#ec5b13]/80" : "text-muted"
-                      }`}
-                    >
-                      Ograničenje:{" "}
-                      <span className="font-bold">{durationMin} min</span>
-                    </p>
-                  </div>
-                </div>
-                {mode === "timed" && (
-                  <CheckCircle2 size={20} className="text-[#ec5b13]" />
-                )}
-              </button>
-
-              {/* Untimed */}
-              <button
-                onClick={() => setMode("untimed")}
-                className={`flex-1 flex items-center justify-between p-4 rounded-xl transition-all ${
-                  mode === "untimed"
-                    ? "border-2 border-[#ec5b13] bg-[#ec5b13]/5"
-                    : "border border-[var(--glass-border)] bg-[var(--glass-bg)] hover:bg-[var(--tint)]"
-                }`}
-              >
-                <div className="flex items-center gap-4">
-                  <div
-                    className={`p-2 rounded-lg ${
-                      mode === "untimed"
-                        ? "bg-[#ec5b13]/20 text-[#ec5b13]"
-                        : "bg-card text-text-secondary"
-                    }`}
-                  >
-                    <Infinity size={20} />
-                  </div>
-                  <div className="text-left">
-                    <p
-                      className={`font-bold ${
-                        mode === "untimed" ? "text-heading" : "text-text"
-                      }`}
-                    >
-                      Bez ograničenja
-                    </p>
-                    <p className="text-xs text-muted">Vežba bez stresa</p>
-                  </div>
-                </div>
-                {mode === "untimed" && (
-                  <CheckCircle2 size={20} className="text-[#ec5b13]" />
-                )}
-              </button>
+                    <div className="flex items-center gap-4">
+                      <span
+                        className={`flex h-10 w-10 items-center justify-center rounded-xl ${
+                          isActive ? "bg-[#ec5b13]/15 text-[#ec5b13]" : "bg-[var(--tint)] text-text-secondary"
+                        }`}
+                      >
+                        <ModeIcon size={20} />
+                      </span>
+                      <span className="text-left">
+                        <span className="block font-headline text-sm font-bold text-heading">{title}</span>
+                        <span className={`block text-xs ${isActive ? "text-[#ec5b13]/80" : "text-muted"}`}>
+                          {subtitle}
+                        </span>
+                      </span>
+                    </div>
+                    {isActive && <CheckCircle2 size={20} className="shrink-0 text-[#ec5b13]" />}
+                  </button>
+                );
+              })}
             </div>
           </section>
 
           {/* Start Button */}
-          <div className="pt-4 flex flex-col gap-4">
+          <div className="flex flex-col items-center gap-4 pt-2">
             <button
               onClick={startSimulation}
               disabled={loading}
-              className="w-full bg-[#ec5b13] hover:bg-[#ec5b13]/90 text-white font-black text-lg py-5 rounded-2xl shadow-[0_0_15px_rgba(236,91,19,0.4)] transition-all active:scale-[0.98] flex items-center justify-center gap-3 disabled:opacity-50"
+              className="btn-shine flex items-center justify-center gap-3 rounded-full bg-[#ec5b13] px-12 py-4 text-sm font-black uppercase tracking-widest text-white shadow-[0_14px_40px_-12px_rgba(236,91,19,0.7)] transition-all hover:-translate-y-0.5 hover:brightness-110 active:scale-[0.98] disabled:opacity-50"
             >
-              {loading ? "Kreiranje testa..." : "ZAPOČNI TEST"}
-              <Play size={20} />
+              {loading ? "Kreiranje testa..." : "Započni test"}
+              <Play size={18} fill="currentColor" />
             </button>
-            <p className="text-center text-xs text-muted flex items-center justify-center gap-1">
+            <p className="flex items-center justify-center gap-1.5 text-center text-xs text-muted">
               <Info size={12} />
               Tvoj napredak će biti automatski sačuvan u profilu.
             </p>

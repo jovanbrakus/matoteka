@@ -243,27 +243,31 @@ export default function SimulationPage() {
       {/* Confirmation Dialog */}
       {showConfirm && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 backdrop-blur-sm">
-          <div className="mx-4 w-full max-w-md rounded-2xl border border-[#ec5b13]/20 bg-surface-dark p-8 shadow-2xl">
-            <h3 className="text-xl font-bold text-heading mb-3">
+          <div className="dash-rise relative mx-4 w-full max-w-md overflow-hidden rounded-3xl border border-[var(--glass-border)] bg-surface-dark p-8 shadow-2xl">
+            <div
+              className="pointer-events-none absolute -right-16 -top-20 h-48 w-48 rounded-full opacity-20 blur-3xl"
+              style={{ background: "#ec5b13" }}
+            />
+            <h3 className="relative mb-3 font-headline text-xl font-bold text-heading">
               Završi simulaciju?
             </h3>
-            <p className="text-text-secondary text-sm mb-6">
+            <p className="relative mb-6 text-sm text-text-secondary">
               Imate{" "}
               <span className="font-bold text-[#ec5b13]">
                 {problems.filter((p) => !p.answer).length}
               </span>{" "}
               neodgovorenih zadataka. Da li ste sigurni da želite da završite?
             </p>
-            <div className="flex gap-3">
+            <div className="relative flex gap-3">
               <button
                 onClick={() => setShowConfirm(false)}
-                className="flex-1 rounded-xl border border-[var(--glass-border)] px-4 py-3 text-sm font-bold text-text hover:bg-[var(--tint)]"
+                className="flex-1 rounded-full border border-[var(--glass-border)] px-4 py-3 text-xs font-black uppercase tracking-widest text-text transition-colors hover:bg-[var(--tint)]"
               >
                 Nastavi test
               </button>
               <button
                 onClick={() => handleSubmit(true)}
-                className="flex-1 rounded-xl bg-[#ec5b13] px-4 py-3 text-sm font-bold text-white hover:bg-[#ec5b13]/90"
+                className="btn-shine flex-1 rounded-full bg-[#ec5b13] px-4 py-3 text-xs font-black uppercase tracking-widest text-white transition-all hover:brightness-110"
               >
                 Završi
               </button>
@@ -273,62 +277,84 @@ export default function SimulationPage() {
       )}
 
       {/* Header — sticky within scrollable main area */}
-      <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[#ec5b13]/20 bg-surface-dark/95 px-6 py-3 backdrop-blur-md">
-        <div className="flex items-center gap-6">
-          {/* Pacing indicator (timed mode only) */}
-          {pacing && (
-            <>
-              <div className="flex flex-col items-start gap-1">
-                <span className="text-[9px] font-black text-muted uppercase tracking-[0.2em]">Proctor Insight</span>
-                <div className="flex items-center gap-3 bg-cyan-400/10 border border-cyan-400/20 px-3 py-1.5 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <div className="relative flex size-2 items-center justify-center">
-                      <span className="absolute h-full w-full rounded-full bg-cyan-400 opacity-75 animate-ping" />
-                      <span className="relative size-1.5 rounded-full bg-cyan-400" />
-                    </div>
-                    <span className="text-xs font-black text-heading">{pacing.displayPercent}%</span>
-                  </div>
-                  <div className="h-3 w-px bg-cyan-400/30" />
-                  <div className="flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-[14px] text-cyan-400">radar</span>
-                    <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-tighter whitespace-nowrap">{pacing.label}</span>
-                  </div>
-                </div>
-              </div>
-              <div className="h-10 w-px bg-[var(--glass-border)]" />
-            </>
-          )}
-
-          {/* Status */}
+      <div className="sticky top-0 z-10 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-[var(--glass-border)] bg-surface-dark/95 px-6 py-3 backdrop-blur-md">
+        <div className="flex items-center gap-5">
+          {/* Mode status */}
           <div className="flex flex-col items-start gap-1">
-            <span className="text-[9px] font-black text-muted uppercase tracking-[0.2em]">Status</span>
-            <div className="flex items-center gap-2 px-1">
+            <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-muted">Status</span>
+            <div className="flex items-center gap-2 rounded-full border border-[var(--glass-border)] bg-[var(--tint)] px-3 py-1.5">
               {exam.mode === "timed" ? (
                 <>
-                  <span className="size-2 rounded-full bg-red-500 animate-pulse" />
-                  <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Proktor aktivan</span>
+                  <span className="size-2 animate-pulse rounded-full bg-red-500" />
+                  <span className="whitespace-nowrap text-[10px] font-bold uppercase tracking-widest text-text-secondary">Proktor aktivan</span>
                 </>
               ) : (
                 <>
                   <span className="size-2 rounded-full bg-emerald-500" />
-                  <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Slobodan režim</span>
+                  <span className="whitespace-nowrap text-[10px] font-bold uppercase tracking-widest text-text-secondary">Slobodan režim</span>
                 </>
               )}
             </div>
           </div>
+
+          {/* Pacing indicator (timed mode only) */}
+          {pacing && (() => {
+            const pacingColor =
+              pacing.displayPercent >= 90 ? "#10b981" : pacing.displayPercent >= 70 ? "#f59e0b" : "#ef4444";
+            return (
+              <div className="flex flex-col items-start gap-1">
+                <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-muted">Tempo</span>
+                <div
+                  className="flex items-center gap-3 rounded-full border px-3 py-1.5"
+                  style={{ borderColor: `${pacingColor}33`, background: `${pacingColor}14` }}
+                >
+                  <div className="flex items-center gap-2">
+                    <div className="relative flex size-2 items-center justify-center">
+                      <span className="absolute h-full w-full animate-ping rounded-full opacity-75" style={{ background: pacingColor }} />
+                      <span className="relative size-1.5 rounded-full" style={{ background: pacingColor }} />
+                    </div>
+                    <span className="font-headline text-xs font-bold tabular-nums text-heading">{pacing.displayPercent}%</span>
+                  </div>
+                  <div className="h-3 w-px" style={{ background: `${pacingColor}4d` }} />
+                  <span className="whitespace-nowrap text-[10px] font-bold uppercase tracking-wider" style={{ color: pacingColor }}>
+                    {pacing.label}
+                  </span>
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Progress */}
+          <div className="hidden flex-col items-start gap-1 sm:flex">
+            <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-muted">Odgovoreno</span>
+            <div className="flex items-center gap-2.5 px-1 py-1.5">
+              <span className="font-headline text-xs font-bold tabular-nums text-heading">
+                {problems.filter((p) => p.answer).length}/{problems.length}
+              </span>
+              <span className="h-1 w-24 overflow-hidden rounded-full bg-[var(--tint-strong)]">
+                <span
+                  className="block h-full rounded-full bg-[#ec5b13]"
+                  style={{
+                    width: `${(problems.filter((p) => p.answer).length / problems.length) * 100}%`,
+                    transition: "width 0.5s cubic-bezier(0.22, 1, 0.36, 1)",
+                  }}
+                />
+              </span>
+            </div>
+          </div>
         </div>
 
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-5">
           {/* Timer */}
-          <div className="flex flex-col items-end">
-            <span className="text-[10px] text-[#ec5b13] font-bold uppercase tracking-widest">
+          <div className="flex flex-col items-end gap-1">
+            <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-muted">
               {exam.mode === "timed" ? "Preostalo vreme" : "Proteklo vreme"}
             </span>
             <div
-              className={`rounded-lg px-4 py-1 text-2xl font-mono font-black shadow-[0_0_15px_rgba(236,91,19,0.3)] ${
+              className={`rounded-full border px-4 py-1 font-headline text-xl font-bold tabular-nums ${
                 timeLeft !== null && timeLeft < 300
-                  ? "bg-red-500/10 border border-red-500/30 text-red-400"
-                  : "bg-[#ec5b13]/10 border border-[#ec5b13]/30 text-[#ec5b13]"
+                  ? "border-red-500/30 bg-red-500/10 text-red-400"
+                  : "border-[#ec5b13]/30 bg-[#ec5b13]/10 text-[#ec5b13]"
               }`}
             >
               {timeLeft !== null ? formatTime(timeLeft) : formatTime(elapsed)}
@@ -339,10 +365,10 @@ export default function SimulationPage() {
           <button
             onClick={() => handleSubmit()}
             disabled={submitting}
-            className="px-6 py-2.5 bg-[#ec5b13] text-white text-[11px] font-black uppercase tracking-[0.15em] rounded-xl hover:bg-[#ec5b13]/90 transition-all shadow-[0_0_20px_rgba(236,91,19,0.4)] flex items-center justify-center gap-2 group shrink-0 disabled:opacity-50"
+            className="btn-shine flex shrink-0 items-center justify-center gap-2 rounded-full bg-[#ec5b13] px-6 py-2.5 text-[11px] font-black uppercase tracking-[0.15em] text-white shadow-[0_10px_30px_-10px_rgba(236,91,19,0.6)] transition-all hover:-translate-y-0.5 hover:brightness-110 disabled:opacity-50"
           >
-            <span>Završi Simulaciju</span>
-            <span className="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">military_tech</span>
+            <span>Završi simulaciju</span>
+            <span className="material-symbols-outlined text-sm">military_tech</span>
           </button>
         </div>
       </div>
@@ -355,10 +381,11 @@ export default function SimulationPage() {
             {/* Question Header */}
             <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-[var(--glass-border)] pb-4 gap-2">
               <div>
-                <span className="text-[#ec5b13] font-bold text-sm tracking-widest uppercase">
-                  Zadatak {cp.position} / {testSizeNum}
+                <span className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.25em]">
+                  <span className="font-headline text-[#ec5b13]">{String(cp.position).padStart(2, "0")}</span>
+                  <span className="text-muted">/ {String(testSizeNum).padStart(2, "0")}</span>
                 </span>
-                <h1 className="text-2xl md:text-3xl font-black text-heading mt-1">
+                <h1 className="mt-1 font-headline text-2xl font-bold tracking-tight text-heading md:text-3xl">
                   {cp.title}
                 </h1>
                 {isAdmin && (
@@ -367,12 +394,12 @@ export default function SimulationPage() {
                   </span>
                 )}
               </div>
-              <div className="flex gap-2">
-                <span className="px-3 py-1 rounded-full bg-[var(--tint)] border border-[var(--glass-border)] text-[10px] font-bold text-text-secondary uppercase tracking-wider">
+              <div className="flex shrink-0 gap-2">
+                <span className="whitespace-nowrap px-3 py-1 rounded-full bg-[var(--tint)] border border-[var(--glass-border)] text-[10px] font-bold text-text-secondary uppercase tracking-wider">
                   {cp.facultyId.split("_").pop()?.toUpperCase()} {cp.year}
                 </span>
                 {cp.difficulty && (
-                  <span className="px-3 py-1 rounded-full bg-[#ec5b13]/10 border border-[#ec5b13]/20 text-[10px] font-bold text-[#ec5b13] uppercase tracking-wider">
+                  <span className="whitespace-nowrap px-3 py-1 rounded-full bg-[#ec5b13]/10 border border-[#ec5b13]/20 text-[10px] font-bold text-[#ec5b13] uppercase tracking-wider">
                     {parseFloat(cp.pointValue)} bod.
                   </span>
                 )}
@@ -380,7 +407,7 @@ export default function SimulationPage() {
             </div>
 
             {/* Problem Content */}
-            <div className="overflow-hidden rounded-2xl border border-[var(--glass-border)] glass-card">
+            <div className="overflow-hidden rounded-3xl border border-[var(--glass-border)] glass-card">
               <ProblemStatement problemId={cp.problemId} section="statement" />
             </div>
 
@@ -397,39 +424,40 @@ export default function SimulationPage() {
               <button
                 onClick={() => setCurrent(Math.max(0, current - 1))}
                 disabled={current === 0}
-                className="px-8 py-3 rounded-xl border border-[var(--glass-border)] text-text-secondary font-bold uppercase tracking-widest hover:bg-[var(--tint)] transition-all flex items-center gap-2 disabled:opacity-30"
+                className="flex items-center gap-2 rounded-full border border-[var(--glass-border)] bg-[var(--tint)] px-7 py-3 text-xs font-bold uppercase tracking-widest text-text-secondary transition-all hover:border-[#ec5b13]/40 hover:text-heading disabled:opacity-30"
               >
-                <ChevronLeft size={18} />
+                <ChevronLeft size={16} />
                 Prethodni
               </button>
-              <div className="flex gap-4">
+              <div className="flex flex-wrap justify-center gap-3">
                 <button
                   onClick={toggleFlag}
-                  className={`px-8 py-3 rounded-xl border font-bold uppercase tracking-widest transition-all flex items-center gap-2 ${
+                  aria-pressed={cp.isFlagged}
+                  className={`flex items-center gap-2 rounded-full border px-7 py-3 text-xs font-bold uppercase tracking-widest transition-all ${
                     cp.isFlagged
-                      ? "border-yellow-400/50 text-yellow-400 bg-yellow-400/5"
-                      : "border-[#ec5b13]/30 text-[#ec5b13] hover:bg-[#ec5b13]/5"
+                      ? "border-amber-400/50 bg-amber-400/10 text-amber-400"
+                      : "border-[var(--glass-border)] bg-[var(--tint)] text-text-secondary hover:border-amber-400/40 hover:text-amber-400"
                   }`}
                 >
-                  <Flag size={16} />
-                  Označi za kasnije
+                  <Flag size={15} fill={cp.isFlagged ? "currentColor" : "none"} />
+                  {cp.isFlagged ? "Označeno" : "Označi za kasnije"}
                 </button>
                 {current < problems.length - 1 ? (
                   <button
                     onClick={() => setCurrent(current + 1)}
-                    className="px-10 py-3 rounded-xl bg-white text-black font-black uppercase tracking-widest hover:bg-slate-200 transition-all flex items-center gap-2 shadow-xl"
+                    className="btn-shine flex items-center gap-2 rounded-full bg-[#ec5b13] px-9 py-3 text-xs font-black uppercase tracking-widest text-white shadow-[0_10px_30px_-10px_rgba(236,91,19,0.6)] transition-all hover:-translate-y-0.5 hover:brightness-110"
                   >
                     Sledeći zadatak
-                    <ChevronRight size={18} />
+                    <ChevronRight size={16} />
                   </button>
                 ) : (
                   <button
                     onClick={() => handleSubmit()}
                     disabled={submitting}
-                    className="px-10 py-3 rounded-xl bg-[#ec5b13] text-white font-black uppercase tracking-widest hover:bg-[#ec5b13]/90 transition-all flex items-center gap-2 shadow-xl disabled:opacity-50"
+                    className="btn-shine flex items-center gap-2 rounded-full bg-[#ec5b13] px-9 py-3 text-xs font-black uppercase tracking-widest text-white shadow-[0_10px_30px_-10px_rgba(236,91,19,0.6)] transition-all hover:-translate-y-0.5 hover:brightness-110 disabled:opacity-50"
                   >
                     Završi test
-                    <Award size={18} />
+                    <Award size={16} />
                   </button>
                 )}
               </div>
@@ -439,10 +467,10 @@ export default function SimulationPage() {
 
         {/* Right Sidebar: Question Grid */}
         <aside className="w-24 border-l border-[var(--glass-border)] flex-col items-center py-6 gap-4 hidden md:flex sticky top-14 self-start">
-          <div className="text-[10px] font-bold text-muted uppercase tracking-tighter mb-2">
-            Status
+          <div className="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-muted">
+            Zadaci
           </div>
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2.5">
             {problems.map((p, i) => {
               const isActive = i === current;
               const isAnswered = !!p.answer;
@@ -451,25 +479,27 @@ export default function SimulationPage() {
               let classes = "";
               if (isActive) {
                 classes =
-                  "bg-[#ec5b13]/20 border-[#ec5b13]/50 text-[#ec5b13] shadow-[0_0_15px_rgba(236,91,19,0.3)]";
+                  "bg-[#ec5b13]/15 border-[#ec5b13]/60 text-[#ec5b13] shadow-[0_4px_16px_-4px_rgba(236,91,19,0.5)] scale-110";
               } else if (isAnswered) {
                 classes =
-                  "bg-cyan-400/20 border-cyan-400/50 text-cyan-400";
+                  "bg-emerald-500/15 border-emerald-500/40 text-emerald-500";
               } else if (isFlagged) {
                 classes =
-                  "bg-yellow-400/20 border-yellow-400/50 text-yellow-400";
+                  "bg-amber-400/15 border-amber-400/40 text-amber-400";
               } else {
-                classes = "border-[var(--glass-border)] text-muted";
+                classes = "border-[var(--glass-border)] text-muted hover:border-[#ec5b13]/30 hover:text-text-secondary";
               }
 
               return (
                 <button
                   key={i}
                   onClick={() => setCurrent(i)}
-                  className={`w-12 h-12 rounded-xl border flex items-center justify-center font-bold text-xs transition-all ${classes}`}
+                  aria-label={`Zadatak ${i + 1}`}
+                  aria-current={isActive ? "true" : undefined}
+                  className={`flex h-11 w-11 items-center justify-center rounded-xl border font-headline text-xs font-bold tabular-nums transition-all ${classes}`}
                 >
-                  {isFlagged && !isActive ? (
-                    <Flag size={14} />
+                  {isFlagged ? (
+                    <Flag size={13} fill="currentColor" />
                   ) : (
                     String(i + 1).padStart(2, "0")
                   )}
@@ -506,19 +536,19 @@ export default function SimulationPage() {
                     <p className="font-bold text-text uppercase tracking-wider text-[10px] mb-1.5">Legenda boja</p>
                     <div className="space-y-1.5">
                       <div className="flex items-center gap-2">
-                        <span className="size-3 rounded bg-[#ec5b13]/30 border border-[#ec5b13]/60 shrink-0" />
+                        <span className="size-3 shrink-0 rounded border border-[#ec5b13]/60 bg-[#ec5b13]/30" />
                         <span>Trenutni zadatak</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="size-3 rounded bg-cyan-400/30 border border-cyan-400/60 shrink-0" />
+                        <span className="size-3 shrink-0 rounded border border-emerald-500/60 bg-emerald-500/30" />
                         <span>Odgovoreno</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="size-3 rounded bg-yellow-400/30 border border-yellow-400/60 shrink-0" />
+                        <span className="size-3 shrink-0 rounded border border-amber-400/60 bg-amber-400/30" />
                         <span>Označeno za kasnije</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="size-3 rounded border border-[var(--glass-border)] shrink-0" />
+                        <span className="size-3 shrink-0 rounded border border-[var(--glass-border)]" />
                         <span>Neodgovoreno</span>
                       </div>
                     </div>
