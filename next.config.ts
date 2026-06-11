@@ -31,8 +31,9 @@ export default withSentryConfig(nextConfig, {
   silent: !process.env.CI,
   // Upload a larger set of source maps for better stack traces, including hidden ones.
   widenClientFileUpload: true,
-  // Tunnel Sentry events through this Next.js route to bypass ad blockers.
-  tunnelRoute: "/monitoring",
+  // No tunnelRoute: it relayed every browser Sentry envelope through a
+  // serverless function (~24% of all invocations). Ad-blocked browsers now
+  // drop their client events — accepted trade for the Fluid CPU savings.
   // Hide source maps from production client bundles after upload.
   sourcemaps: { disable: false },
   // Automatically tree-shake Sentry logger statements to reduce bundle size.
