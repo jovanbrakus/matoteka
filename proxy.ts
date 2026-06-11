@@ -37,6 +37,14 @@ const onboardingExemptApi = ["/api/onboarding", "/api/auth"];
 export default auth(async (req) => {
   const { pathname } = req.nextUrl;
 
+  // "/" is a static landing page (CDN-served, no function invocation) for
+  // anonymous visitors and bots. Signed-in users get the dashboard rewritten
+  // in, keeping the URL at "/". The auth() wrapper has already decoded the
+  // session, so this check costs nothing extra.
+  if (pathname === "/" && req.auth?.user) {
+    return NextResponse.rewrite(new URL("/pocetna", req.url));
+  }
+
   const isPublic = publicPaths.some(
     (p) => pathname === p || pathname.startsWith(p + "/")
   );
