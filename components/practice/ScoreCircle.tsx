@@ -2,10 +2,12 @@ export default function ScoreCircle({
   score,
   size = 64,
   strokeRatio = 0.1,
+  color = "#ec5b13",
 }: {
   score: number;
   size?: number;
   strokeRatio?: number;
+  color?: string;
 }) {
   const strokeWidth = size * strokeRatio;
   const radius = (size - strokeWidth) / 2;
@@ -20,7 +22,7 @@ export default function ScoreCircle({
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="#ec5b13"
+          stroke={color}
           strokeWidth={strokeWidth}
           opacity={0.15}
         />
@@ -29,7 +31,7 @@ export default function ScoreCircle({
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="#ec5b13"
+          stroke={color}
           strokeWidth={strokeWidth}
           strokeDasharray={circumference}
           strokeDashoffset={circumference - filled}
@@ -38,8 +40,8 @@ export default function ScoreCircle({
         />
       </svg>
       <span
-        className="absolute inset-0 flex items-center justify-center font-black text-primary"
-        style={{ fontSize: size * 0.3 }}
+        className="absolute inset-0 flex items-center justify-center font-headline font-bold"
+        style={{ fontSize: size * 0.3, color }}
       >
         {score}
       </span>
