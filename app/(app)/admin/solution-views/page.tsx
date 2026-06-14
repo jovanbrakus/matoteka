@@ -28,7 +28,7 @@ export default function SolutionViewsPage() {
   const [rows, setRows] = useState<any[]>([]);
   const [loadedTab, setLoadedTab] = useState<Tab | null>(null);
   const [total, setTotal] = useState(0);
-  const [solutionLimit, setSolutionLimit] = useState(50);
+  const [solutionLimit, setSolutionLimit] = useState(100);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [dateFrom, setDateFrom] = useState("");

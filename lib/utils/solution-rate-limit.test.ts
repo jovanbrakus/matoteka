@@ -40,7 +40,7 @@ describe("checkSolutionRateLimit", () => {
     const result = await checkSolutionRateLimit("user-1");
     expect(result.allowed).toBe(true);
     expect(result.used).toBe(0);
-    expect(result.limit).toBe(50);
+    expect(result.limit).toBe(100);
   });
 
   it("allows when usage is below limit", async () => {
@@ -51,24 +51,24 @@ describe("checkSolutionRateLimit", () => {
   });
 
   it("denies when usage equals limit", async () => {
-    mockSelectResult = [{ count: 50 }];
+    mockSelectResult = [{ count: 100 }];
     const result = await checkSolutionRateLimit("user-1");
     expect(result.allowed).toBe(false);
-    expect(result.used).toBe(50);
+    expect(result.used).toBe(100);
   });
 
   it("denies when usage exceeds limit", async () => {
-    mockSelectResult = [{ count: 70 }];
+    mockSelectResult = [{ count: 120 }];
     const result = await checkSolutionRateLimit("user-1");
     expect(result.allowed).toBe(false);
-    expect(result.used).toBe(70);
+    expect(result.used).toBe(120);
   });
 
   it("allows at limit - 1", async () => {
-    mockSelectResult = [{ count: 49 }];
+    mockSelectResult = [{ count: 99 }];
     const result = await checkSolutionRateLimit("user-1");
     expect(result.allowed).toBe(true);
-    expect(result.used).toBe(49);
+    expect(result.used).toBe(99);
   });
 });
 
